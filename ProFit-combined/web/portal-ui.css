@@ -402,3 +402,106 @@ body:has(.member-content){background:radial-gradient(900px 500px at 8% -5%,color
 .sidebar-scroll::-webkit-scrollbar{width:0}
 .sidebar-scroll:hover::-webkit-scrollbar{width:5px}
 .sidebar-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18)}
+
+/* =========================================================
+   MEMBERS PAGE (staff) + INTERACTIVE CONTROLS (member portal)
+   ========================================================= */
+/* --- Search pill: the inner input must not draw its own box --- */
+.pp-search{position:relative;display:flex!important;align-items:center;gap:10px;height:48px;padding:0 16px!important;border-radius:999px!important;background:var(--card)!important;border:1px solid var(--border)!important;box-shadow:0 2px 10px rgba(0,0,0,.06);transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease}
+.pp-search:hover{border-color:color-mix(in srgb,var(--gold) 55%,var(--border))!important}
+.pp-search:focus-within{border-color:var(--gold)!important;box-shadow:0 0 0 4px color-mix(in srgb,var(--gold) 20%,transparent)!important;transform:translateY(-1px)}
+.pp-search>i{color:var(--muted);font-size:15px;transition:color .2s ease}
+.pp-search:focus-within>i{color:var(--gold-deep)}
+.pp-search input,.pp-search input[type=search]{flex:1;min-width:0;height:100%!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;outline:0!important;color:var(--text);font:inherit;font-size:14.5px;-webkit-appearance:none;appearance:none}
+.pp-search input::-webkit-search-cancel-button{-webkit-appearance:none;height:16px;width:16px;border-radius:50%;background:var(--muted);opacity:.5;cursor:pointer}
+
+/* --- Info banner --- */
+.pp-help{position:relative;display:flex!important;align-items:center;gap:14px;padding:14px 18px 14px 20px!important;border-radius:16px!important;margin:0 0 16px!important;color:var(--text);font-size:14px;line-height:1.5;border:1px solid color-mix(in srgb,var(--gold) 28%,var(--border))!important;background:linear-gradient(100deg,color-mix(in srgb,var(--gold) 14%,var(--card)),var(--card) 80%)!important;overflow:hidden}
+.pp-help::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--gold-grad)}
+.pp-help>i{flex:0 0 32px;height:32px;display:grid;place-items:center;border-radius:10px;background:var(--gold-soft,#e8b93a22);color:var(--gold-deep)!important}
+
+/* --- Segmented controls (filters, view toggle, theme) --- */
+.pp-segment,.pp-view-toggle{display:inline-flex;gap:4px;padding:5px;border-radius:999px;background:var(--card);border:1px solid var(--border);box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.pp-segment button,.pp-view-toggle button{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 16px;border:0;border-radius:999px;background:transparent;color:var(--muted);font:inherit;font-size:13.5px;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .2s ease,color .2s ease,transform .15s ease,box-shadow .2s ease}
+.pp-segment button:hover,.pp-view-toggle button:hover{color:var(--text);background:var(--hover)}
+.pp-segment button:active,.pp-view-toggle button:active{transform:scale(.95)}
+.pp-segment button.active,.pp-view-toggle button.active,.pp-segment button[aria-checked="true"],.pp-segment button[aria-pressed="true"]{background:var(--gold-grad)!important;color:#1c1606!important;box-shadow:0 6px 16px color-mix(in srgb,var(--gold) 30%,transparent)}
+.pp-toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:14px}
+@media (max-width:700px){.pp-segment,.pp-view-toggle{max-width:100%;overflow-x:auto;scrollbar-width:none}.pp-segment::-webkit-scrollbar,.pp-view-toggle::-webkit-scrollbar{display:none}.pp-search{flex:1 1 100%}}
+
+/* --- Members table --- */
+.pp-table-wrap{border-radius:20px;border:1px solid var(--border);background:var(--card);overflow:auto;box-shadow:var(--shadow)}
+.pp-table-wrap table{width:100%;border-collapse:separate;border-spacing:0}
+.pp-table-wrap thead th{position:sticky;top:0;z-index:2;padding:14px 18px;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);background:color-mix(in srgb,var(--card) 88%,var(--hover));border-bottom:1px solid var(--border)}
+.pp-table-wrap tbody td{padding:14px 18px;border-bottom:1px solid var(--border);vertical-align:middle;transition:background .18s ease}
+.pp-table-wrap tbody tr{cursor:pointer;transition:transform .18s ease}
+.pp-table-wrap tbody tr:hover td{background:color-mix(in srgb,var(--gold) 8%,transparent)}
+.pp-table-wrap tbody tr:active{transform:scale(.998)}
+.pp-table-wrap tbody tr:last-child td{border-bottom:0}
+.pp-table-wrap tbody tr td:first-child{box-shadow:inset 0 0 0 var(--gold);transition:box-shadow .18s ease,background .18s ease}
+.pp-table-wrap tbody tr:hover td:first-child{box-shadow:inset 4px 0 var(--gold)}
+.pp-status,.pp-chip{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;font-size:11.5px;font-weight:800;letter-spacing:.03em}
+.pp-status::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.pp-status.active{background:#22c55e1f;color:#22c55e}.pp-status.expiring{background:#f5a5241f;color:#f5a524}.pp-status.expired{background:#e5484d1f;color:#e5484d}
+.pp-chip{background:var(--hover);color:var(--text)}
+.pp-avatar{display:inline-grid;place-items:center;background:var(--gold-grad);color:#1c1606;font-weight:800}
+.pp-icon-btn{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;transition:transform .18s ease,border-color .18s ease,background .18s ease}
+.pp-icon-btn:hover{border-color:var(--gold);background:var(--hover);transform:scale(1.08)}
+.pp-icon-btn:active{transform:scale(.92)}
+
+/* --- Buttons: press feedback and focus ring everywhere --- */
+.btn,.pp-btn,.pp-chip-btn,.pp-tab,.pp-mood,.pp-swatch{position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent}
+.btn:active,.pp-btn:active,.pp-chip-btn:active,.pp-tab:active{transform:scale(.96)!important}
+.btn:focus-visible,.pp-btn:focus-visible,.pp-chip-btn:focus-visible,.pp-tab:focus-visible,.pp-mood:focus-visible,.pp-swatch:focus-visible,.pp-icon-btn:focus-visible{outline:0;box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 45%,transparent)!important}
+.pf-ripple{position:absolute;border-radius:50%;pointer-events:none;background:currentColor;opacity:.22;transform:scale(0);animation:pfRipple .6s ease-out forwards}
+@keyframes pfRipple{to{transform:scale(1);opacity:0}}
+
+/* --- Chips, moods, swatches --- */
+.pp-chip-row{display:flex;flex-wrap:wrap;gap:8px}
+.pp-chip-btn{height:38px;padding:0 14px;border-radius:999px;border:1px solid var(--border);background:var(--bg);color:var(--text);font:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:border-color .18s ease,background .18s ease,transform .15s ease}
+.pp-chip-btn:hover{border-color:var(--gold);background:var(--gold-soft,#e8b93a22);transform:translateY(-1px)}
+.pp-chip-btn[aria-checked="true"],.pp-chip-btn.active{background:var(--gold-grad);border-color:transparent;color:#1c1606;box-shadow:0 6px 16px color-mix(in srgb,var(--gold) 28%,transparent)}
+#diaryMoods,.pp-mood-row{display:flex;flex-wrap:wrap;gap:8px}
+.pp-mood{display:grid;justify-items:center;gap:4px;min-width:70px;padding:10px 8px;border-radius:16px;border:1px solid var(--border);background:var(--bg);color:var(--muted);font:inherit;font-size:11px;font-weight:700;cursor:pointer;transition:transform .18s cubic-bezier(.3,1.5,.5,1),border-color .18s ease,background .18s ease}
+.pp-mood-emoji{font-size:24px;transition:transform .2s cubic-bezier(.3,1.8,.5,1)}
+.pp-mood:hover{transform:translateY(-3px);border-color:var(--gold)}
+.pp-mood:hover .pp-mood-emoji{transform:scale(1.25) rotate(-6deg)}
+.pp-mood[aria-checked="true"]{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 16%,var(--card));color:var(--text);box-shadow:0 8px 20px color-mix(in srgb,var(--gold) 22%,transparent)}
+.pp-swatches{display:flex;flex-wrap:wrap;gap:10px}
+.pp-swatch{display:inline-flex;align-items:center;gap:9px;padding:8px 14px 8px 8px;border-radius:999px;border:1px solid var(--border);background:var(--bg);color:var(--text);font:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:transform .18s ease,border-color .18s ease}
+.pp-swatch-dot{width:24px;height:24px;border-radius:50%;background:var(--sw);box-shadow:inset 0 0 0 2px rgba(255,255,255,.35)}
+.pp-swatch:hover{transform:translateY(-2px);border-color:var(--sw)}
+.pp-swatch[aria-checked="true"]{border-color:var(--sw);box-shadow:0 0 0 3px color-mix(in srgb,var(--sw) 28%,transparent)}
+
+/* --- Settings checkboxes become switches --- */
+.pp-check{display:flex;align-items:center;gap:14px;padding:14px 16px;margin-bottom:8px;border-radius:14px;border:1px solid var(--border);background:var(--bg);cursor:pointer;transition:border-color .18s ease,background .18s ease}
+.pp-check:hover{border-color:var(--gold)}
+.pp-check input[type=checkbox]{appearance:none;-webkit-appearance:none;flex:0 0 46px;width:46px!important;height:26px!important;padding:0!important;border-radius:99px!important;border:0!important;background:color-mix(in srgb,var(--muted) 35%,transparent)!important;position:relative;cursor:pointer;transition:background .25s ease}
+.pp-check input[type=checkbox]::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.3);transition:transform .25s cubic-bezier(.3,1.4,.5,1)}
+.pp-check input[type=checkbox]:checked{background:var(--gold-grad)!important}
+.pp-check input[type=checkbox]:checked::after{transform:translateX(20px)}
+.pp-check span{font-size:14px}
+
+/* --- Class booking rows, diary entries, calendar --- */
+.pp-class-list{display:grid;gap:10px}
+.pp-class-row{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:18px;border:1px solid var(--border);background:var(--card);transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+.pp-class-row:hover{transform:translateY(-2px);border-color:var(--gold);box-shadow:0 14px 30px rgba(0,0,0,.12)}
+.pp-class-row.is-booked,.pp-class-row.is-mine{border-color:color-mix(in srgb,#22c55e 55%,var(--border));background:linear-gradient(100deg,color-mix(in srgb,#22c55e 12%,var(--card)),var(--card))}
+.pp-class-emoji{display:grid;place-items:center;flex:0 0 48px;height:48px;border-radius:15px;background:var(--gold-soft,#e8b93a22);font-size:24px}
+.pp-class-copy{flex:1;min-width:0}
+.pp-entry{border-radius:20px;padding:18px;border:1px solid var(--border);background:var(--card);transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+.pp-entry:hover{transform:translateY(-2px);border-color:var(--gold);box-shadow:0 16px 36px rgba(0,0,0,.12)}
+.pp-diary-list{display:grid;gap:12px}
+.pp-drop{display:grid;place-items:center;gap:6px;padding:22px;border-radius:18px;border:2px dashed color-mix(in srgb,var(--gold) 50%,var(--border));background:color-mix(in srgb,var(--gold) 5%,transparent);text-align:center;cursor:pointer;transition:background .2s ease,transform .2s ease,border-color .2s ease}
+.pp-drop:hover,.pp-drop:focus-visible{background:color-mix(in srgb,var(--gold) 12%,transparent);border-color:var(--gold);transform:scale(1.01)}
+.pp-cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.pp-cal-day{border:0;border-radius:12px;min-height:44px;background:var(--hover);color:var(--text);font:inherit;font-weight:700;cursor:pointer;transition:transform .15s ease,background .15s ease}
+.pp-cal-day:hover{transform:scale(1.07);background:color-mix(in srgb,var(--gold) 22%,var(--hover))}
+.pp-cal-day.has-visit,.pp-cal-day.is-visit{background:color-mix(in srgb,#22c55e 24%,var(--hover))}
+
+/* --- Dialogs and toasts --- */
+.pp-modal-backdrop{backdrop-filter:blur(8px);animation:pfpFade .2s ease}
+.pp-modal{border-radius:24px!important;border:1px solid var(--border);box-shadow:0 40px 100px rgba(0,0,0,.5);animation:pfpRise .3s cubic-bezier(.2,.8,.2,1)}
+.pp-modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.toast,.pp-toast{border-radius:16px!important;padding:14px 20px!important;font-weight:600;box-shadow:0 20px 50px rgba(0,0,0,.35)!important;border:1px solid color-mix(in srgb,var(--gold) 40%,transparent)}
+.toast.error,.pp-toast.error{border-color:#e5484d99}

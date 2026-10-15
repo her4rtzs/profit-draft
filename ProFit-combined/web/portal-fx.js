@@ -29,6 +29,18 @@
       document.addEventListener("click", () => setTimeout(scan, 80));
     }
 
+    // Ripple on buttons and tabs.
+    document.addEventListener("pointerdown", e => {
+      const t = e.target.closest && e.target.closest(".btn,.pp-btn,.pp-chip-btn,.pp-tab,.pp-segment button,.pp-view-toggle button,.pp-mood");
+      if (!t || t.disabled) return;
+      const r = t.getBoundingClientRect(), size = Math.max(r.width, r.height) * 2;
+      const dot = document.createElement("span");
+      dot.className = "pf-ripple";
+      dot.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX - r.left - size / 2}px;top:${e.clientY - r.top - size / 2}px`;
+      t.appendChild(dot);
+      setTimeout(() => dot.remove(), 650);
+    }, { passive: true });
+
     // Smooth fade when moving between pages.
     document.addEventListener("click", e => {
       const a = e.target.closest && e.target.closest("a[href]");
