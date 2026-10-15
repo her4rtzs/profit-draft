@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script src="splash.js?v=1"></script>
+<head><script src="splash.js?v=2"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ProFit | Payments</title>
@@ -12,7 +12,7 @@
     <script src="config.js"></script>
     <script src="api.js"></script>
     <script src="auth.js"></script>
-<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script></head>
+<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=1"><script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script></head>
 
 <body data-page="payments" data-title="Payments" data-welcome="Record and track payments">
 
@@ -27,6 +27,7 @@
         <div class="tabs" role="tablist">
             <button class="tab active" data-tab="daily" type="button">Daily payment</button>
             <button class="tab" data-tab="subscription" type="button">Subscription monitor</button>
+            <button class="tab" data-tab="history" type="button">Payment history</button>
         </div>
 
         <!-- DAILY PAYMENT -->
@@ -104,13 +105,48 @@
             </div>
         </section>
 
+        <!-- PAYMENT HISTORY -->
+        <section class="pane" data-pane="history">
+            <div class="panel">
+                <div class="toolbar">
+                    <div class="search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input id="histSearch" type="text" placeholder="Search by member, reference or method" aria-label="Search payment history">
+                    </div>
+                    <span class="spacer"></span>
+                    <span class="muted" id="histCount"></span>
+                </div>
+                <p class="pay-note">Owners can correct the method or date of a desk payment with the pencil button. The plan and amount stay fixed because the membership was extended from them. Online (PayMongo) payments cannot be edited.</p>
+                <div class="table-wrapper">
+                    <table>
+                        <thead><tr><th>Ref</th><th>Member</th><th>Plan</th><th>Method</th><th>Date</th><th>Amount</th><th></th></tr></thead>
+                        <tbody id="histRows"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
     </main>
 
+</div>
+
+<div class="pay-modal" id="payEditModal" hidden role="dialog" aria-modal="true" aria-labelledby="payEditTitle">
+    <form class="pay-modal-card" id="payEditForm">
+        <h3 id="payEditTitle">Edit payment</h3>
+        <p class="pay-note" id="payEditInfo"></p>
+        <div class="field"><label for="payEditMethod">Payment method</label><select class="input" id="payEditMethod"></select></div>
+        <div class="field"><label for="payEditDate">Date paid</label><input class="input" id="payEditDate" type="date"></div>
+        <div class="pay-modal-actions">
+            <button class="btn btn-soft" type="button" id="payEditCancel">Cancel</button>
+            <button class="btn btn-primary" type="submit">Save changes</button>
+        </div>
+    </form>
 </div>
 
 <script src="layout.js?v=13"></script>
 <script src="sidebar.js?v=13"></script>
 <script src="data.js"></script>
 <script src="pages.js"></script>
+<script src="portal-fx.js?v=1"></script>
 </body>
 </html>

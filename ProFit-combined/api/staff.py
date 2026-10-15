@@ -31,6 +31,7 @@ from apps.membership.services import (
 from .serializers import (
     CheckInSerializer,
     RenewSerializer,
+    EditPaymentSerializer,
     ManualPaymentSerializer,
     RecordPaymentSerializer,
     StaffAttendanceSerializer,
@@ -230,6 +231,29 @@ class StaffPaymentView(APIView):
             },
             status=status.HTTP_201_CREATED,
         )
+
+
+class StaffPaymentDetailView(APIView):
+    """PATCH /api/staff/payments/<id>/ — Owner only. Corrects the method or date of a desk payment.
+
+    Plan and amount stay fixed because the membership was extended from them.
+    Online (PayMongo) payments are written only by the webhook and cannot be edited here.
+    """
+
+    permission_classes = [CanViewFinancials]
+
+    def patch(self, request, pk):
+        payment = ManualPayment.objects.select_related("member__user").filter(pk=pk).first()
+        if payment is None:
+            return Response({"detail": "Payment not found."}, status=status.HTTP_404_NOT_FOUND)
+        serializer = EditPaymentSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        changed = []
+        for field, value in serializer.validated_data.items():
+            setattr(payment, field, value)
+            changed.append(field)
+        payment.save(update_fields=changed)
+        return Response(ManualPaymentSerializer(payment).data)
 
 
 class StaffSummaryView(APIView):

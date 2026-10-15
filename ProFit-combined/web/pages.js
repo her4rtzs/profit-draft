@@ -358,11 +358,64 @@
             toast(`Payment recorded. ${fresh.name} is covered until ${fmtShort(fresh.end)}`);
         });
 
+        // ---- Payment history (Owner can correct method / date of desk payments) ----
+        const toDay = d => { const x = new Date(d); return `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, "0")}-${String(x.getDate()).padStart(2, "0")}`; };
+        let editing = null;
+        const drawHist = () => {
+            const q = ($("#histSearch")?.value || "").trim().toLowerCase();
+            const all = DB.payments.slice().sort((a, b) => b.date - a.date);
+            const list = q ? all.filter(p => {
+                const m = DB.member(p.memberId);
+                return `${m ? m.name : ""} ${p.ref} ${p.method}`.toLowerCase().includes(q);
+            }) : all;
+            $("#histCount").textContent = `${list.length} of ${all.length} payment${all.length === 1 ? "" : "s"}`;
+            $("#histRows").innerHTML = list.length ? list.map(p => {
+                const m = DB.member(p.memberId);
+                const edit = p.desk ? `<button type="button" class="pay-edit-btn" data-edit="${esc(p.id)}" aria-label="Edit payment ${esc(p.ref)}"><i class="fa-solid fa-pen"></i></button>` : `<small class="muted">Online</small>`;
+                return `<tr><td>${esc(p.ref)}</td><td>${m ? memberCell(m) : esc(p.memberId)}</td><td>${PLANS[p.plan] ? PLANS[p.plan].label : esc(p.plan)}</td><td>${esc(p.method)}</td><td>${fmtShort(p.date)}</td><td>${peso(p.amount)}</td><td>${edit}</td></tr>`;
+            }).join("") : `<tr><td colspan="7">${empty("fa-receipt", q ? `No payment matches “${esc(q)}”.` : "No payments recorded yet.")}</td></tr>`;
+        };
+        const modal = $("#payEditModal");
+        const closeEdit = () => { modal.hidden = true; editing = null; };
+        $("#histRows").addEventListener("click", e => {
+            const btn = e.target.closest("[data-edit]");
+            if (!btn) return;
+            editing = DB.payments.find(p => String(p.id) === btn.dataset.edit);
+            if (!editing) return;
+            const m = DB.member(editing.memberId);
+            $("#payEditInfo").textContent = `${editing.ref} · ${m ? m.name : ""} · ${peso(editing.amount)}`;
+            $("#payEditMethod").innerHTML = methodOptions();
+            $("#payEditMethod").value = editing.method;
+            $("#payEditDate").value = toDay(editing.date);
+            $("#payEditDate").max = toDay(new Date());
+            modal.hidden = false;
+            $("#payEditMethod").focus();
+        });
+        $("#payEditCancel").addEventListener("click", closeEdit);
+        modal.addEventListener("click", e => { if (e.target === modal) closeEdit(); });
+        document.addEventListener("keydown", e => { if (e.key === "Escape" && !modal.hidden) closeEdit(); });
+        $("#payEditForm").addEventListener("submit", async e => {
+            e.preventDefault();
+            if (!editing) return;
+            try {
+                await window.ProFitAPI.patch(`/staff/payments/${editing.id}/`, {
+                    method: METHOD_CODE[$("#payEditMethod").value] || editing.methodCode,
+                    paid_on: $("#payEditDate").value
+                });
+                if (!(await DB.sync(false))) throw new Error("Saved, but the list could not be refreshed. Reload the page.");
+            } catch (err) {
+                return toast(err.message || "The payment could not be updated.", true);
+            }
+            closeEdit(); drawHist(); drawToday(); toast("Payment updated.");
+        });
+        $("#histSearch")?.addEventListener("input", drawHist);
+
         initChips($("#subChips"), f => { filter = f; drawSubs(); });
         // Typing narrows as you go, same as the reports search.
         $("#subSearch")?.addEventListener("input", drawSubs);
         drawToday();
         drawSubs();
+        drawHist();
         initTabs();
     }
 

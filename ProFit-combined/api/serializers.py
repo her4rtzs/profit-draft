@@ -132,3 +132,22 @@ class RecordPaymentSerializer(serializers.Serializer):
     method = serializers.ChoiceField(choices=ManualPayment.Method.values)
     paid_on = serializers.DateField(required=False)
 
+
+class EditPaymentSerializer(serializers.Serializer):
+    """Fields an owner may correct on a desk payment. Plan and amount are fixed."""
+
+    method = serializers.ChoiceField(choices=ManualPayment.Method.values, required=False)
+    paid_on = serializers.DateField(required=False)
+
+    def validate_paid_on(self, value):
+        from django.utils import timezone
+
+        if value > timezone.localdate():
+            raise serializers.ValidationError("The payment date cannot be in the future.")
+        return value
+
+    def validate(self, attrs):
+        if not attrs:
+            raise serializers.ValidationError("Send a method or a paid_on date to change.")
+        return attrs
+

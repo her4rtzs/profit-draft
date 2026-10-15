@@ -286,7 +286,8 @@ DB.sync = async function (reload = true) {
         };
     });
     this.payments = pays.map(p => ({
-        ref: p.ref, date: fromISO(p.paid_on), memberId: idFor(p.member_id),
+        ref: p.ref, id: p.id, desk: typeof p.id === "number", methodCode: p.method,
+        date: fromISO(p.paid_on), memberId: idFor(p.member_id),
         plan: p.plan, method: METHOD_LABEL[p.method] || p.method, amount: p.amount_centavos / 100
     }));
     this.checkins = atts.map(a => ({

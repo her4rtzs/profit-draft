@@ -12,6 +12,7 @@ from .staff import (
     StaffAttendanceView,
     StaffCheckInView,
     StaffMemberViewSet,
+    StaffPaymentDetailView,
     StaffPaymentView,
     StaffSummaryView,
 )
@@ -38,6 +39,7 @@ urlpatterns = [
     path("staff/attendance/", StaffAttendanceView.as_view(), name="staff-attendance"),
     path("staff/attendance/check-in/", StaffCheckInView.as_view(), name="staff-checkin"),
     path("staff/payments/", StaffPaymentView.as_view(), name="staff-payments"),
+    path("staff/payments/<int:pk>/", StaffPaymentDetailView.as_view(), name="staff-payment-detail"),
     path("staff/reports/summary/", StaffSummaryView.as_view(), name="staff-summary"),
     *staff_router.urls,
     *router.urls,
