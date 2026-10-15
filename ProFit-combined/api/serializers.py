@@ -7,6 +7,7 @@ business logic lives here — services/models own that.
 from rest_framework import serializers
 
 from apps.membership.models import Attendance, MemberProfile
+from apps.finance.models import ManualPayment
 
 
 class MemberProfileSerializer(serializers.ModelSerializer):
@@ -98,3 +99,36 @@ class StaffAttendanceSerializer(serializers.ModelSerializer):
     def get_name(self, obj):
         user = obj.member.user
         return user.get_full_name() or user.username
+
+
+# --- Phase 2: desk payments and reports ---------------------------------------
+
+class ManualPaymentSerializer(serializers.ModelSerializer):
+    """One desk payment, as shown in the payments list."""
+
+    ref = serializers.SerializerMethodField()
+    member_id = serializers.IntegerField(source="member.id", read_only=True)
+    name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ManualPayment
+        fields = [
+            "id", "ref", "member_id", "name", "plan", "method",
+            "amount_centavos", "paid_on", "created_at",
+        ]
+        read_only_fields = fields
+
+    def get_ref(self, obj):
+        return f"P-{obj.pk:05d}"
+
+    def get_name(self, obj):
+        user = obj.member.user
+        return user.get_full_name() or user.username
+
+
+class RecordPaymentSerializer(serializers.Serializer):
+    member_id = serializers.IntegerField()
+    plan = serializers.ChoiceField(choices=PLAN_CHOICES)
+    method = serializers.ChoiceField(choices=ManualPayment.Method.values)
+    paid_on = serializers.DateField(required=False)
+

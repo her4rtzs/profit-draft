@@ -16,8 +16,10 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.accounts.adapters import CanManageEnrollment, CanViewAttendance
+from apps.accounts.adapters import CanManageEnrollment, CanViewAttendance, CanViewFinancials
 from apps.membership.models import Attendance, MemberProfile
+from apps.finance.models import ManualPayment
+from apps.finance.services import monthly_summary, record_desk_payment
 from apps.membership.services import (
     check_in_member,
     create_member,
@@ -28,6 +30,8 @@ from apps.membership.services import (
 from .serializers import (
     CheckInSerializer,
     RenewSerializer,
+    ManualPaymentSerializer,
+    RecordPaymentSerializer,
     StaffAttendanceSerializer,
     StaffMemberCreateSerializer,
     StaffMemberSerializer,
@@ -171,3 +175,62 @@ class StaffAttendanceView(APIView):
             .order_by("check_in_at")
         )
         return Response(StaffAttendanceSerializer(rows, many=True).data)
+
+
+class StaffPaymentView(APIView):
+    """GET lists desk payments (optional ?member=<id>). POST records one and renews."""
+
+    permission_classes = [CanManageEnrollment]
+
+    def get(self, request):
+        rows = ManualPayment.objects.select_related("member__user").order_by("-created_at", "-id")
+        member_id = request.query_params.get("member")
+        if member_id:
+            if not member_id.isdigit():
+                return Response({"detail": "member must be a number."}, status=status.HTTP_400_BAD_REQUEST)
+            rows = rows.filter(member_id=int(member_id))
+        return Response(ManualPaymentSerializer(rows[:200], many=True).data)
+
+    def post(self, request):
+        serializer = RecordPaymentSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        profile = MemberProfile.objects.select_related("user").filter(pk=data["member_id"]).first()
+        if profile is None:
+            return Response({"detail": "Member not found."}, status=status.HTTP_404_NOT_FOUND)
+        try:
+            payment = record_desk_payment(
+                member=profile,
+                plan=data["plan"],
+                method=data["method"],
+                recorded_by=request.user,
+                paid_on=data.get("paid_on"),
+            )
+        except DjangoValidationError as exc:
+            return _bad_request(exc)
+        profile.refresh_from_db()
+        return Response(
+            {
+                "payment": ManualPaymentSerializer(payment).data,
+                "member": StaffMemberSerializer(profile).data,
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class StaffSummaryView(APIView):
+    """GET /api/staff/reports/summary/?year=&month= — Owner only."""
+
+    permission_classes = [CanViewFinancials]
+
+    def get(self, request):
+        today = timezone.localdate()
+        try:
+            year = int(request.query_params.get("year", today.year))
+            month = int(request.query_params.get("month", today.month))
+        except ValueError:
+            return Response({"detail": "year and month must be numbers."}, status=status.HTTP_400_BAD_REQUEST)
+        if not 1 <= month <= 12:
+            return Response({"detail": "month must be 1 to 12."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(monthly_summary(year, month))
+
