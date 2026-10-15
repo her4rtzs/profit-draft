@@ -7,6 +7,7 @@ Replaces portal-ui.css from phases 10, 10b and 10c (their fixes are included her
 - Fixes: row action menu no longer clipped, lone stat card spans the row, sidebar labels and account block.
 - Member photo now saved on the server (migration membership 0003) and shown in the header and profile; phone and address also saved. Name and email are read-only for server accounts.
 - Sidebar and member portal redesign; splash plays on a fresh visit or after 10 quiet minutes (add ?splash=1 to force).
+- Dashboard: recent registrations as soft rows with an anchored menu, membership legend fixed, notifications restyled, sidebar scrollbar only when needed.
 - web/welcome.html: plan cards centred and full-width on phones, price no longer wraps.
 - web/portal-ui.css (new, full): sidebar offset on desktop, centred logo in the collapsed sidebar, member portal redesign, health & goals form layout, staff polish, payment edit modal.
 - web/portal-fx.js (new): top progress bar, scroll reveal, smooth page-to-page fade.
