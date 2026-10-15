@@ -18,7 +18,23 @@
     <script src="config.js"></script>
     <script src="api.js"></script>
     <script src="auth.js"></script>
-<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=6"><script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script></head>
+<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=6"><script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script><style id="pf-dash-fx">
+.pf-skel td{padding:18px 16px}
+.pf-skel span{display:block;height:14px;border-radius:8px;background:linear-gradient(90deg,rgba(255,255,255,.05),rgba(255,255,255,.13),rgba(255,255,255,.05));background-size:200% 100%;animation:pfShimmer 1.2s linear infinite}
+.pf-skel td:nth-child(1) span{width:80px}.pf-skel td:nth-child(2) span{width:70%}.pf-skel td:nth-child(3) span{width:110px}.pf-skel td:nth-child(4) span{width:90px}.pf-skel td:nth-child(5) span{width:28px;margin-left:auto}
+@keyframes pfShimmer{to{background-position:-200% 0}}
+.pf-row-in{animation:pfRowIn .42s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0) * 55ms)}
+@keyframes pfRowIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.pf-empty{text-align:center;padding:28px 16px;color:var(--muted)}
+.pf-menu{position:absolute;z-index:60;min-width:210px;padding:6px;border-radius:14px;background:var(--card);border:1px solid var(--border);box-shadow:0 18px 40px rgba(0,0,0,.45);animation:pfPop .18s ease-out}
+.pf-menu[hidden]{display:none}
+.pf-menu a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:var(--text);text-decoration:none;font-weight:600;font-size:14px}
+.pf-menu a:hover,.pf-menu a:focus-visible{background:color-mix(in srgb,var(--gold) 14%,transparent);outline:none}
+.pf-menu a i{color:var(--gold);width:16px;text-align:center}
+@keyframes pfPop{from{opacity:0;transform:translateY(-4px) scale(.98)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.pf-skel span,.pf-row-in,.pf-menu{animation:none!important}}
+</style>
+</head>
 
 <body data-page="dashboard" data-title="Dashboard" data-welcome="Welcome back ">
 
@@ -212,61 +228,7 @@
                         </tr>
                     </thead>
 
-                    <tbody>
-
-                        <tr>
-                            <td><span class="member-id">M202601</span></td>
-                            <td>
-                                <div class="member">
-                                    <div class="mini-avatar">KN</div>
-                                    <div><strong>Kim Namjoon</strong><small>Member</small></div>
-                                </div>
-                            </td>
-                            <td>May 27, 2026</td>
-                            <td><span class="badge active">Active</span></td>
-                            <td><div class="row-menu-wrap"><button class="action-btn" type="button" data-row-menu aria-haspopup="true" aria-expanded="false" aria-label="More actions"><i class="fa-solid fa-ellipsis"></i></button><div class="dropdown dropdown-row" hidden role="menu"><a href="members.html" role="menuitem"><i class="fa-solid fa-id-card"></i> Member profile</a><a href="payments.html" role="menuitem"><i class="fa-solid fa-wallet"></i> Billing</a><a href="attendance.html" role="menuitem"><i class="fa-solid fa-calendar-check"></i> Attendance</a></div></div></td>
-                        </tr>
-
-                        <tr>
-                            <td><span class="member-id">M202602</span></td>
-                            <td>
-                                <div class="member">
-                                    <div class="mini-avatar">KS</div>
-                                    <div><strong>Kim Seokjin</strong><small>Member</small></div>
-                                </div>
-                            </td>
-                            <td>March 21, 2026</td>
-                            <td><span class="badge expired">Expired</span></td>
-                            <td><div class="row-menu-wrap"><button class="action-btn" type="button" data-row-menu aria-haspopup="true" aria-expanded="false" aria-label="More actions"><i class="fa-solid fa-ellipsis"></i></button><div class="dropdown dropdown-row" hidden role="menu"><a href="members.html" role="menuitem"><i class="fa-solid fa-id-card"></i> Member profile</a><a href="payments.html" role="menuitem"><i class="fa-solid fa-wallet"></i> Billing</a><a href="attendance.html" role="menuitem"><i class="fa-solid fa-calendar-check"></i> Attendance</a></div></div></td>
-                        </tr>
-
-                        <tr>
-                            <td><span class="member-id">M202603</span></td>
-                            <td>
-                                <div class="member">
-                                    <div class="mini-avatar">MY</div>
-                                    <div><strong>Min Yoongi</strong><small>Member</small></div>
-                                </div>
-                            </td>
-                            <td>June 07, 2026</td>
-                            <td><span class="badge active">Active</span></td>
-                            <td><div class="row-menu-wrap"><button class="action-btn" type="button" data-row-menu aria-haspopup="true" aria-expanded="false" aria-label="More actions"><i class="fa-solid fa-ellipsis"></i></button><div class="dropdown dropdown-row" hidden role="menu"><a href="members.html" role="menuitem"><i class="fa-solid fa-id-card"></i> Member profile</a><a href="payments.html" role="menuitem"><i class="fa-solid fa-wallet"></i> Billing</a><a href="attendance.html" role="menuitem"><i class="fa-solid fa-calendar-check"></i> Attendance</a></div></div></td>
-                        </tr>
-
-                        <tr>
-                            <td><span class="member-id">M202604</span></td>
-                            <td>
-                                <div class="member">
-                                    <div class="mini-avatar">JH</div>
-                                    <div><strong>Jung Hoseok</strong><small>Member</small></div>
-                                </div>
-                            </td>
-                            <td>May 22, 2026</td>
-                            <td><span class="badge warning">Expiring</span></td>
-                            <td><div class="row-menu-wrap"><button class="action-btn" type="button" data-row-menu aria-haspopup="true" aria-expanded="false" aria-label="More actions"><i class="fa-solid fa-ellipsis"></i></button><div class="dropdown dropdown-row" hidden role="menu"><a href="members.html" role="menuitem"><i class="fa-solid fa-id-card"></i> Member profile</a><a href="payments.html" role="menuitem"><i class="fa-solid fa-wallet"></i> Billing</a><a href="attendance.html" role="menuitem"><i class="fa-solid fa-calendar-check"></i> Attendance</a></div></div></td>
-                        </tr>
-
-                    </tbody>
+                    <tbody id="recentRows" aria-live="polite"><tr class="pf-skel"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr><tr class="pf-skel"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr><tr class="pf-skel"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr><tr class="pf-skel"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr></tbody>
                 </table>
             </div>
 
@@ -282,5 +244,98 @@
 <script src="chart-periods.js?v=914"></script>
 <script src="portal-fx.js?v=2"></script>
 <script src="change-password.js?v=2" defer></script>
+<script>
+(() => {
+  const body = document.getElementById("recentRows");
+  if (!body) return;
+  const table = body.closest("table");
+  const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const initials = n => (String(n || "?").trim().split(/\s+/).map(w => w[0] || "").join("").slice(0, 2).toUpperCase()) || "?";
+  const startOfToday = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
+  const statusFor = m => {
+    if (!m.end) return ["expired", "Pending"];
+    const days = Math.round((m.end - startOfToday()) / 86400000);
+    if (days < 0) return ["expired", "Expired"];
+    if (days <= 7) return ["expiring", "Expiring"];
+    return ["active", "Active"];
+  };
+  const rowHTML = (m, i) => {
+    const [cls, label] = statusFor(m);
+    const joined = m.joined ? fmtShort(m.joined) : "—";
+    return `<tr class="pf-row-in" style="--i:${i}">
+      <td><span class="member-id">${esc(m.id)}</span></td>
+      <td><div class="member"><div class="mini-avatar">${esc(initials(m.name))}</div><div><strong>${esc(m.name)}</strong><small>Member</small></div></div></td>
+      <td>${esc(joined)}</td>
+      <td><span class="badge ${cls}">${label}</span></td>
+      <td><div class="row-menu-wrap pf-menu-wrap">
+        <button class="action-btn pf-menu-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="More actions for ${esc(m.name)}"><i class="fa-solid fa-ellipsis" aria-hidden="true"></i></button>
+        <div class="pf-menu" role="menu" hidden>
+          <a role="menuitem" href="members.html?q=${encodeURIComponent(m.id)}"><i class="fa-regular fa-id-card" aria-hidden="true"></i> Member profile</a>
+          <a role="menuitem" href="payments.html"><i class="fa-solid fa-wallet" aria-hidden="true"></i> Billing</a>
+          <a role="menuitem" href="attendance.html"><i class="fa-solid fa-calendar-check" aria-hidden="true"></i> Attendance</a>
+        </div></div></td></tr>`;
+  };
+
+  // The open menu is moved to <body> while open, so the table wrapper never clips it.
+  let openMenu = null;
+  function closeMenus() {
+    if (!openMenu) return;
+    const { menu, btn, wrap } = openMenu;
+    menu.hidden = true;
+    menu.removeAttribute("style");
+    wrap.appendChild(menu);
+    btn.setAttribute("aria-expanded", "false");
+    openMenu = null;
+  }
+  body.addEventListener("click", e => {
+    const btn = e.target.closest(".pf-menu-btn");
+    if (!btn) return;
+    const wrap = btn.parentElement, menu = wrap.querySelector(".pf-menu");
+    const same = openMenu && openMenu.btn === btn;
+    closeMenus();
+    if (same) return;
+    const r = btn.getBoundingClientRect();
+    document.body.appendChild(menu);
+    menu.hidden = false;
+    menu.style.position = "fixed";
+    menu.style.top = (r.bottom + 8) + "px";
+    menu.style.left = Math.max(12, r.right - 210) + "px";
+    btn.setAttribute("aria-expanded", "true");
+    openMenu = { menu, btn, wrap };
+    menu.querySelector("a")?.focus();
+  });
+  document.addEventListener("click", e => {
+    if (openMenu && !e.target.closest(".pf-menu") && !e.target.closest(".pf-menu-btn")) closeMenus();
+  });
+  document.addEventListener("keydown", e => {
+    if (e.key !== "Escape" || !openMenu) return;
+    const btn = openMenu.btn;
+    closeMenus();
+    btn.focus();
+  });
+  window.addEventListener("resize", closeMenus);
+
+  function render(ok) {
+    closeMenus();
+    if (table) table.setAttribute("aria-busy", "false");
+    if (!ok && !DB.synced) {
+      body.innerHTML = `<tr><td colspan="5" class="pf-empty">Hindi ma-load ang listahan. I-refresh ang page.</td></tr>`;
+      return;
+    }
+    const newest = (DB.members || []).slice()
+      .sort((a, b) => ((b.joined && b.joined.getTime()) || 0) - ((a.joined && a.joined.getTime()) || 0)
+        || String(b.id).localeCompare(String(a.id)))
+      .slice(0, 5);
+    if (!newest.length) {
+      body.innerHTML = `<tr><td colspan="5" class="pf-empty">Wala pang member. Magdagdag sa Members page.</td></tr>`;
+      return;
+    }
+    body.innerHTML = newest.map(rowHTML).join("");
+  }
+
+  document.addEventListener("profit:synced", e => render(e.detail?.ok !== false));
+  if (DB.synced) render(true);
+})();
+</script>
 </body>
 </html>

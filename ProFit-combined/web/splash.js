@@ -5,7 +5,8 @@
   try {
     const now = Date.now(), last = Number(localStorage.getItem("pf-splash-at") || 0);
     const forced = /[?&]splash=1/.test(location.search);
-    if (!forced && now - last < 10 * 60 * 1000) return;
+    const fromLogin = /login\.html/.test(document.referrer);
+    if (!forced && !fromLogin && now - last < 10 * 60 * 1000) return;
     localStorage.setItem("pf-splash-at", String(now));
   } catch (e) { try { if (sessionStorage.getItem("pf-splash2")) return; sessionStorage.setItem("pf-splash2", "1"); } catch (e2) {} }
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;

@@ -266,8 +266,8 @@ DB.sync = async function (reload = false) {
             fetch("/api/staff/payments/", { credentials: "same-origin" }),
             fetch("/api/staff/attendance/", { credentials: "same-origin" })
         ]);
-    } catch { return false; }
-    if (responses.some(r => !r.ok)) return false;
+    } catch { document.dispatchEvent(new CustomEvent("profit:synced", { detail: { ok: false } })); return false; }
+    if (responses.some(r => !r.ok)) { document.dispatchEvent(new CustomEvent("profit:synced", { detail: { ok: false } })); return false; }
 
     const [rows, pays, atts] = await Promise.all(responses.map(r => r.json()));
 
@@ -282,7 +282,8 @@ DB.sync = async function (reload = false) {
             id: idFor(r.id), serverId: r.id, name: r.name, email: r.email || "",
             phone: r.phone || "", address: r.address || "",
             emergencyName: "", emergencyPhone: "", photoId: null,
-            plan, start: addDays(end, -PLANS[plan].days), end, checkins: 0
+            plan, start: addDays(end, -PLANS[plan].days), end, checkins: 0,
+            joined: r.date_joined ? fromISO(r.date_joined) : null
         };
     });
     this.payments = pays.map(p => ({
@@ -298,11 +299,12 @@ DB.sync = async function (reload = false) {
     const sig = JSON.stringify([this.members, this.payments, this.checkins]);
     const changed = localStorage.getItem(SIG_KEY) !== sig;
     this.save();
+    this.synced = true;
     if (changed) {
         try { localStorage.setItem(SIG_KEY, sig); } catch { /* storage blocked */ }
-        if (reload) location.reload();
-        else document.dispatchEvent(new CustomEvent("profit:synced"));
+        if (reload) { location.reload(); return true; }
     }
+    document.dispatchEvent(new CustomEvent("profit:synced", { detail: { ok: true, changed } }));
     return true;
 };
 {
