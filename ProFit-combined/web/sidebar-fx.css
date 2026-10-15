@@ -75,3 +75,12 @@ html body .sidebar-user-copy small { color: #7b8597; font-size: 12px; }
 @media (prefers-reduced-motion: reduce) {
   html body .sidebar, html body .sidebar .menulist a, html body .sidebar .menulist a .icon { transition: none !important; }
 }
+
+/* Sidebar icons: always visible, with enough contrast on the dark background. */
+html body .sidebar i, html body .sidebar .icon {
+  display: inline-block !important; visibility: visible !important; opacity: 1 !important;
+  font-size: 16px !important; line-height: 1 !important; color: #c3cad8;
+}
+html body .sidebar .menulist a:hover .icon, html body .sidebar .menulist a.active .icon { color: var(--gold) !important; }
+html body .sidebar.close .menulist a { display: flex !important; width: 100%; box-sizing: border-box; }
+html body .sidebar.close .menulist a .icon { margin: 0 auto; }

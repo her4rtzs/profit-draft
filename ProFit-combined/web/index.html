@@ -300,7 +300,9 @@
     document.body.appendChild(menu);
     menu.hidden = false;
     menu.style.position = "fixed";
-    menu.style.top = (r.bottom + 8) + "px";
+    const h = menu.offsetHeight;
+    const above = r.top - h - 8;
+    menu.style.top = (above >= 12 ? above : r.bottom + 8) + "px";
     menu.style.left = Math.max(12, r.right - 210) + "px";
     btn.setAttribute("aria-expanded", "true");
     openMenu = { menu, btn, wrap };

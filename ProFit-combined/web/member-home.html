@@ -102,7 +102,7 @@
           <i class="fa-regular fa-calendar"></i>
         </div>
         <div id="memberCalendar" class="pp-cal"></div>
-        <button class="btn btn-soft" type="button" id="addReceiptBtn"><i class="fa-solid fa-receipt"></i> Add a receipt</button>
+        <button class="btn btn-soft" type="button" id="addReceiptBtn" hidden><i class="fa-solid fa-receipt"></i> Add a receipt</button>
       </div>
 
       <div class="panel member-panel">
@@ -511,8 +511,10 @@
   const nav = document.querySelector(".pf-bottomnav");
   if (!nav) return;
   const current = () => document.querySelector('.pp-tab[aria-selected="true"]')?.dataset.tab;
+  const hero = document.querySelector('.member-hero');
   const sync = () => {
     const now = current();
+    if (hero) hero.hidden = now !== "overview";
     nav.querySelectorAll("[data-go-tab]").forEach(b => {
       if (b.dataset.goTab === now) b.setAttribute("aria-current", "page");
       else b.removeAttribute("aria-current");

@@ -60,7 +60,7 @@
 (() => {
   let nav = false;
   try { nav = sessionStorage.getItem("pf-nav") === "1"; sessionStorage.removeItem("pf-nav"); } catch (err) { /* storage blocked */ }
-  if (!nav || window.__pfIntro || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (true || !nav || window.__pfIntro) return; // one loader only: the page-change overlay is retired
   const el = document.createElement("div");
   el.id = "pf-navload";
   el.setAttribute("role", "status");
