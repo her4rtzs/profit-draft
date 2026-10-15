@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<head><script src="splash.js?v=2"></script>
+<head><script src="splash.js?v=3"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>My membership · ProFit</title>
@@ -12,7 +12,7 @@
   <script src="config.js"></script>
   <script src="api.js"></script>
   <script src="auth.js"></script>
-<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=3"><script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script></head>
+<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=4"><script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script></head>
 <body class="member-home">
   <header class="member-top">
     <a class="member-logo" href="member-home.html"><span><i class="fa-solid fa-dumbbell" id="homeLogoIcon"></i><img id="homeLogoImg" alt="" hidden></span><b id="homeGymName">ProFit</b></a>
@@ -318,7 +318,14 @@
     $("membershipName").textContent = safe(m.planName || m.plan);
     $("membershipDetail").textContent = m.expiresAt ? `Membership expires ${date(m.expiresAt)}${m.daysRemaining != null ? ` · ${m.daysRemaining} days remaining` : ""}` : "Your membership details are not available yet.";
     $("membershipStatus").textContent = safe(m.status || "Not enrolled");
-    $("profileDetails").textContent = `Name: ${safe(data.user?.name)} · Email: ${safe(data.user?.email)} · Phone: ${safe(data.user?.phone)}`;
+    if (data.user && data.user.memberId) window.__pfMemberMe = data;
+    const eh = v => String(v ?? "—").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    const paintProfileCard = () => {
+      const u = (window.__pfMemberMe || data).user || {};
+      $("profileDetails").innerHTML = `<dl class="profile-grid"><div><dt>Name</dt><dd>${eh(u.name)}</dd></div><div><dt>Email</dt><dd>${eh(u.email)}</dd></div><div><dt>Phone</dt><dd>${eh(u.phone || "—")}</dd></div><div><dt>Address</dt><dd>${eh(u.address || "—")}</dd></div></dl>`;
+    };
+    paintProfileCard();
+    window.__pfRefreshProfileCard = paintProfileCard;
     list("attendanceList", data.attendance, "No attendance records yet.", x => `<span><b>${date(x.date)}</b><small>${safe(x.location || "Gym check-in")}</small></span><i class="fa-solid fa-arrow-right"></i>`);
     list("paymentList", data.payments, "No payment records yet.", x => `<span><b>${safe(x.reference || "Payment")}</b><small>${date(x.date)} · ${safe(x.method)}</small></span><strong>${safe(x.amountFormatted || x.amount)}</strong><button type="button" class="member-receipt" data-receipt="${safe(x.reference || "Payment")}" data-when="${safe(x.date)}" data-method="${safe(x.method)}" data-amount="${safe(x.amountFormatted || x.amount || "")}"><i class="fa-solid fa-receipt" aria-hidden="true"></i> Receipt</button>`);
     window.__pfAttendanceDays = (data.attendance || []).map(x => String(x.date).slice(0, 10));
@@ -411,9 +418,19 @@
     const initials = name.split(/\s+/).filter(Boolean).slice(0, 2).map(p => p[0].toUpperCase()).join("") || "M";
     const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
     set("memberInitials", initials);
+    set("menuInitials", initials);
+    window.__pfPaintAvatars = photo => {
+      ["memberInitials", "menuInitials"].forEach(id => {
+        const el = $(id); if (!el) return;
+        const ok = typeof photo === "string" && photo.startsWith("data:image/jpeg;base64,");
+        el.classList.toggle("has-photo", ok);
+        el.style.backgroundImage = ok ? `url("${photo}")` : "";
+        el.textContent = ok ? "" : initials;
+      });
+    };
+    window.__pfPaintAvatars(user.photo || "");
     set("memberName", first);
     set("memberPlan", data?.membership?.planName || data?.membership?.plan || "Membership");
-    set("menuInitials", initials);
     set("menuName", name);
     set("menuEmail", user.email || "member@profit.test");
     const greeting = $("memberGreeting");

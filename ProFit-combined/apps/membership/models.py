@@ -33,6 +33,7 @@ class MemberProfile(models.Model):
     expiry_date = models.DateField(null=True, blank=True)
     phone = models.CharField(max_length=30, blank=True, default="")
     address = models.CharField(max_length=255, blank=True, default="")
+    photo_data = models.TextField(blank=True, default="")  # small JPEG data URL, set by the member
 
     def __str__(self):
         return f"MemberProfile<{self.user_id}>"

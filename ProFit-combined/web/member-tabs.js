@@ -695,7 +695,23 @@
   // ---------- Profile (member portal) ----------
   let profileDraft = null;
   const PROFILE_KEY = "profit-member-profile-v1";
+  // Members signed in through the server: their photo, phone and address live in the database.
+  const EMG_KEY = id => `profit-member-emergency-v1:${id}`;
+  function serverMember() {
+    const me = window.__pfMemberMe;
+    if (!me || !me.user || !me.user.memberId) return null;
+    let emg = {};
+    try { emg = JSON.parse(localStorage.getItem(EMG_KEY(me.user.memberId)) || "{}") || {}; } catch { /* ignore */ }
+    return {
+      id: me.user.memberId, name: me.user.name || "Member", email: me.user.email || "", phone: me.user.phone || "",
+      address: me.user.address || "", emergencyName: emg.emergencyName || "", emergencyPhone: emg.emergencyPhone || "",
+      plan: me.membership?.planName || "Membership", start: null, end: me.membership?.expiry || null,
+      photoId: null, photoData: me.user.photo || "", __server: true
+    };
+  }
   function profileMember() {
+    const srv = serverMember();
+    if (srv) return srv;
     const s = sessionMember();
     if (s) {
       if (hasDB) { const m = DB.member(s.id); if (m) return m; }
@@ -720,6 +736,10 @@
   function persistProfileMember(m) {
     if (hasDB) { try { DB.save(); } catch { /* ignore */ } }
     if (!m) return;
+    if (m.__server) {
+      try { localStorage.setItem(EMG_KEY(m.id), JSON.stringify({ emergencyName: m.emergencyName, emergencyPhone: m.emergencyPhone })); } catch { /* ignore */ }
+      return;
+    }
     if (m.__local) {
       try {
         const { __local, __sessionOnly, ...rest } = m;
@@ -745,7 +765,7 @@
     profileDraft = null;
     root.innerHTML = `<div class="pp-profile">
       <aside class="pp-card pp-profile-card">
-        <div class="pp-avatar xl gold-frame ${m.photoId ? "has-photo" : ""}" aria-hidden="true">${esc(initialsOf(m.name))}${m.photoId ? `<img data-photo-id="${esc(m.photoId)}" alt="" hidden>` : ""}</div>
+        <div class="pp-avatar xl gold-frame ${m.photoId || m.photoData ? "has-photo" : ""}" aria-hidden="true">${esc(initialsOf(m.name))}${m.photoData ? `<img src="${esc(m.photoData)}" alt="">` : m.photoId ? `<img data-photo-id="${esc(m.photoId)}" alt="" hidden>` : ""}</div>
         <h3>${esc(m.name)}</h3>
         <p class="pp-muted">${esc(m.id)}</p>
         <div class="pp-chips pp-center"><span class="pp-chip">${esc(plan)}</span><span class="pp-status ${status[0]}">${status[1]}</span></div>
@@ -754,9 +774,9 @@
           <dt>Member since</dt><dd>${m.start && !Number.isNaN(new Date(m.start).getTime()) ? esc(fmt(m.start)) : "—"}</dd>
         </dl>
         <div class="pp-actions pp-center">
-          <label class="pp-btn" for="profilePhotoInput" tabindex="0"><i class="fa-solid fa-camera" aria-hidden="true"></i> ${m.photoId ? "Change photo" : "Add photo"}</label>
+          <label class="pp-btn" for="profilePhotoInput" tabindex="0"><i class="fa-solid fa-camera" aria-hidden="true"></i> ${m.photoId || m.photoData ? "Change photo" : "Add photo"}</label>
           <input type="file" id="profilePhotoInput" accept="image/*" hidden>
-          ${m.photoId ? `<button class="pp-btn" type="button" id="profilePhotoRemove"><i class="fa-solid fa-trash-can" aria-hidden="true"></i> Remove</button>` : ""}
+          ${m.photoId || m.photoData ? `<button class="pp-btn" type="button" id="profilePhotoRemove"><i class="fa-solid fa-trash-can" aria-hidden="true"></i> Remove</button>` : ""}
         </div>
         <p class="pp-small pp-muted">Plan and payment changes are handled by the gym team.</p>
       </aside>
@@ -764,8 +784,8 @@
         <div class="pp-card-head"><div><h3>Personal details</h3><p class="pp-muted">Keep your contact details up to date so the gym can reach you.</p></div>
           <span class="pp-unsaved" id="profileDirty" hidden><i class="fa-solid fa-circle" aria-hidden="true"></i> Unsaved changes</span></div>
         <div class="pp-form-grid">
-          <div class="pp-field"><label for="pfName">Full name</label><input id="pfName" maxlength="80" value="${esc(m.name)}"><small class="pp-err" id="pfName-err" hidden></small></div>
-          <div class="pp-field"><label for="pfEmail">Email (for sign-in)</label><input id="pfEmail" type="email" maxlength="120" value="${esc(m.email)}"><small class="pp-err" id="pfEmail-err" hidden></small></div>
+          <div class="pp-field"><label for="pfName">Full name</label><input id="pfName" maxlength="80" value="${esc(m.name)}"${m.__server ? " readonly" : ""}><small class="pp-err" id="pfName-err" hidden></small></div>
+          <div class="pp-field"><label for="pfEmail">Email (for sign-in)</label><input id="pfEmail" type="email" maxlength="120" value="${esc(m.email)}"${m.__server ? " readonly" : ""}><small class="pp-err" id="pfEmail-err" hidden></small></div>
           <div class="pp-field"><label for="pfPhone">Mobile number</label><input id="pfPhone" type="tel" maxlength="20" value="${esc(m.phone)}" placeholder="09XX XXX XXXX"><small class="pp-err" id="pfPhone-err" hidden></small></div>
           <div class="pp-field"><label for="pfAddress">Home address</label><input id="pfAddress" maxlength="160" value="${esc(m.address)}" placeholder="Street, barangay, city"></div>
           <div class="pp-field"><label for="pfEmgName">Emergency contact name</label><input id="pfEmgName" maxlength="80" value="${esc(m.emergencyName)}"></div>
@@ -804,6 +824,12 @@
       if (!ok) return toast("Please fix the highlighted fields.", true);
       Object.assign(m, v);
       persistProfileMember(m);
+      if (m.__server) {
+        window.ProFitAPI.patch("/member/me/", { phone: v.phone, address: v.address }).then(r => {
+          if (window.__pfMemberMe?.user) { window.__pfMemberMe.user.phone = r.phone; window.__pfMemberMe.user.address = r.address; }
+          window.__pfRefreshProfileCard?.();
+        }).catch(err => toast(err.message || "Phone and address could not be saved.", true));
+      }
       if (!m.__local) {
         const session = sessionMember() || {};
         try { localStorage.setItem("profit-member-logged-in", JSON.stringify({ ...session, name: v.name, email: v.email, phone: v.phone, address: v.address, emergencyName: v.emergencyName, emergencyPhone: v.emergencyPhone })); } catch { /* ignore */ }
@@ -821,6 +847,24 @@
       const file = e.target.files[0];
       e.target.value = "";
       if (!file) return;
+      if (profileMember()?.__server) {
+        try {
+          let side = 360, q = 0.82, url = "";
+          for (let i = 0; i < 5; i++) {
+            const blob = await compressImage(file, side, q);
+            url = await new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => rej(new Error("The photo could not be read.")); r.readAsDataURL(blob); });
+            if (url.length <= 240000) break;
+            side = Math.round(side * 0.8); q = Math.max(0.6, q - 0.06);
+          }
+          if (url.length > 240000) throw new Error("That photo is too large. Choose a smaller one.");
+          const r = await window.ProFitAPI.patch("/member/me/", { photo: url });
+          window.__pfMemberMe.user.photo = r.photo;
+          window.__pfPaintAvatars?.(r.photo);
+          toast("Profile photo saved.");
+          renderProfile();
+        } catch (err) { toast(err.message || "The photo could not be saved.", true); }
+        return;
+      }
       try {
         const blob = await compressImage(file, 800, 0.86);
         const id = await media.save(blob);
@@ -835,6 +879,16 @@
     });
     root.querySelector("#profilePhotoRemove")?.addEventListener("click", async () => {
       const m = profileMember();
+      if (m?.__server) {
+        try {
+          await window.ProFitAPI.patch("/member/me/", { photo: "" });
+          window.__pfMemberMe.user.photo = "";
+          window.__pfPaintAvatars?.("");
+          toast("Profile photo removed.");
+          renderProfile();
+        } catch (err) { toast(err.message || "The photo could not be removed.", true); }
+        return;
+      }
       if (!m?.photoId) return;
       const old = m.photoId;
       m.photoId = null;

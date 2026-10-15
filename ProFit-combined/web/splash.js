@@ -1,7 +1,13 @@
 /* ProFit intro splash: glowing logo, orbiting ring, rising letters, loading bar, then a two-panel curtain opens.
-   Shows once per tab session; skipped when the visitor prefers reduced motion. */
+   Shows on a fresh visit or after 10 quiet minutes; skipped when the visitor prefers reduced motion. */
 (() => {
-  try { if (sessionStorage.getItem("pf-splash2")) return; sessionStorage.setItem("pf-splash2", "1"); } catch (e) {}
+  // Plays on a fresh visit or after 10 quiet minutes (not on every click). Add ?splash=1 to the address to force it.
+  try {
+    const now = Date.now(), last = Number(localStorage.getItem("pf-splash-at") || 0);
+    const forced = /[?&]splash=1/.test(location.search);
+    if (!forced && now - last < 10 * 60 * 1000) return;
+    localStorage.setItem("pf-splash-at", String(now));
+  } catch (e) { try { if (sessionStorage.getItem("pf-splash2")) return; sessionStorage.setItem("pf-splash2", "1"); } catch (e2) {} }
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   const css = `#pf-splash{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;overflow:hidden;font-family:Inter,system-ui,sans-serif;color:#f6efdc}
 #pf-splash .s-bg{position:absolute;inset:0;background:radial-gradient(circle at 50% 42%,#33270a 0%,#0b0a08 62%,#050507 100%);transition:transform .8s cubic-bezier(.7,0,.2,1)}
