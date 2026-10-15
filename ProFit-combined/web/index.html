@@ -69,7 +69,7 @@
                 </div>
                 <div class="stat-content">
                     <p>Total members</p>
-                    <h2>100</h2>
+                    <h2>—</h2>
                     <small>Compared to last month</small>
                 </div>
             </div>
@@ -81,7 +81,7 @@
                 </div>
                 <div class="stat-content">
                     <p>Expired members</p>
-                    <h2>20</h2>
+                    <h2>—</h2>
                     <small>Memberships expired</small>
                 </div>
             </div>
@@ -93,7 +93,7 @@
                 </div>
                 <div class="stat-content">
                     <p>Expiring soon</p>
-                    <h2>26</h2>
+                    <h2>—</h2>
                     <small>Within the next 7 days</small>
                 </div>
             </div>
@@ -173,8 +173,8 @@
 
                 <!-- change --active / --expired to update the donut (expiring is the remainder) -->
                 <div class="membership-circle">
-                    <div class="circle" style="--active:54; --expired:20;">
-                        <strong>100</strong>
+                    <div class="circle" style="--active:0; --expired:0;">
+                        <strong>—</strong>
                         <span>Members</span>
                     </div>
                 </div>
@@ -183,20 +183,20 @@
                     <div>
                         <span class="dot active-dot"></span>
                         <p>Active</p>
-                        <strong>54</strong>
-                        <div class="mini-progress"><span style="width:54%"></span></div>
+                        <strong>—</strong>
+                        <div class="mini-progress"><span style="width:0%"></span></div>
                     </div>
                     <div>
                         <span class="dot expired-dot"></span>
                         <p>Expired</p>
-                        <strong>20</strong>
-                        <div class="mini-progress"><span class="danger" style="width:20%"></span></div>
+                        <strong>—</strong>
+                        <div class="mini-progress"><span class="danger" style="width:0%"></span></div>
                     </div>
                     <div>
                         <span class="dot expiring-dot"></span>
                         <p>Expiring</p>
-                        <strong>26</strong>
-                        <div class="mini-progress"><span class="warning" style="width:26%"></span></div>
+                        <strong>—</strong>
+                        <div class="mini-progress"><span class="warning" style="width:0%"></span></div>
                     </div>
                 </div>
 
@@ -335,6 +335,47 @@
 
   document.addEventListener("profit:synced", e => render(e.detail?.ok !== false));
   if (DB.synced) render(true);
+})();
+</script>
+<script>
+(() => {
+  const startOfToday = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
+  const daysLeft = m => (m.end ? Math.round((m.end - startOfToday()) / 86400000) : -1);
+  const cardFor = label => [...document.querySelectorAll(".stat-card .stat-content")]
+    .find(c => c.querySelector("p")?.textContent.trim() === label);
+
+  function paint() {
+    if (!DB.synced) return;
+    const members = DB.members || [];
+    const total = members.length;
+    let expired = 0, expiring = 0;
+    members.forEach(m => { const d = daysLeft(m); if (d < 0) expired++; else if (d <= 7) expiring++; });
+    const active = total - expired - expiring;
+
+    const put = (label, value) => { const h = cardFor(label)?.querySelector("h2"); if (h) h.textContent = value; };
+    put("Total members", total);
+    put("Expired members", expired);
+    put("Expiring soon", expiring);
+
+    // The trend chips were fixed numbers, not real comparisons, so they are hidden.
+    document.querySelectorAll(".stat-top .trend").forEach(t => { t.style.display = "none"; });
+
+    const pct = n => (total ? Math.round((n / total) * 100) : 0);
+    const circle = document.querySelector(".membership-circle .circle");
+    if (circle) {
+      circle.style.setProperty("--active", pct(active));
+      circle.style.setProperty("--expired", pct(expired));
+      circle.querySelector("strong").textContent = total;
+    }
+    document.querySelectorAll(".membership-stats > div").forEach((row, i) => {
+      const n = [active, expired, expiring][i];
+      if (n === undefined) return;
+      row.querySelector("strong").textContent = n;
+      row.querySelector(".mini-progress span").style.width = pct(n) + "%";
+    });
+  }
+  document.addEventListener("profit:synced", paint);
+  paint();
 })();
 </script>
 </body>

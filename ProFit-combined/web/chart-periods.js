@@ -238,6 +238,7 @@ window.PFChart = (function () {
     draw();
     // Another page (or a payment recorded on this one) can change the store.
     window.addEventListener("storage", draw);
+    document.addEventListener("profit:synced", draw);
     return draw;
   }
 
