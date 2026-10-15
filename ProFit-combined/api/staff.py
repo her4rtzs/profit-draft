@@ -234,7 +234,7 @@ class StaffPaymentView(APIView):
 
 
 class StaffPaymentDetailView(APIView):
-    """PATCH /api/staff/payments/<id>/ — Owner only. Corrects the method or date of a desk payment.
+    """PATCH or DELETE /api/staff/payments/<id>/ — Owner only. PATCH corrects the method or date of a desk payment; DELETE removes the record.
 
     Plan and amount stay fixed because the membership was extended from them.
     Online (PayMongo) payments are written only by the webhook and cannot be edited here.
@@ -254,6 +254,13 @@ class StaffPaymentDetailView(APIView):
             changed.append(field)
         payment.save(update_fields=changed)
         return Response(ManualPaymentSerializer(payment).data)
+
+    def delete(self, request, pk):
+        """Remove a desk payment record. The member's expiry date is NOT rolled back."""
+        deleted, _ = ManualPayment.objects.filter(pk=pk).delete()
+        if not deleted:
+            return Response({"detail": "Payment not found."}, status=status.HTTP_404_NOT_FOUND)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class StaffSummaryView(APIView):

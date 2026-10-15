@@ -58,3 +58,18 @@ class PaymentEditTests(TestCase):
     def test_unknown_payment_is_404(self):
         self.api.force_authenticate(self.owner)
         self.assertEqual(self.api.patch("/api/staff/payments/99999/", {"method": "CASH"}, format="json").status_code, 404)
+
+    def test_owner_can_delete_and_membership_is_untouched(self):
+        self.member.expiry_date = timezone.localdate() + datetime.timedelta(days=30)
+        self.member.save(update_fields=["expiry_date"])
+        self.api.force_authenticate(self.owner)
+        self.assertEqual(self.api.delete(self.url).status_code, 204)
+        self.assertFalse(ManualPayment.objects.filter(pk=self.payment.pk).exists())
+        self.member.refresh_from_db()
+        self.assertEqual(self.member.expiry_date, timezone.localdate() + datetime.timedelta(days=30))
+        self.assertEqual(self.api.delete(self.url).status_code, 404)
+
+    def test_cashier_cannot_delete(self):
+        self.api.force_authenticate(self.cashier)
+        self.assertEqual(self.api.delete(self.url).status_code, 403)
+        self.assertTrue(ManualPayment.objects.filter(pk=self.payment.pk).exists())

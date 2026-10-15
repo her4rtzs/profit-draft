@@ -151,3 +151,21 @@ body.pf-leaving{opacity:0;transition:opacity .18s ease}
 @media (min-width:601px) and (max-width:1000px){
   .pp-stats>:last-child:nth-child(odd){grid-column:1/-1}
 }
+
+/* ---- Payment history: row actions and delete confirmation ---- */
+.pay-actions{display:flex;gap:8px;align-items:center}
+.pay-del-btn:hover{border-color:var(--red,#e5484d);color:var(--red,#e5484d)}
+.btn.pay-danger{background:var(--red,#e5484d)!important;border-color:transparent!important;color:#fff!important}
+
+/* ---- Fixes from screenshots ---- */
+/* Row action menus must not be clipped by the card or table */
+.panel:has(.row-menu-wrap),.table-wrapper:has(.row-menu-wrap),.table-container:has(.row-menu-wrap),table:has(.row-menu-wrap){overflow:visible!important}
+.row-menu-wrap .dropdown-row{right:0;left:auto;z-index:60;min-width:190px}
+/* Stat cards: a lone last card spans the row instead of hanging off to the left */
+@media (max-width:1200px) and (min-width:521px){.stats>:last-child:nth-child(odd){grid-column:1/-1}}
+/* Sidebar: no sideways scrollbar, readable labels when open, tidy account block */
+.sidebar{overflow-x:hidden!important}
+.sidebar:not(.close) .text,.sidebar.mobile-open .text{display:inline!important;opacity:1!important}
+.sidebar-user{min-width:0;max-width:100%;box-sizing:border-box}
+.sidebar-user-copy{display:flex!important;flex-direction:column;gap:2px;min-width:0;flex:1}
+.sidebar-user-copy strong,.sidebar-user-copy small{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}

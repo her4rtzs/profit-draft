@@ -371,7 +371,7 @@
             $("#histCount").textContent = `${list.length} of ${all.length} payment${all.length === 1 ? "" : "s"}`;
             $("#histRows").innerHTML = list.length ? list.map(p => {
                 const m = DB.member(p.memberId);
-                const edit = p.desk ? `<button type="button" class="pay-edit-btn" data-edit="${esc(p.id)}" aria-label="Edit payment ${esc(p.ref)}"><i class="fa-solid fa-pen"></i></button>` : `<small class="muted">Online</small>`;
+                const edit = p.desk ? `<div class="pay-actions"><button type="button" class="pay-edit-btn" data-edit="${esc(p.id)}" aria-label="Edit payment ${esc(p.ref)}"><i class="fa-solid fa-pen"></i></button><button type="button" class="pay-edit-btn pay-del-btn" data-del="${esc(p.id)}" aria-label="Delete payment ${esc(p.ref)}"><i class="fa-solid fa-trash"></i></button></div>` : `<small class="muted">Online</small>`;
                 return `<tr><td>${esc(p.ref)}</td><td>${m ? memberCell(m) : esc(p.memberId)}</td><td>${PLANS[p.plan] ? PLANS[p.plan].label : esc(p.plan)}</td><td>${esc(p.method)}</td><td>${fmtShort(p.date)}</td><td>${peso(p.amount)}</td><td>${edit}</td></tr>`;
             }).join("") : `<tr><td colspan="7">${empty("fa-receipt", q ? `No payment matches “${esc(q)}”.` : "No payments recorded yet.")}</td></tr>`;
         };
@@ -409,6 +409,35 @@
             closeEdit(); drawHist(); drawToday(); toast("Payment updated.");
         });
         $("#histSearch")?.addEventListener("input", drawHist);
+
+        // ---- Delete a desk payment ----
+        const delModal = $("#payDelModal");
+        let deleting = null;
+        const closeDel = () => { delModal.hidden = true; deleting = null; };
+        $("#histRows").addEventListener("click", e => {
+            const btn = e.target.closest("[data-del]");
+            if (!btn) return;
+            deleting = DB.payments.find(p => String(p.id) === btn.dataset.del);
+            if (!deleting) return;
+            const m = DB.member(deleting.memberId);
+            $("#payDelInfo").textContent = `${deleting.ref} · ${m ? m.name : ""} · ${peso(deleting.amount)} · ${fmtShort(deleting.date)}`;
+            delModal.hidden = false;
+            $("#payDelCancel").focus();
+        });
+        $("#payDelCancel").addEventListener("click", closeDel);
+        delModal.addEventListener("click", e => { if (e.target === delModal) closeDel(); });
+        document.addEventListener("keydown", e => { if (e.key === "Escape" && !delModal.hidden) closeDel(); });
+        $("#payDelConfirm").addEventListener("click", async () => {
+            if (!deleting) return;
+            const target = deleting;
+            try {
+                await window.ProFitAPI.request(`/staff/payments/${target.id}/`, { method: "DELETE" });
+                if (!(await DB.sync(false))) throw new Error("Deleted, but the list could not be refreshed. Reload the page.");
+            } catch (err) {
+                return toast(err.message || "The payment could not be deleted.", true);
+            }
+            closeDel(); drawHist(); drawToday(); toast("Payment deleted.");
+        });
 
         initChips($("#subChips"), f => { filter = f; drawSubs(); });
         // Typing narrows as you go, same as the reports search.

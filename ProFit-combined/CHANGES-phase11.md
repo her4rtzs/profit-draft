@@ -3,6 +3,8 @@
 Replaces portal-ui.css from phases 10, 10b and 10c (their fixes are included here).
 
 ## Files
+- Payment history: Owner can also delete a desk payment (record only; expiry is not rolled back).
+- Fixes: row action menu no longer clipped, lone stat card spans the row, sidebar labels and account block.
 - web/welcome.html: plan cards centred and full-width on phones, price no longer wraps.
 - web/portal-ui.css (new, full): sidebar offset on desktop, centred logo in the collapsed sidebar, member portal redesign, health & goals form layout, staff polish, payment edit modal.
 - web/portal-fx.js (new): top progress bar, scroll reveal, smooth page-to-page fade.
