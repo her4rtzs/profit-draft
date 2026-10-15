@@ -73,7 +73,7 @@
     #pf-navload p{margin:0;font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.7}
     @keyframes nlSpin{to{transform:rotate(360deg)}}
     @keyframes nlIn{from{opacity:0}to{opacity:1}}
-    </style><div class="nl-box"><img src="logo.jpg" alt=""><div class="nl-ring" aria-hidden="true"></div><p>Naglo-load…</p></div>`;
+    </style><div class="nl-box"><img src="logo.jpg" alt=""><div class="nl-ring" aria-hidden="true"></div><p>Loading</p></div>`;
   document.documentElement.appendChild(el);
   let gone = false;
   const done = () => {
