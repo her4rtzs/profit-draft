@@ -168,6 +168,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # default so the project runs offline; the webhook rejects (400) any event when
 # the secret is unset. NEVER log or echo this value.
 PAYMONGO_WEBHOOK_SECRET = env("PAYMONGO_WEBHOOK_SECRET", default="")
+# API secret key (sk_test_... / sk_live_...). Empty = online payment disabled. NEVER log it.
+PAYMONGO_SECRET_KEY = env("PAYMONGO_SECRET_KEY", default="")
+PAYMONGO_PAYMENT_METHODS = env.list("PAYMONGO_PAYMENT_METHODS", default=["gcash", "paymaya", "card", "qrph"])
 
 # --- Email (Resend) --------------------------------------------------------
 # When RESEND_API_KEY is set, outbound mail goes through the stdlib-only

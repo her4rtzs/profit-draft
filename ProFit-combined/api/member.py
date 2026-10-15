@@ -36,3 +36,31 @@ class MemberMeView(APIView):
                 "amountFormatted": f"₱{p.amount_centavos / 100:,.2f}",
             } for p in paid],
         })
+
+
+class MemberCheckoutView(APIView):
+    """POST /api/member/checkout/ {plan}: start an online payment for the caller."""
+
+    def post(self, request):
+        from django.conf import settings
+        from django.core.exceptions import ValidationError
+        from rest_framework.exceptions import ValidationError as DRFValidationError
+
+        from apps.billing.services import CheckoutError, create_checkout
+
+        profile = MemberProfile.objects.filter(user=request.user).first()
+        if profile is None:
+            raise NotFound("No member profile.")
+        base = settings.SITE_BASE_URL.rstrip("/")
+        try:
+            url = create_checkout(
+                profile,
+                request.data.get("plan"),
+                success_url=f"{base}/member-home.html?paid=1",
+                cancel_url=f"{base}/member-home.html",
+            )
+        except ValidationError as exc:
+            raise DRFValidationError({"detail": " ".join(exc.messages)})
+        except CheckoutError as exc:
+            return Response({"detail": str(exc)}, status=503)
+        return Response({"checkout_url": url})

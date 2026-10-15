@@ -4,7 +4,7 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from . import auth
-from .member import MemberMeView
+from .member import MemberCheckoutView, MemberMeView
 from rest_framework.routers import SimpleRouter
 
 from .staff import (
@@ -31,6 +31,7 @@ urlpatterns = [
     path("auth/verify-password/", auth.verify_password_view, name="auth-verify-password"),
     path("auth/change-password/", auth.change_password_view, name="auth-change-password"),
     path("member/me/", MemberMeView.as_view(), name="member-me"),
+    path("member/checkout/", MemberCheckoutView.as_view(), name="member-checkout"),
     path("staff/attendance/", StaffAttendanceView.as_view(), name="staff-attendance"),
     path("staff/attendance/check-in/", StaffCheckInView.as_view(), name="staff-checkin"),
     path("staff/payments/", StaffPaymentView.as_view(), name="staff-payments"),

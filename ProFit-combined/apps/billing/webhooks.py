@@ -31,12 +31,16 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from .models import Payment, WebhookEvent
-from .services import mark_payment_failed, mark_payment_paid
+from .services import activate_paid_payment, mark_payment_failed, mark_payment_paid
 
 logger = logging.getLogger("profit.billing.webhook")
 
 # PayMongo signature header name.
 _SIGNATURE_HEADER = "HTTP_PAYMONGO_SIGNATURE"
+
+# Checkout Sessions report the session id (cs_...) as the referenced object.
+_PAID_EVENTS = ("payment.paid", "checkout_session.payment.paid")
+_FAILED_EVENTS = ("payment.failed",)
 
 
 def verify_signature(raw_body: bytes, header: str, secret: str, *, mode: str) -> bool:
@@ -134,7 +138,7 @@ def _apply_event(event, payload):
     """
     event_type = _extract_event_type(payload)
 
-    if event_type in ("payment.paid", "payment.failed"):
+    if event_type in _PAID_EVENTS + _FAILED_EVENTS:
         payment_id = _extract_payment_id(payload)
         payment = (
             Payment.objects.filter(paymongo_payment_id=payment_id).first()
@@ -145,8 +149,11 @@ def _apply_event(event, payload):
             # No matching Payment yet — reprocessable on a later retry.
             event.status = WebhookEvent.Status.UNKNOWN_PAYMENT
         else:
-            if event_type == "payment.paid":
+            if event_type in _PAID_EVENTS:
+                was_paid = payment.status == Payment.Status.PAID
                 mark_payment_paid(payment)
+                if not was_paid and payment.status == Payment.Status.PAID:
+                    activate_paid_payment(payment)
             else:
                 mark_payment_failed(payment)
             event.status = WebhookEvent.Status.PROCESSED

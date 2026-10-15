@@ -28,6 +28,7 @@ class Subscription(models.Model):
         on_delete=models.CASCADE,
         related_name="subscriptions",
     )
+    plan = models.CharField(max_length=20, blank=True, default="")
     amount_centavos = models.PositiveIntegerField()
     status = models.CharField(
         max_length=20,
