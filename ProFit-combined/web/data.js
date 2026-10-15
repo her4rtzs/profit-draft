@@ -303,6 +303,13 @@ DB.sync = async function (reload = true) {
     }
     return true;
 };
+{
+    const rawSync = DB.sync;
+    DB.sync = async function (...args) {
+        window.ProFitAPI?.busy(1);
+        try { return await rawSync.apply(this, args); } finally { window.ProFitAPI?.busy(-1); }
+    };
+}
 DB.sync();
 
 // Class and trainer catalogue used by the member portal schedules.

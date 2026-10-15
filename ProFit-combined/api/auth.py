@@ -7,6 +7,8 @@ Same origin, so cookies work without CORS:
                             The client echoes the cookie in ``X-CSRFToken``.
   3. GET  /api/auth/session/ {"user": {..., "role": ADMIN | TRAINER | MEMBER}} or 401.
   4. POST /api/auth/logout/ ends the session.
+  5. POST /api/auth/change-password/ body {"current_password", "new_password"};
+                            signed-in users of every role change their own password.
 
 These are plain Django views on purpose: CsrfViewMiddleware then enforces CSRF on
 the anonymous login POST as well. No business logic lives here.
@@ -15,7 +17,9 @@ LOGGING POLICY: never log credentials or PII.
 
 import json
 
-from django.contrib.auth import authenticate, get_user_model, login, logout
+from django.contrib.auth import authenticate, get_user_model, login, logout, update_session_auth_hash
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_GET, require_POST
@@ -76,3 +80,40 @@ def session_view(request):
 def logout_view(request):
     logout(request)
     return JsonResponse({"detail": "Logged out."})
+
+
+@require_POST
+def change_password_view(request):
+    """Let any signed-in user change their own password.
+
+    A wrong current password is a 400 (not 401) so the web client does not read
+    it as an expired session. The session stays signed in afterwards. Neither
+    password is ever logged or echoed back.
+    """
+    user = request.user
+    if not user.is_authenticated:
+        return JsonResponse({"detail": "Not signed in."}, status=401)
+    try:
+        payload = json.loads(request.body.decode("utf-8"))
+    except (ValueError, UnicodeDecodeError):
+        return JsonResponse({"detail": "Invalid request body."}, status=400)
+    if not isinstance(payload, dict):
+        return JsonResponse({"detail": "Invalid request body."}, status=400)
+
+    current = payload.get("current_password")
+    new = payload.get("new_password")
+    if not isinstance(current, str) or not isinstance(new, str) or not current or not new:
+        return JsonResponse({"detail": "Enter your current and new password."}, status=400)
+    if not user.check_password(current):
+        return JsonResponse({"detail": "Your current password is incorrect."}, status=400)
+    if new == current:
+        return JsonResponse({"detail": "Choose a new password that is different from the current one."}, status=400)
+    try:
+        validate_password(new, user)
+    except ValidationError as exc:
+        return JsonResponse({"detail": " ".join(exc.messages)}, status=400)
+
+    user.set_password(new)
+    user.save(update_fields=["password"])
+    update_session_auth_hash(request, user)
+    return JsonResponse({"detail": "Password changed."})

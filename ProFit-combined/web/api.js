@@ -15,7 +15,23 @@
     return csrfToken();
   }
 
+  // A thin gold bar at the top of the page while any request is in flight.
+  let busyCount = 0, bar = null, hideTimer = 0;
+  function busy(delta) {
+    busyCount = Math.max(0, busyCount + delta);
+    if (!document.body) return;
+    if (!bar) { bar = document.createElement("div"); bar.id = "pfProgress"; bar.setAttribute("aria-hidden", "true"); document.body.appendChild(bar); }
+    clearTimeout(hideTimer);
+    if (busyCount > 0) bar.className = "on";
+    else { bar.className = "done"; hideTimer = setTimeout(() => { bar.className = ""; }, 350); }
+  }
+
   async function request(path, options = {}) {
+    busy(1);
+    try { return await rawRequest(path, options); } finally { busy(-1); }
+  }
+
+  async function rawRequest(path, options = {}) {
     const method = (options.method || "GET").toUpperCase();
     const headers = new Headers(options.headers || {});
     headers.set("Accept", "application/json");
@@ -37,7 +53,7 @@
   }
 
   window.ProFitAPI = {
-    request,
+    request, busy,
     get: path => request(path),
     post: (path, data) => request(path, { method: "POST", body: JSON.stringify(data || {}) }),
     patch: (path, data) => request(path, { method: "PATCH", body: JSON.stringify(data || {}) })

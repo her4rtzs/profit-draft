@@ -3160,3 +3160,118 @@ body.dark input[type="date"] { color-scheme: dark; }
 .portal-card-body::-webkit-scrollbar { width: 8px; }
 .portal-card-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
 .portal-card-body::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+/* ==========================================================================
+   Phase 3: phone navigation drawer
+   The old bottom tab bar rules (styles.css, max-width 760px) were never fully
+   removed, so the drawer opened with hidden labels and a squashed layout. This
+   block resets them and makes the drawer push the page sideways.
+   ========================================================================== */
+@media (max-width: 760px) {
+  .sidebar,
+  .sidebar.close {
+    inset: 0 auto 0 0 !important;
+    height: 100dvh !important;
+    padding: 0 12px 12px !important;
+    flex-direction: column !important;
+    border-top: 0 !important;
+    overflow-y: auto;
+    visibility: hidden;
+  }
+  .sidebar.mobile-open { visibility: visible !important; }
+  .sidebar header,
+  .sidebar.close header { display: flex !important; }
+  .sidebar .text,
+  .sidebar.close .text { display: inline !important; opacity: 1 !important; }
+  .sidebar .menubar,
+  .sidebar.close .menubar { width: 100% !important; height: auto !important; flex: 1 1 auto; flex-direction: column !important; align-items: stretch !important; }
+  .sidebar .menulist { display: block !important; height: auto !important; flex: none; }
+  .sidebar .sidebar-bottom,
+  .sidebar.close .sidebar-bottom { width: 100% !important; margin-top: auto; }
+  .sidebar .icon { font-size: 18px; }
+  .sidebar li a,
+  .sidebar.close li a,
+  .sidebar .more-btn,
+  .sidebar.close .more-btn {
+    width: 100% !important;
+    height: 46px !important;
+    padding: 0 12px !important;
+    justify-content: flex-start !important;
+    gap: 13px !important;
+    border-radius: 12px !important;
+  }
+  .sidebar .more-popover { left: 0; right: 0; bottom: calc(100% + 8px); }
+
+  /* The page slides over to make room instead of being covered. */
+  .main-content {
+    transition: transform .28s cubic-bezier(.2, .8, .2, 1);
+    will-change: transform;
+  }
+  body.drawer-open .main-content {
+    transform: translateX(min(300px, 86vw));
+    pointer-events: none;
+  }
+  body.drawer-open { overflow: hidden; }
+  .sidebar-shade.visible {
+    left: min(300px, 86vw);
+    background: transparent !important;
+    backdrop-filter: none !important;
+  }
+  .mobile-nav-toggle { position: relative; z-index: 2; }
+}
+@media (max-width: 760px) and (prefers-reduced-motion: reduce) {
+  .main-content { transition: none; }
+}
+
+/* ==========================================================================
+   Phase 3: loading and entrance animation, year picker
+   ========================================================================== */
+/* While the sign-in check runs the page used to be a blank screen. */
+html.auth-checking { background: #11151c; }
+html.auth-checking body { visibility: hidden; }
+html.auth-checking::before {
+  content: ""; position: fixed; left: 50%; top: 50%; width: 44px; height: 44px; margin: -22px 0 0 -22px;
+  border-radius: 50%; border: 3px solid rgba(255, 255, 255, .14); border-top-color: var(--gold, #e0b13f);
+  animation: pfSpin .8s linear infinite; z-index: 99999;
+}
+@keyframes pfSpin { to { transform: rotate(360deg); } }
+
+/* Top progress bar driven by api.js while requests are in flight. */
+#pfProgress { position: fixed; left: 0; top: 0; height: 3px; width: 0; z-index: 99998; opacity: 0; pointer-events: none;
+  background: linear-gradient(90deg, var(--gold, #e0b13f), var(--gold-deep, #c99a2e)); box-shadow: 0 0 10px var(--gold, #e0b13f); }
+#pfProgress.on { opacity: 1; width: 85%; transition: width 6s cubic-bezier(.1, .6, .2, 1); }
+#pfProgress.done { opacity: 0; width: 100%; transition: width .2s ease, opacity .3s ease .15s; }
+
+/* Entrance: cards rise in one after another, bars grow from the baseline. */
+@keyframes pfRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes pfGrow { from { transform: scaleY(.02); } to { transform: scaleY(1); } }
+.main-content > * { animation: pfRise .45s cubic-bezier(.2, .8, .2, 1) backwards; }
+.main-content > *:nth-child(2) { animation-delay: .04s; }
+.main-content > *:nth-child(3) { animation-delay: .08s; }
+.main-content > *:nth-child(4) { animation-delay: .12s; }
+.main-content > *:nth-child(5) { animation-delay: .16s; }
+.main-content > *:nth-child(n+6) { animation-delay: .2s; }
+.stats > * { animation: pfRise .5s cubic-bezier(.2, .8, .2, 1) backwards; }
+.stats > *:nth-child(2) { animation-delay: .08s; }
+.stats > *:nth-child(3) { animation-delay: .16s; }
+.stats > *:nth-child(4) { animation-delay: .24s; }
+.bar { transform-origin: bottom; animation: pfGrow .7s cubic-bezier(.2, .8, .2, 1) backwards; }
+.bar-column:nth-child(2) .bar { animation-delay: .03s; } .bar-column:nth-child(3) .bar { animation-delay: .06s; }
+.bar-column:nth-child(4) .bar { animation-delay: .09s; } .bar-column:nth-child(5) .bar { animation-delay: .12s; }
+.bar-column:nth-child(6) .bar { animation-delay: .15s; } .bar-column:nth-child(7) .bar { animation-delay: .18s; }
+.bar-column:nth-child(8) .bar { animation-delay: .21s; } .bar-column:nth-child(n+9) .bar { animation-delay: .24s; }
+@media (prefers-reduced-motion: reduce) {
+  .main-content > *, .stats > *, .bar, html.auth-checking::before { animation: none !important; }
+}
+
+/* Year picker next to the Days / Week / Month / Year chips. */
+.year-select {
+  appearance: none; -webkit-appearance: none; cursor: pointer; font: inherit; font-size: 13px; font-weight: 600;
+  padding: 7px 30px 7px 14px; border-radius: 999px; color: var(--text, #e8eaed);
+  background: var(--card, rgba(255,255,255,.06)) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none' stroke='%23999' stroke-width='1.6'%3E%3Cpath d='M1 1l4 4 4-4'/%3E%3C/svg%3E") no-repeat right 12px center;
+  border: 1px solid var(--border, rgba(255,255,255,.14));
+}
+.year-select:hover { border-color: var(--gold, #e0b13f); }
+.year-select:focus-visible { outline: 2px solid var(--gold, #e0b13f); outline-offset: 2px; }
+.year-select[hidden] { display: none; }
+.chip-row { flex-wrap: wrap; align-items: center; }

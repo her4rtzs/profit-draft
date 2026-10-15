@@ -37,11 +37,26 @@ window.PFChart = (function () {
     } catch (e) { return {}; }
   }
 
+  /* Years the picker offers: from the earliest record (or four years back) to this year. */
+  function yearChoices() {
+    var db = readDB();
+    var now = new Date().getFullYear();
+    var first = now - 4;
+    (db.payments || []).concat(db.checkins || []).forEach(function (r) {
+      var d = toDate(r && r.date);
+      if (d && d.getFullYear() < first) first = d.getFullYear();
+    });
+    var out = [];
+    for (var y = now; y >= first; y--) out.push(y);
+    return out;
+  }
+
   /* Every period returns a fixed ladder of buckets, oldest first. The ladder is
      built from the calendar, never from the data, so a quiet month still shows
      up as its own column instead of collapsing the chart. */
-  function bucketsFor(period, now) {
+  function bucketsFor(period, now, year) {
     var today = startOfDay(now instanceof Date ? now : new Date());
+    year = year || today.getFullYear();
     var out = [];
     var i, d, s;
     if (period === "days") {
@@ -64,8 +79,8 @@ window.PFChart = (function () {
         });
       }
     } else if (period === "month") {
-      for (i = 11; i >= 0; i--) {
-        d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+      for (i = 0; i < 12; i++) {
+        d = new Date(year, i, 1);
         out.push({
           key: d.getFullYear() + "-" + pad(d.getMonth() + 1),
           from: d,
@@ -76,7 +91,7 @@ window.PFChart = (function () {
       }
     } else {
       for (i = 4; i >= 0; i--) {
-        d = new Date(today.getFullYear() - i, 0, 1);
+        d = new Date(year - i, 0, 1);
         out.push({
           key: String(d.getFullYear()),
           from: d,
@@ -91,10 +106,10 @@ window.PFChart = (function () {
 
   /* Bucket `rows` into the ladder for `period`.
      kind: "revenue" sums payments, "visits" counts check-ins. */
-  function series(kind, period, now) {
+  function series(kind, period, now, year) {
     var db = readDB();
     var rows = kind === "revenue" ? (db.payments || []) : (db.checkins || []);
-    var buckets = bucketsFor(period, now);
+    var buckets = bucketsFor(period, now, year);
     var values = buckets.map(function () { return 0; });
 
     rows.forEach(function (r) {
@@ -151,8 +166,11 @@ window.PFChart = (function () {
   var SUB = {
     days: "Last 14 days",
     week: "Last 8 weeks",
-    month: "Last 12 months",
-    year: "Last 5 years"
+    month: "Jan to Dec",
+    year: "5 years"
+  };
+  var subFor = function (period, year) {
+    return period === "month" ? "Jan to Dec " + year : period === "year" ? "5 years up to " + year : SUB[period];
   };
   var KEY = { days: "Days", week: "Week", month: "Month", year: "Year" };
 
@@ -164,13 +182,35 @@ window.PFChart = (function () {
     var chips = opts.chips;
     var title = opts.title;
     var sub = opts.sub;
+    var year = new Date().getFullYear();
+    var picker = null;
+
+    // A year picker lives beside the period chips. It only matters for the
+    // Month (Jan to Dec of that year) and Year (five years ending then) views.
+    function buildPicker() {
+      if (!chips) return;
+      picker = document.createElement("select");
+      picker.className = "year-select";
+      picker.setAttribute("aria-label", "Choose year");
+      chips.appendChild(picker);
+      picker.addEventListener("change", function () { year = Number(picker.value); draw(); });
+    }
+    function fillPicker() {
+      if (!picker) return;
+      var choices = yearChoices();
+      picker.innerHTML = choices.map(function (y) {
+        return '<option value="' + y + '"' + (y === year ? " selected" : "") + ">" + y + "</option>";
+      }).join("");
+      picker.hidden = !(period === "month" || period === "year");
+    }
 
     function draw() {
-      var s = series(kind, period);
+      var s = series(kind, period, undefined, year);
+      fillPicker();
       renderAxis(opts.axis, s, kind);
       renderBars(opts.bars, s, kind);
       if (title) title.textContent = COPY[kind][period];
-      if (sub) sub.textContent = SUB[period] + (s.empty ? " \u00b7 no records yet" : "");
+      if (sub) sub.textContent = subFor(period, year) + (s.empty ? " \u00b7 no records yet" : "");
       if (chips) {
         chips.querySelectorAll("[data-period]").forEach(function (b) {
           var on = b.dataset.period === period;
@@ -178,7 +218,7 @@ window.PFChart = (function () {
           b.setAttribute("aria-pressed", String(on));
         });
       }
-      if (opts.onPeriod) opts.onPeriod(period, s);
+      if (opts.onPeriod) opts.onPeriod(period, s, year);
     }
 
     if (chips) {
@@ -190,6 +230,7 @@ window.PFChart = (function () {
       });
     }
 
+    buildPicker();
     draw();
     // Another page (or a payment recorded on this one) can change the store.
     window.addEventListener("storage", draw);
@@ -214,11 +255,11 @@ window.PFChart = (function () {
         bars: revBars,
         title: revTitle,
         sub: revSub,
-        onPeriod: function (period, s) {
+        onPeriod: function (period, s, yr) {
           // The headline number answers "how much in the window I am looking at",
           // not "how much this month" while the chart shows a year.
           if (statValue) statValue.textContent = pesoFull(s.total);
-          if (statNote) statNote.textContent = SUB[period] + (s.empty ? " · no payments yet" : "");
+          if (statNote) statNote.textContent = subFor(period, yr) + (s.empty ? " · no payments yet" : "");
         }
       });
     }
@@ -254,6 +295,7 @@ window.PFChart = (function () {
     labels: KEY,
     bucketsFor: bucketsFor,
     series: series,
+    yearChoices: yearChoices,
     renderBars: renderBars,
     renderAxis: renderAxis,
     mount: mount,
