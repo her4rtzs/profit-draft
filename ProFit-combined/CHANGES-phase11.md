@@ -3,6 +3,7 @@
 Replaces portal-ui.css from phases 10, 10b and 10c (their fixes are included here).
 
 ## Files
+- web/welcome.html: plan cards centred and full-width on phones, price no longer wraps.
 - web/portal-ui.css (new, full): sidebar offset on desktop, centred logo in the collapsed sidebar, member portal redesign, health & goals form layout, staff polish, payment edit modal.
 - web/portal-fx.js (new): top progress bar, scroll reveal, smooth page-to-page fade.
 - web/splash.js: new intro (glow, double ring, letter rise, loading bar, curtain opens). Once per tab session. Now also on join.html.

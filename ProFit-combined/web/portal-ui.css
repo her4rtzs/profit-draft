@@ -141,3 +141,13 @@ body.pf-leaving{opacity:0;transition:opacity .18s ease}
   body.pf-ready .main-content>*,body.pf-ready .member-content>*,.pp-tool-panel,.member-logo>span,.member-status-card::before,#pf-topbar,.member-menu{animation:none!important}
   .pf-reveal{opacity:1;transform:none;transition:none}
 }
+
+/* ---- Mobile: a lone card never hangs off to the side; grids fill the width ---- */
+@media (max-width:600px){
+  .pp-member-grid,.pp-class-grid,.pp-trainers,.pp-info-grid,.pp-stats-wide{grid-template-columns:1fr!important}
+  .pp-plan-cards>:last-child:nth-child(odd),.pp-stats>:last-child:nth-child(odd),.member-metrics>:last-child:nth-child(odd){grid-column:1/-1}
+  .pp-card,.panel,.member-panel,.stat-card{max-width:100%;box-sizing:border-box}
+}
+@media (min-width:601px) and (max-width:1000px){
+  .pp-stats>:last-child:nth-child(odd){grid-column:1/-1}
+}
