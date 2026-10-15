@@ -370,3 +370,4 @@ Before any commit, scan the real files for secrets and review every modified fil
 - `billing.PendingSignup` (migration 0003) holds name, email, phone, plan and a HASHED password. The webhook (`complete_signup`) creates the login, member profile, payment and active membership.
 - `member-portal.html` now redirects to `join.html`. Applications and Track request are gone.
 - Staff payments list also shows paid online payments (method ONLINE).
+- Members page: new `web/members-ui.css` (loaded after spotify.css) restyles tabs, search, cards, table and enrollment form. No JS changes.
