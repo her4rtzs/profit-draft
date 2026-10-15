@@ -234,7 +234,7 @@
             }).join("") : `<tr><td colspan="4">${empty("fa-door-open", "No one has checked in yet today.")}</td></tr>`;
         };
 
-        const checkIn = () => {
+        const checkIn = async () => {
             const raw = input.value.trim();
             if (!raw) return toast("Type a member name or ID first");
 
@@ -247,6 +247,11 @@
             if (statusOf(m).key === "expired") return toast(`${m.name}'s membership has expired. Renew it first.`);
             if (todays().some(c => c.memberId === m.id)) return toast(`${m.name} already checked in today`);
 
+            try {
+                await window.ProFitAPI.post("/staff/attendance/check-in/", { member_id: m.serverId });
+            } catch (err) {
+                return toast(err.message || "Check-in failed");
+            }
             DB.checkins.push({ date: TODAY, time: nowTime(), memberId: m.id });
             m.checkins++;
             DB.save();

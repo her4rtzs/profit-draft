@@ -247,6 +247,60 @@ const DB = {
 
 DB.load();
 
+// ---------- Server sync (Part 1) ----------
+// Reads members, desk payments, and today's check-ins from the Django API.
+// Signed-out visitors and non-staff roles get 401/403 and keep the local copy.
+// When the server data differs from what this browser last saw, the page
+// reloads once so every screen renders the server data.
+DB.sync = async function () {
+    const METHOD_LABEL = { CASH: "Cash", GCASH: "GCash", BANK: "Bank transfer" };
+    const idFor = pk => "M" + (202600 + pk);
+    const SIG_KEY = "profit-server-sig";
+    let responses;
+    try {
+        responses = await Promise.all([
+            fetch("/api/staff/members/", { credentials: "same-origin" }),
+            fetch("/api/staff/payments/", { credentials: "same-origin" }),
+            fetch("/api/staff/attendance/", { credentials: "same-origin" })
+        ]);
+    } catch { return; }
+    if (responses.some(r => !r.ok)) return;
+
+    const [rows, pays, atts] = await Promise.all(responses.map(r => r.json()));
+
+    // The API lists payments newest first, so the first row seen is each member's current plan.
+    const planOf = {};
+    pays.forEach(p => { if (!(p.member_id in planOf)) planOf[p.member_id] = p.plan; });
+
+    this.members = rows.map(r => {
+        const plan = planOf[r.id] || "monthly";
+        const end = r.expiry_date ? fromISO(r.expiry_date) : TODAY;
+        return {
+            id: idFor(r.id), serverId: r.id, name: r.name, email: r.email || "",
+            phone: r.phone || "", address: r.address || "",
+            emergencyName: "", emergencyPhone: "", photoId: null,
+            plan, start: addDays(end, -PLANS[plan].days), end, checkins: 0
+        };
+    });
+    this.payments = pays.map(p => ({
+        ref: p.ref, date: fromISO(p.paid_on), memberId: idFor(p.member_id),
+        plan: p.plan, method: METHOD_LABEL[p.method] || p.method, amount: p.amount_centavos / 100
+    }));
+    this.checkins = atts.map(a => ({
+        date: fromISO(a.check_in_date), memberId: idFor(a.member_id),
+        time: new Date(a.check_in_at).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })
+    }));
+
+    const sig = JSON.stringify([this.members, this.payments, this.checkins]);
+    const changed = localStorage.getItem(SIG_KEY) !== sig;
+    this.save();
+    if (changed) {
+        try { localStorage.setItem(SIG_KEY, sig); } catch { /* storage blocked */ }
+        location.reload();
+    }
+};
+DB.sync();
+
 // Class and trainer catalogue used by the member portal schedules.
 const TRAINERS = [
     { id: "t-mia", name: "Coach Mia Ramos", specialty: "Boxing and conditioning", days: "Mon, Wed, Fri" },
