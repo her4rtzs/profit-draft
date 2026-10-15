@@ -1,9 +1,0 @@
-{
-  "appId": "ph.profitgym.app",
-  "appName": "ProFit",
-  "webDir": "../web",
-  "server": {
-    "url": "https://YOUR-DEPLOYMENT.vercel.app",
-    "cleartext": false
-  }
-}

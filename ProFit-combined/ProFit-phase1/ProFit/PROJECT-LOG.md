@@ -364,18 +364,3 @@ Commit the finished member-auth work to the repository (the user had put a hold 
 - Noted that an earlier log entry quotes a SECRET_KEY value in plain text and is already on the remote. The log is append-only, so I did not edit it; the user should treat that value as exposed and rotate it if it is used anywhere real.
 ### Decision-log skill
 Before any commit, scan the real files for secrets and review every modified file that the task did not touch. "Commit everything" is not the same as "commit the task". Never quote a credential value in a log or note, even to say it was removed.
-
-## 2026-10-15 15:36 (Asia/Manila): Combine ProFit backend with v13 web frontend; installable app shell
-### What I asked for
-- Merge the ProFit-main backend with the v13 frontend (liked the v13 look) into one system that also works as a cross-platform app.
-### What the agent decided and why
-- One origin: Django serves web/ (v13 frontend) with WhiteNoise, and the API lives at /api/. Same-origin means session and CSRF cookies work without CORS.
-- Login and role routing use the existing session auth. Added identity (email or username) login while keeping the username contract the existing tests and the RN client depend on.
-- Backend roles map to web roles: OWNER and CASHIER to ADMIN, TRAINER to TRAINER, MEMBER to MEMBER. Server-side RBAC is still the real gate; the UI routing is only convenience.
-- Added /api/member/me/ with the shape the member home already renders, backed by real MemberProfile, Attendance and Payment rows.
-- Did not rewrite the staff data layer (members, payments, reports) in this pass. It still uses browser storage. Rewiring it is the next step and needs a running backend to test.
-- Installable app: manifest, offline shell service worker (API never cached), generated icons, and a Capacitor shell that loads the hosted site so store builds share the web session.
-- Verified by syntax only (Python compile, node --check, manifest JSON). Django was not available in the build environment, so the test suite was not run.
-- Found a SECRET_KEY value quoted in an earlier entry. Log is append-only, so it was left unedited; the value should be treated as exposed and rotated.
-### Decision-log skill
-When merging a static prototype with a real backend, pick one origin first so sessions and CSRF stay simple. Then route UI by server-issued roles and keep the server as the only enforcement point. Never quote a credential in a log, even to say it is exposed.

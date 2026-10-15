@@ -31,6 +31,8 @@ class MemberProfile(models.Model):
     )
     date_joined = models.DateField(default=timezone.localdate)
     expiry_date = models.DateField(null=True, blank=True)
+    phone = models.CharField(max_length=30, blank=True, default="")
+    address = models.CharField(max_length=255, blank=True, default="")
 
     def __str__(self):
         return f"MemberProfile<{self.user_id}>"
