@@ -23,7 +23,7 @@
     const read = () => { try { return JSON.parse(localStorage.getItem("profit-demo-session") || sessionStorage.getItem("profit-demo-session") || "null"); } catch { return null; } };
     const user = read();
     if (!loginPage && (adminPages.has(file) || memberPages.has(file)) && !user) {
-      location.replace("login.html?reason=session");
+      location.replace(file === "index.html" ? "welcome.html" : "login.html?reason=session");
       return;
     }
     const active = user;
@@ -56,7 +56,7 @@
       bindLogoutOnce();
     } catch (error) {
       if (loginPage) document.documentElement.classList.remove("auth-checking");
-      else location.replace("login.html?reason=session");
+      else location.replace(file === "index.html" ? "welcome.html" : "login.html?reason=session");
       window.dispatchEvent(new CustomEvent("profit-auth-error", { detail: error }));
     }
   });
