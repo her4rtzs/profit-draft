@@ -338,16 +338,24 @@
             }).join("") : `<tr><td colspan="5">${empty("fa-hourglass-half", q ? `No member matches “${esc(q)}”.` : "No members in this group.")}</td></tr>`;
         };
 
-        $("#payForm").addEventListener("submit", e => {
+        $("#payForm").addEventListener("submit", async e => {
             e.preventDefault();
             const m = DB.member(sel.value);
             if (!m) return toast("Pick a member first");
-            recordPayment(m, planSel.value, $("#payMethod").value);
-            renew(m, planSel.value);
-            DB.save();
+            if (!m.serverId) return toast("This member is not on the server yet.");
+            try {
+                // The server records the payment and renews the membership in one step.
+                await window.ProFitAPI.post("/staff/payments/", {
+                    member_id: m.serverId, plan: planSel.value, method: METHOD_CODE[$("#payMethod").value] || "CASH"
+                });
+                if (!(await DB.sync(false))) throw new Error("Saved, but the list could not be refreshed. Reload the page.");
+            } catch (err) {
+                return toast(err.message || "The payment could not be recorded.", true);
+            }
+            const fresh = DB.member(m.id) || m;
             drawToday();
             drawSubs();
-            toast(`Payment recorded. ${m.name} is covered until ${fmtShort(m.end)}`);
+            toast(`Payment recorded. ${fresh.name} is covered until ${fmtShort(fresh.end)}`);
         });
 
         initChips($("#subChips"), f => { filter = f; drawSubs(); });

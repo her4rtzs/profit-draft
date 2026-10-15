@@ -32,38 +32,50 @@
   // Everything the front desk does lands in the shared activity bell.
   const notify = input => { try { window.ProFitNotify?.push(input); } catch { /* bell unavailable */ } };
 
-  function addPayment({ memberId, plan, method, amount, date = today() }) {
-    const p = { ref: DB.nextRef(), date, memberId, plan, method: method || "Cash", amount: amount ?? PLANS[plan].price };
-    DB.payments.unshift(p);
-    const who = DB.members.find(m => m.id === memberId);
-    notify({ type: "payment", icon: "fa-wallet", title: "Payment received",
-      message: `${method || "Cash"} payment of ${money(p.amount)} recorded for ${who ? who.name : memberId}. Receipt ${p.ref}.`,
-      tag: "pay:" + p.ref });
-    return p;
-  }
-  function createMember({ name, email, phone = "", address = "", plan, method, start = today(), recordPayment = true }) {
+  // Writes go to the Django API first. Only after the server accepts them do we
+  // pull fresh data (DB.sync(false)) so every screen shows what the server holds.
+  const tempPassword = () => {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
+    const buf = crypto.getRandomValues(new Uint32Array(12));
+    return Array.from(buf, n => chars[n % chars.length]).join("") + "!7";
+  };
+  const refreshFromServer = async () => {
+    if (!(await DB.sync(false))) throw new Error("Saved, but the list could not be refreshed. Reload the page.");
+  };
+  async function createMember({ name, email, phone = "", address = "", plan, method, start = today(), recordPayment = true }) {
     if (!PLANS[plan]) throw new Error("This plan is no longer available. Choose another plan.");
-    const m = {
-      id: DB.nextMemberId(), name, email, phone, address, emergencyName: "", emergencyPhone: "", photoId: null,
-      plan, start, end: addDays(start, PLANS[plan].days), checkins: 0
-    };
-    DB.members.push(m);
-    if (recordPayment) addPayment({ memberId: m.id, plan, method, date: start });
-    save();
+    const password = tempPassword();
+    // With a payment, the payments endpoint starts the membership. Without one,
+    // the create call starts it directly so no payment row is invented.
+    const body = { name, email, password, phone, address };
+    if (!recordPayment) { body.plan = plan; body.start_date = iso(start); }
+    const created = await ProFitAPI.post("/staff/members/", body);
+    if (recordPayment) {
+      await ProFitAPI.post("/staff/payments/", { member_id: created.id, plan, method: METHOD_CODE[method] || "CASH" });
+    }
+    await refreshFromServer();
+    const m = DB.members.find(x => x.serverId === created.id);
     notify({ type: "member", icon: "fa-user-check", title: "New member enrolled",
-      message: `${m.name} joined the ${PLANS[plan].label} plan. Member ID ${m.id}.`,
-      tag: "member:" + m.id });
-    return m;
+      message: `${name} joined the ${PLANS[plan].label} plan. Member ID ${m ? m.id : created.id}.`,
+      tag: "member:" + created.id });
+    return { member: m, password };
   }
-  function renewMember(m, plan, method) {
-    const base = m.end >= today() ? m.end : today();
-    m.plan = plan;
-    m.cancelledAt = null;
-    m.frozenUntil = null;
-    m.end = addDays(base, PLANS[plan].days);
-    const payment = addPayment({ memberId: m.id, plan, method });
-    save();
-    return { payment, end: m.end };
+  async function renewMember(m, plan, method) {
+    if (!m.serverId) throw new Error("This member is not on the server yet.");
+    const res = await ProFitAPI.post("/staff/payments/", { member_id: m.serverId, plan, method: METHOD_CODE[method] || "CASH" });
+    await refreshFromServer();
+    const fresh = DB.member(m.id) || m;
+    const p = res.payment;
+    notify({ type: "payment", icon: "fa-wallet", title: "Payment received",
+      message: `${method || "Cash"} payment of ${money(p.amount_centavos / 100)} recorded for ${fresh.name}. Receipt ${p.ref}.`,
+      tag: "pay:" + p.ref });
+    return { payment: { amount: p.amount_centavos / 100 }, end: fresh.end };
+  }
+  // Shows the one-time temporary password. The server never returns it again.
+  function showTempPassword(name, email, password) {
+    modal({ title: "Member created", confirmText: "Done", cancelText: "Close",
+      body: `<p class="pp-muted">${esc(name)} can sign in with <strong>${esc(email)}</strong> and this temporary password. Write it down now; it is not shown again.</p>
+        <p><code style="font-size:1.1rem;user-select:all">${esc(password)}</code></p>` });
   }
 
   // ---------- Shared UI pieces ----------
@@ -314,18 +326,19 @@
       confirmText: "Approve and create membership",
       body: `<p class="pp-muted">This creates a membership starting today on the <strong>${esc(planLabel(app.plan))}</strong> plan. The member can then sign in with their email.</p>
         <label class="pp-check"><input type="checkbox" id="mRecord" checked> Record the first payment of <strong>${money(PLANS[app.plan]?.price)}</strong> (${esc(app.payment || "Cash")})</label>`,
-      onConfirm: box => {
+      onConfirm: async box => {
         if (findByEmail(app.email)) throw new Error("A member with this email already exists.");
-        const m = createMember({ name: app.name, email: app.email, phone: app.phone, plan: app.plan, method: app.payment, recordPayment: box.querySelector("#mRecord").checked });
+        const { member: m, password } = await createMember({ name: app.name, email: app.email, phone: app.phone, plan: app.plan, method: app.payment, recordPayment: box.querySelector("#mRecord").checked });
         app.status = "approved";
         app.reviewedAt = new Date().toISOString();
         save();
         state.app = "approved";
         renderAll();
-        toast(`${app.name} is now a member (${m.id}).`);
+        toast(`${app.name} is now a member (${m ? m.id : "new"}).`);
         notify({ type: "request", icon: "fa-circle-check", title: "Membership approved",
-          message: `${app.name}${app.ref ? ` (${app.ref})` : ""} can now sign in with ${app.email} and password "password".`,
+          message: `${app.name}${app.ref ? ` (${app.ref})` : ""} can now sign in with ${app.email}.`,
           tag: "request:" + app.id });
+        setTimeout(() => showTempPassword(app.name, app.email, password), 50);
       }
     });
   }
@@ -479,8 +492,8 @@
           <div class="pp-field"><label for="rMethod">Payment method</label><select id="rMethod">${METHODS.map(x => `<option>${esc(x)}</option>`).join("")}</select></div>
         </div>
         <p class="pp-note-line"><i class="fa-regular fa-calendar-check" aria-hidden="true"></i> New end date: <strong id="rEnd"></strong></p>`,
-      onConfirm: dlg => {
-        const { payment, end } = renewMember(m, dlg.querySelector("#rPlan").value, dlg.querySelector("#rMethod").value);
+      onConfirm: async dlg => {
+        const { payment, end } = await renewMember(m, dlg.querySelector("#rPlan").value, dlg.querySelector("#rMethod").value);
         state.subtab = "payments";
         renderAll();
         toast(`Renewal recorded for ${money(payment.amount)}. Valid until ${fmt(end)}.`);
@@ -490,7 +503,7 @@
     box.querySelector("#rPlan").addEventListener("change", update);
     update();
   }
-  function saveEdit(form) {
+  async function saveEdit(form) {
     const m = DB.member(state.selectedId);
     if (!m) return;
     clearErrors(form);
@@ -507,13 +520,20 @@
     if (!validPhone(v.emergencyPhone)) { setErr("eeEmgPhone", "Enter a valid phone number."); ok = false; }
     if (!v.end) { setErr("eeEnd", "Choose the membership end date."); ok = false; }
     if (!ok) return toast("Please fix the highlighted fields.", true);
-    Object.assign(m, {
-      name: v.name, email: v.email, phone: v.phone, address: v.address,
-      emergencyName: v.emergencyName, emergencyPhone: v.emergencyPhone, plan: v.plan, end: parseISO(v.end)
-    });
-    save();
+    // The server stores name, phone and address only. Say so when other fields were changed.
+    const notSaved = [];
+    if (v.email.toLowerCase() !== (m.email || "").toLowerCase()) notSaved.push("email");
+    if (v.emergencyName !== (m.emergencyName || "") || v.emergencyPhone !== (m.emergencyPhone || "")) notSaved.push("emergency contact");
+    if (v.plan !== m.plan) notSaved.push("plan");
+    if (v.end !== iso(m.end)) notSaved.push("end date");
+    try {
+      await ProFitAPI.patch(`/staff/members/${m.serverId}`, { name: v.name, phone: v.phone, address: v.address });
+      await refreshFromServer();
+    } catch (err) {
+      return toast(err.message || "The details could not be saved.", true);
+    }
     renderAll();
-    toast("Member details saved.");
+    toast(notSaved.length ? `Name, phone and address saved. Not saved yet: ${notSaved.join(", ")}.` : "Member details saved.", !!notSaved.length);
   }
 
   // ---------- Enrollment ----------
@@ -637,7 +657,7 @@
     if (e.target.id === "editForm") { e.preventDefault(); saveEdit(e.target); }
   });
 
-  $("enrollForm").addEventListener("submit", e => {
+  $("enrollForm").addEventListener("submit", async e => {
     e.preventDefault();
     const form = e.currentTarget;
     clearErrors(form);
@@ -654,11 +674,12 @@
     if (!plan) { setErr("ePlan", "Choose a plan."); ok = false; }
     if (!ok) return toast("Please fix the highlighted fields.", true);
     try {
-      const m = createMember({ name, email, phone, address, plan, method, start: parseISO(start), recordPayment: record });
+      const { member: m, password } = await createMember({ name, email, phone, address, plan, method, start: parseISO(start), recordPayment: record });
       form.reset();
       fillEnrollDefaults();
-      toast(`${name} is enrolled as ${m.id}.`);
-      openDetail(m.id);
+      toast(`${name} is enrolled${m ? ` as ${m.id}` : ""}.`);
+      if (m) openDetail(m.id);
+      showTempPassword(name, email, password);
     } catch (err) {
       toast(err.message || "The member could not be saved.", true);
     }

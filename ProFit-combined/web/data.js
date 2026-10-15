@@ -252,7 +252,10 @@ DB.load();
 // Signed-out visitors and non-staff roles get 401/403 and keep the local copy.
 // When the server data differs from what this browser last saw, the page
 // reloads once so every screen renders the server data.
-DB.sync = async function () {
+const METHOD_CODE = { "Cash": "CASH", "GCash": "GCASH", "Bank transfer": "BANK" };
+// sync(true) reloads the page once when the server data changed (page load).
+// sync(false) just refreshes DB in place; used right after a write so the screen can redraw.
+DB.sync = async function (reload = true) {
     const METHOD_LABEL = { CASH: "Cash", GCASH: "GCash", BANK: "Bank transfer" };
     const idFor = pk => "M" + (202600 + pk);
     const SIG_KEY = "profit-server-sig";
@@ -263,8 +266,8 @@ DB.sync = async function () {
             fetch("/api/staff/payments/", { credentials: "same-origin" }),
             fetch("/api/staff/attendance/", { credentials: "same-origin" })
         ]);
-    } catch { return; }
-    if (responses.some(r => !r.ok)) return;
+    } catch { return false; }
+    if (responses.some(r => !r.ok)) return false;
 
     const [rows, pays, atts] = await Promise.all(responses.map(r => r.json()));
 
@@ -296,8 +299,9 @@ DB.sync = async function () {
     this.save();
     if (changed) {
         try { localStorage.setItem(SIG_KEY, sig); } catch { /* storage blocked */ }
-        location.reload();
+        if (reload) location.reload();
     }
+    return true;
 };
 DB.sync();
 
