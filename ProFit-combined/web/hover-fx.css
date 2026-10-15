@@ -1,0 +1,52 @@
+/* One set of hover and focus rules for the whole app.
+   Mouse (hover: hover): colour and border change only, nothing moves, so nothing jumps.
+   Touch (hover: none): no hover state, so a tap never leaves a colour stuck on. */
+
+/* Registrations panel: the table stays inside its card. Wide tables scroll inside their own box. */
+html body .registrations-panel { min-width: 0 !important; max-width: 100% !important; box-sizing: border-box; overflow: hidden !important; }
+html body .registrations-panel > * { min-width: 0; max-width: 100%; }
+html body .registrations-panel .panel-header { flex-wrap: wrap; gap: 12px; }
+html body .registrations-panel .view-all { white-space: nowrap; flex: 0 0 auto; }
+html body .registrations-panel .table-wrapper { width: 100%; max-width: 100%; overflow-x: auto !important; -webkit-overflow-scrolling: touch; }
+html body .registrations-panel table { width: 100%; }
+@media (max-width: 760px) {
+  html body .registrations-panel table { min-width: 640px; }
+}
+
+@media (hover: hover) {
+  html body .stat-card:hover, html body .panel:hover, html body .pp-card:hover,
+  html body .member-metric-card:hover, html body .pp-stat:hover {
+    transform: none !important;
+  }
+  html body .btn:hover, html body .pp-btn:hover, html body .pp-chip-btn:hover, html body .pp-icon-btn:hover,
+  html body .action-btn:hover, html body .view-all:hover, html body .pp-tab:hover,
+  html body .pp-segment button:hover, html body .pp-view-toggle button:hover {
+    transform: none !important;
+    border-color: var(--gold) !important;
+  }
+  html body .pp-mood:hover { transform: none !important; border-color: var(--gold) !important; }
+  html body .pp-mood:hover .pp-mood-emoji { transform: none !important; }
+  html body .table-wrapper tbody tr:hover, html body .pp-table-wrap tbody tr:hover {
+    background: color-mix(in srgb, var(--gold) 7%, transparent) !important; box-shadow: none !important; transform: none !important;
+  }
+  html body .pp-table-wrap tbody tr:hover td:first-child { box-shadow: none !important; }
+  html body .sidebar .menulist a:hover .icon { transform: none !important; }
+}
+
+/* Press feedback stays small, and table rows never shift while pressed. */
+html body .btn:active, html body .pp-btn:active, html body .pp-chip-btn:active, html body .pp-tab:active { transform: scale(.98) !important; }
+html body .pp-table-wrap tbody tr:active { transform: none !important; }
+
+@media (hover: none) {
+  html body .btn:hover, html body .pp-btn:hover, html body .pp-chip-btn:hover, html body .pp-icon-btn:hover,
+  html body .action-btn:hover, html body .view-all:hover, html body .pp-tab:hover, html body .pp-mood:hover,
+  html body .pp-segment button:hover, html body .pp-view-toggle button:hover, html body .stat-card:hover,
+  html body .panel:hover, html body .pp-card:hover {
+    transform: none !important;
+    border-color: var(--border) !important;
+  }
+  html body .pp-icon-btn:hover, html body .action-btn:hover { background: var(--card) !important; }
+  html body .sidebar .menulist a:hover { background: transparent !important; color: #a7b0bf !important; }
+  html body .sidebar .menulist a.active:hover { background: color-mix(in srgb, var(--gold) 16%, transparent) !important; color: #fff !important; }
+  html body .table-wrapper tbody tr:hover, html body .pp-table-wrap tbody tr:hover td { background: transparent !important; box-shadow: none !important; }
+}
