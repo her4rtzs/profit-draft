@@ -1,4 +1,5 @@
 import sys
+import sys
 """
 Django settings for the ProFit project.
 
@@ -118,6 +119,10 @@ DATABASES = {
 if "collectstatic" in sys.argv:
     DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": ":memory:"}}
 
+# Build-time guard: collectstatic runs during the Vercel build and never needs the
+# database. Keep it off Postgres so the build never loads psycopg.
+if "collectstatic" in sys.argv:
+    DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": ":memory:"}}
 # Supabase transaction-mode pooler safety, applied UNCONDITIONALLY (harmless on
 # SQLite) so there is no environment-dependent branch that passes locally but
 # fails in production.
