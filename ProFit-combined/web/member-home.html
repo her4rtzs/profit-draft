@@ -496,5 +496,37 @@
 <script src="change-password.js?v=1"></script>
 <script src="member-pay.js?v=1"></script>
 <script src="portal-fx.js?v=2"></script>
+<style>@media (max-width:760px){body{padding-bottom:112px}}</style>
+<nav class="pf-bottomnav" aria-label="Member sections">
+  <button type="button" data-go-tab="overview"><i class="fa-solid fa-gauge-high" aria-hidden="true"></i><span>Overview</span></button>
+  <button type="button" data-go-tab="schedule"><i class="fa-regular fa-calendar" aria-hidden="true"></i><span>Schedule</span></button>
+  <button type="button" data-go-tab="diary"><i class="fa-solid fa-book-open" aria-hidden="true"></i><span>Diary</span></button>
+  <button type="button" data-go-tab="health"><i class="fa-solid fa-heart-pulse" aria-hidden="true"></i><span>Health</span></button>
+  <button type="button" data-go-tab="profile"><i class="fa-regular fa-id-card" aria-hidden="true"></i><span>Profile</span></button>
+  <button type="button" data-go-tab="settings"><i class="fa-solid fa-sliders" aria-hidden="true"></i><span>Settings</span></button>
+</nav>
+<script>
+(() => {
+  const nav = document.querySelector(".pf-bottomnav");
+  if (!nav) return;
+  const current = () => document.querySelector('.pp-tab[aria-selected="true"]')?.dataset.tab;
+  const sync = () => {
+    const now = current();
+    nav.querySelectorAll("[data-go-tab]").forEach(b => {
+      if (b.dataset.goTab === now) b.setAttribute("aria-current", "page");
+      else b.removeAttribute("aria-current");
+    });
+  };
+  nav.addEventListener("click", e => {
+    const b = e.target.closest("[data-go-tab]");
+    if (!b) return;
+    document.querySelector(`.pp-tab[data-tab="${b.dataset.goTab}"]`)?.click();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+  const tabs = document.querySelector(".pp-tabs");
+  if (tabs) new MutationObserver(sync).observe(tabs, { attributes: true, subtree: true, attributeFilter: ["aria-selected"] });
+  sync();
+})();
+</script>
 </body>
 </html>

@@ -564,3 +564,36 @@ html body .pp-mood span { color: inherit; display: block; }
   html body .pp-mood:hover .pp-mood-emoji { transform: none !important; }
   html body .pp-table-wrap tbody tr:hover td, html body .table-wrapper tbody tr:hover { background: transparent !important; box-shadow: none !important; }
 }
+
+
+/* Member bottom navigation (phones only). Replaces the wrapped top tab bar there. */
+.pf-bottomnav { display: none; }
+@media (max-width: 760px) {
+  html body .pp-tabs { display: none !important; }
+  html body .pf-bottomnav { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 2px; position: fixed;
+    left: 10px; right: 10px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); z-index: 150; padding: 6px;
+    border-radius: 22px; background: var(--card); border: 1px solid var(--border); box-shadow: 0 14px 34px rgba(0,0,0,.35); }
+  html body .pf-bottomnav button { display: grid; justify-items: center; gap: 4px; min-width: 0; padding: 8px 2px; border: 0; border-radius: 16px;
+    background: transparent; color: var(--muted); font: 600 10px/1.1 Inter, system-ui, sans-serif; cursor: pointer; transition: background .2s ease, color .2s ease; }
+  html body .pf-bottomnav button i { font-size: 17px; }
+  html body .pf-bottomnav button span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+  html body .pf-bottomnav button[aria-current="page"] { background: linear-gradient(110deg, var(--gold), var(--gold-deep)); color: #19231e;
+    box-shadow: 0 8px 18px color-mix(in srgb, var(--gold) 28%, transparent); }
+  html body .pf-bottomnav button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  html body .pf-bottomnav button:active { transform: scale(.94); }
+}
+
+/* Phone dashboard: content uses the full width, and wide tables scroll inside their own box. */
+@media (max-width: 760px) {
+  html body .main-content { margin-left: 0 !important; width: 100% !important; max-width: 100% !important;
+    padding-left: 14px !important; padding-right: 14px !important; box-sizing: border-box; }
+  html body .registrations-panel .table-wrapper, html body .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  html body .registrations-panel table { min-width: 620px; }
+}
+
+/* Loading placeholders read as shimmering bars, not plain text. */
+@keyframes pfShimmer { to { background-position: -200% 0; } }
+html body .member-loading { display: block; height: 14px; width: 55%; margin: 12px 0; border-radius: 8px; color: transparent !important;
+  background: linear-gradient(90deg, rgba(255,255,255,.05), rgba(255,255,255,.13), rgba(255,255,255,.05)); background-size: 200% 100%;
+  animation: pfShimmer 1.2s linear infinite; }
+@media (prefers-reduced-motion: reduce) { html body .member-loading { animation: none; } }

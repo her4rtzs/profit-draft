@@ -8,6 +8,7 @@
     const fromLogin = /login\.html/.test(document.referrer);
     if (!forced && !fromLogin && now - last < 10 * 60 * 1000) return;
     localStorage.setItem("pf-splash-at", String(now));
+    window.__pfIntro = true;
   } catch (e) { try { if (sessionStorage.getItem("pf-splash2")) return; sessionStorage.setItem("pf-splash2", "1"); } catch (e2) {} }
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   const css = `#pf-splash{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;overflow:hidden;font-family:Inter,system-ui,sans-serif;color:#f6efdc}
@@ -59,8 +60,7 @@
 (() => {
   let nav = false;
   try { nav = sessionStorage.getItem("pf-nav") === "1"; sessionStorage.removeItem("pf-nav"); } catch (err) { /* storage blocked */ }
-  void nav;
-  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (!nav || window.__pfIntro || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   const el = document.createElement("div");
   el.id = "pf-navload";
   el.setAttribute("role", "status");
