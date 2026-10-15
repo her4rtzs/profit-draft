@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
 
-from apps.billing.services import CheckoutError, create_join_checkout
+from apps.billing.services import CheckoutError, confirm_join, create_join_checkout
 
 
 class JoinThrottle(AnonRateThrottle):
@@ -40,3 +40,16 @@ class JoinCheckoutView(APIView):
         except CheckoutError as exc:
             return Response({"detail": str(exc)}, status=503)
         return Response({"checkout_url": url})
+
+
+class JoinConfirmView(APIView):
+    """POST /api/join/confirm/ {token}: create the account once PayMongo says it is paid."""
+
+    permission_classes = [AllowAny]
+    authentication_classes = []
+
+    def post(self, request):
+        try:
+            return Response({"status": confirm_join(request.data.get("token"))})
+        except ValidationError as exc:
+            raise DRFValidationError({"detail": " ".join(exc.messages)})

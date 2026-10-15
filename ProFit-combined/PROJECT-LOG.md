@@ -371,3 +371,4 @@ Before any commit, scan the real files for secrets and review every modified fil
 - `member-portal.html` now redirects to `join.html`. Applications and Track request are gone.
 - Staff payments list also shows paid online payments (method ONLINE).
 - Members page: new `web/members-ui.css` (loaded after spotify.css) restyles tabs, search, cards, table and enrollment form. No JS changes.
+- Join backup path: `PendingSignup.token` (migration 0004), `POST /api/join/confirm/`. On return from PayMongo the server asks PayMongo if the session is paid and creates the account, so it no longer depends only on the webhook.

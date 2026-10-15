@@ -90,8 +90,23 @@ input.t:focus{outline:0;border-color:var(--g);box-shadow:0 0 0 3px #e8b93a22}
   if (q.get("cancelled")) $("cancel").hidden = false;
   if (q.get("paid")) {
     $("f").hidden = true; $("ok").hidden = false; $("alt").hidden = true;
-    // The account is made by the confirmed payment, so give it a moment, then point to sign in.
-    setTimeout(() => { $("okmsg").textContent = "Your account is ready. Sign in with the email and password you set."; }, 4000);
+    // The server checks the payment with PayMongo and creates the account. Retry a few times.
+    const token = q.get("t") || "";
+    let tries = 0;
+    const check = async () => {
+      tries++;
+      try {
+        const r = await window.ProFitAPI.post("/join/confirm", { token });
+        if (r.status === "active") {
+          $("okmsg").textContent = "Your account is ready. Sign in with the email and password you set.";
+          $("okgo").hidden = false; return;
+        }
+      } catch (ex) { if (ex.status === 400) { $("okmsg").textContent = "We could not find this signup. Please call 0912 261 7663."; return; } }
+      if (tries < 12) setTimeout(check, 3000);
+      else $("okmsg").textContent = "We have not received the payment confirmation yet. Wait a minute and refresh this page, or call 0912 261 7663.";
+    };
+    $("okgo").hidden = true;
+    check();
   }
   $("f").addEventListener("submit", async e => {
     e.preventDefault();

@@ -11,6 +11,7 @@ no-op once the payment has reached a terminal state (NIT-4).
 
 import base64
 import json
+import secrets
 import logging
 import urllib.error
 import urllib.request
@@ -188,9 +189,11 @@ def create_join_checkout(*, name, email, phone, plan, password, success_url, can
     if get_user_model().objects.filter(username=email).exists():
         raise ValidationError("An account with this email already exists. Sign in instead, then choose a plan.")
     validate_password(password or "")
-    session_id, checkout_url, _ = _paymongo_session(plan, success_url=success_url, cancel_url=cancel_url)
+    token = secrets.token_urlsafe(24)
+    session_id, checkout_url, _ = _paymongo_session(
+        plan, success_url=f"{success_url}&t={token}", cancel_url=cancel_url)
     PendingSignup.objects.create(
-        checkout_session_id=session_id, name=name, email=email, phone=(phone or "").strip(),
+        checkout_session_id=session_id, token=token, name=name, email=email, phone=(phone or "").strip(),
         plan=plan, password_hash=make_password(password),
     )
     return checkout_url
@@ -233,3 +236,44 @@ def complete_signup(pending):
         pending.completed = True
         pending.save(update_fields=["completed"])
     return payment
+
+
+def _session_is_paid(session_id):
+    """Ask PayMongo directly whether this checkout session has a paid payment."""
+    key = getattr(settings, "PAYMONGO_SECRET_KEY", "")
+    if not key:
+        return False
+    auth = base64.b64encode(f"{key}:".encode()).decode()
+    req = urllib.request.Request(
+        f"{PAYMONGO_CHECKOUT_URL}/{session_id}",
+        headers={"Authorization": f"Basic {auth}", "Accept": "application/json"},
+        method="GET",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            attrs = json.loads(resp.read().decode())["data"]["attributes"]
+    except (urllib.error.URLError, ValueError, KeyError, TimeoutError):
+        logger.warning("session lookup failed")
+        return False
+    for pay in attrs.get("payments") or []:
+        if (pay.get("attributes") or {}).get("status") == "paid":
+            return True
+    intent = attrs.get("payment_intent") or {}
+    return (intent.get("attributes") or {}).get("status") == "succeeded"
+
+
+def confirm_join(token):
+    """Return 'active' once the signup is paid and its account exists, else 'pending'.
+
+    Backs up the webhook: the server itself asks PayMongo, so the browser can never
+    claim a payment. Safe to call repeatedly (complete_signup is idempotent).
+    """
+    pending = PendingSignup.objects.filter(token=token or "").first() if token else None
+    if pending is None:
+        raise ValidationError("Unknown signup.")
+    if pending.completed:
+        return "active"
+    if _session_is_paid(pending.checkout_session_id):
+        complete_signup(pending)
+        return "active"
+    return "pending"

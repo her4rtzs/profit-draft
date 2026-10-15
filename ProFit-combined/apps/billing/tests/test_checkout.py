@@ -128,3 +128,42 @@ class JoinPayFirstTests(TestCase):
     def test_weak_password_and_bad_plan_are_refused(self):
         self.assertEqual(self._join({**self.BODY, "password": "123"}).status_code, 400)
         self.assertEqual(self._join({**self.BODY, "plan": "platinum"}).status_code, 400)
+
+
+@override_settings(PAYMONGO_SECRET_KEY="sk_test_dummy", PAYMONGO_WEBHOOK_SECRET=SECRET)
+class JoinConfirmTests(TestCase):
+    """The return-from-payment check works even if the webhook never arrives."""
+
+    BODY = {"name": "Back Up", "email": "backup@example.com", "phone": "09120000000",
+            "plan": "monthly", "password": "Strong-pass-987"}
+
+    def _join(self):
+        fake = _Resp({"data": {"id": "cs_c1", "attributes": {"checkout_url": "https://pay.example/cs_c1"}}})
+        with mock.patch("apps.billing.services.urllib.request.urlopen", return_value=fake) as m:
+            resp = Client().post("/api/join/checkout/", data=json.dumps(self.BODY), content_type="application/json")
+        self.assertEqual(resp.status_code, 200)
+        sent = json.loads(m.call_args[0][0].data.decode())
+        return sent["data"]["attributes"]["success_url"].split("t=")[-1]
+
+    def _confirm(self, token, paid):
+        attrs = {"payments": [{"attributes": {"status": "paid" if paid else "pending"}}]}
+        fake = _Resp({"data": {"attributes": attrs}})
+        with mock.patch("apps.billing.services.urllib.request.urlopen", return_value=fake):
+            return Client().post("/api/join/confirm/", data=json.dumps({"token": token}), content_type="application/json")
+
+    def test_unpaid_session_creates_nothing(self):
+        token = self._join()
+        self.assertEqual(self._confirm(token, paid=False).json()["status"], "pending")
+        self.assertFalse(User.objects.filter(username="backup@example.com").exists())
+
+    def test_paid_session_creates_active_account_once(self):
+        token = self._join()
+        self.assertEqual(self._confirm(token, paid=True).json()["status"], "active")
+        self.assertEqual(self._confirm(token, paid=True).json()["status"], "active")
+        user = User.objects.get(username="backup@example.com")
+        self.assertTrue(user.check_password("Strong-pass-987"))
+        self.assertEqual(MemberProfile.objects.get(user=user).membership_status, "ACTIVE")
+        self.assertEqual(Payment.objects.filter(paymongo_payment_id="cs_c1").count(), 1)
+
+    def test_unknown_token_is_rejected(self):
+        self.assertEqual(self._confirm("nope", paid=True).status_code, 400)

@@ -114,6 +114,7 @@ class PendingSignup(models.Model):
     """
 
     checkout_session_id = models.CharField(max_length=255, unique=True, db_index=True)
+    token = models.CharField(max_length=64, unique=True, null=True, blank=True)
     name = models.CharField(max_length=150)
     email = models.EmailField()
     phone = models.CharField(max_length=30, blank=True, default="")
