@@ -77,3 +77,54 @@ class CheckoutFlowTests(TestCase):
         self._webhook("evt_2")  # redelivery under a new event id must not extend it
         self.profile.refresh_from_db()
         self.assertEqual(self.profile.expiry_date, first_expiry)
+
+
+@override_settings(PAYMONGO_SECRET_KEY="sk_test_dummy", PAYMONGO_WEBHOOK_SECRET=SECRET)
+class JoinPayFirstTests(TestCase):
+    """Pay first: no account exists until the confirmed payment arrives."""
+
+    BODY = {"name": "New Person", "email": "New@Example.com", "phone": "09120000000",
+            "plan": "monthly", "password": "Strong-pass-987"}
+
+    def _join(self, body=None):
+        fake = _Resp({"data": {"id": "cs_join_1", "attributes": {"checkout_url": "https://pay.example/cs_join_1"}}})
+        with mock.patch("apps.billing.services.urllib.request.urlopen", return_value=fake):
+            return Client().post("/api/join/checkout/", data=json.dumps(body or self.BODY), content_type="application/json")
+
+    def _webhook(self, event_id, session="cs_join_1"):
+        payload = {"data": {"id": event_id, "attributes": {"type": "checkout_session.payment.paid", "livemode": False, "data": {"id": session}}}}
+        raw = json.dumps(payload).encode()
+        t = "1700000000"
+        sig = hmac.new(SECRET.encode(), t.encode() + b"." + raw, hashlib.sha256).hexdigest()
+        return Client().post("/webhooks/paymongo/", data=raw, content_type="application/json", HTTP_PAYMONGO_SIGNATURE=f"t={t},te={sig},li=")
+
+    def test_no_account_before_payment(self):
+        resp = self._join()
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.json()["checkout_url"], "https://pay.example/cs_join_1")
+        self.assertFalse(User.objects.filter(username="new@example.com").exists())
+
+    def test_paid_webhook_creates_active_member_who_can_log_in(self):
+        self._join()
+        self.assertEqual(self._webhook("evt_j1").status_code, 200)
+        user = User.objects.get(username="new@example.com")
+        self.assertEqual(user.role, "MEMBER")
+        self.assertTrue(user.check_password("Strong-pass-987"))
+        profile = MemberProfile.objects.get(user=user)
+        self.assertEqual(profile.membership_status, "ACTIVE")
+        self.assertEqual(Payment.objects.get(paymongo_payment_id="cs_join_1").status, Payment.Status.PAID)
+
+    def test_redelivery_does_not_duplicate(self):
+        self._join()
+        self._webhook("evt_j1")
+        self._webhook("evt_j2")
+        self.assertEqual(User.objects.filter(username="new@example.com").count(), 1)
+        self.assertEqual(Payment.objects.filter(paymongo_payment_id="cs_join_1").count(), 1)
+
+    def test_existing_email_is_refused(self):
+        User.objects.create_user(username="new@example.com", email="new@example.com", password="x-Pass-12345")
+        self.assertEqual(self._join().status_code, 400)
+
+    def test_weak_password_and_bad_plan_are_refused(self):
+        self.assertEqual(self._join({**self.BODY, "password": "123"}).status_code, 400)
+        self.assertEqual(self._join({**self.BODY, "plan": "platinum"}).status_code, 400)

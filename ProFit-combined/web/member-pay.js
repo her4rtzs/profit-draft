@@ -23,7 +23,7 @@
     });
   }
   document.addEventListener("click", e => {
-    const a = e.target.closest('a[href="member-portal.html"]');
+    const a = e.target.closest('a[href="member-portal.html"],a[href="join.html"]');
     if (a && /explore plans/i.test(a.textContent)) { e.preventDefault(); open(); }
   }, true);
   if (/[?&]paid=1/.test(location.search)) {

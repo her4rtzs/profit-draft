@@ -30,8 +30,8 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
-from .models import Payment, WebhookEvent
-from .services import activate_paid_payment, mark_payment_failed, mark_payment_paid
+from .models import Payment, PendingSignup, WebhookEvent
+from .services import activate_paid_payment, complete_signup, mark_payment_failed, mark_payment_paid
 
 logger = logging.getLogger("profit.billing.webhook")
 
@@ -145,7 +145,17 @@ def _apply_event(event, payload):
             if payment_id
             else None
         )
-        if payment is None:
+        pending = (
+            PendingSignup.objects.filter(checkout_session_id=payment_id).first()
+            if payment_id and payment is None
+            else None
+        )
+        if payment is None and pending is not None:
+            # Pay-first join: the confirmed payment creates the account.
+            if event_type in _PAID_EVENTS:
+                complete_signup(pending)
+            event.status = WebhookEvent.Status.PROCESSED
+        elif payment is None:
             # No matching Payment yet — reprocessable on a later retry.
             event.status = WebhookEvent.Status.UNKNOWN_PAYMENT
         else:

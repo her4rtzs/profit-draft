@@ -256,7 +256,7 @@ const METHOD_CODE = { "Cash": "CASH", "GCash": "GCASH", "Bank transfer": "BANK" 
 // sync(true) reloads the page once when the server data changed (page load).
 // sync(false) just refreshes DB in place; used right after a write so the screen can redraw.
 DB.sync = async function (reload = true) {
-    const METHOD_LABEL = { CASH: "Cash", GCASH: "GCash", BANK: "Bank transfer" };
+    const METHOD_LABEL = { CASH: "Cash", GCASH: "GCash", BANK: "Bank transfer", ONLINE: "Online (PayMongo)" };
     const idFor = pk => "M" + (202600 + pk);
     const SIG_KEY = "profit-server-sig";
     let responses;

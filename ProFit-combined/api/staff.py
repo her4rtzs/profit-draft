@@ -18,6 +18,7 @@ from rest_framework.views import APIView
 
 from apps.accounts.adapters import CanManageEnrollment, CanViewAttendance, CanViewFinancials
 from apps.membership.models import Attendance, MemberProfile
+from apps.billing.models import Payment
 from apps.finance.models import ManualPayment
 from apps.finance.services import monthly_summary, record_desk_payment
 from apps.membership.services import (
@@ -189,7 +190,20 @@ class StaffPaymentView(APIView):
             if not member_id.isdigit():
                 return Response({"detail": "member must be a number."}, status=status.HTTP_400_BAD_REQUEST)
             rows = rows.filter(member_id=int(member_id))
-        return Response(ManualPaymentSerializer(rows[:200], many=True).data)
+        data = list(ManualPaymentSerializer(rows[:200], many=True).data)
+        online = Payment.objects.filter(status=Payment.Status.PAID).select_related("subscription__member__user")
+        if member_id:
+            online = online.filter(subscription__member_id=int(member_id))
+        for p in online.order_by("-created_at")[:200]:
+            user = p.subscription.member.user
+            data.append({
+                "id": f"online-{p.pk}", "ref": f"O-{p.pk:05d}", "member_id": p.subscription.member_id,
+                "name": user.get_full_name() or user.username, "plan": p.subscription.plan or "monthly",
+                "method": "ONLINE", "amount_centavos": p.amount_centavos,
+                "paid_on": timezone.localdate(p.created_at).isoformat(), "created_at": p.created_at.isoformat(),
+            })
+        data.sort(key=lambda r: str(r["created_at"]), reverse=True)
+        return Response(data[:200])
 
     def post(self, request):
         serializer = RecordPaymentSerializer(data=request.data)

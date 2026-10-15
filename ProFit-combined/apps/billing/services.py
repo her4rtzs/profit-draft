@@ -23,7 +23,7 @@ from django.utils import timezone
 from apps.finance.services import PLAN_PRICE_CENTAVOS
 from apps.membership.services import renew_member
 
-from .models import Payment, Subscription
+from .models import Payment, PendingSignup, Subscription
 
 logger = logging.getLogger("profit.billing")
 PAYMONGO_CHECKOUT_URL = "https://api.paymongo.com/v1/checkout_sessions"
@@ -134,3 +134,102 @@ def activate_paid_payment(payment):
         renew_member(member, sub.plan, created_by=member.user, start_date=start)
     sub.status = Subscription.Status.ACTIVE
     sub.save(update_fields=["status", "updated_at"])
+
+
+def _paymongo_session(plan, *, success_url, cancel_url):
+    """Create a PayMongo Checkout Session; return (session_id, checkout_url, amount)."""
+    key = getattr(settings, "PAYMONGO_SECRET_KEY", "")
+    if not key:
+        raise CheckoutError("Online payment is not set up yet.")
+    amount = PLAN_PRICE_CENTAVOS[plan]
+    body = {"data": {"attributes": {
+        "description": f"ProFit {plan} membership",
+        "line_items": [{"currency": "PHP", "amount": amount, "name": f"{plan.title()} membership", "quantity": 1}],
+        "payment_method_types": list(getattr(settings, "PAYMONGO_PAYMENT_METHODS", ["gcash", "paymaya", "card", "qrph"])),
+        "success_url": success_url,
+        "cancel_url": cancel_url,
+        "send_email_receipt": False,
+    }}}
+    auth = base64.b64encode(f"{key}:".encode()).decode()
+    req = urllib.request.Request(
+        PAYMONGO_CHECKOUT_URL,
+        data=json.dumps(body).encode(),
+        headers={"Authorization": f"Basic {auth}", "Content-Type": "application/json", "Accept": "application/json"},
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            data = json.loads(resp.read().decode())["data"]
+        return data["id"], data["attributes"]["checkout_url"], amount
+    except (urllib.error.URLError, ValueError, KeyError, TimeoutError):
+        logger.warning("paymongo checkout session failed")
+        raise CheckoutError("Could not start the payment. Please try again.")
+
+
+def create_join_checkout(*, name, email, phone, plan, password, success_url, cancel_url):
+    """Pay-first join: start a checkout for someone with NO account yet.
+
+    Nothing is created for the person except a PendingSignup (hashed password).
+    The login and membership are created by the webhook once the payment is
+    confirmed. Returns the hosted ``checkout_url``.
+    """
+    from django.contrib.auth import get_user_model
+    from django.contrib.auth.hashers import make_password
+    from django.contrib.auth.password_validation import validate_password
+
+    if plan not in PLAN_PRICE_CENTAVOS:
+        raise ValidationError("Choose a plan.")
+    name = (name or "").strip()
+    email = (email or "").strip().lower()
+    if len(name) < 2:
+        raise ValidationError("Enter your full name.")
+    if "@" not in email or "." not in email.rsplit("@", 1)[-1]:
+        raise ValidationError("Enter a valid email address.")
+    if get_user_model().objects.filter(username=email).exists():
+        raise ValidationError("An account with this email already exists. Sign in instead, then choose a plan.")
+    validate_password(password or "")
+    session_id, checkout_url, _ = _paymongo_session(plan, success_url=success_url, cancel_url=cancel_url)
+    PendingSignup.objects.create(
+        checkout_session_id=session_id, name=name, email=email, phone=(phone or "").strip(),
+        plan=plan, password_hash=make_password(password),
+    )
+    return checkout_url
+
+
+def complete_signup(pending):
+    """Create the login, member profile, payment record and active membership.
+
+    Called by the webhook when a confirmed payment belongs to a PendingSignup.
+    Safe to call twice: a completed signup is skipped. If the email was taken in
+    the meantime, the payment is applied to that existing member so money is
+    never lost.
+    """
+    from django.contrib.auth import get_user_model
+    from apps.membership.models import MemberProfile
+    from apps.membership.services import _split_name
+
+    User = get_user_model()
+    with transaction.atomic():
+        pending = PendingSignup.objects.select_for_update().get(pk=pending.pk)
+        if pending.completed:
+            return None
+        user = User.objects.filter(username=pending.email).first()
+        if user is None:
+            first, last = _split_name(pending.name)
+            user = User(username=pending.email, email=pending.email, first_name=first,
+                        last_name=last, role="MEMBER", is_active=True)
+            user.password = pending.password_hash
+            user.save()
+        profile, _ = MemberProfile.objects.get_or_create(user=user, defaults={"phone": pending.phone})
+        if pending.phone and not profile.phone:
+            profile.phone = pending.phone
+            profile.save(update_fields=["phone"])
+        amount = PLAN_PRICE_CENTAVOS[pending.plan]
+        sub = Subscription.objects.create(member=profile, plan=pending.plan, amount_centavos=amount)
+        payment = Payment.objects.create(subscription=sub, amount_centavos=amount,
+                                         paymongo_payment_id=pending.checkout_session_id)
+        mark_payment_paid(payment)
+        activate_paid_payment(payment)
+        pending.completed = True
+        pending.save(update_fields=["completed"])
+    return payment

@@ -4,6 +4,7 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from . import auth
+from .join import JoinCheckoutView
 from .member import MemberCheckoutView, MemberMeView
 from rest_framework.routers import SimpleRouter
 
@@ -30,6 +31,7 @@ urlpatterns = [
     path("auth/session/", auth.session_view, name="auth-session"),
     path("auth/verify-password/", auth.verify_password_view, name="auth-verify-password"),
     path("auth/change-password/", auth.change_password_view, name="auth-change-password"),
+    path("join/checkout/", JoinCheckoutView.as_view(), name="join-checkout"),
     path("member/me/", MemberMeView.as_view(), name="member-me"),
     path("member/checkout/", MemberCheckoutView.as_view(), name="member-checkout"),
     path("staff/attendance/", StaffAttendanceView.as_view(), name="staff-attendance"),

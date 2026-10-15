@@ -365,17 +365,8 @@ Commit the finished member-auth work to the repository (the user had put a hold 
 ### Decision-log skill
 Before any commit, scan the real files for secrets and review every modified file that the task did not touch. "Commit everything" is not the same as "commit the task". Never quote a credential value in a log or note, even to say it was removed.
 
-## 2026-10-16 02:50 (Asia/Manila): Phase 2 write-through, Phase 3 UI and change password
-### What I asked for
-Finish Phase 2 (member enrollment, renewal, payments and edit saved to the server), then fix the phone sidebar, add a year picker to the bar graph, add loading animation, and add change password for every role.
-### What the agent decided and why
-- Wrote every staff write (create member, renewal, desk payment, profile edit) to the Django API first, and only then refreshed the local copy with DB.sync(false), so the screen always shows what the server holds.
-- Used the payments endpoint for renewals and for a new member's first payment, because it records the payment and renews in one transaction. Calling the renew endpoint as well would have renewed twice.
-- Generated a random temporary password in the browser for new members and showed it once. The server never returns it.
-- Edit saves name, phone and address only, since the backend has no other fields yet. The page says which edited fields were not saved.
-- Fixed the phone sidebar by resetting the leftover bottom-tab-bar rules, so the drawer shows labels and pushes the page sideways instead of covering it.
-- Month view of the charts now shows Jan to Dec of a chosen year; Year view shows five years up to the chosen year.
-- Added POST /api/auth/change-password/ as a plain Django view, like login, so CSRF is enforced. A wrong current password returns 400, not 401, so the web client does not treat it as an expired session.
-- Left Applications and PayMongo online payment unbuilt: applications are still stored in the applicant's own browser, and create_payment_intent is still a stub that needs PayMongo keys.
-### Decision-log skill
-Check what the server call already does before adding a second call after it. When a bug is a layer of old CSS fighting new CSS, reset the old rules in one block instead of adding more overrides. Never block on a missing secret: build what can be tested and list exactly what is needed for the rest.
+## Phase 7: pay-first join
+- New public page `web/join.html` and `POST /api/join/checkout/`. No account exists until PayMongo confirms the payment.
+- `billing.PendingSignup` (migration 0003) holds name, email, phone, plan and a HASHED password. The webhook (`complete_signup`) creates the login, member profile, payment and active membership.
+- `member-portal.html` now redirects to `join.html`. Applications and Track request are gone.
+- Staff payments list also shows paid online payments (method ONLINE).

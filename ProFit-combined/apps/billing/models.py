@@ -103,3 +103,24 @@ class WebhookEvent(models.Model):
 
     def __str__(self):
         return f"WebhookEvent<{self.event_id} {self.status}>"
+
+
+class PendingSignup(models.Model):
+    """A person who started paying to join but has no account yet.
+
+    The account is created ONLY by the PayMongo webhook after the payment is
+    confirmed (``services.complete_signup``). The password is stored hashed,
+    never as plain text, and is copied to the new login on success.
+    """
+
+    checkout_session_id = models.CharField(max_length=255, unique=True, db_index=True)
+    name = models.CharField(max_length=150)
+    email = models.EmailField()
+    phone = models.CharField(max_length=30, blank=True, default="")
+    plan = models.CharField(max_length=20)
+    password_hash = models.CharField(max_length=256)
+    completed = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"PendingSignup<{self.pk} {self.plan} completed={self.completed}>"

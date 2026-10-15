@@ -1,7 +1,7 @@
 /* ProFit service worker: offline shell only.
    - Pages and assets are network-first and fall back to the cache when offline.
    - /api/ is never cached, so member and staff data always comes from the server. */
-const CACHE = "profit-shell-v2";
+const CACHE = "profit-shell-v3";
 const SHELL = [
   "./", "index.html", "login.html", "welcome.html", "splash.js", "member-home.html", "trainer-portal.html",
   "styles.css", "pro-theme.css", "spotify.css", "api.js", "auth.js", "config.js",
