@@ -1,0 +1,19 @@
+{
+  "name": "profit-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Native Android/iOS shell for ProFit. Loads the hosted web app over HTTPS, so sign-in and data use the same server as the website.",
+  "scripts": {
+    "sync": "cap sync",
+    "android": "cap open android",
+    "ios": "cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.0.0",
+    "@capacitor/core": "^7.0.0",
+    "@capacitor/ios": "^7.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.0.0"
+  }
+}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load component_tags %}
+
+{% block title %}Members · ProFit{% endblock %}
+
+{% block content %}
+  <div class="flex items-center gap-2 mb-4">
+    {% component "icon" name="users" css_class="text-primary" %}{% endcomponent %}
+    <h1 class="text-xl font-semibold">Members</h1>
+  </div>
+
+  <div class="form-control max-w-sm mb-4">
+    <div class="flex items-center gap-2">
+      {% component "icon" name="search" %}{% endcomponent %}
+      <input
+        type="search"
+        name="q"
+        placeholder="Search by username"
+        class="input input-bordered w-full"
+        hx-get="{% url 'membership:member_search' %}"
+        hx-trigger="keyup changed delay:300ms, search"
+        hx-target="#member-rows"
+        hx-swap="innerHTML"
+      />
+    </div>
+  </div>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Status</th>
+        <th>Expiry</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="member-rows">
+      {% include "membership/_member_rows.html" %}
+    </tbody>
+  </table>
+{% endblock %}

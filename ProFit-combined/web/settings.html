@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProFit | Settings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="styles.css">
+<script src="config.js"></script><script src="api.js"></script><script src="auth.js"></script>
+<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=13">
+<script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script></head>
+<body data-page="settings" data-title="Settings" data-welcome="Preferences and workspace">
+<div class="dashboard"><nav class="sidebar" id="sidebar"></nav><main class="main-content"><header class="topbar" id="topbar"></header>
+<section class="pp-settings" aria-label="Settings">
+<div class="portal-result" id="settingsNotice" role="status" hidden></div>
+
+  <article id="appearance" class="pp-section-card">
+    <div class="pp-card-head"><div><h2><i class="fa-solid fa-palette"></i> Appearance</h2><p>Changes apply across ProFit on this browser.</p></div></div>
+    <div class="pp-setting">
+      <div class="pp-setting-copy"><strong id="lblDark">Dark mode</strong><p>Charcoal interface that works with any color theme below. The sign-in page opens in dark mode by default.</p></div>
+      <div class="pp-setting-controls">
+        <span class="pp-default" data-default-for="prefDark">Default: On</span>
+        <button class="pp-reset" type="button" data-reset="prefDark">Reset</button>
+        <label class="pp-switch"><input type="checkbox" id="prefDark" aria-labelledby="lblDark"><span></span></label>
+      </div>
+    </div>
+    <div class="pp-setting">
+      <div class="pp-setting-copy"><strong id="lblAccent">Color theme</strong><p>Choose a color for buttons and highlights. It applies everywhere right away and does not change any of your data.</p></div>
+      <div class="pp-setting-controls">
+        <span class="pp-default" data-default-for="prefAccent">Default: Gold</span>
+        <button class="pp-reset" type="button" data-reset="prefAccent">Reset</button>
+        <div class="pp-swatches" role="radiogroup" aria-labelledby="lblAccent">
+          <button type="button" class="pp-swatch" role="radio" aria-checked="true" data-accent-pick="gold" style="--sw:#d4ad39"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Gold</span></button>
+          <button type="button" class="pp-swatch" role="radio" aria-checked="false" data-accent-pick="spotify" style="--sw:#1db954"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Spotify</span></button>
+          <button type="button" class="pp-swatch" role="radio" aria-checked="false" data-accent-pick="ocean" style="--sw:#0d9488"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Ocean</span></button>
+          <button type="button" class="pp-swatch" role="radio" aria-checked="false" data-accent-pick="indigo" style="--sw:#6366f1"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Indigo</span></button>
+          <button type="button" class="pp-swatch" role="radio" aria-checked="false" data-accent-pick="coral" style="--sw:#f43f5e"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Coral</span></button>
+          <button type="button" class="pp-swatch" role="radio" aria-checked="false" data-accent-pick="emerald" style="--sw:#10b981"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Emerald</span></button>
+          <button type="button" class="pp-swatch" role="radio" aria-checked="false" data-accent-pick="sunset" style="--sw:#f97316"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Sunset</span></button>
+        </div>
+      </div>
+    </div>
+    <div class="pp-setting">
+      <div class="pp-setting-copy"><strong id="lblCompact">Compact sidebar</strong><p>Collapse navigation to icons to make more room for tables and charts.</p></div>
+      <div class="pp-setting-controls">
+        <span class="pp-default" data-default-for="prefCompact">Default: Off</span>
+        <button class="pp-reset" type="button" data-reset="prefCompact">Reset</button>
+        <label class="pp-switch"><input type="checkbox" id="prefCompact" aria-labelledby="lblCompact"><span></span></label>
+      </div>
+    </div>
+  </article>
+
+  <article class="pp-section-card">
+    <div class="pp-card-head"><div><h2><i class="fa-regular fa-bell"></i> Notifications</h2><p>Control how gym updates appear in the header.</p></div></div>
+    <div class="pp-setting">
+      <div class="pp-setting-copy"><strong id="lblBadge">Unread badge</strong><p>Show the unread count on the bell icon in the header.</p></div>
+      <div class="pp-setting-controls">
+        <span class="pp-default" data-default-for="prefBadge">Default: On</span>
+        <button class="pp-reset" type="button" data-reset="prefBadge">Reset</button>
+        <label class="pp-switch"><input type="checkbox" id="prefBadge" aria-labelledby="lblBadge"><span></span></label>
+      </div>
+    </div>
+    <div class="pp-setting">
+      <div class="pp-setting-copy"><strong>Notification center</strong><p>Read, mark, or clear your gym updates.</p></div>
+      <div class="pp-setting-controls"><button class="pp-btn" id="openNotifications" type="button"><i class="fa-regular fa-bell"></i> Open</button></div>
+    </div>
+  </article>
+
+  <article id="account" class="pp-section-card">
+    <div class="pp-card-head"><div><h2><i class="fa-regular fa-user"></i> Account</h2><p>Signed in as <span data-user-name>Administrator</span>.</p></div></div>
+    <div class="pp-setting">
+      <div class="pp-setting-copy"><strong>Sign out</strong><p>End this session on this device.</p></div>
+      <div class="pp-setting-controls"><button class="pp-btn" type="button" data-logout><i class="fa-solid fa-arrow-right-from-bracket"></i> Log out</button></div>
+    </div>
+  </article>
+
+  <article id="announce" class="pp-section-card">
+    <div class="pp-card-head"><div><h2><i class="fa-solid fa-bullhorn"></i> Announcements</h2><p>Publish once — staff, members and trainers are notified straight away.</p></div></div>
+    <form id="announceForm" class="pp-form-grid" novalidate>
+      <div class="pp-field"><label for="annTitle">Title</label><input id="annTitle" maxlength="120" placeholder="Schedule change this Saturday"></div>
+      <div class="pp-field"><label for="annAudience">Who sees it</label>
+        <select id="annAudience">
+          <option>Everyone</option>
+          <option>Members</option>
+          <option>Trainers</option>
+        </select>
+      </div>
+      <div class="pp-field" style="grid-column:1/-1"><label for="annMessage">Message</label><textarea id="annMessage" rows="3" maxlength="600" placeholder="Write it the way you would say it on the floor."></textarea></div>
+      <div class="pp-field pp-actions" style="grid-column:1/-1"><button class="pp-btn pp-btn-primary" type="submit"><i class="fa-solid fa-paper-plane"></i> Publish announcement</button></div>
+    </form>
+    <div id="announceList" class="pp-announce-list"></div>
+  </article>
+
+  <article id="profile" class="pp-section-card">
+    <div class="pp-card-head"><div><h2><i class="fa-solid fa-dumbbell"></i> Gym profile</h2><p>Your branding, shown on the sidebar, the ribbon under the header, and the member portal.</p></div></div>
+    <div class="pp-setting">
+      <div class="pp-setting-copy"><strong>Logo</strong><p>Swap this when your gym changes its logo. A square JPG or PNG under 900 KB works best.</p></div>
+      <div class="pp-setting-controls">
+        <span class="pp-gym-logo" id="gymLogoPreview"><img src="logo.jpg" alt="Current gym logo"></span>
+        <label class="pp-btn" for="gymLogo" tabindex="0"><i class="fa-solid fa-camera"></i> Change logo</label>
+        <input type="file" id="gymLogo" accept="image/*" hidden>
+        <button class="pp-btn" type="button" id="gymLogoClear">Restore default</button>
+      </div>
+    </div>
+    <form id="gymProfileForm" class="pp-form-grid" novalidate>
+      <div class="pp-field"><label for="gymName">Gym name</label><input id="gymName" maxlength="60" placeholder="Functional Fitness"></div>
+      <div class="pp-field"><label for="gymTagline">Tagline</label><input id="gymTagline" maxlength="40" placeholder="FUNCTIONAL FITNESS"></div>
+      <div class="pp-field"><label for="gymHours">Opening hours</label><input id="gymHours" maxlength="80" placeholder="Mon–Sat · 5:00 AM – 10:00 PM"></div>
+      <div class="pp-field"><label for="gymAddress">Address</label><input id="gymAddress" maxlength="120" placeholder="Street, city"></div>
+      <div class="pp-field"><label for="gymPhone">Contact number</label><input id="gymPhone" maxlength="30" placeholder="09XX XXX XXXX"></div>
+      <div class="pp-field pp-actions pp-actions-end"><button class="pp-btn pp-btn-primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save gym profile</button></div>
+    </form>
+  </article>
+
+  <article class="pp-section-card pp-danger">
+    <div class="pp-card-head"><div><h2><i class="fa-solid fa-rotate-left"></i> Workspace data</h2><p>Restore the original demo records in this browser.</p></div></div>
+    <div class="pp-setting">
+      <div class="pp-setting-copy"><strong>Reset workspace records</strong><p>Removes changes made to members, payments, and check-ins on this browser.</p></div>
+      <div class="pp-setting-controls"><button class="pp-btn pp-btn-danger" id="resetDemo" type="button"><i class="fa-solid fa-trash-can"></i> Reset records</button></div>
+    </div>
+  </article>
+
+</section>
+</main></div>
+<script src="layout.js?v=13"></script><script src="sidebar.js?v=13"></script><script src="data.js"></script><script src="settings.js?v=13"></script>
+</body>
+</html>
