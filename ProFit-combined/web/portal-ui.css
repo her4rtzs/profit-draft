@@ -547,3 +547,20 @@ html body.pf-leaving main { opacity: 0 !important; transform: none !important; t
   font: 600 13px/1.2 Inter, system-ui, sans-serif; white-space: nowrap; box-shadow: 0 12px 28px rgba(0,0,0,.45);
   transition: opacity .16s ease, transform .16s ease; }
 .pf-tip.show { opacity: 1; transform: translateY(-50%) translateX(0); }
+
+
+/* Mood tiles: the old fixed 46px box hid the emoji and label. */
+html body .pp-mood { width: auto !important; height: auto !important; min-width: 76px; padding: 10px 8px !important;
+  display: grid !important; justify-items: center; gap: 4px; color: var(--text) !important; background: var(--card) !important; font-size: 12px !important; font-weight: 600; }
+html body .pp-mood .pp-mood-emoji { display: block; font-size: 24px; line-height: 1; }
+html body .pp-mood span { color: inherit; display: block; }
+
+/* Touch screens keep :hover after a tap. Only real mouse hover should colour things. */
+@media (hover: none) {
+  html body .pp-icon-btn:hover { background: var(--card) !important; border-color: var(--border) !important; transform: none !important; }
+  html body .sidebar li a:hover .icon { color: inherit !important; transform: none !important; }
+  html body .pp-tab:hover, html body .portal-tab:hover { transform: none !important; color: inherit !important; }
+  html body .pp-mood:hover { transform: none !important; border-color: var(--border) !important; }
+  html body .pp-mood:hover .pp-mood-emoji { transform: none !important; }
+  html body .pp-table-wrap tbody tr:hover td, html body .table-wrapper tbody tr:hover { background: transparent !important; box-shadow: none !important; }
+}

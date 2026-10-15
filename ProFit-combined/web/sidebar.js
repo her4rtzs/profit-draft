@@ -41,15 +41,9 @@
   $("#adminHelpBtn")?.addEventListener("click",()=>alert("For support, contact your Functional Fitness Gym administrator."));
   // Notifications are a real, shared feed: any page can push to it, and the
   // panel re-renders the moment something arrives.
-  const key="profit-notifications-v1";
+  const key="profit-notifications-v2";
   const seedKey="profit-notifications-seeded-v1";
-  const defaults=[
-    {type:"request",icon:"fa-file-signature",title:"3 membership requests need review",message:"Juan Dela Cruz, Maria Santos and Kyle Ramos submitted enrollment forms.",time:"2 min ago",tag:"request:jc",href:"payments.html"},
-    {type:"member",icon:"fa-user-check",title:"New member enrolled",message:"Paolo Reyes joined the Annual Plan. Send him his access details.",time:"18 min ago",tag:"member:pr",href:"members.html"},
-    {type:"attendance",icon:"fa-calendar-check",title:"12 members checked in today",message:"Morning rush is the busiest slot so far this week.",time:"1 hr ago",tag:"att:today",href:"attendance.html"},
-    {type:"trainer",icon:"fa-dumbbell",title:"Trainer schedule updated",message:"Coach Mika is on the 6:00 AM HIIT block today.",time:"3 hr ago",tag:"trainer:mika",href:"index.html"},
-    {type:"payment",icon:"fa-wallet",title:"Payment received",message:"GCash payment of ₱1,200 recorded for Maria Santos.",time:"Yesterday",tag:"pay:maria",href:"payments.html"}
-  ];
+  const defaults=[];
   const readNotifs=()=>{try{const val=JSON.parse(localStorage.getItem(key));return Array.isArray(val)?val:defaults.map(n=>({...n,id:n.tag,read:false}))}catch{return defaults.map(n=>({...n,id:n.tag,read:false}))}};
   let notifications=readNotifs();
   // One-time seed so the bell is never a dead end on first visit. Anything the
@@ -89,6 +83,39 @@
     // Clicking the body of a linked notification marks it read and follows it.
     const row=e.target.closest("[data-go]");
     if(row){const item=notifications.find(n=>n.id===row.dataset.go);if(item&&!item.read){item.read=true;save()}}
+  });
+  // Notifications built from the server data (members, check-ins, payments). Rebuilt after every sync;
+  // read state is kept per item so a read notification stays read.
+  function serverNotifs(db) {
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const weekAgo = new Date(today.getTime() - 6 * 86400000);
+    const members = db.members || [];
+    const daysLeft = m => (m.end ? Math.round((m.end - today) / 86400000) : -1);
+    const expired = members.filter(m => daysLeft(m) < 0).length;
+    const expiring = members.filter(m => daysLeft(m) >= 0 && daysLeft(m) <= 7).length;
+    const newWeek = members.filter(m => m.joined && m.joined >= weekAgo).length;
+    const todayStr = today.toDateString();
+    const checkedIn = (db.checkins || []).filter(c => c.date && c.date.toDateString() === todayStr).length;
+    const paid = (db.payments || []).filter(p => p.date && p.date.toDateString() === todayStr);
+    const collected = paid.reduce((sum, p) => sum + (p.amount || 0), 0);
+    const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
+    const items = [];
+    const add = (tag, icon, type, title, message, href) => items.push({ src: "server", tag, icon, type, title, message, href });
+    if (expiring) add("expiring", "fa-hourglass-half", "request", `${plural(expiring, "membership")} expiring this week`, "Send a renewal reminder before they lapse.", "members.html");
+    if (expired) add("expired", "fa-user-xmark", "request", `${plural(expired, "membership")} expired`, "Follow up to renew or update the status.", "members.html");
+    if (newWeek) add("new-week", "fa-user-check", "member", `${plural(newWeek, "new member")} this week`, "Check their access details and first payment.", "members.html");
+    if (checkedIn) add("att-" + todayStr, "fa-calendar-check", "attendance", `${plural(checkedIn, "member")} checked in today`, "From the attendance log.", "attendance.html");
+    if (paid.length) add("pay-" + todayStr, "fa-wallet", "payment", `₱${collected.toLocaleString("en-US")} collected today`, `${plural(paid.length, "payment")} recorded.`, "payments.html");
+    return items;
+  }
+  document.addEventListener("profit:synced", e => {
+    if (!window.DB || e.detail?.ok === false) return;
+    const readTags = new Set(notifications.filter(n => n.src === "server" && n.read).map(n => n.tag));
+    const fresh = serverNotifs(window.DB).map(n => ({ ...n, id: n.tag, read: readTags.has(n.tag) }));
+    const kept = notifications.filter(n => n.src !== "server");
+    notifications = [...fresh, ...kept].slice(0, 40);
+    save();
+    renderNotifications();
   });
   $("#markAllRead")?.addEventListener("click",e=>{e.stopPropagation();notifications=notifications.map(n=>({...n,read:true}));save();renderNotifications()});
   $("#clearNotifications")?.addEventListener("click",e=>{e.stopPropagation();notifications=[];save();renderNotifications()});

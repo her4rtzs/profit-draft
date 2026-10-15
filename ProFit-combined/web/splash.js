@@ -59,7 +59,8 @@
 (() => {
   let nav = false;
   try { nav = sessionStorage.getItem("pf-nav") === "1"; sessionStorage.removeItem("pf-nav"); } catch (err) { /* storage blocked */ }
-  if (!nav || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  void nav;
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   const el = document.createElement("div");
   el.id = "pf-navload";
   el.setAttribute("role", "status");

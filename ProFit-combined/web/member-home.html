@@ -314,7 +314,10 @@
     });
   }
   function render(data) {
-    const m = data.membership || {};
+    const raw = data.membership || {};
+    const m = { ...raw,
+      expiresAt: raw.expiry ? raw.expiry + "T00:00:00" : raw.expiresAt,
+      daysRemaining: raw.expiry ? Math.round((new Date(raw.expiry + "T00:00:00") - new Date(new Date().toDateString())) / 86400000) : raw.daysRemaining };
     $("membershipName").textContent = safe(m.planName || m.plan);
     $("membershipDetail").textContent = m.expiresAt ? `Membership expires ${date(m.expiresAt)}${m.daysRemaining != null ? ` · ${m.daysRemaining} days remaining` : ""}` : "Your membership details are not available yet.";
     $("membershipStatus").textContent = safe(m.status || "Not enrolled");
