@@ -4,5 +4,11 @@
     "api/index.py": {
       "excludeFiles": "{.venv/**,node_modules/**,.git/**,.agents/**,mobile/**,.ruff_cache/**,**/*.pyc,**/__pycache__/**}"
     }
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/api"
+    }
+  ]
 }
