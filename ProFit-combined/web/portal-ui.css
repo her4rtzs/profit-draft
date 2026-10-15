@@ -519,3 +519,31 @@ html body .sidebar .menulist a.active .icon,
 html body .sidebar .navlinks a.active .icon,
 html body .sidebar li a.active .icon { color: var(--gold) !important; }
 html body .sidebar .menulist a.active .text { color: #fff !important; }
+
+
+/* Sidebar pressed and keyboard-focus states: keep the text readable. */
+html body .sidebar .menulist a:active,
+html body .sidebar .menulist a:focus-visible {
+  background: linear-gradient(100deg, color-mix(in srgb, var(--gold) 16%, transparent), color-mix(in srgb, var(--gold) 4%, transparent)) !important;
+  color: #fff !important;
+  outline: 2px solid var(--gold) !important;
+  outline-offset: -2px !important;
+}
+html body .sidebar .menulist a:active .text,
+html body .sidebar .menulist a:focus-visible .text,
+html body .sidebar .menulist a.active .text { color: #fff !important; }
+html body .sidebar .menulist a:active .icon,
+html body .sidebar .menulist a:focus-visible .icon { color: var(--gold) !important; }
+
+/* Motion without shaking: fades only, no sliding, on reveal and page change. */
+html body .pf-reveal,
+html body .pf-reveal.in { transform: none !important; transition: opacity .4s ease !important; }
+html body.pf-leaving { transform: none !important; }
+html body.pf-leaving main { opacity: 0 !important; transform: none !important; transition: opacity .2s ease !important; }
+
+/* Tooltip for the collapsed sidebar. */
+.pf-tip { position: fixed; z-index: 99990; transform: translateY(-50%) translateX(-4px); opacity: 0; pointer-events: none;
+  background: #161b24; color: #f4ead0; border: 1px solid rgba(255,255,255,.14); border-radius: 10px; padding: 7px 11px;
+  font: 600 13px/1.2 Inter, system-ui, sans-serif; white-space: nowrap; box-shadow: 0 12px 28px rgba(0,0,0,.45);
+  transition: opacity .16s ease, transform .16s ease; }
+.pf-tip.show { opacity: 1; transform: translateY(-50%) translateX(0); }

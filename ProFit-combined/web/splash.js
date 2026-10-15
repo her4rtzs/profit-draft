@@ -54,3 +54,35 @@
   document.readyState === "complete" ? hide() : addEventListener("load", hide);
   setTimeout(hide, 4500);
 })();
+
+// Short branded loader on every page change. It fades out when the data has synced (or after a short limit).
+(() => {
+  let nav = false;
+  try { nav = sessionStorage.getItem("pf-nav") === "1"; sessionStorage.removeItem("pf-nav"); } catch (err) { /* storage blocked */ }
+  if (!nav || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const el = document.createElement("div");
+  el.id = "pf-navload";
+  el.setAttribute("role", "status");
+  el.setAttribute("aria-live", "polite");
+  el.innerHTML = `<style>
+    #pf-navload{position:fixed;inset:0;z-index:99998;display:grid;place-items:center;background:radial-gradient(circle at 50% 40%,#2b2108 0%,#0b0a08 70%);transition:opacity .35s ease}
+    #pf-navload .nl-box{display:grid;justify-items:center;gap:14px;color:#f4ead0;font-family:Inter,system-ui,sans-serif}
+    #pf-navload img{width:72px;height:72px;border-radius:20px;object-fit:cover;box-shadow:0 12px 30px #0008;animation:nlIn .5s cubic-bezier(.2,.8,.2,1) both}
+    #pf-navload .nl-ring{width:34px;height:34px;border-radius:50%;border:3px solid #e8b93a33;border-top-color:#f4d27a;animation:nlSpin .9s linear infinite}
+    #pf-navload p{margin:0;font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.7}
+    @keyframes nlSpin{to{transform:rotate(360deg)}}
+    @keyframes nlIn{from{opacity:0}to{opacity:1}}
+    </style><div class="nl-box"><img src="logo.jpg" alt=""><div class="nl-ring" aria-hidden="true"></div><p>Naglo-load…</p></div>`;
+  document.documentElement.appendChild(el);
+  let gone = false;
+  const done = () => {
+    if (gone) return;
+    gone = true;
+    el.style.opacity = "0";
+    setTimeout(() => el.remove(), 380);
+  };
+  document.addEventListener("profit:synced", done);
+  addEventListener("load", () => setTimeout(done, 450));
+  setTimeout(done, 1600);
+})();
+

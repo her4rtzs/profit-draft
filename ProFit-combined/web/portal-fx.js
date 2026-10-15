@@ -49,8 +49,40 @@
       if (u.origin !== location.origin || a.target === "_blank" || a.hasAttribute("download")) return;
       if (u.pathname === location.pathname && u.hash) return;
       document.body.classList.add("pf-leaving");
+      try { sessionStorage.setItem("pf-nav", "1"); } catch (err) { /* storage blocked */ }
     });
     addEventListener("pageshow", e => { if (e.persisted) document.body.classList.remove("pf-leaving"); });
   };
   document.body ? ready() : document.addEventListener("DOMContentLoaded", ready);
+})();
+
+// Labels for the collapsed sidebar. The tip is fixed to the viewport, so the sidebar never clips it.
+(() => {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const tip = document.createElement("div");
+  tip.className = "pf-tip";
+  tip.setAttribute("aria-hidden", "true");
+  const place = a => {
+    const sb = document.querySelector(".sidebar");
+    if (!sb || !sb.classList.contains("close") || sb.classList.contains("mobile-open")) return false;
+    const label = (a.querySelector(".text") || a).textContent.trim();
+    if (!label) return false;
+    const r = a.getBoundingClientRect();
+    tip.textContent = label;
+    tip.style.top = (r.top + r.height / 2) + "px";
+    tip.style.left = (r.right + 12) + "px";
+    return true;
+  };
+  const show = e => {
+    const a = e.target.closest && e.target.closest(".sidebar .menulist a");
+    if (!a || !place(a)) return;
+    if (!tip.isConnected) document.body.appendChild(tip);
+    requestAnimationFrame(() => tip.classList.add("show"));
+  };
+  const hide = () => tip.classList.remove("show");
+  document.addEventListener("pointerover", show);
+  document.addEventListener("focusin", show);
+  document.addEventListener("pointerout", hide);
+  document.addEventListener("focusout", hide);
+  addEventListener("scroll", hide, true);
 })();
