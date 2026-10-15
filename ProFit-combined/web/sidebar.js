@@ -191,7 +191,6 @@
   const initials = window.ProFitProfile?.initials?.() || parts || 'PF';
   document.querySelectorAll('[data-user-initials]').forEach(el => el.textContent = initials);
   document.querySelectorAll('[data-user-role]').forEach(el => { el.textContent = profile.role || (user?.role === 'MEMBER' ? 'Gym member' : 'Gym administrator'); });
-  if (!user) document.querySelectorAll('[data-logout]').forEach(el => el.hidden = true);
 })();
 
 // Top bar condenses once the page scrolls — Spotify's header solidifies on scroll.

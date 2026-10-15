@@ -117,3 +117,26 @@ def change_password_view(request):
     user.save(update_fields=["password"])
     update_session_auth_hash(request, user)
     return JsonResponse({"detail": "Password changed."})
+
+
+@require_POST
+def verify_password_view(request):
+    """Check the signed-in user's current password without changing anything.
+
+    Used as step one of the change-password form. A wrong password is a 400 (not
+    401) so the web client does not treat it as an expired session. The password
+    is never logged or echoed back.
+    """
+    user = request.user
+    if not user.is_authenticated:
+        return JsonResponse({"detail": "Not signed in."}, status=401)
+    try:
+        payload = json.loads(request.body.decode("utf-8"))
+    except (ValueError, UnicodeDecodeError):
+        return JsonResponse({"detail": "Invalid request body."}, status=400)
+    current = payload.get("current_password") if isinstance(payload, dict) else None
+    if not isinstance(current, str) or not current:
+        return JsonResponse({"detail": "Enter your current password."}, status=400)
+    if not user.check_password(current):
+        return JsonResponse({"detail": "That is not your current password."}, status=400)
+    return JsonResponse({"detail": "Verified."})

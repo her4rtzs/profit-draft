@@ -19,7 +19,7 @@
     <div class="pp-profile-photo">
       <span class="pp-avatar-photo" id="profilePhotoBox"><i class="fa-solid fa-user"></i></span>
       <div class="pp-profile-photo-actions">
-        <label class="pp-btn" for="profilePhoto" tabindex="0"><i class="fa-solid fa-camera"></i> Change photo</label>
+        <label class="pp-btn pp-btn-primary" for="profilePhoto" tabindex="0"><i class="fa-solid fa-camera"></i> Change photo</label>
         <input type="file" id="profilePhoto" accept="image/*" hidden>
         <button class="pp-btn" type="button" id="profilePhotoClear">Remove</button>
         <small>Square JPG or PNG under 900 KB.</small>
@@ -47,9 +47,12 @@
   <article class="pp-section-card">
     <div class="pp-card-head"><div><h2><i class="fa-solid fa-shield-halved"></i> Sign-in</h2><p>Keep this account to yourself.</p></div></div>
     <form id="passwordForm" class="pp-form-grid" novalidate>
-      <div class="pp-field"><label for="pwCurrent">Current password</label><input id="pwCurrent" type="password" autocomplete="current-password"></div>
-      <div class="pp-field"><label for="pwNext">New password</label><input id="pwNext" type="password" autocomplete="new-password"></div>
-      <div class="pp-field pp-actions" style="grid-column:1/-1"><button class="pp-btn" type="submit"><i class="fa-solid fa-key"></i> Update password</button></div>
+      <div class="pp-field" style="grid-column:1/-1"><label for="pwCurrent">Current password</label><input id="pwCurrent" type="password" autocomplete="current-password"><small id="pwState" class="pp-muted">Step 1: confirm it is really you.</small></div>
+      <div id="pwStep2" class="pp-form-grid" style="grid-column:1/-1" hidden>
+        <div class="pp-field"><label for="pwNext">New password</label><input id="pwNext" type="password" autocomplete="new-password" minlength="8"></div>
+        <div class="pp-field"><label for="pwConfirm">Confirm new password</label><input id="pwConfirm" type="password" autocomplete="new-password"></div>
+      </div>
+      <div class="pp-field pp-actions" style="grid-column:1/-1"><button class="pp-btn pp-btn-primary" type="submit" id="pwBtn"><i class="fa-solid fa-shield-halved"></i> Verify password</button></div>
     </form>
   </article>
 

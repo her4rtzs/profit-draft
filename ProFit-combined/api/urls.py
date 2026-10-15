@@ -28,6 +28,7 @@ urlpatterns = [
     path("auth/login/", auth.login_view, name="auth-login"),
     path("auth/logout/", auth.logout_view, name="auth-logout"),
     path("auth/session/", auth.session_view, name="auth-session"),
+    path("auth/verify-password/", auth.verify_password_view, name="auth-verify-password"),
     path("auth/change-password/", auth.change_password_view, name="auth-change-password"),
     path("member/me/", MemberMeView.as_view(), name="member-me"),
     path("staff/attendance/", StaffAttendanceView.as_view(), name="staff-attendance"),

@@ -80,13 +80,29 @@
     }, "Profile saved.");
   });
 
-  $("passwordForm")?.addEventListener("submit", e => {
+  // Two steps: verify the current password on the server, then set a new one.
+  let pwVerified = false;
+  const pwReset = () => { pwVerified = false; $("pwStep2").hidden = true; $("pwCurrent").readOnly = false; $("pwBtn").innerHTML = '<i class="fa-solid fa-shield-halved"></i> Verify password'; $("pwState").textContent = "Step 1: confirm it is really you."; };
+  $("passwordForm")?.addEventListener("submit", async e => {
     e.preventDefault();
-    const current = $("pwCurrent").value, next = $("pwNext").value;
-    if (!current || !next) return flash("Fill in both password fields.", true);
-    if (next.length < 8) return flash("Use at least 8 characters for the new password.", true);
-    e.target.reset();
-    flash("Password updated for this demo account.");
+    const btn = $("pwBtn"), current = $("pwCurrent").value;
+    btn.disabled = true;
+    try {
+      if (!pwVerified) {
+        if (!current) return flash("Enter your current password.", true);
+        await window.ProFitAPI.post("/auth/verify-password", { current_password: current });
+        pwVerified = true; $("pwCurrent").readOnly = true; $("pwStep2").hidden = false;
+        btn.innerHTML = '<i class="fa-solid fa-key"></i> Update password'; $("pwState").textContent = "Verified. Now choose a new password.";
+        $("pwNext").focus();
+      } else {
+        const next = $("pwNext").value;
+        if (next.length < 8) return flash("Use at least 8 characters for the new password.", true);
+        if (next !== $("pwConfirm").value) return flash("The new passwords do not match.", true);
+        await window.ProFitAPI.post("/auth/change-password", { current_password: current, new_password: next });
+        e.target.reset(); pwReset(); flash("Password updated.");
+      }
+    } catch (err) { flash(err.message || "Could not update the password.", true); }
+    finally { btn.disabled = false; }
   });
 
   paint();
