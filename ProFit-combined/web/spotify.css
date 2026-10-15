@@ -3275,3 +3275,16 @@ html.auth-checking::before {
 .year-select:focus-visible { outline: 2px solid var(--gold, #e0b13f); outline-offset: 2px; }
 .year-select[hidden] { display: none; }
 .chip-row { flex-wrap: wrap; align-items: center; }
+
+/* Phase 5: year stepper + member tabs on one scrollable row */
+.year-stepper{display:inline-flex;align-items:center;gap:2px;margin-left:8px;padding:2px;border-radius:999px;background:var(--hover);border:1px solid var(--border)}
+.year-stepper[hidden]{display:none}
+.year-stepper button{width:28px;height:28px;border:0;border-radius:50%;background:transparent;color:var(--text);font-size:18px;cursor:pointer}
+.year-stepper button:hover{background:var(--card)}
+.year-stepper input{width:64px;border:0;background:transparent;color:var(--text);font-weight:700;text-align:center;font-size:13px;-moz-appearance:textfield}
+.year-stepper input::-webkit-outer-spin-button,.year-stepper input::-webkit-inner-spin-button{-webkit-appearance:none}
+@media (max-width:560px){
+  .portal-tabs{flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .portal-tabs::-webkit-scrollbar{display:none}
+  .portal-tab{flex:0 0 auto!important;padding:0 16px;white-space:nowrap}
+}

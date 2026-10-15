@@ -189,18 +189,22 @@ window.PFChart = (function () {
     // Month (Jan to Dec of that year) and Year (five years ending then) views.
     function buildPicker() {
       if (!chips) return;
-      picker = document.createElement("select");
-      picker.className = "year-select";
-      picker.setAttribute("aria-label", "Choose year");
+      /* Year stepper: arrows move one year, and the number can be typed or picked
+         from the browser's own list, so any year works (not just years with data). */
+      picker = document.createElement("span");
+      picker.className = "year-stepper";
+      picker.innerHTML = '<button type="button" data-yr="-1" aria-label="Previous year">\u2039</button>' +
+        '<input type="number" inputmode="numeric" min="2000" max="2100" aria-label="Year">' +
+        '<button type="button" data-yr="1" aria-label="Next year">\u203a</button>';
       chips.appendChild(picker);
-      picker.addEventListener("change", function () { year = Number(picker.value); draw(); });
+      var yin = picker.querySelector("input");
+      var setYear = function (v) { v = Math.min(2100, Math.max(2000, Math.round(Number(v)))); if (v && v !== year) { year = v; draw(); } else yin.value = year; };
+      picker.addEventListener("click", function (e) { var b = e.target.closest("[data-yr]"); if (b) setYear(year + Number(b.dataset.yr)); });
+      yin.addEventListener("change", function () { setYear(yin.value); });
     }
     function fillPicker() {
       if (!picker) return;
-      var choices = yearChoices();
-      picker.innerHTML = choices.map(function (y) {
-        return '<option value="' + y + '"' + (y === year ? " selected" : "") + ">" + y + "</option>";
-      }).join("");
+      picker.querySelector("input").value = year;
       picker.hidden = !(period === "month" || period === "year");
     }
 
