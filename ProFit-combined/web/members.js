@@ -708,6 +708,7 @@
   });
   document.querySelectorAll("[data-view-mode]").forEach(b => b.addEventListener("click", () => { state.view = b.dataset.viewMode; renderBrowse(); }));
 
+  document.addEventListener("profit:synced", () => renderAll());
   buildEnroll();
   renderAll();
   tabFromHash();
