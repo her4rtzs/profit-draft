@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProFit | Attendance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="config.js"></script>
+    <script src="api.js"></script>
+    <script src="auth.js"></script>
+<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=13"><script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script></head>
+
+<body data-page="attendance" data-title="Attendance" data-welcome="Who is training today">
+
+<div class="dashboard">
+
+    <nav class="sidebar" id="sidebar"></nav>
+
+    <main class="main-content">
+
+        <header class="topbar" id="topbar"></header>
+
+        <section class="stats three">
+            <div class="stat-card">
+                <div class="stat-top"><div class="stat-icon green"><i class="fa-solid fa-door-open"></i></div></div>
+                <div class="stat-content"><p>Checked in today</p><h2 id="statToday">0</h2><small>Members at the gym</small></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-top"><div class="stat-icon gold"><i class="fa-solid fa-calendar-week"></i></div></div>
+                <div class="stat-content"><p>Last 7 days</p><h2 id="statWeek">0</h2><small>Total check-ins</small></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-top"><div class="stat-icon yellow"><i class="fa-solid fa-fire"></i></div></div>
+                <div class="stat-content"><p>Busiest day</p><h2 id="statBest">-</h2><small>This past week</small></div>
+            </div>
+        </section>
+
+        <section class="two-col split">
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h2>Check in a member</h2>
+                        <p>Type a name or member ID, then press Enter.</p>
+                    </div>
+                </div>
+                <div class="form">
+                    <div class="field">
+                        <label for="ciInput">Member</label>
+                        <input class="input" id="ciInput" type="text" list="ciList" placeholder="e.g. M202601 or Namjoon" autocomplete="off">
+                        <datalist id="ciList"></datalist>
+                    </div>
+                    <button class="btn btn-primary" id="ciBtn" type="button"><i class="fa-solid fa-check"></i> Check in</button>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h2 id="attendanceTitle">Daily attendance</h2>
+                        <p id="attendanceSub">Last 14 days</p>
+                    </div>
+                    <div class="chip-row" id="attendancePeriods" role="group" aria-label="Attendance period">
+                        <button type="button" class="chip active" data-period="days" aria-pressed="true">Days</button>
+                        <button type="button" class="chip" data-period="week" aria-pressed="false">Week</button>
+                        <button type="button" class="chip" data-period="month" aria-pressed="false">Month</button>
+                        <button type="button" class="chip" data-period="year" aria-pressed="false">Year</button>
+                    </div>
+                </div>
+                <div class="chart-area">
+                    <div class="chart-y" id="attendanceAxis">
+                        <span>60</span><span>50</span><span>40</span><span>30</span><span>20</span><span>10</span><span>0</span>
+                    </div>
+                    <div class="chart">
+                        <div class="grid-lines"></div>
+                        <div class="bar-container" id="weekBars"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">
+                <div>
+                    <h2>Today's check-ins</h2>
+                    <p>Newest first</p>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr><th>Time</th><th>Member</th><th>Expires</th><th>Status</th></tr>
+                    </thead>
+                    <tbody id="ciRows"></tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+</div>
+
+<script src="layout.js?v=13"></script>
+<script src="sidebar.js?v=13"></script>
+<script src="data.js"></script>
+<script src="pages.js"></script>
+<script src="chart-periods.js?v=14"></script>
+</body>
+</html>

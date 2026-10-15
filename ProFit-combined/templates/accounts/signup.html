@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Create account · ProFit{% endblock %}
+
+{% block content %}
+<style>
+  .pf-auth{--gold:#b8891c;--gold-deep:#8d6512;--gold-soft:rgba(184,137,28,.16);
+    --gold-grad:linear-gradient(135deg,#e6c04f 0%,#d4ad39 55%,#b88a12 100%);
+    --text:#0d0d0d;--muted:#545a66;--card:#fff;--border:#dcdfe6;--red:#e04357;
+    min-height:calc(100vh - 8rem);display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(360px,460px);align-items:center;
+    gap:clamp(32px,6vw,80px);
+    background:radial-gradient(circle at 12% 8%,var(--gold-soft),transparent 32%);
+    color:var(--text);padding:24px}
+  .pf-story .pf-eyebrow{display:flex;align-items:center;gap:10px;color:var(--gold-deep);
+    font-size:10px;font-weight:800;letter-spacing:.17em}
+  .pf-story .pf-eyebrow span{width:25px;height:2px;background:var(--gold-deep)}
+  .pf-story h1{margin:18px 0;font-size:clamp(40px,5vw,64px);line-height:1;
+    letter-spacing:-.06em;font-weight:800}
+  .pf-story h1 em{color:var(--gold-deep);font-style:normal}
+  .pf-story p{max-width:420px;color:var(--muted);line-height:1.8}
+  .pf-points{display:grid;gap:12px;margin-top:24px}
+  .pf-points span{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600}
+  .pf-points i{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;
+    background:var(--gold-soft);color:var(--gold-deep);font-size:11px;font-style:normal}
+  .pf-card{padding:32px;border:1px solid var(--border);border-radius:22px;background:var(--card);
+    box-shadow:0 24px 70px rgba(28,39,54,.11)}
+  .pf-icon{display:grid;place-items:center;width:44px;height:44px;border-radius:13px;
+    background:var(--gold-soft);color:var(--gold-deep);font-size:18px;margin-bottom:14px}
+  .pf-kicker{font-size:9px;color:var(--gold-deep);font-weight:800;letter-spacing:.17em}
+  .pf-card h2{margin:8px 0 6px;font-size:24px;letter-spacing:-.045em}
+  .pf-sub{margin:0 0 20px;font-size:13px;color:var(--muted)}
+  .pf-label{display:block;margin:14px 0 6px;color:var(--muted);font-size:11px;font-weight:700}
+  .pf-input{width:100%;box-sizing:border-box;padding:12px 13px;border:1px solid var(--border);
+    border-radius:9px;background:#fff;color:var(--text);font-size:13px}
+  .pf-input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(184,137,28,.22)}
+  .pf-err{display:block;margin-top:4px;color:#9b2c2c;font-size:11px;font-weight:600}
+  .pf-submit{width:100%;display:flex;justify-content:center;gap:10px;align-items:center;
+    padding:15px 17px;margin-top:20px;border:0;border-radius:11px;background:var(--gold-grad);
+    color:#1c1606;font-size:13px;font-weight:800;cursor:pointer;box-shadow:0 8px 17px rgba(185,133,32,.3)}
+  .pf-submit:hover{filter:brightness(1.04)}
+  .pf-alert{padding:12px 14px;border-radius:10px;font-size:13px;margin-bottom:12px;
+    border:1px solid var(--border);background:#fff8e6;color:var(--gold-deep)}
+  .pf-alert.error{border-color:#f0c9c5;background:#fde7e9;color:#9b2c2c}
+  .pf-foot{margin-top:16px;font-size:13px;color:var(--muted);text-align:center}
+  .pf-foot a{color:var(--gold-deep);font-weight:700;text-decoration:none}
+  @media(max-width:900px){.pf-auth{grid-template-columns:1fr;max-width:520px;margin:0 auto}
+    .pf-story{display:none}}
+</style>
+
+<section class="pf-auth">
+  <div class="pf-story">
+    <div class="pf-eyebrow"><span></span> JOIN PROFIT</div>
+    <h1>Start your<br>journey with <em>ProFit.</em></h1>
+    <p>Create your member account to track attendance, manage your subscription, and more.</p>
+    <div class="pf-points">
+      <span><i>✓</i> Quick email sign-up</span>
+      <span><i>✓</i> Secure 6-digit email verification</span>
+      <span><i>✓</i> Your membership, in your pocket</span>
+    </div>
+  </div>
+
+  <div class="pf-card">
+    <div class="pf-icon">👤</div>
+    <p class="pf-kicker">WELCOME TO PROFIT</p>
+    <h2>Create your account</h2>
+    <p class="pf-sub">Sign up with your email to get started.</p>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="pf-alert {% if message.tags == 'error' %}error{% endif %}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="post" action="{% url 'accounts:signup' %}">
+      {% csrf_token %}
+      {% if form.non_field_errors %}<div class="pf-alert error">{{ form.non_field_errors }}</div>{% endif %}
+
+      <label class="pf-label" for="id_email">Email</label>
+      <input class="pf-input" id="id_email" type="email" name="email" required
+             autocomplete="email" maxlength="254" placeholder="you@example.com">
+      {% if form.email.errors %}<span class="pf-err">{{ form.email.errors }}</span>{% endif %}
+
+      <label class="pf-label" for="id_password">Password</label>
+      <input class="pf-input" id="id_password" type="password" name="password" required
+             autocomplete="new-password" placeholder="Create a password">
+      {% if form.password.errors %}<span class="pf-err">{{ form.password.errors }}</span>{% endif %}
+
+      <button class="pf-submit" type="submit">Create account →</button>
+    </form>
+
+    <p class="pf-foot">Already have an account? <a href="{% url 'accounts:login' %}">Sign in</a></p>
+  </div>
+</section>
+{% endblock %}

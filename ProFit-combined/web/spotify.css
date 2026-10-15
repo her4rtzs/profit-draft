@@ -1,0 +1,3162 @@
+/* ============================================================================
+   ProFit · Spotify-inspired design layer
+   ----------------------------------------------------------------------------
+   Loaded LAST on every page. Two jobs only:
+     1. Re-declare the design tokens (surfaces, type, radius, accent).
+     2. Reskin the existing components in place.
+   No markup contract changes — every id/class/data-attribute the scripts rely on
+   is untouched, so all current behaviour keeps working.
+   ============================================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&display=swap");
+
+/* ==========================================================================
+   1 · TOKENS
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* surfaces — cool, slightly greyed canvas so light mode is not glaring
+     white, with white cards doing the lifting. */
+  --bg: #eceff4;
+  --card: #ffffff;
+  --hover: #e4e8ee;
+  --border: #dcdfe6;
+  --line: #e2e5ea;
+  --surface: #ffffff;
+  --canvas: #eceff4;
+  --ink: #0d0d0d;
+
+  /* type */
+  --text: #0d0d0d;
+  --muted: #545a66;
+  --faint: #868d9b;
+
+  /* Sidebar stays a dark rail even in light mode, exactly like Spotify —
+     it is what stops the whole app reading as a wall of white. */
+  --sidebar: #131822;
+  --sidebar-text: #b4bac7;
+  --sidebar-line: #242b38;
+  /* Hover stays a quiet lift; the GOLD pill belongs to the current page only.
+     (Making hover gold too flattened the rail into one blob.) */
+  --sidebar-hover: rgba(255, 255, 255, .07);
+  --sidebar-hover-text: #f1f3f7;
+  --sidebar-faint: #7d8697;
+  --chrome: #eceff4;
+  --sidebar-w: 268px;
+  --sidebar-w-closed: 104px;
+
+  /* One gutter drives BOTH the page padding and the sticky header's negative
+     margin, so the header contents line up exactly with the content below.
+     (They were a fixed -32px against a breakpoint-changing padding.) */
+  --gutter: clamp(18px, 3vw, 38px);
+
+  /* radius + elevation (Spotify leans on colour, not shadow) */
+  --radius-lg: 14px;
+  --radius-md: 10px;
+  --shadow: 0 1px 3px rgba(0, 0, 0, .07);
+  --shadow-hover: 0 8px 26px rgba(0, 0, 0, .13);
+  --ease: .2s cubic-bezier(.2, .7, .2, 1);
+
+  /* status */
+  --green: #1db954;
+  --green-soft: rgba(29, 185, 84, .16);
+  --red: #e04357;
+  --red-soft: rgba(224, 67, 87, .14);
+  /* The unread-count pill gets its own token: --red is tuned for tinted
+     text/icons, and it read as a muddy brick dot on the bell. */
+  --notif: #e5093c;
+  --notif-ring: #eceff4;
+  --amber: #d98a06;
+  --amber-soft: rgba(217, 138, 6, .16);
+  --ok: #1db954;
+  --warn: #d98a06;
+  --bad: #e04357;
+  --info: #0b8fd6;
+
+  /* now-playing bar */
+}
+
+body.dark {
+  color-scheme: dark;
+
+  /* The original ProFit dark ladder — deep navy rather than flat grey, which
+     is what the app looked like before the redesign. */
+  --bg: #0a0e17;
+  --card: #111827;
+  --hover: #1b2433;
+  --border: #263246;
+  --line: #263246;
+  --surface: #111827;
+  --canvas: #0a0e17;
+  --ink: #f3f4f6;
+
+  --text: #f3f4f6;
+  --muted: #a5b1c2;
+  --faint: #758399;
+
+  /* the left rail: the lighter navy the original used, not near-black */
+  --sidebar: #151b24;
+  --sidebar-text: #b9b8ae;
+  --sidebar-line: #1d293b;
+  --sidebar-hover: rgba(255, 255, 255, .08);
+  --sidebar-hover-text: #f1f3f7;
+  --sidebar-faint: #758399;
+  --chrome: #121824;
+  --sidebar-w: 268px;
+  --sidebar-w-closed: 104px;
+
+  /* One gutter drives BOTH the page padding and the sticky header's negative
+     margin, so the header contents line up exactly with the content below.
+     (They were a fixed -32px against a breakpoint-changing padding.) */
+  --gutter: clamp(18px, 3vw, 38px);
+
+  --green: #3ddc84;
+  --green-soft: rgba(61, 220, 132, .16);
+  --red: #ff7b8a;
+  --red-soft: rgba(255, 123, 138, .16);
+  /* The unread-count pill gets its own token: --red is a soft coral meant for
+     tinted text/icons, so on the bell it read as a washed-out pink dot. */
+  --notif: #ff4d61;
+  --notif-ring: #0a0e17;
+  --amber: #ffc061;
+  --amber-soft: rgba(255, 192, 97, .16);
+  --ok: #3ddc84;
+  --warn: #ffc061;
+  --bad: #ff7b8a;
+  --info: #58b6ff;
+
+  --shadow: 0 2px 10px rgba(0, 0, 0, .45);
+  --shadow-hover: 0 10px 32px rgba(0, 0, 0, .55);
+}
+
+/* ==========================================================================
+   2 · ACCENT — the gym's brand gold is the default; Spotify green and the
+   rest stay available on the Settings → Color theme picker.
+   ========================================================================== */
+
+:root {
+  --gold: #b8891c;
+  --gold-deep: #8d6512;
+  --gold-soft: rgba(184, 137, 28, .16);
+  --gold-grad: linear-gradient(135deg, #e6c04f 0%, #d4ad39 55%, #b88a12 100%);
+  --on-accent: #1c1606;
+}
+
+body.dark {
+  --gold: #e0b94a;
+  --gold-deep: #f0cf68;
+  --gold-soft: rgba(224, 185, 74, .16);
+  --gold-grad: linear-gradient(135deg, #f0d268 0%, #e0b94a 55%, #c99a32 100%);
+  --on-accent: #1c1606;
+}
+
+/* Spotify green — still on the picker, just no longer the default. */
+html[data-accent="spotify"] body:not(.dark) {
+  --gold: #12a94a;
+  --gold-deep: #0d8a3c;
+  --gold-soft: rgba(29, 185, 84, .14);
+  --gold-grad: linear-gradient(135deg, #2bd968 0%, #1db954 55%, #12964a 100%);
+  --on-accent: #04220f;
+}
+html[data-accent="spotify"] body.dark {
+  --gold: #1ed760;
+  --gold-deep: #1ed760;
+  --gold-soft: rgba(30, 215, 96, .15);
+  --gold-grad: linear-gradient(135deg, #4ded88 0%, #1ed760 55%, #16a34a 100%);
+  --on-accent: #04220f;
+}
+
+/* Keep the accent switcher honest: picking another palette must still win. */
+html[data-accent="ocean"] body:not(.dark) { --gold: #0d9488; --gold-deep: #0f766e; --gold-soft: rgba(13, 148, 136, .14); --gold-grad: linear-gradient(135deg, #2dd4bf 0%, #0d9488 55%, #0f766e 100%); --on-accent: #ffffff; }
+html[data-accent="indigo"] body:not(.dark) { --gold: #4f46e5; --gold-deep: #4338ca; --gold-soft: rgba(79, 70, 229, .13); --gold-grad: linear-gradient(135deg, #818cf8 0%, #6366f1 55%, #4f46e5 100%); --on-accent: #ffffff; }
+html[data-accent="coral"]  body:not(.dark) { --gold: #e11d48; --gold-deep: #be123c; --gold-soft: rgba(225, 29, 72, .13); --gold-grad: linear-gradient(135deg, #fb7185 0%, #f43f5e 55%, #e11d48 100%); --on-accent: #ffffff; }
+html[data-accent="emerald"] body:not(.dark) { --gold: #059669; --gold-deep: #047857; --gold-soft: rgba(5, 150, 105, .14); --gold-grad: linear-gradient(135deg, #34d399 0%, #10b981 55%, #059669 100%); --on-accent: #ffffff; }
+html[data-accent="sunset"] body:not(.dark) { --gold: #ea580c; --gold-deep: #c2410c; --gold-soft: rgba(234, 88, 12, .14); --gold-grad: linear-gradient(135deg, #fb923c 0%, #f97316 55%, #ea580c 100%); --on-accent: #ffffff; }
+html[data-accent="gold"]   body:not(.dark) { --gold: #b8891c; --gold-deep: #8d6512; --gold-soft: rgba(184, 137, 28, .16); --gold-grad: linear-gradient(135deg, #e6c04f 0%, #d4ad39 55%, #b88a12 100%); --on-accent: #1c1606; }
+
+html[data-accent="ocean"] body.dark { --gold: #2dd4bf; --gold-deep: #5eead4; --gold-soft: rgba(45, 212, 191, .16); --gold-grad: linear-gradient(135deg, #5eead4 0%, #2dd4bf 55%, #14b8a6 100%); --on-accent: #04220f; }
+html[data-accent="indigo"] body.dark { --gold: #818cf8; --gold-deep: #a5b4fc; --gold-soft: rgba(129, 140, 248, .18); --gold-grad: linear-gradient(135deg, #a5b4fc 0%, #818cf8 55%, #6366f1 100%); --on-accent: #0a0a1a; }
+html[data-accent="coral"]  body.dark { --gold: #fb7185; --gold-deep: #fda4af; --gold-soft: rgba(251, 113, 133, .18); --gold-grad: linear-gradient(135deg, #fda4af 0%, #fb7185 55%, #f43f5e 100%); --on-accent: #2a0510; }
+html[data-accent="emerald"] body.dark { --gold: #34d399; --gold-deep: #6ee7b7; --gold-soft: rgba(52, 211, 153, .16); --gold-grad: linear-gradient(135deg, #6ee7b7 0%, #34d399 55%, #10b981 100%); --on-accent: #04220f; }
+html[data-accent="sunset"] body.dark { --gold: #fb923c; --gold-deep: #fdba74; --gold-soft: rgba(251, 146, 60, .16); --gold-grad: linear-gradient(135deg, #fdba74 0%, #fb923c 55%, #f97316 100%); --on-accent: #2a1403; }
+html[data-accent="gold"]   body.dark { --gold: #e0b94a; --gold-deep: #efcc6b; --gold-soft: rgba(224, 185, 74, .16); --gold-grad: linear-gradient(135deg, #efcc6b 0%, #e0b94a 55%, #c99a32 100%); --on-accent: #1c1606; }
+
+/* ==========================================================================
+   3 · BASE
+   ========================================================================== */
+
+body, button, input, select, textarea {
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+  font-size: 15px;
+}
+
+h1, h2, h3, h4, strong, .headertxt strong, .nav-group-label,
+.welcome, .topbar h1, .btn, .pp-btn, .tab, .pp-tab, .pp-page-tab,
+.sidebar .text, .member-logo, .portal-brand strong, .pp-eyebrow {
+  font-family: "Figtree", "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
+}
+
+body {
+  background: var(--bg) !important;
+  color: var(--text);
+  letter-spacing: -.01em;
+}
+
+/* The green wash behind the workspace — reads like a Spotify gradient header. */
+body:not(.portal-body) {
+  background-image:
+    radial-gradient(1100px 520px at 92% -14%, color-mix(in srgb, var(--gold) 16%, transparent), transparent 68%),
+    radial-gradient(760px 420px at -6% 108%, color-mix(in srgb, var(--gold) 9%, transparent), transparent 70%) !important;
+  background-attachment: fixed !important;
+  background-repeat: no-repeat !important;
+}
+
+html { scrollbar-color: color-mix(in srgb, var(--gold) 60%, #555) transparent; }
+::selection { background: color-mix(in srgb, var(--gold) 38%, transparent); color: var(--text); }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-radius: 4px; }
+
+::scrollbar { width: 12px; height: 12px; }
+::-webkit-scrollbar { width: 12px; height: 12px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(128, 128, 128, .45); border-radius: 999px; border: 3px solid transparent; background-clip: content-box; }
+::-webkit-scrollbar-thumb:hover { background: rgba(160, 160, 160, .75); background-clip: content-box; }
+
+/* ==========================================================================
+   4 · SIDEBAR — black rail, pill nav, green icon when active
+   ========================================================================== */
+
+.dashboard { background: transparent; }
+
+/* --------------------------------------------------------------------------
+   4b · Motion
+   The rail, the content offset and the ribbon all move together when the
+   sidebar is collapsed. The base layers each declare their own duration and
+   easing, which made the collapse look like three separate slides; one shared
+   curve here keeps them locked to each other.
+   -------------------------------------------------------------------------- */
+.sidebar { transition: width var(--ease), transform var(--ease) !important; }
+.main-content,
+.sidebar.close ~ .main-content { transition: margin-left var(--ease) !important; }
+.status-strip { transition: margin-left var(--ease) !important; }
+.topbar { transition: margin-left var(--ease) !important; }
+
+/* Anything that only tints or lifts should never slide under the pointer. */
+.btn, .tab, .pp-tab, .pp-btn, .quick-action, .stat-card, .strip-cta,
+.portal-tab, .portal-submit, .auth-role-btn, .pp-chip-btn, .pp-swatch {
+  transition: background var(--ease), color var(--ease), border-color var(--ease),
+              box-shadow var(--ease), transform var(--ease), opacity var(--ease) !important;
+}
+/* Layout-shifting transitions (height, padding, flex-basis) make tables and
+   cards breathe on hover, which reads as jitter — kill them outright. */
+.table-container tr, tbody tr, .panel, .pp-card { transition: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.sidebar {
+  background: var(--sidebar) !important;
+  border-right: 1px solid var(--sidebar-line) !important;
+  box-shadow: none !important;
+  padding: 20px 12px 16px;
+  width: var(--sidebar-w);
+  z-index: 60;
+}
+
+.sidebar-brand-row { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 0 6px 2px; }
+
+.imgbrand { gap: 11px !important; }
+
+/* Album-art style logo tile instead of the gold ring. */
+.imgbrand .image {
+  width: 42px; height: 42px;
+  padding: 0 !important;
+  border-radius: 13px !important;
+  background: var(--gold-grad) !important;
+  box-shadow: 0 6px 18px -8px color-mix(in srgb, var(--gold) 70%, transparent);
+}
+.imgbrand img { border-radius: 13px !important; border: 0 !important; background: #0b0b0b; }
+
+.headertxt h2 { font-size: 20px !important; font-weight: 800 !important; letter-spacing: -.045em !important; color: var(--text) !important; }
+.headertxt span { font-size: 9.5px !important; letter-spacing: .16em; font-weight: 700; color: var(--faint) !important; }
+.headertxt strong { font-size: 20px; }
+
+/* section labels: small warm caps, as in the original rail */
+.nav-group { margin-bottom: 22px; }
+.nav-group-label {
+  font-size: 9px !important;
+  font-weight: 800 !important;
+  letter-spacing: -.015em !important;
+  color: var(--sidebar-faint) !important;
+  padding: 0 12px 9px !important;
+  margin: 0 0 6px !important;
+}
+
+.sidebar li { margin-bottom: 2px !important; }
+
+.sidebar li a, .sidebar .more-btn {
+  height: 44px !important;
+  gap: 13px !important;
+  padding: 0 12px !important;
+  border-radius: 12px !important;
+  color: var(--sidebar-text) !important;
+  font-weight: 400;
+  font-size: 13px;
+  letter-spacing: -.014em;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  transform: none !important;
+}
+
+.sidebar .icon { width: 20px !important; font-size: 16px !important; }
+.sidebar .text { font-size: 13px !important; font-weight: 400 !important; }
+
+/* Hover must stay readable. These rules set `color: var(--text)`, and --text is
+   the near-black used for labels sitting ON the gold pill — so on the dark rail
+   the link label blinked to invisible on hover. Keep the rail's own text tokens. */
+.sidebar li a:hover, .sidebar .more-btn:hover {
+  background: var(--sidebar-hover) !important;
+  color: var(--sidebar-hover-text, #f1f3f7) !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+.sidebar li a:hover .icon { color: var(--sidebar-hover-text, #f1f3f7) !important; }
+.sidebar li a:hover .text { color: inherit !important; }
+
+/* Active: the accent-gradient pill with dark text, as in the original rail. */
+body .dashboard .sidebar li a.active,
+body .dashboard .sidebar .menulist a.active,
+body .dashboard .sidebar li a.active:hover {
+  background: var(--gold-grad) !important;
+  color: var(--on-accent) !important;
+  box-shadow: none !important;
+  inset auto;
+}
+body .dashboard .sidebar li a.active .icon { color: var(--on-accent) !important; }
+body .dashboard .sidebar li a.active .text { color: var(--on-accent); font-weight: 700; }
+
+/* Collapsed rail keeps the icon centred and tooltips legible. */
+.sidebar.close { width: var(--sidebar-w-closed) !important; }
+/* Logo and the collapse control stay on one row when the rail is shut, so the
+   control can never drop down on top of the gym mark. */
+.sidebar.close .sidebar-brand-row { justify-content: space-between; flex-direction: row; gap: 6px; padding: 0; }
+.sidebar.close .imgbrand .image { width: 38px !important; height: 38px !important; }
+.sidebar.close li a, .sidebar.close .more-btn { justify-content: center; padding: 0 !important; gap: 0 !important; }
+.sidebar.close .nav-group-label { opacity: 0; height: 0; overflow: hidden; padding: 0; margin: 0; }
+.sidebar.close .nav-group { margin-bottom: 6px; }
+
+/* The collapse control is pulled out of the rail entirely and pinned to the
+   sidebar's right edge, so it can never sit on top of the logo or the account
+   avatar. It tracks the rail width as the sidebar opens and shuts, and sits
+   half-way down the rail rather than stranded near the top. (calc() on `top`
+   rather than a translate, so the hover scale keeps a clean transform.) */
+#sidebarToggle.toggle {
+  position: fixed !important;
+  top: calc(50% - 16px) !important;
+  left: calc(var(--sidebar-w) - 16px) !important;
+  right: auto !important;
+  transform: none !important;
+  width: 32px !important; height: 32px !important;
+  flex: 0 0 32px;
+  border-radius: 50% !important;
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text) !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .28) !important;
+  font-size: 11px !important;
+  z-index: 70;
+  display: grid !important;
+  place-items: center !important;
+  cursor: pointer;
+  transition: left var(--ease), background var(--ease), border-color var(--ease), color var(--ease), transform var(--ease) !important;
+}
+.sidebar.close ~ #sidebarToggle.toggle { left: calc(var(--sidebar-w-closed) - 16px) !important; }
+#sidebarToggle.toggle:hover {
+  background: var(--gold-grad) !important;
+  color: var(--on-accent) !important;
+  border-color: transparent !important;
+  transform: scale(1.08) !important;
+}
+#sidebarToggle.toggle:active { transform: scale(.96) !important; }
+.sidebar.close ~ #sidebarToggle.toggle i { transform: rotate(180deg); }
+
+/* Account plate at the foot of the rail */
+.sidebar-account { border-bottom: 0 !important; border-top: 1px solid var(--sidebar-line) !important; padding: 14px 2px 0 !important; margin: auto 0 0 !important; }
+.sidebar .sidebar-user {
+  border: 0 !important;
+  background: transparent !important;
+  border-radius: 10px !important;
+  padding: 8px !important;
+  gap: 10px !important;
+}
+.sidebar .sidebar-user:hover { background: var(--sidebar-hover) !important; }
+.sidebar-user-copy strong { color: #f3f4f6 !important; font-size: 13px !important; font-weight: 700; }
+.sidebar-user-copy small { color: var(--sidebar-faint) !important; font-size: 11px !important; }
+/* The rail is always a dark navy — even in light mode — so its own text tokens
+   must not follow the page theme, or the name goes near-black on navy. */
+.sidebar, .sidebar :is(strong, small, span, a, i, p, li) { color-scheme: dark; }
+
+.sidebar-avatar {
+  width: 34px !important; height: 34px !important;
+  border-radius: 50% !important;
+  background: var(--gold-grad) !important;
+  color: var(--on-accent) !important;
+  font-family: "Figtree", sans-serif; font-weight: 800; font-size: 13px !important;
+}
+
+.account-menu-toggle {
+  width: 28px !important; height: 28px !important;
+  border-radius: 50% !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--muted) !important;
+}
+.account-menu-toggle:hover { background: var(--sidebar-hover); color: var(--text) !important; }
+
+/* Opens upward from the account row so it can never run off the bottom of the
+   viewport. (The old rule here pinned opacity:1, which left it stuck open.) */
+.sidebar .account-menu,
+.sidebar .account-menu:not([hidden]),
+body .sidebar.close .account-menu,
+body .sidebar.close .account-menu:not([hidden]) {
+  top: auto !important;
+  bottom: calc(100% + 12px) !important;
+  left: auto !important;
+  right: 0 !important;
+  width: 236px !important;
+  transform-origin: bottom right;
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: 0 18px 46px rgba(0, 0, 0, .55) !important;
+}
+/* Collapsed rail: the trigger row is only ~64px wide, so slide the flyout out
+   to the right of the rail and bottom-align it with the trigger. */
+body .sidebar.close .account-menu,
+body .sidebar.close .account-menu:not([hidden]) {
+  left: calc(100% + 10px) !important;
+  right: auto !important;
+  bottom: 0 !important;
+  top: auto !important;
+  width: 230px !important;
+  transform-origin: bottom left;
+}
+.sidebar .account-menu a, .sidebar .account-menu button { color: var(--text) !important; border-radius: 8px !important; }
+.sidebar .account-menu a:hover, .sidebar .account-menu button:hover { background: var(--hover) !important; color: var(--text) !important; }
+.sidebar .account-menu button[data-logout] { color: var(--red) !important; }
+.sidebar .account-menu button[data-logout]:hover { background: var(--red-soft) !important; color: var(--red) !important; }
+
+/* ==========================================================================
+   5 · TOPBAR — sticky chrome that condenses on scroll, pill search, round nav
+   ========================================================================== */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 45;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  margin: 0 calc(var(--gutter) * -1) 24px !important;
+  /* Explicit width rather than relying on auto + negative margins: one of the
+     older layers pins the used width, which silently ate the right margin. */
+  width: calc(100% + var(--gutter) * 2) !important;
+  max-width: none !important;
+  padding: 16px var(--gutter) !important;
+  min-height: 0 !important;
+  gap: 16px !important;
+  border-bottom: 1px solid transparent !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  transition: background .25s ease, border-color .25s ease, padding .25s ease, box-shadow .25s ease;
+}
+
+.topbar.is-scrolled {
+  background: color-mix(in srgb, var(--bg) 88%, transparent) !important;
+  backdrop-filter: blur(18px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(140%) !important;
+  border-bottom-color: var(--border) !important;
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+  box-shadow: 0 12px 32px -22px rgba(0, 0, 0, .9);
+}
+
+.topbar-heading { display: flex; align-items: center; gap: 14px; flex: 1 1 0; min-width: 0; }
+.topbar-title { min-width: 0; flex: 1 1 auto; }
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px !important;
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+/* Spotify's circular back / forward buttons */
+.topbar-nav { display: flex; align-items: center; gap: 8px; }
+.topbar-nav button {
+  width: 34px; height: 34px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  border: 0;
+  background: color-mix(in srgb, #000 55%, transparent);
+  color: var(--muted);
+  font-size: 13px;
+  cursor: pointer;
+  transition: transform .15s ease, color .15s ease, background .15s ease;
+}
+body:not(.dark) .topbar-nav button { background: rgba(0, 0, 0, .07); }
+.topbar-nav button:hover:not(:disabled) { color: var(--text); transform: scale(1.06); background: color-mix(in srgb, #000 72%, transparent); }
+body:not(.dark) .topbar-nav button:hover:not(:disabled) { background: rgba(0, 0, 0, .12); }
+.topbar-nav button:disabled { opacity: .35; cursor: not-allowed; }
+
+.welcome {
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: .14em !important;
+  text-transform: uppercase;
+  color: var(--gold) !important;
+  margin-bottom: 3px !important;
+  white-space: nowrap !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.topbar h1 { font-size: clamp(22px, 2vw, 30px) !important; font-weight: 800 !important; letter-spacing: -.04em !important; color: var(--text); }
+
+/* Search pill.
+   `body .topbar .search` is required: an older layer pins
+   `.topbar .search { border-radius: 12px !important }`. */
+.search {
+  width: clamp(150px, 18vw, 300px) !important;
+  height: 42px !important;
+  border-radius: 999px !important;
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: none !important;
+  padding: 0 14px 0 16px !important;
+  gap: 10px !important;
+  transition: border-color var(--ease), background var(--ease);
+}
+body .topbar .search {
+  min-width: 0 !important;
+  max-width: none !important;
+  border-radius: 999px !important;
+  border: 1px solid var(--border) !important;
+  background: var(--card) !important;
+  box-shadow: none !important;
+}
+.search:hover { background: var(--hover) !important; }
+body .topbar .search:hover, body.dark .topbar .search:hover { background: var(--hover) !important; }
+.search:focus-within { border-color: var(--text) !important; background: var(--card) !important; box-shadow: none !important; }
+body .topbar .search:focus-within, body.dark .topbar .search:focus-within {
+  border-color: var(--text) !important;
+  background: var(--card) !important;
+  box-shadow: none !important;
+}
+body .topbar .search input { font-size: 13.5px !important; }
+body .topbar .search kbd { border: 1px solid var(--border) !important; background: var(--hover) !important; color: var(--faint) !important; border-radius: 6px !important; font-size: 10px !important; }
+.search i { color: var(--faint) !important; font-size: 13px !important; }
+.search input { font-size: 13.5px !important; color: var(--text); }
+.search input::placeholder { color: var(--faint) !important; }
+.search kbd, .search .shortcut {
+  font-family: "Figtree", sans-serif;
+  font-size: 10px !important; font-weight: 800 !important;
+  padding: 3px 7px !important; border-radius: 6px !important;
+  background: var(--hover) !important; color: var(--faint) !important;
+  border: 1px solid var(--border) !important;
+}
+
+/* Round chrome buttons */
+.theme-toggle, .notification {
+  width: 42px !important; height: 42px !important;
+  border-radius: 50% !important;
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: none !important;
+  color: var(--text) !important;
+  font-size: 15px !important;
+}
+.theme-toggle:hover, .notification:hover {
+  background: var(--hover) !important;
+  border-color: var(--text) !important;
+  transform: none !important;
+}
+.notification span,
+.notification .notification-badge {
+  /* A plain red dot, not a counted pill: the count lives in the button's
+     aria-label and in the panel header ("N unread updates"), which is where it
+     is actually read. A number inside a 10px dot was illegible anyway. */
+  position: absolute !important;
+  top: -2px !important;
+  right: -2px !important;
+  left: auto !important;
+  width: 11px !important;
+  min-width: 0 !important;
+  height: 11px !important;
+  padding: 0 !important;
+  display: grid !important;
+  place-items: center !important;
+  border-radius: 50% !important;
+  border: 0 !important;
+  background: var(--notif, var(--red)) !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  overflow: hidden;
+  box-shadow: 0 0 0 2px var(--card);
+}
+.notification { position: relative; }
+
+/* Green identity chip at the far right of the bar */
+.topbar-avatar {
+  width: 34px; height: 34px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: var(--gold-grad);
+  color: var(--on-accent);
+  font-family: "Figtree", sans-serif; font-weight: 800; font-size: 13px;
+  border: 0; cursor: default;
+  flex: 0 0 auto;
+}
+
+/* ==========================================================================
+   6 - STATUS RIBBON - the old bottom bar's numbers, moved up into a strip
+   under the header so the sidebar keeps owning navigation.
+   ========================================================================== */
+
+.status-strip {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: -8px 0 22px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+}
+.status-strip a { text-decoration: none; }
+
+.strip-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-right: 4px;
+}
+.strip-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: ts-pulse 2s infinite;
+}
+
+.strip-clock {
+  margin-left: auto;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.strip-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: var(--gold-grad);
+  color: var(--on-accent);
+  font-family: "Figtree", sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+  border: 0;
+  transition: transform var(--ease), filter var(--ease);
+}
+.strip-cta:hover { transform: scale(1.04); filter: brightness(1.06); }
+
+.topbar-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--text) 7%, transparent);
+  border: 1px solid transparent;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background var(--ease), color var(--ease), border-color var(--ease);
+}
+.topbar-stat i { font-size: 11px; color: var(--gold); }
+.topbar-stat b {
+  color: var(--text);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.topbar-stat:hover {
+  background: color-mix(in srgb, var(--text) 13%, transparent);
+  border-color: var(--border);
+  color: var(--text);
+}
+@keyframes ts-pulse {
+  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--green) 65%, transparent); }
+  70%  { box-shadow: 0 0 0 6px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+
+.main-content { padding: 26px var(--gutter) 42px !important; }
+/* Narrower screens need a tighter gutter — and the header follows it because
+   both read the same variable. */
+@media (max-width: 1050px) { :root { --gutter: 20px; } .main-content { padding: 22px var(--gutter) 34px !important; } }
+@media (max-width: 760px)  { :root { --gutter: 14px; } .main-content { padding: 18px var(--gutter) 28px !important; } }
+@media (max-width: 560px)  { :root { --gutter: 13px; } }
+
+/* ==========================================================================
+   7 · PANELS, STAT CARDS, QUICK ACTIONS
+   ========================================================================== */
+
+.stat-card, .panel, .stories, .table-container, .content-card {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: none !important;
+  background-image: none !important;
+}
+
+/* The older layers pin panel chrome with !important on `body.dark .panel`,
+   so these have to match or beat that specificity to win the cascade. */
+body .stat-card, body .panel, body .stories, body .table-container,
+body .content-card, body .chart-card, body .dashboard .card {
+  background: var(--card) !important;
+  background-color: var(--card) !important;
+  background-image: none !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: none !important;
+}
+
+body.dark .stat-card, body.dark .panel, body.dark .stories,
+body.dark .table-container, body.dark .content-card, body.dark .chart-card,
+body.dark .dashboard .card, body.dark .quick-action {
+  background: var(--card) !important;
+  background-color: var(--card) !important;
+  background-image: none !important;
+  border-color: var(--border) !important;
+  box-shadow: none !important;
+}
+body.dark .stat-card, body.dark .panel, body.dark .stories, body.dark .table-container,
+body.dark .content-card, body.dark .chart-card, body.dark .dashboard .card { border-color: #232323 !important; }
+
+.stat-card { padding: 20px 22px !important; }
+.stat-card:hover { transform: none !important; box-shadow: none !important; border-color: var(--border) !important; }
+.stat-card::after { opacity: .5; }
+
+.stat-icon {
+  width: 40px !important; height: 40px !important;
+  border-radius: 10px !important;
+  font-size: 15px !important;
+  background: color-mix(in srgb, var(--gold) 16%, transparent) !important;
+  color: var(--gold) !important;
+}
+.stat-icon.green { background: var(--green-soft) !important; color: var(--green) !important; }
+.stat-icon.red { background: var(--red-soft) !important; color: var(--red) !important; }
+.stat-icon.yellow { background: var(--amber-soft) !important; color: var(--amber) !important; }
+.stat-icon.gold { background: color-mix(in srgb, var(--gold) 18%, transparent) !important; color: var(--gold) !important; }
+
+.stat-content p { font-size: 12.5px !important; font-weight: 700 !important; letter-spacing: .02em; color: var(--muted) !important; text-transform: uppercase; }
+.stat-content h2 {
+  font-family: "Figtree", sans-serif;
+  font-size: clamp(26px, 2.1vw, 34px) !important;
+  font-weight: 800 !important;
+  letter-spacing: -.05em !important;
+  color: var(--text) !important;
+  margin-top: 6px;
+}
+.stat-content small { color: var(--faint) !important; font-size: 11.5px; }
+
+.trend, .status-warning {
+  font-family: "Figtree", sans-serif;
+  font-size: 11px !important; font-weight: 800 !important;
+  padding: 4px 9px !important; border-radius: 999px !important;
+}
+.trend.positive { color: var(--green) !important; background: var(--green-soft) !important; }
+.trend.negative { color: var(--red) !important; background: var(--red-soft) !important; }
+.status-warning { color: var(--amber) !important; background: var(--amber-soft) !important; }
+
+/* Panels: title block without the hairline rule */
+.panel { padding: 22px 24px !important; }
+.panel-header { padding: 0 !important; margin-bottom: 18px !important; border-bottom: 0 !important; gap: 14px !important; }
+.panel-header h2 { font-family: "Figtree", sans-serif; font-size: 16.5px !important; font-weight: 800 !important; letter-spacing: -.03em !important; color: var(--text) !important; }
+.panel-header p { font-size: 12.5px !important; color: var(--faint) !important; margin-top: 3px !important; }
+.panel-header select, .panel-header .input-sm {
+  height: 36px !important; border-radius: 999px !important;
+  background: var(--hover) !important; color: var(--text) !important;
+  border: 1px solid var(--border) !important; font-size: 13px !important; font-weight: 600;
+}
+
+/* Quick actions — Spotify's home shortcut tiles: flush art, bold label,
+   green play-circle that slides up on hover. */
+.quick-actions { display: grid !important; grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 12px !important; margin-bottom: 24px !important; }
+
+.quick-action {
+  position: relative;
+  display: flex !important;
+  align-items: center;
+  gap: 0 !important;
+  height: 68px;
+  padding: 0 !important;
+  overflow: hidden;
+  border: 0 !important;
+  border-radius: 8px !important;
+  background: var(--card) !important;
+  box-shadow: none !important;
+  transform: none !important;
+  transition: background var(--ease), transform var(--ease), box-shadow var(--ease), border-color var(--ease);
+}
+.quick-action:hover, .quick-action:focus-visible {
+  background: var(--hover) !important;
+  transform: none !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
+}
+body .quick-action:hover, body .quick-action:focus-visible,
+body.dark .quick-action:hover, body.dark .quick-action:focus-visible {
+  background: var(--hover) !important;
+  background-color: var(--hover) !important;
+}
+
+.quick-action-icon {
+  width: 68px !important; height: 68px !important;
+  flex: 0 0 68px;
+  border-radius: 0 !important;
+  display: grid !important; place-items: center;
+  font-size: 22px !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+.quick-action:nth-child(1) .quick-action-icon { background: linear-gradient(140deg, #2bd968, #0a8a3c); }
+.quick-action:nth-child(2) .quick-action-icon { background: linear-gradient(140deg, #5b8cff, #2f4fd8); }
+.quick-action:nth-child(3) .quick-action-icon { background: linear-gradient(140deg, #ff7a5c, #d63e5c); }
+.quick-action:nth-child(4) .quick-action-icon { background: linear-gradient(140deg, #b98bff, #7038d8); }
+
+.quick-action > span:nth-child(2) { padding: 0 14px !important; gap: 3px !important; min-width: 0; }
+.quick-action strong { font-family: "Figtree", sans-serif; font-size: 13.5px !important; font-weight: 800 !important; color: var(--text) !important; letter-spacing: -.015em; }
+.quick-action small { color: var(--faint) !important; font-size: 11.5px !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.quick-action .action-arrow {
+  margin: 0 12px 0 auto !important;
+  width: 40px; height: 40px;
+  flex: 0 0 40px;
+  border-radius: 50%;
+  display: grid !important; place-items: center;
+  background: var(--gold-grad);
+  color: var(--on-accent) !important;
+  font-size: 13px !important;
+  opacity: 0;
+  transform: translateY(8px) scale(.85);
+  box-shadow: 0 10px 22px -8px rgba(0, 0, 0, .75);
+  transition: opacity .22s ease, transform .28s cubic-bezier(.2, .8, .2, 1);
+}
+.quick-action:hover .action-arrow, .quick-action:focus-visible .action-arrow { opacity: 1; transform: none; }
+
+/* ==========================================================================
+   8 · CHART + DONUT
+   ========================================================================== */
+
+.chart-y span { color: var(--faint) !important; font-size: 11px; }
+.grid-lines { border-color: var(--border) !important; }
+
+.bar { background: color-mix(in srgb, var(--text) 8%, transparent) !important; border-radius: 4px 4px 0 0; }
+.bar.empty { background: color-mix(in srgb, var(--text) 6%, transparent) !important; opacity: .5; }
+.bar.has-data, .bar.is-top, body.dark .bar.has-data, body:not(.dark) .bar.has-data {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--gold) 84%, #ffffff) 0%, var(--gold) 100%) !important;
+  box-shadow: 0 0 18px -4px color-mix(in srgb, var(--gold) 55%, transparent) !important;
+}
+.bar.has-data:hover, body.dark .bar.has-data:hover { filter: brightness(1.12); box-shadow: 0 0 26px -4px color-mix(in srgb, var(--gold) 75%, transparent) !important; }
+.bar span { color: var(--text) !important; background: var(--card) !important; border: 1px solid var(--border) !important; border-radius: 8px; font-weight: 700; font-size: 12px; }
+.bar-column label { color: var(--muted) !important; font-weight: 600; font-size: 11.5px; }
+
+.circle { box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .06); }
+.circle::before { background: var(--card) !important; inset: 18px !important; }
+.circle strong { font-family: "Figtree", sans-serif; font-weight: 800; }
+.membership-stats > div { background: var(--hover) !important; border-radius: 8px !important; }
+.mini-progress span { background: var(--gold-grad) !important; }
+.mini-progress .danger { background: var(--red) !important; }
+.mini-progress .warning { background: var(--amber) !important; }
+
+/* ==========================================================================
+   9 · TABLES — Spotify track list: quiet rows, strong hover plate
+   ========================================================================== */
+
+.table-wrapper { padding: 4px 6px 8px !important; }
+
+thead th, th {
+  background: transparent !important;
+  color: var(--faint) !important;
+  font-family: "Figtree", sans-serif;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: .09em !important;
+  text-transform: uppercase !important;
+  border-bottom: 1px solid var(--border) !important;
+  height: 44px;
+}
+
+td { height: 60px !important; color: var(--muted); font-size: 13.5px; border-bottom: 1px solid color-mix(in srgb, var(--border) 65%, transparent) !important; }
+
+tbody tr { background: transparent !important; border-radius: 8px; }
+tbody tr:hover, tbody tr:focus-visible { background: color-mix(in srgb, var(--text) 7%, transparent) !important; outline: none; }
+tbody tr:last-child td { border-bottom: 0 !important; }
+tbody tr td:first-child { border-radius: 8px 0 0 8px; }
+tbody tr td:last-child { border-radius: 0 8px 8px 0; }
+
+.member strong { font-family: "Figtree", sans-serif; font-size: 14px; font-weight: 700; color: var(--text); }
+.member-id { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; letter-spacing: .04em; color: var(--faint); }
+
+.mini-avatar {
+  border-radius: 50% !important;
+  background: var(--gold-grad) !important;
+  color: var(--on-accent) !important;
+  font-family: "Figtree", sans-serif; font-weight: 800; font-size: 12.5px !important;
+}
+body.dark .mini-avatar { color: var(--on-accent) !important; }
+
+.badge {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+  font-family: "Figtree", sans-serif;
+  font-size: 11px !important; font-weight: 800 !important;
+  letter-spacing: .04em;
+  padding: 5px 11px !important; border-radius: 999px !important;
+  text-transform: uppercase;
+}
+.badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.badge.active { color: var(--green) !important; background: var(--green-soft) !important; }
+.badge.expired { color: var(--red) !important; background: var(--red-soft) !important; }
+.badge.warning { color: var(--amber) !important; background: var(--amber-soft) !important; }
+
+.action-btn { border-radius: 50% !important; color: var(--muted); }
+.action-btn:hover { background: color-mix(in srgb, var(--text) 12%, transparent) !important; color: var(--text); }
+
+.view-all {
+  background: transparent !important;
+  border: 1px solid var(--border);
+  color: var(--text) !important;
+  font-weight: 700;
+  font-size: 12.5px !important;
+  padding: 7px 14px !important;
+  transition: background var(--ease), border-color var(--ease), transform var(--ease);
+}
+.view-all:hover { background: color-mix(in srgb, var(--text) 10%, transparent) !important; border-color: var(--text); transform: scale(1.03); }
+body.dark .view-all { color: var(--text) !important; }
+
+/* ==========================================================================
+   10 · BUTTONS — Spotify pills
+   ========================================================================== */
+
+.btn, .pp-btn {
+  border-radius: 999px !important;
+  font-family: "Figtree", sans-serif;
+  font-weight: 700 !important;
+  letter-spacing: -.005em;
+  border: 1px solid transparent;
+  transition: transform .16s ease, background var(--ease), border-color var(--ease), color var(--ease), filter var(--ease) !important;
+}
+.btn:hover, .pp-btn:hover { transform: scale(1.04) !important; }
+.btn:active, .pp-btn:active { transform: scale(.97) !important; }
+
+/* Primary = Spotify's green pill with near-black label */
+.btn-primary, .portal-submit {
+  background: var(--gold-grad) !important;
+  color: var(--on-accent) !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 22px -12px color-mix(in srgb, var(--gold) 90%, transparent) !important;
+}
+.btn-primary:hover, .portal-submit:hover { filter: brightness(1.07) !important; box-shadow: 0 12px 26px -12px color-mix(in srgb, var(--gold) 95%, transparent) !important; }
+/* The base layer justified the label to the left edge and floated the arrow on
+   the right; on a single-action form that reads as unbalanced. */
+.portal-submit { justify-content: center !important; gap: 10px !important; }
+
+/* Secondary = quiet outline pill */
+.btn-soft {
+  background: transparent !important;
+  border-color: var(--border) !important;
+  color: var(--text) !important;
+}
+.btn-soft:hover { background: var(--hover) !important; border-color: var(--text) !important; }
+body.dark .btn-soft { background: transparent !important; color: var(--text) !important; border-color: #4d4d4d !important; }
+body.dark .btn-soft:hover { background: #2a2a2a !important; border-color: #7c7c7c !important; }
+
+.btn-danger, .pp-btn-danger { background: transparent !important; border-color: color-mix(in srgb, var(--red) 45%, transparent) !important; color: var(--red) !important; }
+.btn-danger:hover { background: var(--red-soft) !important; }
+.pp-btn-danger-solid, .btn-danger-solid { background: var(--red) !important; color: #fff !important; border-color: var(--red) !important; }
+
+.btn-sm { height: 34px !important; padding: 0 15px !important; font-size: 12.5px !important; }
+
+.pp-btn-primary { background: var(--gold-grad) !important; color: var(--on-accent) !important; border-color: transparent !important; }
+
+/* ==========================================================================
+   11 · TABS, SEGMENTS, PAGE TABS
+   ========================================================================== */
+
+.tabs {
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+  gap: 6px !important;
+  border-bottom: 1px solid var(--border) !important;
+  margin-bottom: 22px !important;
+}
+.tab {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  color: var(--muted) !important;
+  font-family: "Figtree", sans-serif;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  padding: 9px 18px !important;
+  margin-bottom: 6px;
+  position: relative;
+  transition: color var(--ease), background var(--ease);
+}
+.tab:hover { color: var(--text) !important; background: var(--hover) !important; }
+.tab.active, .tab.active:hover { background: color-mix(in srgb, var(--text) 10%, transparent) !important; color: var(--text) !important; }
+
+.pp-page-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border) !important;
+  gap: 6px !important;
+  padding: 0 !important;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.pp-page-tabs::-webkit-scrollbar { display: none; }
+/* Same pill treatment as .tabs so Members matches Payments and Reports. */
+.pp-page-tab {
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 0 !important;
+  border-radius: 999px !important;
+  color: var(--muted) !important;
+  font-family: "Figtree", sans-serif;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  padding: 9px 18px !important;
+  margin-bottom: 6px;
+  gap: 8px;
+  white-space: nowrap;
+  transition: color var(--ease), background var(--ease);
+}
+.pp-page-tab:hover { color: var(--text) !important; background: var(--hover) !important; }
+.pp-page-tab.active,
+.pp-page-tab.active:hover { background: color-mix(in srgb, var(--text) 10%, transparent) !important; color: var(--text) !important; border-bottom-color: transparent !important; }
+.pp-page-tab i, .pp-page-tab.active i { color: currentColor !important; }
+
+.pp-count { background: var(--hover) !important; color: var(--muted) !important; font-weight: 800; padding: 2px 8px; border-radius: 999px; font-size: 11.5px; line-height: 1.4; }
+.pp-page-tab.active .pp-count { background: color-mix(in srgb, var(--gold) 22%, transparent); color: var(--gold) !important; }
+
+/* Filter chips — Spotify's white-on-grey active chip */
+.pp-segment {
+  background: var(--hover) !important;
+  border-radius: 999px !important;
+  padding: 4px !important;
+  gap: 3px !important;
+  border: 0 !important;
+}
+.pp-segment button {
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  color: var(--muted) !important;
+  font-family: "Figtree", sans-serif;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  padding: 8px 15px !important;
+  box-shadow: none !important;
+}
+.pp-segment button:hover { color: var(--text) !important; }
+.pp-segment button.active {
+  background: var(--card) !important;
+  color: var(--text) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .25) !important;
+}
+body:not(.dark) .pp-segment button.active { box-shadow: 0 2px 6px rgba(0, 0, 0, .12) !important; }
+
+.pp-view-toggle { background: var(--hover) !important; padding: 4px !important; border-radius: 999px !important; }
+.pp-view-toggle button { border: 0 !important; background: transparent !important; color: var(--muted) !important; border-radius: 999px !important; font-weight: 700; font-size: 13px; padding: 8px 14px !important; box-shadow: none !important; }
+.pp-view-toggle button.active { background: var(--card) !important; color: var(--text) !important; box-shadow: 0 2px 8px rgba(0, 0, 0, .25) !important; }
+
+.pp-tabs { background: var(--hover) !important; border-radius: 999px !important; padding: 4px !important; }
+.pp-tab { color: var(--muted) !important; border-radius: 999px !important; font-weight: 700; }
+.pp-tab[aria-selected="true"], .pp-tab.active { background: var(--card) !important; color: var(--text) !important; box-shadow: 0 2px 8px rgba(0, 0, 0, .25) !important; }
+
+.pp-tabbar { background: var(--hover) !important; border-radius: 999px !important; padding: 4px !important; }
+.pp-tabbar .member-detail-tab { color: var(--muted) !important; border-radius: 999px !important; border-bottom: 0 !important; font-weight: 700; }
+.pp-tabbar .member-detail-tab.active { background: var(--card) !important; color: var(--text) !important; box-shadow: 0 2px 8px rgba(0, 0, 0, .25) !important; }
+
+.member-detail-tab { border-radius: 999px !important; font-weight: 700; color: var(--muted) !important; }
+.member-detail-tab.active { color: var(--text) !important; border-bottom-color: var(--gold) !important; }
+
+.pp-subtabs { border-bottom: 1px solid var(--border) !important; }
+.pp-subtabs button { color: var(--muted) !important; border-radius: 8px 8px 0 0; font-weight: 700; }
+.pp-subtabs button.active { color: var(--text) !important; border-bottom-color: var(--gold) !important; }
+
+/* ==========================================================================
+   12 · FORMS
+   ========================================================================== */
+
+input, select, textarea, .input, .pp-card input, .pp-card select, .pp-card textarea,
+:is(.pp-field, .pp-modal, .pp-card, .pp-profile, .pp-search) :is(input, select, textarea) {
+  background: var(--hover) !important;
+  color: var(--text) !important;
+  border: 1px solid transparent !important;
+  border-radius: 8px !important;
+  font-size: 14px;
+}
+input:hover, select:hover, textarea:hover { border-color: var(--border) !important; }
+input:focus, select:focus, textarea:focus, .input:focus, .search input:focus {
+  outline: none !important;
+  background: var(--card) !important;
+  border-color: var(--text) !important;
+  box-shadow: none !important;
+}
+input::placeholder, textarea::placeholder { color: var(--faint) !important; }
+select { background-image: none !important; }
+input[readonly] { color: var(--faint) !important; }
+
+.field label, .pp-label, .pp-field label { color: var(--muted) !important; font-weight: 700; font-size: 12px !important; letter-spacing: .02em; }
+.pp-err, .field-error, .pp-form-error { color: var(--red) !important; }
+
+.input-sm { border-radius: 999px !important; height: 42px !important; padding: 0 16px !important; font-weight: 600; background: var(--hover) !important; }
+.search input { background: transparent !important; border: 0 !important; }
+
+.auth-input { background: var(--hover) !important; border: 1px solid transparent !important; }
+.auth-password { background: var(--hover) !important; border-color: transparent !important; }
+
+/* ==========================================================================
+   13 · CARDS, DASHBOARD MODULES
+   ========================================================================== */
+
+.pp-card, .pp-stat, .pp-member, .pp-app, .pp-entry, .pp-section-card {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: none !important;
+}
+
+/* pro-theme pins these to 340px max and centres them, which leaves a ragged
+   two-up column in the middle of the page. Stretch them across the grid. */
+.pp-member-grid {
+  grid-template-columns: repeat(auto-fill, minmax(256px, 1fr)) !important;
+  justify-content: stretch !important;
+  gap: 14px !important;
+}
+.pp-member, .pp-app { position: relative; overflow: hidden; }
+.pp-member:hover, .pp-member:focus-visible { transform: none !important; border-color: var(--border) !important; background: var(--hover) !important; box-shadow: none !important; }
+.pp-app:hover { box-shadow: none !important; background: var(--hover) !important; }
+
+/* Spotify's hover play-button on member cards */
+.pp-member::after, .pp-app::after {
+  content: "\f061";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  position: absolute;
+  right: 16px; bottom: 16px;
+  width: 44px; height: 44px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: var(--gold-grad);
+  color: var(--on-accent);
+  font-size: 15px;
+  box-shadow: 0 12px 26px -10px rgba(0, 0, 0, .8);
+  opacity: 0;
+  transform: translateY(10px) scale(.86);
+  transition: opacity .22s ease, transform .28s cubic-bezier(.2, .8, .2, 1);
+  pointer-events: none;
+}
+.pp-member:hover::after, .pp-member:focus-visible::after { opacity: 1; transform: none; }
+
+.pp-banner { background: var(--card) !important; border: 1px solid var(--border) !important; border-radius: var(--radius-lg) !important; box-shadow: none !important; }
+.pp-help { background: color-mix(in srgb, var(--info) 12%, transparent) !important; border: 1px solid color-mix(in srgb, var(--info) 26%, transparent); border-radius: 10px !important; color: var(--text) !important; }
+.pp-help i { color: var(--info) !important; }
+
+.pp-stat strong { font-family: "Figtree", sans-serif; font-weight: 800; letter-spacing: -.04em; }
+.pp-eyebrow { color: var(--gold) !important; letter-spacing: .14em; }
+.welcome { color: var(--gold) !important; }
+
+.pp-dash-hero {
+  background: radial-gradient(600px 200px at 100% 0%, color-mix(in srgb, var(--gold) 22%, transparent), transparent 72%), var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-lg) !important;
+}
+.pp-pass { background: linear-gradient(160deg, color-mix(in srgb, var(--gold) 24%, var(--card)), var(--card) 62%) !important; }
+.pp-streak-card { background: var(--card) !important; }
+
+.pp-entry { background: var(--hover) !important; border-color: transparent !important; }
+.pp-mini-row { background: var(--hover) !important; }
+.pp-timeline li { background: var(--hover) !important; }
+.pp-goal { background: var(--hover) !important; }
+.pp-metric { background: var(--hover) !important; }
+.pp-chip { background: color-mix(in srgb, var(--gold) 18%, transparent) !important; color: var(--gold) !important; }
+
+.pp-avatar, .pp-avatar.xl { background: var(--gold-grad) !important; color: var(--on-accent) !important; }
+.pp-frame { background: conic-gradient(from 200deg, var(--gold), var(--gold-deep), var(--gold), var(--gold)) !important; box-shadow: 0 0 22px 2px color-mix(in srgb, var(--gold) 45%, transparent) !important; }
+
+.pp-heat-cell { background: color-mix(in srgb, var(--text) 8%, transparent) !important; }
+.pp-heat-cell.on { background: var(--green) !important; box-shadow: 0 0 8px -2px var(--green) !important; }
+.pp-bar { background: color-mix(in srgb, var(--text) 9%, transparent) !important; }
+.pp-meter { background: color-mix(in srgb, var(--text) 9%, transparent) !important; }
+.pp-meter span, .pp-bar span { background: var(--gold-grad) !important; }
+
+/* ==========================================================================
+   14 · MENUS, NOTIFICATIONS, MODALS, TOASTS
+   ========================================================================== */
+
+.dropdown, .more-popover, .pp-menu {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, .5) !important;
+  backdrop-filter: none !important;
+  padding: 6px !important;
+  overflow: hidden !important;
+}
+.dropdown a, .more-popover a { border-radius: 8px !important; color: var(--text) !important; font-weight: 600; font-size: 13.5px; }
+.dropdown a:hover, .more-popover a:hover { background: var(--hover) !important; color: var(--text) !important; }
+.dropdown a i, .more-popover a i { color: var(--gold) !important; }
+
+.notification-panel {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .55) !important;
+}
+.notification-item { border-bottom-color: var(--border) !important; }
+.notification-item.is-unread { background: color-mix(in srgb, var(--gold) 9%, var(--card)) !important; }
+
+.pp-modal { background: var(--card) !important; border: 1px solid var(--border) !important; border-radius: 16px !important; }
+.pp-modal-foot { background: var(--hover) !important; border-top-color: var(--border) !important; }
+.pp-modal-backdrop { background: rgba(0, 0, 0, .65) !important; backdrop-filter: blur(6px) !important; }
+
+.pp-toast, .toast { border-radius: 999px !important; font-family: "Figtree", sans-serif; font-weight: 700; background: var(--text) !important; color: var(--bg) !important; border: 0 !important; box-shadow: 0 18px 40px rgba(0, 0, 0, .45) !important; }
+.pp-toast.error, .toast.error { background: var(--red) !important; color: #fff !important; }
+
+.pp-swatch { box-shadow: 0 0 0 1px var(--border); }
+.pp-swatch[aria-checked="true"] { box-shadow: 0 0 0 2px var(--card), 0 0 0 4px var(--sw); }
+
+.pp-help, .pp-note p { color: var(--muted); }
+
+/* ==========================================================================
+   15 · SIDEBAR DRAWER + SCROLL SHADE
+   ========================================================================== */
+
+.sidebar-shade { background: rgba(0, 0, 0, .6) !important; backdrop-filter: blur(3px); }
+
+/* ==========================================================================
+   16 · PORTAL PAGES — login, member home, member portal
+   ========================================================================== */
+
+.portal-nav {
+  background: color-mix(in srgb, var(--chrome) 88%, transparent) !important;
+  border-bottom: 1px solid var(--border) !important;
+  backdrop-filter: blur(16px) saturate(150%);
+  color: var(--text) !important;
+}
+.portal-brand strong, .portal-brand { color: var(--text) !important; }
+.brand-mark { background: var(--gold-grad) !important; color: var(--on-accent) !important; border-radius: 10px !important; }
+
+.member-top { background: var(--chrome) !important; border-bottom-color: var(--border) !important; }
+.member-logo > span { background: var(--gold-grad) !important; color: var(--on-accent) !important; border-radius: 10px !important; }
+.member-logo { color: var(--text) !important; }
+
+.auth-story h1 em { color: var(--gold) !important; }
+.auth-card { background: var(--card) !important; border-color: var(--border) !important; border-radius: 20px !important; }
+
+/* Account-type picker: decides which workspace the sign-in opens, so nobody
+   lands in the wrong portal after authenticating. */
+.auth-role { border: 0; padding: 0; margin: 0 0 18px; min-width: 0; }
+.auth-role legend {
+  padding: 0;
+  margin-bottom: 9px;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.auth-role-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.auth-role-btn {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  padding: 10px;
+  border-radius: 13px;
+  border: 1px solid var(--border);
+  background: var(--hover);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--ease), border-color var(--ease), color var(--ease), transform var(--ease);
+}
+.auth-role-btn > i { flex: 0 0 auto; font-size: 15px; color: var(--muted); transition: color var(--ease); }
+.auth-role-btn span { min-width: 0; }
+.auth-role-btn b { display: block; font-size: 12.5px; font-weight: 800; letter-spacing: -.01em; }
+.auth-role-btn small {
+  display: block;
+  margin-top: 1px;
+  font-size: 10.5px;
+  color: var(--faint);
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.auth-role-btn:hover { border-color: color-mix(in srgb, var(--gold) 50%, var(--border)); transform: translateY(-1px); }
+.auth-role-btn.is-on {
+  background: var(--gold-soft);
+  border-color: var(--gold);
+  color: var(--text);
+}
+.auth-role-btn.is-on > i { color: var(--gold); }
+.auth-role-btn.is-on b { color: var(--text); }
+.portal-heading-icon { background: var(--gold-grad) !important; color: var(--on-accent) !important; border-radius: 14px !important; }
+.portal-kicker { color: var(--gold) !important; letter-spacing: .16em; }
+.auth-points i { background: var(--green-soft) !important; color: var(--green) !important; }
+.member-hero { background: radial-gradient(circle at 85% 20%, var(--gold-soft), transparent 42%), var(--card) !important; border-color: var(--border) !important; border-radius: var(--radius-lg) !important; }
+
+/* --------------------------------------------------------------------------
+   16i · Member space — canvas, hero and diary
+   The member area is a different shell from the staff app, so it gets its own
+   layered background and a diary that reads like a journal rather than a form.
+   -------------------------------------------------------------------------- */
+.member-content {
+  position: relative;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 26px var(--gutter, 26px) 46px;
+}
+/* Soft gold bloom behind the welcome card so the canvas is not a flat sheet. */
+.member-content::before {
+  content: "";
+  position: absolute;
+  inset: -140px 0 auto;
+  height: 420px;
+  background:
+    radial-gradient(58% 100% at 12% 0%, color-mix(in srgb, var(--gold) 13%, transparent), transparent 70%),
+    radial-gradient(45% 90% at 88% 0%, color-mix(in srgb, var(--gold) 7%, transparent), transparent 72%);
+  pointer-events: none;
+  z-index: 0;
+}
+.member-content > * { position: relative; z-index: 1; }
+
+/* --------------------------------------------------------------------------
+   16j · Container system
+   Every card grid in the member space shares one rhythm: equal columns, equal
+   gaps and cards that stretch to the same height. The base layer used a
+   1fr / 1.25fr split, which made neighbouring cards visibly mismatched.
+   -------------------------------------------------------------------------- */
+.member-content .pp-two,
+.member-content .pp-three,
+.member-content .pp-member-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.member-content .pp-two > .pp-card,
+.member-content .pp-three > .pp-card,
+.member-content .pp-member-grid > .pp-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 20px 22px;
+}
+/* Push a card's own action row to the foot so buttons line up across a row. */
+.member-content .pp-two > .pp-card > .pp-actions:last-child,
+.member-content .pp-three > .pp-card > .pp-actions:last-child { margin-top: auto; padding-top: 14px; }
+.member-content .pp-stats { gap: 14px; margin-bottom: 16px; }
+.member-content .pp-stat {
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+}
+.member-content > .pp-card { margin-bottom: 16px; padding: 20px 22px; }
+@media (max-width: 860px) {
+  .member-content .pp-two,
+  .member-content .pp-three,
+  .member-content .pp-member-grid { grid-template-columns: 1fr; }
+}
+
+.member-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 26px 28px;
+  border: 1px solid var(--border) !important;
+  border-radius: 22px !important;
+  background:
+    radial-gradient(circle at 88% 18%, color-mix(in srgb, var(--gold) 16%, transparent), transparent 46%),
+    linear-gradient(135deg, var(--card), color-mix(in srgb, var(--gold) 5%, var(--card))) !important;
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--card) 60%, transparent) inset !important;
+}
+.member-hero h1 { font-family: "Figtree", sans-serif; letter-spacing: -.035em; }
+.member-hero-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* Tabs sit in a tray rather than floating, so the panel below reads as one. */
+.pp-tabs {
+  display: flex;
+  gap: 4px;
+  margin: 18px 0 20px;
+  padding: 5px;
+  border-radius: 16px;
+  background: var(--hover);
+  border: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.pp-tabs::-webkit-scrollbar { display: none; }
+.pp-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 0 auto;
+  justify-content: center;
+  min-width: 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--ease), color var(--ease), box-shadow var(--ease);
+}
+.pp-tab i { font-size: 12px; }
+.pp-tab:hover { color: var(--text); background: color-mix(in srgb, var(--card) 70%, transparent); }
+.pp-tab[aria-selected="true"] {
+  background: var(--card);
+  color: var(--text);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .10);
+}
+.pp-tab[aria-selected="true"] i { color: var(--gold); }
+
+/* Diary: the banner becomes a journal header, the timeline a paper trail. */
+.pp-diary { display: block; }
+.pp-diary-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr); gap: 18px; align-items: start; }
+.pp-diary-form { position: sticky; top: 18px; }
+.pp-diary-form .pp-card-head h3 { font-family: "Figtree", sans-serif; }
+.pp-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  margin-bottom: 18px;
+  border-radius: 18px !important;
+  border: 1px solid var(--border) !important;
+  background:
+    linear-gradient(120deg, color-mix(in srgb, var(--gold) 9%, var(--card)), var(--card) 62%) !important;
+}
+.pp-banner::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 4px;
+  align-self: stretch;
+  border-radius: 999px;
+  background: var(--gold-grad);
+}
+.pp-diary-list .pp-card-head { flex-wrap: wrap; gap: 12px; }
+.pp-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  height: 38px;
+  min-width: 190px;
+  border-radius: 999px;
+  background: var(--hover);
+  border: 1px solid var(--border);
+}
+.pp-search i { color: var(--faint); font-size: 12px; }
+.pp-search input { border: 0; background: transparent; box-shadow: none; padding: 0; height: 100%; font-size: 13px; }
+.pp-search input:focus-visible { outline: none; box-shadow: none; }
+.pp-search:focus-within { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); }
+@media (max-width: 900px) {
+  .pp-diary-layout { grid-template-columns: 1fr; }
+  .pp-diary-form { position: static; }
+}
+@media (max-width: 700px) {
+  .member-hero { flex-direction: column; align-items: flex-start; padding: 22px 20px; }
+  .member-hero-actions { width: 100%; }
+  .member-hero-actions .btn { flex: 1 1 auto; }
+  .member-content { padding: 20px 0 34px; }
+  .pp-tab { font-size: 12px; padding: 9px 11px; gap: 6px; }
+  .pp-tab i { display: none; }
+  .banner, .pp-banner { flex-wrap: wrap; }
+}
+.member-status-card { background: var(--card) !important; border-color: var(--border) !important; border-radius: var(--radius-lg) !important; }
+.member-metric-card { background: var(--card) !important; border-color: var(--border) !important; border-radius: var(--radius-lg) !important; }
+
+/* ==========================================================================
+   16b · MEMBER SPACE — header menu, calendar, class schedule, settings
+   ========================================================================== */
+
+.member-user { position: relative; }
+
+.member-avatar {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 46px;
+  padding: 4px 12px 4px 4px;
+  border-radius: 999px;
+  background: var(--hover);
+  border: 1px solid var(--border);
+  color: var(--text);
+  cursor: pointer;
+  transition: background var(--ease), border-color var(--ease);
+}
+.member-avatar:hover, .member-avatar[aria-expanded="true"] { background: var(--card); border-color: var(--gold); }
+.member-avatar > i { font-size: 11px; color: var(--muted); transition: transform var(--ease); }
+.member-avatar[aria-expanded="true"] > i { transform: rotate(180deg); }
+
+.member-avatar-face {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--gold-grad);
+  color: var(--on-accent);
+  font-family: "Figtree", sans-serif;
+  font-weight: 800;
+  font-size: 14px;
+}
+.member-avatar-copy { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.15; }
+.member-avatar-copy b { font-size: 13px; font-weight: 700; }
+.member-avatar-copy small { font-size: 10.5px; color: var(--muted); }
+
+.member-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 232px;
+  padding: 7px;
+  border-radius: 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: 0 18px 46px rgba(0, 0, 0, .4);
+  z-index: 90;
+  display: grid;
+  gap: 2px;
+  animation: mm-pop .16s ease-out;
+}
+/* --------------------------------------------------------------------
+   [hidden] must actually hide.
+   Several components here set an explicit `display: grid/flex`, which is an
+   author-level declaration and therefore beats the UA stylesheet's
+   `[hidden] { display: none }`. That left whole sections — the member
+   dashboard, dropdown menus — visible while technically hidden. One global
+   rule restores the contract: if the attribute is present, it's not shown.
+   -------------------------------------------------------------------- */
+[hidden] { display: none !important; }
+@keyframes mm-pop { from { opacity: 0; transform: translateY(-6px) scale(.98); } }
+.member-menu button, .member-menu a {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  height: 40px;
+  padding: 0 11px;
+  border-radius: 10px;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+.member-menu button i { width: 16px; color: var(--muted); text-align: center; }
+.member-menu button:hover { background: var(--hover); }
+.member-menu button.is-danger { color: var(--red); }
+.member-menu button.is-danger i { color: var(--red); }
+.member-menu hr { border: 0; border-top: 1px solid var(--border); margin: 6px 4px; }
+
+@media (max-width: 620px) {
+  .member-avatar-copy { display: none; }
+  .member-avatar { padding: 4px; }
+  .member-menu { right: -4px; }
+}
+
+/* --- Calendar --- */
+.pp-cal { user-select: none; }
+.pp-cal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.pp-cal-head strong { font-family: "Figtree", sans-serif; font-size: 15px; font-weight: 800; }
+.pp-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 5px;
+}
+.pp-cal-dow {
+  text-align: center;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  color: var(--faint);
+  padding-bottom: 4px;
+}
+.pp-cal-pad { min-height: 34px; }
+.pp-cal-day {
+  min-height: 38px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: color-mix(in srgb, var(--text) 5%, transparent);
+  color: var(--text);
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: background var(--ease), border-color var(--ease);
+}
+.pp-cal-day b { font-weight: 700; line-height: 1; }
+.pp-cal-day:hover { background: var(--hover); border-color: var(--border); }
+.pp-cal-day.is-today { border-color: var(--gold); font-weight: 800; }
+.pp-cal-day.is-selected { background: var(--gold-grad); color: var(--on-accent); border-color: transparent; }
+.pp-cal-dots { display: flex; gap: 2px; height: 5px; }
+.pp-cal-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--faint); }
+.pp-cal-dot.checkin { background: var(--green); }
+.pp-cal-dot.booked { background: var(--gold); }
+.pp-cal-dot.diary { background: var(--info); }
+.pp-cal-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--muted);
+}
+.pp-cal-summary strong { color: var(--text); font-size: 12.5px; }
+.pp-chip-good { color: var(--green) !important; }
+
+/* --- Class list --- */
+.pp-class-list { display: grid; gap: 8px; }
+.pp-class-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--text) 5%, transparent);
+  border: 1px solid transparent;
+}
+.pp-class-row.is-booked { border-color: var(--gold); background: var(--gold-soft); }
+.pp-class-emoji { font-size: 20px; width: 30px; text-align: center; }
+.pp-class-copy { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.pp-class-copy strong { font-size: 13.5px; }
+.pp-class-copy small { font-size: 11.5px; color: var(--muted); }
+
+/* --- Member settings --- */
+.pp-segment {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--text) 7%, transparent);
+}
+.pp-segment button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.pp-segment button.active { background: var(--gold-grad); color: var(--on-accent); }
+
+.pp-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 2px;
+  font-size: 13px;
+  color: var(--muted);
+  cursor: pointer;
+}
+.pp-check input { margin-top: 2px; accent-color: var(--gold); width: 16px; height: 16px; }
+.pp-check:hover { color: var(--text); }
+
+/* --- Member tabs wrap instead of scrolling away --- */
+.pp-tabs { flex-wrap: wrap; }
+.pp-tab { margin-bottom: 8px; }
+
+/* --- Gym profile (Settings) --- */
+.pp-gym-logo {
+  display: inline-grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 13px;
+  overflow: hidden;
+  background: var(--hover);
+  border: 1px solid var(--border);
+  flex: 0 0 54px;
+}
+.pp-gym-logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pp-setting-controls .pp-btn[for] { cursor: pointer; }
+.pp-settings .pp-form-grid { padding: 0 20px 20px; }
+
+/* Check-in button reflects a completed check-in */
+#checkInButton.is-done { opacity: .85; cursor: default; }
+
+/* ==========================================================================
+   16c · STAFF PROFILE + ANNOUNCEMENTS
+   ========================================================================== */
+
+.topbar-avatar { text-decoration: none; position: relative; overflow: hidden; }
+.topbar-avatar, .sidebar-avatar, .pp-avatar-photo { position: relative; }
+.topbar-avatar img, .sidebar-avatar img, .pp-avatar-photo img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; border-radius: inherit; z-index: 1;
+}
+.topbar-avatar.has-photo > span, .sidebar-avatar.has-photo { font-size: 0; }
+.pp-avatar-photo.has-photo { background: var(--hover); }
+.pp-avatar-photo.has-photo i { display: none; }
+
+.pp-profile-hero { display: flex; align-items: center; gap: 26px; flex-wrap: wrap; }
+.pp-profile-photo { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.pp-avatar-photo {
+  width: 96px; height: 96px; flex: 0 0 96px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: var(--gold-grad);
+  color: var(--on-accent);
+  font-size: 34px;
+}
+.pp-profile-photo-actions { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.pp-profile-photo-actions small { color: var(--faint); font-size: 11.5px; }
+.pp-profile-photo-actions .pp-btn[for] { cursor: pointer; }
+.pp-profile-identity { flex: 1 1 280px; min-width: 0; }
+.pp-profile-identity h2 { font-size: 26px; font-weight: 800; letter-spacing: -.03em; margin: 2px 0 4px; }
+
+.pp-announce-list { display: grid; gap: 10px; padding: 0 20px 20px; }
+.pp-announce {
+  position: relative;
+  padding: 14px 46px 14px 16px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--gold) 8%, transparent);
+  border: 1px solid var(--border);
+}
+.pp-announce-head { display: flex; align-items: center; gap: 10px; margin-bottom: 7px; }
+.pp-announce-head small { color: var(--faint); font-size: 11.5px; }
+.pp-announce strong { display: block; font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.pp-announce p { margin: 0; font-size: 13px; line-height: 1.5; color: var(--muted); }
+.pp-announce > .pp-icon-btn { position: absolute; top: 10px; right: 8px; }
+.pp-empty-inline { color: var(--muted); font-size: 13px; }
+
+.pp-settings select,
+.pp-field select {
+  width: 100%;
+  height: 42px;
+  padding: 0 34px 0 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font: inherit;
+  font-size: 13.5px;
+  cursor: pointer;
+}
+
+/* Workspace toasts (pages.js uses .toast, the portals use .pp-toast) */
+.toast.error { background: var(--red) !important; color: #fff !important; }
+.toolbar .btn { display: inline-flex; align-items: center; gap: 8px; }
+
+/* ==========================================================================
+   16d · MEMBERSHIP PORTAL — header, three-way tab, request tracking
+   ========================================================================== */
+
+.portal-nav {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  height: 74px;
+  padding: 0 clamp(16px, 4vw, 44px);
+}
+.portal-nav .brand-mark { position: relative; overflow: hidden; flex: 0 0 auto; }
+.portal-nav .brand-mark img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.portal-brand { display: flex; align-items: center; gap: 11px; text-decoration: none; }
+.portal-brand strong { display: block; font-size: 19px; font-weight: 800; letter-spacing: -.045em; }
+.portal-brand small { display: block; margin-top: 2px; font-size: 9px; letter-spacing: .16em; font-weight: 800; color: var(--faint); }
+
+/* Inline nav so the three public flows are one click apart. */
+.portal-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--hover);
+  border: 1px solid var(--border);
+}
+.portal-nav-links button {
+  height: 34px;
+  padding: 0 15px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-family: "Figtree", sans-serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  cursor: pointer;
+  transition: background var(--ease), color var(--ease);
+}
+.portal-nav-links button:hover { color: var(--text); }
+.portal-nav-links button.is-on { background: var(--text); color: var(--bg); }
+
+.portal-nav-right { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+
+.portal-chip {
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 13px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--gold) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--gold) 42%, transparent);
+  color: var(--gold);
+  font-size: 12.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.portal-theme {
+  width: 40px;
+  height: 40px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--hover);
+  color: var(--text);
+  cursor: pointer;
+  transition: background var(--ease), border-color var(--ease);
+}
+.portal-theme:hover { background: var(--card); border-color: var(--gold); color: var(--gold); }
+
+.portal-cta {
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: var(--gold-grad);
+  color: var(--on-accent) !important;
+  font-family: "Figtree", sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: -.01em;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: 0 10px 26px -14px color-mix(in srgb, var(--gold) 90%, transparent);
+  transition: transform var(--ease), filter var(--ease);
+}
+.portal-cta:hover { transform: scale(1.04); filter: brightness(1.06); }
+
+/* Three tabs need three columns, not the old two. */
+.portal-tabs { grid-template-columns: repeat(3, 1fr); }
+
+/* Portal form fields are grids (label + control [+ hint]). A field with a hint
+   has three rows, one without has two — and because the outer grid stretched
+   both cells to the taller one, the shorter field's rows absorbed the slack.
+   That made "Payment method" sit ~16px below "Amount" and its select balloon
+   to 58px beside a 41px input. Pin the rows to the top instead. */
+.portal-field { align-content: start; }
+.portal-form-grid { align-items: start; }
+
+/* Signed in: the public intro and auth card step aside for the dashboard. */
+#portalPublic[hidden],
+#trainerPublic[hidden] { display: none !important; }
+/* #portalPublic wraps the intro and the card, so it carries the two-column
+   layout itself and the shell above it stays single-column. */
+.portal-shell { grid-template-columns: minmax(0, 1fr) !important; }
+.portal-shell.member-mode { max-width: 1280px; }
+#portalPublic {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(400px, 520px);
+  align-items: center;
+  gap: clamp(32px, 5vw, 72px);
+  width: 100%;
+}
+#portalPublic > .portal-intro { min-width: 0; }
+#portalPublic > .portal-card { min-width: 0; }
+/* The pitch column is much narrower than the card, so it reads as a centred
+   stack rather than a left-ragged one. */
+.portal-intro { text-align: center; }
+.portal-intro .eyebrow,
+.portal-intro .portal-hero-card,
+.portal-intro .portal-benefits { justify-content: center; }
+.portal-intro h1 { text-wrap: balance; }
+.portal-intro > p { max-width: 40ch; margin-inline: auto; }
+.portal-intro .portal-benefits { display: flex; flex-wrap: wrap; gap: 8px 18px; }
+@media (max-width: 900px) {
+  #portalPublic { grid-template-columns: 1fr; gap: 28px; }
+  #portalPublic > .portal-card { order: -1; }
+}
+
+/* The base layer hard-coded translucent white for the intro furniture, which
+   turned into grey slabs punched into the dark canvas. Re-anchor to tokens. */
+.portal-intro h1 { color: var(--text); }
+.portal-intro > p { color: var(--muted); }
+.portal-intro .eyebrow { color: var(--gold); }
+.portal-intro .eyebrow span { background: var(--gold-grad); }
+
+.portal-hero-card {
+  border: 1px solid color-mix(in srgb, var(--gold) 30%, var(--border)) !important;
+  background: color-mix(in srgb, var(--card) 88%, transparent) !important;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, .26) !important;
+  backdrop-filter: blur(14px);
+}
+.portal-hero-card small { color: var(--faint); }
+.portal-hero-card strong { color: var(--text); }
+.portal-hero-card span { color: var(--gold); background: var(--gold-soft); }
+.portal-hero-card i { color: var(--gold); }
+
+.portal-benefits div { color: var(--text); }
+.portal-benefits i { background: color-mix(in srgb, var(--green, #1db954) 20%, transparent); color: var(--green, #1db954); }
+
+/* Public contact bar — sits under the pitch so a visitor can reach the gym
+   before signing up. It spans both columns and lays out horizontally, so it
+   never inflates the pitch column past the height of the auth card. */
+.portal-contact {
+  grid-column: 1 / -1;
+  margin-top: clamp(20px, 3vw, 32px);
+  padding: 18px 22px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 300px);
+  align-items: center;
+  gap: 16px 30px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--card) 82%, transparent);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, .14);
+}
+.portal-contact-head {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.portal-contact-head i {
+  width: 26px; height: 26px;
+  display: grid; place-items: center;
+  border-radius: 8px;
+  background: var(--gold-soft);
+  font-size: 12px;
+}
+.portal-contact-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.portal-contact-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: .875rem;
+  line-height: 1.45;
+  color: var(--muted);
+  min-width: 0;
+}
+.portal-contact-list i { width: 16px; flex: 0 0 16px; margin-top: 2px; color: var(--gold); text-align: center; }
+.portal-contact-list a { color: var(--text); text-decoration: none; border-bottom: 1px solid transparent; word-break: break-word; }
+.portal-contact-list a:hover { color: var(--gold); border-bottom-color: color-mix(in srgb, var(--gold) 50%, transparent); }
+.portal-contact-list span { word-break: break-word; }
+.portal-contact-hours {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  padding-left: 28px;
+  border-left: 1px dashed var(--border);
+}
+.portal-contact-hours div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--gold) 8%, transparent);
+  font-size: .76rem;
+  line-height: 1.35;
+  color: var(--muted);
+}
+.portal-contact-hours b { color: var(--text); font-weight: 700; font-size: .76rem; }
+.portal-contact-hours span { font-variant-numeric: tabular-nums; word-break: break-word; }
+@media (max-width: 900px) {
+  .portal-contact { grid-template-columns: 1fr; }
+  .portal-contact-hours { padding-left: 0; border-left: 0; padding-top: 14px; border-top: 1px dashed var(--border); }
+}
+
+/* Pay-in block: the gym's own account details for the chosen method. */
+.pay-in {
+  margin: 4px 0 18px;
+  padding: 14px 16px;
+  display: grid;
+  gap: 10px;
+  border: 1px solid color-mix(in srgb, var(--gold) 26%, var(--border));
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--gold) 7%, var(--card));
+}
+.pay-in-head { display: flex; align-items: center; gap: 9px; font-size: .82rem; color: var(--text); }
+.pay-in-head i { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 8px; background: var(--gold-soft); color: var(--gold); font-size: 12px; }
+.pay-in-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-width: 0; }
+.pay-in-row small { flex: 0 0 108px; font-size: .74rem; letter-spacing: .04em; text-transform: uppercase; color: var(--faint); }
+.pay-in-row b { font-size: .92rem; font-weight: 700; color: var(--text); letter-spacing: .01em; min-width: 0; word-break: break-word; }
+.pay-in-row .pay-in-num { font-variant-numeric: tabular-nums; letter-spacing: .04em; }
+.pay-in-copy {
+  margin-left: auto;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--text);
+  font: inherit; font-size: .74rem; font-weight: 700;
+  cursor: pointer;
+  transition: border-color var(--ease), color var(--ease), background var(--ease);
+}
+.pay-in-copy:hover { border-color: var(--gold); color: var(--gold); }
+.pay-in-copy.is-ok { border-color: var(--green); color: var(--green); }
+.pay-in-note { margin: 0; display: flex; gap: 8px; font-size: .78rem; line-height: 1.45; color: var(--muted); }
+.pay-in-note i { margin-top: 2px; color: var(--gold); flex: 0 0 auto; }
+@media (max-width: 560px) {
+  .pay-in-row small { flex-basis: 100%; }
+  .pay-in-copy { margin-left: 0; }
+}
+
+.portal-note { color: var(--muted); }
+.portal-note strong, .portal-note b { color: var(--text); }
+.secure-label { color: var(--muted); }
+.portal-footer { color: var(--muted); border-top: 1px solid var(--border); }
+.portal-footer a { color: var(--gold); }
+
+/* The base layer pinned white card chrome with a fixed hex border, which left
+   a glaring slab punched into the page in dark mode. Re-anchor it to the
+   theme tokens, give it a real edge, and let the header sit on a tinted band. */
+.portal-card {
+  padding: 31px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 22px !important;
+  background: var(--card) !important;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .30) !important;
+  position: relative;
+  overflow: hidden;
+}
+/* Gold hairline across the top edge, like a playlist header. */
+.portal-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: var(--gold-grad);
+}
+.portal-card-heading {
+  display: flex !important;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: flex-start;
+  padding-bottom: 18px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+}
+.portal-card-heading .portal-kicker { color: var(--gold); }
+.portal-card h2 { color: var(--text); }
+.portal-card-heading p { color: var(--muted); }
+.portal-heading-icon {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: var(--gold-soft);
+  color: var(--gold);
+  font-size: 18px;
+}
+/* Tabs inside the card read as a segmented control. */
+.portal-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  margin-bottom: 20px;
+  border-radius: 13px;
+  background: var(--hover);
+  border: 1px solid var(--border);
+}
+.portal-tab {
+  flex: 1 1 0;
+  height: 38px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background var(--ease), color var(--ease), box-shadow var(--ease);
+}
+.portal-tab:hover { color: var(--text); }
+.portal-tab.active {
+  background: var(--card);
+  color: var(--text);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .12);
+}
+@media (max-width: 560px) {
+  .portal-card { padding: 22px 17px !important; }
+  .portal-tabs { flex-wrap: wrap; }
+  .portal-tab { flex: 1 1 40%; }
+}
+#memberDashboard { grid-column: 1 / -1; }
+
+/* --- Request tracking --- */
+.track-result { margin-top: 20px; }
+.link-btn {
+  border: 0;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: var(--gold);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.track-code {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--gold) 20%, transparent);
+  color: var(--text) !important;
+  font-family: "Figtree", monospace;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+.track-hint { margin-top: 8px; font-size: 11.5px; color: var(--muted); }
+
+.track-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 16px; }
+.track-head small { display: block; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); font-weight: 700; }
+.track-head strong.track-code { display: inline-block; margin-top: 5px; font-size: 17px; }
+
+.track-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.track-steps li {
+  display: flex;
+  gap: 13px;
+  padding: 11px 12px;
+  border-radius: 12px;
+  opacity: .55;
+}
+.track-steps li.is-done { opacity: 1; background: var(--hover); }
+.track-steps li > span {
+  flex: 0 0 26px;
+  width: 26px; height: 26px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: var(--border);
+  color: var(--muted);
+  font-size: 11px;
+}
+.track-steps li.is-done > span { background: var(--gold-grad); color: var(--on-accent); }
+.track-steps li strong { display: block; font-size: 13px; }
+.track-steps li small { display: block; margin-top: 2px; font-size: 11.5px; color: var(--muted); }
+
+.track-credentials {
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--green) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--green) 42%, transparent);
+}
+.track-credentials.is-declined {
+  background: color-mix(in srgb, var(--red) 12%, transparent);
+  border-color: color-mix(in srgb, var(--red) 42%, transparent);
+}
+.track-credentials > strong { display: block; font-size: 14px; margin-bottom: 4px; }
+.track-credentials > p { margin: 0 0 12px; font-size: 12px; color: var(--muted); }
+.track-credentials dl { display: grid; gap: 8px; margin: 0 0 14px; }
+.track-credentials dl > div { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 12px; border-radius: 10px; background: var(--card); }
+.track-credentials dt { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--faint); font-weight: 700; }
+.track-credentials dd { margin: 0; font-size: 13px; font-weight: 700; word-break: break-all; text-align: right; }
+.track-credentials .portal-submit { width: 100%; margin-top: 2px; }
+
+/* Status pill shared by the dashboard stats and the tracker */
+.pp-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 11px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: -.01em;
+  background: var(--hover);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.pp-pill.is-ok { background: var(--green-soft); color: var(--green); border-color: color-mix(in srgb, var(--green) 45%, transparent); }
+.pp-pill.is-warn { background: var(--amber-soft); color: var(--amber); border-color: color-mix(in srgb, var(--amber) 45%, transparent); }
+.pp-pill.is-bad { background: var(--red-soft); color: var(--red); border-color: color-mix(in srgb, var(--red) 45%, transparent); }
+
+.dash-announce { margin-bottom: 4px; }
+
+/* ==========================================================================
+   16e · MEMBER SPACE — header chrome, schedule add-on, diary "today" strip
+   ========================================================================== */
+
+/* Announcement counter sits with the theme + account controls. */
+.member-top-actions { display: flex; align-items: center; gap: 8px; }
+.member-top-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: var(--hover);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background var(--ease), border-color var(--ease), color var(--ease);
+}
+.member-top-chip:hover { background: var(--card); color: var(--text); }
+.member-top-chip.has-new { border-color: color-mix(in srgb, var(--gold) 45%, transparent); color: var(--gold); }
+.member-top-chip[hidden] { display: none; }
+
+/* Account dropdown: identity block at the top, like the Spotify menu. */
+.member-menu-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 8px 12px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.member-menu-head .member-avatar-face { flex: 0 0 36px; width: 36px; height: 36px; font-size: 12.5px; }
+.member-menu-head b { display: block; font-size: 13.5px; color: var(--text); max-width: 190px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.member-menu-head small { display: block; margin-top: 1px; font-size: 11.5px; color: var(--faint); max-width: 190px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.member-logo > span { position: relative; overflow: hidden; }
+.member-logo > span img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+/* Overview calendar summary: label the member's own entries distinctly. */
+.pp-chip-gold {
+  background: color-mix(in srgb, var(--gold) 18%, transparent) !important;
+  color: var(--gold) !important;
+  border-color: color-mix(in srgb, var(--gold) 40%, transparent) !important;
+}
+
+/* "My own activities" card in the Schedule tab. */
+#myPlanCard .pp-card-head h3::after {
+  content: "yours";
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--gold) 18%, transparent);
+  color: var(--gold);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+.pp-inline-form {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(140px, 1fr) minmax(110px, .8fr) 92px auto;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.pp-inline-form input { min-width: 0; width: 100%; }
+
+/* Unit picker next to a numeric field: cm / in / ft for height, kg / lb for
+   weight. Values are stored canonically, so this only changes how they read. */
+.pp-unit-row { display: flex; gap: 8px; align-items: stretch; min-width: 0; }
+.pp-unit-row > input { flex: 1 1 auto; min-width: 0; width: 100%; }
+.pp-unit-row > input.pp-sub-unit { flex: 0 0 78px; }
+.pp-unit-select {
+  flex: 0 0 auto;
+  min-width: 74px;
+  height: auto;
+  align-self: stretch;
+  padding: 0 26px 0 11px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background-color: var(--hover);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 512'%3E%3Cpath fill='%238a8f99' d='M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8H32c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 9px center;
+  background-size: 10px 10px;
+  color: var(--text);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.pp-unit-select:hover { border-color: color-mix(in srgb, var(--gold) 55%, var(--border)); }
+.pp-unit-select:focus-visible { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); }
+/* Static unit label (used for the diary's hr / min split). */
+.pp-unit-tag {
+  flex: 0 0 auto;
+  align-self: center;
+  padding: 0 2px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--faint);
+  letter-spacing: .04em;
+}
+.pp-hint { display: block; margin-top: 5px; font-size: 11.5px; color: var(--faint); }
+/* Inside a half-width card the two-up field row squeezes the number box and
+   its unit pill into ~180px, which reads as cramped — stack it there. */
+.member-content .pp-card .pp-field-row { grid-template-columns: 1fr; gap: 14px; }
+/* The inline log-weight form needs room for its unit pill. */
+.pp-inline-form .pp-unit-row { flex: 1 1 auto; }
+.pp-mini-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  background: var(--hover);
+}
+.pp-mini-row > span { min-width: 0; }
+.pp-mini-row strong { font-size: 13px; color: var(--text); }
+.pp-mini-row small { font-size: 11.5px; color: var(--muted); }
+.pp-mini-row .pp-icon-btn { flex: 0 0 auto; opacity: .55; }
+.pp-mini-row:hover .pp-icon-btn { opacity: 1; }
+
+.pp-class-row.is-mine { background: color-mix(in srgb, var(--gold) 8%, transparent); }
+.pp-class-row.is-mine .pp-class-copy small { color: var(--gold); }
+
+/* --------------------------------------------------------------------------
+   16h · Enrollment progress rail
+   The three numbered stops sit above the form so an applicant always knows
+   which section they are in, what is already done, and can jump back to any.
+   -------------------------------------------------------------------------- */
+.portal-steps {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  margin: 4px 0 18px;
+  padding: 14px;
+  border-radius: 16px;
+  background: var(--hover);
+  border: 1px solid var(--border);
+}
+.portal-step {
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--ease), color var(--ease);
+}
+.portal-step:hover { background: var(--card); }
+.portal-step-dot {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 12px;
+  transition: background var(--ease), border-color var(--ease), color var(--ease), box-shadow var(--ease);
+}
+.portal-step-copy { min-width: 0; }
+.portal-step-copy b {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: -.01em;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.portal-step-copy small {
+  display: block;
+  margin-top: 1px;
+  font-size: 10.5px;
+  color: var(--faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* Current stop: gold ring plus a soft wash behind the whole button. */
+.portal-step.is-on { background: var(--gold-soft); }
+.portal-step.is-on .portal-step-dot {
+  background: var(--gold-grad);
+  border-color: transparent;
+  color: var(--on-accent);
+  box-shadow: 0 0 0 4px var(--gold-soft);
+}
+.portal-step.is-on .portal-step-copy b { color: var(--text); }
+/* Finished stop: filled gold tick so completed work is unmistakable. */
+.portal-step.is-done .portal-step-dot {
+  background: color-mix(in srgb, var(--gold) 22%, transparent);
+  border-color: color-mix(in srgb, var(--gold) 45%, transparent);
+  color: var(--gold);
+}
+.portal-step-rail {
+  flex: 0 0 auto;
+  align-self: center;
+  width: 26px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--border);
+  margin: 0 4px;
+}
+.portal-steps-note {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: -6px 0 20px;
+  padding: 10px 13px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--gold) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--gold) 24%, transparent);
+  color: var(--text);
+  font-size: 12px;
+}
+.portal-steps-note i { color: var(--gold); flex: 0 0 auto; }
+@media (max-width: 720px) {
+  .portal-steps { flex-direction: column; gap: 2px; }
+  .portal-step-rail { width: 2px; height: 14px; margin: 0 0 0 26px; }
+  .portal-step-copy small { display: none; }
+}
+
+/* --------------------------------------------------------------------------
+   16g · Date fields
+   The native picker is invisible in dark mode and grey in light mode, so the
+   whole control gets a surface of its own and the calendar glyph is tinted.
+   -------------------------------------------------------------------------- */
+.pp-field input[type="date"],
+.pp-inline-form input[type="date"],
+input[type="date"] {
+  position: relative;
+  min-height: 42px;
+  /* The base input reset at §11 declares `background: … !important` for every
+     input, and pro-theme's :is(.pp-field…) :is(input:not([type=checkbox])…)
+     scores (0,3,1) against this rule's (0,2,1). Without matching priorities the
+     glyph and the 40px gutter both lose and the picker looks missing. */
+  padding-right: 40px !important;
+  /* Layer order matters: the first image is painted last, i.e. on top. The
+     glyph used to be listed second behind a solid 100%x100% tint, which buried
+     the calendar icon entirely — the field looked like it had no picker. */
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath fill='%23b99a2e' d='M128 0c17.7 0 32 14.3 32 32V64H288V32c0-17.7 14.3-32 32-32s32 14.3 32 32V64h48c26.5 0 48 21.5 48 48v48H0V112C0 85.5 21.5 64 48 64H96V32c0-17.7 14.3-32 32-32zM0 192H448V464c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V192zm64 80v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V272c0-8.8-7.2-16-16-16H80c-8.8 0-16 7.2-16 16zm128 0v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V272c0-8.8-7.2-16-16-16H208c-8.8 0-16 7.2-16 16zm144-16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V272c0-8.8-7.2-16-16-16H336zM64 400v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H80c-8.8 0-16 7.2-16 16zm144-16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H208zm128 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H336c-8.8 0-16 7.2-16 16z'/%3E%3C/svg%3E"),
+    linear-gradient(var(--hover), var(--hover)) !important;
+  background-repeat: no-repeat, no-repeat !important;
+  /* Tint tile is confined to the 36px the icon sits in, not the whole field. */
+  background-position: right 11px center, right 0 center !important;
+  background-size: 15px 15px, 36px 100% !important;
+  cursor: pointer;
+}
+/* The tinted tile behind the glyph only appears where the icon sits. */
+.pp-field input[type="date"]::-webkit-calendar-picker-indicator,
+.pp-inline-form input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="date"]::-webkit-calendar-picker-indicator {
+  position: absolute;
+  right: 0;
+  width: 34px;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.pp-field input[type="date"]:hover,
+.pp-inline-form input[type="date"]:hover,
+input[type="date"]:hover { border-color: color-mix(in srgb, var(--gold) 55%, var(--border)); }
+.pp-field input[type="date"]:focus,
+.pp-inline-form input[type="date"]:focus,
+input[type="date"]:focus { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); }
+body.dark .pp-field input[type="date"],
+body.dark .pp-inline-form input[type="date"],
+body.dark input[type="date"] {
+  /* Both blocks carry !important — the §11 reset is !important too, and a
+     later normal declaration still loses to an earlier important one. */
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath fill='%23e0b94a' d='M128 0c17.7 0 32 14.3 32 32V64H288V32c0-17.7 14.3-32 32-32s32 14.3 32 32V64h48c26.5 0 48 21.5 48 48v48H0V112C0 85.5 21.5 64 48 64H96V32c0-17.7 14.3-32 32-32zM0 192H448V464c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V192zm64 80v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V272c0-8.8-7.2-16-16-16H80c-8.8 0-16 7.2-16 16zm128 0v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V272c0-8.8-7.2-16-16-16H208c-8.8 0-16 7.2-16 16zm144-16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V272c0-8.8-7.2-16-16-16H336zM64 400v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H80c-8.8 0-16 7.2-16 16zm144-16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H208zm128 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H336c-8.8 0-16 7.2-16 16z'/%3E%3C/svg%3E"),
+    linear-gradient(var(--hover), var(--hover)) !important;
+  background-repeat: no-repeat, no-repeat !important;
+  background-position: right 11px center, right 0 center !important;
+  background-size: 15px 15px, 36px 100% !important;
+}
+/* Chrome paints the popup calendar itself; tint it so it is not a white slab
+   punched into a dark page. */
+.pp-field,
+input[type="date"] { color-scheme: light; }
+body.dark .pp-field,
+body.dark input[type="date"] { color-scheme: dark; }
+
+/* Diary "today" strip: a calm date-led header instead of a shouty banner. */
+#diaryBanner { align-items: center; gap: 16px; padding: 14px 18px; }
+.pp-banner-date {
+  flex: 0 0 auto;
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  border-radius: 14px;
+  background: var(--hover);
+  border: 1px solid var(--border);
+  line-height: 1;
+}
+.pp-banner-date b { font-family: "Figtree", sans-serif; font-size: 20px; color: var(--text); }
+.pp-banner-date small { margin-top: 3px; font-size: 9px; font-weight: 800; letter-spacing: .1em; color: var(--faint); }
+#diaryBanner .pp-banner-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+  flex: 1 1 220px;
+}
+.pp-banner-kicker { font-size: 10.5px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); }
+#diaryBanner .pp-banner-body strong { font-size: 15px; color: var(--text); }
+#diaryBanner .pp-banner-body span { font-size: 12.5px; color: var(--muted); }
+#diaryBanner .pp-banner-body.ok .pp-banner-kicker { color: var(--green); }
+#diaryBanner .pp-btn { flex: 0 0 auto; margin-left: auto; }
+
+@media (max-width: 900px) {
+  .pp-inline-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pp-inline-form input:first-child { grid-column: 1 / -1; }
+  .pp-inline-form .pp-btn { grid-column: 1 / -1; }
+}
+@media (max-width: 620px) {
+  #diaryBanner { gap: 12px; padding: 12px 14px; }
+  .pp-banner-date { width: 44px; height: 44px; }
+  .pp-banner-date b { font-size: 17px; }
+  #diaryBanner .pp-btn { grid-column: auto; margin-left: 0; width: 100%; }
+  .pp-streak { display: none; }
+}
+
+/* ==========================================================================
+   16f · APPLICATIONS — tracking code + payment verification block
+   ========================================================================== */
+
+.pp-app-ref {
+  flex: 0 0 auto;
+  padding: 3px 9px;
+  border-radius: 8px;
+  background: var(--hover);
+  border: 1px dashed var(--border);
+  color: var(--muted);
+  font-family: "Figtree", monospace;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: .07em;
+  white-space: nowrap;
+}
+
+.pp-verify {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0 4px;
+  padding: 11px 13px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--amber) 11%, transparent);
+  border: 1px solid color-mix(in srgb, var(--amber) 38%, transparent);
+}
+.pp-verify.is-ok {
+  background: color-mix(in srgb, var(--green) 12%, transparent);
+  border-color: color-mix(in srgb, var(--green) 40%, transparent);
+}
+.pp-verify-icon {
+  flex: 0 0 auto;
+  width: 32px; height: 32px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--amber) 24%, transparent);
+  color: var(--amber);
+  font-size: 13px;
+}
+.pp-verify.is-ok .pp-verify-icon { background: color-mix(in srgb, var(--green) 26%, transparent); color: var(--green); }
+.pp-verify-copy { flex: 1 1 auto; min-width: 0; }
+.pp-verify-copy small { display: block; font-size: 10px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: var(--faint); }
+.pp-verify-copy code {
+  display: block;
+  margin: 2px 0 3px;
+  font-family: "Figtree", ui-monospace, monospace;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+.pp-verify-copy strong { display: block; font-size: 12px; color: var(--muted); font-weight: 700; }
+.pp-verify .pp-status { flex: 0 0 auto; }
+.pp-app-foot { flex-wrap: wrap; gap: 8px; }
+
+/* ==========================================================================
+   17 · RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 1240px) {
+  /* Compact the ribbon before it wraps: icon + number, drop the captions. */
+  .status-strip .ts-label { display: none; }
+  .status-strip { gap: 6px; padding: 8px 10px; }
+  .strip-label { padding-right: 2px; }
+}
+
+@media (max-width: 1100px) {
+  .quick-actions { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .strip-label { display: none; }
+}
+
+/* Below this the header would collide with the control cluster, so it folds
+   into two tidy rows instead of letting the title shove the search around. */
+@media (max-width: 900px) {
+  .topbar { flex-wrap: wrap; row-gap: 12px; }
+  .topbar-heading { flex: 1 1 100%; }
+  .topbar-right { flex: 1 1 100%; }
+  .search { width: auto !important; flex: 1 1 auto; max-width: none; }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+
+@media (max-width: 768px) {
+  .quick-actions { grid-template-columns: 1fr !important; }
+  .panel { padding: 16px !important; }
+  .stat-card { padding: 16px !important; }
+  .tabs { flex-wrap: wrap; gap: 6px; }
+  .tab { flex: 1; min-width: 110px; text-align: center; margin-bottom: 0; }
+  .topbar-nav { display: none; }
+  .strip-clock { display: none; }
+  .strip-cta { margin-left: auto; padding: 0 12px; }
+}
+
+@media (max-width: 560px) {
+  .stats { grid-template-columns: 1fr !important; }
+  .search { width: 100% !important; }
+  .topbar h1 { font-size: 21px !important; }
+  .strip-cta span { display: none; }
+  .strip-cta { width: 34px; justify-content: center; padding: 0; }
+}
+
+/* Phone: the rail becomes a slide-in drawer, so the fixed desktop widths above
+   must give way to a fluid panel that never squeezes the content. */
+@media (max-width: 760px) {
+  .sidebar,
+  .sidebar.close,
+  .sidebar.mobile-open,
+  .sidebar.close.mobile-open { width: min(300px, 86vw) !important; }
+
+  .sidebar,
+  .sidebar.close {
+    position: fixed !important;
+    transform: translateX(-105%);
+    transition: transform .24s cubic-bezier(.2, .8, .2, 1) !important;
+    z-index: 1001;
+  }
+  .sidebar.mobile-open { transform: translateX(0) !important; }
+
+  .sidebar.close .sidebar-brand-row { flex-direction: row; justify-content: space-between; gap: 8px; }
+  .sidebar.close .imgbrand .image { width: 43px !important; height: 43px !important; }
+  .sidebar.close .headertxt,
+  .sidebar.close .sidebar-user-copy,
+  .sidebar.close .account-menu-toggle,
+  .sidebar.close .nav-group-label { display: initial; }
+  .sidebar.close .nav-group-label { display: block; }
+  .sidebar.close .nav-group { margin-bottom: 18px; }
+  .sidebar.close .imgbrand { justify-content: flex-start; }
+  .sidebar.close li a { justify-content: flex-start; padding: 0 12px !important; gap: 13px !important; }
+  .sidebar.close .toggle i { transform: none; }
+
+  /* Phones open the rail with the hamburger, so the edge toggle is redundant
+     and would overlap the top bar. */
+  #sidebarToggle.toggle { display: none !important; }
+
+  .main-content,
+  .sidebar.close ~ .main-content { margin-left: 0 !important; }
+  .status-strip { margin-inline: 0; }
+}
+
+/* Very small phones: let the ribbon scroll rather than wrap into a tall block. */
+@media (max-width: 480px) {
+  .status-strip { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .status-strip::-webkit-scrollbar { display: none; }
+  .strip-clock { padding-left: 6px; padding-right: 6px; }
+}
+
+/* --------------------------------------------------------------------
+   Mobile portal nav: the brand left, controls right, and the three section
+   links folded into a drawer. Without this the brand and the links fought for
+   the same row and the logo ended up stranded in the middle of the bar.
+   -------------------------------------------------------------------- */
+.portal-burger {
+  display: none;
+  width: 42px; height: 42px;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--text);
+  font-size: 15px;
+  cursor: pointer;
+}
+
+@media (max-width: 760px) {
+  .portal-nav { position: sticky; justify-content: flex-start; gap: 10px; }
+  .portal-brand { flex: 0 0 auto; }
+  .portal-nav-right { margin-left: auto; gap: 10px; }
+  .portal-burger { display: grid; }
+
+  /* The links leave the bar entirely and become a drawer that drops beneath it.
+     They are still real buttons, so keyboard and screen-reader behaviour is
+     unchanged — only the presentation moves. */
+  .portal-nav-links {
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    padding: 10px 14px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    box-shadow: 0 18px 34px rgba(0, 0, 0, .18);
+    transform: translateY(-10px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: transform var(--ease), opacity var(--ease), visibility var(--ease);
+  }
+  .portal-nav.nav-open .portal-nav-links {
+    transform: none;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  .portal-nav-links button {
+    height: 44px;
+    justify-content: flex-start;
+    padding: 0 14px;
+    border-radius: 12px;
+  }
+  .portal-nav-links button.is-on { background: var(--gold-soft); color: var(--gold); }
+}
+
+/* Membership portal header folds down without losing the three flows. */
+@media (max-width: 940px) {
+  .portal-cta { display: none; }
+  .portal-brand small { display: none; }
+}
+@media (max-width: 760px) {
+  .portal-nav { gap: 9px; padding: 0 14px; height: 66px; }
+  .portal-nav-links { gap: 3px; padding: 3px; }
+  .portal-nav-links button { padding: 0 11px; font-size: 11.5px; height: 32px; }
+}
+@media (max-width: 520px) {
+  .portal-chip { display: none; }
+  .portal-nav-links button { padding: 0 9px; font-size: 11px; }
+  .portal-theme { width: 36px; height: 36px; }
+}
+
+/* ==========================================================================
+   18 · MOTION
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .strip-dot { animation: none !important; }
+  *, *::before, *::after {
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* ==========================================================================
+   19 · MEMBER HOME EXTRAS
+   ========================================================================== */
+
+/* A payment row that can actually be opened. Without this the list stopped at
+   the amount and the receipt was unreachable from the Overview tab. */
+.member-list-row .member-receipt {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--text);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--ease), border-color var(--ease), color var(--ease);
+}
+.member-list-row .member-receipt:hover {
+  border-color: var(--gold);
+  background: var(--gold-soft);
+  color: var(--gold);
+}
+.member-list-row .member-receipt i { color: inherit; }
+
+/* The four headline numbers read as one centred band rather than a row that
+   starts flush left and ends short of the card edge. */
+.pp-stat-row { justify-content: center; text-align: center; }
+.pp-stat-row .pp-stat { justify-items: center; text-align: center; }
+.pp-stat-row .pp-stat span,
+.pp-stat-row .pp-stat small { text-align: center; }
+
+/* Period switcher shared by the revenue and attendance charts. Uses the same
+   .chip as every other filter row so all the controls read as one family. */
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}.chip-row .chip {
+  height: 30px;
+  padding: 0 13px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+.chip-row .chip.active {
+  border-color: color-mix(in srgb, var(--gold) 55%, var(--border));
+  box-shadow: 0 6px 16px -10px var(--gold);
+}
+@media (max-width: 620px) {
+  .chip-row { justify-content: flex-start; }
+  .revenue-panel .panel-header,
+  .panel-header:has(.chip-row) { flex-direction: column; align-items: flex-start; gap: 12px; }
+}
+
+/* ==========================================================================
+   20 · OVERFLOW GUARDS
+   ========================================================================== */
+
+/* sidebar.js nudges an opened dropdown back inside the viewport by setting
+   --dd-shift. Applying it as a translate keeps the base anchoring rule
+   (right-aligned, or centred for .dropdown-row) rather than fighting it, so a
+   "..." menu on the last column of a wide table is always fully readable. */
+.dropdown { transform: translateX(var(--dd-shift, 0px)); }
+.dropdown-row { transform: translateX(calc(-50% + var(--dd-shift, 0px))); }
+
+/* Transient nudge used when a shortcut elsewhere on the page scrolls you to a
+   panel. Pulses the gold ring, then the class is removed by the caller. */
+.member-panel.is-highlight {
+  animation: pp-nudge 1.6s ease;
+}
+@keyframes pp-nudge {
+  0%, 100% { box-shadow: none; }
+  25%, 65% { box-shadow: 0 0 0 2px var(--gold), 0 14px 34px -18px var(--gold); }
+}
+
+/* ==========================================================================
+   22 · TRAINING DIARY AS A NOTE APP
+   ========================================================================== */
+
+/* The entries were flat grey slabs with a small date label. A diary reads as a
+   stack of paper: each one gets its own surface, a ruled gold spine down the
+   left, and a day chip you can scan without reading the title. */
+.pp-diary-list .pp-entry {
+  position: relative;
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 16px !important;
+  padding: 16px 18px 16px 20px !important;
+  margin-bottom: 14px !important;
+  overflow: hidden;
+  transition: transform var(--ease), box-shadow var(--ease), border-color var(--ease);
+}
+.pp-diary-list .pp-entry::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--gold), color-mix(in srgb, var(--gold) 25%, transparent));
+}
+.pp-diary-list .pp-entry:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--gold) 40%, var(--border)) !important;
+  box-shadow: 0 16px 34px -22px rgba(0, 0, 0, .55);
+}
+
+/* The day chip is the thing you scan, so it gets real weight. */
+.pp-diary-list .pp-entry-date {
+  width: 54px;
+  padding: 8px 0 7px !important;
+  border-radius: 12px !important;
+  background: var(--bg) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: none;
+}
+.pp-diary-list .pp-entry-date strong { font-size: 1.35rem; }
+.pp-diary-list .pp-entry-date span {
+  font-size: 9.5px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 800;
+}
+
+.pp-diary-list .pp-entry-main h4 {
+  font-size: 15.5px;
+  letter-spacing: -.01em;
+  line-height: 1.35;
+}
+.pp-diary-list .pp-entry-main .pp-chips { margin-top: 9px; }
+.pp-diary-list .pp-chip { font-size: 11px; }
+
+/* The note itself is the point of the screen, so it reads like body copy in a
+   writing app rather than like a caption. */
+.pp-diary-list .pp-notes {
+  margin: 13px 0 0 68px;
+  white-space: pre-wrap;
+  line-height: 1.72;
+  font-size: 14px;
+  letter-spacing: .005em;
+  color: var(--text);
+  opacity: .92;
+}
+
+/* Actions stay out of the way until the entry is touched. */
+.pp-diary-list .pp-entry-actions { opacity: .45; transition: opacity var(--ease); }
+.pp-diary-list .pp-entry:hover .pp-entry-actions,
+.pp-diary-list .pp-entry:focus-within .pp-entry-actions { opacity: 1; }
+
+.pp-diary-list .pp-thumbs { margin: 13px 0 0 68px; gap: 10px; }
+.pp-diary-list .pp-thumb {
+  border-radius: 12px !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 6px 16px -12px rgba(0, 0, 0, .6);
+}
+
+/* Month headings become sticky rails, so the current month stays visible while
+   you scroll back through older entries. */
+.pp-diary-list .pp-month {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: inline-block;
+  margin: 22px 0 12px !important;
+  padding: 5px 13px;
+  border-radius: 999px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 10.5px;
+}
+.pp-diary-list .pp-month:first-child { margin-top: 0; }
+
+@media (max-width: 620px) {
+  .pp-diary-list .pp-notes,
+  .pp-diary-list .pp-thumbs { margin-left: 0; }
+}
+
+/* Photo picker. The old version was a dashed box of centred grey text with no
+   clear target, so it read as decoration rather than a control. This is a real
+   row: tappable icon, a primary label, a secondary instruction, and the
+   remaining slot count so the limit is not discovered by hitting it. */
+.pp-field .pp-drop {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 14px 16px;
+  border: 1.5px dashed var(--border);
+  border-radius: 14px;
+  background: var(--bg);
+  color: var(--muted);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--ease), background var(--ease), transform var(--ease);
+}
+.pp-field .pp-drop:hover,
+.pp-field .pp-drop:focus-visible,
+.pp-field .pp-drop.is-over {
+  border-color: var(--gold);
+  background: var(--gold-soft);
+  outline: none;
+  transform: translateY(-1px);
+}
+.pp-field .pp-drop-icon {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--gold) 18%, transparent);
+  color: var(--gold);
+  font-size: 16px;
+}
+.pp-field .pp-drop-copy { display: grid; gap: 2px; min-width: 0; }
+.pp-field .pp-drop-copy strong {
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 700;
+}
+.pp-field .pp-drop-copy em {
+  font-style: normal;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.pp-field .pp-drop-slots {
+  margin-left: auto;
+  flex: 0 0 auto;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--hover);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.pp-field .pp-drop-slots.is-zero {
+  background: color-mix(in srgb, var(--red) 20%, transparent);
+  color: var(--red);
+}
+.pp-field .pp-drop.is-full { opacity: .55; pointer-events: none; }
+.pp-field .pp-drop.is-busy { opacity: .7; }
+
+@media (max-width: 560px) {
+  .pp-field .pp-drop { gap: 11px; padding: 12px 13px; }
+  .pp-field .pp-drop-slots { display: none; }
+}
+
+/* Gym contact details surfaced inside the member space. A definition list
+   rather than cards — this is reference information you scan, not something to
+   act on repeatedly. */
+.member-contact dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px 18px;
+  margin: 0;
+}
+.member-contact dt {
+  color: var(--muted);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.member-contact dd {
+  margin: 0;
+  color: var(--text);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+.member-contact a { color: var(--gold); text-decoration: none; }
+.member-contact a:hover { text-decoration: underline; }
+
+@media (max-width: 420px) {
+  .member-contact dl { grid-template-columns: 1fr; gap: 3px; }
+  .member-contact dt { margin-top: 8px; }
+}
+
+/* Panel headings all start from the same line. `align-items: center` centred a
+   short header against a taller right-hand control (or against a neighbour
+   with a two-line subtitle), which is what made some titles sit lower than
+   others. */
+.panel-header,
+.pp-card-head { align-items: flex-start; }
+.panel-header > div:first-child,
+.pp-card-head > div:first-child { display: grid; gap: 3px; align-content: start; }
+
+/* ==========================================================================
+   21 · PORTAL CARD — ONE SIZE FOR ALL THREE FLOWS
+   ========================================================================== */
+
+/* Enroll, Track request and Member sign-in used to size themselves to their
+   own content, so switching tabs made the card jump between ~1266px and
+   ~380px and the page lurched. One fixed shell with an internal scroller keeps
+   the card still while the three forms keep their natural heights. */
+.portal-card--fixed {
+  display: flex;
+  flex-direction: column;
+  height: clamp(460px, 76vh, 720px);
+}
+.portal-card--fixed > .portal-card-heading,
+.portal-card--fixed > .portal-tabs { flex: 0 0 auto; }
+.portal-card-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 2px;
+}
+.portal-card-body::-webkit-scrollbar { width: 8px; }
+.portal-card-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+.portal-card-body::-webkit-scrollbar-thumb:hover { background: var(--gold); }

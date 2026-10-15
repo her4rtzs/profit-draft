@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ProFit trainer portal — your classes, your calendar and who is booked in.">
+  <title>ProFit | Trainer Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="member-portal.css">
+  <script src="config.js"></script>
+  <script src="api.js"></script>
+<script src="auth.js"></script>
+  <script src="data.js"></script>
+  <link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=13"><script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script>
+  <style>
+    .tp-wrap { display: grid; gap: 18px; }
+    .tp-hero {
+      display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap;
+      padding: 24px 26px;
+      border-radius: var(--radius-lg, 18px);
+      border: 1px solid var(--border);
+      background: radial-gradient(700px 220px at 92% -30%, color-mix(in srgb, var(--gold) 22%, transparent), transparent 70%), var(--card);
+    }
+    .tp-hero h1 { margin: 4px 0 6px; font-size: clamp(24px, 3vw, 32px); letter-spacing: -.03em; }
+    .tp-hero p { margin: 0; color: var(--muted); font-size: 14px; max-width: 62ch; }
+    .tp-stats { display: flex; gap: 10px; flex-wrap: wrap; }
+    .tp-stat {
+      min-width: 118px; padding: 12px 16px; border-radius: 14px;
+      background: var(--hover); border: 1px solid var(--border);
+    }
+    .tp-stat span { display: block; font-size: 10.5px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: var(--faint); }
+    .tp-stat strong { display: block; margin-top: 4px; font-family: "Figtree", sans-serif; font-size: 24px; letter-spacing: -.03em; color: var(--text); }
+    .tp-stat small { display: block; margin-top: 1px; font-size: 11.5px; color: var(--muted); }
+    .tp-cols { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+    .tp-day { display: grid; gap: 10px; }
+    .tp-session {
+      display: flex; align-items: center; gap: 14px;
+      padding: 13px 15px; border-radius: 14px;
+      background: var(--hover); border: 1px solid var(--border);
+      border-left: 3px solid color-mix(in srgb, var(--gold) 70%, transparent);
+    }
+    .tp-session .tp-time {
+      flex: 0 0 auto; min-width: 66px; text-align: center;
+      font-family: "Figtree", sans-serif; font-weight: 800; font-size: 15px; color: var(--text);
+    }
+    .tp-session .tp-time small { display: block; font-size: 10.5px; font-weight: 700; color: var(--faint); letter-spacing: .06em; }
+    .tp-session .tp-copy { flex: 1 1 auto; min-width: 0; }
+    .tp-session .tp-copy strong { display: block; font-size: 14.5px; }
+    .tp-session .tp-copy small { display: block; margin-top: 2px; font-size: 12px; color: var(--muted); }
+    .tp-emoji { flex: 0 0 auto; font-size: 20px; }
+    .tp-fill {
+      flex: 0 0 auto; display: flex; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 700; color: var(--muted);
+    }
+    .tp-fill-bar { width: 62px; height: 6px; border-radius: 999px; background: var(--border); overflow: hidden; }
+    .tp-fill-bar i { display: block; height: 100%; background: var(--gold-grad); border-radius: inherit; }
+    .tp-roster { display: grid; gap: 8px; }
+    .tp-person { display: flex; align-items: center; gap: 11px; padding: 9px 12px; border-radius: 12px; background: var(--hover); }
+    .tp-person span.pp-avatar { flex: 0 0 auto; }
+    .tp-person b { display: block; font-size: 13.5px; color: var(--text); }
+    .tp-person small { display: block; font-size: 11.5px; color: var(--muted); }
+    .tp-person .tp-when { margin-left: auto; font-size: 11.5px; font-weight: 700; color: var(--muted); white-space: nowrap; }
+    .tp-coach-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+    .tp-coach {
+      display: flex; flex-direction: column; gap: 6px; align-items: flex-start;
+      padding: 15px 16px; border-radius: 14px; cursor: pointer; text-align: left;
+      background: var(--hover); border: 1px solid var(--border); color: var(--text);
+      font: inherit; transition: border-color .18s ease, transform .18s ease, background .18s ease;
+    }
+    .tp-coach:hover { border-color: var(--gold); transform: translateY(-2px); }
+    .tp-coach b { font-size: 15px; }
+    .tp-coach small { font-size: 12px; color: var(--muted); }
+    .tp-coach .tp-days { font-size: 11.5px; font-weight: 700; color: var(--gold); }
+    .tp-note-form { display: grid; gap: 10px; }
+    .tp-note-form select, .tp-note-form input, .tp-note-form textarea {
+      width: 100%; padding: 10px 12px; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--card); color: var(--text);
+      font: inherit; font-size: 13.5px;
+    }
+    .tp-note-form textarea { min-height: 78px; resize: vertical; }
+    @media (max-width: 900px) {
+      .tp-cols { grid-template-columns: minmax(0, 1fr); }
+      .tp-hero { padding: 20px; }
+    }
+    @media (max-width: 560px) {
+      .tp-stat { min-width: 0; flex: 1 1 40%; }
+      .tp-session { flex-wrap: wrap; }
+      .tp-fill { width: 100%; justify-content: flex-start; }
+    }
+  </style>
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script></head>
+<body class="portal-body" data-page="trainer-portal">
+  <header class="portal-nav" id="portalNav">
+    <a class="portal-brand" href="trainer-portal.html" aria-label="Trainer portal home">
+      <span class="brand-mark"><i class="fa-solid fa-dumbbell" id="portalLogoIcon"></i><img id="portalLogoImg" alt="" hidden></span>
+      <span><strong id="portalGymName">ProFit</strong><small id="portalGymTag">TRAINER PORTAL</small></span>
+    </a>
+
+    <nav class="portal-nav-links" id="portalNavLinks" aria-label="Trainer portal sections">
+      <button type="button" class="is-on" data-goto="overview">Overview</button>
+      <button type="button" data-goto="calendar">Calendar</button>
+      <button type="button" data-goto="roster">Roster</button>
+    </nav>
+
+    <div class="portal-nav-right">
+      <span class="portal-chip" id="trainerGreeting" hidden></span>
+      <button type="button" class="portal-theme" id="portalTheme" aria-label="Switch theme" title="Toggle theme"><i class="fa-regular fa-moon" aria-hidden="true"></i></button>
+
+      <div class="member-user" id="portalUser" hidden>
+        <button type="button" class="member-avatar" id="memberMenuToggle" aria-haspopup="menu" aria-expanded="false" aria-controls="memberMenu">
+          <span class="member-avatar-face" id="portalFace">C</span>
+          <span class="member-avatar-copy"><b id="portalUserName">Coach</b><small>Trainer account</small></span>
+          <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+        </button>
+        <div class="member-menu" id="memberMenu" role="menu" hidden>
+          <button type="button" role="menuitem" data-trainer-goto="overview"><i class="fa-solid fa-gauge-high"></i> Overview</button>
+          <button type="button" role="menuitem" data-trainer-goto="calendar"><i class="fa-regular fa-calendar"></i> My calendar</button>
+          <button type="button" role="menuitem" data-trainer-goto="roster"><i class="fa-solid fa-people-group"></i> Roster</button>
+          <hr>
+          <button type="button" role="menuitem" class="is-danger" id="logoutBtn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign out</button>
+        </div>
+      </div>
+
+      <a class="portal-cta" id="portalCta" href="member-home.html">Member home</a>
+    </div>
+  </header>
+
+  <main class="portal-shell" id="mainContent">
+    <div id="trainerPublic">
+      <section class="portal-intro">
+        <p class="eyebrow"><span></span> TRAINER SPACE</p>
+        <h2>Your week, your classes, who is booked in.</h2>
+        <p>The calendar, the roster and the gym's announcements for coaches — all in one place, no spreadsheets.</p>
+        <ul class="portal-points">
+          <li><i class="fa-regular fa-calendar-check" aria-hidden="true"></i><span><strong>A calendar that is actually yours</strong><small>See every session you are on, week by week.</small></span></li>
+          <li><i class="fa-solid fa-people-group" aria-hidden="true"></i><span><strong>Know who is coming</strong><small>Members booked into your classes, with their membership status.</small></span></li>
+          <li><i class="fa-solid fa-bullhorn" aria-hidden="true"></i><span><strong>Gym announcements</strong><small>Anything the gym publishes for trainers shows up here.</small></span></li>
+        </ul>
+      </section>
+
+      <section class="portal-card">
+        <div class="portal-heading">
+          <div class="portal-heading-icon"><i class="fa-solid fa-dumbbell"></i></div>
+          <div><h2 id="portalHeading">Who is training?</h2><p id="portalSubheading">Pick your name to open your portal.</p></div>
+        </div>
+
+        <div class="tp-coach-grid" id="coachGrid"></div>
+
+        <p class="portal-privacy"><i class="fa-solid fa-shield-halved"></i> Demo portal — pick any coach to look around. Everything stays in this browser.</p>
+      </section>
+    </div>
+
+    <div id="trainerDash" hidden class="tp-wrap">
+      <section class="tp-hero">
+        <div>
+          <p class="eyebrow"><span></span> TRAINER SPACE</p>
+          <h1 id="trainerTitle">Coach</h1>
+          <p id="trainerSubtitle">Your sessions for today.</p>
+        </div>
+        <div class="tp-stats">
+          <div class="tp-stat"><span>Today</span><strong id="statToday">0</strong><small>sessions</small></div>
+          <div class="tp-stat"><span>This week</span><strong id="statWeek">0</strong><small>sessions</small></div>
+          <div class="tp-stat"><span>Booked in</span><strong id="statBooked">0</strong><small>this week</small></div>
+          <div class="tp-stat"><span>Next up</span><strong id="statNext" style="font-size:18px">—</strong><small id="statNextLabel">no session today</small></div>
+        </div>
+      </section>
+
+      <nav class="pp-tabs" role="tablist" aria-label="Trainer sections">
+        <button class="pp-tab" type="button" role="tab" data-tab="overview" aria-selected="true"><i class="fa-solid fa-gauge-high"></i> Overview</button>
+        <button class="pp-tab" type="button" role="tab" data-tab="calendar" aria-selected="false"><i class="fa-regular fa-calendar"></i> My calendar</button>
+        <button class="pp-tab" type="button" role="tab" data-tab="roster" aria-selected="false"><i class="fa-solid fa-people-group"></i> Roster</button>
+      </nav>
+
+      <div class="tp-cols" data-panel="overview">
+        <div class="pp-card">
+          <div class="pp-card-head"><div><h3 id="todayTitle">Today's sessions</h3><p class="pp-muted" id="todayMeta"></p></div></div>
+          <div class="tp-day" id="todayList"></div>
+        </div>
+        <div style="display:grid;gap:18px">
+          <div class="pp-card">
+            <div class="pp-card-head"><div><h3>Send a schedule update</h3><p class="pp-muted">Goes straight to the front desk bell.</p></div></div>
+            <form class="tp-note-form" id="noteForm" novalidate>
+              <select id="noteSession" aria-label="Session"></select>
+              <textarea id="noteText" maxlength="300" placeholder="e.g. Moving Thursday's HIIT to 6:30 — room change." aria-label="Message"></textarea>
+              <button class="pp-btn pp-btn-primary" type="submit"><i class="fa-solid fa-paper-plane"></i> Send update</button>
+            </form>
+          </div>
+          <div class="pp-card">
+            <div class="pp-card-head"><div><h3>Announcements</h3><p class="pp-muted">From the gym to its coaches.</p></div></div>
+            <div id="trainerAnnounceList" class="pp-announce-list" style="padding:0"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pp-card" data-panel="calendar" hidden>
+        <div class="pp-card-head"><div><h3>My calendar</h3><p class="pp-muted">Gold dots are your sessions. Tap a day to open it.</p></div></div>
+        <div id="trainerCal" class="pp-cal"></div>
+        <div class="tp-day" id="calDayList" style="margin-top:14px"></div>
+      </div>
+
+      <div class="pp-card" data-panel="roster" hidden>
+        <div class="pp-card-head"><div><h3>Roster</h3><p class="pp-muted">Members booked into your sessions in the next 7 days.</p></div></div>
+        <div class="tp-roster" id="rosterList"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="portal-footer"><span>© <span id="year"></span> ProFit · Trainer portal</span><span><i class="fa-solid fa-shield-halved"></i> Coaches first</span></footer>
+  <script src="pf-common.js"></script>
+  <script src="trainer-portal.js"></script>
+</body>
+</html>

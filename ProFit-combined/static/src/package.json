@@ -1,0 +1,13 @@
+{
+  "name": "profit-web-portal",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Build-time Tailwind CSS + daisyUI for the ProFit staff web portal.",
+  "scripts": {
+    "build": "tailwindcss -i ./input.css -o ../dist/app.css --minify"
+  },
+  "devDependencies": {
+    "daisyui": "4.12.10",
+    "tailwindcss": "3.4.10"
+  }
+}
