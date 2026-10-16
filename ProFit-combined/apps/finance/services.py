@@ -12,6 +12,8 @@ from django.utils import timezone
 from apps.membership.models import MemberProfile
 from apps.membership.services import renew_member
 
+from apps.notifications.models import Notification
+from apps.notifications.services import notify
 from .models import ManualPayment
 
 PLAN_PRICE_CENTAVOS = {
@@ -50,6 +52,14 @@ def record_desk_payment(*, member, plan, method, recorded_by, paid_on=None):
             recorded_by=recorded_by,
         )
         renew_member(profile, plan, created_by=recorded_by, start_date=start)
+        profile.refresh_from_db()
+        notify(
+            profile.user,
+            "Membership renewed",
+            kind=Notification.Kind.MEMBERSHIP,
+            body=f"Your {plan} plan is active until {profile.expiry_date:%b %d, %Y}.",
+            link="member-home.html",
+        )
     return payment
 
 

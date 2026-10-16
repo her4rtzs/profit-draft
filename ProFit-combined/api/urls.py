@@ -8,6 +8,7 @@ from .join import JoinCheckoutView, JoinConfirmView
 from .member import MemberCheckoutView, MemberMeView
 from rest_framework.routers import SimpleRouter
 
+from .notifications import NotificationListView, NotificationReadAllView, NotificationReadView
 from .staff import (
     StaffAttendanceView,
     StaffCheckInView,
@@ -41,6 +42,9 @@ urlpatterns = [
     path("staff/payments/", StaffPaymentView.as_view(), name="staff-payments"),
     path("staff/payments/<int:pk>/", StaffPaymentDetailView.as_view(), name="staff-payment-detail"),
     path("staff/reports/summary/", StaffSummaryView.as_view(), name="staff-summary"),
+    path("notifications/", NotificationListView.as_view(), name="notifications"),
+    path("notifications/read-all/", NotificationReadAllView.as_view(), name="notifications-read-all"),
+    path("notifications/<int:pk>/read/", NotificationReadView.as_view(), name="notification-read"),
     *staff_router.urls,
     *router.urls,
 ]
