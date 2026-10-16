@@ -1,86 +1,87 @@
-/* ProFit sidebar and shared portal tokens for the staff and trainer portals.
-   Loaded last, so it wins over the older rules in styles.css and portal-ui.css. */
-:root { --sidebar-w: 272px; --sidebar-w-closed: 84px; }
+/* ProFit sidebar (staff and trainer portals). Dark panel, icon + label, solid gold active pill.
+   Hover is a quiet tint with no colour flip and no weight change. Loaded last so it wins. */
+:root { --sidebar-w: 250px; --sidebar-w-closed: 84px; }
 
 html body .sidebar {
-  width: var(--sidebar-w) !important;
-  height: 100dvh !important;
-  box-sizing: border-box;
-  padding: 18px 12px 14px !important;
-  display: flex; flex-direction: column;
-  background: linear-gradient(180deg, #161c26 0%, #0e1218 100%) !important;
-  border-right: 1px solid rgba(255,255,255,.07) !important;
-  box-shadow: 12px 0 36px rgba(0,0,0,.28) !important;
-  overflow-x: hidden;
-  transition: width .28s cubic-bezier(.2,.8,.2,1), transform .3s ease !important;
+  width: var(--sidebar-w) !important; box-sizing: border-box; padding: 18px 14px 16px !important;
+  display: flex; flex-direction: column; overflow: hidden !important;
+  background: linear-gradient(180deg, #141b27 0%, #0c1119 100%) !important;
+  border-right: 1px solid rgba(255,255,255,.06) !important; border-radius: 0 28px 28px 0 !important;
+  box-shadow: 18px 0 48px rgba(0,0,0,.35) !important;
+  transition: width .3s cubic-bezier(.2,.8,.2,1), transform .3s ease !important;
 }
 html body .sidebar.close { width: var(--sidebar-w-closed) !important; }
 
-html body .sidebar-brand-row { display: flex; align-items: center; gap: 12px; padding: 4px 6px 16px; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,.07); }
-html body .sidebar .imgbrand { display: flex; align-items: center; gap: 12px; text-decoration: none; min-width: 0; }
-html body .sidebar .imgbrand img { width: 44px; height: 44px; border-radius: 14px; object-fit: cover; box-shadow: 0 8px 20px rgba(0,0,0,.35); flex: 0 0 auto; }
+html body .sidebar-brand-row { display: flex; align-items: center; gap: 12px; padding: 6px 6px 18px; margin: 0 0 12px; border-bottom: 1px solid rgba(255,255,255,.06); }
+html body .sidebar .imgbrand { display: flex; align-items: center; gap: 12px; min-width: 0; text-decoration: none; }
+html body .sidebar .imgbrand img { width: 42px; height: 42px; border-radius: 14px; object-fit: cover; box-shadow: 0 8px 18px rgba(0,0,0,.4); flex: 0 0 auto; }
 html body .sidebar .headertxt { display: grid; gap: 3px; min-width: 0; }
 html body .sidebar .headertxt strong { color: #fff; font-size: 16px; font-weight: 800; white-space: nowrap; }
-html body .sidebar .headertxt small { color: var(--gold); font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; white-space: nowrap; }
+html body .sidebar .headertxt small { color: #e8b93a; font-size: 10px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; white-space: nowrap; }
 
-html body .sidebar-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; }
-html body .sidebar .nav-group-label { margin: 16px 10px 6px; color: #657084; font-size: 10.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
-html body .sidebar .menulist { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+html body .sidebar-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; }
+html body .sidebar .nav-group-label { margin: 18px 12px 8px; color: #5f6b80; font-size: 10.5px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+html body .sidebar .menulist { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+
 html body .sidebar .menulist a {
-  position: relative; display: flex; align-items: center; gap: 12px; padding: 11px 12px;
-  border-radius: 14px; color: #a7b0bf !important; text-decoration: none; font-size: 14.5px; font-weight: 600;
-  transition: background .2s ease, color .2s ease, box-shadow .2s ease;
+  position: relative; display: flex; align-items: center; gap: 14px; height: 46px; padding: 0 14px; box-sizing: border-box;
+  border-radius: 14px; color: #97a1b4 !important; text-decoration: none; font-size: 14.5px; font-weight: 600 !important;
+  background: transparent !important; box-shadow: none !important; transition: background-color .2s ease, color .2s ease;
 }
-html body .sidebar .menulist a .icon { flex: 0 0 22px; width: 22px; text-align: center; color: #7b8577; font-size: 16px; transition: color .2s ease, transform .2s ease; }
-html body .sidebar .menulist a .text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-html body .sidebar .menulist a:hover { background: rgba(255,255,255,.05) !important; color: #fff !important; }
-html body .sidebar .menulist a:hover .icon { color: var(--gold) !important; transform: translateX(1px); }
-html body .sidebar .menulist a.active {
-  background: linear-gradient(90deg, color-mix(in srgb, var(--gold) 20%, transparent), color-mix(in srgb, var(--gold) 4%, transparent)) !important;
-  color: #fff !important; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--gold) 28%, transparent) !important;
-}
-html body .sidebar .menulist a.active::before { content: ""; position: absolute; left: -12px; top: 10px; bottom: 10px; width: 4px; border-radius: 0 4px 4px 0; background: var(--gold); }
-html body .sidebar .menulist a.active .icon,
-html body .sidebar .menulist a.active .text { color: inherit; }
-html body .sidebar .menulist a.active .icon { color: var(--gold) !important; }
-html body .sidebar .menulist a:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
-html body .sidebar .menulist a:active { background: color-mix(in srgb, var(--gold) 14%, transparent) !important; color: #fff !important; }
+html body .sidebar .menulist a .icon { flex: 0 0 20px; width: 20px; text-align: center; font-size: 16px; color: #7f8aa0 !important; transition: color .2s ease; }
+html body .sidebar .menulist a .text { font-weight: 600 !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* Collapsed: icons only, centred. The label appears as a tooltip (portal-fx.js). */
-html body .sidebar.close .menulist a { justify-content: center; padding: 12px 0; }
+@media (hover: hover) {
+  html body .sidebar .menulist a:hover { background: rgba(255,255,255,.055) !important; color: #e7ebf3 !important; }
+  html body .sidebar .menulist a:hover .icon { color: #e7ebf3 !important; }
+}
+html body .sidebar .menulist a:focus { outline: none !important; background: transparent !important; color: #97a1b4 !important; }
+html body .sidebar .menulist a:focus-visible { outline: 2px solid #e8b93a !important; outline-offset: 2px; }
+html body .sidebar .menulist a:active { background: rgba(255,255,255,.08) !important; }
+
+/* Active page: solid gold pill with dark text. Same weight as the rest. */
+html body .sidebar .menulist a.active,
+html body .sidebar .menulist a.active:hover,
+html body .sidebar .menulist a.active:focus,
+html body .sidebar .menulist a.active:active {
+  background: linear-gradient(110deg, #f4d27a 0%, #e8b93a 100%) !important; color: #1a1407 !important;
+  box-shadow: 0 10px 24px rgba(232,185,58,.22) !important;
+}
+html body .sidebar .menulist a.active .icon, html body .sidebar .menulist a.active .text { color: #1a1407 !important; }
+html body .sidebar .menulist a.active::before { display: none !important; }
+html body .sidebar i { display: inline-block; visibility: visible; opacity: 1; }
+
+/* Collapsed rail: icons only, centred. The label shows as a tooltip. */
+html body .sidebar.close .menulist a { justify-content: center; padding: 0; width: 100%; }
 html body .sidebar.close .menulist a .text,
 html body .sidebar.close .nav-group-label,
 html body .sidebar.close .headertxt,
 html body .sidebar.close .sidebar-user-copy { display: none !important; }
-html body .sidebar.close .sidebar-brand-row { justify-content: center; }
+html body .sidebar.close .sidebar-brand-row { justify-content: center; padding: 6px 0 18px; }
 
 /* Account block at the bottom. */
-html body .sidebar-account { margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(255,255,255,.07); }
-html body .sidebar-user { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 16px; background: rgba(255,255,255,.04); }
-html body .sidebar-avatar { width: 38px; height: 38px; flex: 0 0 38px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(135deg, var(--gold), var(--gold-deep)); color: #19231e; font-weight: 800; }
+html body .sidebar-account { margin-top: auto; padding-top: 14px; border-top: 1px solid rgba(255,255,255,.06); }
+html body .sidebar-user { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 18px; background: rgba(255,255,255,.04); }
+html body .sidebar-avatar { width: 38px; height: 38px; flex: 0 0 38px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(135deg, #f4d27a, #e8b93a); color: #1a1407; font-weight: 800; }
 html body .sidebar-user-copy { min-width: 0; display: grid; gap: 2px; }
 html body .sidebar-user-copy strong { color: #fff; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-html body .sidebar-user-copy small { color: #7b8597; font-size: 12px; }
+html body .sidebar-user-copy small { color: #7f8aa0; font-size: 12px; }
 
-/* Phone: the sidebar is a drawer, and it never squeezes the content. */
+/* Tooltip for the collapsed rail (portal-fx.js). */
+.pf-tip { position: fixed; z-index: 99990; transform: translateY(-50%) translateX(-4px); opacity: 0; pointer-events: none;
+  background: #141b27; color: #fff; border: 1px solid rgba(255,255,255,.08); border-radius: 12px; padding: 9px 14px;
+  font: 600 13px/1.2 Inter, system-ui, sans-serif; white-space: nowrap; box-shadow: 0 14px 30px rgba(0,0,0,.45);
+  transition: opacity .16s ease, transform .16s ease; }
+.pf-tip.show { opacity: 1; transform: translateY(-50%) translateX(0); }
+
+/* Phone: the sidebar is a drawer and never squeezes the content. */
 @media (max-width: 760px) {
-  html body .sidebar { position: fixed !important; left: 0; top: 0; bottom: 0; z-index: 300; width: min(300px, 84vw) !important; transform: translateX(-104%) !important; }
+  html body .sidebar { position: fixed !important; left: 0; top: 0; bottom: 0; z-index: 300; width: min(300px, 84vw) !important; transform: translateX(-104%) !important; border-radius: 0 28px 28px 0 !important; }
   html body .sidebar.close { width: min(300px, 84vw) !important; }
   html body .sidebar.mobile-open { transform: translateX(0) !important; }
   html body .sidebar-shade.visible { background: rgba(3,6,12,.6) !important; }
   html body .main-content { margin-left: 0 !important; }
 }
-
-/* Motion users who prefer less get no slide. */
 @media (prefers-reduced-motion: reduce) {
   html body .sidebar, html body .sidebar .menulist a, html body .sidebar .menulist a .icon { transition: none !important; }
 }
-
-/* Sidebar icons: always visible, with enough contrast on the dark background. */
-html body .sidebar i, html body .sidebar .icon {
-  display: inline-block !important; visibility: visible !important; opacity: 1 !important;
-  font-size: 16px !important; line-height: 1 !important; color: #c3cad8;
-}
-html body .sidebar .menulist a:hover .icon, html body .sidebar .menulist a.active .icon { color: var(--gold) !important; }
-html body .sidebar.close .menulist a { display: flex !important; width: 100%; box-sizing: border-box; }
-html body .sidebar.close .menulist a .icon { margin: 0 auto; }
