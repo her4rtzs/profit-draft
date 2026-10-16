@@ -13,12 +13,13 @@
   <script src="api.js"></script>
   <script src="auth.js"></script>
 <link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=6"><script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script><link rel="stylesheet" href="hover-fx.css?v=1">
+<link rel="stylesheet" href="announcements.css?v=1">
 </head>
 <body class="member-home">
   <header class="member-top">
     <a class="member-logo" href="member-home.html"><span><i class="fa-solid fa-dumbbell" id="homeLogoIcon"></i><img id="homeLogoImg" alt="" hidden></span><b id="homeGymName">ProFit</b></a>
     <div class="member-top-actions">
-      <div class="member-top-chip"><i class="fa-solid fa-bell" aria-hidden="true"></i><span id="homeAnnounceCount">0</span></div>
+      <a class="member-top-chip" href="member-home.html#announcements" aria-label="Announcements and notifications"><i class="fa-solid fa-bell" aria-hidden="true"></i><span id="homeAnnounceCount">0</span></a>
       <button class="theme-toggle" id="memberTheme" aria-label="Toggle theme"><i class="fa-solid fa-moon"></i></button>
       <div class="member-user">
         <button class="member-avatar" id="memberMenuToggle" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="memberMenu">
@@ -64,6 +65,7 @@
     <nav class="pp-tabs" role="tablist" aria-label="Member sections">
       <button class="pp-tab" type="button" role="tab" data-tab="overview" aria-selected="true"><i class="fa-solid fa-gauge-high"></i> Overview</button>
       <button class="pp-tab" type="button" role="tab" data-tab="schedule" aria-selected="false"><i class="fa-regular fa-calendar"></i> Schedule</button>
+      <button class="pp-tab" type="button" role="tab" data-tab="announcements" aria-selected="false"><i class="fa-solid fa-bullhorn"></i> Announcements</button>
       <button class="pp-tab" type="button" role="tab" data-tab="diary" aria-selected="false"><i class="fa-solid fa-book-open"></i> Diary</button>
       <button class="pp-tab" type="button" role="tab" data-tab="health" aria-selected="false"><i class="fa-solid fa-heart-pulse"></i> Health &amp; goals</button>
       <button class="pp-tab" type="button" role="tab" data-tab="profile" aria-selected="false"><i class="fa-regular fa-id-card"></i> My profile</button>
@@ -71,6 +73,10 @@
     </nav>
     <div class="portal-result" id="memberNotice" role="status" hidden></div>
     <div class="pp-tool-panel" data-panel="overview">
+    <section class="panel ann-overview">
+      <div class="panel-header"><div><h2>Latest from the gym</h2><p>Notices and updates.</p></div><a class="ann-btn" href="#announcements">See all</a></div>
+      <div id="annPreview" class="ann-list"></div>
+    </section>
     <section class="member-status-card">
       <div>
         <span class="member-status-label"><i class="fa-solid fa-circle-check"></i> MEMBERSHIP OVERVIEW</span>
@@ -153,6 +159,12 @@
   </div>
     <div class="pp-tool-panel" data-panel="schedule" hidden>
 <div id="scheduleRoot"></div>
+    </div>
+    <div class="pp-tool-panel" data-panel="announcements" hidden>
+      <section class="panel member-panel">
+        <div class="panel-header"><div><h2>Announcements</h2><p>Notices from the gym.</p></div></div>
+        <div id="announcementList" class="ann-list"></div>
+      </section>
     </div>
     <div class="pp-tool-panel" data-panel="diary" hidden>
 <div id="diaryRoot"></div>
@@ -531,5 +543,6 @@
   sync();
 })();
 </script>
+<script src="announcements-member.js?v=1" defer></script>
 </body>
 </html>

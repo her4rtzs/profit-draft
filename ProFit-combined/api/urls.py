@@ -8,6 +8,13 @@ from .join import JoinCheckoutView, JoinConfirmView
 from .member import MemberCheckoutView, MemberMeView
 from rest_framework.routers import SimpleRouter
 
+from .announcements import (
+    MemberAnnouncementListView,
+    StaffAnnouncementArchiveView,
+    StaffAnnouncementDetailView,
+    StaffAnnouncementListView,
+    StaffAnnouncementPublishView,
+)
 from .notifications import NotificationListView, NotificationReadAllView, NotificationReadView
 from .staff import (
     StaffAttendanceView,
@@ -45,6 +52,11 @@ urlpatterns = [
     path("notifications/", NotificationListView.as_view(), name="notifications"),
     path("notifications/read-all/", NotificationReadAllView.as_view(), name="notifications-read-all"),
     path("notifications/<int:pk>/read/", NotificationReadView.as_view(), name="notification-read"),
+    path("announcements/", MemberAnnouncementListView.as_view(), name="announcements"),
+    path("staff/announcements/", StaffAnnouncementListView.as_view(), name="staff-announcements"),
+    path("staff/announcements/<int:pk>/", StaffAnnouncementDetailView.as_view(), name="staff-announcement-detail"),
+    path("staff/announcements/<int:pk>/publish/", StaffAnnouncementPublishView.as_view(), name="staff-announcement-publish"),
+    path("staff/announcements/<int:pk>/archive/", StaffAnnouncementArchiveView.as_view(), name="staff-announcement-archive"),
     *staff_router.urls,
     *router.urls,
 ]

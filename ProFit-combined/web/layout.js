@@ -11,6 +11,7 @@
     { label: 'FINANCE', items: [
       { id: 'payments', label: 'Payments & Billing', icon: 'fa-wallet', href: 'payments.html' },
       { id: 'reports', label: 'Financial Reports', icon: 'fa-chart-column', href: 'reports.html' },
+      { id: 'announcements', label: 'Announcements', icon: 'fa-bullhorn', href: 'announcements.html' },
     ]},
   ];
   const body = document.body, current = body.dataset.page;
