@@ -8,6 +8,18 @@ from .join import JoinCheckoutView, JoinConfirmView
 from .member import MemberCheckoutView, MemberMeView
 from rest_framework.routers import SimpleRouter
 
+from .trainers import (
+    MemberTrainerRequestCancelView,
+    MemberTrainerRequestView,
+    MemberTrainerView,
+    StaffMemberTrainerRemoveView,
+    StaffMemberTrainerView,
+    StaffTrainerCandidatesView,
+    StaffTrainerDetailView,
+    StaffTrainerListView,
+    StaffTrainerRequestDecideView,
+    StaffTrainerRequestListView,
+)
 from .announcements import (
     MemberAnnouncementListView,
     StaffAnnouncementArchiveView,
@@ -57,6 +69,16 @@ urlpatterns = [
     path("staff/announcements/<int:pk>/", StaffAnnouncementDetailView.as_view(), name="staff-announcement-detail"),
     path("staff/announcements/<int:pk>/publish/", StaffAnnouncementPublishView.as_view(), name="staff-announcement-publish"),
     path("staff/announcements/<int:pk>/archive/", StaffAnnouncementArchiveView.as_view(), name="staff-announcement-archive"),
+    path("staff/trainers/", StaffTrainerListView.as_view(), name="staff-trainers"),
+    path("staff/trainers/candidates/", StaffTrainerCandidatesView.as_view(), name="staff-trainer-candidates"),
+    path("staff/trainers/<int:pk>/", StaffTrainerDetailView.as_view(), name="staff-trainer-detail"),
+    path("staff/members/<int:pk>/trainer/", StaffMemberTrainerView.as_view(), name="staff-member-trainer"),
+    path("staff/members/<int:pk>/trainer/remove/", StaffMemberTrainerRemoveView.as_view(), name="staff-member-trainer-remove"),
+    path("staff/trainer-requests/", StaffTrainerRequestListView.as_view(), name="staff-trainer-requests"),
+    path("staff/trainer-requests/<int:pk>/decide/", StaffTrainerRequestDecideView.as_view(), name="staff-trainer-request-decide"),
+    path("trainer/me/", MemberTrainerView.as_view(), name="member-trainer"),
+    path("trainer-requests/", MemberTrainerRequestView.as_view(), name="member-trainer-request"),
+    path("trainer-requests/<int:pk>/cancel/", MemberTrainerRequestCancelView.as_view(), name="member-trainer-request-cancel"),
     *staff_router.urls,
     *router.urls,
 ]

@@ -38,6 +38,7 @@ class StaffMemberSerializer(serializers.ModelSerializer):
 
     name = serializers.SerializerMethodField()
     email = serializers.EmailField(source="user.email", read_only=True)
+    trainer = serializers.SerializerMethodField()
 
     class Meta:
         model = MemberProfile
@@ -50,11 +51,19 @@ class StaffMemberSerializer(serializers.ModelSerializer):
             "membership_status",
             "date_joined",
             "expiry_date",
+            "trainer",
         ]
-        read_only_fields = ["membership_status", "date_joined", "expiry_date"]
+        read_only_fields = ["membership_status", "date_joined", "expiry_date", "trainer"]
 
     def get_name(self, obj):
         return obj.user.get_full_name() or obj.user.username
+
+    def get_trainer(self, obj):
+        from apps.trainers.services import current_assignment
+        current = current_assignment(obj)
+        if current is None:
+            return None
+        return {"id": current.trainer_id, "name": current.trainer.user.get_full_name() or current.trainer.user.username}
 
 
 class StaffMemberCreateSerializer(serializers.Serializer):

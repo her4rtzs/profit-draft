@@ -12,6 +12,7 @@
       { id: 'payments', label: 'Payments & Billing', icon: 'fa-wallet', href: 'payments.html' },
       { id: 'reports', label: 'Financial Reports', icon: 'fa-chart-column', href: 'reports.html' },
       { id: 'announcements', label: 'Announcements', icon: 'fa-bullhorn', href: 'announcements.html' },
+      { id: 'trainers', label: 'Trainers', icon: 'fa-dumbbell', href: 'trainers.html' },
     ]},
   ];
   const body = document.body, current = body.dataset.page;
