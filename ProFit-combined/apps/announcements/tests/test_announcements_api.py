@@ -94,3 +94,10 @@ class AnnouncementTests(TestCase):
         self.as_(self.user_a)
         self.assertEqual(self.api.get(STAFF).status_code, 403)
         self.assertEqual(self.api.post(f"{STAFF}1/publish/", {}, format="json").status_code, 403)
+
+    def test_status_filter_is_lenient(self):
+        self.create()
+        self.as_(self.owner)
+        everything = self.api.get(STAFF).json()
+        self.assertEqual(len(self.api.get(STAFF, {"status": "bogus"}).json()), len(everything))
+        self.assertEqual(len(self.api.get(STAFF, {"status": "draft"}).json()), 1)

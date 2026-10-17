@@ -69,10 +69,8 @@ class StaffAnnouncementListView(APIView):
 
     def get(self, request):
         rows = Announcement.objects.all().prefetch_related("recipients")
-        status = request.query_params.get("status")
-        if status:
-            if status not in Announcement.Status.values:
-                return Response({"detail": "Unknown status."}, status=400)
+        status = (request.query_params.get("status") or "").upper()
+        if status in Announcement.Status.values:
             rows = rows.filter(status=status)
         return Response(StaffAnnouncementSerializer(rows, many=True).data)
 
