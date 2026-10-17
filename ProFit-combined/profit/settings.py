@@ -28,7 +28,8 @@ environ.Env.read_env(BASE_DIR / ".env")
 # SECRET_KEY from env, with a clearly-insecure dev fallback for local use only.
 SECRET_KEY = env("SECRET_KEY", default="dev-insecure-key-not-for-production")
 
-DEBUG = env.bool("DEBUG", default=True)
+# Off by default so production is safe. Set DEBUG=True in .env for local development.
+DEBUG = env.bool("DEBUG", default=False)
 
 # ALLOWED_HOSTS from a CSV env value.
 #   DEBUG=True  -> fall back to localhost when unset.
