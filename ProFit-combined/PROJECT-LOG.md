@@ -471,3 +471,15 @@ When several pages carry their own copy of a shared block, replace them with one
 - Could not run a browser in the build environment. Verified markup and script syntax.
 ### Decision-log skill
 When navigation is hidden on small screens, always provide a visible way to open it. Check the header rules for every breakpoint before calling the layout finished.
+
+## 2026-10-18 03:30 (Asia/Manila): Footer redesign to the approved design
+### What I asked for
+- Make the footer match the approved footer design (PF mark, tagline, Built by Team AusFITious, Explore and Contact columns, copyright row).
+### What the agent decided and why
+- Used one footer markup and one stylesheet on all public pages, so every page matches.
+- Explore links point to the landing sections with full paths, so they work from every page.
+- Contact column follows the design's note to use the existing site contact details, which are the landing Visit section details. The email from the earlier brief is not shown in this design. Owner to confirm.
+- Kept Terms of Service, Privacy Policy, and FAQ in the bottom row, because the brief requires those links.
+- Could not run a browser in the build environment. Verified script syntax and link targets.
+### Decision-log skill
+When a design sample includes placeholder text, replace it with the real detail from the approved source, and flag any conflicting detail for the owner instead of guessing.

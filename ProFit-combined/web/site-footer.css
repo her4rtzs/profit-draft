@@ -1,22 +1,26 @@
-/* Shared footer for public pages. Same container width as the landing page. */
-.site-footer{--foot-mu:#a9acb4;--foot-line:#262a33;--foot-gold:#e8b93a;margin-top:56px;padding:0;background:#0b0c0f;border-top:1px solid var(--foot-line);color:#f5f1e6;font:400 15px/1.6 Inter,system-ui,sans-serif;text-align:left}
+/* Shared footer for public pages. Matches the approved design; same 1200px width as the landing page. */
+.site-footer{--foot-mu:#a9acb4;--foot-line:#262a33;--foot-gold:#e8b93a;margin-top:56px;background:#0b0c0f;border-top:1px solid var(--foot-gold);color:#f5f1e6;font:400 15px/1.6 Inter,system-ui,sans-serif;text-align:left}
 body:not(.dark) .site-footer{--foot-mu:#5d5f66;--foot-line:#e2ddd0;background:#f6f3ea;color:#1b1c20}
-.site-footer .foot-inner{max-width:1200px;margin:0 auto;padding:56px 24px 28px;display:grid;gap:40px}
-.site-footer .foot-top{display:grid;grid-template-columns:1.4fr 1fr 1.2fr;gap:48px;align-items:start}
+.site-footer .foot-inner{max-width:1200px;margin:0 auto;padding:56px 24px 28px;display:flex;flex-direction:column;gap:40px}
+.site-footer .foot-top{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:48px;align-items:start}
+.site-footer .foot-lead{display:flex;flex-direction:column;gap:28px}
 .site-footer .foot-brand{display:flex;gap:14px;align-items:center}
-.site-footer .foot-brand img{width:48px;height:48px;border-radius:50%;object-fit:cover;flex:none}
-.site-footer .foot-brand strong{display:block;font:800 22px/1 "Barlow Condensed",Inter,sans-serif;letter-spacing:.04em;text-transform:uppercase}
-.site-footer .foot-brand small{display:block;margin-top:6px;color:var(--foot-mu);font-size:14px}
-.site-footer h3{margin:0 0 14px;font:700 12px/1 Inter,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--foot-gold)}
+.site-footer .pf-mark{display:grid;place-items:center;width:52px;height:52px;flex:none;border-radius:50%;border:2px solid var(--foot-gold);color:var(--foot-gold);font:800 16px/1 "Barlow Condensed",Inter,sans-serif;letter-spacing:.04em}
+.site-footer .foot-brand strong{display:block;font:800 26px/1 "Barlow Condensed",Inter,sans-serif;letter-spacing:.03em;text-transform:uppercase}
+.site-footer .foot-brand small{display:block;margin-top:6px;color:var(--foot-mu);font-size:15px}
+.site-footer .foot-built{display:flex;gap:14px;align-items:center}
+.site-footer .foot-built img{width:56px;height:56px;border-radius:8px;object-fit:cover;background:#000;flex:none}
+.site-footer .kicker{display:block;color:var(--foot-gold);font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:600}
+.site-footer .foot-built strong{display:block;font-size:17px;font-weight:700}
+.site-footer .foot-built small{display:block;color:var(--foot-mu);font-size:14px}
+.site-footer h3{margin:0 0 16px;font:700 13px/1 Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase}
 .site-footer .foot-col{display:flex;flex-direction:column;gap:10px}
 .site-footer .foot-col p{margin:0;color:var(--foot-mu)}
-.site-footer a{color:inherit;text-decoration:none;opacity:.88;width:fit-content;max-width:100%;overflow-wrap:anywhere;transition:color .15s,opacity .15s}
-.site-footer a:hover,.site-footer a:focus-visible{color:var(--foot-gold);opacity:1;text-decoration:underline;text-underline-offset:3px}
-.site-footer .foot-bottom{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px 32px;padding-top:24px;border-top:1px solid var(--foot-line);font-size:14px;color:var(--foot-mu)}
-.site-footer .foot-team{display:flex;align-items:center;gap:12px}
-.site-footer .foot-team img{width:44px;height:44px;border-radius:10px;object-fit:cover}
-.site-footer .foot-team span{display:block;font-size:13px;color:var(--foot-mu)}
-.site-footer .foot-team strong{display:block;color:inherit;font-weight:700;font-size:15px}
-@media (max-width:860px){.site-footer .foot-top{grid-template-columns:1fr 1fr}.site-footer .foot-brand{grid-column:1/-1}}
+.site-footer a{color:var(--foot-mu);text-decoration:none;width:fit-content;max-width:100%;overflow-wrap:anywhere;transition:color .15s}
+.site-footer a:hover,.site-footer a:focus-visible{color:var(--foot-gold);text-decoration:underline;text-underline-offset:3px}
+.site-footer .foot-bottom{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 28px;padding-top:22px;border-top:1px solid var(--foot-line);font-size:14px;color:var(--foot-mu)}
+.site-footer .legal{display:flex;flex-wrap:wrap;gap:6px 20px}
+.site-footer .foot-team{color:var(--foot-gold);font-weight:600}
+@media (max-width:860px){.site-footer .foot-top{grid-template-columns:1fr 1fr}.site-footer .foot-lead{grid-column:1/-1}}
 @media (max-width:520px){.site-footer .foot-top{grid-template-columns:1fr}.site-footer .foot-inner{padding:44px 20px 24px}}
 @media (prefers-reduced-motion:reduce){.site-footer a{transition:none}}
