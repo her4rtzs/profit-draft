@@ -95,6 +95,12 @@ section.s{padding:84px 0}
 .visit .box{display:flex;gap:16px;align-items:flex-start}.visit .box .ic{margin:0;flex:none}
 .visit h3{font-size:16px;margin-bottom:4px}.visit p,.visit a{color:var(--mu);font-size:14.5px}.visit a:hover{color:var(--lime)}
 @media(max-width:860px){.visit{grid-template-columns:1fr}}
+
+/* Landing hero: team photo behind the headline with a solid dark overlay; solid gold accent (no gradient text). */
+.hero{position:relative;overflow:hidden;background:#0b0b09 url("img/hero.jpg") center 30%/cover no-repeat}
+.hero::before{content:"";position:absolute;inset:0;background:rgba(9,9,7,.82)}
+.hero .wrap{position:relative;z-index:1}
+.hero h1 em{background:none;-webkit-background-clip:initial;background-clip:initial;color:var(--gold,#d4a646)}
 </style></head>
 <body class="dark pf-glow">
 <header class="top"><div class="wrap"><a class="brand" href="welcome.html"><img src="logo.jpg" alt="">ProFit</a>
