@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="site-footer.css?v=1">
 <style>
 *{box-sizing:border-box;margin:0}html{scroll-behavior:smooth}
-:root{--gold:#e8b93a;--lime:#e8b93a;--lime-hi:#f2cb5c;--on:#1a1407;--bg:#07080c;--grad:linear-gradient(135deg,#f4d27a 0%,#e8b93a 50%,#b8891c 100%);--bg2:#0b0d16;--card:#111320;--line:#232636;--tx:#f6efdc;--mu:#9a9788;--wrap:1160px;--r:16px;--gap:20px}
+:root{--gold:#e8b93a;--lime:#e8b93a;--lime-hi:#f2cb5c;--on:#1a1407;--bg:#07080c;--grad:#e8b93a;--bg2:#0b0d16;--card:#111320;--line:#232636;--tx:#f6efdc;--mu:#9a9788;--wrap:1160px;--r:16px;--gap:20px}
 body{position:relative;font:16px/1.6 Inter,system-ui,sans-serif;background:transparent;color:var(--tx);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 h1,h2,h3,.brand{font-family:"Plus Jakarta Sans",Inter,sans-serif;letter-spacing:-.02em}
 a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
@@ -16,7 +16,7 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 22px;border-radius:999px;font:700 15px "Plus Jakarta Sans",sans-serif;border:1px solid var(--line);background:transparent;color:var(--tx);cursor:pointer;transition:background-color .15s,border-color .15s}
 .btn:hover{border-color:var(--lime)}
 .btn.p{background:var(--grad);color:var(--on);border-color:var(--lime)}.btn.p:hover{filter:brightness(1.07)}
-html{background-color:#07080c;background-image:radial-gradient(900px 520px at 12% -8%,rgba(232,185,58,.30),transparent 65%),radial-gradient(800px 520px at 100% 105%,rgba(90,66,170,.26),transparent 65%),linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:auto,auto,48px 48px,48px 48px;background-attachment:fixed}
+html{background-color:#07080c;background-image:none;background-size:auto,auto,48px 48px,48px 48px;background-attachment:fixed}
 .strip,.plans{background:rgba(11,13,22,.85)}
 /* header */
 header.top{position:sticky;top:0;z-index:50;background:rgba(7,8,12,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
@@ -101,7 +101,13 @@ section.s{padding:84px 0}
 .hero::before{content:"";position:absolute;inset:0;background:rgba(9,9,7,.82)}
 .hero .wrap{position:relative;z-index:1}
 .hero h1 em{background:none;-webkit-background-clip:initial;background-clip:initial;color:var(--gold,#d4a646)}
-</style></head>
+
+/* Inside ProFit gallery */
+.gal-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:22px}
+.gal-grid figure{margin:0}
+.gal-grid img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:16px;border:1px solid var(--line)}
+@media (max-width:860px){.gal-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style><script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script></head>
 <body class="dark pf-glow">
 <header class="top"><div class="wrap"><a class="brand" href="welcome.html"><img src="logo.jpg" alt="">ProFit</a>
 <nav aria-label="Primary"><a href="#home">Home</a><a href="#why">Features</a><a href="#programs">Programs</a><a href="#plans">Membership</a><a href="#about">About</a><a href="#visit">Contact</a></nav>
@@ -131,6 +137,7 @@ section.s{padding:84px 0}
 <article class="box prog"><div class="pic"><img src="img/gym-2.jpg" alt="" onerror="this.remove()"><div class="ph"><i class="fa-solid fa-fire"></i></div></div><div class="in"><h3>HIIT &amp; functional</h3><p>Short, high-energy sessions that build stamina.</p><div class="tags"><span>Intermediate</span><span>Group</span></div></div></article>
 <article class="box prog"><div class="pic"><img src="img/gym-3.jpg" alt="" onerror="this.remove()"><div class="ph"><i class="fa-solid fa-user"></i></div></div><div class="in"><h3>Personal coaching</h3><p>One-on-one attention and a plan made for your goals.</p><div class="tags"><span>1-on-1</span><span>By schedule</span></div></div></article></div></div></section>
 
+<section class="s gal" aria-label="Inside ProFit"><div class="wrap"><h2>Inside ProFit</h2><div class="gal-grid"><figure><img src="img/gal-1.jpg" alt="Team photo at the ProFit gym" loading="lazy"></figure><figure><img src="img/gal-2.jpg" alt="Group of members posing together in the gym" loading="lazy"></figure><figure><img src="img/gal-3.jpg" alt="Member training at the squat rack" loading="lazy"></figure><figure><img src="img/gal-4.jpg" alt="Equipment on the ProFit gym floor" loading="lazy"></figure></div></div></section>
 <section class="s plans" id="plans"><div class="wrap"><div class="sh"><div><span class="eyebrow">Membership</span><h2>Simple plans, no surprises</h2></div><p>Choose a plan, pay online, and your account is created right away.</p></div>
 <div class="grid3">
 <div class="box plan"><h3>Monthly</h3><div class="price">₱800<small> / 30 days</small></div><ul><li><i class="fa-solid fa-check"></i>Gym access</li><li><i class="fa-solid fa-check"></i>Member portal</li><li><i class="fa-solid fa-check"></i>Attendance tracking</li></ul><a class="btn" href="join.html?plan=monthly">Choose plan</a></div>

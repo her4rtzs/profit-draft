@@ -385,3 +385,15 @@ The landing page header was broken (logo and menu hidden behind FAQ / Terms / Pr
 - Left the landing page's Visit section alone. Its phone number and address differ from the footer and the legal pages; the gym must confirm which is correct.
 ### Decision-log skill
 A bare element selector (nav, footer, header) in a page stylesheet will also hit every injected component of the same tag. Scope page-level selectors (body>nav) and give shared components a class. When one component exists in several places, keep a single source for its markup and CSS.
+## 2026-10-18 02:59 (Asia/Manila): Landing page color split, gym photos, and tab-switch flicker
+### What I asked for
+- Remove the split colors on the landing page, add the real gym photos, stop the blank flash on every tab switch, and refactor one screen at a time against the attached wireframe.
+### What the agent decided and why
+- Removed the decorative radial glows and made the shared gradient solid gold. The glows caused the two-tone split, and the brief asks for no gradients.
+- Added speculation rules (prerender on moderate hover) to all web pages. The staff portal is multi-page static HTML, so each tab click reloads the page and flashes blank. Prerendering makes the click show a ready page. Browsers without speculation rules fall back to the normal load.
+- Added a four-photo gallery on the landing page from the supplied gym photos, cropped to 4:5, because the wireframe uses real photos.
+- Did not rewrite the portal into Django templates with Tailwind and daisyUI as AGENTS.md describes. The current web portal is static HTML and JS. Converting it is a separate decision for the owner.
+- Could not run `python manage.py test` or a browser in the build environment. Verified by parsing scripts, checking local links, and checking the rules are valid JSON.
+### Decision-log skill
+When a multi-page static site flashes on navigation, prerender the next page before adding animations. When a page looks split, check the shared gradient variables and the page background first, then fix them in one place.
+
