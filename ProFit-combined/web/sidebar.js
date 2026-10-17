@@ -12,8 +12,8 @@
   const setDrawer = open => { if(!sidebar) return; sidebar.classList.toggle("mobile-open",open); drawerShade.classList.toggle("visible",open); if(mobileToggle){mobileToggle.setAttribute("aria-expanded",String(open));mobileToggle.setAttribute("aria-label",open?"Close navigation":"Open navigation");mobileToggle.innerHTML=`<i class="fa-solid ${open?'fa-xmark':'fa-bars'}"></i>`;} document.body.classList.toggle("drawer-open",open); };
   mobileToggle?.addEventListener("click",()=>setDrawer(!sidebar?.classList.contains("mobile-open")));
   drawerShade.addEventListener("click",()=>setDrawer(false));
-  sidebar?.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{if(window.matchMedia("(max-width: 760px)").matches)setDrawer(false)}));
-  window.addEventListener("resize",()=>{if(!window.matchMedia("(max-width: 760px)").matches)setDrawer(false)});
+  sidebar?.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{setDrawer(false)}));
+  
   if (sidebar && store.get("sidebar")==="closed") sidebar.classList.add("close");
   if(toggle) toggle.dataset.profitBound="1";
   toggle?.addEventListener("click", () => {

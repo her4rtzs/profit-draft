@@ -483,3 +483,16 @@ When navigation is hidden on small screens, always provide a visible way to open
 - Could not run a browser in the build environment. Verified script syntax and link targets.
 ### Decision-log skill
 When a design sample includes placeholder text, replace it with the real detail from the approved source, and flag any conflicting detail for the owner instead of guessing.
+
+## 2026-10-18 03:32 (Asia/Manila): Remove portal loading effects; sidebar as a drawer on all screens
+### What I asked for
+- Remove the loading effects in the portal so the sidebar stops flickering. Hide the sidebar until a button opens it, the same way the mobile view works.
+### What the agent decided and why
+- Removed the page reveal fade and the top progress bar. Both added motion on every page open, which the brief asks to avoid.
+- The sidebar is built by script after the first paint. It is now off-screen by default on every screen size, so a late build is not visible.
+- The menu button opens the sidebar on desktop too. It closes after a link is tapped or when the dark area is clicked.
+- The main content takes the full width when the sidebar is closed.
+- Could not run a browser in the build environment. Verified script syntax and CSS structure.
+- Not a complete fix for every loading state. Pages that load data still show their own content when ready. A static sidebar in the HTML would remove the build step entirely and is the next step if any flicker remains.
+### Decision-log skill
+When a navigation element flickers because a script builds it late, move it out of the normal layout first (off-screen by default), then decide whether it should be static markup.
