@@ -411,3 +411,17 @@ When a multi-page static site flashes on navigation, prerender the next page bef
 - Could not run a browser in the build environment. Verified by parsing the markup and checking local links.
 ### Decision-log skill
 When a landing page flickers on open, check for entrance overlays and blur effects before touching the content. When a page feels heavy, reduce section spacing first and remove doubled gaps before changing colors.
+
+## 2026-10-18 03:13 (Asia/Manila): Landing page rebuilt as one design system
+### What I asked for
+- Make the landing page look like a finished, professional gym site (reference: a well-known gym brand's website), based on the attached wireframe.
+### What the agent decided and why
+- Rebuilt the landing page as one document with one set of tokens (colors, buttons, cards, spacing) instead of patching the old styles. Patching had left mismatched sections and oversized spacing.
+- Kept the real gym details already on the page (address, phone, hours, prices) and did not add statistics or testimonials that the gym has not supplied.
+- Removed the intro overlay, the blurred header, and the gold call-to-action band that caused flicker and visual noise.
+- Added a no-JavaScript mobile menu (checkbox toggle) so the header works on phones.
+- Flagged for the owner: the page shows "Functional Fitness Gym", but the footer details supplied earlier say "Functional Performance". The phone number also differs. The owner must confirm which name and contact details are correct.
+- Did not change the staff portal in this pass. The portal should adopt the same tokens next.
+- Could not run a browser in the build environment. Verified by checking markup, local links, and photo files.
+### Decision-log skill
+When a page keeps needing patches, rebuild it once around a small token set, then reuse the same tokens on the next page. Keep the owner's real details and never invent figures.

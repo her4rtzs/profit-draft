@@ -5,169 +5,172 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <link rel="stylesheet" href="site-footer.css?v=1">
-<style>
-*{box-sizing:border-box;margin:0}html{scroll-behavior:smooth}
-:root{--gold:#e8b93a;--lime:#e8b93a;--lime-hi:#f2cb5c;--on:#1a1407;--bg:#07080c;--grad:#e8b93a;--bg2:#0b0d16;--card:#111320;--line:#232636;--tx:#f6efdc;--mu:#9a9788;--wrap:1160px;--r:16px;--gap:20px}
-body{position:relative;font:16px/1.6 Inter,system-ui,sans-serif;background:transparent;color:var(--tx);-webkit-font-smoothing:antialiased;overflow-x:hidden}
-h1,h2,h3,.brand{font-family:"Plus Jakarta Sans",Inter,sans-serif;letter-spacing:-.02em}
-a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
-.wrap{width:min(var(--wrap),100% - 40px);margin-inline:auto}
-:focus-visible{outline:2px solid var(--lime);outline-offset:3px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 22px;border-radius:999px;font:700 15px "Plus Jakarta Sans",sans-serif;border:1px solid var(--line);background:transparent;color:var(--tx);cursor:pointer;transition:background-color .15s,border-color .15s}
-.btn:hover{border-color:var(--lime)}
-.btn.p{background:var(--grad);color:var(--on);border-color:var(--lime)}.btn.p:hover{filter:brightness(1.07)}
-html{background-color:#07080c;background-image:none;background-size:auto,auto,48px 48px,48px 48px;background-attachment:fixed}
-.strip,.plans{background:rgba(11,13,22,.85)}
-/* header */
-header.top{position:sticky;top:0;z-index:50;background:rgba(7,8,12,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.top .wrap{display:flex;align-items:center;justify-content:space-between;height:68px;gap:20px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:22px}.brand img{width:36px;height:36px;border-radius:10px}
-.top nav{display:flex;gap:28px}.top nav a{color:var(--mu);font-size:14px;font-weight:600}.top nav a:hover{color:var(--lime)}
-.top .cta{display:flex;gap:10px}.top .btn{height:40px;padding:0 18px;font-size:14px}
-@media(max-width:860px){.top nav{display:none}}
-@media(max-width:420px){.top .btn:not(.p){display:none}}
-/* hero */
-.hero{padding:72px 0 56px}
-.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
-.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.16em;color:var(--lime);text-transform:uppercase}
-.eyebrow::before{content:"";width:24px;height:2px;background:var(--lime)}
-.hero h1{font-size:clamp(40px,6vw,72px);line-height:1.02;font-weight:800;margin:16px 0 18px}
-.hero h1 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero p.lead{color:var(--mu);font-size:18px;max-width:520px}
-.hero .acts{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap}
-.hero-media{position:relative;aspect-ratio:4/5;border-radius:24px;border:1px solid var(--line);background:var(--card);overflow:hidden;display:grid;place-items:center}
-.hero-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.ph{display:grid;place-items:center;gap:10px;text-align:center;color:var(--mu);font-size:13px;padding:24px}
-.ph i{font-size:44px;color:var(--lime)}
-.chip{position:absolute;display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:14px;background:rgba(17,19,32,.94);border:1px solid var(--line);font-size:13px;font-weight:600}
-.chip i{color:var(--lime)}.chip small{display:block;color:var(--mu);font-weight:500}
-.chip.a{left:16px;bottom:18px}.chip.b{right:16px;top:18px}
-@media(max-width:860px){.hero .wrap{grid-template-columns:1fr}.hero{padding-top:40px}.hero-media{aspect-ratio:16/10}}
-/* ticker strip */
-.strip{border-block:1px solid var(--line);background:var(--bg2)}
-.strip .wrap{display:grid;grid-template-columns:repeat(4,1fr)}
-.strip div{padding:22px 20px;border-right:1px solid var(--line);display:flex;align-items:center;gap:12px;font-weight:600;font-size:14px}
-.strip div:last-child{border-right:0}.strip i{color:var(--lime);font-size:18px}
-@media(max-width:720px){.strip .wrap{grid-template-columns:1fr 1fr}.strip div:nth-child(2){border-right:0}.strip div:nth-child(-n+2){border-bottom:1px solid var(--line)}}
-/* sections */
-section.s{padding:84px 0}
-.sh{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:36px;flex-wrap:wrap}
-.sh h2{font-size:clamp(28px,4vw,44px);line-height:1.08;margin-top:10px;max-width:640px}
-.sh p{color:var(--mu);max-width:420px}
-.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap)}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap)}
-.box{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px}
-.box .ic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:rgba(232,185,58,.12);color:var(--lime);font-size:18px;margin-bottom:18px}
-.box h3{font-size:18px;margin-bottom:8px}.box p{color:var(--mu);font-size:14.5px}
-@media(max-width:980px){.grid4{grid-template-columns:1fr 1fr}.grid3{grid-template-columns:1fr}}
-@media(max-width:520px){.grid4{grid-template-columns:1fr}}
-/* programs */
-.prog{padding:0;overflow:hidden;display:flex;flex-direction:column}
-.prog .pic{aspect-ratio:16/10;background:var(--bg2);border-bottom:1px solid var(--line);position:relative;display:grid;place-items:center}
-.prog .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.prog .in{padding:22px;flex:1}.prog .in h3{font-size:18px;margin-bottom:6px}.prog .in p{color:var(--mu);font-size:14.5px}
-.prog .tags{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}.prog .tags span{font-size:12px;font-weight:600;border:1px solid var(--line);border-radius:99px;padding:4px 10px;color:var(--mu)}
-/* plans */
-.plans{background:var(--bg2);border-block:1px solid var(--line)}
-.plan{position:relative;display:flex;flex-direction:column;padding:28px}
-.plan.hot{border-color:var(--lime)}
-.plan .badge{position:absolute;top:-12px;left:24px;background:var(--lime);color:var(--on);font-size:11px;font-weight:800;letter-spacing:.06em;padding:4px 12px;border-radius:99px}
-.plan h3{font-size:16px;color:var(--mu);font-weight:600}
-.plan .price{font:800 44px/1.1 "Plus Jakarta Sans",sans-serif;margin:10px 0 2px}
-.plan .price small{font-size:14px;color:var(--mu);font-weight:500}
-.plan ul{list-style:none;padding:0;margin:20px 0 24px;display:grid;gap:10px;flex:1}
-.plan li{display:flex;gap:10px;font-size:14.5px}.plan li i{color:var(--lime);margin-top:5px;font-size:12px}
-.plan .btn{width:100%}
-/* story */
-.story{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
-.story .pic{aspect-ratio:4/3;border-radius:24px;border:1px solid var(--line);background:var(--card);position:relative;overflow:hidden;display:grid;place-items:center}
-.story .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.story h2{font-size:clamp(28px,4vw,42px);line-height:1.1;margin:10px 0 16px}.story p{color:var(--mu);margin-bottom:14px}
-.story ul{list-style:none;padding:0;display:grid;gap:10px;margin-top:18px}.story li{display:flex;gap:10px}.story li i{color:var(--lime);margin-top:5px}
-@media(max-width:860px){.story{grid-template-columns:1fr;gap:28px}}
-/* cta */
-.cta-band{background:var(--grad);color:var(--on)}
-.cta-band .wrap{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:44px 0;flex-wrap:wrap}
-.cta-band h2{font-size:clamp(26px,3.6vw,38px);line-height:1.1}.cta-band p{opacity:.8;margin-top:6px}
-.cta-band .btn{background:var(--on);color:var(--lime);border-color:var(--on)}.cta-band .btn:hover{background:#000}
-/* visit */
-.visit{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap)}
-.visit .box{display:flex;gap:16px;align-items:flex-start}.visit .box .ic{margin:0;flex:none}
-.visit h3{font-size:16px;margin-bottom:4px}.visit p,.visit a{color:var(--mu);font-size:14.5px}.visit a:hover{color:var(--lime)}
-@media(max-width:860px){.visit{grid-template-columns:1fr}}
-
-/* Landing hero: team photo behind the headline with a solid dark overlay; solid gold accent (no gradient text). */
-.hero{position:relative;overflow:hidden;background:#0b0b09 url("img/hero.jpg") center 30%/cover no-repeat}
-.hero::before{content:"";position:absolute;inset:0;background:rgba(9,9,7,.82)}
-.hero .wrap{position:relative;z-index:1}
-.hero h1 em{background:none;-webkit-background-clip:initial;background-clip:initial;color:var(--gold,#d4a646)}
-
-/* Inside ProFit gallery */
-.gal-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:22px}
-.gal-grid figure{margin:0}
-.gal-grid img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:16px;border:1px solid var(--line)}
-@media (max-width:860px){.gal-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-
-/* Refinement pass: calmer spacing, solid surfaces, photo program cards, no intro overlay. */
-header.top{background:#0b0c10;backdrop-filter:none;-webkit-backdrop-filter:none}
-.s{padding:64px 0}
-.s + .s{padding-top:0}
-@media (max-width:820px){.s{padding:44px 0}}
-.cta-band{background:var(--card);color:var(--tx);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.cta-band .wrap{padding:34px 0}
-.cta-band p{color:var(--mu);opacity:1;margin-top:4px}
-.cta-band .btn{background:var(--lime);color:var(--on);border-color:var(--lime)}
-.cta-band .btn:hover{filter:brightness(1.07)}
-.pc-img{aspect-ratio:4/3;overflow:hidden;border-radius:14px;border:1px solid var(--line);margin-bottom:18px}
-.pc-img img{display:block;width:100%;height:100%;object-fit:cover}
-</style><script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script><link rel="preload" as="image" href="img/hero.jpg"></head>
-<body class="dark pf-glow">
-<header class="top"><div class="wrap"><a class="brand" href="welcome.html"><img src="logo.jpg" alt="">ProFit</a>
-<nav aria-label="Primary"><a href="#home">Home</a><a href="#why">Features</a><a href="#programs">Programs</a><a href="#plans">Membership</a><a href="#about">About</a><a href="#visit">Contact</a></nav>
-<div class="cta"><a class="btn" href="login.html">Sign in</a><a class="btn p" href="join.html">Join now</a></div></div></header>
-<main id="home">
-<section class="hero"><div class="wrap"><div>
-<span class="eyebrow">Functional Fitness Gym · Alfonso</span>
-<h1>Stronger people.<br><em>Healthier</em> community.</h1>
+<style>:root{--bg:#0b0c0f;--s1:#13151a;--line:#262a33;--tx:#f5f1e6;--mu:#a9acb4;--gold:#e8b93a;--gold-hi:#f5cd5c;--on:#14110a;--r:14px;--w:1200px}
+*{box-sizing:border-box}
+html{background:var(--bg);color:var(--tx);scroll-behavior:smooth;scroll-padding-top:90px}
+body{margin:0;font:400 16px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{color:inherit}
+p{margin:0}
+.wrap{max-width:var(--w);margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:"Barlow Condensed",Inter,sans-serif;text-transform:uppercase;font-weight:800;line-height:.96;margin:0;letter-spacing:.005em}
+h2{font-size:clamp(40px,4.8vw,62px)}
+h3{font-size:26px;line-height:1.05}
+.eyebrow{display:flex;align-items:center;gap:10px;margin:0 0 16px;font:700 13px/1 Inter,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.eyebrow::before{content:"";width:26px;height:2px;background:var(--gold)}
+.lead{color:var(--mu);font-size:18px;max-width:560px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:50px;padding:0 24px;border-radius:10px;border:1.5px solid transparent;font:700 15px/1 Inter,sans-serif;text-decoration:none;transition:background .15s,color .15s,border-color .15s}
+.btn-gold{background:var(--gold);color:var(--on)}
+.btn-gold:hover{background:var(--gold-hi)}
+.btn-line{border-color:var(--line);color:var(--tx)}
+.btn-line:hover{border-color:var(--gold);color:var(--gold)}
+.acts{display:flex;gap:10px}
+header.top{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--line)}
+.bar{height:72px;display:flex;align-items:center;gap:32px}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;font:800 24px/1 "Barlow Condensed",Inter,sans-serif;letter-spacing:.04em;text-transform:uppercase}
+.brand img{width:40px;height:40px;border-radius:50%;object-fit:cover}
+.nav{display:flex;gap:28px;margin-left:auto}
+.nav a{text-decoration:none;color:var(--mu);font-weight:600;font-size:15px}
+.nav a:hover{color:var(--tx)}
+.top .btn{height:42px;padding:0 18px;font-size:14px}
+.menu-btn{display:none;margin-left:auto;cursor:pointer;font-size:22px;padding:6px}
+#navt:checked ~ header .nav{display:flex}
+@media (max-width:920px){
+ .nav{display:none;position:absolute;top:72px;left:0;right:0;flex-direction:column;gap:0;background:var(--bg);border-bottom:1px solid var(--line);padding:4px 24px 12px}
+ .nav a{padding:13px 0;border-top:1px solid var(--line)}
+ .menu-btn{display:block}
+ .acts .btn-line{display:none}
+}
+.hero{position:relative;display:flex;align-items:center;min-height:min(780px,calc(100svh - 72px));background:var(--bg) url("img/hero.jpg") center 30%/cover no-repeat;border-bottom:1px solid var(--line)}
+.hero::before{content:"";position:absolute;inset:0;background:rgba(9,10,12,.82)}
+.hero .wrap{position:relative;padding-top:96px;padding-bottom:96px}
+.hero h1{font-size:clamp(56px,9vw,120px);max-width:11ch}
+.hero h1 span{color:var(--gold)}
+.hero .lead{margin-top:22px}
+.hero .acts{margin-top:34px;flex-wrap:wrap}
+.where{display:inline-flex;align-items:center;gap:10px;margin-top:36px;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:rgba(11,12,15,.7);color:var(--mu);font-size:14px}
+.where i{color:var(--gold)}
+.strip{background:var(--s1);border-bottom:1px solid var(--line)}
+.sg{display:grid;grid-template-columns:repeat(4,1fr)}
+.sg span{display:flex;align-items:center;gap:12px;padding:22px 20px;font-weight:600;font-size:15px;border-left:1px solid var(--line)}
+.sg span:first-child{border-left:0;padding-left:0}
+.sg i{color:var(--gold);width:20px;text-align:center}
+@media (max-width:820px){.sg{grid-template-columns:1fr 1fr}.sg span:nth-child(3){border-left:0;padding-left:0}.sg span:nth-child(n+3){border-top:1px solid var(--line)}}
+.sec{padding:88px 0}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap;margin-bottom:44px}
+.sec-head p{color:var(--mu);max-width:400px}
+.grid{display:grid;gap:20px}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{background:var(--s1);border:1px solid var(--line);border-radius:var(--r);padding:26px}
+.card h3{margin:18px 0 10px}
+.card p{color:var(--mu);font-size:15px}
+.ico{width:48px;height:48px;border-radius:12px;display:grid;place-items:center;background:rgba(232,185,58,.12);color:var(--gold);font-size:20px}
+.prog{padding:0;overflow:hidden}
+.prog img{width:100%;aspect-ratio:4/3;object-fit:cover;border-bottom:1px solid var(--line)}
+.bd{padding:24px 26px 28px}
+.bd h3{margin:0 0 8px}
+.tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.tag{padding:7px 11px;border:1px solid var(--line);border-radius:999px;color:var(--mu);font:600 12px/1 Inter,sans-serif}
+.plan{display:flex;flex-direction:column;position:relative}
+.plan .name{font:700 13px/1 Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--mu)}
+.plan .price{font:800 68px/1 "Barlow Condensed",Inter,sans-serif;margin:20px 0 22px}
+.plan .price small{font:600 15px/1 Inter,sans-serif;color:var(--mu);margin-left:8px;text-transform:none}
+.plan ul{list-style:none;padding:0;margin:0 0 28px;display:grid;gap:12px;color:var(--mu)}
+.plan li{display:flex;align-items:center;gap:10px}
+.plan li i{color:var(--gold)}
+.plan .btn{margin-top:auto}
+.plan.hot{border-color:var(--gold)}
+.badge{position:absolute;top:-12px;left:26px;padding:7px 11px;border-radius:999px;background:var(--gold);color:var(--on);font:800 12px/1 Inter,sans-serif;letter-spacing:.12em;text-transform:uppercase}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.split img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:var(--r);border:1px solid var(--line)}
+.split h2{margin:0 0 20px}
+.checks{list-style:none;padding:0;margin:28px 0 0;display:grid;gap:14px}
+.checks li{display:flex;gap:12px;align-items:flex-start}
+.checks i{color:var(--gold);margin-top:4px}
+.gal{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.gal img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:12px;border:1px solid var(--line)}
+.cta{display:flex;align-items:center;justify-content:space-between;gap:28px;flex-wrap:wrap;padding:44px;background:var(--s1);border:1px solid var(--line);border-radius:20px}
+.cta h2{margin:0 0 10px;font-size:clamp(36px,4vw,52px)}
+.cta p{color:var(--mu)}
+@media (max-width:980px){.g4{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr}}
+@media (max-width:860px){.split{grid-template-columns:1fr;gap:36px}.gal{grid-template-columns:1fr 1fr}}
+@media (max-width:620px){.sec{padding:60px 0}.g3,.g4{grid-template-columns:1fr}.hero .acts .btn{flex:1}.cta{padding:28px}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style><script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script><link rel="preload" as="image" href="img/hero.jpg"><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet"></head>
+<body>
+<input id="navt" type="checkbox" hidden>
+<header class="top"><div class="wrap bar">
+<a class="brand" href="welcome.html"><img src="logo.jpg" alt="ProFit logo" width="40" height="40">ProFit</a>
+<nav class="nav" aria-label="Primary"><a href="#why">Features</a><a href="#programs">Programs</a><a href="#plans">Membership</a><a href="#about">About</a><a href="#visit">Visit</a></nav>
+<div class="acts"><a class="btn btn-line" href="login.html">Sign in</a><a class="btn btn-gold" href="join.html">Join now</a></div>
+<label class="menu-btn" for="navt" aria-label="Open menu"><i class="fa-solid fa-bars"></i></label>
+</div></header>
+<main>
+<section class="hero"><div class="wrap">
+<p class="eyebrow">Functional Fitness Gym · Alfonso</p>
+<h1>Stronger people. <span>Healthier</span> community.</h1>
 <p class="lead">Train with coaches who know your name. Join online in minutes, pay with GCash, Maya or card, and manage everything in your member portal.</p>
-<div class="acts"><a class="btn p" href="join.html">Join now <i class="fa-solid fa-arrow-right"></i></a><a class="btn" href="#plans">View plans</a></div></div>
-<div class="hero-media"><img src="img/hero-side.jpg" alt="ProFit gym interior with members training" onerror="this.remove()">
-<div class="chip b"><i class="fa-solid fa-bolt"></i><span>Pay online<small>GCash · Maya · Card</small></span></div>
-<div class="chip a"><i class="fa-solid fa-location-dot"></i><span>Alfonso, Calabarzon<small>Luksuhin-Mangas Road</small></span></div></div></div></section>
-<div class="strip"><div class="wrap">
-<div><i class="fa-solid fa-ticket"></i>3 flexible plans</div><div><i class="fa-solid fa-credit-card"></i>Pay online, account ready</div><div><i class="fa-solid fa-mobile-screen"></i>Member portal on your phone</div><div><i class="fa-solid fa-user-group"></i>Coaches on the floor</div></div></div>
-
-<section class="s" id="why"><div class="wrap"><div class="sh"><div><span class="eyebrow">Why choose us</span><h2>Everything you need to keep showing up</h2></div><p>From your first workout to your hundredth, ProFit keeps your plan, schedule and progress in one place.</p></div>
-<div class="grid4">
-<div class="box"><div class="ic"><i class="fa-solid fa-dumbbell"></i></div><h3>Functional training</h3><p>Strength, conditioning and mobility built around real-life movement.</p></div>
-<div class="box"><div class="ic"><i class="fa-solid fa-user-check"></i></div><h3>Coach guidance</h3><p>Trainers assigned to you, with schedules and notes inside your portal.</p></div>
-<div class="box"><div class="ic"><i class="fa-solid fa-chart-line"></i></div><h3>Track progress</h3><p>Attendance, health goals and your diary, all in one dashboard.</p></div>
-<div class="box"><div class="ic"><i class="fa-solid fa-shield-halved"></i></div><h3>Secure payments</h3><p>Checkout by PayMongo. Your membership starts as soon as you pay.</p></div></div></div></section>
-
-<section class="s" id="programs" style="padding-top:0"><div class="wrap"><div class="sh"><div><span class="eyebrow">Programs</span><h2>Train the way that fits you</h2></div><p>Sample programs. Final schedules and offerings are confirmed by the gym.</p></div>
-<div class="grid3">
-<article class="box prog"><div class="pic"><img src="img/gym-1.jpg" alt="" onerror="this.remove()"><div class="pc-img"><img src="img/prog-1.jpg" alt="Member training at the squat rack" loading="lazy"></div></div><div class="in"><h3>Strength &amp; conditioning</h3><p>Guided lifting and circuits for all levels.</p><div class="tags"><span>All levels</span><span>Group</span></div></div></article>
-<article class="box prog"><div class="pic"><img src="img/gym-2.jpg" alt="" onerror="this.remove()"><div class="pc-img"><img src="img/prog-2.jpg" alt="Bench and equipment on the ProFit gym floor" loading="lazy"></div></div><div class="in"><h3>HIIT &amp; functional</h3><p>Short, high-energy sessions that build stamina.</p><div class="tags"><span>Intermediate</span><span>Group</span></div></div></article>
-<article class="box prog"><div class="pic"><img src="img/gym-3.jpg" alt="" onerror="this.remove()"><div class="pc-img"><img src="img/prog-3.jpg" alt="Group of members posing together in the gym" loading="lazy"></div></div><div class="in"><h3>Personal coaching</h3><p>One-on-one attention and a plan made for your goals.</p><div class="tags"><span>1-on-1</span><span>By schedule</span></div></div></article></div></div></section>
-
-<section class="s gal" aria-label="Inside ProFit"><div class="wrap"><h2>Inside ProFit</h2><div class="gal-grid"><figure><img src="img/gal-1.jpg" alt="Team photo at the ProFit gym" loading="lazy"></figure><figure><img src="img/gal-2.jpg" alt="Group of members posing together in the gym" loading="lazy"></figure><figure><img src="img/gal-3.jpg" alt="Member training at the squat rack" loading="lazy"></figure><figure><img src="img/gal-4.jpg" alt="Equipment on the ProFit gym floor" loading="lazy"></figure></div></div></section>
-<section class="s plans" id="plans"><div class="wrap"><div class="sh"><div><span class="eyebrow">Membership</span><h2>Simple plans, no surprises</h2></div><p>Choose a plan, pay online, and your account is created right away.</p></div>
-<div class="grid3">
-<div class="box plan"><h3>Monthly</h3><div class="price">₱800<small> / 30 days</small></div><ul><li><i class="fa-solid fa-check"></i>Gym access</li><li><i class="fa-solid fa-check"></i>Member portal</li><li><i class="fa-solid fa-check"></i>Attendance tracking</li></ul><a class="btn" href="join.html?plan=monthly">Choose plan</a></div>
-<div class="box plan hot"><span class="badge">MOST POPULAR</span><h3>Quarterly</h3><div class="price">₱2,100<small> / 90 days</small></div><ul><li><i class="fa-solid fa-check"></i>Gym access</li><li><i class="fa-solid fa-check"></i>Member portal</li><li><i class="fa-solid fa-check"></i>Attendance tracking</li></ul><a class="btn p" href="join.html?plan=quarterly">Choose plan</a></div>
-<div class="box plan"><h3>Annual</h3><div class="price">₱7,500<small> / 365 days</small></div><ul><li><i class="fa-solid fa-check"></i>Gym access</li><li><i class="fa-solid fa-check"></i>Member portal</li><li><i class="fa-solid fa-check"></i>Attendance tracking</li></ul><a class="btn" href="join.html?plan=annual">Choose plan</a></div></div></div></section>
-
-<section class="s" id="about"><div class="wrap story"><div class="pic"><img src="img/hero.jpg" alt="ProFit members posing together in the gym" onerror="this.remove()"></div>
-<div><span class="eyebrow">Our story</span><h2>A neighborhood gym built on community</h2><p>Functional Fitness Gym is a local gym in Alfonso, Calabarzon. We focus on practical strength, steady habits and a friendly floor where everyone belongs.</p><p>ProFit is the system behind it: join online, check in, and follow your progress without paperwork.</p>
-<ul><li><i class="fa-solid fa-circle-check"></i>Friendly, beginner-welcome environment</li><li><i class="fa-solid fa-circle-check"></i>Coaches who track your progress</li><li><i class="fa-solid fa-circle-check"></i>Clear pricing, paid online</li></ul></div></div></section>
-
-<div class="cta-band"><div class="wrap"><div><h2>Ready to start?</h2><p>Pick a plan and your account is ready after payment.</p></div><a class="btn" href="join.html">Join now <i class="fa-solid fa-arrow-right"></i></a></div></div>
-
-<section class="s" id="visit"><div class="wrap"><div class="sh"><div><span class="eyebrow">Visit</span><h2>Come train with us</h2></div></div>
-<div class="visit">
-<div class="box"><div class="ic"><i class="fa-solid fa-location-dot"></i></div><div><h3>Address</h3><p>259 Luksuhin-Mangas Road<br>Alfonso, Calabarzon</p></div></div>
-<div class="box"><div class="ic"><i class="fa-solid fa-phone"></i></div><div><h3>Call us</h3><a href="tel:09122617663">0912 261 7663</a><p>Opens at 7 AM</p></div></div>
-<div class="box"><div class="ic"><i class="fa-brands fa-facebook-f"></i></div><div><h3>Facebook</h3><a href="https://www.facebook.com/FunctionalPerformance.2022" target="_blank" rel="noopener">Functional Fitness Gym</a></div></div></div></div></section>
+<div class="acts"><a class="btn btn-gold" href="join.html">Join now <i class="fa-solid fa-arrow-right"></i></a><a class="btn btn-line" href="#plans">View plans</a></div>
+<p class="where"><i class="fa-solid fa-location-dot"></i>259 Luksuhin-Mangas Road, Alfonso, Calabarzon</p>
+</div></section>
+<div class="strip"><div class="wrap sg">
+<span><i class="fa-solid fa-ticket"></i>3 flexible plans</span>
+<span><i class="fa-solid fa-credit-card"></i>Pay online, account ready</span>
+<span><i class="fa-solid fa-mobile-screen"></i>Member portal on your phone</span>
+<span><i class="fa-solid fa-users"></i>Coaches on the floor</span>
+</div></div>
+<section class="sec" id="why"><div class="wrap">
+<div class="sec-head"><div><p class="eyebrow">Why choose us</p><h2>Everything you need to keep showing up</h2></div>
+<p>From your first workout to your hundredth, ProFit keeps your plan, schedule and progress in one place.</p></div>
+<div class="grid g4">
+<div class="card"><div class="ico"><i class="fa-solid fa-dumbbell"></i></div><h3>Functional training</h3><p>Strength, conditioning and mobility built around real-life movement.</p></div>
+<div class="card"><div class="ico"><i class="fa-solid fa-user-check"></i></div><h3>Coach guidance</h3><p>Trainers assigned to you, with schedules and notes inside your portal.</p></div>
+<div class="card"><div class="ico"><i class="fa-solid fa-chart-line"></i></div><h3>Track progress</h3><p>Attendance, health goals and your diary, all in one dashboard.</p></div>
+<div class="card"><div class="ico"><i class="fa-solid fa-shield-halved"></i></div><h3>Secure payments</h3><p>Checkout by PayMongo. Your membership starts as soon as you pay.</p></div>
+</div></div></section>
+<section class="sec" id="programs" style="padding-top:0"><div class="wrap">
+<div class="sec-head"><div><p class="eyebrow">Programs</p><h2>Train the way that fits you</h2></div>
+<p>Sample programs. Final schedules and offerings are confirmed by the gym.</p></div>
+<div class="grid g3">
+<article class="card prog"><img src="img/prog-1.jpg" alt="Member training at the squat rack" loading="lazy"><div class="bd"><h3>Strength &amp; conditioning</h3><p style="color:var(--mu);margin-top:8px;font-size:15px">Guided lifting and circuits for all levels.</p><div class="tags"><span class="tag">All levels</span><span class="tag">Group</span></div></div></article>
+<article class="card prog"><img src="img/prog-2.jpg" alt="Bench and equipment on the ProFit gym floor" loading="lazy"><div class="bd"><h3>HIIT &amp; functional</h3><p style="color:var(--mu);margin-top:8px;font-size:15px">Short, high-energy sessions that build stamina.</p><div class="tags"><span class="tag">Intermediate</span><span class="tag">Group</span></div></div></article>
+<article class="card prog"><img src="img/prog-3.jpg" alt="Group of members posing together in the gym" loading="lazy"><div class="bd"><h3>Personal coaching</h3><p style="color:var(--mu);margin-top:8px;font-size:15px">One-on-one attention and a plan made for your goals.</p><div class="tags"><span class="tag">1-on-1</span><span class="tag">By schedule</span></div></div></article>
+</div></div></section>
+<section class="sec" id="plans" style="padding-top:0"><div class="wrap">
+<div class="sec-head"><div><p class="eyebrow">Membership</p><h2>Simple plans, no surprises</h2></div>
+<p>Choose a plan, pay online, and your account is created right away.</p></div>
+<div class="grid g3">
+<div class="card plan"><span class="name">Monthly</span><div class="price">₱800<small>/ 30 days</small></div><ul><li><i class="fa-solid fa-check"></i>Gym access</li><li><i class="fa-solid fa-check"></i>Member portal</li><li><i class="fa-solid fa-check"></i>Attendance tracking</li></ul><a class="btn btn-line" href="join.html">Choose plan</a></div>
+<div class="card plan hot"><span class="badge">Most popular</span><span class="name">Quarterly</span><div class="price">₱2,100<small>/ 90 days</small></div><ul><li><i class="fa-solid fa-check"></i>Gym access</li><li><i class="fa-solid fa-check"></i>Member portal</li><li><i class="fa-solid fa-check"></i>Attendance tracking</li></ul><a class="btn btn-gold" href="join.html">Choose plan</a></div>
+<div class="card plan"><span class="name">Annual</span><div class="price">₱7,500<small>/ 365 days</small></div><ul><li><i class="fa-solid fa-check"></i>Gym access</li><li><i class="fa-solid fa-check"></i>Member portal</li><li><i class="fa-solid fa-check"></i>Attendance tracking</li></ul><a class="btn btn-line" href="join.html">Choose plan</a></div>
+</div></div></section>
+<section class="sec" id="about"><div class="wrap split">
+<img src="img/hero-side.jpg" alt="Gym interior with members training" loading="lazy">
+<div><p class="eyebrow">Our story</p><h2>A neighborhood gym built on community</h2>
+<p class="lead">Functional Fitness Gym is a local gym in Alfonso, Calabarzon. We focus on practical strength, steady habits and a friendly floor where everyone belongs.</p>
+<p class="lead" style="margin-top:14px">ProFit is the system behind it: join online, check in, and follow your progress without paperwork.</p>
+<ul class="checks"><li><i class="fa-solid fa-circle-check"></i>Friendly, beginner-welcome environment</li><li><i class="fa-solid fa-circle-check"></i>Coaches who track your progress</li><li><i class="fa-solid fa-circle-check"></i>Clear pricing, paid online</li></ul></div>
+</div></section>
+<section class="sec" aria-label="Inside ProFit" style="padding-top:0"><div class="wrap">
+<div class="sec-head"><div><p class="eyebrow">Inside ProFit</p><h2>The floor, the crew, the work</h2></div></div>
+<div class="gal">
+<img src="img/gal-1.jpg" alt="Team photo at the ProFit gym" loading="lazy">
+<img src="img/gal-2.jpg" alt="Group of members posing together in the gym" loading="lazy">
+<img src="img/gal-3.jpg" alt="Member training at the squat rack" loading="lazy">
+<img src="img/gal-4.jpg" alt="Equipment on the ProFit gym floor" loading="lazy">
+</div></div></section>
+<section class="sec" style="padding-top:0"><div class="wrap">
+<div class="cta"><div><h2>Ready to start?</h2><p>Pick a plan and your account is ready after payment.</p></div>
+<a class="btn btn-gold" href="join.html">Join now <i class="fa-solid fa-arrow-right"></i></a></div>
+</div></section>
+<section class="sec" id="visit" style="padding-top:0"><div class="wrap">
+<div class="sec-head"><div><p class="eyebrow">Visit</p><h2>Come train with us</h2></div></div>
+<div class="grid g3">
+<div class="card"><div class="ico"><i class="fa-solid fa-location-dot"></i></div><h3>Address</h3><p>259 Luksuhin-Mangas Road<br>Alfonso, Calabarzon</p></div>
+<div class="card"><div class="ico"><i class="fa-solid fa-phone"></i></div><h3>Call us</h3><p>0912 261 7663<br>Opens at 7 AM</p></div>
+<div class="card"><div class="ico"><i class="fa-brands fa-facebook-f"></i></div><h3>Facebook</h3><p>Functional Fitness Gym</p></div>
+</div></div></section>
 </main>
 <script src="site-footer.js?v=2" defer></script>
 </body></html>
