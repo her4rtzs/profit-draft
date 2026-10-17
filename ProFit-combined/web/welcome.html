@@ -1,281 +1,118 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b0b0d"><meta name="description" content="Functional Fitness Gym in Alfonso, Cavite. Strength, conditioning and mobility training, simple membership plans, and a member portal for your membership, attendance and payments.">
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#120c26"><meta name="description" content="Functional Fitness Gym in Alfonso, Cavite. Join online and manage your membership.">
 <title>Functional Fitness Gym · Alfonso, Cavite</title>
-<script src="splash.js?v=2"></script>
+<script src="splash.js?v=3"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <link rel="stylesheet" href="site-footer.css?v=1">
 <style>
-/* Landing page. Solid surfaces, one gold accent, no glow. Class names are prefixed so the portal stylesheets never touch this page. */
-*{box-sizing:border-box;margin:0}
-html{scroll-behavior:smooth}
-:root{--bg:#0b0b0d;--panel:#131316;--panel2:#1a1a1f;--line:#ffffff1c;--tx:#f4eee0;--mu:#a29f94;--gold:#e8b93a;--gold-hi:#f2cb5c;--gold-ink:#17130a;--nav:64px}
-body{background:var(--bg);color:var(--tx);font:16px/1.6 Inter,system-ui,sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
-a{color:inherit;text-decoration:none}
-img{display:block;max-width:100%}
-.disp{font-family:"Barlow Condensed","Arial Narrow",Inter,sans-serif;text-transform:uppercase;letter-spacing:.01em}
-.wrap{width:min(1180px,100% - 40px);margin-inline:auto}
-:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px}
-.skip{position:absolute;left:12px;top:-60px;background:var(--gold);color:var(--gold-ink);padding:10px 16px;border-radius:8px;font-weight:700;z-index:100}
-.skip:focus{top:10px}
-
-/* buttons */
-.wb{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 24px;border-radius:10px;border:1px solid var(--line);font:700 15px/1 Inter,sans-serif;color:var(--tx);background:transparent;cursor:pointer;transition:background .18s,border-color .18s,color .18s}
-.wb:hover{border-color:var(--gold);color:var(--gold-hi)}
-.wb.gold{background:var(--gold);border-color:var(--gold);color:var(--gold-ink)}
-.wb.gold:hover{background:var(--gold-hi);border-color:var(--gold-hi);color:var(--gold-ink)}
-.wb.sm{min-height:40px;padding:0 18px;font-size:14px}
-
-/* top bar */
-.top{position:sticky;top:0;z-index:30;height:var(--nav);background:var(--bg);border-bottom:1px solid var(--line)}
-.top .wrap{height:100%;display:flex;align-items:center;gap:28px}
-.brand{display:flex;align-items:center;gap:11px;margin-right:auto}
-.brand img{width:40px;height:40px;border-radius:10px;object-fit:cover}
-.brand b{font-size:26px;font-weight:800;line-height:1}
-.brand small{display:block;font:600 10px/1.2 Inter,sans-serif;letter-spacing:.18em;color:var(--mu);margin-top:3px}
-.top .links{display:flex;gap:26px}
-.top .links a{font-size:14px;font-weight:500;color:var(--mu)}
-.top .links a:hover{color:var(--gold-hi)}
-.top .acts{display:flex;gap:10px}
-
-/* jump-to bar */
-
+/* Landing page, following the approved wireframe: purple accent, light sections, rounded cards. Flat colours only. */
+*{box-sizing:border-box;margin:0}html{scroll-behavior:smooth}
+:root{--p:#5a38d6;--p-hi:#6f50ee;--ink:#120c26;--tx:#1b1630;--mu:#6b6785;--bg:#f6f4fc;--card:#fff;--line:#e4e0f2;--wrap:1160px}
+body{font:16px/1.6 "Plus Jakarta Sans",system-ui,sans-serif;color:var(--tx);background:#fff;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
+.wrap{width:min(var(--wrap),100% - 40px);margin-inline:auto}
+:focus-visible{outline:3px solid #b9a8ff;outline-offset:2px;border-radius:8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 24px;border-radius:10px;border:1.5px solid transparent;font:700 15px/1 inherit;cursor:pointer;transition:background-color .2s,border-color .2s,color .2s}
+.btn.pri{background:var(--p);color:#fff}.btn.pri:hover{background:var(--p-hi)}
+.btn.out{border-color:#ffffff55;color:#fff}.btn.out:hover{border-color:#fff}
+.btn.sm{height:40px;padding:0 18px;font-size:14px}
+.btn.line{border-color:var(--line);color:var(--tx);background:#fff}.btn.line:hover{border-color:var(--p);color:var(--p)}
+/* header */
+.top{position:sticky;top:0;z-index:30;background:var(--ink);color:#fff}
+.top .wrap{height:68px;display:flex;align-items:center;gap:32px}
+.brand{display:flex;align-items:center;gap:12px;margin-right:auto}.brand img{width:42px;height:42px;border-radius:10px}
+.brand b{display:block;font-size:19px;line-height:1.1}.brand small{display:block;font-size:10px;letter-spacing:.16em;color:#b8b2d6}
+.links{display:flex;gap:28px}.links a{font-size:14px;font-weight:600;color:#cfc9ea}.links a:hover{color:#fff}
+.acts{display:flex;gap:10px}
 /* hero */
-.hero{padding:clamp(36px,6vw,72px) 0 clamp(44px,7vw,88px);border-bottom:1px solid var(--line)}
-.hero .wrap{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(24px,4vw,56px);align-items:stretch}
-.tag{display:inline-flex;align-items:center;gap:8px;font:700 12px/1 Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);border:1px solid #e8b93a55;border-radius:999px;padding:8px 14px}
-.tag i{font-size:11px}
-.hero h1{font-size:clamp(40px,6.2vw,96px);font-weight:800;line-height:.95;margin:22px 0 20px;overflow-wrap:anywhere}
-.hero .wrap>*{min-width:0}
-.hero h1 em{font-style:normal;color:var(--gold)}
-.hero .lede{font-size:18px;color:var(--mu);max-width:520px}
-.facts{list-style:none;padding:0;margin:26px 0 30px;display:grid;gap:10px}
-.facts li{display:flex;gap:12px;align-items:flex-start;font-size:15px;color:#d8d3c4}
-.facts i{color:var(--gold);width:18px;margin-top:5px;text-align:center}
-.facts a:hover{color:var(--gold-hi);text-decoration:underline;text-underline-offset:3px}
-.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
-.more{font-size:14px;font-weight:600;color:var(--gold);display:inline-flex;gap:8px;align-items:center;padding:6px 4px}
-.more:hover{color:var(--gold-hi)}
-
-/* hero visual: drop a photo at web/hero.jpg and it fills this panel */
-.visual{position:relative;min-height:420px;border-radius:16px;border:1px solid var(--line);overflow:hidden;background:#141209 url(hero.jpg) center/cover no-repeat;display:flex;align-items:flex-end}
-.visual::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0b0b0d00 35%,#0b0b0dcc 100%)}
-.plans-mini{position:relative;width:100%;margin:14px;background:#0b0b0df2;border:1px solid var(--line);border-radius:12px;padding:20px}
-.plans-mini h2{font-size:22px;font-weight:700;margin-bottom:10px}
-.plans-mini ul{list-style:none;padding:0}
-.plans-mini li{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:11px 0;border-top:1px solid var(--line);font-size:15px}
-.plans-mini li span{color:var(--mu);font-size:13px;margin-left:8px}
-.plans-mini li b{font-family:"Barlow Condensed",sans-serif;font-size:24px;font-weight:700;color:var(--tx)}
-.plans-mini .wb{width:100%;margin-top:14px}
-
+.hero{background:#150d2e url(hero.jpg) center/cover no-repeat;color:#fff;position:relative}
+.hero::before{content:"";position:absolute;inset:0;background:rgba(18,12,38,.72)}
+.hero .wrap{position:relative;display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;padding:96px 0 104px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.16em;color:#a995ff;text-transform:uppercase;margin-bottom:14px}
+.hero h1{font-size:clamp(40px,6.4vw,76px);line-height:1.04;font-weight:800;letter-spacing:-.02em}
+.hero h1 em{font-style:normal;color:#a995ff}
+.hero p.lede{margin:22px 0 32px;font-size:18px;color:#d9d4ee;max-width:520px}
+.row{display:flex;gap:12px;flex-wrap:wrap}
+.hero .art{justify-self:end;width:min(100%,380px);aspect-ratio:1;border:2px solid #ffffff26;border-radius:24px;display:grid;place-items:center;color:#a995ff}
+.hero .art svg{width:70%;height:auto}
 /* sections */
-section{padding:clamp(56px,8vw,96px) 0;border-bottom:1px solid var(--line);scroll-margin-top:var(--nav)}
-.eyebrow{font:700 12px/1 Inter,sans-serif;letter-spacing:.2em;color:var(--gold);text-transform:uppercase}
-section h2.h{font-size:clamp(34px,5vw,56px);font-weight:800;line-height:1;margin:12px 0 16px}
-.sub{color:var(--mu);max-width:560px;font-size:17px}
-.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:clamp(28px,5vw,72px);align-items:start}
-
-/* about list */
-.feat{display:grid;gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel)}
-.feat div{display:flex;gap:16px;padding:22px 24px;border-top:1px solid var(--line)}
-.feat div:first-child{border-top:0}
-.feat i{flex:none;width:42px;height:42px;display:grid;place-items:center;border-radius:10px;background:#e8b93a1f;color:var(--gold);font-size:18px}
-.feat h3{font-size:17px;font-weight:700;margin-bottom:2px}
-.feat p{color:var(--mu);font-size:15px}
-
-/* programs */
-.progs{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:36px}
-.prog{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:28px 26px 30px;transition:border-color .18s}
-.prog:hover{border-color:#e8b93a77}
-.prog .n{font-family:"Barlow Condensed",sans-serif;font-size:56px;font-weight:700;line-height:1;color:#e8b93a55}
-.prog h3{font-size:30px;font-weight:700;margin:14px 0 6px}
-.prog p{color:var(--mu);font-size:15px}
-
+section{padding:84px 0}
+section.alt{background:var(--bg)}
+.head{text-align:center;max-width:640px;margin:0 auto 44px}
+.head h2{font-size:clamp(28px,4vw,40px);line-height:1.15;font-weight:800;letter-spacing:-.01em}.head p{color:var(--mu);margin-top:10px}
+.eyebrow.dk{color:var(--p)}
+.grid{display:grid;gap:20px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px}
+.feat i{display:grid;place-items:center;width:48px;height:48px;border-radius:12px;background:#ece8fb;color:var(--p);font-size:20px;margin-bottom:18px}
+.feat h3{font-size:17px;margin-bottom:6px}.feat p{font-size:14.5px;color:var(--mu)}
 /* plans */
-.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:36px;align-items:stretch}
-.plan{display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:28px 26px}
-.plan.best{border-color:var(--gold);background:var(--panel2)}
-.plan .flag{align-self:flex-start;font:700 11px/1 Inter,sans-serif;letter-spacing:.12em;text-transform:uppercase;background:var(--gold);color:var(--gold-ink);padding:6px 10px;border-radius:6px;margin-bottom:14px}
-.plan h3{font-size:30px;font-weight:700}
-.plan .amt{font-family:"Barlow Condensed",sans-serif;font-size:60px;font-weight:700;line-height:1;margin:10px 0 2px}
-.plan .per{color:var(--mu);font-size:14px}
-.plan ul{list-style:none;padding:0;margin:20px 0 26px;display:grid;gap:10px;font-size:15px;color:#d8d3c4}
-.plan li{display:flex;gap:10px}
-.plan li i{color:var(--gold);margin-top:5px;font-size:13px}
-.plan .wb{margin-top:auto}
-
-/* member portal band */
-.portal{background:var(--panel)}
-.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:36px}
-.step{border-top:2px solid var(--gold);padding-top:16px}
-.step i{color:var(--gold);font-size:20px}
-.step h3{font-size:17px;font-weight:700;margin:12px 0 4px}
-.step p{color:var(--mu);font-size:14.5px}
-
-/* visit */
-.visit{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:16px;margin-top:36px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:30px}
-.card h3{font-size:30px;font-weight:700;margin-bottom:16px}
-.card.gold{background:var(--gold);border-color:var(--gold);color:var(--gold-ink)}
-.card.gold p{color:#3a3217;font-size:16px;margin-bottom:22px}
-.card.gold .wb{background:var(--gold-ink);border-color:var(--gold-ink);color:var(--gold-hi)}
-.card.gold .wb:hover{background:#000}
-.card.gold .wb.ghost{background:transparent;color:var(--gold-ink);border-color:#17130a66}
-.card.gold .wb.ghost:hover{border-color:var(--gold-ink);background:#17130a14;color:var(--gold-ink)}
-
-/* scroll reveal: opacity and a short slide, only when motion is allowed */
-@media (prefers-reduced-motion:no-preference){
-  .rv{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
-  .rv.in{opacity:1;transform:none}
-}
-
-@media (max-width:900px){
-  .hero .wrap,.two,.visit{grid-template-columns:1fr}
-  .progs,.plans{grid-template-columns:1fr}
-  .steps{grid-template-columns:1fr 1fr}
-  .visual{min-height:0}
-  .top .links{display:none}
-}
-@media (max-width:560px){
-  :root{--nav:60px}
-  .wrap{width:min(1180px,100% - 32px)}
-  .top .wrap{gap:12px}
-  .brand small{display:none}
-  .top .acts .wb:not(.gold){display:none}
-
-  .steps{grid-template-columns:1fr}
-  .row .wb{flex:1 1 150px}
-}
-
-/* Editorial finish: flat colour, square corners, numbered sections. No gradients or glow. */
-body{counter-reset:sec}
-.eyebrow::before{counter-increment:sec;content:"0" counter(sec) "  /  ";color:var(--mu);letter-spacing:.1em}
-.wb,.card,.plans-mini,.step,.tag,.visual{border-radius:4px}
-.hero .visual{display:flex;flex-direction:column;justify-content:space-between;gap:28px}
-.bignum{font:800 clamp(96px,12vw,170px)/.82 "Barlow Condensed","Arial Narrow",sans-serif;color:transparent;-webkit-text-stroke:2px var(--gold);letter-spacing:-.02em}
-.bignum small{display:block;margin-top:14px;font:600 12px/1 Inter,sans-serif;letter-spacing:.24em;color:var(--mu);-webkit-text-stroke:0}
-.top{border-bottom-color:var(--tx)}
-@media (max-width:760px){.bignum{font-size:80px}.top .acts .wb{display:inline-flex}.top .wrap{gap:10px}.brand small{display:none}}
-</style>
-</head><body>
-<a class="skip" href="#main">Skip to content</a>
-
-<header class="top">
-  <div class="wrap">
-    <a class="brand" href="welcome.html" aria-label="ProFit home"><img src="logo.jpg" alt=""><span><b class="disp">ProFit</b><small>FUNCTIONAL FITNESS GYM</small></span></a>
-    <nav class="links" aria-label="Main"><a href="#programs">Programs</a><a href="#plans">Plans</a><a href="#portal">Member portal</a><a href="#visit">Visit</a></nav>
-    <div class="acts"><a class="wb sm" href="login.html">Sign in</a><a class="wb sm gold" href="join.html">Join now</a></div>
+.plans{background:var(--ink);color:#fff}.plans .head p{color:#b8b2d6}
+.plan{color:var(--tx);display:flex;flex-direction:column;position:relative}
+.plan.pop{border:2px solid var(--p)}
+.plan .badge{position:absolute;top:-13px;right:22px;background:var(--p);color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:999px}
+.plan h3{font-size:16px;color:var(--mu);font-weight:600}.plan .pr{font-size:38px;font-weight:800;margin:6px 0 4px}.plan .pr small{font-size:14px;color:var(--mu);font-weight:600}
+.plan ul{list-style:none;padding:0;margin:18px 0 26px;display:grid;gap:10px;font-size:14.5px;flex:1}
+.plan li{display:flex;gap:10px;align-items:center}.plan li i{color:var(--p);font-size:13px}
+.plan .btn{width:100%}
+/* closing + visit */
+.cta{background:var(--p);color:#fff;padding:56px 0}.cta .wrap{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.cta h2{font-size:clamp(24px,3.4vw,32px);line-height:1.2}.cta p{opacity:.85;margin-top:6px}
+.cta .btn{background:#fff;color:var(--p)}.cta .btn:hover{background:#ece8fb}
+.visit{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.visit .card{padding:24px;display:flex;gap:14px;align-items:flex-start}.visit i{color:var(--p);font-size:18px;margin-top:3px;width:20px}
+.visit b{display:block;font-size:13px;color:var(--mu);font-weight:600;margin-bottom:2px}.visit span,.visit a{font-weight:600;font-size:15px}.visit a:hover{color:var(--p)}
+@media(max-width:960px){.g4,.visit{grid-template-columns:repeat(2,1fr)}.hero .wrap{grid-template-columns:1fr;padding:64px 0 72px}.hero .art{display:none}.links{display:none}}
+@media(max-width:640px){.g4,.g3,.visit{grid-template-columns:1fr}section{padding:60px 0}.brand small{display:none}.top .wrap{gap:12px}.acts .btn{padding:0 14px}.hero p.lede{font-size:16px}}
+</style></head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="welcome.html" aria-label="ProFit home"><img src="logo.jpg" alt=""><span><b>ProFit</b><small>FUNCTIONAL FITNESS GYM</small></span></a>
+  <nav class="links" aria-label="Main"><a href="#why">Why us</a><a href="#plans">Membership</a><a href="#visit">Visit</a></nav>
+  <div class="acts"><a class="btn out sm" href="login.html">Sign in</a><a class="btn pri sm" href="join.html">Join now</a></div>
+</div></header>
+<main>
+<div class="hero"><div class="wrap">
+  <div>
+    <p class="eyebrow">Functional Fitness Gym · Alfonso, Cavite</p>
+    <h1>Stronger.<br>Healthier.<br><em>Together.</em></h1>
+    <p class="lede">Train with a community that shows up. Join online, pay with GCash, Maya, card or QR, and manage your membership in one place.</p>
+    <div class="row"><a class="btn pri" href="join.html">Join now</a><a class="btn out" href="#plans">See plans <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></div>
   </div>
-</header>
+  <div class="art" aria-hidden="true"><svg viewBox="0 0 120 60" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M10 22v16M18 16v28M102 22v16M94 16v28M18 30h76"/><rect x="6" y="24" width="4" height="12" rx="1"/><rect x="110" y="24" width="4" height="12" rx="1"/></svg></div>
+</div></div>
 
-<main id="main">
-<div class="hero">
-  <div class="wrap">
-    <div>
-      <p class="tag"><i class="fa-regular fa-clock" aria-hidden="true"></i> Opens at 7 AM</p>
-      <h1 class="disp">Train hard.<br><em>Stay consistent.</em></h1>
-      <p class="lede">Functional training, simple memberships, and one place to see your membership, attendance and payments.</p>
-      <ul class="facts">
-        <li><i class="fa-solid fa-location-dot" aria-hidden="true"></i><span>259 Luksuhin-Mangas Road, Alfonso, Cavite</span></li>
-        <li><i class="fa-solid fa-phone" aria-hidden="true"></i><a href="tel:09122617663">0912 261 7663</a></li>
-      </ul>
-      <div class="row"><a class="wb gold" href="join.html">Join now</a><a class="more" href="#plans">See plans <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></div>
-    </div>
-    <div class="visual">
-      <div class="bignum" aria-hidden="true">7AM<small>OPENS AT 7 AM</small></div>
-      <div class="plans-mini">
-        <h2 class="disp">Membership plans</h2>
-        <ul>
-          <li><div>Monthly<span>30 days</span></div><b>₱800</b></li>
-          <li><div>Quarterly<span>90 days</span></div><b>₱2,100</b></li>
-          <li><div>Annual<span>1 year</span></div><b>₱7,500</b></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-
-<section id="about"><div class="wrap two">
-  <div class="rv">
-    <p class="eyebrow">About us</p>
-    <h2 class="h disp">A gym built around real movement</h2>
-    <p class="sub">We focus on functional training that makes everyday life easier: strength, mobility and endurance, guided by coaches who know your name.</p>
-  </div>
-  <div class="feat rv">
-    <div><i class="fa-solid fa-people-group" aria-hidden="true"></i><span><h3>Community</h3><p>Train alongside people who push you to show up.</p></span></div>
-    <div><i class="fa-solid fa-user-check" aria-hidden="true"></i><span><h3>Coaching</h3><p>Trainers who guide your form and your goals.</p></span></div>
-    <div><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i><span><h3>Member portal</h3><p>Check your membership, attendance and payments anytime.</p></span></div>
+<section id="why" class="alt"><div class="wrap">
+  <div class="head"><p class="eyebrow dk">Why choose us</p><h2>Everything you need to move forward</h2><p>Simple memberships and a member portal that keeps you on track.</p></div>
+  <div class="grid g4">
+    <div class="card feat"><i class="fa-solid fa-ticket" aria-hidden="true"></i><h3>Flexible memberships</h3><p>Monthly, quarterly or annual. Pick the plan that fits your goals.</p></div>
+    <div class="card feat"><i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i><h3>Pay online</h3><p>GCash, Maya, card or QR. Your account is ready right after you pay.</p></div>
+    <div class="card feat"><i class="fa-solid fa-calendar-check" aria-hidden="true"></i><h3>Track attendance</h3><p>See your check-ins and streaks in the member portal.</p></div>
+    <div class="card feat"><i class="fa-solid fa-bullhorn" aria-hidden="true"></i><h3>Stay updated</h3><p>Read announcements and schedule changes from the gym.</p></div>
   </div>
 </div></section>
 
-<section id="programs"><div class="wrap">
-  <div class="rv"><p class="eyebrow">Programs</p><h2 class="h disp">Find your training style</h2></div>
-  <div class="progs">
-    <article class="prog rv"><div class="n">01</div><h3 class="disp">Strength</h3><p>Build power with progressive lifting.</p></article>
-    <article class="prog rv"><div class="n">02</div><h3 class="disp">Conditioning</h3><p>Engines, intervals and full-body circuits.</p></article>
-    <article class="prog rv"><div class="n">03</div><h3 class="disp">Mobility</h3><p>Move better, recover faster.</p></article>
+<section id="plans" class="plans"><div class="wrap">
+  <div class="head"><p class="eyebrow">Membership plans</p><h2>Choose the plan that fits your goals</h2><p>Simple pricing. No hidden fees.</p></div>
+  <div class="grid g3">
+    <div class="card plan"><h3>Monthly</h3><div class="pr">₱800<small> / 30 days</small></div><ul><li><i class="fa-solid fa-check"></i>Gym access</li><li><i class="fa-solid fa-check"></i>Member portal</li><li><i class="fa-solid fa-check"></i>Attendance tracking</li></ul><a class="btn line" href="join.html">Choose monthly</a></div>
+    <div class="card plan pop"><span class="badge">Most popular</span><h3>Quarterly</h3><div class="pr">₱2,100<small> / 90 days</small></div><ul><li><i class="fa-solid fa-check"></i>Gym access</li><li><i class="fa-solid fa-check"></i>Member portal</li><li><i class="fa-solid fa-check"></i>Attendance tracking</li></ul><a class="btn pri" href="join.html">Choose quarterly</a></div>
+    <div class="card plan"><h3>Annual</h3><div class="pr">₱7,500<small> / year</small></div><ul><li><i class="fa-solid fa-check"></i>Gym access</li><li><i class="fa-solid fa-check"></i>Member portal</li><li><i class="fa-solid fa-check"></i>Attendance tracking</li></ul><a class="btn line" href="join.html">Choose annual</a></div>
   </div>
 </div></section>
 
-<section id="plans"><div class="wrap">
-  <div class="rv"><p class="eyebrow">Membership</p><h2 class="h disp">Simple plans, no surprises</h2><p class="sub">Pick the length that fits you. Every plan comes with access to the member portal.</p></div>
-  <div class="plans">
-    <article class="plan rv"><h3 class="disp">Monthly</h3><div class="amt">₱800</div><div class="per">for 30 days</div>
-      <ul><li><i class="fa-solid fa-check" aria-hidden="true"></i>Flexible, no long commitment</li><li><i class="fa-solid fa-check" aria-hidden="true"></i>Member portal access</li></ul>
-      </article>
-    <article class="plan best rv"><span class="flag">Best for building a habit</span><h3 class="disp">Quarterly</h3><div class="amt">₱2,100</div><div class="per">for 90 days · about ₱700 a month</div>
-      <ul><li><i class="fa-solid fa-check" aria-hidden="true"></i>Three months to settle into a routine</li><li><i class="fa-solid fa-check" aria-hidden="true"></i>Member portal access</li></ul>
-      <a class="wb gold" href="join.html">Choose quarterly</a></article>
-    <article class="plan rv"><h3 class="disp">Annual</h3><div class="amt">₱7,500</div><div class="per">for 1 year · about ₱625 a month</div>
-      <ul><li><i class="fa-solid fa-check" aria-hidden="true"></i>Lowest cost per month</li><li><i class="fa-solid fa-check" aria-hidden="true"></i>Member portal access</li></ul>
-      <a class="wb" href="join.html">Choose annual</a></article>
-  </div>
-</div></section>
-
-<section id="portal" class="portal"><div class="wrap">
-  <div class="rv"><p class="eyebrow">Member portal</p><h2 class="h disp">Everything about your membership, in one place</h2><p class="sub">Sign in with the account created when you join.</p></div>
-  <div class="steps">
-    <div class="step rv"><i class="fa-solid fa-id-card" aria-hidden="true"></i><h3>Membership status</h3><p>See your plan and when it ends.</p></div>
-    <div class="step rv"><i class="fa-solid fa-calendar-check" aria-hidden="true"></i><h3>Attendance</h3><p>Review your check-in history.</p></div>
-    <div class="step rv"><i class="fa-solid fa-receipt" aria-hidden="true"></i><h3>Payments</h3><p>Find your payments and renewals.</p></div>
-    <div class="step rv"><i class="fa-solid fa-bullhorn" aria-hidden="true"></i><h3>Announcements</h3><p>Read updates from the gym.</p></div>
-  </div>
-</div></section>
+<div class="cta"><div class="wrap"><div><h2>Ready to start your fitness journey?</h2><p>Join online today and we will get you training.</p></div><a class="btn" href="join.html">Join now</a></div></div>
 
 <section id="visit"><div class="wrap">
-  <div class="rv"><p class="eyebrow">Visit us</p><h2 class="h disp">Functional Fitness Gym</h2><p class="sub">Alfonso, Cavite. Opens at 7 AM.</p></div>
+  <div class="head"><p class="eyebrow dk">Visit us</p><h2>Functional Fitness Gym</h2></div>
   <div class="visit">
-    <div class="card rv">
-      <h3 class="disp">Find us</h3>
-      <ul class="facts" style="margin:0 0 24px">
-        <li><i class="fa-solid fa-location-dot" aria-hidden="true"></i><span>259 Luksuhin-Mangas Road, Alfonso, Cavite</span></li>
-        <li><i class="fa-regular fa-clock" aria-hidden="true"></i><span>Opens at 7 AM</span></li>
-        <li><i class="fa-solid fa-phone" aria-hidden="true"></i><a href="tel:09122617663">0912 261 7663</a></li>
-        <li><i class="fa-brands fa-facebook" aria-hidden="true"></i><a href="https://www.facebook.com/FunctionalPerformance.2022" target="_blank" rel="noopener">Functional Performance on Facebook</a></li>
-      </ul>
-      <a class="wb" href="https://www.google.com/maps/search/?api=1&query=259+Luksuhin-Mangas+Road+Alfonso+Cavite" target="_blank" rel="noopener"><i class="fa-solid fa-diamond-turn-right" aria-hidden="true"></i> Get directions</a>
-    </div>
-    <div class="card gold rv">
-      <h3 class="disp">Ready to start?</h3>
-      <p>Join online, then come in and we will get you training.</p>
-      <div class="row"><a class="wb" href="join.html">Join now</a></div>
-    </div>
+    <div class="card"><i class="fa-solid fa-location-dot" aria-hidden="true"></i><div><b>Address</b><span>259 Luksuhin-Mangas Road, Alfonso, Cavite</span></div></div>
+    <div class="card"><i class="fa-solid fa-clock" aria-hidden="true"></i><div><b>Opens</b><span>7 AM</span></div></div>
+    <div class="card"><i class="fa-solid fa-phone" aria-hidden="true"></i><div><b>Call</b><a href="tel:09122617663">0912 261 7663</a></div></div>
+    <div class="card"><i class="fa-brands fa-facebook" aria-hidden="true"></i><div><b>Facebook</b><a href="https://www.facebook.com/FunctionalPerformance.2022" target="_blank" rel="noopener">Functional Performance</a></div></div>
   </div>
 </div></section>
 </main>
-
-<script>
-// Reveal on scroll, and highlight the section the reader is in on the jump bar.
-(() => {
-  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const items = document.querySelectorAll(".rv");
-  if (reduce || !("IntersectionObserver" in window)) items.forEach(e => e.classList.add("in"));
-  else {
-    const io = new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) { x.target.classList.add("in"); io.unobserve(x.target); } }), { threshold: .12 });
-    items.forEach(e => io.observe(e));
-  }
-})();
-</script>
-<script src="site-footer.js?v=1" defer></script>
+<script src="site-footer.js?v=2" defer></script>
 </body></html>

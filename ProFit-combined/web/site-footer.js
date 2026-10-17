@@ -2,6 +2,7 @@
 // Pages that already contain a <footer class="site-footer"> (landing page, FAQ, Terms, Privacy) are left alone,
 // so the footer never appears twice.
 (() => {
+  if (!/(welcome|login|join|faq|terms|privacy)\.html$/.test(location.pathname)) return; // never inside the portal
   if (document.querySelector(".site-footer")) return;
   if (!document.querySelector('link[href^="site-footer.css"]')) {
     const link = document.createElement("link");
