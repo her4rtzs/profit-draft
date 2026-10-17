@@ -39,7 +39,7 @@
     #notificationList .notification-item:focus-visible{outline:2px solid #e8b93a;outline-offset:-2px}
     #notificationList .notification-item.is-unread strong{font-weight:800}
     #notificationList .notification-item.is-read{opacity:.62}
-    #notificationList .notif-icon{flex:0 0 36px;height:36px;border-radius:12px;display:grid;place-items:center;background:rgba(232,185,58,.14);color:#e8b93a}
+    #notificationList .notif-icon{flex:0 0 36px;height:36px;border-radius:12px;display:grid;place-items:center;background:rgba(232, 185, 58,.14);color:#e8b93a}
     #notificationList .notif-copy{display:grid;gap:3px;min-width:0}
     #notificationList .notif-copy strong{font-size:14px;font-weight:700}
     #notificationList .notif-copy small{font-size:12.5px;color:#9aa4b6;line-height:1.4}

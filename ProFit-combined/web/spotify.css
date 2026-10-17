@@ -140,8 +140,8 @@ body.dark {
   --gold: #b8891c;
   --gold-deep: #8d6512;
   --gold-soft: rgba(184, 137, 28, .16);
-  --gold-grad: linear-gradient(135deg, #e6c04f 0%, #d4ad39 55%, #b88a12 100%);
-  --on-accent: #1c1606;
+  --gold-grad: linear-gradient(135deg, #f2cb5c 0%, #e8b93a 55%, #b8891c 100%);
+  --on-accent: #1a1407;
 }
 
 body.dark {
@@ -149,7 +149,7 @@ body.dark {
   --gold-deep: #f0cf68;
   --gold-soft: rgba(224, 185, 74, .16);
   --gold-grad: linear-gradient(135deg, #f0d268 0%, #e0b94a 55%, #c99a32 100%);
-  --on-accent: #1c1606;
+  --on-accent: #1a1407;
 }
 
 /* Spotify green — still on the picker, just no longer the default. */
@@ -174,14 +174,14 @@ html[data-accent="indigo"] body:not(.dark) { --gold: #4f46e5; --gold-deep: #4338
 html[data-accent="coral"]  body:not(.dark) { --gold: #e11d48; --gold-deep: #be123c; --gold-soft: rgba(225, 29, 72, .13); --gold-grad: linear-gradient(135deg, #fb7185 0%, #f43f5e 55%, #e11d48 100%); --on-accent: #ffffff; }
 html[data-accent="emerald"] body:not(.dark) { --gold: #059669; --gold-deep: #047857; --gold-soft: rgba(5, 150, 105, .14); --gold-grad: linear-gradient(135deg, #34d399 0%, #10b981 55%, #059669 100%); --on-accent: #ffffff; }
 html[data-accent="sunset"] body:not(.dark) { --gold: #ea580c; --gold-deep: #c2410c; --gold-soft: rgba(234, 88, 12, .14); --gold-grad: linear-gradient(135deg, #fb923c 0%, #f97316 55%, #ea580c 100%); --on-accent: #ffffff; }
-html[data-accent="gold"]   body:not(.dark) { --gold: #b8891c; --gold-deep: #8d6512; --gold-soft: rgba(184, 137, 28, .16); --gold-grad: linear-gradient(135deg, #e6c04f 0%, #d4ad39 55%, #b88a12 100%); --on-accent: #1c1606; }
+html[data-accent="gold"]   body:not(.dark) { --gold: #b8891c; --gold-deep: #8d6512; --gold-soft: rgba(184, 137, 28, .16); --gold-grad: linear-gradient(135deg, #f2cb5c 0%, #e8b93a 55%, #b8891c 100%); --on-accent: #1a1407; }
 
 html[data-accent="ocean"] body.dark { --gold: #2dd4bf; --gold-deep: #5eead4; --gold-soft: rgba(45, 212, 191, .16); --gold-grad: linear-gradient(135deg, #5eead4 0%, #2dd4bf 55%, #14b8a6 100%); --on-accent: #04220f; }
 html[data-accent="indigo"] body.dark { --gold: #818cf8; --gold-deep: #a5b4fc; --gold-soft: rgba(129, 140, 248, .18); --gold-grad: linear-gradient(135deg, #a5b4fc 0%, #818cf8 55%, #6366f1 100%); --on-accent: #0a0a1a; }
 html[data-accent="coral"]  body.dark { --gold: #fb7185; --gold-deep: #fda4af; --gold-soft: rgba(251, 113, 133, .18); --gold-grad: linear-gradient(135deg, #fda4af 0%, #fb7185 55%, #f43f5e 100%); --on-accent: #2a0510; }
 html[data-accent="emerald"] body.dark { --gold: #34d399; --gold-deep: #6ee7b7; --gold-soft: rgba(52, 211, 153, .16); --gold-grad: linear-gradient(135deg, #6ee7b7 0%, #34d399 55%, #10b981 100%); --on-accent: #04220f; }
 html[data-accent="sunset"] body.dark { --gold: #fb923c; --gold-deep: #fdba74; --gold-soft: rgba(251, 146, 60, .16); --gold-grad: linear-gradient(135deg, #fdba74 0%, #fb923c 55%, #f97316 100%); --on-accent: #2a1403; }
-html[data-accent="gold"]   body.dark { --gold: #e0b94a; --gold-deep: #efcc6b; --gold-soft: rgba(224, 185, 74, .16); --gold-grad: linear-gradient(135deg, #efcc6b 0%, #e0b94a 55%, #c99a32 100%); --on-accent: #1c1606; }
+html[data-accent="gold"]   body.dark { --gold: #e0b94a; --gold-deep: #efcc6b; --gold-soft: rgba(224, 185, 74, .16); --gold-grad: linear-gradient(135deg, #efcc6b 0%, #e0b94a 55%, #c99a32 100%); --on-accent: #1a1407; }
 
 /* ==========================================================================
    3 · BASE

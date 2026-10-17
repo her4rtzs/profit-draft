@@ -25,10 +25,10 @@
     --faint: #8a8d91;
 
     /* brand */
-    --gold: #d4ad39;
-    --gold-deep: #a67c00;
-    --gold-soft: #fbf3d9;
-    --gold-grad: linear-gradient(135deg, #e6c04f 0%, #d4ad39 55%, #b88a12 100%);
+    --gold: #e8b93a;
+    --gold-deep: #b8891c;
+    --gold-soft: #fbf3dc;
+    --gold-grad: linear-gradient(135deg, #f2cb5c 0%, #e8b93a 55%, #b8891c 100%);
 
     /* status */
     --green: #1f9d5b;

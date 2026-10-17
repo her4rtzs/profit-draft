@@ -1,5 +1,5 @@
 /* Legal pages (terms, privacy, faq). The footer lives in site-footer.css. */
-.legal-page{--lg-accent:var(--gold,#d4a646);--lg-surface:rgba(255,255,255,.035);--lg-line:rgba(255,255,255,.09);--lg-muted:rgba(255,255,255,.66)}
+.legal-page{--lg-accent:var(--gold,#e8b93a);--lg-surface:rgba(255,255,255,.035);--lg-line:rgba(255,255,255,.09);--lg-muted:rgba(255,255,255,.66)}
 body.legal-page:not(.dark){--lg-surface:#ffffff;--lg-line:rgba(15,23,42,.10);--lg-muted:rgba(15,23,42,.64)}
 
 .legal-main{max-width:1120px;margin:0 auto;padding:clamp(28px,5vw,56px) 20px 8px;width:100%;box-sizing:border-box}
@@ -47,6 +47,6 @@ mark.review{background:transparent;color:inherit;border-bottom:2px dashed var(--
 @media (prefers-reduced-motion:reduce){.legal-toc a,.faq summary::after{transition:none}}
 
 /* Header on the legal pages: the Sign in link looks like the landing page's button. */
-.legal-page .portal-nav>a:not(.portal-brand){display:inline-flex;align-items:center;padding:10px 22px;border-radius:999px;font-weight:700;font-size:14px;text-decoration:none;color:var(--on-accent,#17130a);background:var(--gold-grad,linear-gradient(135deg,#f4d27a,#b8891c))}
+.legal-page .portal-nav>a:not(.portal-brand){display:inline-flex;align-items:center;padding:10px 22px;border-radius:999px;font-weight:700;font-size:14px;text-decoration:none;color:var(--on-accent,#1a1407);background:var(--gold-grad,linear-gradient(135deg,#f2cb5c,#b8891c))}
 .legal-page .portal-nav>a:not(.portal-brand):hover{filter:brightness(1.06)}
 .legal-page .portal-nav>a:not(.portal-brand):focus-visible{outline:2px solid var(--gold,#e8b93a);outline-offset:3px}

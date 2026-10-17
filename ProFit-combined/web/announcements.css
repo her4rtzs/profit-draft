@@ -2,7 +2,7 @@
 .ann-filters { display: flex; gap: 8px; flex-wrap: wrap; margin: 4px 0 18px; }
 .ann-chip { border: 1px solid var(--border); background: transparent; color: var(--muted); border-radius: 999px; padding: 8px 14px; font: 600 13px/1 Inter, system-ui, sans-serif; cursor: pointer; transition: background-color .2s ease, color .2s ease; }
 .ann-chip:hover { color: var(--text); }
-.ann-chip.is-on { background: linear-gradient(110deg, #f4d27a, #e8b93a); color: #1a1407; border-color: transparent; }
+.ann-chip.is-on { background: linear-gradient(110deg, #f2cb5c, #e8b93a); color: #1a1407; border-color: transparent; }
 .ann-chip:focus-visible, .ann-btn:focus-visible { outline: 2px solid #e8b93a; outline-offset: 2px; }
 .ann-list { display: grid; gap: 14px; }
 .ann-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 18px 20px; display: grid; gap: 10px; }
@@ -12,12 +12,12 @@
 .ann-badge.draft { background: rgba(148,163,184,.18); color: #94a3b8; }
 .ann-badge.published { background: rgba(74,222,128,.14); color: #4ade80; }
 .ann-badge.archived { background: rgba(248,113,113,.14); color: #f87171; }
-.ann-badge.pin { background: rgba(232,185,58,.16); color: #e8b93a; }
+.ann-badge.pin { background: rgba(232, 185, 58,.16); color: #e8b93a; }
 .ann-body { margin: 0; color: var(--text); line-height: 1.6; white-space: pre-line; }
 .ann-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .ann-btn { border: 1px solid var(--border); background: transparent; color: var(--text); border-radius: 12px; padding: 9px 14px; font: 600 13px/1 Inter, system-ui, sans-serif; cursor: pointer; transition: border-color .2s ease, background-color .2s ease; }
 .ann-btn:hover { border-color: #e8b93a; }
-.ann-btn.primary { background: linear-gradient(110deg, #f4d27a, #e8b93a); color: #1a1407; border-color: transparent; }
+.ann-btn.primary { background: linear-gradient(110deg, #f2cb5c, #e8b93a); color: #1a1407; border-color: transparent; }
 .ann-form { display: grid; gap: 14px; max-width: 760px; }
 .ann-field { display: grid; gap: 6px; }
 .ann-field label, .ann-field .ann-label { font-size: 13px; font-weight: 600; color: var(--muted); }
@@ -26,7 +26,7 @@
 .ann-field input:focus-visible, .ann-field textarea:focus-visible, .ann-field select:focus-visible { outline: 2px solid #e8b93a; outline-offset: 1px; }
 .ann-members { display: grid; gap: 4px; max-height: 240px; overflow: auto; padding: 10px; border: 1px solid var(--border); border-radius: 14px; }
 .ann-members label { display: flex; gap: 10px; align-items: center; padding: 8px; border-radius: 10px; font-weight: 500; color: var(--text); cursor: pointer; }
-.ann-members label:hover { background: rgba(232,185,58,.08); }
+.ann-members label:hover { background: rgba(232, 185, 58,.08); }
 .ann-members small { color: var(--muted); }
 .ann-check { display: flex; gap: 10px; align-items: center; font-weight: 600; color: var(--text); }
 .ann-msg { min-height: 20px; font-size: 13px; color: var(--muted); }

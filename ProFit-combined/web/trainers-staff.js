@@ -21,7 +21,7 @@
       <p class="ann-msg">${esc(t.specialization || "General training")}${t.availability ? " · " + esc(t.availability) : ""}</p>
       <div aria-label="${t.load} of ${t.max_members} members">
         <div style="height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden">
-          <span style="display:block;height:100%;width:${pct}%;background:linear-gradient(90deg,#f4d27a,#e8b93a);border-radius:999px;transition:width .4s ease"></span>
+          <span style="display:block;height:100%;width:${pct}%;background:linear-gradient(90deg,#f2cb5c,#e8b93a);border-radius:999px;transition:width .4s ease"></span>
         </div>
         <small class="ann-msg">${t.load} of ${t.max_members} members</small>
       </div>
