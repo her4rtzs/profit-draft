@@ -425,3 +425,14 @@ When a landing page flickers on open, check for entrance overlays and blur effec
 - Could not run a browser in the build environment. Verified by checking markup, local links, and photo files.
 ### Decision-log skill
 When a page keeps needing patches, rebuild it once around a small token set, then reuse the same tokens on the next page. Keep the owner's real details and never invent figures.
+
+## 2026-10-18 03:22 (Asia/Manila): Portal flicker on open, soft reveal, and container consistency
+### What I asked for
+- Remove the flicker when a page opens, especially the sidebar. Use a smooth animation only, with a soft blur effect. Make containers consistent.
+### What the agent decided and why
+- The sidebar is built by layout.js after the first paint, so it appeared late. The portal shell is now hidden until the sidebar and content are built, then fades in with a short blur. A 1.5-second fallback prevents a permanent hidden page if a script fails.
+- Removed the cross-page view transition, because it captured the hidden frame and caused a blank flash.
+- Unified the border, radius, padding, and gap of .panel and .stat-card, and made stat cards equal height in a row. Removed heavy shadows.
+- Could not run a browser in the build environment. Verified by checking markup and that the pre-reveal script parses. Container alignment still needs a visual check on each page.
+### Decision-log skill
+When a sidebar is built by script, do not show the shell until that script has finished. Reveal once with a single short animation, and always keep a fallback so the page cannot stay hidden.
