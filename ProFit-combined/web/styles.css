@@ -2220,3 +2220,11 @@ body.dark input::placeholder,body.dark textarea::placeholder{color:#758399}
   }
 }
 
+
+/* Smooth page-to-page transitions for the portal (browsers that support cross-document view transitions).
+   Quick, subtle fade; disabled for users who prefer reduced motion. */
+@view-transition { navigation: auto; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: .16s; }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+}
