@@ -38,3 +38,11 @@
 6. Add Confirm Password to registration.
 7. Add membership reminders as a scheduled job.
 8. Run a browser pass on desktop, tablet, and phone, in both themes.
+
+## Phase 1 changes (this pass)
+
+- **Notification bell:** the older local engine in `web/sidebar.js` no longer writes to the bell once the server panel is live (`window.PF_LIVE_NOTIFICATIONS`). The summary and unread count now come only from `/api/notifications/`.
+- **Footer:** `web/site-footer.js` adds the logo, copyright, "All rights reserved", the Team AusFITious credit, and links to FAQ, Terms and Privacy on every page.
+- **Stray files:** `notifications-live.js` and `notifications.py` at the project root, and the `ProFit-phase1/` folder, are not used by anything. Delete them locally (see the phase notes).
+
+Not verified: runtime tests and a browser pass. Django is not available in the environment where these changes were made.

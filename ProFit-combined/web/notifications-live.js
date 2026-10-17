@@ -3,6 +3,8 @@
 (() => {
   if (!document.getElementById("notificationToggle") || !document.getElementById("notificationPanel")) return;
 
+  // Tell the older local engine (sidebar.js) to stand down: the server feed owns the bell now.
+  window.PF_LIVE_NOTIFICATIONS = true;
   // Clones carry no listeners, so the old demo wiring is dropped by swapping the nodes.
   const swap = id => {
     const old = document.getElementById(id);

@@ -57,6 +57,7 @@
   const panel=$("#notificationPanel"), button=$("#notificationToggle"), list=$("#notificationList"), badge=$("#notificationBadge");
   function save(){try{localStorage.setItem(key,JSON.stringify(notifications))}catch{}}
   function renderNotifications(){
+    if(window.PF_LIVE_NOTIFICATIONS)return;
     if(!list||!badge)return;
     const unread=notifications.filter(n=>!n.read).length;
     // The badge is a dot; the count belongs in the label and the panel header.
