@@ -211,3 +211,22 @@ html body .auth-story h1 em, html body .auth-story h1 em * {
 }
 html body .auth-card, html body .auth-story { background-color: rgba(17,19,32,.92) !important; }
 html body .portal-nav { background: transparent !important; border-bottom: 1px solid rgba(255,255,255,.06); }
+
+
+/* ---------- Background: warm gold glow + faint grid ---------- */
+html:has(body.auth-page), html:has(body.pf-glow) {
+  background-color: #07080c;
+  background-image:
+    radial-gradient(900px 520px at 12% -8%, rgba(232,185,58,.30), transparent 65%),
+    radial-gradient(800px 520px at 100% 105%, rgba(90,66,170,.26), transparent 65%),
+    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size: auto, auto, 48px 48px, 48px 48px;
+  background-attachment: fixed;
+}
+body.auth-page::before, body.auth-page::after, body.pf-glow::before, body.pf-glow::after { display: none; }
+body.dark:not(.auth-page):not(.pf-glow) {
+  background-image: radial-gradient(900px 420px at 18% -10%, rgba(232,185,58,.09), transparent 62%);
+  background-attachment: fixed;
+}
+html body.portal-body.auth-page.dark, html body.auth-page.dark.pf-ready, html body.pf-glow.dark { background: transparent !important; background-color: transparent !important; background-image: none !important; }

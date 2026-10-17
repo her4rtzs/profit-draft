@@ -13,7 +13,7 @@
 .jn-plans .plan strong{font-size:14px}.jn-plans .plan small{color:var(--muted);font-size:12px}.jn-plans .plan b{font-size:18px;color:var(--text)}
 .jn-plans .tag{position:absolute;top:-9px;right:10px;font-size:10px;font-weight:700;background:var(--pf-lime);color:var(--on-accent);border-radius:99px;padding:2px 8px}
 .jn-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.jn-err{color:#ff7b7b;font-size:14px;min-height:20px;margin:10px 0 0}
+.jn-terms{display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-size:14px;color:var(--muted);cursor:pointer}.jn-terms input{width:18px;min-height:18px;height:18px;margin-top:2px;accent-color:#e8b93a;flex:none}.jn-terms a{color:#e8b93a;text-decoration:underline}.jn-err{color:#ff7b7b;font-size:14px;min-height:20px;margin:10px 0 0}
 .jn-note{border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:14px;margin-bottom:12px;background:var(--hover)}
 .jn-ok{text-align:center;padding:10px 0}.jn-ok i{font-size:48px;color:var(--pf-lime);margin-bottom:12px}.jn-ok p{color:var(--muted);margin:8px 0 18px}
 @media(max-width:560px){.jn-plans{grid-template-columns:1fr}.jn-row{grid-template-columns:1fr}.jn-plans .plan{flex-direction:row;align-items:center;min-height:0}}
@@ -31,6 +31,7 @@
 <label class="auth-label" for="name">Full name</label><input class="auth-input" id="name" autocomplete="name" maxlength="100" placeholder="Enter your full name">
 <div class="jn-row"><div><label class="auth-label" for="email">Email</label><input class="auth-input" id="email" type="email" autocomplete="email" maxlength="254" placeholder="you@example.com"></div><div><label class="auth-label" for="phone">Mobile number</label><input class="auth-input" id="phone" type="tel" autocomplete="tel" maxlength="20" placeholder="09XX XXX XXXX"></div></div>
 <div class="jn-row"><div><label class="auth-label" for="pw">Password</label><input class="auth-input" id="pw" type="password" autocomplete="new-password" maxlength="128" placeholder="8+ characters"></div><div><label class="auth-label" for="pw2">Confirm password</label><input class="auth-input" id="pw2" type="password" autocomplete="new-password" maxlength="128" placeholder="Repeat password"></div></div>
+<label class="jn-terms"><input type="checkbox" id="terms"><span>I have read and agree to the <a href="terms.html" target="_blank" rel="noopener">Terms of Service</a> and <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</span></label>
 <p class="jn-err" id="err" role="alert"></p>
 <button class="portal-submit auth-submit" id="go" type="submit"><span>Continue to secure payment</span><i class="fa-solid fa-arrow-right"></i></button>
 </form>
@@ -70,6 +71,7 @@
     if (body.phone.replace(/\D/g, "").length < 10) return err.textContent = "Enter a valid mobile number.";
     if (body.password.length < 8) return err.textContent = "Password must be at least 8 characters.";
     if (body.password !== $("pw2").value) return err.textContent = "The two passwords do not match.";
+    if (!$("terms").checked) return err.textContent = "Please accept the Terms of Service and Privacy Policy to continue.";
     btn.disabled = true; btn.querySelector("span").textContent = "Opening secure checkout...";
     try { const r = await window.ProFitAPI.post("/join/checkout", body); location.href = r.checkout_url; }
     catch (ex) { err.textContent = ex.message || "Could not start the payment."; btn.disabled = false; btn.querySelector("span").textContent = "Continue to secure payment"; }
