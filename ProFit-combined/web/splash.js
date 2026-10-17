@@ -4,7 +4,7 @@
   try { if (sessionStorage.getItem("pf-landed")) return; sessionStorage.setItem("pf-landed", "1"); } catch (e) {}
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   const d = document.createElement("div"); d.id = "pf-intro";
-  d.innerHTML = `<style>#pf-intro{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:#0b0b0d;color:#f4eee0;transition:transform .7s cubic-bezier(.7,0,.2,1)}
+  d.innerHTML = `<style>#pf-intro{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:#07080c;color:#f6efdc;transition:transform .7s cubic-bezier(.7,0,.2,1)}
 #pf-intro.out{transform:translateY(-100%)}#pf-intro div{text-align:center}
 #pf-intro img{width:84px;height:84px;border-radius:12px;opacity:0;animation:pfi .5s .1s forwards}
 #pf-intro b{display:block;margin-top:16px;font:800 44px/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.04em;opacity:0;animation:pfi .5s .3s forwards}

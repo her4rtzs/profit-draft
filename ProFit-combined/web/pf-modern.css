@@ -5,6 +5,7 @@
 :root, :root[data-accent], body, body.dark {
   --pf-lime: #e8b93a;
   --pf-lime-hi: #f2cb5c;
+  --pf-grad: linear-gradient(135deg, #f4d27a 0%, #e8b93a 50%, #b8891c 100%);
   --pf-lime-deep: #8a6200;
   --gold: #e8b93a;
   --gold-deep: #b8891c;
@@ -26,16 +27,16 @@
 
 /* Dark surfaces (default for the whole app) */
 body.dark {
-  --bg: #0b0b0d;
-  --card: #141416;
-  --hover: #1d1b16;
-  --border: #2a2619;
-  --text: #f4eee0;
-  --muted: #a39e8c;
-  --faint: #857f6d;
-  --sidebar: #0b0b0d;
-  --sidebar-text: #b3ad99;
-  --sidebar-line: #2a2619;
+  --bg: #07080c;
+  --card: #111320;
+  --hover: #181b2b;
+  --border: #232636;
+  --text: #f6efdc;
+  --muted: #9a9788;
+  --faint: #7d7a6c;
+  --sidebar: #07080c;
+  --sidebar-text: #b9b4a4;
+  --sidebar-line: #232636;
   --shadow: none;
   --shadow-hover: none;
   --green: #e8b93a;
@@ -60,7 +61,7 @@ body:not(.dark) {
 body:not(.dark) .sidebar a.active { color: var(--on-accent); }
 
 body { background: var(--bg); color: var(--text); }
-body.dark { background: #0b0b0d; }
+body.dark { background: #07080c; }
 
 /* ---------- Containers: identical radius, padding, border, gap ---------- */
 .card, .panel, .stat-card, .stat, .kpi, .chart-card, .pp-section-card, .auth-card,
@@ -95,17 +96,17 @@ input, select, textarea {
 }
 input:focus, select:focus, textarea:focus { outline: 0; border-color: var(--pf-lime); box-shadow: var(--pp-ring); }
 .btn-primary, .primary, button[type="submit"], .gold-btn, .pp-btn.primary, a.btn.primary {
-  background: var(--pf-lime) !important;
+  background: var(--pf-grad) !important;
   color: var(--on-accent) !important;
   border: 0 !important;
   font-weight: 700;
 }
-.btn-primary:hover, .primary:hover, button[type="submit"]:hover { background: var(--pf-lime-hi) !important; }
+.btn-primary:hover, .primary:hover, button[type="submit"]:hover { filter: brightness(1.07); }
 
 /* ---------- Sidebar ---------- */
 .sidebar { background: var(--sidebar); border-right: 1px solid var(--border); }
 .sidebar a, .menulist a { border-radius: var(--pf-radius-sm); transition: background-color .15s, color .15s; }
-.sidebar a.active, .menulist a.active { background: var(--pf-lime) !important; color: var(--on-accent) !important; font-weight: 700; }
+.sidebar a.active, .menulist a.active { background: var(--pf-grad) !important; color: var(--on-accent) !important; font-weight: 700; }
 .sidebar a.active i { color: var(--on-accent) !important; }
 
 /* ---------- Tables: same row height, quiet lines ---------- */
@@ -135,7 +136,7 @@ canvas, .chart svg, svg.chart { max-width: 100%; }
 }
 
 /* ---------- Auth pages (Sign in + Join): one look, always dark ---------- */
-body.auth-page, body.pf-auth { background: #0b0b0d; color: var(--text); }
+body.auth-page, body.pf-auth { background: #07080c; color: var(--text); }
 .auth-theme-toggle { display: none !important; }
 .pf-auth-top {
   display: flex; align-items: center; justify-content: space-between;
@@ -169,22 +170,22 @@ html body .auth-card, html body .auth-story, html body .portal-nav {
 }
 html body .member-hero, html body .member-status-card, html body .pp-note { background-color: var(--card) !important; }
 html body .brand-mark, html body .portal-heading-icon {
-  background: var(--pf-lime) !important; background-image: none !important; color: var(--on-accent) !important;
+  background: var(--pf-grad) !important; color: var(--on-accent) !important;
   box-shadow: none !important;
 }
 html body .brand-mark i, html body .portal-heading-icon i { color: var(--on-accent) !important; }
 html body .portal-submit, html body .auth-submit {
-  background: var(--pf-lime) !important; background-image: none !important; color: var(--on-accent) !important; box-shadow: none !important; border: 0 !important;
+  background: var(--pf-grad) !important; color: var(--on-accent) !important; box-shadow: none !important; border: 0 !important;
 }
-html body .portal-submit:hover, html body .auth-submit:hover { background: var(--pf-lime-hi) !important; transform: none !important; }
+html body .portal-submit:hover, html body .auth-submit:hover { filter: brightness(1.07); transform: none !important; }
 html body .sidebar li a.active, html body .sidebar a.active {
-  background: var(--pf-lime) !important; background-image: none !important; color: var(--on-accent) !important; box-shadow: none !important;
+  background: var(--pf-grad) !important; color: var(--on-accent) !important; box-shadow: none !important;
 }
 html body .auth-card, html body .auth-story { background-color: var(--card) !important; border-radius: var(--pf-radius) !important; }
 html body .auth-shell { gap: var(--pf-gap); align-items: stretch; }
 html body .auth-story { display: flex; flex-direction: column; justify-content: center; padding: 32px; border: 1px solid var(--border); }
 html body .auth-card { padding: 32px; }
-html body .auth-story h1 em, html body .eyebrow, html body .portal-kicker, html body .auth-enroll a, html body .auth-options a { color: var(--pf-lime) !important; background: none !important; -webkit-text-fill-color: currentColor; }
+html body .eyebrow, html body .portal-kicker, html body .auth-enroll a, html body .auth-options a { color: var(--pf-lime) !important; background: none !important; -webkit-text-fill-color: currentColor; }
 html body .auth-points span i { color: var(--pf-lime); }
 html body .auth-role-btn.is-on { border-color: var(--pf-lime) !important; box-shadow: 0 0 0 1px var(--pf-lime) inset; background: rgba(232,185,58,.08) !important; }
 @media (max-width: 720px) { html body .auth-card, html body .auth-story { padding: 22px; } }
@@ -192,3 +193,21 @@ html body .auth-role-btn.is-on { border-color: var(--pf-lime) !important; box-sh
 /* Footer headings and links use the same lime accent */
 html body .site-footer h3 { color: var(--pf-lime) !important; }
 html body .site-footer a:hover, html body .site-footer a:focus-visible { color: var(--pf-lime) !important; }
+
+
+/* ---------- Restored look: near-black with warm gold glow, cream text, gold gradient accents ---------- */
+html:has(body.auth-page), html:has(body.pf-glow) { background: #07080c; }
+html body.auth-page, html body.pf-glow { background: transparent !important; position: relative; }
+body.auth-page::before, body.auth-page::after, body.pf-glow::before, body.pf-glow::after {
+  content: ""; position: fixed; width: 60vmax; height: 60vmax; border-radius: 50%;
+  filter: blur(110px); opacity: .26; z-index: -1; pointer-events: none;
+}
+body.auth-page::before, body.pf-glow::before { background: #b8891c; top: -30vmax; left: -20vmax; }
+body.auth-page::after, body.pf-glow::after { background: #3b2a6e; bottom: -35vmax; right: -20vmax; }
+html body .auth-story h1 em, html body .auth-story h1 em * {
+  background: none !important; background-image: var(--pf-grad) !important;
+  -webkit-background-clip: text !important; background-clip: text !important;
+  color: transparent !important; -webkit-text-fill-color: transparent !important;
+}
+html body .auth-card, html body .auth-story { background-color: rgba(17,19,32,.92) !important; }
+html body .portal-nav { background: transparent !important; border-bottom: 1px solid rgba(255,255,255,.06); }
