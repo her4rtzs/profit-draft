@@ -1,4 +1,4 @@
-/* Legal pages (terms, privacy, faq) and the shared site footer. */
+/* Legal pages (terms, privacy, faq). The footer lives in site-footer.css. */
 .legal-page{--lg-accent:var(--gold,#d4a646);--lg-surface:rgba(255,255,255,.035);--lg-line:rgba(255,255,255,.09);--lg-muted:rgba(255,255,255,.66)}
 body.legal-page:not(.dark){--lg-surface:#ffffff;--lg-line:rgba(15,23,42,.10);--lg-muted:rgba(15,23,42,.64)}
 
@@ -39,26 +39,14 @@ mark.review{background:transparent;color:inherit;border-bottom:2px dashed var(--
 .faq summary:focus-visible{outline:2px solid var(--lg-accent);outline-offset:4px;border-radius:6px}
 .faq details p{margin:0 0 18px;color:var(--lg-muted)}
 
-.site-footer{margin-top:56px;padding:0;border-top:1px solid rgba(127,127,127,.18);background:rgba(0,0,0,.2);color:inherit;font-size:14px;line-height:1.6;text-align:left}
-body:not(.dark) .site-footer{background:rgba(0,0,0,.03)}
-.site-footer .foot-inner{max-width:1120px;margin:0 auto;padding:44px 24px 24px;display:grid;gap:36px}
-.site-footer .foot-top{display:grid;grid-template-columns:1.6fr 1fr 1.2fr;gap:36px;align-items:start}
-.site-footer .foot-brand{display:flex;gap:14px;align-items:center}
-.site-footer .foot-brand img{width:44px;height:44px;border-radius:50%;object-fit:cover;flex:none}
-.site-footer .foot-brand strong{display:block;font-size:17px;letter-spacing:.02em}
-.site-footer .foot-brand small{display:block;opacity:.65;font-size:13px;margin-top:2px}
-.site-footer h3{margin:0 0 12px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold,#d4a646);font-weight:700}
-.site-footer .foot-col{display:flex;flex-direction:column;gap:9px}
-.site-footer .foot-col p{margin:0;opacity:.8}
-.site-footer a{color:inherit;opacity:.82;text-decoration:none;width:fit-content;max-width:100%;overflow-wrap:anywhere;transition:opacity .15s,color .15s}
-.site-footer a:hover,.site-footer a:focus-visible{opacity:1;color:var(--gold,#d4a646);text-decoration:underline;text-underline-offset:3px}
-.site-footer .foot-bottom{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;padding-top:20px;border-top:1px solid rgba(127,127,127,.15);font-size:13px;opacity:.7}
-
 @media (max-width:860px){
   .legal-layout{grid-template-columns:1fr}
   .legal-toc{position:static;border-left:0;padding-left:0;flex-direction:row;flex-wrap:wrap;gap:6px 16px}
   .legal-toc-title{width:100%}
 }
-@media (max-width:820px){.site-footer .foot-top{grid-template-columns:1fr 1fr}.site-footer .foot-brand{grid-column:1/-1}}
-@media (max-width:480px){.site-footer .foot-top{grid-template-columns:1fr}}
-@media (prefers-reduced-motion:reduce){.legal-toc a,.site-footer a,.faq summary::after{transition:none}}
+@media (prefers-reduced-motion:reduce){.legal-toc a,.faq summary::after{transition:none}}
+
+/* Header on the legal pages: the Sign in link looks like the landing page's button. */
+.legal-page .portal-nav>a:not(.portal-brand){display:inline-flex;align-items:center;padding:10px 22px;border-radius:999px;font-weight:700;font-size:14px;text-decoration:none;color:var(--on-accent,#17130a);background:var(--gold-grad,linear-gradient(135deg,#f4d27a,#b8891c))}
+.legal-page .portal-nav>a:not(.portal-brand):hover{filter:brightness(1.06)}
+.legal-page .portal-nav>a:not(.portal-brand):focus-visible{outline:2px solid var(--gold,#e8b93a);outline-offset:3px}

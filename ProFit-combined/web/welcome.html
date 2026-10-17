@@ -10,9 +10,9 @@
 body{background:var(--bg);color:var(--tx);font:16px/1.6 Inter,system-ui,sans-serif;overflow-x:hidden}
 h1,h2,h3,.brand{font-family:"Plus Jakarta Sans",Inter,sans-serif}
 a{color:inherit;text-decoration:none}
-nav{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;gap:22px;padding:14px 5vw;background:#07080cd9;backdrop-filter:blur(12px);border-bottom:1px solid #ffffff12}
+body>nav{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;gap:22px;padding:14px 5vw;background:#07080cd9;backdrop-filter:blur(12px);border-bottom:1px solid #ffffff12}
 .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;margin-right:auto}.brand img{width:38px;height:38px;border-radius:10px}
-nav a.l{color:var(--mu);font-size:14px;font-weight:500}nav a.l:hover{color:var(--g)}
+body>nav a.l{color:var(--mu);font-size:14px;font-weight:500}body>nav a.l:hover{color:var(--g)}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:999px;font-weight:700;font-size:15px;border:1px solid #ffffff30;transition:.25s}
 .btn.p{background:linear-gradient(135deg,#f4d27a,var(--g2));color:#17130a;border:0;box-shadow:0 8px 28px #e8b93a33}.btn.p:hover{transform:translateY(-2px);box-shadow:0 12px 34px #e8b93a55}
 .btn:not(.p):hover{border-color:var(--g);color:var(--g)}
@@ -37,8 +37,7 @@ section h2{font-size:clamp(28px,4.5vw,44px);margin:8px 0 14px}
 .price{font-size:40px;font-weight:800;font-family:"Plus Jakarta Sans";margin:10px 0}.price{font-size:clamp(32px,9vw,40px);display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 6px}.price small{font-size:14px;color:var(--mu);font-weight:500;white-space:nowrap}
 .card.hot{border-color:var(--g);background:linear-gradient(180deg,#2a210b,var(--card))}
 .reveal{opacity:0;transform:translateY(30px);transition:.8s}.reveal.in{opacity:1;transform:none}
-footer{text-align:center;padding:50px 6vw;color:var(--mu);border-top:1px solid #ffffff12;font-size:14px}
-@media(max-width:700px){nav a.l{display:none}
+@media(max-width:700px){body>nav a.l{display:none}
 section{padding:60px 18px}
 .grid{flex-direction:column;align-items:stretch;gap:14px}
 .grid>.card{flex:0 0 auto;max-width:none;width:100%;box-sizing:border-box;padding:24px}
@@ -47,6 +46,7 @@ section{padding:60px 18px}
 </style><link rel="stylesheet" href="hover-fx.css?v=1">
 <link rel="stylesheet" href="ui-polish.css?v=1">
 <link rel="stylesheet" href="ui-fixes.css?v=1">
+<link rel="stylesheet" href="site-footer.css?v=1">
 </head><body>
 <nav><a class="brand" href="welcome.html"><img src="logo.jpg" alt="">ProFit</a><a class="l" href="#about">About</a><a class="l" href="#programs">Programs</a><a class="l" href="#plans">Plans</a><a class="l" href="#visit">Visit</a><a class="btn p" href="login.html"><i class="fa-solid fa-right-to-bracket"></i> Sign in</a></nav>
 <header class="hero"><div><p class="eyebrow">FUNCTIONAL FITNESS</p><h1>Train hard. <em>Stay consistent.</em></h1><p>Your gym, your membership and your progress, all in one place.</p><div class="cta"><a class="btn p" href="join.html">Join now</a><a class="btn" href="login.html">Member sign in</a></div></div></header>
@@ -59,7 +59,6 @@ section{padding:60px 18px}
 <div class="cta" style="margin-top:40px"><a class="btn p" href="join.html">Join now</a> <a class="btn" href="login.html">Sign in</a></div></section>
 <section id="visit" class="reveal"><p class="eyebrow">VISIT US</p><h2>Functional Fitness Gym</h2><p class="sub">Gym in Alfonso, Calabarzon. Opens at 7 AM.</p>
 <div class="grid"><div class="card"><i class="ic fa-solid fa-location-dot"></i><h3>Address</h3><p>259 Luksuhin-Mangas Road, Alfonso, Calabarzon</p></div><div class="card"><i class="ic fa-solid fa-phone"></i><h3>Call us</h3><p><a href="tel:09122617663">0912 261 7663</a></p></div><div class="card"><i class="ic fa-brands fa-facebook"></i><h3>Facebook</h3><p><a href="https://www.facebook.com/FunctionalPerformance.2022" target="_blank" rel="noopener">Functional Performance</a></p></div></div></section>
-<footer>© Functional Fitness Gym · 259 Luksuhin-Mangas Road, Alfonso, Calabarzon · 0912 261 7663</footer>
 <script>const io=new IntersectionObserver(e=>e.forEach(x=>x.isIntersecting&&x.target.classList.add("in")),{threshold:.15});document.querySelectorAll(".reveal").forEach(el=>io.observe(el));</script>
 <script src="site-footer.js?v=1" defer></script>
 </body></html>

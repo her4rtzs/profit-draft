@@ -372,3 +372,16 @@ Before any commit, scan the real files for secrets and review every modified fil
 - Staff payments list also shows paid online payments (method ONLINE).
 - Members page: new `web/members-ui.css` (loaded after spotify.css) restyles tabs, search, cards, table and enrollment form. No JS changes.
 - Join backup path: `PendingSignup.token` (migration 0004), `POST /api/join/confirm/`. On return from PayMongo the server asks PayMongo if the session is paid and creates the account, so it no longer depends only on the webhook.
+
+## 2026-10-17 22:50 (Asia/Manila): Fix landing header, unstyled legal pages, and add the team logo to the footer
+### What I asked for
+The landing page header was broken (logo and menu hidden behind FAQ / Terms / Privacy links). Fix it, and put the Team AusFITious logo in the footer.
+### What the agent decided and why
+- Root cause: welcome.html styled every <nav> as a fixed top bar, so the footer's own <nav> (added by site-footer.js) was pinned to the top and covered the real header. The rule is now scoped to body>nav.
+- The landing page also had its own plain footer, so two footers existed. Removed it; the shared footer is the only one.
+- Moved the footer styles out of legal.css into site-footer.css, so one footer design serves the landing page, sign-in, legal pages and every portal page. site-footer.js skips pages that already contain a .site-footer, so it never doubles up.
+- FAQ, Terms and Privacy only loaded two stylesheets, so they rendered as plain white serif pages. They now load the same stylesheet stack as the login page, with the gold accent set before paint.
+- Team logo saved as ausfitious-logo.png (384px, from the supplied artwork). It is shown in a rounded square because the artwork has a solid black background.
+- Left the landing page's Visit section alone. Its phone number and address differ from the footer and the legal pages; the gym must confirm which is correct.
+### Decision-log skill
+A bare element selector (nav, footer, header) in a page stylesheet will also hit every injected component of the same tag. Scope page-level selectors (body>nav) and give shared components a class. When one component exists in several places, keep a single source for its markup and CSS.
