@@ -397,3 +397,17 @@ A bare element selector (nav, footer, header) in a page stylesheet will also hit
 ### Decision-log skill
 When a multi-page static site flashes on navigation, prerender the next page before adding animations. When a page looks split, check the shared gradient variables and the page background first, then fix them in one place.
 
+
+## 2026-10-18 03:06 (Asia/Manila): Landing page flicker, spacing, and program photos
+### What I asked for
+- Remove the flicker when opening the landing page, reduce the oversized spacing, remove the full-width yellow band, add photos, and make the landing page look finished.
+### What the agent decided and why
+- Removed the splash intro overlay from the landing page. It covered the page on every open, which caused the flicker. The brief asks for animation only where genuinely needed.
+- Made the header a solid color with no blur. The translucent header picked up the gold band behind it and changed color while scrolling.
+- Reduced section padding and removed doubled gaps between consecutive sections, since the screens showed empty space.
+- Replaced the solid gold call-to-action band with a dark panel and a gold button, so the page is not a block of one loud color.
+- Used three crops of the supplied photos for the program cards. Only six usable photos were supplied, so the crops overlap with the gallery. New photos would give better variety.
+- Did not change the staff portal in this pass. The portal is the next step.
+- Could not run a browser in the build environment. Verified by parsing the markup and checking local links.
+### Decision-log skill
+When a landing page flickers on open, check for entrance overlays and blur effects before touching the content. When a page feels heavy, reduce section spacing first and remove doubled gaps before changing colors.
