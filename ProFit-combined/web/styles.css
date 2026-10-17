@@ -2242,7 +2242,14 @@ body.dark .sidebar li a:hover { background:rgba(255,255,255,.08); color:#fff; }
 .sidebar li a.active .icon, body.dark .sidebar li a.active .icon { color:#19231e; }
 html body .main-content > * { animation:none !important; }
 
+/* Page reveal: one soft fade-and-blur in after the sidebar is built. Replaces the old flicker. */
 @view-transition { navigation: none; }
+html.pf-pre body { opacity: 0; filter: blur(8px); }
+body { transition: opacity .28s ease, filter .28s ease; }
+@media (prefers-reduced-motion: reduce) {
+  html.pf-pre body { opacity: 1; filter: none; }
+  body { transition: none; }
+}
 
 /* Container consistency: one border, radius, padding, and gap for every panel and stat card. */
 .panel, .stat-card {
@@ -2255,18 +2262,3 @@ html body .main-content > * { animation:none !important; }
 }
 .stats { gap: 16px !important; align-items: stretch !important; }
 .stat-card { min-height: 112px; }
-
-/* Loading effects off: no top progress bar. */
-#pfProgress { display: none !important; }
-
-/* Navigation drawer on every screen size: the sidebar stays hidden until the menu button opens it. */
-.mobile-nav-toggle { display: grid !important; place-items: center; }
-.dashboard { display: block !important; grid-template-columns: 1fr !important; }
-.sidebar {
-  position: fixed !important; top: 0; bottom: 0; left: 0;
-  height: 100dvh !important; width: 272px !important; z-index: 1001;
-  transform: translateX(-105%) !important; transition: transform .24s ease; margin: 0 !important;
-}
-.sidebar.mobile-open { transform: translateX(0) !important; }
-.main-content { margin-left: 0 !important; width: 100% !important; }
-@media (prefers-reduced-motion: reduce) { .sidebar { transition: none; } }
