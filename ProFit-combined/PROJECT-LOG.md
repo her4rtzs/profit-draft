@@ -436,3 +436,13 @@ When a page keeps needing patches, rebuild it once around a small token set, the
 - Could not run a browser in the build environment. Verified by checking markup and that the pre-reveal script parses. Container alignment still needs a visual check on each page.
 ### Decision-log skill
 When a sidebar is built by script, do not show the shell until that script has finished. Reveal once with a single short animation, and always keep a fallback so the page cannot stay hidden.
+
+## 2026-10-18 03:18 (Asia/Manila): Revert landing page to the previous version
+### What I asked for
+- Revert the landing page to the version used before the last redesign. The owner reported visual effects they did not want.
+### What the agent decided and why
+- Restored welcome.html from the last refine build, which the owner had already applied. Reverting is the fastest way back to a known state, and avoids another large unrequested rebuild.
+- Did not change the staff portal or any other file in this session.
+- Could not run a browser in the build environment. Verified the restored file by checking its markers.
+### Decision-log skill
+When a visual change is rejected, revert to the last accepted build first, then ask the owner to point at the exact element that is wrong before making another change.
