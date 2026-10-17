@@ -10,7 +10,7 @@
 /* Landing page. Solid surfaces, one gold accent, no glow. Class names are prefixed so the portal stylesheets never touch this page. */
 *{box-sizing:border-box;margin:0}
 html{scroll-behavior:smooth}
-:root{--bg:#0b0b0d;--panel:#131316;--panel2:#1a1a1f;--line:#ffffff1c;--tx:#f4eee0;--mu:#a29f94;--gold:#e8b93a;--gold-hi:#f2cb5c;--gold-ink:#17130a;--nav:64px;--jump:50px}
+:root{--bg:#0b0b0d;--panel:#131316;--panel2:#1a1a1f;--line:#ffffff1c;--tx:#f4eee0;--mu:#a29f94;--gold:#e8b93a;--gold-hi:#f2cb5c;--gold-ink:#17130a;--nav:64px}
 body{background:var(--bg);color:var(--tx);font:16px/1.6 Inter,system-ui,sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
 img{display:block;max-width:100%}
@@ -40,14 +40,6 @@ img{display:block;max-width:100%}
 .top .acts{display:flex;gap:10px}
 
 /* jump-to bar */
-.jump{position:sticky;top:var(--nav);z-index:25;background:var(--panel);border-bottom:1px solid var(--line)}
-.jump .wrap{height:var(--jump);display:flex;align-items:center;gap:6px;overflow-x:auto;scrollbar-width:none}
-.jump .wrap::-webkit-scrollbar{display:none}
-.jump span{font:700 12px/1 Inter,sans-serif;letter-spacing:.16em;color:var(--mu);margin-right:14px;white-space:nowrap}
-.jump a{position:relative;flex:none;padding:0 14px;height:var(--jump);display:flex;align-items:center;font-size:14px;font-weight:500;color:var(--mu);white-space:nowrap}
-.jump a:hover{color:var(--tx)}
-.jump a[aria-current="true"]{color:var(--gold-hi)}
-.jump a[aria-current="true"]::after{content:"";position:absolute;left:14px;right:14px;bottom:0;height:3px;background:var(--gold);border-radius:3px 3px 0 0}
 
 /* hero */
 .hero{padding:clamp(36px,6vw,72px) 0 clamp(44px,7vw,88px);border-bottom:1px solid var(--line)}
@@ -78,7 +70,7 @@ img{display:block;max-width:100%}
 .plans-mini .wb{width:100%;margin-top:14px}
 
 /* sections */
-section{padding:clamp(56px,8vw,96px) 0;border-bottom:1px solid var(--line);scroll-margin-top:calc(var(--nav) + var(--jump))}
+section{padding:clamp(56px,8vw,96px) 0;border-bottom:1px solid var(--line);scroll-margin-top:var(--nav)}
 .eyebrow{font:700 12px/1 Inter,sans-serif;letter-spacing:.2em;color:var(--gold);text-transform:uppercase}
 section h2.h{font-size:clamp(34px,5vw,56px);font-weight:800;line-height:1;margin:12px 0 16px}
 .sub{color:var(--mu);max-width:560px;font-size:17px}
@@ -151,10 +143,20 @@ section h2.h{font-size:clamp(34px,5vw,56px);font-weight:800;line-height:1;margin
   .top .wrap{gap:12px}
   .brand small{display:none}
   .top .acts .wb:not(.gold){display:none}
-  .jump span{display:none}
+
   .steps{grid-template-columns:1fr}
   .row .wb{flex:1 1 150px}
 }
+
+/* Editorial finish: flat colour, square corners, numbered sections. No gradients or glow. */
+body{counter-reset:sec}
+.eyebrow::before{counter-increment:sec;content:"0" counter(sec) "  /  ";color:var(--mu);letter-spacing:.1em}
+.wb,.card,.plans-mini,.step,.tag,.visual{border-radius:4px}
+.hero .visual{display:flex;flex-direction:column;justify-content:space-between;gap:28px}
+.bignum{font:800 clamp(96px,12vw,170px)/.82 "Barlow Condensed","Arial Narrow",sans-serif;color:transparent;-webkit-text-stroke:2px var(--gold);letter-spacing:-.02em}
+.bignum small{display:block;margin-top:14px;font:600 12px/1 Inter,sans-serif;letter-spacing:.24em;color:var(--mu);-webkit-text-stroke:0}
+.top{border-bottom-color:var(--tx)}
+@media (max-width:760px){.bignum{font-size:80px}.top .acts .wb{display:inline-flex}.top .wrap{gap:10px}.brand small{display:none}}
 </style>
 </head><body>
 <a class="skip" href="#main">Skip to content</a>
@@ -167,10 +169,6 @@ section h2.h{font-size:clamp(34px,5vw,56px);font-weight:800;line-height:1;margin
   </div>
 </header>
 
-<nav class="jump" aria-label="Jump to a section">
-  <div class="wrap"><span>JUMP TO</span><a href="#about">About</a><a href="#programs">Programs</a><a href="#plans">Membership plans</a><a href="#portal">Member portal</a><a href="#visit">Visit us</a></div>
-</nav>
-
 <main id="main">
 <div class="hero">
   <div class="wrap">
@@ -182,9 +180,10 @@ section h2.h{font-size:clamp(34px,5vw,56px);font-weight:800;line-height:1;margin
         <li><i class="fa-solid fa-location-dot" aria-hidden="true"></i><span>259 Luksuhin-Mangas Road, Alfonso, Cavite</span></li>
         <li><i class="fa-solid fa-phone" aria-hidden="true"></i><a href="tel:09122617663">0912 261 7663</a></li>
       </ul>
-      <div class="row"><a class="wb gold" href="join.html">Join now</a><a class="wb" href="login.html">Member sign in</a><a class="more" href="#plans">See plans <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></div>
+      <div class="row"><a class="wb gold" href="join.html">Join now</a><a class="more" href="#plans">See plans <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></div>
     </div>
     <div class="visual">
+      <div class="bignum" aria-hidden="true">7AM<small>OPENS AT 7 AM</small></div>
       <div class="plans-mini">
         <h2 class="disp">Membership plans</h2>
         <ul>
@@ -192,7 +191,6 @@ section h2.h{font-size:clamp(34px,5vw,56px);font-weight:800;line-height:1;margin
           <li><div>Quarterly<span>90 days</span></div><b>₱2,100</b></li>
           <li><div>Annual<span>1 year</span></div><b>₱7,500</b></li>
         </ul>
-        <a class="wb gold" href="join.html">Start your membership</a>
       </div>
     </div>
   </div>
@@ -225,7 +223,7 @@ section h2.h{font-size:clamp(34px,5vw,56px);font-weight:800;line-height:1;margin
   <div class="plans">
     <article class="plan rv"><h3 class="disp">Monthly</h3><div class="amt">₱800</div><div class="per">for 30 days</div>
       <ul><li><i class="fa-solid fa-check" aria-hidden="true"></i>Flexible, no long commitment</li><li><i class="fa-solid fa-check" aria-hidden="true"></i>Member portal access</li></ul>
-      <a class="wb" href="join.html">Choose monthly</a></article>
+      </article>
     <article class="plan best rv"><span class="flag">Best for building a habit</span><h3 class="disp">Quarterly</h3><div class="amt">₱2,100</div><div class="per">for 90 days · about ₱700 a month</div>
       <ul><li><i class="fa-solid fa-check" aria-hidden="true"></i>Three months to settle into a routine</li><li><i class="fa-solid fa-check" aria-hidden="true"></i>Member portal access</li></ul>
       <a class="wb gold" href="join.html">Choose quarterly</a></article>
@@ -243,7 +241,6 @@ section h2.h{font-size:clamp(34px,5vw,56px);font-weight:800;line-height:1;margin
     <div class="step rv"><i class="fa-solid fa-receipt" aria-hidden="true"></i><h3>Payments</h3><p>Find your payments and renewals.</p></div>
     <div class="step rv"><i class="fa-solid fa-bullhorn" aria-hidden="true"></i><h3>Announcements</h3><p>Read updates from the gym.</p></div>
   </div>
-  <div class="row rv" style="margin-top:32px"><a class="wb gold" href="login.html">Sign in</a><a class="wb" href="join.html">Create an account</a></div>
 </div></section>
 
 <section id="visit"><div class="wrap">
@@ -262,7 +259,7 @@ section h2.h{font-size:clamp(34px,5vw,56px);font-weight:800;line-height:1;margin
     <div class="card gold rv">
       <h3 class="disp">Ready to start?</h3>
       <p>Join online, then come in and we will get you training.</p>
-      <div class="row"><a class="wb" href="join.html">Join now</a><a class="wb ghost" href="login.html">Sign in</a></div>
+      <div class="row"><a class="wb" href="join.html">Join now</a></div>
     </div>
   </div>
 </div></section>
@@ -278,14 +275,6 @@ section h2.h{font-size:clamp(34px,5vw,56px);font-weight:800;line-height:1;margin
     const io = new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) { x.target.classList.add("in"); io.unobserve(x.target); } }), { threshold: .12 });
     items.forEach(e => io.observe(e));
   }
-  const links = [...document.querySelectorAll(".jump a")];
-  const map = new Map(links.map(a => [a.getAttribute("href").slice(1), a]));
-  const spy = new IntersectionObserver(es => es.forEach(x => {
-    if (!x.isIntersecting) return;
-    links.forEach(a => a.removeAttribute("aria-current"));
-    const a = map.get(x.target.id); if (a) { a.setAttribute("aria-current", "true"); a.scrollIntoView({ block: "nearest", inline: "center" }); }
-  }), { rootMargin: "-40% 0px -55% 0px" });
-  map.forEach((_, id) => { const s = document.getElementById(id); if (s) spy.observe(s); });
 })();
 </script>
 <script src="site-footer.js?v=1" defer></script>
