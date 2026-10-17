@@ -446,3 +446,16 @@ When a sidebar is built by script, do not show the shell until that script has f
 - Could not run a browser in the build environment. Verified the restored file by checking its markers.
 ### Decision-log skill
 When a visual change is rejected, revert to the last accepted build first, then ask the owner to point at the exact element that is wrong before making another change.
+
+## 2026-10-18 03:27 (Asia/Manila): Shared footer redesign
+### What I asked for
+- Fix the footer.
+### What the agent decided and why
+- One footer markup and one stylesheet for all public pages (landing, login, join, Terms, Privacy, FAQ), so every page matches.
+- Same container width as the landing page (1200px), replacing the narrower footer width that did not line up.
+- Clear three-column layout (brand, legal links, contact) with a bottom row for the copyright and the Team AusFITious credit, responsive down to phones.
+- Kept the contact details already on the footer. The landing Visit section shows different details (Functional Fitness Gym, 0912 261 7663). The owner must confirm which set is correct before the two are unified.
+- Did not add a footer to portal pages in this session. That needs a compact variant and a layout check first.
+- Could not run a browser in the build environment. Verified script syntax and link targets.
+### Decision-log skill
+When several pages carry their own copy of a shared block, replace them with one markup and one stylesheet, and keep the container width equal to the main page so the edges line up.
