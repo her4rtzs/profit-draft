@@ -459,3 +459,15 @@ When a visual change is rejected, revert to the last accepted build first, then 
 - Could not run a browser in the build environment. Verified script syntax and link targets.
 ### Decision-log skill
 When several pages carry their own copy of a shared block, replace them with one markup and one stylesheet, and keep the container width equal to the main page so the edges line up.
+
+## 2026-10-18 03:28 (Asia/Manila): Landing page mobile navigation
+### What I asked for
+- Explain why the landing page shows no header or navigation on mobile, then fix it.
+### What the agent decided and why
+- Cause: the landing CSS hides the navigation links below 860px, and no menu button was provided to show them again. Only the logo and the Join button remained.
+- Added a menu button that opens the links on small screens. It uses a hidden checkbox, so opening the menu does not depend on JavaScript. A small script closes the menu after a link is tapped.
+- Added Sign in to the mobile menu, because the header hides the Sign in button on very small screens.
+- Did not change the desktop layout.
+- Could not run a browser in the build environment. Verified markup and script syntax.
+### Decision-log skill
+When navigation is hidden on small screens, always provide a visible way to open it. Check the header rules for every breakpoint before calling the layout finished.
