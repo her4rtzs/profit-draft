@@ -80,4 +80,27 @@
 </script>
 <script src="portal-fx.js?v=2"></script>
 <script src="site-footer.js?v=2" defer></script>
-</body></html>
+<dialog id="legalDialog" class="legal-dialog" aria-labelledby="legalDialogTitle">
+<div class="legal-dialog-bar"><strong id="legalDialogTitle">Legal</strong><button type="button" class="legal-dialog-close" aria-label="Close">&times;</button></div>
+<div class="legal-dialog-body" id="legalDialogBody"></div>
+</dialog>
+<script>
+(function(){
+  var dlg=document.getElementById('legalDialog'), body=document.getElementById('legalDialogBody'), title=document.getElementById('legalDialogTitle');
+  if(!dlg||!dlg.showModal) return;
+  function openLegal(a){
+    var href=a.getAttribute('href');
+    title.textContent=a.textContent.trim();
+    body.innerHTML='<p class="legal-meta">Loading...</p>';
+    dlg.showModal();
+    fetch(href,{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.text();})
+      .then(function(t){var doc=new DOMParser().parseFromString(t,'text/html');var main=doc.querySelector('.legal-main');body.innerHTML=main?main.innerHTML:'<p>Could not load this page.</p>';body.scrollTop=0;})
+      .catch(function(){body.innerHTML='<p>Could not load this page. Please try again.</p>';});
+  }
+  document.querySelectorAll('a[href="terms.html"],a[href="privacy.html"]').forEach(function(a){
+    a.addEventListener('click',function(e){e.preventDefault();openLegal(a);});
+  });
+  dlg.querySelector('.legal-dialog-close').addEventListener('click',function(){dlg.close();});
+  dlg.addEventListener('click',function(e){if(e.target===dlg)dlg.close();});
+})();
+</script></body></html>

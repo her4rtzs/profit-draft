@@ -50,3 +50,17 @@ mark.review{background:transparent;color:inherit;border-bottom:2px dashed var(--
 .legal-page .portal-nav>a:not(.portal-brand){display:inline-flex;align-items:center;padding:10px 22px;border-radius:999px;font-weight:700;font-size:14px;text-decoration:none;color:var(--on-accent,#1a1407);background:var(--gold-grad,linear-gradient(135deg,#f2cb5c,#b8891c))}
 .legal-page .portal-nav>a:not(.portal-brand):hover{filter:brightness(1.06)}
 .legal-page .portal-nav>a:not(.portal-brand):focus-visible{outline:2px solid var(--gold,#e8b93a);outline-offset:3px}
+
+/* Popup version of the legal text (opened from the sign-up page). */
+dialog.legal-dialog{--lg-surface:transparent;--lg-line:rgba(127,127,127,.2);--lg-muted:rgba(127,127,127,.9);--lg-accent:var(--gold,#d4a646);width:min(860px,calc(100vw - 24px));max-height:88vh;padding:0;border:1px solid rgba(127,127,127,.25);border-radius:16px;background:#ffffff;color:#1d1c17;box-shadow:0 24px 70px rgba(0,0,0,.4);overflow:hidden}
+body.dark dialog.legal-dialog{background:#15171b;color:#eeece4}
+dialog.legal-dialog::backdrop{background:rgba(0,0,0,.6)}
+.legal-dialog-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid rgba(127,127,127,.2)}
+.legal-dialog-bar strong{font-size:16px}
+.legal-dialog-close{width:34px;height:34px;border-radius:999px;border:1px solid rgba(127,127,127,.35);background:none;color:inherit;font-size:20px;line-height:1;cursor:pointer}
+.legal-dialog-body{overflow:auto;max-height:calc(88vh - 62px);padding:6px 18px 22px}
+.legal-dialog-body .legal-toc{display:none}
+.legal-dialog-body .legal-layout{grid-template-columns:minmax(0,1fr)}
+.legal-dialog-body .legal-card{padding:20px}
+.legal-dialog-body .legal-hero h1{font-size:26px}
+.legal-page .portal-nav a[href="login.html"]{background:var(--gold,#d4a646)!important;background-image:none!important;color:#1a1407!important;border-radius:999px;padding:9px 18px;font-weight:700;text-decoration:none;box-shadow:none!important}

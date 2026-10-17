@@ -27,7 +27,7 @@
       return;
     }
     const active = user;
-    if (active) window.ProFitAuth = { user: active, role: active.role, async logout() { localStorage.removeItem("profit-demo-session"); sessionStorage.removeItem("profit-demo-session"); location.replace("login.html"); } };
+    if (active) window.ProFitAuth = { user: active, role: active.role, async logout() { try{localStorage.removeItem("pp-accent");}catch(e){} localStorage.removeItem("profit-demo-session"); sessionStorage.removeItem("profit-demo-session"); location.replace("login.html"); } };
     document.addEventListener("DOMContentLoaded", () => {
       if (active) {
         document.querySelectorAll("[data-user-name]").forEach(el => el.textContent = active.name || "Account");
@@ -51,7 +51,7 @@
       if (isMember && role !== "MEMBER") { location.replace(role === "ADMIN" ? "index.html" : "login.html"); return; }
       if (isTrainer && role !== "TRAINER") { location.replace(role === "ADMIN" ? "index.html" : role === "MEMBER" ? "member-home.html" : "login.html"); return; }
       document.documentElement.classList.remove("auth-checking");
-      window.ProFitAuth = { user, role, async logout() { await window.ProFitAPI.post("/auth/logout", {}); location.replace("login.html"); } };
+      window.ProFitAuth = { user, role, async logout() { try{localStorage.removeItem("pp-accent");}catch(e){} await window.ProFitAPI.post("/auth/logout", {}); location.replace("login.html"); } };
       document.querySelectorAll("[data-user-name]").forEach(el => el.textContent = user.name || user.email || "Account");
       bindLogoutOnce();
     } catch (error) {

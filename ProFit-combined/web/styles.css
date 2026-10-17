@@ -2228,3 +2228,16 @@ body.dark input::placeholder,body.dark textarea::placeholder{color:#758399}
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 }
+
+/* Consistency pass: one sidebar look for light and dark mode; no fade-in on every tab switch. */
+.sidebar { background:#fbfaf6 !important; border-right:1px solid #e4e0d3 !important; box-shadow:none !important; }
+body.dark .sidebar { background:#0c111c !important; border-right-color:#1d293b !important; box-shadow:none !important; }
+.sidebar .headertxt strong { color:#1d1c17; }
+body.dark .sidebar .headertxt strong { color:#fffdf6; }
+.sidebar li a { color:#3d3c35; background:transparent; box-shadow:none; }
+body.dark .sidebar li a { color:#b9b8ae; }
+.sidebar li a:hover { background:rgba(0,0,0,.05); color:#111; }
+body.dark .sidebar li a:hover { background:rgba(255,255,255,.08); color:#fff; }
+.sidebar li a.active, body.dark .sidebar li a.active { background:var(--gold,#d4a646); color:#19231e; box-shadow:none; }
+.sidebar li a.active .icon, body.dark .sidebar li a.active .icon { color:#19231e; }
+html body .main-content > * { animation:none !important; }
