@@ -38,25 +38,135 @@ html body nav.sidebar {
   transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
 }
 
-/* Desktop sidebar MUST NOT collapse into an icon rail */
-html body nav.sidebar.close {
-  width: var(--sidebar-w) !important;
-  min-width: var(--sidebar-w) !important;
-  max-width: var(--sidebar-w) !important;
-}
-html body nav.sidebar.close .headertxt { display: grid !important; }
-html body nav.sidebar.close .nav-group-label { display: block !important; }
-html body nav.sidebar.close .menulist a .text { display: block !important; }
-html body nav.sidebar.close .sidebar-user-copy { display: grid !important; }
-html body nav.sidebar.close .account-menu-toggle { display: grid !important; }
-html body nav.sidebar.close .sidebar-brand-row { justify-content: flex-start !important; flex-direction: row !important; padding: 4px 6px 16px !important; }
-html body nav.sidebar.close .imgbrand { justify-content: flex-start !important; width: auto !important; }
-html body nav.sidebar.close .menulist a { justify-content: flex-start !important; padding: 0 12px !important; gap: 12px !important; }
-html body nav.sidebar.close .sidebar-user { justify-content: flex-start !important; padding: 8px 10px !important; }
+/* ==========================================================================
+   SIDEBAR COLLAPSE TOGGLE & COMPACT RAIL (78px)
+   ========================================================================== */
 
-/* Hide obsolete collapse button */
-html body nav.sidebar .sb-collapse,
+/* Toggle Button in brand row */
+html body nav.sidebar #sidebarToggle,
 html body #sidebarToggle {
+  display: grid !important;
+  place-items: center !important;
+  flex: 0 0 30px !important;
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 9px !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #94a3b8 !important;
+  font-size: 13px !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}
+
+html body nav.sidebar #sidebarToggle:hover,
+html body #sidebarToggle:hover {
+  background: color-mix(in srgb, var(--sb-gold, #e8b93a) 20%, transparent) !important;
+  border-color: var(--sb-gold, #e8b93a) !important;
+  color: var(--sb-gold, #e8b93a) !important;
+  transform: scale(1.08) !important;
+  box-shadow: 0 2px 10px rgba(232, 185, 58, 0.25) !important;
+}
+
+/* Collapsed rail state (78px) */
+html body nav.sidebar.close {
+  width: 78px !important;
+  min-width: 78px !important;
+  max-width: 78px !important;
+  padding: 16px 8px 14px !important;
+}
+
+html body nav.sidebar.close .sidebar-brand-row {
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 2px 0 14px !important;
+}
+
+html body nav.sidebar.close .imgbrand {
+  flex: 0 0 auto !important;
+  justify-content: center !important;
+  width: auto !important;
+}
+
+html body nav.sidebar.close .headertxt {
+  display: none !important;
+}
+
+html body nav.sidebar.close #sidebarToggle {
+  display: grid !important;
+  margin: 0 auto !important;
+}
+
+html body nav.sidebar.close .nav-group-label {
+  display: none !important;
+}
+
+html body nav.sidebar.close .menulist a {
+  justify-content: center !important;
+  padding: 0 !important;
+  width: 44px !important;
+  height: 44px !important;
+  margin: 0 auto 6px !important;
+  border-radius: 12px !important;
+}
+
+html body nav.sidebar.close .menulist a .text {
+  display: none !important;
+}
+
+html body nav.sidebar.close .menulist a .icon {
+  margin: 0 !important;
+  font-size: 17px !important;
+}
+
+/* Tooltip on collapsed menu items */
+html body nav.sidebar.close .menulist a::after {
+  content: attr(data-tip);
+  position: absolute;
+  left: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: #1e293b;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 8px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 1000;
+}
+
+html body nav.sidebar.close .menulist a:hover::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-50%) translateX(2px);
+}
+
+html body nav.sidebar.close .sidebar-foot {
+  padding: 10px 4px 0 !important;
+}
+
+html body nav.sidebar.close .sidebar-user {
+  justify-content: center !important;
+  padding: 4px !important;
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 50% !important;
+  margin: 0 auto !important;
+}
+
+html body nav.sidebar.close .sidebar-user-copy,
+html body nav.sidebar.close .account-menu-toggle {
   display: none !important;
 }
 
@@ -74,8 +184,7 @@ html body .dashboard {
 }
 
 html body nav.sidebar ~ .main-content,
-html body .dashboard > main.main-content,
-html body nav.sidebar.close ~ .main-content {
+html body .dashboard > main.main-content {
   display: block !important;
   box-sizing: border-box !important;
   margin-left: var(--sidebar-w) !important;
@@ -86,7 +195,17 @@ html body nav.sidebar.close ~ .main-content {
   min-width: 0 !important;
   flex: none !important;
   padding: 24px clamp(20px, 3vw, 40px) 48px !important;
-  overflow-x: hidden !important;
+  overflow-x: clip !important;
+  overflow-y: visible !important;
+  transition: margin-left 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), width 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}
+
+html body nav.sidebar.close ~ .main-content,
+html body .dashboard > main.main-content.sidebar-collapsed,
+body.sidebar-collapsed .main-content {
+  margin-left: 78px !important;
+  width: calc(100% - 78px) !important;
+  max-width: calc(100% - 78px) !important;
 }
 
 /* ==========================================================================
@@ -97,8 +216,9 @@ html body nav.sidebar .sidebar-brand-row {
   flex: 0 0 auto !important;
   display: flex !important;
   align-items: center !important;
-  gap: 12px !important;
-  padding: 4px 6px 16px !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  padding: 4px 4px 16px !important;
   margin: 0 0 8px !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
 }

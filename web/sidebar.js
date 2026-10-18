@@ -12,14 +12,46 @@
   const setDrawer = open => { if(!sidebar) return; sidebar.classList.toggle("mobile-open",open); drawerShade.classList.toggle("visible",open); if(mobileToggle){mobileToggle.setAttribute("aria-expanded",String(open));mobileToggle.setAttribute("aria-label",open?"Close navigation":"Open navigation");mobileToggle.innerHTML=`<i class="fa-solid ${open?'fa-xmark':'fa-bars'}"></i>`;} document.body.classList.toggle("drawer-open",open); };
   mobileToggle?.addEventListener("click",()=>setDrawer(!sidebar?.classList.contains("mobile-open")));
   drawerShade.addEventListener("click",()=>setDrawer(false));
-  // Mobile drawer only on small screens (< 768px)
+  // Mobile drawer only on small screens (<= 768px)
   sidebar?.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{if(window.matchMedia("(max-width: 768px)").matches)setDrawer(false)}));
   window.addEventListener("resize",()=>{if(!window.matchMedia("(max-width: 768px)").matches)setDrawer(false)});
-  // Desktop sidebar is permanently fixed and stable - ensure it never starts or stays collapsed
-  if (sidebar) {
-    sidebar.classList.remove("close");
-    try { localStorage.removeItem("sidebar"); } catch(e){}
+
+  // Desktop sidebar collapse toggle
+  function syncToggleIcon(isClosed) {
+    if (!toggle) return;
+    const icon = toggle.querySelector("i");
+    if (icon) {
+      icon.className = `fa-solid ${isClosed ? "fa-chevron-right" : "fa-chevron-left"}`;
+    }
+    toggle.setAttribute("aria-label", isClosed ? "Expand sidebar" : "Collapse sidebar");
+    toggle.setAttribute("title", isClosed ? "Expand sidebar" : "Collapse sidebar");
+    toggle.setAttribute("aria-expanded", String(!isClosed));
   }
+
+  // Restore saved desktop collapse state
+  if (sidebar && !window.matchMedia("(max-width: 768px)").matches) {
+    const saved = store.get("sidebar");
+    if (saved === "closed") {
+      sidebar.classList.add("close");
+      document.body.classList.add("sidebar-collapsed");
+      syncToggleIcon(true);
+    } else {
+      sidebar.classList.remove("close");
+      document.body.classList.remove("sidebar-collapsed");
+      syncToggleIcon(false);
+    }
+  }
+
+  toggle?.addEventListener("click", e => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!sidebar) return;
+    const isNowClosed = !sidebar.classList.contains("close");
+    sidebar.classList.toggle("close", isNowClosed);
+    document.body.classList.toggle("sidebar-collapsed", isNowClosed);
+    store.set("sidebar", isNowClosed ? "closed" : "open");
+    syncToggleIcon(isNowClosed);
+  });
   const applyTheme = dark => {
     document.body.classList.toggle("dark", !!dark);
     if (themeToggle) {

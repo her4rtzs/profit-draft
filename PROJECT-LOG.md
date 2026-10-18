@@ -550,3 +550,15 @@ Continue fixing the staff dashboard layout, sidebar overlap, and responsive cont
 - Bumped `layout-fixes.css` version to `?v=3` across all 9 staff dashboard HTML files and bumped service worker cache to `profit-shell-v13`.
 ### Decision-log skill
 When fixing container alignment beside fixed sidebars, audit direct children (`> *`) as well as parent wrappers for `max-width` with `margin-inline: auto`. Centering child components inside an offset container causes them to calculate margins against the viewport instead of the workspace, producing invisible clipping on the left and phantom voids on the right.
+
+## 2026-10-18 23:20 (Asia/Manila): Remove Double Scrollbar, Collapsible Sidebar Icon & Hover Effects
+### What I asked for
+In dashboard, remove one scroll bar in the right side. Add icon for collapsing sidebar and fix the hover effects.
+### What the agent decided and why
+- Eliminated the double vertical scrollbar by fixing container overflow hierarchy in `web/layout-fixes.css`: `html` now manages vertical page scroll (`overflow-y: auto !important; overflow-x: clip !important; scrollbar-gutter: stable;`), while `body`, `.dashboard`, and `.main-content` use `overflow: visible !important;` (with horizontal clipping on `.main-content`). This resolves the CSS issue where `overflow-x: hidden` on both `html` and `body` caused Chromium/Windows browsers to spawn two independent vertical scrollbars.
+- Restored the sidebar collapse icon button (`#sidebarToggle`) with a chevron (`<i class="fa-solid fa-chevron-left"></i>`) inside `.sidebar-brand-row` in `web/layout.js`, and re-enabled desktop collapse logic in `web/sidebar.js` and `web/sidebar-pro.css`.
+- The collapse state toggles the desktop sidebar between 260px expanded and a 78px icon rail (`nav.sidebar.close`), flips the icon between `fa-chevron-left` and `fa-chevron-right`, and dynamically adjusts `.main-content` width (`calc(100% - 78px)`) with state persisted in `localStorage.sidebar`.
+- Restored interactive hover micro-animations across dashboard cards and buttons by removing restrictive `transform: none !important;` rules in `web/hover-fx.css`. Enhanced hover states in `web/layout-fixes.css` for `.menulist a:hover`, `.quick-action:hover` (elevation `translateY(-4px)` with gold glow and icon zoom), `.stat-card:hover` (elevation `translateY(-3px)` with subtle gold glow and icon scale), topbar action buttons, and table rows.
+- Bumped asset versions across all 9 staff HTML pages (`layout-fixes.css?v=4`, `sidebar-pro.css?v=5`, `hover-fx.css?v=2`, `layout.js?v=16`, `sidebar.js?v=16`) and bumped service worker cache to `profit-shell-v14`.
+### Decision-log skill
+When diagnosing double scrollbars in web applications, inspect both `html` and `body` for non-visible `overflow-x` values (such as `hidden` or `auto`), as the W3C CSS specification forces `overflow-y` to compute to `auto` whenever `overflow-x` is non-visible, turning both elements into nested scroll containers. Use `overflow-x: clip` on root containers and keep body overflow visible to preserve a single, clean document scrollbar.

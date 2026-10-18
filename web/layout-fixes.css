@@ -8,8 +8,20 @@
 /* --------------------------------------------------------------------------
    1. DASHBOARD & MAIN CONTENT AREA
    -------------------------------------------------------------------------- */
-html, body {
-  overflow-x: hidden !important;
+html {
+  overflow-x: clip !important;
+  overflow-y: auto !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  scrollbar-gutter: stable;
+}
+
+body {
+  overflow: visible !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
   width: 100% !important;
   min-height: 100vh !important;
   margin: 0 !important;
@@ -23,6 +35,7 @@ html body .dashboard {
   min-height: 100vh !important;
   background: var(--bg) !important;
   box-sizing: border-box !important;
+  overflow: visible !important;
 }
 
 html body nav.sidebar {
@@ -36,6 +49,138 @@ html body nav.sidebar {
   height: 100vh !important;
   z-index: 100 !important;
   box-sizing: border-box !important;
+  transition: width 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}
+
+/* Sidebar collapse toggle button */
+html body nav.sidebar #sidebarToggle,
+html body #sidebarToggle {
+  display: grid !important;
+  place-items: center !important;
+  flex: 0 0 30px !important;
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 9px !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #94a3b8 !important;
+  font-size: 13px !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}
+
+html body nav.sidebar #sidebarToggle:hover,
+html body #sidebarToggle:hover {
+  background: color-mix(in srgb, var(--sb-gold, #e8b93a) 20%, transparent) !important;
+  border-color: var(--sb-gold, #e8b93a) !important;
+  color: var(--sb-gold, #e8b93a) !important;
+  transform: scale(1.08) !important;
+  box-shadow: 0 2px 10px rgba(232, 185, 58, 0.25) !important;
+}
+
+/* Collapsed rail state (78px desktop) */
+html body nav.sidebar.close {
+  width: 78px !important;
+  min-width: 78px !important;
+  max-width: 78px !important;
+  padding: 16px 8px 14px !important;
+}
+
+html body nav.sidebar.close .sidebar-brand-row {
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 2px 0 14px !important;
+}
+
+html body nav.sidebar.close .imgbrand {
+  flex: 0 0 auto !important;
+  justify-content: center !important;
+  width: auto !important;
+}
+
+html body nav.sidebar.close .headertxt {
+  display: none !important;
+}
+
+html body nav.sidebar.close #sidebarToggle {
+  display: grid !important;
+  margin: 0 auto !important;
+}
+
+html body nav.sidebar.close #sidebarToggle i {
+  transform: rotate(180deg) !important;
+}
+
+html body nav.sidebar.close .nav-group-label {
+  display: none !important;
+}
+
+html body nav.sidebar.close .menulist a {
+  justify-content: center !important;
+  padding: 0 !important;
+  width: 44px !important;
+  height: 44px !important;
+  margin: 0 auto 6px !important;
+  border-radius: 12px !important;
+}
+
+html body nav.sidebar.close .menulist a .text {
+  display: none !important;
+}
+
+html body nav.sidebar.close .menulist a .icon {
+  margin: 0 !important;
+  font-size: 17px !important;
+}
+
+html body nav.sidebar.close .menulist a::after {
+  content: attr(data-tip);
+  position: absolute;
+  left: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: #1e293b;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 8px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 1000;
+}
+
+html body nav.sidebar.close .menulist a:hover::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-50%) translateX(2px);
+}
+
+html body nav.sidebar.close .sidebar-foot {
+  padding: 10px 4px 0 !important;
+}
+
+html body nav.sidebar.close .sidebar-user {
+  justify-content: center !important;
+  padding: 4px !important;
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 50% !important;
+  margin: 0 auto !important;
+}
+
+html body nav.sidebar.close .sidebar-user-copy,
+html body nav.sidebar.close .account-menu-toggle {
+  display: none !important;
 }
 
 html body .main-content {
@@ -47,7 +192,17 @@ html body .main-content {
   min-width: 0 !important;
   box-sizing: border-box !important;
   padding: 24px clamp(20px, 3vw, 40px) 48px !important;
-  overflow-x: hidden !important;
+  overflow-x: clip !important;
+  overflow-y: visible !important;
+  transition: margin-left 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), width 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}
+
+html body nav.sidebar.close ~ .main-content,
+html body .dashboard > main.main-content.sidebar-collapsed,
+body.sidebar-collapsed .main-content {
+  margin-left: 78px !important;
+  width: calc(100% - 78px) !important;
+  max-width: calc(100% - 78px) !important;
 }
 
 html body .main-content > * {
@@ -218,12 +373,23 @@ html body .quick-action {
   background: var(--card) !important;
   box-sizing: border-box !important;
   text-decoration: none !important;
-  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease !important;
+  transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.22s ease, box-shadow 0.22s ease !important;
 }
 
 html body .quick-action:hover {
-  transform: translateY(-2px) !important;
+  transform: translateY(-4px) !important;
   border-color: var(--sb-gold, #e8b93a) !important;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12), 0 0 0 1px color-mix(in srgb, var(--sb-gold, #e8b93a) 25%, transparent) !important;
+}
+
+html body .quick-action:hover .quick-action-icon {
+  transform: scale(1.08) !important;
+  background: color-mix(in srgb, var(--sb-gold, #e8b93a) 28%, transparent) !important;
+}
+
+html body .quick-action:hover .action-arrow {
+  color: var(--sb-gold, #e8b93a) !important;
+  transform: translate(2px, -2px) !important;
 }
 
 html body .quick-action-icon {
@@ -236,6 +402,7 @@ html body .quick-action-icon {
   background: color-mix(in srgb, var(--sb-gold, #e8b93a) 15%, transparent) !important;
   color: var(--sb-gold, #e8b93a) !important;
   font-size: 16px !important;
+  transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease !important;
 }
 
 html body .quick-action > span:nth-child(2) {
@@ -270,6 +437,7 @@ html body .quick-action .action-arrow {
   margin-left: auto !important;
   color: var(--muted) !important;
   font-size: 12px !important;
+  transition: transform 0.2s ease, color 0.2s ease !important;
 }
 
 @media (max-width: 1100px) {
@@ -302,6 +470,13 @@ html body .stat-card {
   justify-content: space-between !important;
   min-height: 110px !important;
   overflow: hidden !important;
+  transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.22s ease, box-shadow 0.22s ease !important;
+}
+
+html body .stat-card:hover {
+  transform: translateY(-3px) !important;
+  border-color: color-mix(in srgb, var(--sb-gold, #e8b93a) 50%, var(--border)) !important;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08), 0 0 0 1px color-mix(in srgb, var(--sb-gold, #e8b93a) 15%, transparent) !important;
 }
 
 html body .stat-top {
@@ -318,6 +493,11 @@ html body .stat-icon {
   display: grid !important;
   place-items: center !important;
   font-size: 16px !important;
+  transition: transform 0.2s ease !important;
+}
+
+html body .stat-card:hover .stat-icon {
+  transform: scale(1.08) !important;
 }
 
 html body .stat-content {
@@ -628,3 +808,83 @@ html body .notification-panel {
     display: none !important;
   }
 }
+
+/* --------------------------------------------------------------------------
+   10. INTERACTIVE HOVER MICRO-ANIMATIONS & FEEDBACK
+   -------------------------------------------------------------------------- */
+@media (hover: hover) {
+  /* Sidebar menu links */
+  html body nav.sidebar .menulist a {
+    transition: background-color 0.18s ease, color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease !important;
+  }
+
+  html body nav.sidebar:not(.close) .menulist a:hover {
+    background: color-mix(in srgb, var(--sb-gold, #e8b93a) 14%, rgba(255, 255, 255, 0.06)) !important;
+    color: #ffffff !important;
+    transform: translateX(4px) !important;
+  }
+
+  html body nav.sidebar:not(.close) .menulist a:hover .icon {
+    color: var(--sb-gold, #e8b93a) !important;
+    transform: scale(1.1) !important;
+  }
+
+  html body nav.sidebar.close .menulist a:hover {
+    background: color-mix(in srgb, var(--sb-gold, #e8b93a) 20%, rgba(255, 255, 255, 0.08)) !important;
+    color: var(--sb-gold, #e8b93a) !important;
+    transform: none !important;
+  }
+
+  html body nav.sidebar.close .menulist a:hover .icon {
+    color: var(--sb-gold, #e8b93a) !important;
+    transform: scale(1.15) !important;
+  }
+
+  /* Topbar interactive controls */
+  html body .theme-toggle,
+  html body .notification,
+  html body .topbar-nav button,
+  html body .topbar-avatar {
+    transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease !important;
+  }
+
+  html body .theme-toggle:hover,
+  html body .notification:hover {
+    transform: translateY(-2px) scale(1.05) !important;
+    border-color: var(--sb-gold, #e8b93a) !important;
+    color: var(--sb-gold, #e8b93a) !important;
+    background: color-mix(in srgb, var(--sb-gold, #e8b93a) 12%, var(--card)) !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12) !important;
+  }
+
+  html body .topbar-nav button:hover:not(:disabled) {
+    transform: scale(1.08) !important;
+    border-color: var(--sb-gold, #e8b93a) !important;
+    color: var(--sb-gold, #e8b93a) !important;
+    background: color-mix(in srgb, var(--sb-gold, #e8b93a) 14%, var(--card)) !important;
+  }
+
+  html body .topbar-avatar:hover {
+    transform: scale(1.06) !important;
+    box-shadow: 0 0 0 2px var(--sb-gold, #e8b93a), 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+  }
+
+  /* General buttons */
+  html body .btn-primary:hover,
+  html body a.btn-primary:hover,
+  html body .btn:hover {
+    transform: translateY(-2px) !important;
+    border-color: var(--sb-gold, #e8b93a) !important;
+    box-shadow: 0 6px 16px rgba(232, 185, 58, 0.25) !important;
+  }
+
+  /* Table rows */
+  html body tbody tr {
+    transition: background-color 0.15s ease !important;
+  }
+
+  html body tbody tr:hover {
+    background: color-mix(in srgb, var(--sb-gold, #e8b93a) 8%, var(--card)) !important;
+  }
+}
+
