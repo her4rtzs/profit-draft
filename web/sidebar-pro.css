@@ -156,3 +156,38 @@ html body nav.sidebar.close .account-menu { left: calc(100% + 14px) !important; 
 @media (prefers-reduced-motion: reduce) {
   html body nav.sidebar, html body nav.sidebar .menulist a, html body nav.sidebar .sb-collapse, .pf-tip { transition: none !important; }
 }
+
+/* PROFIT MAIN LAYOUT FIX */
+html body .dashboard {
+    display: block;
+    width: 100%;
+    min-width: 0;
+}
+
+html body .dashboard > main.main-content {
+    display: block;
+    flex: none;
+    box-sizing: border-box;
+    width: calc(100% - var(--sidebar-w));
+    max-width: calc(100% - var(--sidebar-w));
+    min-width: 0;
+    margin-left: var(--sidebar-w);
+}
+
+html body .sidebar.close ~ main.main-content {
+    width: calc(100% - var(--sidebar-w-closed));
+    max-width: calc(100% - var(--sidebar-w-closed));
+    margin-left: var(--sidebar-w-closed);
+}
+
+@media (max-width: 760px) {
+    html body .dashboard > main.main-content,
+    html body .sidebar.close ~ main.main-content {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        margin-left: 0;
+        padding-left: clamp(14px, 4vw, 20px);
+        padding-right: clamp(14px, 4vw, 20px);
+    }
+}

@@ -1,3 +1,11 @@
+# 2026-10-18 — Sidebar/content overflow follow-up
+
+- Fixed the desktop/tablet main area to explicitly use the viewport width remaining after the fixed sidebar.
+- Fixed the collapsed-sidebar width calculation and mobile full-width drawer layout.
+- Clipped horizontal overflow from page-level containers and media without changing the existing ProFit dark/gold theme.
+- Bumped sidebar stylesheet to v3 and service-worker shell cache to v11.
+- Browser verification is still required at desktop, tablet, and mobile widths.
+
 ## 2026-10-18: Sidebar/content alignment fix
 - Unified the sidebar desktop-to-mobile breakpoint at 760px to match `sidebar-pro.css` drawer behavior.
 - Prevented the main content from retaining a full-viewport width while offset beside the fixed sidebar; applied `min-width: 0` and `box-sizing: border-box` to avoid horizontal overflow.
