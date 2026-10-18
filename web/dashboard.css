@@ -1,0 +1,933 @@
+/* ==========================================================================
+   ProFit Dashboard layout (web/dashboard.css)
+
+   Loaded last on index.html. Every rule is scoped to
+   body[data-page="dashboard"], so no other page changes.
+
+   The header and panels are styled by eleven stylesheets that redefine the
+   same selectors, several with !important. Those files are not edited here
+   because ten other pages share them. On this page this file is the single
+   authority for layout. Each block names the root cause it fixes.
+
+   Root causes fixed on this page:
+   1. .topbar-right had width:100% (styles.css) inside a flex-wrap .topbar,
+      so the search and action cluster dropped onto a second row and the
+      header grew to about 214px.
+   2. .topbar-actions (created by layout.js) only had display:flex inside the
+      max-width:768px query, so on desktop the theme, bell and avatar buttons
+      stacked vertically.
+   3. .panel-header > div:first-child has flex:1 1 220px (layout-fixes.css).
+      In the phone column layout that basis becomes a 220px HEIGHT, which
+      caused the empty gaps above the revenue chart, membership donut and
+      registrations table.
+   4. .bar-column max-width:44px plus a 6px gap cannot hold twelve month
+      columns at phone width, so the bars ran past the panel.
+   5. .panel-header .chip-row was nowrap with overflow-x on phones, which
+      pushed the year stepper off-screen.
+   6. The status ribbon sat between the header and the content and added about
+      70px of height. Quick actions were a separate full-width strip.
+   7. The phone revenue and registration headers used a column layout whose
+      children also received a row-only flex basis (see 3).
+   ========================================================================== */
+
+
+/* ---------- 1. Page grid ------------------------------------------------- */
+/* 12 columns on desktop. Named areas place each module where the wireframe
+   puts it: header, status ribbon, KPI row, membership (1/3) beside revenue
+   (2/3), registrations beside quick actions. Tablet and phone re-flow below. */
+html body[data-page="dashboard"] .dashboard > main.main-content {
+  display: grid !important;
+  grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+  grid-template-areas:
+    "top top top top top top top top top top top top"
+    "strip strip strip strip strip strip strip strip strip strip strip strip"
+    "stats stats stats stats stats stats stats stats stats stats stats stats"
+    "members members members members revenue revenue revenue revenue revenue revenue revenue revenue"
+    "regs regs regs regs regs regs regs regs quick quick quick quick" !important;
+  gap: 20px !important;
+  align-content: start !important;
+  padding: 24px clamp(18px, 2.6vw, 36px) 48px !important;
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+  overflow-x: clip !important;
+}
+
+/* Every grid child drops the legacy vertical rhythm (pf-modern adds margin-top
+   to siblings, and the KPI and content sections add their own bottom margins). */
+body[data-page="dashboard"] .main-content > * {
+  margin: 0 !important;
+  width: auto !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+body[data-page="dashboard"] .topbar           { grid-area: top; }
+body[data-page="dashboard"] #statusStrip      { grid-area: strip; }
+body[data-page="dashboard"] .stats            { grid-area: stats; }
+body[data-page="dashboard"] .summary-panel    { grid-area: members; }
+body[data-page="dashboard"] .revenue-panel    { grid-area: revenue; }
+body[data-page="dashboard"] .registrations-panel { grid-area: regs; }
+body[data-page="dashboard"] .quick-actions    { grid-area: quick; }
+
+/* The content wrapper only groups the two charts in the HTML. Making it
+   transparent lets membership and revenue sit in the page grid directly. */
+body[data-page="dashboard"] .content-grid {
+  display: contents !important;
+}
+
+/* Tablet landscape and small laptops: membership 5/12, revenue 7/12, the
+   registrations table and quick actions run the full width. */
+@media (max-width: 1099px) {
+  html body[data-page="dashboard"] .dashboard > main.main-content {
+    grid-template-areas:
+      "top top top top top top top top top top top top"
+      "strip strip strip strip strip strip strip strip strip strip strip strip"
+      "stats stats stats stats stats stats stats stats stats stats stats stats"
+      "members members members members members revenue revenue revenue revenue revenue revenue revenue"
+      "regs regs regs regs regs regs regs regs regs regs regs regs"
+      "quick quick quick quick quick quick quick quick quick quick quick quick" !important;
+  }
+}
+
+/* Tablets below 1024px: membership and revenue stack full width, so the
+   twelve-month chart and the three status tiles never have to squeeze. */
+@media (max-width: 1023px) {
+  html body[data-page="dashboard"] .dashboard > main.main-content {
+    grid-template-areas:
+      "top"
+      "strip"
+      "stats"
+      "members"
+      "revenue"
+      "regs"
+      "quick" !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+
+/* Phones: one column. KPI cards come first, then quick actions, then charts. */
+@media (max-width: 768px) {
+  html body[data-page="dashboard"] .dashboard > main.main-content {
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-areas:
+      "top"
+      "strip"
+      "stats"
+      "quick"
+      "members"
+      "revenue"
+      "regs" !important;
+    gap: 16px !important;
+    padding: 14px 14px calc(96px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+
+/* ---------- 2. Header ---------------------------------------------------- */
+/* One row on desktop: heading left, search and action buttons right. All
+   controls share one 42px height. */
+body[data-page="dashboard"] .topbar {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  position: static !important;
+  width: auto !important;
+  max-width: none !important;
+  min-height: 0 !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+body[data-page="dashboard"] .topbar-heading {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  width: auto !important;
+}
+
+body[data-page="dashboard"] .topbar-nav {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex: 0 0 auto !important;
+}
+
+body[data-page="dashboard"] .topbar-nav button {
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  padding: 0 !important;
+}
+
+body[data-page="dashboard"] .mobile-nav-toggle {
+  display: none !important;
+}
+
+body[data-page="dashboard"] .topbar-title {
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+}
+
+body[data-page="dashboard"] .topbar-title .welcome {
+  margin: 0 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  letter-spacing: .12em !important;
+  text-transform: uppercase !important;
+  color: var(--gold) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+body[data-page="dashboard"] .topbar-title h1 {
+  margin: 4px 0 0 !important;
+  font-size: 26px !important;
+  line-height: 1.15 !important;
+  font-weight: 800 !important;
+  letter-spacing: -.02em !important;
+  color: var(--text) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+body[data-page="dashboard"] .topbar-sub {
+  margin: 4px 0 0 !important;
+  font-size: 13px !important;
+  line-height: 1.35 !important;
+  color: var(--muted) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+body[data-page="dashboard"] .topbar-right {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  flex-wrap: nowrap !important;
+  gap: 12px !important;
+  flex: 0 1 auto !important;
+  width: auto !important;
+  min-width: 0 !important;
+}
+
+body[data-page="dashboard"] .topbar-right .search {
+  flex: 0 1 300px !important;
+  width: 300px !important;
+  min-width: 200px !important;
+  max-width: 100% !important;
+  height: 42px !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+}
+
+body[data-page="dashboard"] .topbar-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 8px !important;
+  flex: 0 0 auto !important;
+}
+
+/* Theme, bell and avatar: same 42px square, same radius, never shrink. */
+body[data-page="dashboard"] .topbar-actions .theme-toggle,
+body[data-page="dashboard"] .topbar-actions .notification,
+body[data-page="dashboard"] .topbar-actions .topbar-avatar {
+  flex: 0 0 42px !important;
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+  min-height: 42px !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  border-radius: 12px !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  padding: 0 !important;
+}
+
+body[data-page="dashboard"] .topbar-actions .notification-wrap {
+  position: relative !important;
+  display: block !important;
+  flex: 0 0 42px !important;
+  width: 42px !important;
+  height: 42px !important;
+}
+
+/* Status ribbon: a slim row aligned to the content edges. */
+body[data-page="dashboard"] #statusStrip {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  gap: 12px !important;
+  min-height: 52px !important;
+  height: auto !important;
+  padding: 8px 14px !important;
+  box-sizing: border-box !important;
+  overflow-x: auto !important;
+  scrollbar-width: none !important;
+}
+
+body[data-page="dashboard"] #statusStrip::-webkit-scrollbar {
+  display: none !important;
+}
+
+body[data-page="dashboard"] #statusStrip > * {
+  flex: 0 0 auto !important;
+}
+
+body[data-page="dashboard"] #statusStrip .strip-clock {
+  margin-left: auto !important;
+}
+
+
+/* ---------- 3. KPI cards ------------------------------------------------- */
+body[data-page="dashboard"] .stats {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  margin: 0 !important;
+  align-items: stretch !important;
+}
+
+body[data-page="dashboard"] .stat-card {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  min-width: 0 !important;
+  min-height: 128px !important;
+  margin: 0 !important;
+  padding: 16px 18px !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+body[data-page="dashboard"] .stat-top {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  min-width: 0 !important;
+}
+
+body[data-page="dashboard"] .stat-icon {
+  flex: 0 0 40px !important;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 12px !important;
+  display: grid !important;
+  place-items: center !important;
+}
+
+body[data-page="dashboard"] .stat-content {
+  min-width: 0 !important;
+  margin-top: 12px !important;
+}
+
+body[data-page="dashboard"] .stat-content h2 {
+  margin: 8px 0 2px !important;
+  font-size: 26px !important;
+  line-height: 1.1 !important;
+  font-variant-numeric: tabular-nums !important;
+  overflow-wrap: anywhere !important;
+}
+
+body[data-page="dashboard"] .stat-content small {
+  display: block !important;
+  font-size: 12px !important;
+  line-height: 1.35 !important;
+}
+
+
+/* ---------- 4. Panels ---------------------------------------------------- */
+body[data-page="dashboard"] .panel {
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: 0 !important;
+  padding: 20px 22px !important;
+  box-sizing: border-box !important;
+}
+
+/* Title block left, controls right. Wraps cleanly on narrow screens. */
+body[data-page="dashboard"] .panel-header {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 0 16px !important;
+}
+
+/* Root cause 3: the flex-basis of 220px is a height in a column layout. */
+body[data-page="dashboard"] .panel-header > div:first-child {
+  flex: 1 1 auto !important;
+  height: auto !important;
+  min-width: 0 !important;
+  display: block !important;
+}
+
+body[data-page="dashboard"] .panel-header h2 {
+  margin: 0 !important;
+  font-size: 17px !important;
+  line-height: 1.25 !important;
+  font-weight: 700 !important;
+}
+
+body[data-page="dashboard"] .panel-header p {
+  margin: 3px 0 0 !important;
+  font-size: 13px !important;
+  line-height: 1.35 !important;
+}
+
+body[data-page="dashboard"] .panel-header .chip-row {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 6px !important;
+  width: auto !important;
+  max-width: 100% !important;
+  overflow: visible !important;
+}
+
+/* Revenue chart: fills the row height, keeps the axis and bars on-screen. */
+body[data-page="dashboard"] .revenue-panel .chart-area {
+  flex: 1 1 auto !important;
+  height: auto !important;
+  min-height: 260px !important;
+  padding: 14px 16px 18px 6px !important;
+}
+
+body[data-page="dashboard"] .chart-y {
+  width: 46px !important;
+  flex: 0 0 46px !important;
+}
+
+body[data-page="dashboard"] .bar-container {
+  gap: 8px !important;
+  min-width: 0 !important;
+}
+
+body[data-page="dashboard"] .bar-column {
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+  max-width: 44px !important;
+}
+
+body[data-page="dashboard"] .bar-column label {
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  max-width: 100% !important;
+  text-overflow: clip !important;
+}
+
+/* Membership donut: the circle keeps its size and sits centred in the panel. */
+body[data-page="dashboard"] .summary-panel .membership-circle {
+  flex: 1 1 auto !important;
+  display: grid !important;
+  place-items: center !important;
+  min-height: 180px !important;
+}
+
+/* Quick actions: 2x2 shortcuts beside the registrations table. */
+body[data-page="dashboard"] .quick-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  flex: 1 1 auto !important;
+  align-content: stretch !important;
+}
+
+/* Each shortcut: icon top-left, label below, arrow top-right. Tiles fill the
+   panel height, so the label sits at the bottom instead of floating. */
+body[data-page="dashboard"] .quick-action {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 14px !important;
+  min-width: 0 !important;
+  min-height: 92px !important;
+  margin: 0 !important;
+  padding: 16px !important;
+  box-sizing: border-box !important;
+}
+
+/* Root cause of the squeezed labels: the legacy rule gives this span display:flex,
+   which lays <strong> and <small> side by side. Here they stack as blocks. */
+body[data-page="dashboard"] .quick-action > span:not(.quick-action-icon) {
+  display: block !important;
+  width: auto !important;
+  min-width: 0 !important;
+  flex: 0 0 auto !important;
+  overflow-wrap: anywhere !important;
+}
+
+body[data-page="dashboard"] .quick-action > span:not(.quick-action-icon) strong,
+body[data-page="dashboard"] .quick-action > span:not(.quick-action-icon) small {
+  display: block !important;
+}
+
+body[data-page="dashboard"] .quick-action .action-arrow {
+  position: absolute !important;
+  top: 16px !important;
+  right: 16px !important;
+  margin: 0 !important;
+}
+
+/* Tablet: quick actions across the full width as four tiles. */
+@media (max-width: 1099px) {
+  body[data-page="dashboard"] .quick-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 899px) {
+  body[data-page="dashboard"] .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+
+/* ---------- 5. Phone (<= 768px) ----------------------------------------- */
+@media (max-width: 768px) {
+  /* Header: heading and actions on row one, search full width on row two. */
+  body[data-page="dashboard"] .topbar {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    grid-template-areas:
+      "heading actions"
+      "search search" !important;
+    align-items: center !important;
+    gap: 10px 12px !important;
+  }
+
+  body[data-page="dashboard"] .topbar-heading {
+    grid-area: heading !important;
+    min-width: 0 !important;
+  }
+
+  body[data-page="dashboard"] .topbar-nav {
+    display: none !important;
+  }
+
+  /* Only one navigation system on phones: the bottom tab bar. */
+  body[data-page="dashboard"] .topbar-title .welcome {
+    font-size: 11px !important;
+  }
+
+  body[data-page="dashboard"] .topbar-title h1 {
+    font-size: 22px !important;
+  }
+
+  body[data-page="dashboard"] .topbar-sub {
+    font-size: 12px !important;
+  }
+
+  body[data-page="dashboard"] .topbar-right {
+    display: contents !important;
+  }
+
+  body[data-page="dashboard"] .topbar-right .search {
+    grid-area: search !important;
+    flex: none !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    height: 44px !important;
+  }
+
+  body[data-page="dashboard"] .topbar-actions {
+    grid-area: actions !important;
+    gap: 8px !important;
+  }
+
+  body[data-page="dashboard"] .topbar-actions .theme-toggle,
+  body[data-page="dashboard"] .topbar-actions .notification,
+  body[data-page="dashboard"] .topbar-actions .topbar-avatar,
+  body[data-page="dashboard"] .topbar-actions .notification-wrap {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    flex-basis: 40px !important;
+  }
+
+  /* Status ribbon wraps onto the content width instead of scrolling. */
+  body[data-page="dashboard"] #statusStrip {
+    flex-wrap: wrap !important;
+    overflow: visible !important;
+    gap: 8px !important;
+    padding: 10px 12px !important;
+  }
+
+  body[data-page="dashboard"] #statusStrip .strip-clock {
+    margin-left: 0 !important;
+  }
+
+  /* KPI cards: two per row, compact. */
+  body[data-page="dashboard"] .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+
+  body[data-page="dashboard"] .stat-card {
+    min-height: 112px !important;
+    padding: 14px !important;
+  }
+
+  body[data-page="dashboard"] .stat-icon {
+    flex-basis: 36px !important;
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  body[data-page="dashboard"] .stat-content h2 {
+    font-size: 22px !important;
+    margin-top: 6px !important;
+  }
+
+  /* Panels: tighter padding, headers stack, the 220px basis is ignored here too. */
+  body[data-page="dashboard"] .panel {
+    padding: 16px !important;
+  }
+
+  /* Title on the left, small controls (menu, "View all") stay on the same row.
+     Only the chip row takes a full line of its own. */
+  body[data-page="dashboard"] .panel-header {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-items: flex-start !important;
+    justify-content: space-between !important;
+    gap: 10px !important;
+    margin-bottom: 14px !important;
+  }
+
+  body[data-page="dashboard"] .panel-header > div:first-child {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+  }
+
+  body[data-page="dashboard"] .panel-header .menu-wrap,
+  body[data-page="dashboard"] .panel-header .view-all {
+    flex: 0 0 auto !important;
+  }
+
+  body[data-page="dashboard"] .panel-header .chip-row {
+    flex: 1 1 100% !important;
+    justify-content: flex-start !important;
+  }
+
+  body[data-page="dashboard"] .panel-header .chip-row .chip {
+    min-height: 34px !important;
+    padding: 6px 12px !important;
+  }
+
+  /* Revenue chart: narrower axis and tighter bars so twelve months fit. */
+  body[data-page="dashboard"] .revenue-panel .chart-area {
+    min-height: 240px !important;
+    padding: 12px 8px 14px 0 !important;
+  }
+
+  body[data-page="dashboard"] .chart-y {
+    width: 36px !important;
+    flex-basis: 36px !important;
+  }
+
+  body[data-page="dashboard"] .chart-y span {
+    font-size: 10px !important;
+  }
+
+  body[data-page="dashboard"] .bar-container {
+    gap: 3px !important;
+  }
+
+  body[data-page="dashboard"] .bar-column label {
+    font-size: 9.5px !important;
+    letter-spacing: -.02em !important;
+  }
+
+  /* Membership: the three status tiles sit side by side. */
+  body[data-page="dashboard"] .membership-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  body[data-page="dashboard"] .membership-stats > div {
+    padding: 10px !important;
+    min-width: 0 !important;
+  }
+
+  body[data-page="dashboard"] .membership-stats strong {
+    font-size: 20px !important;
+  }
+
+  body[data-page="dashboard"] .membership-stats p {
+    font-size: 11px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  /* Quick actions: 2x2 tiles, two columns. */
+  body[data-page="dashboard"] .quick-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+
+  body[data-page="dashboard"] .quick-action {
+    min-height: 76px !important;
+    padding: 12px !important;
+  }
+
+  body[data-page="dashboard"] .quick-action .action-arrow {
+    display: none !important;
+  }
+
+  /* Recent registrations: each row becomes a stacked card, so the table never
+     scrolls sideways. Markup and cell order are unchanged. */
+  body[data-page="dashboard"] .registrations-panel .table-wrapper {
+    overflow: visible !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  body[data-page="dashboard"] .registrations-panel table {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    border: 0 !important;
+  }
+
+  body[data-page="dashboard"] .registrations-panel thead {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+    clip: rect(0 0 0 0) !important;
+    white-space: nowrap !important;
+  }
+
+  body[data-page="dashboard"] .registrations-panel tbody {
+    display: grid !important;
+    gap: 10px !important;
+  }
+
+  /* pf-modern.css fixes every table row at 56px. A card has to grow with its content. */
+  body[data-page="dashboard"] .registrations-panel tbody tr {
+    display: grid !important;
+    height: auto !important;
+    min-height: 0 !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    grid-template-areas:
+      "member status"
+      "id action"
+      "date action" !important;
+    gap: 4px 12px !important;
+    align-items: center !important;
+    padding: 14px !important;
+    border: 1px solid var(--line) !important;
+    border-radius: 14px !important;
+  }
+
+  body[data-page="dashboard"] .registrations-panel tbody td {
+    display: block !important;
+    height: auto !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
+
+  body[data-page="dashboard"] .registrations-panel tbody td:nth-child(1) { grid-area: id !important; }
+  body[data-page="dashboard"] .registrations-panel tbody td:nth-child(2) { grid-area: member !important; min-width: 0 !important; }
+  body[data-page="dashboard"] .registrations-panel tbody td:nth-child(3) { grid-area: date !important; }
+  body[data-page="dashboard"] .registrations-panel tbody td:nth-child(4) { grid-area: status !important; justify-self: end !important; }
+  body[data-page="dashboard"] .registrations-panel tbody td:nth-child(5) { grid-area: action !important; justify-self: end !important; align-self: center !important; }
+
+  /* Empty-state and loading rows span the whole card. */
+  body[data-page="dashboard"] .registrations-panel tbody tr:not(:has(> td:nth-child(2))) {
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-areas: "empty" !important;
+  }
+
+  body[data-page="dashboard"] .registrations-panel td[colspan] {
+    grid-column: 1 / -1 !important;
+    grid-area: empty !important;
+  }
+
+  /* Bottom tab bar: the only phone navigation. Sits above the sidebar shade. */
+  body[data-page="dashboard"] .pf-tabbar {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 4px !important;
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 80 !important;
+    padding: 6px 10px calc(6px + env(safe-area-inset-bottom, 0px)) !important;
+    background: var(--card) !important;
+    border-top: 1px solid var(--line) !important;
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, .12) !important;
+    box-sizing: border-box !important;
+  }
+
+  body[data-page="dashboard"] .pf-tab {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    min-height: 52px !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 6px 2px !important;
+    border: 0 !important;
+    border-radius: 14px !important;
+    background: transparent !important;
+    color: var(--muted) !important;
+    font-family: inherit !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    line-height: 1.1 !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    -webkit-tap-highlight-color: transparent;
+    appearance: none !important;
+  }
+
+  body[data-page="dashboard"] .pf-tab i {
+    font-size: 18px !important;
+  }
+
+  body[data-page="dashboard"] .pf-tab span {
+    max-width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  body[data-page="dashboard"] .pf-tab[aria-current="page"],
+  body[data-page="dashboard"] .pf-tab[aria-expanded="true"] {
+    color: var(--gold-deep) !important;
+    background: var(--gold-soft) !important;
+  }
+
+  body[data-page="dashboard"] .pf-tab:focus-visible {
+    outline: 2px solid var(--gold) !important;
+    outline-offset: 2px !important;
+  }
+
+  /* Quick actions on phones: icon above the label so the words are never cut off. */
+  body[data-page="dashboard"] .quick-action {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+
+  body[data-page="dashboard"] .quick-action strong,
+  body[data-page="dashboard"] .quick-action small {
+    display: block !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  /* Status ribbon CTA keeps its label on phones (a full row, right aligned). */
+  body[data-page="dashboard"] #statusStrip .strip-cta {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    width: auto !important;
+    min-width: 0 !important;
+    height: 36px !important;
+    padding: 0 14px !important;
+    white-space: nowrap !important;
+  }
+
+  body[data-page="dashboard"] #statusStrip .strip-cta span {
+    display: inline !important;
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    clip: auto !important;
+  }
+
+  /* KPI badges: keep the text on one line. */
+  body[data-page="dashboard"] .stat-top > span:not(.trend) {
+    white-space: nowrap !important;
+    font-size: 10.5px !important;
+    padding: 4px 8px !important;
+  }
+
+  /* Membership status tiles: compact so Active, Expired and Expiring fit. */
+  body[data-page="dashboard"] .membership-stats > div {
+    gap: 4px 6px !important;
+  }
+
+  body[data-page="dashboard"] .membership-stats p {
+    font-size: 10.5px !important;
+  }
+
+  body[data-page="dashboard"] .summary-panel .membership-circle {
+    min-height: 0 !important;
+    padding: 6px 0 4px !important;
+  }
+
+  /* Revenue axis: month labels never clip. */
+  body[data-page="dashboard"] .bar-container {
+    gap: 2px !important;
+  }
+
+  body[data-page="dashboard"] .bar-column label {
+    font-size: 9px !important;
+    letter-spacing: -.3px !important;
+  }
+
+  /* "View all" keeps its natural width, left aligned under the title. */
+  body[data-page="dashboard"] .panel-header .view-all {
+    align-self: flex-start !important;
+  }
+
+  /* Registrations on phones: the table itself has no frame, only the row cards. */
+  body[data-page="dashboard"] .registrations-panel .table-wrapper,
+  body[data-page="dashboard"] .registrations-panel table {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  body[data-page="dashboard"] .registrations-panel tbody td:nth-child(5) {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+  }
+}
+
+/* Desktop and tablet: the tab bar stays hidden. */
+body[data-page="dashboard"] .pf-tabbar {
+  display: none;
+}
