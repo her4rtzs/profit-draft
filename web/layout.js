@@ -35,7 +35,6 @@
         ${groups.map(g => `<section class="nav-group"><p class="nav-group-label">${g.label}</p><ul class="menulist">${g.items.map(item => `<li><a href="${item.href}" data-tip="${item.label}" class="${item.id===current?'active':''}" ${item.id===current?'aria-current="page"':''}><i class="fa-solid ${item.icon} icon" aria-hidden="true"></i><span class="text nav-text">${item.label}</span></a></li>`).join('')}</ul></section>`).join('')}
       </div>
       <div class="sidebar-foot">
-        <button type="button" class="sb-collapse" id="sidebarToggle" data-tip="Expand sidebar" aria-label="Collapse sidebar" aria-expanded="true"><i class="fa-solid fa-angles-left icon" aria-hidden="true"></i><span class="text">Collapse Sidebar</span></button>
         <div class="sidebar-account">
           <div class="sidebar-user">
             <span class="sidebar-avatar" data-user-initials id="railAvatar">AD</span>

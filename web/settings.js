@@ -7,10 +7,9 @@
   };
   const ACCENTS = { gold: "Gold", spotify: "Spotify", ocean: "Ocean", indigo: "Indigo", coral: "Coral", emerald: "Emerald", sunset: "Sunset" };
   const DEFAULT_ACCENT = "gold";
-  const DEFAULTS = { prefDark: true, prefCompact: false, prefBadge: true };
+  const DEFAULTS = { prefDark: true, prefBadge: true };
   const current = {
     prefDark: store.get("theme") !== "light",
-    prefCompact: store.get("sidebar") === "closed",
     prefBadge: store.get("pref-badge") !== "off"
   };
   let accent = ACCENTS[store.get("pp-accent")] ? store.get("pp-accent") : DEFAULT_ACCENT;
@@ -20,10 +19,6 @@
   // Each switch reuses the control the rest of the app already uses, so state never drifts.
   const apply = {
     prefDark: on => { if (document.body.classList.contains("dark") !== on) $("themeToggle")?.click(); },
-    prefCompact: on => {
-      const sidebar = document.querySelector(".sidebar");
-      if (sidebar && sidebar.classList.contains("close") !== on) document.getElementById("sidebarToggle")?.click();
-    },
     prefBadge: on => {
       store.set("pref-badge", on ? "on" : "off");
       document.body.classList.toggle("hide-notif-badge", !on);

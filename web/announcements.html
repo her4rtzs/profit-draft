@@ -14,26 +14,21 @@
 <link rel="stylesheet" href="ui-polish.css?v=1">
 <link rel="stylesheet" href="ui-fixes.css?v=1">
 <link rel="stylesheet" href="pf-modern.css?v=1">
-<link rel="stylesheet" href="sidebar-pro.css?v=3">
-<link rel="stylesheet" href="layout-fixes.css?v=1">
+<link rel="stylesheet" href="sidebar-pro.css?v=4">
+<link rel="stylesheet" href="layout-fixes.css?v=2">
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script></head>
 <body data-page="announcements" data-title="Announcements" data-welcome="Notices for members and trainers">
 <div class="dashboard"><nav class="sidebar" id="sidebar"></nav><main class="main-content" id="main" tabindex="-1">
   <header class="topbar" id="topbar"></header>
-  <header class="page-head" style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:18px">
-    <div>
-      <span class="eyebrow">Gym communications</span>
-      <h1 style="margin:4px 0 6px">Announcements</h1>
-      <p style="margin:0;color:var(--muted)">Write notices, choose who sees them, and publish when ready.</p>
+  <p class="ann-msg" id="annMsg" role="status" aria-live="polite"></p>
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:20px">
+    <div class="ann-filters" role="group" aria-label="Filter announcements" style="margin-bottom:0">
+      <button class="ann-chip is-on" type="button" data-filter="">All</button>
+      <button class="ann-chip" type="button" data-filter="DRAFT">Drafts</button>
+      <button class="ann-chip" type="button" data-filter="PUBLISHED">Published</button>
+      <button class="ann-chip" type="button" data-filter="ARCHIVED">Archived</button>
     </div>
     <button class="ann-btn primary" id="annNew" type="button"><i class="fa-solid fa-plus" aria-hidden="true"></i> New announcement</button>
-  </header>
-  <p class="ann-msg" id="annMsg" role="status" aria-live="polite"></p>
-  <div class="ann-filters" role="group" aria-label="Filter announcements">
-    <button class="ann-chip is-on" type="button" data-filter="">All</button>
-    <button class="ann-chip" type="button" data-filter="DRAFT">Drafts</button>
-    <button class="ann-chip" type="button" data-filter="PUBLISHED">Published</button>
-    <button class="ann-chip" type="button" data-filter="ARCHIVED">Archived</button>
   </div>
   <section class="panel" id="annFormPanel" hidden style="padding:20px;margin-bottom:18px">
     <form class="ann-form" id="annForm" novalidate>
@@ -58,7 +53,7 @@
   </section>
   <section class="ann-list" id="annList" aria-live="polite"></section>
 </main></div>
-<script src="layout.js?v=14"></script><script src="sidebar.js?v=14"></script><script src="data.js"></script><script src="settings.js?v=13"></script>
+<script src="layout.js?v=15"></script><script src="sidebar.js?v=15"></script><script src="data.js"></script><script src="settings.js?v=13"></script>
 <script src="portal-fx.js?v=2"></script>
 <script src="change-password.js?v=2" defer></script>
 <script src="notifications-live.js?v=1" defer></script>

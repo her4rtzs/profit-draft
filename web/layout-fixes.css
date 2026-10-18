@@ -1,54 +1,569 @@
-/* ProFit layout fixes: cards and panels size to their content so nothing collides or spills.
-   Loaded last on the admin pages. */
+/* ==========================================================================
+   PROFiT STAFF DASHBOARD - UNIFIED LAYOUT SYSTEM & CONTAINER POSITIONING
+   Ensures consistent spacing, alignment, responsiveness, and zero overlap
+   across all staff modules: Dashboard, Members, Attendance, Payments,
+   Reports, Trainers, Announcements, Settings, and Profile.
+   ========================================================================== */
 
-/* Quick actions: height follows the text instead of a fixed 68px box. */
-html body .quick-actions { align-items: stretch; }
-html body .quick-action { height: auto !important; min-height: 72px; align-items: stretch !important; }
-html body .quick-action-icon { height: auto !important; min-height: 72px; align-self: stretch; }
-html body .quick-action > span:nth-child(2) { display: flex; flex-direction: column; justify-content: center; flex: 1 1 auto; padding: 12px 14px !important; }
-html body .quick-action strong { line-height: 1.25; overflow-wrap: anywhere; }
-html body .quick-action small { white-space: normal !important; line-height: 1.35; overflow: visible !important; }
-html body .quick-action .action-arrow { align-self: center; flex: 0 0 auto; margin-right: 12px; }
+/* --------------------------------------------------------------------------
+   1. DASHBOARD & MAIN CONTENT AREA
+   -------------------------------------------------------------------------- */
+html, body {
+  overflow-x: hidden !important;
+  width: 100% !important;
+  min-height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
 
-/* Dashboard grid: both panels share one top edge and one height; the chart fills the space. */
-html body .content-grid { align-items: stretch; }
-html body .content-grid > .panel { margin: 0; min-width: 0; display: flex; flex-direction: column; }
-html body .revenue-panel .chart-area { flex: 1 1 auto; height: auto; min-height: 270px; }
-html body .summary-panel .membership-circle { flex: 1 1 auto; display: grid; place-items: center; }
-@media (max-width: 1050px) { html body .content-grid { grid-template-columns: minmax(0, 1fr); } }
+html body .dashboard {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 100vh !important;
+  background: var(--bg) !important;
+  box-sizing: border-box !important;
+}
 
-/* Panel headers wrap their controls instead of colliding with the title. */
-html body .panel-header { flex-wrap: wrap; }
-html body .panel-header > div:first-child { min-width: 0; flex: 1 1 200px; }
+html body .main-content {
+  margin-left: var(--sidebar-w, 260px) !important;
+  margin-right: 0 !important;
+  margin-inline: 0 !important;
+  width: calc(100% - var(--sidebar-w, 260px)) !important;
+  max-width: calc(100% - var(--sidebar-w, 260px)) !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  padding: 24px clamp(20px, 3vw, 40px) 48px !important;
+  overflow-x: hidden !important;
+}
 
-/* Stat cards: label, value and caption never share a line. */
-html body .stat-card { min-width: 0; overflow: hidden; }
-html body .stat-content { min-width: 0; }
-html body .stat-content h2 { overflow-wrap: anywhere; }
+/* --------------------------------------------------------------------------
+   2. TOPBAR & STATUS RIBBON
+   -------------------------------------------------------------------------- */
+html body .topbar {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 40 !important;
+  margin: 0 0 20px 0 !important;
+  padding: 14px 0 16px 0 !important;
+  min-height: auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  flex-wrap: wrap !important;
+  background: color-mix(in srgb, var(--bg) 88%, transparent) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border-bottom: 1px solid var(--border) !important;
+}
 
-/* Top bar and status strip wrap on narrow screens rather than overlapping. */
-html body .topbar { flex-wrap: wrap; gap: 12px 16px; }
-html body .topbar-heading { min-width: 0; flex: 1 1 260px; }
-html body .topbar-right { flex-wrap: wrap; justify-content: flex-end; min-width: 0; }
-html body .status-strip { flex-wrap: wrap; gap: 8px 10px; }
-html body .main-content { min-width: 0; }
+html body .topbar-heading {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  min-width: 0 !important;
+  flex: 1 1 280px !important;
+}
 
-/* Two-column pages (payments, trainers…): panels share one top edge and align with the tabs above. */
-html body .pane, html body .pane.active { padding-left: 0 !important; padding-right: 0 !important; }
-html body .two-col { align-items: stretch; }
-html body .two-col > *, html body .split > *, html body .content-grid > * { margin: 0 !important; min-width: 0; }
-html body .feed > li > .empty-state { flex: 1 1 100%; width: 100%; }
+html body .topbar-title {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  min-width: 0 !important;
+}
 
-/* Form controls never push past the card they sit in. */
-html body .main-content :is(select, input:not([type="checkbox"]):not([type="radio"]), textarea) { max-width: 100%; min-width: 0; box-sizing: border-box; }
-html body .main-content :is(.field, .ann-field, .form-row > *, .panel form > *) { min-width: 0; }
-html body .main-content .form-row { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+html body .topbar-title .welcome {
+  margin: 0 !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  color: var(--sb-gold, #e8b93a) !important;
+  line-height: 1.2 !important;
+}
 
-/* Settings rows: copy first, controls below when they do not fit. Colour swatches wrap. */
-html body .pp-setting { flex-wrap: wrap; }
-html body .pp-setting-copy { flex: 1 1 260px; min-width: 0; }
-html body .pp-setting-controls { flex: 0 1 auto; flex-wrap: wrap; justify-content: flex-end; min-width: 0; max-width: 100%; }
-html body .pp-setting:has(.pp-swatches) { flex-direction: column; align-items: stretch; }
-html body .pp-setting:has(.pp-swatches) .pp-setting-controls { justify-content: flex-start; width: 100%; }
-html body .pp-swatches { display: flex; flex-wrap: wrap; gap: 8px; min-width: 0; max-width: 100%; }
-html body .pp-swatch { flex: 0 0 auto; }
+html body .topbar-title h1 {
+  margin: 0 !important;
+  font-size: clamp(22px, 2.5vw, 28px) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+  color: var(--text) !important;
+  line-height: 1.2 !important;
+}
+
+html body .topbar-right {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  flex-wrap: wrap !important;
+  justify-content: flex-end !important;
+  min-width: 0 !important;
+}
+
+html body .topbar-right .search {
+  min-width: 200px !important;
+  max-width: 280px !important;
+  box-sizing: border-box !important;
+}
+
+html body .status-strip {
+  margin: 0 0 24px 0 !important;
+  padding: 10px 16px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 10px 14px !important;
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 14px !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. CONSISTENT CONTAINER SPACING & STRUCTURE
+   -------------------------------------------------------------------------- */
+html body .panel,
+html body .stat-card,
+html body .card,
+html body .pp-section-card {
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  border-radius: 16px !important;
+  border: 1px solid var(--border) !important;
+  background: var(--card) !important;
+}
+
+html body .panel {
+  padding: 24px !important;
+  margin-bottom: 24px !important;
+}
+
+html body .panel-header {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  flex-wrap: wrap !important;
+  margin-bottom: 18px !important;
+  padding-bottom: 14px !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+html body .panel-header > div:first-child {
+  min-width: 0 !important;
+  flex: 1 1 220px !important;
+}
+
+html body .panel-header h2 {
+  margin: 0 !important;
+  font-size: 17px !important;
+  font-weight: 750 !important;
+  letter-spacing: -0.015em !important;
+}
+
+html body .panel-header p {
+  margin: 4px 0 0 0 !important;
+  font-size: 13px !important;
+  color: var(--muted) !important;
+}
+
+/* --------------------------------------------------------------------------
+   4. GRIDS: QUICK ACTIONS, STATS, CONTENT GRIDS
+   -------------------------------------------------------------------------- */
+html body .quick-actions {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  margin: 0 0 24px 0 !important;
+  align-items: stretch !important;
+}
+
+html body .quick-action {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  height: auto !important;
+  min-height: 72px !important;
+  padding: 14px !important;
+  border-radius: 14px !important;
+  border: 1px solid var(--border) !important;
+  background: var(--card) !important;
+  box-sizing: border-box !important;
+  text-decoration: none !important;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+html body .quick-action:hover {
+  transform: translateY(-2px) !important;
+  border-color: var(--sb-gold, #e8b93a) !important;
+}
+
+html body .quick-action-icon {
+  flex: 0 0 42px !important;
+  width: 42px !important;
+  height: 42px !important;
+  border-radius: 12px !important;
+  display: grid !important;
+  place-items: center !important;
+  background: color-mix(in srgb, var(--sb-gold, #e8b93a) 15%, transparent) !important;
+  color: var(--sb-gold, #e8b93a) !important;
+  font-size: 16px !important;
+}
+
+html body .quick-action > span:nth-child(2) {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+}
+
+html body .quick-action strong {
+  font-size: 13px !important;
+  font-weight: 750 !important;
+  line-height: 1.3 !important;
+  color: var(--text) !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+html body .quick-action small {
+  font-size: 11px !important;
+  color: var(--muted) !important;
+  line-height: 1.35 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+html body .quick-action .action-arrow {
+  flex: 0 0 auto !important;
+  margin-left: auto !important;
+  color: var(--muted) !important;
+  font-size: 12px !important;
+}
+
+@media (max-width: 1100px) {
+  html body .quick-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 540px) {
+  html body .quick-actions {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Stat Cards */
+html body .stats,
+html body .stats.three {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+  gap: 16px !important;
+  margin: 0 0 24px 0 !important;
+  align-items: stretch !important;
+}
+
+html body .stat-card {
+  padding: 20px !important;
+  margin: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  min-height: 110px !important;
+  overflow: hidden !important;
+}
+
+html body .stat-top {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-bottom: 10px !important;
+}
+
+html body .stat-icon {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 10px !important;
+  display: grid !important;
+  place-items: center !important;
+  font-size: 16px !important;
+}
+
+html body .stat-content {
+  min-width: 0 !important;
+}
+
+html body .stat-content p {
+  margin: 0 0 4px 0 !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: var(--muted) !important;
+}
+
+html body .stat-content h2 {
+  margin: 0 0 4px 0 !important;
+  font-size: clamp(24px, 2.4vw, 30px) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+  color: var(--text) !important;
+  line-height: 1.1 !important;
+  font-variant-numeric: tabular-nums !important;
+  overflow-wrap: anywhere !important;
+}
+
+html body .stat-content small {
+  font-size: 11px !important;
+  color: var(--muted) !important;
+}
+
+/* Two-column and split grids */
+html body .content-grid {
+  display: grid !important;
+  grid-template-columns: 2fr 1fr !important;
+  gap: 20px !important;
+  align-items: stretch !important;
+  margin: 0 0 24px 0 !important;
+}
+
+html body .content-grid > .panel {
+  margin: 0 !important;
+  min-width: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+html body .revenue-panel .chart-area {
+  flex: 1 1 auto !important;
+  height: auto !important;
+  min-height: 270px !important;
+}
+
+html body .summary-panel .membership-circle {
+  flex: 1 1 auto !important;
+  display: grid !important;
+  place-items: center !important;
+}
+
+@media (max-width: 1050px) {
+  html body .content-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+html body .two-col.split,
+html body .two-col {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 20px !important;
+  align-items: stretch !important;
+  margin: 0 0 24px 0 !important;
+}
+
+html body .two-col > *,
+html body .two-col.split > * {
+  margin: 0 !important;
+  min-width: 0 !important;
+}
+
+@media (max-width: 900px) {
+  html body .two-col.split,
+  html body .two-col {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   5. TABS & PANES
+   -------------------------------------------------------------------------- */
+html body .tabs,
+html body .pp-page-tabs {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  margin: 0 0 24px 0 !important;
+  padding: 0 0 8px 0 !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+html body .tab,
+html body .pp-page-tab {
+  height: 40px !important;
+  padding: 0 16px !important;
+  border: 1px solid transparent !important;
+  border-radius: 10px !important;
+  background: transparent !important;
+  color: var(--muted) !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  transition: all 0.15s ease !important;
+}
+
+html body .tab:hover,
+html body .pp-page-tab:hover {
+  background: color-mix(in srgb, var(--text) 6%, transparent) !important;
+  color: var(--text) !important;
+}
+
+html body .tab.active,
+html body .pp-page-tab.active {
+  background: var(--card) !important;
+  border-color: var(--border) !important;
+  color: var(--sb-gold, #e8b93a) !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+}
+
+html body .pane,
+html body .pp-pane {
+  display: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+html body .pane.active,
+html body .pp-pane.active {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  animation: fadeIn 0.2s ease both !important;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --------------------------------------------------------------------------
+   6. TABLES & DATA CONTAINERS
+   -------------------------------------------------------------------------- */
+html body .table-wrapper,
+html body .pp-table-wrap,
+html body .table-card,
+html body .table-container {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  box-sizing: border-box !important;
+  border-radius: 14px !important;
+  margin-top: 12px !important;
+}
+
+html body table {
+  width: 100% !important;
+  min-width: 620px !important;
+  border-collapse: collapse !important;
+}
+
+html body th,
+html body td {
+  padding: 12px 14px !important;
+  text-align: left !important;
+  vertical-align: middle !important;
+  box-sizing: border-box !important;
+}
+
+html body th {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: var(--muted) !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+html body td {
+  font-size: 13.5px !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent) !important;
+}
+
+/* --------------------------------------------------------------------------
+   7. FORM CONTROLS & INPUTS
+   -------------------------------------------------------------------------- */
+html body .main-content :is(select, input:not([type="checkbox"]):not([type="radio"]), textarea) {
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+html body .main-content :is(.field, .ann-field, .form-row > *, .panel form > *) {
+  min-width: 0 !important;
+}
+
+html body .main-content .form-row {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
+  gap: 14px !important;
+}
+
+/* --------------------------------------------------------------------------
+   8. NOTIFICATION PANEL & POPUPS
+   -------------------------------------------------------------------------- */
+html body .notification-wrap {
+  position: relative !important;
+}
+
+html body .notification-panel {
+  position: absolute !important;
+  top: calc(100% + 10px) !important;
+  right: 0 !important;
+  z-index: 500 !important;
+  width: min(380px, calc(100vw - 32px)) !important;
+  max-height: min(560px, calc(100vh - 100px)) !important;
+  overflow: auto !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 16px !important;
+  background: var(--card) !important;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* --------------------------------------------------------------------------
+   9. MOBILE BREAKPOINT (<= 768px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  html body .main-content {
+    margin-left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 16px 14px 40px !important;
+  }
+
+  html body .topbar {
+    padding: 10px 0 12px 0 !important;
+    margin-bottom: 16px !important;
+  }
+
+  html body .topbar-heading {
+    width: 100% !important;
+  }
+
+  html body .topbar-right {
+    width: 100% !important;
+    justify-content: flex-start !important;
+  }
+
+  html body .topbar-right .search {
+    flex: 1 1 auto !important;
+    max-width: none !important;
+  }
+
+  html body .panel {
+    padding: 16px !important;
+  }
+}

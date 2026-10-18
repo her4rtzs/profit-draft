@@ -2162,12 +2162,11 @@ body.dark input::placeholder,body.dark textarea::placeholder{color:#758399}
   }
 }
 
-/* Large screens - center with max-width */
+/* Large screens */
 @media (min-width: 1440px) {
   .main-content {
-    max-width: 1400px;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: var(--sidebar-w);
+    margin-right: 0;
   }
 
   .pane, .panel {
