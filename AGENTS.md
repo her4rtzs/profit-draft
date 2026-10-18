@@ -2,10 +2,11 @@
 
 Gym operations system for Functional Fitness Gym. Replaces paper logbooks and group-chat financial reports. Staff use a Django web portal; members use a React Native mobile app. Both talk to one Django backend and one Supabase PostgreSQL database.
 
-Architecture diagram: see `architecture.md` (humans only, do not load it unless asked).
+Architecture: see `Architecture.md`
 
 ## Stack
-- Web (staff portal): Django templates, Tailwind CSS, daisyUI, HTMX, Alpine.js, Lucide Icons, django-components
+- Web staff portal, static pages (`web/`): plain HTML, CSS and vanilla JavaScript, no framework and no build step; Font Awesome and Google Fonts via CDN; calls the Django API from the browser
+- Web staff portal, Django pages (`templates/`, `components/`, `static/`): Django templates, Tailwind CSS, daisyUI, HTMX, Alpine.js, Lucide Icons, django-components
 - Mobile (member app): React Native, NativeWind, react-native-reusables, lucide-react-native
 - Backend: Django + Django REST Framework, deployed as serverless functions on Vercel
 - Database: Supabase PostgreSQL, accessed through the Django ORM
@@ -36,7 +37,8 @@ Mobile (run from `mobile/`):
 - `apps/finance/`: transaction history and reports (Module 3)
 - `apps/accounts/`: users, roles, RBAC permissions
 - `api/`: DRF serializers and viewsets for the mobile app
-- `templates/`, `components/`, `static/`: staff web portal (page templates, django-components, compiled assets)
+- `web/`: static staff portal pages (plain HTML/CSS/JS, no build step), served by WhiteNoise at the site root
+- `templates/`, `components/`, `static/`: Django-templated staff pages (page templates, django-components, compiled Tailwind assets)
 - `mobile/`: React Native member app
 - `supabase/cron/`: `pg_cron` SQL definitions
 - `docs/`: human-facing documentation

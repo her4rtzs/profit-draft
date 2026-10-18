@@ -59,3 +59,27 @@ def send_invite_email(invite, raw_token, accept_url):
         html_message=html,
         fail_silently=False,
     )
+
+
+def send_reset_email(user, code):
+    """Email a password-reset ``code``. Never logs the code or the address."""
+    body = (
+        "We received a request to reset your ProFit password.\n\n"
+        f"Your reset code is: {code}\n\n"
+        "It expires in 10 minutes. If you did not request this, ignore this email "
+        "and your password will stay the same."
+    )
+    html = (
+        "<p>We received a request to reset your ProFit password.</p>"
+        f"<p>Your reset code is: <strong>{code}</strong></p>"
+        "<p>It expires in 10 minutes. If you did not request this, ignore this "
+        "email and your password will stay the same.</p>"
+    )
+    send_mail(
+        subject="Your ProFit password reset code",
+        message=body,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[user.email],
+        html_message=html,
+        fail_silently=False,
+    )
