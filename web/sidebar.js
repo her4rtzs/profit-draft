@@ -5,7 +5,7 @@
     get(k){ try{return localStorage.getItem(k)}catch{return null} },
     set(k,v){try{localStorage.setItem(k,v)}catch{}}
   };
-  const sidebar = $(".sidebar"), toggle = document.getElementById("sidebarToggle"), themeToggle=$("#themeToggle");
+  const sidebar = $(".sidebar"), themeToggle=$("#themeToggle");
   const mobileToggle = $("#mobileNavToggle");
   let drawerShade = $("#sidebarShade");
   if (!drawerShade) { drawerShade = document.createElement("button"); drawerShade.type="button"; drawerShade.id="sidebarShade"; drawerShade.className="sidebar-shade"; drawerShade.setAttribute("aria-label","Close navigation"); document.body.appendChild(drawerShade); }
@@ -16,86 +16,7 @@
   sidebar?.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{if(window.matchMedia("(max-width: 768px)").matches)setDrawer(false)}));
   window.addEventListener("resize",()=>{if(!window.matchMedia("(max-width: 768px)").matches)setDrawer(false)});
 
-  // Desktop sidebar collapse toggle
-  function syncToggleIcon(isClosed) {
-    if (!toggle) return;
-    const icon = toggle.querySelector("i");
-    if (icon) {
-      icon.className = `fa-solid ${isClosed ? "fa-chevron-right" : "fa-chevron-left"}`;
-    }
-    toggle.setAttribute("aria-label", isClosed ? "Expand sidebar" : "Collapse sidebar");
-    toggle.setAttribute("title", isClosed ? "Expand sidebar" : "Collapse sidebar");
-    toggle.setAttribute("aria-expanded", String(!isClosed));
-  }
 
-  // Restore and maintain responsive sidebar states
-  function applyResponsiveState() {
-    if (!sidebar) return;
-    if (window.matchMedia("(max-width: 768px)").matches) {
-      // Mobile drawer: ensure drawer has full width and text labels
-      sidebar.classList.remove("close");
-      document.body.classList.remove("sidebar-collapsed");
-    } else {
-      // Desktop: close any open mobile drawer and restore collapse state
-      setDrawer(false);
-      const saved = store.get("sidebar");
-      const isClosed = saved === "closed";
-      sidebar.classList.toggle("close", isClosed);
-      document.body.classList.toggle("sidebar-collapsed", isClosed);
-      syncToggleIcon(isClosed);
-    }
-    document.documentElement.classList.remove("pf-sidebar-closed");
-  }
-
-  applyResponsiveState();
-  window.addEventListener("resize", applyResponsiveState);
-
-  toggle?.addEventListener("click", e => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!sidebar || window.matchMedia("(max-width: 768px)").matches) return;
-    const isNowClosed = !sidebar.classList.contains("close");
-    sidebar.classList.toggle("close", isNowClosed);
-    document.body.classList.toggle("sidebar-collapsed", isNowClosed);
-    store.set("sidebar", isNowClosed ? "closed" : "open");
-    syncToggleIcon(isNowClosed);
-  });
-
-  // Floating tooltip for collapsed rail items
-  let tipEl = document.getElementById("sidebarFloatingTip");
-  if (!tipEl) {
-    tipEl = document.createElement("div");
-    tipEl.id = "sidebarFloatingTip";
-    tipEl.className = "sidebar-floating-tip";
-    tipEl.setAttribute("aria-hidden", "true");
-    document.body.appendChild(tipEl);
-  }
-
-  function showTip(link) {
-    if (!sidebar || !sidebar.classList.contains("close") || window.matchMedia("(max-width: 768px)").matches) {
-      hideTip();
-      return;
-    }
-    const text = link.getAttribute("data-tip") || link.querySelector(".text")?.textContent?.trim();
-    if (!text) { hideTip(); return; }
-    tipEl.textContent = text;
-    tipEl.classList.add("is-visible");
-    const rect = link.getBoundingClientRect();
-    tipEl.style.left = `${Math.round(rect.right + 10)}px`;
-    tipEl.style.top = `${Math.round(rect.top + (rect.height / 2) - (tipEl.offsetHeight / 2))}px`;
-  }
-
-  function hideTip() {
-    tipEl?.classList.remove("is-visible");
-  }
-
-  sidebar?.querySelectorAll(".menulist a").forEach(link => {
-    link.addEventListener("mouseenter", () => showTip(link));
-    link.addEventListener("mouseleave", hideTip);
-    link.addEventListener("focus", () => showTip(link));
-    link.addEventListener("blur", hideTip);
-  });
-  window.addEventListener("scroll", hideTip, { passive: true });
   const applyTheme = dark => {
     document.body.classList.toggle("dark", !!dark);
     if (themeToggle) {

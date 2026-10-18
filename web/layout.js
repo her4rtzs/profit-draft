@@ -30,9 +30,6 @@
           <span class="image"><img id="gymLogoImg" src="${GYM.logo || 'logo.jpg'}" alt="${GYM.name}" onerror="this.style.display='none'"></span>
           <span class="headertxt"><strong id="gymNameTxt">${GYM.name}</strong><small id="gymTagTxt">${GYM.tagline}</small></span>
         </a>
-        <button type="button" class="sidebar-toggle-btn" id="sidebarToggle" aria-label="Collapse sidebar" title="Collapse sidebar">
-          <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
-        </button>
       </div>
       <div class="sidebar-scroll">
         ${groups.map(g => `<section class="nav-group"><p class="nav-group-label">${g.label}</p><ul class="menulist">${g.items.map(item => `<li><a href="${item.href}" data-tip="${item.label}" class="${item.id===current?'active':''}" ${item.id===current?'aria-current="page"':''}><i class="fa-solid ${item.icon} icon" aria-hidden="true"></i><span class="text nav-text">${item.label}</span></a></li>`).join('')}</ul></section>`).join('')}

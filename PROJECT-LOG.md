@@ -673,3 +673,52 @@ Organize all the files and remove duplicate files or unnecessary.
 ### Decision-log skill
 When organizing codebases and removing duplicate directories, verify that the canonical paths specified in the architecture/rules documentation (`AGENTS.md`) are preserved. Audit all file usages across HTML, JS, CSS, Python, and configuration files before deleting, and run the test suite to guarantee zero regressions.
 
+## 2026-10-19 00:05 (Asia/Manila): Staff sidebar becomes a hover-expanding icon rail
+### What I asked for
+Change the staff portal navigation bar to behave like Instagram: collapsed to icons, and it shows in full only while you hover it.
+### What the agent decided and why
+- Built it as CSS only, in `sidebar-pro.css`, scoped to `@media (min-width: 769px)`, so the <=768px drawer keeps its full-width look and no page needed new markup.
+- Put `#sidebar` into every rail selector: `layout-fixes.css` loads after `sidebar-pro.css` and pins the sidebar to a hard 260px with `!important`, so the id is what lets the rail win without editing that file.
+- Animated `width` alone (78px -> 260px) and released `min-width`/`max-width`, because the 260px max-width clamp would otherwise have snapped the expansion instantly.
+- A teammate's manual collapse rail (chevron button, `.close`, `body.sidebar-collapsed`, localStorage) landed on the remote mid-session. Kept both instead of overwriting: every hover-rail rule is scoped to `:not(.close)`, so the chevron still pins a permanently collapsed rail with tooltips and the two mechanisms never fight each other.
+- Settled the rail at the teammate's 78px instead of the 80px chosen from the width comparison, so the rail and the content offset stay identical when the chevron is toggled: no 2px seam against the sidebar and no content jump.
+- Re-bumped `sidebar-pro.css` to `?v=6` on the 9 staff pages and the service worker shell cache to `v15`, because the file changed a second time on top of the teammate's `v5`.
+- The collapsed label is clipped to 1px instead of `display: none`, so every link keeps its accessible name; the brand text, group headings and account copy are hidden outright because they name nothing. The account menu and the chevron are hidden only while the rail rests, because both need the full-width panel to fit.
+- The page column always reserves the rail, so the expanded panel slides over the content and the page never reflows. The icons keep the same x-position in both states, so only the panel edge moves.
+- Verified by measuring the live DOM: rail 78px, icon centre = rail centre, page offset 78px, expanded 260px, no horizontal overflow. The desktop pointer cannot be driven in this environment, so the hover state was proven through the identical `:focus-within` branch.
+### Decision-log skill
+When a later stylesheet pins a value with `!important`, raise your own selector's specificity (an id) instead of editing that file, and keep the pinned property out of the animated set: animating `width` while `min-width`/`max-width` still hold the old value turns the transition into a no-op. When two mechanisms target the same element, scope the newer one with `:not()` on the older one's state class rather than deleting a teammate's work. For a collapsed nav, hide label text by clipping it rather than `display: none`, so the links keep their accessible names.
+
+## 2026-10-19 00:14 (Asia/Manila): Hover only - remove the click-collapse rail
+### What I asked for
+Keep the Instagram-style sidebar, but hover only: drop the chevron that could pin the sidebar permanently collapsed.
+### What the agent decided and why
+- Removed the whole manual-collapse mechanism rather than only hiding the button: the `#sidebarToggle` markup in `layout.js`, the click handler and its `localStorage` state in `sidebar.js`, and the `.close` rail CSS. A hidden button that still owns state would have been a trap, and leaving the `sidebar` key unread is harmless because nothing applies `.close` any more.
+- That CSS existed twice, in `sidebar-pro.css` and in `layout-fixes.css`, so both copies went. The double-scrollbar fix from the same session stayed untouched.
+- Put the rail back to 80px. It had only been 78px to line up with the teammate collapse rail, so with that rail gone the invented constraint went with it and the width that was actually chosen stands.
+- Dropped the `.close` hover variant in `layout-fixes.css` and reverted its `:not(.close)` guards to plain selectors, but kept the link hover micro-animation.
+- Re-bumped `sidebar-pro.css` to `?v=7`, `layout-fixes.css` to `?v=5`, `layout.js` to `?v=17`, `sidebar.js` to `?v=17` and the service worker shell cache to `v16`.
+- Caught a self-inflicted bug before committing: the regex that stripped the mobile `.close` selector also swallowed the opening brace of the shared mobile rule, leaving a stray `}`. Found by scanning per-line brace depth with comments stripped, not by eye.
+- Verified on the live DOM: rail 80px, icon centre 40 = rail centre, expanded 260px with the icon centre unmoved, page offset 80px in both states, 7 of 7 links keep an accessible name, no `#sidebarToggle` in the DOM, no console messages, no horizontal overflow.
+### Decision-log skill
+Removing a feature means finding every copy of it: this one lived in two stylesheets, one markup template and one script, and the second CSS copy only surfaced by grepping the state class instead of the feature name. Never trust a fresh `getComputedStyle` right after a state change - it returns the mid-transition value, so measure with transitions disabled. When a regex targets one selector inside a multi-selector rule, it can delete the rule opening brace: verify with a comment-stripped per-line brace depth scan before committing.
+
+## 2026-10-19 01:21 (Asia/Manila): Mobile UI Overhaul & Conflict Resolution with Angelo Metillo's Hover Rail
+### What I asked for
+Fix the UI for mobile devices across all staff pages, and merge changes with Angelo Metillo's incoming commits on origin/master.
+### What the agent decided and why
+- Overhauled the mobile viewport (360px - 768px) across all staff dashboard pages in `web/layout-fixes.css`:
+  - Structured `.topbar` into a clean 2-row CSS Grid layout (`minmax(0, 1fr) auto`): Row 1 contains the mobile drawer toggle button (`[☰]`), page greeting, and title on the left, with compact action controls (theme switch, live notifications badge, and staff profile avatar) aligned on the right; Row 2 hosts the full-width search input with rounded styling.
+  - Overrode the `--gutter` negative margin from `spotify.css` on mobile (`margin: 0 0 14px 0 !important; width: 100% !important;`), preventing horizontal scroll leakage and clipped action buttons.
+  - Refactored `.quick-actions` on mobile to a responsive 1-column card stack and removed rigid `white-space: nowrap !important;` text truncation, restoring full card titles and subtitles.
+  - Enabled smooth horizontal touch-scrolling with hidden scrollbars for `.status-strip`, `.tabs`, `.pp-page-tabs`, filter chips, and table wrappers.
+  - Replaced duplicate currency symbol (`₱ ₱14,300`) with a clean wallet icon (`fa-wallet`) in `#tsRevenue`.
+  - Added mobile touch target sizing (min 42-44px) and 15px-16px input font sizing to avoid iOS Safari automatic zoom.
+- Preserved local dev resilience in `web/auth.js` and `web/login.html` to allow standalone demo testing without requiring active remote Django API endpoints.
+- Resolved Git merge conflicts with Angelo Metillo's branch (`origin/master`):
+  - Harmonized desktop navigation to use Angelo's pure hover-expanding 80px -> 260px icon rail without manual collapse chevrons, while keeping the responsive full-width off-canvas drawer navigation for mobile (`<= 768px`).
+  - Removed obsolete `.close` rail styles from `sidebar-pro.css` and `layout-fixes.css`, and removed the deprecated toggle listeners from `sidebar.js`.
+  - Bumped asset cachebusters to `sidebar-pro.css?v=7`, `sidebar.js?v=17`, `layout-fixes.css?v=5`, and `layout.js?v=17` across all 9 HTML staff templates.
+### Decision-log skill
+When reconciling responsive mobile drawer navigation with a desktop hover-expanding icon rail, keep desktop rules strictly gated within `@media (min-width: 769px)` and mobile drawer rules within `@media (max-width: 768px)`. This prevents hover state animations from colliding with off-canvas slide-out drawers and eliminates redundant click toggle states.
+

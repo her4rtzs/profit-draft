@@ -1,11 +1,12 @@
-/* ProFit Staff Dashboard - Fixed Desktop Sidebar & Mobile Drawer.
-   The desktop sidebar remains permanently fixed, stable, and visible at 260px.
-   The mobile sidebar acts strictly as a sliding drawer on screens <= 768px.
-   Loaded last so layout invariants are guaranteed. */
+/* ProFit Staff Dashboard - Hover-Expand Icon Rail & Mobile Drawer.
+   On desktop the sidebar is an icon rail that expands to the full 260px panel
+   while the pointer hovers it or the keyboard focus is inside it.
+   The mobile sidebar acts strictly as a sliding drawer on screens <= 768px. */
 
 :root {
   --sidebar-w: 260px;
   --pf-sb-w: 260px;
+  --sb-rail: 80px;              /* collapsed icon rail width */
   --sb-gold: #e8b93a;
   --sb-gold-2: #f2cb5c;
   --sb-ink: #1a1407;
@@ -36,158 +37,6 @@ html body nav.sidebar {
   box-shadow: 10px 0 35px rgba(0, 0, 0, 0.25) !important;
   transform: none !important;
   transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
-}
-
-/* ==========================================================================
-   SIDEBAR COLLAPSE TOGGLE & COMPACT RAIL (78px)
-   ========================================================================== */
-
-/* Toggle Button in brand row */
-html body nav.sidebar #sidebarToggle,
-html body #sidebarToggle {
-  display: grid !important;
-  place-items: center !important;
-  flex: 0 0 30px !important;
-  width: 30px !important;
-  height: 30px !important;
-  border-radius: 9px !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  background: rgba(255, 255, 255, 0.05) !important;
-  color: #94a3b8 !important;
-  font-size: 13px !important;
-  cursor: pointer !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
-}
-
-html body nav.sidebar #sidebarToggle:hover,
-html body #sidebarToggle:hover {
-  background: color-mix(in srgb, var(--sb-gold, #e8b93a) 20%, transparent) !important;
-  border-color: var(--sb-gold, #e8b93a) !important;
-  color: var(--sb-gold, #e8b93a) !important;
-  transform: scale(1.08) !important;
-  box-shadow: 0 2px 10px rgba(232, 185, 58, 0.25) !important;
-}
-
-/* ==========================================================================
-   DESKTOP COLLAPSED RAIL STATE (78px) — Scoped strictly to >= 769px
-   ========================================================================== */
-@media (min-width: 769px) {
-  html.pf-sidebar-closed body nav.sidebar,
-  html body nav.sidebar.close {
-    width: 78px !important;
-    min-width: 78px !important;
-    max-width: 78px !important;
-    padding: 16px 8px 14px !important;
-  }
-
-  html.pf-sidebar-closed body .main-content {
-    margin-left: 78px !important;
-    width: calc(100% - 78px) !important;
-    max-width: calc(100% - 78px) !important;
-  }
-
-  html body nav.sidebar.close .sidebar-brand-row {
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 8px !important;
-    padding: 2px 0 14px !important;
-  }
-
-  html body nav.sidebar.close .imgbrand {
-    flex: 0 0 auto !important;
-    justify-content: center !important;
-    width: auto !important;
-  }
-
-  html body nav.sidebar.close .headertxt {
-    display: none !important;
-  }
-
-  html body nav.sidebar.close #sidebarToggle {
-    display: grid !important;
-    margin: 0 auto !important;
-  }
-
-  html body nav.sidebar.close .nav-group-label {
-    display: none !important;
-  }
-
-  html body nav.sidebar.close .menulist a {
-    justify-content: center !important;
-    padding: 0 !important;
-    width: 44px !important;
-    height: 44px !important;
-    margin: 0 auto 6px !important;
-    border-radius: 12px !important;
-  }
-
-  html body nav.sidebar.close .menulist a .text {
-    display: none !important;
-  }
-
-  html body nav.sidebar.close .menulist a .icon {
-    margin: 0 !important;
-    font-size: 17px !important;
-  }
-
-  html body nav.sidebar.close .sidebar-foot {
-    padding: 10px 4px 0 !important;
-  }
-
-  html body nav.sidebar.close .sidebar-user {
-    justify-content: center !important;
-    padding: 4px !important;
-    width: 44px !important;
-    height: 44px !important;
-    border-radius: 50% !important;
-    margin: 0 auto !important;
-    cursor: pointer !important;
-  }
-
-  html body nav.sidebar.close .sidebar-user-copy,
-  html body nav.sidebar.close .account-menu-toggle {
-    display: none !important;
-  }
-
-  html body nav.sidebar.close .account-menu {
-    position: fixed !important;
-    left: 86px !important;
-    bottom: 14px !important;
-    top: auto !important;
-    right: auto !important;
-    width: 220px !important;
-    z-index: 1100 !important;
-  }
-}
-
-/* Floating tooltip for collapsed rail navigation */
-.sidebar-floating-tip {
-  position: fixed !important;
-  z-index: 10000 !important;
-  pointer-events: none !important;
-  background: #1e293b !important;
-  color: #fff !important;
-  font-family: 'Plus Jakarta Sans', Inter, system-ui, sans-serif !important;
-  font-size: 12px !important;
-  font-weight: 600 !important;
-  padding: 6px 12px !important;
-  border-radius: 8px !important;
-  white-space: nowrap !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  transform: translateX(-4px) !important;
-  transition: opacity 0.15s ease, transform 0.15s ease !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-}
-
-.sidebar-floating-tip.is-visible {
-  opacity: 1 !important;
-  visibility: visible !important;
-  transform: translateX(0) !important;
 }
 
 /* Prevent full-page opacity blank flash during early page paint */
@@ -227,14 +76,6 @@ html body .dashboard > main.main-content {
   overflow-x: clip !important;
   overflow-y: visible !important;
   transition: margin-left 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), width 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
-}
-
-html body nav.sidebar.close ~ .main-content,
-html body .dashboard > main.main-content.sidebar-collapsed,
-body.sidebar-collapsed .main-content {
-  margin-left: 78px !important;
-  width: calc(100% - 78px) !important;
-  max-width: calc(100% - 78px) !important;
 }
 
 /* ==========================================================================
@@ -631,7 +472,6 @@ html body nav.sidebar .account-menu button[data-logout] i {
 
   html body nav.sidebar ~ .main-content,
   html body .dashboard > main.main-content,
-  html body nav.sidebar.close ~ .main-content,
   html body .main-content {
     width: 100% !important;
     max-width: 100% !important;
@@ -682,5 +522,106 @@ html body nav.sidebar .account-menu button[data-logout] i {
   }
   .sidebar-shade {
     display: none !important;
+  }
+}
+
+/* ==========================================================================
+   HOVER-EXPAND ICON RAIL (desktop)
+   The sidebar rests as an icon rail and expands to the full panel while the
+   pointer hovers it or the keyboard focus is inside it. Only `width` animates
+   and the icons keep their x-position, so the page column never reflows: the
+   expanded panel slides over the content instead of pushing it.
+   Scoped to desktop, so the <=768px drawer keeps its full-width layout.
+   ========================================================================== */
+
+@media (min-width: 769px) {
+  /* The rail and the page column are one width, and only `width` is animated,
+     so min/max must not clamp the transition. */
+  html body nav.sidebar#sidebar {
+    min-width: 0 !important;
+    max-width: none !important;
+    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1),
+                width 0.22s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+  }
+
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) {
+    width: var(--sb-rail) !important;
+  }
+
+  /* Resting rail: icons only, centred. */
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-brand-row,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user {
+    justify-content: center !important;
+  }
+
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a {
+    justify-content: center !important;
+    gap: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Text that only makes sense while the panel is open. The nav label is
+     clipped further down instead, so links keep their accessible names. */
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .headertxt,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-group-label,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user-copy,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .account-menu-toggle,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .account-menu {
+    display: none !important;
+  }
+
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .text {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    margin: -1px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    clip-path: inset(50%) !important;
+  }
+
+  /* Reveal: labels fade in only after the panel has widened, so they are never
+     painted across the page content mid-transition. */
+  html body nav.sidebar#sidebar:hover .headertxt,
+  html body nav.sidebar#sidebar:focus-within .headertxt,
+  html body nav.sidebar#sidebar:hover .sidebar-user-copy,
+  html body nav.sidebar#sidebar:focus-within .sidebar-user-copy,
+  html body nav.sidebar#sidebar:hover .menulist a .text,
+  html body nav.sidebar#sidebar:focus-within .menulist a .text {
+    animation: sb-rail-reveal 0.16s ease 0.08s both !important;
+  }
+
+  html body nav.sidebar#sidebar:hover .nav-group-label,
+  html body nav.sidebar#sidebar:focus-within .nav-group-label {
+    animation: sb-rail-fade 0.16s ease 0.08s both !important;
+  }
+
+  /* The page column always reserves the rail, so the expanded panel slides
+     over the content rather than pushing it. */
+  html body nav.sidebar#sidebar ~ .main-content {
+    margin-left: var(--sb-rail) !important;
+    width: calc(100% - var(--sb-rail)) !important;
+    max-width: calc(100% - var(--sb-rail)) !important;
+  }
+}
+
+@keyframes sb-rail-reveal {
+  from { opacity: 0; transform: translateX(-6px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes sb-rail-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html body nav.sidebar#sidebar,
+  html body nav.sidebar#sidebar .headertxt,
+  html body nav.sidebar#sidebar .nav-group-label,
+  html body nav.sidebar#sidebar .sidebar-user-copy,
+  html body nav.sidebar#sidebar .menulist a .text {
+    transition: none !important;
+    animation: none !important;
   }
 }
