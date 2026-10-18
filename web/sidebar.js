@@ -28,30 +28,74 @@
     toggle.setAttribute("aria-expanded", String(!isClosed));
   }
 
-  // Restore saved desktop collapse state
-  if (sidebar && !window.matchMedia("(max-width: 768px)").matches) {
-    const saved = store.get("sidebar");
-    if (saved === "closed") {
-      sidebar.classList.add("close");
-      document.body.classList.add("sidebar-collapsed");
-      syncToggleIcon(true);
-    } else {
+  // Restore and maintain responsive sidebar states
+  function applyResponsiveState() {
+    if (!sidebar) return;
+    if (window.matchMedia("(max-width: 768px)").matches) {
+      // Mobile drawer: ensure drawer has full width and text labels
       sidebar.classList.remove("close");
       document.body.classList.remove("sidebar-collapsed");
-      syncToggleIcon(false);
+    } else {
+      // Desktop: close any open mobile drawer and restore collapse state
+      setDrawer(false);
+      const saved = store.get("sidebar");
+      const isClosed = saved === "closed";
+      sidebar.classList.toggle("close", isClosed);
+      document.body.classList.toggle("sidebar-collapsed", isClosed);
+      syncToggleIcon(isClosed);
     }
+    document.documentElement.classList.remove("pf-sidebar-closed");
   }
+
+  applyResponsiveState();
+  window.addEventListener("resize", applyResponsiveState);
 
   toggle?.addEventListener("click", e => {
     e.preventDefault();
     e.stopPropagation();
-    if (!sidebar) return;
+    if (!sidebar || window.matchMedia("(max-width: 768px)").matches) return;
     const isNowClosed = !sidebar.classList.contains("close");
     sidebar.classList.toggle("close", isNowClosed);
     document.body.classList.toggle("sidebar-collapsed", isNowClosed);
     store.set("sidebar", isNowClosed ? "closed" : "open");
     syncToggleIcon(isNowClosed);
   });
+
+  // Floating tooltip for collapsed rail items
+  let tipEl = document.getElementById("sidebarFloatingTip");
+  if (!tipEl) {
+    tipEl = document.createElement("div");
+    tipEl.id = "sidebarFloatingTip";
+    tipEl.className = "sidebar-floating-tip";
+    tipEl.setAttribute("aria-hidden", "true");
+    document.body.appendChild(tipEl);
+  }
+
+  function showTip(link) {
+    if (!sidebar || !sidebar.classList.contains("close") || window.matchMedia("(max-width: 768px)").matches) {
+      hideTip();
+      return;
+    }
+    const text = link.getAttribute("data-tip") || link.querySelector(".text")?.textContent?.trim();
+    if (!text) { hideTip(); return; }
+    tipEl.textContent = text;
+    tipEl.classList.add("is-visible");
+    const rect = link.getBoundingClientRect();
+    tipEl.style.left = `${Math.round(rect.right + 10)}px`;
+    tipEl.style.top = `${Math.round(rect.top + (rect.height / 2) - (tipEl.offsetHeight / 2))}px`;
+  }
+
+  function hideTip() {
+    tipEl?.classList.remove("is-visible");
+  }
+
+  sidebar?.querySelectorAll(".menulist a").forEach(link => {
+    link.addEventListener("mouseenter", () => showTip(link));
+    link.addEventListener("mouseleave", hideTip);
+    link.addEventListener("focus", () => showTip(link));
+    link.addEventListener("blur", hideTip);
+  });
+  window.addEventListener("scroll", hideTip, { passive: true });
   const applyTheme = dark => {
     document.body.classList.toggle("dark", !!dark);
     if (themeToggle) {
@@ -197,7 +241,28 @@
     menu.classList.toggle('is-open', open);
     toggle.setAttribute('aria-expanded', String(open));
   };
+  const sidebar = document.querySelector('.sidebar');
+  const railAvatar = document.getElementById('railAvatar');
+  const userBox = document.querySelector('.sidebar-user');
+
   toggle?.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); setOpen(!menu.classList.contains('is-open')); });
+
+  railAvatar?.addEventListener('click', e => {
+    if (sidebar?.classList.contains('close')) {
+      e.preventDefault();
+      e.stopPropagation();
+      setOpen(!menu.classList.contains('is-open'));
+    }
+  });
+
+  userBox?.addEventListener('click', e => {
+    if (sidebar?.classList.contains('close') && !e.target.closest('#accountMenu')) {
+      e.preventDefault();
+      e.stopPropagation();
+      setOpen(!menu.classList.contains('is-open'));
+    }
+  });
+
   // NOTE: this menu used to call stopPropagation on every click inside it, which
   // kept the document-level dismiss handler happy but also swallowed the click
   // before it could bubble to auth.js's [data-logout] listener — so "Log out"
@@ -205,7 +270,7 @@
   menu?.addEventListener('click', e => {
     if (e.target.closest('[role="menuitem"]')) setOpen(false);
   });
-  document.addEventListener('click', e => { if (menu && toggle && !menu.contains(e.target) && !toggle.contains(e.target)) setOpen(false); });
+  document.addEventListener('click', e => { if (menu && !menu.contains(e.target) && !toggle?.contains(e.target) && !railAvatar?.contains(e.target) && !userBox?.contains(e.target)) setOpen(false); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') setOpen(false); });
 
   // Generic "..." dropdowns used by other pages.

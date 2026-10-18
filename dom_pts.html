@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en" class="" style="background: rgb(24, 25, 26); color-scheme: dark;" data-accent="gold"><head><script>(function(){try{var d=localStorage.getItem('theme')!=='light';var h=document.documentElement;h.style.background=d?'#18191a':'#f0f2f5';h.style.colorScheme=d?'dark':'light';h.classList.add('pf-pre');setTimeout(function(){h.classList.remove('pf-pre')},1500);}catch(e){}})();</script><script src="splash.js?v=2"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10:MAIN.main-content | 40:DIV.topbar-heading | 70:DIV.topbar-heading | 100:DIV.topbar-heading | 130:DIV.topbar-heading | 160:H1.</title>
+
+    <!-- Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <script src="config.js"></script>
+    <script src="api.js"></script>
+    <script src="auth.js"></script>
+<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=6"><link rel="stylesheet" href="ui-final.css?v=1"><script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script><style id="pf-dash-fx">
+.pf-skel td{padding:18px 16px}
+.pf-skel span{display:block;height:14px;border-radius:8px;background:linear-gradient(90deg,rgba(255,255,255,.05),rgba(255,255,255,.13),rgba(255,255,255,.05));background-size:200% 100%;animation:pfShimmer 1.2s linear infinite}
+.pf-skel td:nth-child(1) span{width:80px}.pf-skel td:nth-child(2) span{width:70%}.pf-skel td:nth-child(3) span{width:110px}.pf-skel td:nth-child(4) span{width:90px}.pf-skel td:nth-child(5) span{width:28px;margin-left:auto}
+@keyframes pfShimmer{to{background-position:-200% 0}}
+.pf-row-in{animation:pfRowIn .42s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0) * 55ms)}
+@keyframes pfRowIn{from{opacity:0}to{opacity:1}}
+.pf-empty{text-align:center;padding:28px 16px;color:var(--muted)}
+.pf-menu{position:absolute;z-index:60;min-width:210px;padding:6px;border-radius:14px;background:var(--card);border:1px solid var(--border);box-shadow:0 18px 40px rgba(0,0,0,.45);animation:pfPop .18s ease-out}
+.pf-menu[hidden]{display:none}
+.pf-menu a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:var(--text);text-decoration:none;font-weight:600;font-size:14px}
+.pf-menu a:hover,.pf-menu a:focus-visible{background:color-mix(in srgb,var(--gold) 14%,transparent);outline:none}
+.pf-menu a i{color:var(--gold);width:16px;text-align:center}
+@keyframes pfPop{from{opacity:0;transform:translateY(-4px) scale(.98)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.pf-skel span,.pf-row-in,.pf-menu{animation:none!important}}
+</style>
+<link rel="stylesheet" href="hover-fx.css?v=2">
+<link rel="stylesheet" href="ui-polish.css?v=1">
+<link rel="stylesheet" href="ui-fixes.css?v=1">
+<link rel="stylesheet" href="pf-modern.css?v=1">
+<link rel="stylesheet" href="sidebar-pro.css?v=5">
+<link rel="stylesheet" href="layout-fixes.css?v=4">
+<script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script><style>
+    #notificationList .notification-item{display:flex;align-items:flex-start;gap:12px;width:100%;padding:14px 16px;border:0;background:transparent;color:inherit;text-align:left;cursor:pointer;border-radius:14px;transition:background-color .2s ease}
+    #notificationList .notification-item:hover{background:rgba(255,255,255,.05)}
+    #notificationList .notification-item:focus-visible{outline:2px solid #e8b93a;outline-offset:-2px}
+    #notificationList .notification-item.is-unread strong{font-weight:800}
+    #notificationList .notification-item.is-read{opacity:.62}
+    #notificationList .notif-icon{flex:0 0 36px;height:36px;border-radius:12px;display:grid;place-items:center;background:rgba(232, 185, 58,.14);color:#e8b93a}
+    #notificationList .notif-copy{display:grid;gap:3px;min-width:0}
+    #notificationList .notif-copy strong{font-size:14px;font-weight:700}
+    #notificationList .notif-copy small{font-size:12.5px;color:#9aa4b6;line-height:1.4}
+    #notificationList .notif-copy em{font-style:normal;font-size:11.5px;color:#6f7a8e}
+    #notificationList .notification-empty{display:grid;justify-items:center;gap:8px;padding:28px 16px;text-align:center;color:#9aa4b6}
+    #notificationList .notification-empty i{font-size:22px;color:#e8b93a}</style></head>
+
+<body data-page="dashboard" data-title="Dashboard" data-welcome="Welcome back " class="dark pf-ready">
+
+<div class="dashboard">
+
+    <!-- ===================== SIDEBAR ===================== -->
+    <nav class="sidebar" id="sidebar" aria-label="Main navigation">
+      <div class="sidebar-brand-row">
+        <a class="imgbrand" href="index.html" aria-label="ProFit dashboard">
+          <span class="image"><img id="gymLogoImg" src="logo.jpg" alt="ProFit" onerror="this.style.display='none'"></span>
+          <span class="headertxt"><strong id="gymNameTxt">ProFit</strong><small id="gymTagTxt">FUNCTIONAL FITNESS</small></span>
+        </a>
+        <button type="button" class="sidebar-toggle-btn" id="sidebarToggle" aria-label="Collapse sidebar" title="Collapse sidebar">
+          <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="sidebar-scroll">
+        <section class="nav-group"><p class="nav-group-label">WORKSPACE</p><ul class="menulist"><li><a href="index.html" data-tip="Dashboard" class="active" aria-current="page"><i class="fa-solid fa-house icon" aria-hidden="true"></i><span class="text nav-text">Dashboard</span></a></li><li><a href="announcements.html" data-tip="Announcements" class=""><i class="fa-solid fa-bullhorn icon" aria-hidden="true"></i><span class="text nav-text">Announcements</span></a></li></ul></section><section class="nav-group"><p class="nav-group-label">MEMBERSHIP</p><ul class="menulist"><li><a href="members.html" data-tip="Member List" class=""><i class="fa-solid fa-users icon" aria-hidden="true"></i><span class="text nav-text">Member List</span></a></li><li><a href="attendance.html" data-tip="Attendance" class=""><i class="fa-solid fa-calendar-check icon" aria-hidden="true"></i><span class="text nav-text">Attendance</span></a></li><li><a href="trainers.html" data-tip="Trainers" class=""><i class="fa-solid fa-dumbbell icon" aria-hidden="true"></i><span class="text nav-text">Trainers</span></a></li></ul></section><section class="nav-group"><p class="nav-group-label">FINANCE</p><ul class="menulist"><li><a href="payments.html" data-tip="Payments &amp; Billing" class=""><i class="fa-solid fa-wallet icon" aria-hidden="true"></i><span class="text nav-text">Payments &amp; Billing</span></a></li><li><a href="reports.html" data-tip="Financial Reports" class=""><i class="fa-solid fa-chart-column icon" aria-hidden="true"></i><span class="text nav-text">Financial Reports</span></a></li></ul></section>
+      </div>
+      <div class="sidebar-foot">
+        <div class="sidebar-account">
+          <div class="sidebar-user">
+            <span class="sidebar-avatar" data-user-initials="" id="railAvatar">A</span>
+            <div class="sidebar-user-copy"><strong data-user-name="">Administrator</strong><small data-user-role="">Gym administrator</small></div>
+            <button type="button" class="account-menu-toggle" id="accountMenuToggle" aria-haspopup="menu" aria-expanded="false" aria-controls="accountMenu" aria-label="Account actions" title="Account"><i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i></button>
+            <div class="account-menu" id="accountMenu" role="menu" aria-label="Account actions">
+              <a href="profile.html" role="menuitem" class=""><i class="fa-regular fa-user" aria-hidden="true"></i> My profile</a>
+              <a href="settings.html#appearance" role="menuitem" class=""><i class="fa-solid fa-sliders" aria-hidden="true"></i> Settings</a>
+              <button type="button" class=" pf-cp-item" role="menuitem" data-cp-item="1"><i class="fa-solid fa-key" aria-hidden="true"></i> Change password</button><button type="button" role="menuitem" data-logout="" data-cp-done="1"><i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i> Log out</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      </nav>
+
+
+    <!-- ===================== MAIN ===================== -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <header class="topbar" id="topbar">
+      <div class="topbar-heading">
+        <div class="topbar-nav">
+          <button type="button" id="navBack" aria-label="Go back" title="Back"><i class="fa-solid fa-chevron-left"></i></button>
+          <button type="button" id="navFwd" aria-label="Go forward" title="Forward" disabled=""><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+        <button class="mobile-nav-toggle" id="mobileNavToggle" type="button" aria-label="Open navigation" aria-expanded="false"><i class="fa-solid fa-bars"></i></button>
+        <div class="topbar-title">
+          <p class="welcome">Welcome back </p>
+          <h1>Dashboard</h1>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <label class="search"><i class="fa-solid fa-magnifying-glass"></i><input type="search" placeholder="Search members..." aria-label="Search members"><kbd>Ctrl K</kbd></label>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light mode" title="Light mode"><i class="fa-solid fa-sun"></i></button>
+        <div class="notification-wrap"><button class="notification" id="notificationToggle" type="button" aria-label="Notifications, you're all caught up" aria-haspopup="true" aria-expanded="false"><i class="fa-regular fa-bell"></i><span class="notification-badge" id="notificationBadge" hidden="" aria-hidden="true"></span></button>
+          <section class="notification-panel" id="notificationPanel" aria-label="Notifications" hidden=""><div class="notification-head"><div><strong>Notifications</strong><small id="notificationSummary">You're all caught up</small></div><button type="button" id="markAllRead">Mark all read</button></div><div class="notification-list" id="notificationList"><div class="notification-empty"><i class="fa-regular fa-bell-slash"></i><strong>No notifications</strong><p>Membership requests, check-ins and trainer updates land here.</p></div></div><div class="notification-foot"><span>Gym updates</span></div></section>
+        </div>
+        <a class="topbar-avatar" id="topbarAvatar" href="profile.html" title="My profile" aria-label="My profile"><span data-user-initials="">A</span></a>
+      </div></header><div class="status-strip" id="statusStrip" aria-label="Gym status">
+      <span class="strip-label"><span class="strip-dot" aria-hidden="true"></span><span id="stripGymName">ProFit</span></span>
+      <a class="topbar-stat" href="attendance.html" title="Members checked in today"><i class="fa-solid fa-door-open" aria-hidden="true"></i><b id="tsChecked">5</b><span class="ts-label">in today</span></a>
+      <a class="topbar-stat" href="members.html" title="Total members"><i class="fa-solid fa-users" aria-hidden="true"></i><b id="tsMembers">10</b><span class="ts-label">members</span></a>
+      <a class="topbar-stat" href="reports.html" title="Revenue collected this month"><i class="fa-solid fa-peso-sign" aria-hidden="true"></i><b id="tsRevenue">₱14,300</b><span class="ts-label">this month</span></a>
+      <span class="strip-clock" id="stripClock">12:44 AM</span>
+      <a class="strip-cta" href="members.html#enroll" title="Add a new gym member"><i class="fa-solid fa-user-plus" aria-hidden="true"></i><span>Enroll member</span></a></div>
+
+
+        <!-- QUICK ACTIONS -->
+        <section class="quick-actions" aria-label="Quick actions">
+          <a class="quick-action" href="members.html#enrollment"><span class="quick-action-icon"><i class="fa-solid fa-user-plus"></i></span><span><strong>Enroll a member</strong><small>Add a new gym member</small></span><i class="fa-solid fa-arrow-up-right-from-square action-arrow"></i></a>
+          <a class="quick-action" href="attendance.html"><span class="quick-action-icon"><i class="fa-solid fa-calendar-check"></i></span><span><strong>Record attendance</strong><small>Manage today's check-ins</small></span><i class="fa-solid fa-arrow-up-right-from-square action-arrow"></i></a>
+          <a class="quick-action" href="payments.html"><span class="quick-action-icon"><i class="fa-solid fa-credit-card"></i></span><span><strong>Record a payment</strong><small>Update member billing</small></span><i class="fa-solid fa-arrow-up-right-from-square action-arrow"></i></a>
+          <a class="quick-action" href="reports.html"><span class="quick-action-icon"><i class="fa-solid fa-chart-line"></i></span><span><strong>View reports</strong><small>Review gym performance</small></span><i class="fa-solid fa-arrow-up-right-from-square action-arrow"></i></a>
+        </section>
+
+        <!-- STATS -->
+        <section class="stats">
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <div class="stat-icon green"><i class="fa-solid fa-users"></i></div>
+                    <span class="trend positive"><i class="fa-solid fa-arrow-up"></i> 12.5%</span>
+                </div>
+                <div class="stat-content">
+                    <p>Total members</p>
+                    <h2>—</h2>
+                    <small>Compared to last month</small>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <div class="stat-icon red"><i class="fa-solid fa-user-xmark"></i></div>
+                    <span class="trend negative"><i class="fa-solid fa-arrow-down"></i> 4.2%</span>
+                </div>
+                <div class="stat-content">
+                    <p>Expired members</p>
+                    <h2>—</h2>
+                    <small>Memberships expired</small>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <div class="stat-icon yellow"><i class="fa-solid fa-hourglass-half"></i></div>
+                    <span class="status-warning">Needs attention</span>
+                </div>
+                <div class="stat-content">
+                    <p>Expiring soon</p>
+                    <h2>—</h2>
+                    <small>Within the next 7 days</small>
+                </div>
+            </div>
+
+            <div class="stat-card revenue-card">
+                <div class="stat-top">
+                    <div class="stat-icon gold"><i class="fa-solid fa-peso-sign"></i></div>
+                    <span class="trend positive"><i class="fa-solid fa-arrow-up"></i> 8.3%</span>
+                </div>
+                <div class="stat-content">
+                    <p>Total revenue</p>
+                    <h2>₱77,000</h2>
+                    <small>Jan to Dec 2026</small>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- CHART + DONUT -->
+        <section class="content-grid">
+
+            <div class="panel revenue-panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h2 id="revenueTitle">Monthly revenue</h2>
+                        <p id="revenueSub">Jan to Dec 2026</p>
+                    </div>
+                    <div class="chip-row" id="revenuePeriods" role="group" aria-label="Revenue period">
+                        <button type="button" class="chip" data-period="days" aria-pressed="false">Days</button>
+                        <button type="button" class="chip" data-period="week" aria-pressed="false">Week</button>
+                        <button type="button" class="chip active" data-period="month" aria-pressed="true">Month</button>
+                        <button type="button" class="chip" data-period="year" aria-pressed="false">Year</button>
+                    <span class="year-stepper"><button type="button" data-yr="-1" aria-label="Previous year">‹</button><input type="number" inputmode="numeric" min="2000" max="2100" aria-label="Year"><button type="button" data-yr="1" aria-label="Next year">›</button></span></div>
+                </div>
+
+                <div class="chart-area">
+
+                    <div class="chart-y" id="revenueAxis"><span>₱14.3k</span><span>₱11.9k</span><span>₱9.5k</span><span>₱7.2k</span><span>₱4.8k</span><span>₱2.4k</span><span>₱0</span></div>
+
+                    <div class="chart">
+                        <div class="grid-lines"></div>
+                        <div class="bar-container" id="revenueBars"><div class="bar-column"><div class="bar-track"><div class="bar has-data" tabindex="0" role="img" aria-label="Jan 2026: ₱7,700" title="Jan 2026 · ₱7,700" style="height:54%;"><span>₱7,700</span></div></div><label>Jan</label></div><div class="bar-column"><div class="bar-track"><div class="bar has-data" tabindex="0" role="img" aria-label="Feb 2026: ₱5,600" title="Feb 2026 · ₱5,600" style="height:39%;"><span>₱5,600</span></div></div><label>Feb</label></div><div class="bar-column"><div class="bar-track"><div class="bar has-data" tabindex="0" role="img" aria-label="Mar 2026: ₱9,800" title="Mar 2026 · ₱9,800" style="height:69%;"><span>₱9,800</span></div></div><label>Mar</label></div><div class="bar-column"><div class="bar-track"><div class="bar has-data" tabindex="0" role="img" aria-label="Apr 2026: ₱7,700" title="Apr 2026 · ₱7,700" style="height:54%;"><span>₱7,700</span></div></div><label>Apr</label></div><div class="bar-column"><div class="bar-track"><div class="bar has-data" tabindex="0" role="img" aria-label="May 2026: ₱5,600" title="May 2026 · ₱5,600" style="height:39%;"><span>₱5,600</span></div></div><label>May</label></div><div class="bar-column"><div class="bar-track"><div class="bar has-data" tabindex="0" role="img" aria-label="Jun 2026: ₱9,800" title="Jun 2026 · ₱9,800" style="height:69%;"><span>₱9,800</span></div></div><label>Jun</label></div><div class="bar-column"><div class="bar-track"><div class="bar has-data" tabindex="0" role="img" aria-label="Jul 2026: ₱7,700" title="Jul 2026 · ₱7,700" style="height:54%;"><span>₱7,700</span></div></div><label>Jul</label></div><div class="bar-column"><div class="bar-track"><div class="bar has-data" tabindex="0" role="img" aria-label="Aug 2026: ₱5,600" title="Aug 2026 · ₱5,600" style="height:39%;"><span>₱5,600</span></div></div><label>Aug</label></div><div class="bar-column"><div class="bar-track"><div class="bar has-data" tabindex="0" role="img" aria-label="Sep 2026: ₱3,200" title="Sep 2026 · ₱3,200" style="height:22%;"><span>₱3,200</span></div></div><label>Sep</label></div><div class="bar-column"><div class="bar-track"><div class="bar has-data" tabindex="0" role="img" aria-label="Oct 2026: ₱14,300" title="Oct 2026 · ₱14,300" style="height:100%;"><span>₱14,300</span></div></div><label>Oct</label></div><div class="bar-column"><div class="bar-track"><div class="bar empty" tabindex="0" role="img" aria-label="Nov 2026: ₱0" title="Nov 2026 · ₱0" style="height:3%;"><span>₱0</span></div></div><label>Nov</label></div><div class="bar-column"><div class="bar-track"><div class="bar empty" tabindex="0" role="img" aria-label="Dec 2026: ₱0" title="Dec 2026 · ₱0" style="height:3%;"><span>₱0</span></div></div><label>Dec</label></div></div>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="panel summary-panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h2>Membership overview</h2>
+                        <p>Current membership status</p>
+                    </div>
+                    <div class="menu-wrap">
+                        <button class="icon-btn" type="button" data-menu="" aria-haspopup="true" aria-expanded="false" aria-label="More options">
+                            <i class="fa-solid fa-ellipsis"></i>
+                        </button>
+                        <div class="dropdown" hidden="" role="menu">
+                            <a href="members.html"><i class="fa-solid fa-user-group"></i> View all members</a>
+                            <a href="payments.html#subscription"><i class="fa-solid fa-hourglass-half"></i> Subscription monitor</a>
+                            <a href="reports.html#summary"><i class="fa-solid fa-chart-column"></i> Revenue summary</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- change --active / --expired to update the donut (expiring is the remainder) -->
+                <div class="membership-circle">
+                    <div class="circle" style="--active:0; --expired:0;">
+                        <strong>—</strong>
+                        <span>Members</span>
+                    </div>
+                </div>
+
+                <div class="membership-stats">
+                    <div>
+                        <span class="dot active-dot"></span>
+                        <p>Active</p>
+                        <strong>—</strong>
+                        <div class="mini-progress"><span style="width:0%"></span></div>
+                    </div>
+                    <div>
+                        <span class="dot expired-dot"></span>
+                        <p>Expired</p>
+                        <strong>—</strong>
+                        <div class="mini-progress"><span class="danger" style="width:0%"></span></div>
+                    </div>
+                    <div>
+                        <span class="dot expiring-dot"></span>
+                        <p>Expiring</p>
+                        <strong>—</strong>
+                        <div class="mini-progress"><span class="warning" style="width:0%"></span></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- RECENT REGISTRATIONS -->
+        <section class="panel registrations-panel">
+
+            <div class="panel-header">
+                <div>
+                    <h2>Recent registrations</h2>
+                    <p>Latest members who joined the gym</p>
+                </div>
+                <a href="members.html" class="view-all">View all <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Member</th>
+                            <th>Registration date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="recentRows" aria-live="polite"><tr class="pf-skel"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr><tr class="pf-skel"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr><tr class="pf-skel"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr><tr class="pf-skel"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr></tbody>
+                </table>
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="data.js"></script><div id="pfProgress" aria-hidden="true" class=""></div>
+<script src="layout.js?v=16"></script>
+<script src="sidebar.js?v=16"></script><button type="button" id="sidebarShade" class="sidebar-shade" aria-label="Close navigation"></button><div id="sidebarFloatingTip" class="sidebar-floating-tip" aria-hidden="true"></div>
+<script src="chart-periods.js?v=914"></script>
+<script src="portal-fx.js?v=2"></script>
+<script src="change-password.js?v=2" defer=""></script>
+<script>
+(() => {
+  const body = document.getElementById("recentRows");
+  if (!body) return;
+  const table = body.closest("table");
+  const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const initials = n => (String(n || "?").trim().split(/\s+/).map(w => w[0] || "").join("").slice(0, 2).toUpperCase()) || "?";
+  const startOfToday = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
+  const statusFor = m => {
+    if (!m.end) return ["expired", "Pending"];
+    const days = Math.round((m.end - startOfToday()) / 86400000);
+    if (days < 0) return ["expired", "Expired"];
+    if (days <= 7) return ["expiring", "Expiring"];
+    return ["active", "Active"];
+  };
+  const rowHTML = (m, i) => {
+    const [cls, label] = statusFor(m);
+    const joined = m.joined ? fmtShort(m.joined) : "—";
+    return `<tr class="pf-row-in" style="--i:${i}">
+      <td><span class="member-id">${esc(m.id)}</span></td>
+      <td><div class="member"><div class="mini-avatar">${esc(initials(m.name))}</div><div><strong>${esc(m.name)}</strong><small>Member</small></div></div></td>
+      <td>${esc(joined)}</td>
+      <td><span class="badge ${cls}">${label}</span></td>
+      <td><div class="row-menu-wrap pf-menu-wrap">
+        <button class="action-btn pf-menu-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="More actions for ${esc(m.name)}"><i class="fa-solid fa-ellipsis" aria-hidden="true"></i></button>
+        <div class="pf-menu" role="menu" hidden>
+          <a role="menuitem" href="members.html?q=${encodeURIComponent(m.id)}"><i class="fa-regular fa-id-card" aria-hidden="true"></i> Member profile</a>
+          <a role="menuitem" href="payments.html"><i class="fa-solid fa-wallet" aria-hidden="true"></i> Billing</a>
+          <a role="menuitem" href="attendance.html"><i class="fa-solid fa-calendar-check" aria-hidden="true"></i> Attendance</a>
+        </div></div></td></tr>`;
+  };
+
+  // The open menu is moved to <body> while open, so the table wrapper never clips it.
+  let openMenu = null;
+  function closeMenus() {
+    if (!openMenu) return;
+    const { menu, btn, wrap } = openMenu;
+    menu.hidden = true;
+    menu.removeAttribute("style");
+    wrap.appendChild(menu);
+    btn.setAttribute("aria-expanded", "false");
+    openMenu = null;
+  }
+  body.addEventListener("click", e => {
+    const btn = e.target.closest(".pf-menu-btn");
+    if (!btn) return;
+    const wrap = btn.parentElement, menu = wrap.querySelector(".pf-menu");
+    const same = openMenu && openMenu.btn === btn;
+    closeMenus();
+    if (same) return;
+    const r = btn.getBoundingClientRect();
+    document.body.appendChild(menu);
+    menu.hidden = false;
+    menu.style.position = "fixed";
+    const h = menu.offsetHeight;
+    const above = r.top - h - 8;
+    menu.style.top = (above >= 12 ? above : r.bottom + 8) + "px";
+    menu.style.left = Math.max(12, r.right - 210) + "px";
+    btn.setAttribute("aria-expanded", "true");
+    openMenu = { menu, btn, wrap };
+    menu.querySelector("a")?.focus();
+  });
+  document.addEventListener("click", e => {
+    if (openMenu && !e.target.closest(".pf-menu") && !e.target.closest(".pf-menu-btn")) closeMenus();
+  });
+  document.addEventListener("keydown", e => {
+    if (e.key !== "Escape" || !openMenu) return;
+    const btn = openMenu.btn;
+    closeMenus();
+    btn.focus();
+  });
+  window.addEventListener("resize", closeMenus);
+
+  function render(ok) {
+    closeMenus();
+    if (table) table.setAttribute("aria-busy", "false");
+    if (!ok && !DB.synced) {
+      body.innerHTML = `<tr><td colspan="5" class="pf-empty">Hindi ma-load ang listahan. I-refresh ang page.</td></tr>`;
+      return;
+    }
+    const newest = (DB.members || []).slice()
+      .sort((a, b) => ((b.joined && b.joined.getTime()) || 0) - ((a.joined && a.joined.getTime()) || 0)
+        || String(b.id).localeCompare(String(a.id)))
+      .slice(0, 5);
+    if (!newest.length) {
+      body.innerHTML = `<tr><td colspan="5" class="pf-empty">Wala pang member. Magdagdag sa Members page.</td></tr>`;
+      return;
+    }
+    const html = newest.map(rowHTML).join("");
+    if (body.dataset.sig !== html) { body.innerHTML = html; body.dataset.sig = html; }
+  }
+
+  document.addEventListener("profit:synced", e => render(e.detail?.ok !== false));
+  if (DB.synced) render(true);
+})();
+</script>
+<script>
+(() => {
+  const startOfToday = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
+  const daysLeft = m => (m.end ? Math.round((m.end - startOfToday()) / 86400000) : -1);
+  const cardFor = label => [...document.querySelectorAll(".stat-card .stat-content")]
+    .find(c => c.querySelector("p")?.textContent.trim() === label);
+
+  function paint() {
+    if (!DB.synced) return;
+    const members = DB.members || [];
+    const total = members.length;
+    let expired = 0, expiring = 0;
+    members.forEach(m => { const d = daysLeft(m); if (d < 0) expired++; else if (d <= 7) expiring++; });
+    const active = total - expired - expiring;
+
+    const put = (label, value) => { const h = cardFor(label)?.querySelector("h2"); if (h) h.textContent = value; };
+    put("Total members", total);
+    const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+    const newThisMonth = members.filter(m => m.joined && m.joined >= monthStart).length;
+    const sub = cardFor("Total members")?.querySelector("small");
+    if (sub) sub.textContent = newThisMonth
+      ? `+${newThisMonth} member${newThisMonth === 1 ? "" : "s"} ngayong buwan`
+      : "Walang bagong member ngayong buwan";
+    put("Expired members", expired);
+    put("Expiring soon", expiring);
+
+    // The trend chips were fixed numbers, not real comparisons, so they are hidden.
+    document.querySelectorAll(".stat-top .trend").forEach(t => { t.style.display = "none"; });
+
+    const pct = n => (total ? Math.round((n / total) * 100) : 0);
+    const circle = document.querySelector(".membership-circle .circle");
+    if (circle) {
+      circle.style.setProperty("--active", pct(active));
+      circle.style.setProperty("--expired", pct(expired));
+      circle.querySelector("strong").textContent = total;
+    }
+    document.querySelectorAll(".membership-stats > div").forEach((row, i) => {
+      const n = [active, expired, expiring][i];
+      if (n === undefined) return;
+      row.querySelector("strong").textContent = n;
+      row.querySelector(".mini-progress span").style.width = pct(n) + "%";
+    });
+  }
+  document.addEventListener("profit:synced", paint);
+  paint();
+})();
+</script>
+<script src="notifications-live.js?v=1" defer=""></script>
+<script>
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.title = [10, 40, 70, 100, 130, 160].map(y => {
+      const el = document.elementFromPoint(195, y);
+      return y + ':' + (el ? el.tagName + '.' + el.className.split(' ')[0] : 'null');
+    }).join(' | ');
+  }, 200);
+});
+</script>
+
+
+</body></html>

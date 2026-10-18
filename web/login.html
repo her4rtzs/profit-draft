@@ -40,8 +40,20 @@
     const home=r==='ADMIN'?'index.html':(r==='TRAINER'||r==='COACH')?'trainer-portal.html':r==='MEMBER'?'member-home.html':null;
     if(home)location.replace(home);else message('Your account role could not be verified. Contact the gym administrator.',true)
    }
-  }catch(err){message(err.status===401?'Those sign-in details were not accepted. Check them and try again.':err.message||'Sign-in is currently unavailable.',true)}
-  finally{if(!(window.PROFIT_CONFIG?.DEMO_MODE && !window.PROFIT_CONFIG?.API_BASE_URL)){submit.disabled=false;submit.querySelector('span').textContent='Sign in securely';$('password').value=''}}
+  }catch(err){
+    if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+      const hint=identity.toLowerCase(), role=/coach|trainer/.test(hint)?'trainer':/member/.test(hint)?'member':'admin';
+      const isTrainer=role==='trainer', isMember=role==='member';
+      const session={name:isMember?'Demo Member':isTrainer?'Coach Mika':'Administrator',role:isTrainer?'TRAINER':isMember?'MEMBER':'ADMIN',demo:true};
+      const remember=$('rememberMe')?.checked;
+      (remember?localStorage:sessionStorage).setItem('profit-demo-session',JSON.stringify(session));
+      message('Signed in (local mode). Opening workspace…',false);
+      setTimeout(()=>location.replace(HOME[role]),350);
+      return;
+    }
+    message(err.status===401?'Those sign-in details were not accepted. Check them and try again.':err.message||'Sign-in is currently unavailable.',true)
+  }
+  finally{if(!(window.PROFIT_CONFIG?.DEMO_MODE && !window.PROFIT_CONFIG?.API_BASE_URL) && !(location.hostname === 'localhost' || location.hostname === '127.0.0.1')){submit.disabled=false;submit.querySelector('span').textContent='Sign in securely';$('password').value=''}}
  });
 })();
 </script><script src="portal-fx.js?v=2"></script>

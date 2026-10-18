@@ -282,7 +282,7 @@ DB.sync = async function (reload = false) {
             id: idFor(r.id), serverId: r.id, name: r.name, email: r.email || "",
             phone: r.phone || "", address: r.address || "",
             emergencyName: "", emergencyPhone: "", photoId: null,
-            plan, start: addDays(end, -PLANS[plan].days), end, checkins: 0,
+            plan, start: addDays(end, -(PLANS[plan]?.days || 30)), end, checkins: 0,
             joined: r.date_joined ? fromISO(r.date_joined) : null
         };
     });

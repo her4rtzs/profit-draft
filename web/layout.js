@@ -71,11 +71,13 @@
       </div>
       <div class="topbar-right">
         <label class="search"><i class="fa-solid fa-magnifying-glass"></i><input type="search" placeholder="Search members..." aria-label="Search members"><kbd>Ctrl K</kbd></label>
-        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode" title="Toggle theme"><i class="fa-solid fa-moon"></i></button>
-        <div class="notification-wrap"><button class="notification" id="notificationToggle" type="button" aria-label="Notifications" aria-haspopup="true" aria-expanded="false"><i class="fa-regular fa-bell"></i><span class="notification-badge" id="notificationBadge" hidden>0</span></button>
-          <section class="notification-panel" id="notificationPanel" aria-label="Notifications" hidden><div class="notification-head"><div><strong>Notifications</strong><small id="notificationSummary">You're all caught up</small></div><button type="button" id="markAllRead">Mark all read</button></div><div class="notification-list" id="notificationList"></div><div class="notification-foot"><span>Gym updates</span><button type="button" id="clearNotifications">Clear all</button></div></section>
+        <div class="topbar-actions">
+          <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode" title="Toggle theme"><i class="fa-solid fa-moon"></i></button>
+          <div class="notification-wrap"><button class="notification" id="notificationToggle" type="button" aria-label="Notifications" aria-haspopup="true" aria-expanded="false"><i class="fa-regular fa-bell"></i><span class="notification-badge" id="notificationBadge" hidden>0</span></button>
+            <section class="notification-panel" id="notificationPanel" aria-label="Notifications" hidden><div class="notification-head"><div><strong>Notifications</strong><small id="notificationSummary">You're all caught up</small></div><button type="button" id="markAllRead">Mark all read</button></div><div class="notification-list" id="notificationList"></div><div class="notification-foot"><span>Gym updates</span><button type="button" id="clearNotifications">Clear all</button></div></section>
+          </div>
+          <a class="topbar-avatar" id="topbarAvatar" href="profile.html" title="My profile" aria-label="My profile"><span data-user-initials>AD</span></a>
         </div>
-        <a class="topbar-avatar" id="topbarAvatar" href="profile.html" title="My profile" aria-label="My profile"><span data-user-initials>AD</span></a>
       </div>`;
 
     // Staff profile: photo or initials, shared with the rail below.
@@ -132,7 +134,7 @@
       <span class="strip-label"><span class="strip-dot" aria-hidden="true"></span><span id="stripGymName">${GYM.name}</span></span>
       <a class="topbar-stat" href="attendance.html" title="Members checked in today"><i class="fa-solid fa-door-open" aria-hidden="true"></i><b id="tsChecked">–</b><span class="ts-label">in today</span></a>
       <a class="topbar-stat" href="members.html" title="Total members"><i class="fa-solid fa-users" aria-hidden="true"></i><b id="tsMembers">–</b><span class="ts-label">members</span></a>
-      <a class="topbar-stat" href="reports.html" title="Revenue collected this month"><i class="fa-solid fa-peso-sign" aria-hidden="true"></i><b id="tsRevenue">–</b><span class="ts-label">this month</span></a>
+      <a class="topbar-stat" href="reports.html" title="Revenue collected this month"><i class="fa-solid fa-wallet" aria-hidden="true"></i><b id="tsRevenue">–</b><span class="ts-label">this month</span></a>
       <span class="strip-clock" id="stripClock">--:--</span>
       <a class="strip-cta" href="members.html#enroll" title="Add a new gym member"><i class="fa-solid fa-user-plus" aria-hidden="true"></i><span>Enroll member</span></a>`;
     top.insertAdjacentElement('afterend', strip);

@@ -49,14 +49,18 @@
         });
     }
 
-    const planOptions = () => Object.entries(PLANS)
-        .map(([k, p]) => `<option value="${k}">${p.label} - ${peso(p.price)}</option>`).join("");
+    const planLabel = k => (window.PLANS && PLANS[k]?.label) || k || "Plan";
+    const planDays = k => (window.PLANS && PLANS[k]?.days) || 30;
+    const planPrice = k => (window.PLANS && PLANS[k]?.price) ?? 0;
+
+    const planOptions = () => (window.PLANS ? Object.entries(PLANS)
+        .map(([k, p]) => `<option value="${k}">${p.label} - ${peso(p.price)}</option>`).join("") : "");
     const methodOptions = () => METHODS.map(m => `<option>${m}</option>`).join("");
 
     const memberCell = m => `
         <div class="member">
             <div class="mini-avatar">${initials(m.name)}</div>
-            <div><strong>${esc(m.name)}</strong><small>${esc(PLANS[m.plan].label)}</small></div>
+            <div><strong>${esc(m.name)}</strong><small>${esc(planLabel(m.plan))}</small></div>
         </div>`;
 
     const badge = m => { const s = statusOf(m); return `<span class="badge ${s.cls}">${s.label}</span>`; };
@@ -67,11 +71,11 @@
         const base = m.end > TODAY ? m.end : TODAY;
         m.plan = planKey;
         m.start = base;
-        m.end = addDays(base, PLANS[planKey].days);
+        m.end = addDays(base, planDays(planKey));
     }
 
     function recordPayment(m, planKey, method) {
-        const p = { ref: DB.nextRef(), date: TODAY, memberId: m.id, plan: planKey, method, amount: PLANS[planKey].price };
+        const p = { ref: DB.nextRef(), date: TODAY, memberId: m.id, plan: planKey, method, amount: planPrice(planKey) };
         DB.payments.push(p);
         return p;
     }
@@ -131,7 +135,7 @@
                         <div class="profile-stats">
                             <div><strong>${m.checkins}</strong><span>Check-ins</span></div>
                             <div><strong>${Math.max(dl, 0)}</strong><span>Days left</span></div>
-                            <div><strong>${esc(PLANS[m.plan].label)}</strong><span>Plan</span></div>
+                            <div><strong>${esc(planLabel(m.plan))}</strong><span>Plan</span></div>
                         </div>
                     </div>
                 </div>
@@ -164,8 +168,8 @@
         const eAmount = $("#eAmount");
         ePlan.innerHTML = planOptions();
         $("#eMethod").innerHTML = methodOptions();
-        const resetForm = () => { form.reset(); $("#eStart").value = toISO(TODAY); eAmount.value = peso(PLANS[ePlan.value].price); };
-        ePlan.addEventListener("change", () => { eAmount.value = peso(PLANS[ePlan.value].price); });
+        const resetForm = () => { form.reset(); $("#eStart").value = toISO(TODAY); eAmount.value = peso(planPrice(ePlan.value)); };
+        ePlan.addEventListener("change", () => { eAmount.value = peso(planPrice(ePlan.value)); });
         resetForm();
 
         form.addEventListener("submit", e => {
@@ -178,7 +182,7 @@
                 name: f.get("name").trim(),
                 phone: f.get("phone").trim(),
                 plan, start,
-                end: addDays(start, PLANS[plan].days),
+                end: addDays(start, planDays(plan)),
                 checkins: 0
             };
             DB.members.push(m);
@@ -274,37 +278,58 @@
         const amount = $("#payAmount");
         let filter = "all";
 
-        sel.innerHTML = DB.members.map(m => `<option value="${m.id}">${esc(m.name)} (${m.id})</option>`).join("");
-        planSel.innerHTML = planOptions();
-        $("#payMethod").innerHTML = methodOptions();
+        const populateMembers = () => {
+            if (!sel) return;
+            if (DB.members && DB.members.length) {
+                sel.innerHTML = DB.members.map(m => `<option value="${m.id}">${esc(m.name)} (${m.id})</option>`).join("");
+            } else {
+                sel.innerHTML = `<option value="">No members registered</option>`;
+            }
+        };
 
-        const syncAmount = () => { amount.value = peso(PLANS[planSel.value].price); };
+        populateMembers();
+        if (planSel) planSel.innerHTML = planOptions();
+        const payMethod = $("#payMethod");
+        if (payMethod) payMethod.innerHTML = methodOptions();
+
+        const syncAmount = () => {
+            if (!amount || !planSel) return;
+            amount.value = peso(planPrice(planSel.value));
+        };
         const syncFromMember = () => {
+            if (!sel || !planSel) return;
             const m = DB.member(sel.value);
-            if (m) planSel.value = m.plan;
+            if (m && m.plan) planSel.value = m.plan;
             syncAmount();
         };
 
-        if (params.get("member") && DB.member(params.get("member"))) sel.value = params.get("member");
+        if (params.get("member") && DB.member(params.get("member"))) {
+            if (sel) sel.value = params.get("member");
+        }
         syncFromMember();
-        sel.addEventListener("change", syncFromMember);
-        planSel.addEventListener("change", syncAmount);
+        sel?.addEventListener("change", syncFromMember);
+        planSel?.addEventListener("change", syncAmount);
 
         const drawToday = () => {
             const list = DB.payments.filter(p => toISO(p.date) === toISO(TODAY)).sort(newest);
             const total = list.reduce((s, p) => s + p.amount, 0);
-            $("#todayTotal").textContent = peso(total);
-            $("#todayCount").textContent = `${list.length} payment${list.length === 1 ? "" : "s"} received today`;
-            $("#todayFeed").innerHTML = list.length ? list.map(p => {
-                const m = DB.member(p.memberId);
-                const name = m ? m.name : p.memberId;
-                return `
-                <li>
-                    <div class="mini-avatar">${initials(name)}</div>
-                    <div class="grow"><strong>${esc(name)}</strong><small>${PLANS[p.plan].label}, ${p.method}</small></div>
-                    <span class="amt">${peso(p.amount)}</span>
-                </li>`;
-            }).join("") : `<li>${empty("fa-receipt", "No payments recorded today.")}</li>`;
+            const todayTotal = $("#todayTotal");
+            if (todayTotal) todayTotal.textContent = peso(total);
+            const todayCount = $("#todayCount");
+            if (todayCount) todayCount.textContent = `${list.length} payment${list.length === 1 ? "" : "s"} received today`;
+            const todayFeed = $("#todayFeed");
+            if (todayFeed) {
+                todayFeed.innerHTML = list.length ? list.map(p => {
+                    const m = DB.member(p.memberId);
+                    const name = m ? m.name : p.memberId;
+                    return `
+                    <li>
+                        <div class="mini-avatar">${initials(name)}</div>
+                        <div class="grow"><strong>${esc(name)}</strong><small>${esc(planLabel(p.plan))}, ${esc(p.method)}</small></div>
+                        <span class="amt">${peso(p.amount)}</span>
+                    </li>`;
+                }).join("") : `<li>${empty("fa-receipt", "No payments recorded today.")}</li>`;
+            }
         };
 
         const drawSubs = () => {
@@ -320,25 +345,30 @@
             const count = $("#subCount");
             if (count) count.textContent = `${list.length} of ${DB.members.length} member${DB.members.length === 1 ? "" : "s"}`;
 
-            $("#subRows").innerHTML = list.length ? list.map(m => {
-                const st = statusOf(m), dl = daysLeft(m);
-                const pct = Math.max(0, Math.min(100, (dl / PLANS[m.plan].days) * 100));
-                const label = dl < 0 ? `Expired ${-dl} day${dl === -1 ? "" : "s"} ago`
-                            : dl === 0 ? "Expires today"
-                            : `${dl} day${dl === 1 ? "" : "s"} left`;
-                const tone = st.key === "active" ? "" : st.key === "expiring" ? "warning" : "expired";
-                return `
-                <tr>
-                    <td>${memberCell(m)}</td>
-                    <td>${fmtShort(m.end)}</td>
-                    <td><div class="timeleft"><div class="progress ${tone}"><i style="width:${pct}%"></i></div><small>${label}</small></div></td>
-                    <td>${badge(m)}</td>
-                    <td><a class="btn btn-soft btn-sm" href="payments.html?member=${m.id}#daily">Renew</a></td>
-                </tr>`;
-            }).join("") : `<tr><td colspan="5">${empty("fa-hourglass-half", q ? `No member matches “${esc(q)}”.` : "No members in this group.")}</td></tr>`;
+            const subRows = $("#subRows");
+            if (subRows) {
+                subRows.innerHTML = list.length ? list.map(m => {
+                    const st = statusOf(m), dl = daysLeft(m);
+                    const totalDays = planDays(m.plan);
+                    const pct = Math.max(0, Math.min(100, (dl / totalDays) * 100));
+                    const label = dl < 0 ? `Expired ${-dl} day${dl === -1 ? "" : "s"} ago`
+                                : dl === 0 ? "Expires today"
+                                : `${dl} day${dl === 1 ? "" : "s"} left`;
+                    const tone = st.key === "active" ? "" : st.key === "expiring" ? "warning" : "expired";
+                    return `
+                    <tr>
+                        <td>${memberCell(m)}</td>
+                        <td>${fmtShort(m.end)}</td>
+                        <td><div class="timeleft"><div class="progress ${tone}"><i style="width:${pct}%"></i></div><small>${label}</small></div></td>
+                        <td>${badge(m)}</td>
+                        <td><a class="btn btn-soft btn-sm" href="payments.html?member=${m.id}#daily">Renew</a></td>
+                    </tr>`;
+                }).join("") : `<tr><td colspan="5">${empty("fa-hourglass-half", q ? `No member matches “${esc(q)}”.` : "No members in this group.")}</td></tr>`;
+            }
         };
 
-        $("#payForm").addEventListener("submit", async e => {
+        const payForm = $("#payForm");
+        payForm?.addEventListener("submit", async e => {
             e.preventDefault();
             const m = DB.member(sel.value);
             if (!m) return toast("Pick a member first");
@@ -368,16 +398,20 @@
                 const m = DB.member(p.memberId);
                 return `${m ? m.name : ""} ${p.ref} ${p.method}`.toLowerCase().includes(q);
             }) : all;
-            $("#histCount").textContent = `${list.length} of ${all.length} payment${all.length === 1 ? "" : "s"}`;
-            $("#histRows").innerHTML = list.length ? list.map(p => {
-                const m = DB.member(p.memberId);
-                const edit = p.desk ? `<div class="pay-actions"><button type="button" class="pay-edit-btn" data-edit="${esc(p.id)}" aria-label="Edit payment ${esc(p.ref)}"><i class="fa-solid fa-pen"></i></button><button type="button" class="pay-edit-btn pay-del-btn" data-del="${esc(p.id)}" aria-label="Delete payment ${esc(p.ref)}"><i class="fa-solid fa-trash"></i></button></div>` : `<small class="muted">Online</small>`;
-                return `<tr><td>${esc(p.ref)}</td><td>${m ? memberCell(m) : esc(p.memberId)}</td><td>${PLANS[p.plan] ? PLANS[p.plan].label : esc(p.plan)}</td><td>${esc(p.method)}</td><td>${fmtShort(p.date)}</td><td>${peso(p.amount)}</td><td>${edit}</td></tr>`;
-            }).join("") : `<tr><td colspan="7">${empty("fa-receipt", q ? `No payment matches “${esc(q)}”.` : "No payments recorded yet.")}</td></tr>`;
+            const histCount = $("#histCount");
+            if (histCount) histCount.textContent = `${list.length} of ${all.length} payment${all.length === 1 ? "" : "s"}`;
+            const histRows = $("#histRows");
+            if (histRows) {
+                histRows.innerHTML = list.length ? list.map(p => {
+                    const m = DB.member(p.memberId);
+                    const edit = p.desk ? `<div class="pay-actions"><button type="button" class="pay-edit-btn" data-edit="${esc(p.id)}" aria-label="Edit payment ${esc(p.ref)}"><i class="fa-solid fa-pen"></i></button><button type="button" class="pay-edit-btn pay-del-btn" data-del="${esc(p.id)}" aria-label="Delete payment ${esc(p.ref)}"><i class="fa-solid fa-trash"></i></button></div>` : `<small class="muted">Online</small>`;
+                    return `<tr><td>${esc(p.ref)}</td><td>${m ? memberCell(m) : esc(p.memberId)}</td><td>${esc(planLabel(p.plan))}</td><td>${esc(p.method)}</td><td>${fmtShort(p.date)}</td><td>${peso(p.amount)}</td><td>${edit}</td></tr>`;
+                }).join("") : `<tr><td colspan="7">${empty("fa-receipt", q ? `No payment matches “${esc(q)}”.` : "No payments recorded yet.")}</td></tr>`;
+            }
         };
         const modal = $("#payEditModal");
-        const closeEdit = () => { modal.hidden = true; editing = null; };
-        $("#histRows").addEventListener("click", e => {
+        const closeEdit = () => { if (modal) modal.hidden = true; editing = null; };
+        $("#histRows")?.addEventListener("click", e => {
             const btn = e.target.closest("[data-edit]");
             if (!btn) return;
             editing = DB.payments.find(p => String(p.id) === btn.dataset.edit);
@@ -388,13 +422,13 @@
             $("#payEditMethod").value = editing.method;
             $("#payEditDate").value = toDay(editing.date);
             $("#payEditDate").max = toDay(new Date());
-            modal.hidden = false;
+            if (modal) modal.hidden = false;
             $("#payEditMethod").focus();
         });
-        $("#payEditCancel").addEventListener("click", closeEdit);
-        modal.addEventListener("click", e => { if (e.target === modal) closeEdit(); });
-        document.addEventListener("keydown", e => { if (e.key === "Escape" && !modal.hidden) closeEdit(); });
-        $("#payEditForm").addEventListener("submit", async e => {
+        $("#payEditCancel")?.addEventListener("click", closeEdit);
+        modal?.addEventListener("click", e => { if (e.target === modal) closeEdit(); });
+        document.addEventListener("keydown", e => { if (e.key === "Escape" && modal && !modal.hidden) closeEdit(); });
+        $("#payEditForm")?.addEventListener("submit", async e => {
             e.preventDefault();
             if (!editing) return;
             try {
@@ -413,21 +447,21 @@
         // ---- Delete a desk payment ----
         const delModal = $("#payDelModal");
         let deleting = null;
-        const closeDel = () => { delModal.hidden = true; deleting = null; };
-        $("#histRows").addEventListener("click", e => {
+        const closeDel = () => { if (delModal) delModal.hidden = true; deleting = null; };
+        $("#histRows")?.addEventListener("click", e => {
             const btn = e.target.closest("[data-del]");
             if (!btn) return;
             deleting = DB.payments.find(p => String(p.id) === btn.dataset.del);
             if (!deleting) return;
             const m = DB.member(deleting.memberId);
             $("#payDelInfo").textContent = `${deleting.ref} · ${m ? m.name : ""} · ${peso(deleting.amount)} · ${fmtShort(deleting.date)}`;
-            delModal.hidden = false;
+            if (delModal) delModal.hidden = false;
             $("#payDelCancel").focus();
         });
-        $("#payDelCancel").addEventListener("click", closeDel);
-        delModal.addEventListener("click", e => { if (e.target === delModal) closeDel(); });
-        document.addEventListener("keydown", e => { if (e.key === "Escape" && !delModal.hidden) closeDel(); });
-        $("#payDelConfirm").addEventListener("click", async () => {
+        $("#payDelCancel")?.addEventListener("click", closeDel);
+        delModal?.addEventListener("click", e => { if (e.target === delModal) closeDel(); });
+        document.addEventListener("keydown", e => { if (e.key === "Escape" && delModal && !delModal.hidden) closeDel(); });
+        $("#payDelConfirm")?.addEventListener("click", async () => {
             if (!deleting) return;
             const target = deleting;
             try {
@@ -446,6 +480,18 @@
         drawSubs();
         drawHist();
         initTabs();
+
+        // Listen for server sync updates
+        document.addEventListener("profit:synced", () => {
+            populateMembers();
+            if (params.get("member") && DB.member(params.get("member"))) {
+                if (sel) sel.value = params.get("member");
+            }
+            syncFromMember();
+            drawToday();
+            drawSubs();
+            drawHist();
+        });
     }
 
     // =====================================================
@@ -473,7 +519,7 @@
                     <td>${fmtShort(p.date)}</td>
                     <td><span class="member-id">${p.ref}</span></td>
                     <td><strong class="plain">${esc(nameOf(p.memberId))}</strong></td>
-                    <td>${PLANS[p.plan].label}</td>
+                    <td>${esc(planLabel(p.plan))}</td>
                     <td>${p.method}</td>
                     <td class="num"><strong class="plain">${peso(p.amount)}</strong></td>
                 </tr>`).join("")
@@ -496,7 +542,7 @@
             $("#sumTotal").textContent = peso(total);
             $("#sumCount").textContent = all.length;
             $("#sumAvg").textContent = peso(all.length ? Math.round(total / all.length) : 0);
-            bars($("#byPlan"), Object.entries(PLANS).map(([k, p]) =>
+            bars($("#byPlan"), Object.entries(window.PLANS || {}).map(([k, p]) =>
                 [p.label, all.filter(x => x.plan === k).reduce((s, x) => s + x.amount, 0)]), total);
             bars($("#byMethod"), METHODS.map(m =>
                 [m, all.filter(x => x.method === m).reduce((s, x) => s + x.amount, 0)]), total);
@@ -508,7 +554,7 @@
         $("#exportCsv").addEventListener("click", () => {
             const q = v => `"${String(v).replace(/"/g, '""')}"`;
             const lines = [["Date", "Reference", "Member ID", "Member", "Plan", "Method", "Amount"].join(",")]
-                .concat(filtered().map(p => [toISO(p.date), p.ref, p.memberId, nameOf(p.memberId), PLANS[p.plan].label, p.method, p.amount].map(q).join(",")));
+                .concat(filtered().map(p => [toISO(p.date), p.ref, p.memberId, nameOf(p.memberId), planLabel(p.plan), p.method, p.amount].map(q).join(",")));
             const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
             const a = document.createElement("a");
             a.href = URL.createObjectURL(blob);
@@ -559,7 +605,7 @@
                 </div>
                 <table>
                     <thead><tr><th>Date</th><th>Reference</th><th>Member</th><th>Plan</th><th>Method</th><th class="num">Amount</th></tr></thead>
-                    <tbody>${rows.map(p => `<tr><td>${esc(toISO(p.date))}</td><td>${esc(p.ref)}</td><td>${esc(nameOf(p.memberId))}</td><td>${esc(PLANS[p.plan].label)}</td><td>${esc(p.method)}</td><td class="num">${peso(p.amount)}</td></tr>`).join("")}</tbody>
+                    <tbody>${rows.map(p => `<tr><td>${esc(toISO(p.date))}</td><td>${esc(p.ref)}</td><td>${esc(nameOf(p.memberId))}</td><td>${esc(planLabel(p.plan))}</td><td>${esc(p.method)}</td><td class="num">${peso(p.amount)}</td></tr>`).join("")}</tbody>
                     <tfoot><tr><td colspan="5">Total</td><td class="num">${peso(total)}</td></tr></tfoot>
                 </table>
                 <footer>Generated by ProFit. This report reflects the transactions currently filtered in the app.</footer>
@@ -585,6 +631,10 @@
     }
 
     // ---------- start ----------
-    const page = document.body.dataset.page;
-    ({ members: pageMembers, attendance: pageAttendance, payments: pagePayments, reports: pageReports })[page]?.();
+    try {
+        const page = document.body.dataset.page;
+        ({ members: pageMembers, attendance: pageAttendance, payments: pagePayments, reports: pageReports })[page]?.();
+    } catch (err) {
+        console.error("ProFit page initialization error:", err);
+    }
 })();
