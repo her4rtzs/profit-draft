@@ -638,3 +638,13 @@ Check the changes made to Architecture.md and AGENTS.md, then fix four things: b
 - Left the section 1/10/11 RLS wording and section 5's data model alone even though both describe unbuilt things, because the document states requirements in the present tense throughout and the owner asked for four specific fixes. Both are in the report instead.
 ### Decision-log skill
 When reviewing someone else's document, check every factual claim against the code before editing, then fix only what was authorised and report the rest as a list with file and line references. A design document that keeps its own status column will always drift from the code, so point it at the tracker that owns the statuses instead of restating them.
+
+## 2026-10-18 23:40 (Asia/Manila): Push the consolidation, after merging a teammate's PROJECT-LOG entry
+### What I asked for
+Push the work.
+### What the agent decided and why
+- Fetched before pushing and found a new remote commit (4e1812c, joycalavarez, "bago na naman") touching web/ cache versions, layout-fixes.css, pro-theme.css, sw.js and PROJECT-LOG.md, so the push would have been rejected. Committed locally first, then rebased onto it rather than merging, to keep the history linear.
+- Resolved the one conflict in PROJECT-LOG.md by keeping both blocks whole: their two entries (22:05 sidebar stability, 22:56 container alignment) first, then this session's six, so no side lost a record.
+- Wrote the commit message to a file and used git commit -F, because PowerShell split a multi-line -m argument at the first space and git read the remainder as a pathspec.
+### Decision-log skill
+Fetch before pushing to a shared repository: a teammate can push between the last fetch and the push, and a deliberate rebase conflict is much easier to resolve than a rejected push is to retry. When two sessions append to the same log file, keep both appended blocks instead of choosing one, and expect the log to be the file that conflicts most often.
