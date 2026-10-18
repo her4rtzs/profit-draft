@@ -1,0 +1,81 @@
+
+/* ProFit dashboard wireframe integration — intentionally leaves the shared sidebar untouched. */
+body[data-page="dashboard"] .dashboard { display:flex !important; align-items:stretch; }
+body[data-page="dashboard"] .main-content {
+  display:flex !important; flex-direction:column !important; gap:18px !important;
+  min-width:0 !important; box-sizing:border-box !important;
+  padding:24px clamp(16px,2vw,32px) 32px !important;
+}
+body[data-page="dashboard"] .main-content > * { margin:0 !important; min-width:0; }
+body[data-page="dashboard"] .topbar { order:0; flex:0 0 auto; }
+body[data-page="dashboard"] .stats {
+  order:1; display:grid !important; grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  gap:14px !important; margin:0 !important;
+}
+body[data-page="dashboard"] .stat-card {
+  min-width:0; min-height:112px; padding:18px !important; border:1px solid var(--border);
+  border-radius:16px !important; box-shadow:0 4px 16px rgba(22,28,45,.055) !important;
+}
+body[data-page="dashboard"] .content-grid {
+  order:2; display:grid !important; grid-template-columns:minmax(260px,.92fr) minmax(0,1.45fr) !important;
+  gap:14px !important; align-items:stretch; margin:0 !important;
+}
+body[data-page="dashboard"] .content-grid > .summary-panel { order:0; }
+body[data-page="dashboard"] .content-grid > .revenue-panel { order:1; }
+body[data-page="dashboard"] .panel {
+  min-width:0; border:1px solid var(--border); border-radius:16px !important;
+  box-shadow:0 4px 18px rgba(22,28,45,.05) !important;
+}
+body[data-page="dashboard"] .panel-header { gap:12px; padding:18px 20px !important; }
+body[data-page="dashboard"] .panel-header h2 { font-size:15px !important; font-weight:750; letter-spacing:-.02em; }
+body[data-page="dashboard"] .panel-header p { font-size:12px !important; }
+body[data-page="dashboard"] .membership-circle { min-height:190px; }
+body[data-page="dashboard"] .registrations-panel { order:3; }
+body[data-page="dashboard"] .quick-actions {
+  order:4; display:grid !important; grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  gap:12px !important; margin:0 !important;
+}
+body[data-page="dashboard"] .quick-action {
+  min-height:104px; padding:16px !important; border-radius:14px !important;
+  box-shadow:none !important; transition:none !important;
+}
+body[data-page="dashboard"] .quick-action:hover { transform:none !important; }
+body[data-page="dashboard"] .stat-card, body[data-page="dashboard"] .panel,
+body[data-page="dashboard"] .quick-action { animation:none !important; }
+body[data-page="dashboard"] .chart, body[data-page="dashboard"] .chart-area { min-width:0; }
+body[data-page="dashboard"] .table-wrapper { max-width:100%; overflow-x:auto; }
+body[data-page="dashboard"] .pf-row-in, body[data-page="dashboard"] .pf-menu {
+  animation:none !important;
+}
+@media (min-width:1500px) {
+  body[data-page="dashboard"] .main-content { gap:20px !important; }
+  body[data-page="dashboard"] .content-grid { grid-template-columns:minmax(300px,.92fr) minmax(0,1.45fr) !important; }
+}
+@media (max-width:1100px) {
+  body[data-page="dashboard"] .stats { grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
+  body[data-page="dashboard"] .content-grid { grid-template-columns:minmax(0,1fr) minmax(0,1.25fr) !important; }
+  body[data-page="dashboard"] .quick-actions { grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
+}
+@media (max-width:760px) {
+  body[data-page="dashboard"] .main-content { padding:14px !important; gap:14px !important; }
+  body[data-page="dashboard"] .stats { grid-template-columns:repeat(2,minmax(0,1fr)) !important; gap:10px !important; }
+  body[data-page="dashboard"] .stat-card { padding:14px !important; min-height:100px; }
+  body[data-page="dashboard"] .content-grid { grid-template-columns:minmax(0,1fr) !important; gap:12px !important; }
+  body[data-page="dashboard"] .content-grid > .summary-panel { order:0; }
+  body[data-page="dashboard"] .content-grid > .revenue-panel { order:1; }
+  body[data-page="dashboard"] .panel-header { padding:15px 16px !important; }
+  body[data-page="dashboard"] .membership-circle { min-height:160px; }
+  body[data-page="dashboard"] .quick-actions { grid-template-columns:repeat(2,minmax(0,1fr)) !important; gap:10px !important; }
+  body[data-page="dashboard"] .quick-action { min-height:100px; padding:12px !important; }
+  body[data-page="dashboard"] .registrations-panel .table-wrapper { overflow-x:auto; }
+  body[data-page="dashboard"] .registrations-panel table { min-width:620px; }
+}
+@media (max-width:380px) {
+  body[data-page="dashboard"] .stats, body[data-page="dashboard"] .quick-actions { grid-template-columns:minmax(0,1fr) !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body[data-page="dashboard"] *, body[data-page="dashboard"] *::before, body[data-page="dashboard"] *::after {
+    animation-duration:0.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important;
+    transition-duration:0.01ms !important;
+  }
+}
