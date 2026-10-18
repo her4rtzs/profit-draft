@@ -447,11 +447,11 @@ body:not(.dark) .pp-status.expired, body:not(.dark) .pp-status.cancelled, body:n
 .pp-badge-info, .pp-class-tag { display: inline-flex; align-items: center; gap: 6px; font-size: .74rem; font-weight: 700; padding: 4px 10px; border-radius: 999px; background: color-mix(in srgb, var(--info) 16%, transparent); color: var(--info); }
 body:not(.dark) .pp-badge-info, body:not(.dark) .pp-class-tag { color: #0e7490; }
 
-/* ===== Layout: centered, max 1400px, balanced margins ===== */
+/* ===== Layout: full width, clean margins ===== */
 .main-content { padding-inline: clamp(14px, 2.4vw, 34px); }
-.main-content > * { max-width: 1400px; margin-inline: auto; width: 100%; }
-body.is-member .portal-shell { max-width: 1400px !important; }
-.pp-dash { max-width: 1400px; margin-inline: auto; width: 100%; }
+.main-content > * { width: 100%; max-width: 100%; margin-inline: 0; }
+body.is-member .portal-shell { max-width: 1400px !important; margin-inline: auto; }
+.pp-dash { width: 100%; max-width: 100%; margin-inline: 0; }
 
 /* ===== Sidebar account: hover flyout at the bottom, with glow and blur ===== */
 .sidebar-account { position: relative; }

@@ -527,3 +527,26 @@ When a navigation change removes a layout column, reset the width and offset var
 - Font Awesome could not load in the build environment, so icons were not visible in screenshots. Layout was checked by measurement. Please look at the icons in a real browser.
 ### Decision-log skill
 When a UI has many stacked override stylesheets, add one last stylesheet with its own variable names instead of editing each layer, and check layout by measuring overlaps across widths rather than by eye. Check body data-page and data-title on every page, because the sidebar highlight depends on them.
+
+## 2026-10-18 22:05 (Asia/Manila): Fix Staff Sidebar Stability, Eliminate Collapsing & Overlapping Containers
+### What I asked for
+Thoroughly inspect, debug, and fix the entire ProFit Staff Dashboard, especially the sidebar, content containers, page layouts, responsiveness, and navigation behavior. Ensure the desktop sidebar is permanently fixed and stable without unexpected collapsing, fix overlapping containers, and establish a consistent layout across all modules.
+### What the agent decided and why
+- Enforced a stable, fixed 260px desktop sidebar by removing `#sidebarToggle` and removing the desktop collapse logic in `sidebar.js`. The sidebar no longer shrinks into an icon rail on desktop screens and clears any stale `sidebar="closed"` stored in localStorage.
+- Confined responsive drawer behavior exclusively to small mobile screens (`<= 768px`) using `#mobileNavToggle`, `.mobile-open`, and `#sidebarShade`, ensuring desktop layout remains unaffected when navigating, switching tabs, or resizing.
+- Resolved the severe layout bug where `.main-content` had `margin-inline: auto` (in `ui-polish.css`) and `margin-left: auto` at `>= 1440px` (in `styles.css`), which previously centered the content area on the viewport and pushed its left boundary underneath the fixed sidebar on modern widescreen displays.
+- Removed negative margins on `.topbar` (`margin: 0 -32px`) and `.status-strip` (`margin: -8px 0`) that caused horizontal viewport overflows and overlapping with surrounding containers.
+- Replaced duplicate `<h1>` headers in `trainers.html` and `announcements.html` with unified page actions and topbar page titles.
+- Unified container grids, cards, tables (`overflow-x: auto`), tabs, and panes in `layout-fixes.css` and bumped stylesheet/script cache versions to v4/v2 and v15, alongside service worker cache v12.
+### Decision-log skill
+In dashboards with fixed desktop sidebars, ensure the main content wrapper never inherits centering rules (`margin-inline: auto` or `margin: 0 auto`) from shared typography/prose stylesheets or widescreen media queries, as centering causes the left portion of the container to slide under the fixed sidebar.
+## 2026-10-18 22:56 (Asia/Manila): Dashboard Sidebar Overlap Fix & Full-Width Container Alignment
+### What I asked for
+Continue fixing the staff dashboard layout, sidebar overlap, and responsive container alignment where content was shifted under the sidebar on the left and left a huge empty gap on the right.
+### What the agent decided and why
+- Identified and eliminated the remaining root cause in `web/pro-theme.css`: `.main-content > *` and `.pp-dash` had `max-width: 1400px; margin-inline: auto; width: 100%;`. On wide and standard viewports, `margin-inline: auto` computed left and right margins that centered child content relative to the entire screen width rather than the workspace offset, sliding heading text ("WELCOME BACK", "Dashboard"), the 1st quick action card ("Enroll a member"), and the 1st stat card ("Total members") underneath the 260px fixed sidebar while leaving an empty right-side void.
+- Explicitly set `margin-left: 0 !important; margin-right: 0 !important; margin-inline: 0 !important; width: 100% !important; max-width: 100% !important;` on `.main-content > *` in `web/layout-fixes.css` and updated `web/pro-theme.css`, allowing all child sections (`.topbar`, `.quick-actions`, `.stats`, `.content-grid`) to naturally fill the available workspace beside the 260px sidebar.
+- Added explicit desktop positioning guarantee for `html body nav.sidebar` in `web/layout-fixes.css` (`position: fixed`, `width: 260px`, `z-index: 100`) and refined mobile drawer behavior (`<= 768px`) with smooth offscreen translation (`translateX(-105%)`) and `.mobile-open` state (`translateX(0)`).
+- Bumped `layout-fixes.css` version to `?v=3` across all 9 staff dashboard HTML files and bumped service worker cache to `profit-shell-v13`.
+### Decision-log skill
+When fixing container alignment beside fixed sidebars, audit direct children (`> *`) as well as parent wrappers for `max-width` with `margin-inline: auto`. Centering child components inside an offset container causes them to calculate margins against the viewport instead of the workspace, producing invisible clipping on the left and phantom voids on the right.
