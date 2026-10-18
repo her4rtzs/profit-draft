@@ -1,15 +1,19 @@
 // Shared ProFit navigation, top bar and the live status chips.
 (() => {
-  // Wireframe order. Every module is still here; Settings is now a nav item too.
-  const items = [
-    { id: 'dashboard',     label: 'Dashboard',     icon: 'fa-house',          href: 'index.html' },
-    { id: 'members',       label: 'Member List',   icon: 'fa-users',          href: 'members.html' },
-    { id: 'trainers',      label: 'Trainers',      icon: 'fa-dumbbell',       href: 'trainers.html' },
-    { id: 'attendance',    label: 'Attendance',    icon: 'fa-calendar-check', href: 'attendance.html' },
-    { id: 'payments',      label: 'Payments & Billing', icon: 'fa-wallet',         href: 'payments.html' },
-    { id: 'reports',       label: 'Financial Reports', icon: 'fa-chart-column',   href: 'reports.html' },
-    { id: 'announcements', label: 'Announcements', icon: 'fa-bullhorn',       href: 'announcements.html' },
-    { id: 'settings',      label: 'Settings',      icon: 'fa-gear',           href: 'settings.html' },
+  const groups = [
+    { label: 'WORKSPACE', items: [
+      { id: 'dashboard', label: 'Dashboard', icon: 'fa-house', href: 'index.html' },
+      { id: 'announcements', label: 'Announcements', icon: 'fa-bullhorn', href: 'announcements.html' },
+    ]},
+    { label: 'MEMBERSHIP', items: [
+      { id: 'members', label: 'Member List', icon: 'fa-users', href: 'members.html' },
+      { id: 'attendance', label: 'Attendance', icon: 'fa-calendar-check', href: 'attendance.html' },
+      { id: 'trainers', label: 'Trainers', icon: 'fa-dumbbell', href: 'trainers.html' },
+    ]},
+    { label: 'FINANCE', items: [
+      { id: 'payments', label: 'Payments & Billing', icon: 'fa-wallet', href: 'payments.html' },
+      { id: 'reports', label: 'Financial Reports', icon: 'fa-chart-column', href: 'reports.html' },
+    ]},
   ];
   const body = document.body, current = body.dataset.page;
 
@@ -26,18 +30,17 @@
           <span class="image"><img id="gymLogoImg" src="${GYM.logo || 'logo.jpg'}" alt="${GYM.name}" onerror="this.style.display='none'"></span>
           <span class="headertxt"><strong id="gymNameTxt">${GYM.name}</strong><small id="gymTagTxt">${GYM.tagline}</small></span>
         </a>
-        <button type="button" class="sb-collapse" id="sidebarToggle" data-tip="Collapse sidebar" aria-label="Collapse sidebar" aria-expanded="true"><i class="fa-solid fa-angles-left icon" aria-hidden="true"></i><span class="text">Collapse Sidebar</span></button>
-        <button type="button" class="sb-close" id="sidebarClose" aria-label="Close navigation"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
       </div>
       <div class="sidebar-scroll">
-        <ul class="menulist">${items.map(item => `<li><a href="${item.href}" data-tip="${item.label}" class="${item.id===current?'active':''}" ${item.id===current?'aria-current="page"':''}><i class="fa-solid ${item.icon} icon" aria-hidden="true"></i><span class="text nav-text">${item.label}</span></a></li>`).join('')}</ul>
+        ${groups.map(g => `<section class="nav-group"><p class="nav-group-label">${g.label}</p><ul class="menulist">${g.items.map(item => `<li><a href="${item.href}" data-tip="${item.label}" class="${item.id===current?'active':''}" ${item.id===current?'aria-current="page"':''}><i class="fa-solid ${item.icon} icon" aria-hidden="true"></i><span class="text nav-text">${item.label}</span></a></li>`).join('')}</ul></section>`).join('')}
       </div>
       <div class="sidebar-foot">
+        <button type="button" class="sb-collapse" id="sidebarToggle" data-tip="Expand sidebar" aria-label="Collapse sidebar" aria-expanded="true"><i class="fa-solid fa-angles-left icon" aria-hidden="true"></i><span class="text">Collapse Sidebar</span></button>
         <div class="sidebar-account">
           <div class="sidebar-user">
             <span class="sidebar-avatar" data-user-initials id="railAvatar">AD</span>
             <div class="sidebar-user-copy"><strong data-user-name>Administrator</strong><small data-user-role>Gym administrator</small></div>
-            <button type="button" class="account-menu-toggle" id="accountMenuToggle" aria-haspopup="menu" aria-expanded="false" aria-controls="accountMenu" aria-label="Account actions" title="Account"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+            <button type="button" class="account-menu-toggle" id="accountMenuToggle" aria-haspopup="menu" aria-expanded="false" aria-controls="accountMenu" aria-label="Account actions" title="Account"><i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i></button>
             <div class="account-menu" id="accountMenu" role="menu" aria-label="Account actions">
               <a href="profile.html" role="menuitem" class="${current==='profile'?'active':''}"><i class="fa-regular fa-user" aria-hidden="true"></i> My profile</a>
               <a href="settings.html#appearance" role="menuitem" class="${current==='settings'?'active':''}"><i class="fa-solid fa-sliders" aria-hidden="true"></i> Settings</a>
@@ -47,21 +50,6 @@
         </div>
       </div>
       `;
-  }
-
-  // Mobile bottom navigation: quick access to the four busiest pages, "More" opens the drawer.
-  if (nav && !document.getElementById('bottomNav')) {
-    const quick = [
-      { id: 'dashboard',  label: 'Home',       icon: 'fa-house',          href: 'index.html' },
-      { id: 'members',    label: 'Members',    icon: 'fa-users',          href: 'members.html' },
-      { id: 'attendance', label: 'Attendance', icon: 'fa-calendar-check', href: 'attendance.html' },
-      { id: 'reports',    label: 'Reports',    icon: 'fa-chart-column',   href: 'reports.html' },
-    ];
-    const bn = document.createElement('nav');
-    bn.className = 'bottom-nav'; bn.id = 'bottomNav'; bn.setAttribute('aria-label', 'Quick navigation');
-    bn.innerHTML = quick.map(q => `<a href="${q.href}" class="${q.id===current?'active':''}" ${q.id===current?'aria-current="page"':''}><i class="fa-solid ${q.icon}" aria-hidden="true"></i><span>${q.label}</span></a>`).join('')
-      + `<button type="button" id="bottomMore" aria-label="More navigation" aria-haspopup="true"><i class="fa-solid fa-ellipsis" aria-hidden="true"></i><span>More</span></button>`;
-    document.body.appendChild(bn);
   }
 
   const top = document.getElementById('topbar');
