@@ -550,3 +550,91 @@ Continue fixing the staff dashboard layout, sidebar overlap, and responsive cont
 - Bumped `layout-fixes.css` version to `?v=3` across all 9 staff dashboard HTML files and bumped service worker cache to `profit-shell-v13`.
 ### Decision-log skill
 When fixing container alignment beside fixed sidebars, audit direct children (`> *`) as well as parent wrappers for `max-width` with `margin-inline: auto`. Centering child components inside an offset container causes them to calculate margins against the viewport instead of the workspace, producing invisible clipping on the left and phantom voids on the right.
+## Session: sidebar per drawing, forgot password, flicker and layout pass
+- Sidebar: the collapse row and the edge toggle are gone. A hamburger in the top bar collapses or expands it on desktop and opens the drawer on phones; only the profile circle sits at the bottom and it opens the account menu (profile, settings, log out). Width comes from two variables, so light and dark are the same size.
+- Menu groups: Workspace (Dashboard), Membership (Member List, Attendance), Finance (Payments, Reports), Gym (Trainers, Announcements).
+- Flicker: early.js sets theme and sidebar state before first paint and keeps transitions off until the first frame. The intro animation now plays only on the landing page. portal-fx.js no longer adds a load bar, scroll reveal or page fade.
+- Table / Cards is now one button that switches to the other view (view-toggle.js).
+- Chart: the Days view shows one Monday to Sunday week with previous/next week arrows instead of 14 days.
+- Forgot password now works: POST /api/auth/forgot-password/ emails a 6-digit code (always answers 200, no account enumeration) and POST /api/auth/reset-password/ verifies it once and sets the new password. New OTP purpose PASSWORD_RESET (migration accounts 0003). Page: forgot.html. Tests: apps/accounts/tests/test_password_reset.py (not run in the build environment: Django could not be installed).
+- Dashboard stat cards each have their own colour; the member picker uses the full width; side-by-side panels stretch to equal height. English copy fixed on the dashboard.
+- Not done: dashboard redesign beyond colours, equal-width audit of every page, 2-step reconfirm on Join.
+### Decision-log skill
+Put theme and layout state on the html element in a script at the top of the head, before first paint, and keep transitions off until the first frame. Setting them after load is what makes every page flicker.
+
+## 2026-10-18 14:34 (Asia/Manila): Add the roadmap to the repo and report the current phase
+### What I asked for
+Clone the profit-draft repository, add the attached ROADMAP.md to it so that it lines up with AGENTS.md, and check which phase the system is in.
+### What the agent decided and why
+- Put the roadmap at the repo root as ROADMAP.md, next to AGENTS.md, Architecture.md and PROJECT-LOG.md, because those are the existing root-level docs; AGENTS.md's docs/ folder does not exist.
+- Kept AGENTS.md as the source of truth and wrote that rule into the roadmap's first paragraph: the roadmap only carries the delivery order, so a future conflict is resolved in one direction instead of by whoever reads last.
+- Corrected the roadmap's names to the ones in the code rather than the other way round: PAYMONGO_PAYMENT_METHODS (not PAYMONGO_ENABLED_METHODS) and Architecture.md (not architecture.md). The AGENTS.md pointer to architecture.md was fixed to the real filename, and AGENTS.md now also points at ROADMAP.md.
+- Marked the phase items from code reading only, with a note wherever an item is partly there, and stated in the file that no runtime test was run so the marks are not read as a green test suite.
+- Recorded the two real divergences as owner decisions instead of picking for them: the repo ships two front-ends (static web/ portal in production vs the Django templates named in AGENTS.md) and two payment-method lists (GCash/Maya/cards in AGENTS.md vs GCash/Maya/card/QR Ph in settings vs the QR Ph + Wallet draft).
+- Logged the work built outside the roadmap (announcements, notifications, trainers, member portal, PWA, pay-first join) as its own section, since none of it appears in the phases and it makes the phase number alone misleading.
+### Decision-log skill
+When a plan document arrives from outside the repo, align it to the code and the rules file instead of the reverse, keep the rules file as the single source of truth, and turn every plan-vs-reality conflict into one explicit decision line for the owner rather than resolving it silently. Report a phase by evidence per item (with "partial" called out) instead of asserting a phase number, and state plainly when the check was reading only.
+
+## 2026-10-18 15:05 (Asia/Manila): Realign the roadmap to AGENTS.md, leave AGENTS.md untouched
+### What I asked for
+Follow AGENTS.md and modify the roadmap: AGENTS.md stays as it is, and the roadmap is the file that has to change.
+### What the agent decided and why
+- Reverted the AGENTS.md edits from the previous entry (Architecture.md casing, the ROADMAP.md pointer, the repo-layout line) with `git checkout --`. The instruction was to modify the roadmap, so the rules file goes back to pristine and the roadmap alone carries the new text.
+- Replaced the "Alignment with AGENTS.md" section (which offered two owner decisions) with "Conformance with AGENTS.md": every drift is now an action AGENTS.md already implies, not a choice, so the doc cannot be read as leaving the rules open.
+- Dropped PayMongo Wallet from the roadmap because AGENTS.md names only GCash, Maya and cards; restated the Phase 3 item as that list from one setting, and moved the "turn on more methods" step in Phase 7 to the same list instead of the invented PAYMONGO_ENABLED_METHODS name.
+- Moved the portal-stack drift from an open question into Phase 6 as work: AGENTS.md fixes Django templates + Tailwind/daisyUI + django-components in templates/, components/ and static/, so the static web/ staff pages, the CDN fonts/icons and the areas missing from the RBAC matrix (announcements, notifications, trainers) became explicit Phase 6 items rather than questions.
+- Left the "Current status" section factual and marked as code reading only, because the phase answer is evidence about the code and does not depend on which side wins.
+### Decision-log skill
+When the user says "follow X, change Y", treat X as read-only and put every reconciliation into Y: revert your own earlier edits to X, and convert each place where Y disagreed with X into an action X already dictates instead of an option for the user to arbitrate. A rules file with a typo or a missing entry is still read-only; note the drift inside the plan document and let the plan point at the fix.
+## 2026-10-18 16:10 (Asia/Manila): Pull origin/master (8 commits) and record the duplicate tree
+### What I asked for
+Pull https://github.com/her4rtzs/profit-draft.
+### What the agent decided and why
+- Backed up the two local files (ROADMAP.md, PROJECT-LOG.md) to the temp folder before pulling: the incoming commits appended to the same PROJECT-LOG.md at the same end-of-file hunk, so a stash-and-pop would have conflicted even though both sides were correct. Discarding, fast-forwarding, then re-appending the two entries kept the log append-only and lost nothing.
+- The pull was a clean fast-forward from 8087505 to 0953a92 (8 commits), so no merge commit was created.
+- The pull showed the repo holds the project twice: the root tree (api/, apps/, profit/, templates/, web/, static/, mobile/) and the older ProFit-combined/ tree. The root tree is the actively developed one, since the three newest commits including the tip 0953a92 "change sidebar" touch only the root, while ProFit-combined/ was last touched by c17f620. AGENTS.md, Architecture.md, README.md, requirements.txt and vercel.json are byte-identical between the two; the web assets and PROJECT-LOG.md differ.
+- Restored ROADMAP.md and the two log entries into ProFit-combined/ exactly where they were and flagged the tree question instead of moving files, because which tree is canonical is the owner's call and moving the roadmap changes what the earlier request meant.
+### Decision-log skill
+Before pulling into a tree that holds an append-only file, assume the incoming commits appended to that same file and plan the re-apply step first; a stash-and-pop on two appends at the same end-of-file hunk conflicts even though both sides are correct. And when a pull brings files that already exist under another path, check which tree the newest commits actually touch before assuming the copy you have been working in is the live one.
+
+## 2026-10-18 17:05 (Asia/Manila): Merge the duplicate tree, root wins, ProFit-combined deleted
+### What I asked for
+Consolidate the two copies: pick one tree as the base, bring the other tree's work into it, then delete the duplicate.
+### What the agent decided and why
+- Chose the root tree as the base because the repo layout in AGENTS.md puts the project at the repo root (manage.py, profit/, apps/, api/, web/, templates/, static/, mobile/, vercel.json); making the subfolder canonical would have meant rewriting the rules file instead.
+- Compared the two trees by blob hash rather than by eye: 6 files existed only in ProFit-combined, 3 only in the root, and 35 had the same path but different content. Only 5 of the 35 were backend.
+- Ported only what the root was missing and its pages actually use: the password-reset feature (api/auth.py, api/urls.py, apps/accounts/emails.py, models.py, services.py, migration accounts 0003, test_password_reset.py) and web/forgot.html.
+- Did NOT port web/early.js, web/sidebar-drawing.css or web/view-toggle.js although they exist only in ProFit-combined: the root's newer commits already do those jobs (16 pages carry an inline pre-paint theme script, sidebar-pro.css is the sidebar the tip commit "change sidebar" ships, and members.js already handles data-view-mode). They remain recoverable at c17f620.
+- Patched the root's dead "Forgot password?" link (/member/password-reset/, the item AUDIT.md flagged and could not fix) to the ported forgot.html.
+- Merged the two PROJECT-LOG.md files instead of picking one: the root's log plus the single entry that existed only in ProFit-combined, then this session's entries, so no session record was lost.
+- Skipped the ProFit-combined copies of the other 29 differing web files, because the root's versions are what the five newest commits produced.
+### Decision-log skill
+Decide which of two divergent copies is canonical from the project's own rules file, not from which copy looks newer, then diff by blob hash to get the exact list instead of comparing directories by name and size. Port a file only when the winning copy needs it: an alternative implementation of something the winner already does belongs in git history, not in the merged tree.
+
+## 2026-10-18 17:40 (Asia/Manila): Split the AGENTS.md web stack into the two portal surfaces
+### What I asked for
+Remove from AGENTS.md the web tech stack that is not used in the web/ folder.
+### What the agent decided and why
+- Checked each of the seven items in the old "Web (staff portal)" stack line against the code instead of assuming: web/ (19 pages, 29 JS files, 17 CSS files) uses none of Django templates, Tailwind, daisyUI, HTMX, Alpine, Lucide or django-components. It is plain HTML/CSS/JS with Font Awesome and Google Fonts from CDNs, calling /api from the browser.
+- Verified the same seven are still live in templates/ + components/ + static/ before changing anything: vendored htmx.min.js and alpine.min.js, components/button and components/icon, static/src/tailwind.config.js with the daisyUI plugin, and Lucide SVGs inlined at render time by the icon component. templates/ cannot be retired, because accounts/accept_invite.html is the page behind the emailed staff invite.
+- Split the stack into one line per surface instead of deleting the seven, because deleting them would have left the Rules section demanding daisyUI, HTMX, Alpine, django-components and build-time Tailwind with nothing declaring them, and would have made AGENTS.md describe templates/ as empty. Asked the user first; they chose the split.
+- Added web/ to the repo layout, which never listed it although WHITENOISE_ROOT serves it at the site root. A stack line that names web/ with no layout entry would send a reader looking for a folder the layout does not have.
+- Left the Rules section untouched as chosen, so the web-UI rule still reads as if the portal were one surface. Flagged to the owner rather than edited.
+- Updated ROADMAP.md, since its job is to track AGENTS.md: the Phase 6 "bring the staff portal onto the AGENTS.md stack" item, the web/ pages item, the CDN item and the staff-portal conformance bullet all claimed web/ sat outside AGENTS.md, which the split makes false.
+### Decision-log skill
+When a stack list disagrees with the code, test each named technology against each candidate folder before editing: the same line can be right for one surface and wrong for another, and the fix may be to name both surfaces rather than delete the list. Finish the edit: if a line now names a folder, the repo layout must list that folder, and every derived document that repeated the old claim must be corrected in the same pass.
+
+## 2026-10-18 23:15 (Asia/Manila): Align Architecture.md with the code and with AGENTS.md
+### What I asked for
+Check the changes made to Architecture.md and AGENTS.md, then fix four things: base the payment section on the current system (test mode but GCash/Maya/cards allowed), follow the AGENTS.md web stack, list the real phase statuses, and drop the prototype folder.
+### What the agent decided and why
+- Checked every claim in the new Architecture.md against the code before editing, and reported the ones the four answers did not cover: RLS stated as done but absent from the code, django-storages not in requirements.txt, section 5's data model not matching the models, and section 12's status column calling finished work "not started".
+- Rewrote the payment section to match the code: PayMongo in test mode, methods read from PAYMONGO_PAYMENT_METHODS (currently gcash, paymaya, card, qrph). The document said PAYMONGO_ENABLED_METHODS and "QR Ph only"; neither name or restriction exists.
+- Dropped the "individual (unregistered) account" reasoning wherever it appeared, because the owner only confirmed test mode.
+- Split the web portal bullet into the two surfaces AGENTS.md names, so the "no CSS or JS framework" deviation could be deleted instead of left contradicting the rules and templates/base.html.
+- Replaced the phase status column with the real statuses and named the ROADMAP phase each one maps to, and noted that the two documents number their phases differently.
+- Deleted both prototype references: there is no prototype/ folder in the system.
+- Fixed the lowercase architecture.md reference in AGENTS.md to Architecture.md: the file is capitalised, and the lowercase name breaks on a case-sensitive filesystem such as Vercel's.
+- Left the section 1/10/11 RLS wording and section 5's data model alone even though both describe unbuilt things, because the document states requirements in the present tense throughout and the owner asked for four specific fixes. Both are in the report instead.
+### Decision-log skill
+When reviewing someone else's document, check every factual claim against the code before editing, then fix only what was authorised and report the rest as a list with file and line references. A design document that keeps its own status column will always drift from the code, so point it at the tracker that owns the statuses instead of restating them.
