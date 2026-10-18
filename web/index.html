@@ -40,9 +40,10 @@
 <link rel="stylesheet" href="pf-modern.css?v=1">
 <link rel="stylesheet" href="sidebar-pro.css?v=7">
 <link rel="stylesheet" href="layout-fixes.css?v=5">
+<link rel="stylesheet" href="dashboard.css?v=1">
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script></head>
 
-<body data-page="dashboard" data-title="Dashboard" data-welcome="Welcome back ">
+<body data-page="dashboard" data-title="Dashboard" data-welcome="Welcome back " data-subtitle="Overview of members, attendance and revenue">
 
 <div class="dashboard">
 
@@ -55,15 +56,6 @@
 
         <!-- TOPBAR -->
         <header class="topbar" id="topbar"></header>
-
-
-        <!-- QUICK ACTIONS -->
-        <section class="quick-actions" aria-label="Quick actions">
-          <a class="quick-action" href="members.html#enrollment"><span class="quick-action-icon"><i class="fa-solid fa-user-plus"></i></span><span><strong>Enroll a member</strong><small>Add a new gym member</small></span><i class="fa-solid fa-arrow-up-right-from-square action-arrow"></i></a>
-          <a class="quick-action" href="attendance.html"><span class="quick-action-icon"><i class="fa-solid fa-calendar-check"></i></span><span><strong>Record attendance</strong><small>Manage today's check-ins</small></span><i class="fa-solid fa-arrow-up-right-from-square action-arrow"></i></a>
-          <a class="quick-action" href="payments.html"><span class="quick-action-icon"><i class="fa-solid fa-credit-card"></i></span><span><strong>Record a payment</strong><small>Update member billing</small></span><i class="fa-solid fa-arrow-up-right-from-square action-arrow"></i></a>
-          <a class="quick-action" href="reports.html"><span class="quick-action-icon"><i class="fa-solid fa-chart-line"></i></span><span><strong>View reports</strong><small>Review gym performance</small></span><i class="fa-solid fa-arrow-up-right-from-square action-arrow"></i></a>
-        </section>
 
         <!-- STATS -->
         <section class="stats">
@@ -240,12 +232,35 @@
 
         </section>
 
+        <!-- QUICK ACTIONS -->
+        <section class="panel quick-actions" aria-labelledby="quickActionsTitle">
+          <div class="panel-header">
+            <div>
+              <h2 id="quickActionsTitle">Quick actions</h2>
+              <p>Shortcuts to the tasks you use most</p>
+            </div>
+          </div>
+          <div class="quick-grid">
+          <a class="quick-action" href="members.html#enrollment"><span class="quick-action-icon"><i class="fa-solid fa-user-plus"></i></span><span><strong>Enroll a member</strong><small>Add a new gym member</small></span><i class="fa-solid fa-arrow-up-right-from-square action-arrow"></i></a>
+          <a class="quick-action" href="attendance.html"><span class="quick-action-icon"><i class="fa-solid fa-calendar-check"></i></span><span><strong>Record attendance</strong><small>Manage today's check-ins</small></span><i class="fa-solid fa-arrow-up-right-from-square action-arrow"></i></a>
+          <a class="quick-action" href="payments.html"><span class="quick-action-icon"><i class="fa-solid fa-credit-card"></i></span><span><strong>Record a payment</strong><small>Update member billing</small></span><i class="fa-solid fa-arrow-up-right-from-square action-arrow"></i></a>
+          <a class="quick-action" href="reports.html"><span class="quick-action-icon"><i class="fa-solid fa-chart-line"></i></span><span><strong>View reports</strong><small>Review gym performance</small></span><i class="fa-solid fa-arrow-up-right-from-square action-arrow"></i></a>
+        </div>
+        </section>
+
     </main>
 
 </div>
 
+<nav class="pf-tabbar" aria-label="Primary">
+  <a class="pf-tab" href="index.html" aria-current="page"><i class="fa-solid fa-house" aria-hidden="true"></i><span>Home</span></a>
+  <a class="pf-tab" href="members.html"><i class="fa-solid fa-users" aria-hidden="true"></i><span>Members</span></a>
+  <a class="pf-tab" href="attendance.html"><i class="fa-solid fa-calendar-check" aria-hidden="true"></i><span>Attendance</span></a>
+  <button class="pf-tab" type="button" id="pfTabMore" aria-haspopup="true" aria-expanded="false" aria-controls="sidebar"><i class="fa-solid fa-ellipsis" aria-hidden="true"></i><span>More</span></button>
+</nav>
+
 <script src="data.js"></script>
-<script src="layout.js?v=17"></script>
+<script src="layout.js?v=18"></script>
 <script src="sidebar.js?v=17"></script>
 <script src="chart-periods.js?v=914"></script>
 <script src="portal-fx.js?v=2"></script>
@@ -394,5 +409,30 @@
 })();
 </script>
 <script src="notifications-live.js?v=1" defer></script>
+<script>
+(() => {
+  // Greeting: time of day plus the signed-in first name (plain greeting if no name yet).
+  const greet = () => {
+    const el = document.querySelector('.topbar-title .welcome');
+    if (!el) return;
+    const h = new Date().getHours();
+    const part = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+    const raw = (document.querySelector('.sidebar-user-copy [data-user-name]')?.textContent || '').trim();
+    const first = raw && raw !== 'Administrator' ? raw.split(/\s+/)[0] : '';
+    el.textContent = first ? part + ', ' + first : part;
+  };
+  greet();
+  window.addEventListener('profit-account-changed', greet);
+
+  // Phones: the bottom "More" tab opens the existing side navigation (the only menu on this page).
+  const more = document.getElementById('pfTabMore');
+  const menuBtn = document.getElementById('mobileNavToggle');
+  if (more && menuBtn) {
+    more.addEventListener('click', () => menuBtn.click());
+    new MutationObserver(() => more.setAttribute('aria-expanded', String(document.body.classList.contains('drawer-open'))))
+      .observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  }
+})();
+</script>
 </body>
 </html>

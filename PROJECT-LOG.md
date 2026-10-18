@@ -722,3 +722,23 @@ Fix the UI for mobile devices across all staff pages, and merge changes with Ang
 ### Decision-log skill
 When reconciling responsive mobile drawer navigation with a desktop hover-expanding icon rail, keep desktop rules strictly gated within `@media (min-width: 769px)` and mobile drawer rules within `@media (max-width: 768px)`. This prevents hover state animations from colliding with off-canvas slide-out drawers and eliminates redundant click toggle states.
 
+
+## 2026-10-19 03:38 (Asia/Manila): Dashboard header and layout fix, page by page
+### What I asked for
+Fix the staff Dashboard header and responsive layout to follow the supplied desktop and mobile wireframes, without changing modules, data, navigation, permissions, or the other pages.
+### What the agent decided and why
+- Added `web/dashboard.css`, loaded last on `index.html` and scoped to `body[data-page="dashboard"]`. The eleven shared stylesheets are used by ten pages, so they were not edited; the Dashboard now has one authoritative layout file.
+- Header root causes: `.topbar-right { width:100% }` in `styles.css` forced the search and action cluster onto a second row, and `.topbar-actions` (added by `layout.js`) only had `display:flex` inside the 768px query, so the theme, bell and avatar buttons stacked. On this page the header is one row on desktop and two rows on phones.
+- Phone panel gaps: `layout-fixes.css` sets `.panel-header > div:first-child { flex:1 1 220px }`. In a column layout that basis becomes a 220px height. Overridden on this page only; the shared rule remains for other pages.
+- Revenue chart: `.bar-column` max-width 44px with a 6px gap cannot fit twelve months at phone width. Tightened on this page only, because `chart-periods.js` is shared with the Attendance page and was left unchanged.
+- Mobile navigation: one system. On phones the bottom tab bar (Home, Members, Attendance, More) is the only navigation; More opens the existing side menu, and the top hamburger is hidden on this page only. The wireframe shows both controls; the one-navigation rule was applied instead.
+- Quick actions moved into a titled panel beside Recent registrations, matching the wireframe. No module was removed.
+- The status ribbon stays. It is a shared live-counts element and is not in the wireframe.
+- Recent Activity, Daily Attendance and Membership Distribution appear in the wireframe but have no existing data module, and the rules forbid inventing modules. They were not built.
+- `layout.js`: added an optional subtitle that renders only when a page sets `data-subtitle` (additive). Cache version bumped to v=18 on every page that loads it. `sw.js` cache is now v17 and precaches `dashboard.css`.
+- No dummy data ships. The empty state shows real zeros and the existing empty message. Test records were injected only in the browser test harness by intercepting the three API calls, never in the codebase.
+### Decision-log skill
+When a shared CSS stack is broken and other pages depend on it, scope the fix to one page with a single stylesheet loaded last, and name each root cause beside the rule that fixes it. Check specificity against legacy !important rules, and against rules such as `html body .dashboard > main.main-content { display:block !important }`. Measure in headless Chromium with the pointer parked away from the hover rail (Playwright's default pointer position expands it). Verify other pages by comparing shared topbar and sidebar markup; pixel diffs between two runs of the same build are already noisy from animations and timing.
+### Open items
+- Empty-state and fallback copy on the Dashboard ("Wala pang member...", "Hindi ma-load...") is Tagalog while the rest of the page is English. Pre-existing text, left as is.
+- Legacy header and panel-header rules in the shared stylesheets still exist for the other pages and should be retired when each page is fixed.

@@ -54,6 +54,8 @@
   const top = document.getElementById('topbar');
   if (top) {
     const title = body.dataset.title || 'Dashboard', welcome = body.dataset.welcome || 'Welcome back';
+    // Optional one-line description under the page title. Only pages that set data-subtitle render it.
+    const subtitle = body.dataset.subtitle || '';
     top.innerHTML = `
       <div class="topbar-heading">
         <div class="topbar-nav">
@@ -64,6 +66,7 @@
         <div class="topbar-title">
           <p class="welcome">${welcome}</p>
           <h1>${title}</h1>
+          ${subtitle ? `<p class="topbar-sub">${subtitle}</p>` : ''}
         </div>
       </div>
       <div class="topbar-right">
