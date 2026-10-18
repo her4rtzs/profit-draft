@@ -483,3 +483,16 @@ When navigation is hidden on small screens, always provide a visible way to open
 - Could not run a browser in the build environment. Verified script syntax and link targets.
 ### Decision-log skill
 When a design sample includes placeholder text, replace it with the real detail from the approved source, and flag any conflicting detail for the owner instead of guessing.
+
+## 2026-10-18 03:41 (Asia/Manila): Dashboard layout regression, single toggle, footer line, and gym logo
+### What I asked for
+- Remove the extra floating toggle, fix the dashboard offset and horizontal scroll caused by the drawer change, keep one gold line in the footer, and use the gym logo as the ProFit brand.
+### What the agent decided and why
+- The floating button was the desktop sidebar collapse control. It is hidden so the top-bar menu button is the only toggle.
+- The content offset came from the sidebar width variables and the dashboard grid. They are reset so the content uses the full width.
+- The footer had a gap and a second gray line above its gold line. The gap is removed and one gold line is kept.
+- The gym logo now stands in for the ProFit brand, as requested. The PF monogram can return if the owner prefers it.
+- Bumped the footer script and stylesheet versions to stop browsers serving the old files.
+- Could not run a browser in the build environment. Verified script syntax and markup.
+### Decision-log skill
+When a navigation change removes a layout column, reset the width and offset variables as well. Check for every toggle that was part of the old layout, and remove the ones the new layout replaces.

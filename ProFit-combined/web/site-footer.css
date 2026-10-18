@@ -24,3 +24,8 @@ body:not(.dark) .site-footer{--foot-mu:#5d5f66;--foot-line:#e2ddd0;background:#f
 @media (max-width:860px){.site-footer .foot-top{grid-template-columns:1fr 1fr}.site-footer .foot-lead{grid-column:1/-1}}
 @media (max-width:520px){.site-footer .foot-top{grid-template-columns:1fr}.site-footer .foot-inner{padding:44px 20px 24px}}
 @media (prefers-reduced-motion:reduce){.site-footer a{transition:none}}
+
+/* One gold line above the footer, no gap, and the gym logo as the ProFit brand. */
+footer.site-footer, .site-footer { margin-top: 0 !important; border-top: 1px solid var(--foot-gold) !important; box-shadow: none !important; }
+main, section { border-bottom: 0 !important; }
+.site-footer .foot-brand img { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; border: 0; flex: none; }
