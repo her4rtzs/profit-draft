@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script>(function(){try{var d=localStorage.getItem('theme')!=='light';var h=document.documentElement;h.style.background=d?'#18191a':'#f0f2f5';h.style.colorScheme=d?'dark':'light';h.classList.add('pf-pre');setTimeout(function(){h.classList.remove('pf-pre')},1500);}catch(e){}})();</script><script src="splash.js?v=2"></script>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProFit | Members</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="styles.css">
+<script src="config.js"></script><script src="api.js"></script><script src="auth.js"></script>
+<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=6"><link rel="stylesheet" href="ui-final.css?v=1"><link rel="stylesheet" href="members-ui.css?v=1">
+<script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script><link rel="stylesheet" href="hover-fx.css?v=1">
+<link rel="stylesheet" href="ui-polish.css?v=1">
+<link rel="stylesheet" href="ui-fixes.css?v=1">
+<link rel="stylesheet" href="pf-modern.css?v=1">
+<link rel="stylesheet" href="sidebar-pro.css?v=1">
+<link rel="stylesheet" href="layout-fixes.css?v=1">
+<script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script></head>
+<body data-page="members" data-title="Members" data-welcome="Memberships and enrollment">
+<div class="dashboard"><nav class="sidebar" id="sidebar"></nav><main class="main-content"><header class="topbar" id="topbar"></header>
+
+<nav class="pp-page-tabs" role="tablist" aria-label="Members sections">
+  <button class="pp-page-tab active" type="button" role="tab" aria-selected="true" data-tab="browse"><i class="fa-solid fa-users"></i> Browse members <span class="pp-count" id="countBrowse">0</span></button>
+  <button class="pp-page-tab" type="button" role="tab" aria-selected="false" data-tab="applications" hidden style="display:none"><i class="fa-solid fa-inbox"></i> Applications <span class="pp-count" id="countApps">0</span></button>
+  <button class="pp-page-tab" type="button" role="tab" aria-selected="false" data-tab="detail"><i class="fa-solid fa-id-card"></i> Member detail</button>
+  <button class="pp-page-tab" type="button" role="tab" aria-selected="false" data-tab="enroll"><i class="fa-solid fa-user-plus"></i> New enrollment</button>
+</nav>
+
+<section class="pp-pane active" data-pane="browse">
+    <p class="pp-help"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Click a row to open the member's profile. Use the more actions button for renew, freeze or cancel.</p>
+  <div class="pp-toolbar">
+    <label class="pp-search"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input id="memberSearch" type="search" placeholder="Search by name, ID, email or phone" aria-label="Search members"></label>
+    <div class="pp-segment" id="memberFilters" role="group" aria-label="Filter by status">
+      <button type="button" class="active" data-filter="all">All</button>
+      <button type="button" data-filter="active">Active</button>
+      <button type="button" data-filter="expiring">Expiring soon</button>
+      <button type="button" data-filter="expired">Expired</button>
+    </div>
+    <div class="pp-view-toggle" role="group" aria-label="How to show members">
+      <button type="button" data-view-mode="table" aria-pressed="true" class="active"><i class="fa-solid fa-table-list" aria-hidden="true"></i> Table</button>
+      <button type="button" data-view-mode="cards" aria-pressed="false"><i class="fa-solid fa-table-cells-large" aria-hidden="true"></i> Cards</button>
+    </div>
+  </div>
+  <p class="pp-muted pp-summary" id="memberSummary" aria-live="polite"></p>
+  <div class="pp-table-wrap pp-members-wrap" id="memberTableWrap" hidden></div>
+  <div class="pp-member-grid" id="memberGrid"></div>
+  <nav class="pp-pager" id="memberPager" aria-label="Pages"></nav>
+</section>
+
+<section class="pp-pane" data-pane="applications">
+  <div class="pp-segment pp-segment-wide" id="appFilters" role="group" aria-label="Application status">
+    <button type="button" class="active" data-app="pending">Pending <span class="pp-count" id="appPendingCount">0</span></button>
+    <button type="button" data-app="approved">Approved <span class="pp-count" id="appApprovedCount">0</span></button>
+    <button type="button" data-app="declined">Declined <span class="pp-count" id="appDeclinedCount">0</span></button>
+  </div>
+  <div class="pp-app-list" id="appList"></div>
+</section>
+
+<section class="pp-pane" data-pane="detail"><div id="detailRoot"></div></section>
+
+<section class="pp-pane" data-pane="enroll">
+  <form class="pp-card pp-enroll" id="enrollForm" novalidate>
+    <div class="pp-card-head"><div><h2>Enroll a new member</h2><p>Creates the member record and, if you choose, records the first payment.</p></div></div>
+    <div class="pp-form-grid">
+      <div class="pp-field"><label for="eName">Full name <span class="req" aria-hidden="true">*</span></label><input id="eName" maxlength="80" autocomplete="off" placeholder="e.g. Juan Dela Cruz"><small class="pp-err" id="eName-err" hidden></small></div>
+      <div class="pp-field"><label for="eEmail">Email (used to sign in) <span class="req" aria-hidden="true">*</span></label><input id="eEmail" type="email" maxlength="120" placeholder="name@example.com"><small class="pp-err" id="eEmail-err" hidden></small></div>
+      <div class="pp-field"><label for="ePhone">Mobile number</label><input id="ePhone" type="tel" maxlength="20" placeholder="09XX XXX XXXX"><small class="pp-err" id="ePhone-err" hidden></small></div>
+      <div class="pp-field"><label for="eStart">Membership start</label><input id="eStart" type="date"><small class="pp-err" id="eStart-err" hidden></small></div>
+      <div class="pp-field pp-span-2"><label for="eAddress">Home address</label><input id="eAddress" maxlength="160" placeholder="Street, barangay, city"></div>
+    </div>
+    <fieldset class="pp-fieldset">
+      <legend>Plan <span class="req" aria-hidden="true">*</span></legend>
+      <div class="pp-plan-cards" id="ePlans"></div>
+      <small class="pp-err" id="ePlan-err" hidden></small>
+    </fieldset>
+    <div class="pp-form-grid">
+      <div class="pp-field"><label for="eMethod">Payment method</label><select id="eMethod"></select></div>
+      <div class="pp-field"><label for="eAmount">Amount due</label><input id="eAmount" readonly></div>
+    </div>
+    <label class="pp-check"><input id="eRecord" type="checkbox" checked> Record the first payment now</label>
+    <div class="pp-actions pp-actions-end">
+      <button class="pp-btn" type="reset">Clear form</button>
+      <button class="pp-btn pp-btn-primary" type="submit"><i class="fa-solid fa-user-plus"></i> Enroll member</button>
+    </div>
+  </form>
+</section>
+
+</main></div>
+<script src="layout.js?v=14"></script><script src="sidebar.js?v=14"></script><script src="data.js"></script><script src="pf-common.js"></script><script src="members.js?v=13"></script>
+<script src="portal-fx.js?v=2"></script>
+<script src="change-password.js?v=2" defer></script>
+<script src="notifications-live.js?v=1" defer></script>
+<script src="site-footer.js?v=2" defer></script>
+</body>
+</html>

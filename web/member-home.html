@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en">
+<head><script src="splash.js?v=2"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>My membership · ProFit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js"></script>
+  <script src="api.js"></script>
+  <script src="auth.js"></script>
+<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=6"><link rel="stylesheet" href="ui-final.css?v=1"><script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script><link rel="stylesheet" href="hover-fx.css?v=1">
+<link rel="stylesheet" href="announcements.css?v=1">
+<link rel="stylesheet" href="ui-polish.css?v=1">
+<link rel="stylesheet" href="ui-fixes.css?v=1">
+<link rel="stylesheet" href="pf-modern.css?v=1">
+<script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script></head>
+<body class="member-home">
+  <header class="member-top">
+    <a class="member-logo" href="member-home.html"><span><i class="fa-solid fa-dumbbell" id="homeLogoIcon"></i><img id="homeLogoImg" alt="" hidden></span><b id="homeGymName">ProFit</b></a>
+    <div class="member-top-actions">
+      <a class="member-top-chip" href="member-home.html#announcements" aria-label="Announcements and notifications"><i class="fa-solid fa-bell" aria-hidden="true"></i><span id="homeAnnounceCount">0</span></a>
+      <button class="theme-toggle" id="memberTheme" aria-label="Toggle theme"><i class="fa-solid fa-moon"></i></button>
+      <div class="member-user">
+        <button class="member-avatar" id="memberMenuToggle" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="memberMenu">
+          <span class="member-avatar-face" id="memberInitials" aria-hidden="true">M</span>
+          <span class="member-avatar-copy"><b id="memberName">Member</b><small id="memberPlan">Membership</small></span>
+          <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+        </button>
+        <div class="member-menu" id="memberMenu" role="menu" hidden>
+          <div class="member-menu-head">
+            <span class="member-avatar-face" id="menuInitials" aria-hidden="true">M</span>
+            <span><b id="menuName">Member</b><small id="menuEmail">member@profit.test</small></span>
+          </div>
+          <button type="button" role="menuitem" data-member-goto="profile"><i class="fa-regular fa-id-card" aria-hidden="true"></i> My profile</button>
+          <button type="button" role="menuitem" data-member-goto="settings"><i class="fa-solid fa-sliders" aria-hidden="true"></i> Settings</button>
+          <hr>
+          <button type="button" role="menuitem" data-member-goto="schedule"><i class="fa-regular fa-calendar" aria-hidden="true"></i> My schedule</button>
+          <button type="button" role="menuitem" data-member-goto="health"><i class="fa-solid fa-heart-pulse" aria-hidden="true"></i> Health &amp; goals</button>
+          <button type="button" role="menuitem" data-member-goto="diary"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Training diary</button>
+          <hr>
+          <button type="button" role="menuitem" class="is-danger" data-logout><i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i> Sign out</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="member-content">
+    <section class="member-welcome member-hero">
+      <div>
+        <p class="eyebrow"><span></span> MEMBER SPACE</p>
+        <h1 id="memberGreeting">Welcome back, <span data-user-name>member</span></h1>
+        <p>Your membership, streaks, payments, and gym progress in one organized workspace.</p>
+      </div>
+      <div class="member-hero-actions">
+        <button class="btn btn-soft" id="checkInButton" type="button"><i class="fa-solid fa-location-check"></i> Check in today</button>
+        <a class="btn btn-primary" href="member-portal.html"><i class="fa-solid fa-plus"></i> Explore plans</a>
+        <!-- Contact used to live only on the public portal, so a signed-in
+             member had to log out to find the gym's number. Reads the same
+             ProFitGym store, so it can never drift from the portal copy. -->
+        <button class="btn btn-soft" id="gymContactBtn" type="button"><i class="fa-solid fa-headset"></i> Contact the gym</button>
+      </div>
+    </section>
+
+    <nav class="pp-tabs" role="tablist" aria-label="Member sections">
+      <button class="pp-tab" type="button" role="tab" data-tab="overview" aria-selected="true"><i class="fa-solid fa-gauge-high"></i> Overview</button>
+      <button class="pp-tab" type="button" role="tab" data-tab="schedule" aria-selected="false"><i class="fa-regular fa-calendar"></i> Schedule</button>
+      <button class="pp-tab" type="button" role="tab" data-tab="announcements" aria-selected="false"><i class="fa-solid fa-bullhorn"></i> Announcements</button>
+      <button class="pp-tab" type="button" role="tab" data-tab="diary" aria-selected="false"><i class="fa-solid fa-book-open"></i> Diary</button>
+      <button class="pp-tab" type="button" role="tab" data-tab="health" aria-selected="false"><i class="fa-solid fa-heart-pulse"></i> Health &amp; goals</button>
+      <button class="pp-tab" type="button" role="tab" data-tab="profile" aria-selected="false"><i class="fa-regular fa-id-card"></i> My profile</button>
+      <button class="pp-tab" type="button" role="tab" data-tab="settings" aria-selected="false"><i class="fa-solid fa-sliders"></i> Settings</button>
+    </nav>
+    <div class="portal-result" id="memberNotice" role="status" hidden></div>
+    <div class="pp-tool-panel" data-panel="overview">
+    <section class="panel ann-overview">
+      <div class="panel-header"><div><h2>Latest from the gym</h2><p>Notices and updates.</p></div><a class="ann-btn" href="#announcements">See all</a></div>
+      <div id="annPreview" class="ann-list"></div>
+    </section>
+    <section class="member-status-card">
+      <div>
+        <span class="member-status-label"><i class="fa-solid fa-circle-check"></i> MEMBERSHIP OVERVIEW</span>
+        <h2 id="membershipName">Loading</h2>
+        <p id="membershipDetail">Checking your current account details.</p>
+      </div>
+      <span class="member-status-chip" id="membershipStatus">Loading</span>
+    </section>
+
+    <section class="member-metrics" aria-label="Member progress metrics">
+      <article class="member-metric-card streak-card">
+        <span class="metric-icon fire"><i class="fa-solid fa-fire"></i></span>
+        <div><small>Current streak</small><strong id="streakCount">0 days</strong><p>Train consistently to unlock rewards.</p></div>
+      </article>
+      <article class="member-metric-card">
+        <span class="metric-icon"><i class="fa-solid fa-bullseye"></i></span>
+        <div><small>Weekly goal</small><strong id="weeklyGoalText">0 / 4 visits</strong><div class="mini-progress"><span id="weeklyGoalBar"></span></div></div>
+      </article>
+      <article class="member-metric-card">
+        <span class="metric-icon green"><i class="fa-solid fa-trophy"></i></span>
+        <div><small>Achievements</small><strong id="achievementCount">0 unlocked</strong><p id="achievementHint">Start checking in to earn badges.</p></div>
+      </article>
+    </section>
+
+    <section class="member-grid">
+      <div class="panel member-panel">
+        <div class="panel-header">
+          <div><h2>This month</h2><p>Your training calendar</p></div>
+          <i class="fa-regular fa-calendar"></i>
+        </div>
+        <div id="memberCalendar" class="pp-cal"></div>
+        <button class="btn btn-soft" type="button" id="addReceiptBtn" hidden><i class="fa-solid fa-receipt"></i> Add a receipt</button>
+      </div>
+
+      <div class="panel member-panel">
+        <div class="panel-header">
+          <div><h2>Up next</h2><p>Classes you have booked</p></div>
+          <i class="fa-solid fa-dumbbell"></i>
+        </div>
+        <div id="upNextList" class="member-list"><p class="member-loading">Loading</p></div>
+        <button class="btn btn-soft" type="button" data-member-goto="schedule"><i class="fa-regular fa-calendar-plus"></i> Book a class</button>
+      </div>
+    </section>
+
+    <section class="member-grid">
+      <div class="panel member-panel">
+        <div class="panel-header">
+          <div><h2>Recent attendance</h2><p>Your latest gym check-ins</p></div>
+          <i class="fa-solid fa-calendar-check"></i>
+        </div>
+        <div id="attendanceList" class="member-list"><p class="member-loading">Loading</p></div>
+      </div>
+
+      <div class="panel member-panel">
+        <div class="panel-header">
+          <div><h2>Payment history</h2><p>Recent membership payments</p></div>
+          <i class="fa-solid fa-receipt"></i>
+        </div>
+        <div id="paymentList" class="member-list"><p class="member-loading">Loading</p></div>
+      </div>
+    </section>
+
+    <section class="member-grid member-grid-secondary">
+      <div class="panel member-panel">
+        <div class="panel-header">
+          <div><h2>Member profile</h2><p>Account information</p></div>
+          <i class="fa-solid fa-user-shield"></i>
+        </div>
+        <p class="profile-details" id="profileDetails">Loading</p>
+      </div>
+
+      <div class="panel member-panel">
+        <div class="panel-header">
+          <div><h2>Challenges</h2><p>Simple goals to keep you moving</p></div>
+          <i class="fa-solid fa-bolt"></i>
+        </div>
+        <div class="challenge-list" id="challengeList"></div>
+      </div>
+    </section>
+  </div>
+    <div class="pp-tool-panel" data-panel="schedule" hidden>
+<div id="scheduleRoot"></div>
+    </div>
+    <div class="pp-tool-panel" data-panel="announcements" hidden>
+      <section class="panel member-panel">
+        <div class="panel-header"><div><h2>Announcements</h2><p>Notices from the gym.</p></div></div>
+        <div id="announcementList" class="ann-list"></div>
+      </section>
+    </div>
+    <div class="pp-tool-panel" data-panel="diary" hidden>
+<div id="diaryRoot"></div>
+    </div>
+    <div class="pp-tool-panel" data-panel="health" hidden>
+<div class="pp-stats">
+  <div class="pp-stat"><span>BMI</span><strong id="statBmi">—</strong><small id="statBmiCat">Add height and a weight entry</small></div>
+  <div class="pp-stat"><span>Current weight</span><strong id="statWeight">—</strong><small id="statWeightChange">Log weight to see your change</small></div>
+  <div class="pp-stat"><span>Goal progress</span><strong id="statGoal">—</strong><div class="pp-bar"><span id="statGoalBar" style="width:0%"></span></div></div>
+  <div class="pp-stat"><span>Target date</span><strong id="statDays">—</strong><small id="statTarget">Set a target date</small></div>
+</div>
+<div class="pp-two">
+  <div class="pp-card">
+    <div class="pp-card-head"><h3>Body profile and goal</h3><span class="pp-muted">Used for BMI and progress</span></div>
+    <form id="healthForm" novalidate>
+      <div class="pp-field-row">
+        <div class="pp-field">
+          <label for="healthHeight">Height</label>
+          <div class="pp-unit-row">
+            <input type="number" id="healthHeight" min="20" max="98" step="0.1" placeholder="e.g. 5'6&quot;">
+            <input type="number" id="healthHeightIn" class="pp-sub-unit" min="0" max="11.9" step="0.1" placeholder="in" aria-label="Extra inches" hidden>
+            <select id="healthHeightUnit" class="pp-unit-select" aria-label="Height unit">
+              <option value="cm">cm</option>
+              <option value="ft">ft / in</option>
+              <option value="in">in</option>
+            </select>
+          </div>
+          <small class="pp-hint" id="heightHint">100 – 250 cm</small>
+        </div>
+        <div class="pp-field">
+          <label for="healthGoalWeight">Goal weight</label>
+          <div class="pp-unit-row">
+            <input type="number" id="healthGoalWeight" min="44" max="660" step="0.1" placeholder="e.g. 143">
+            <select id="healthGoalWeightUnit" class="pp-unit-select" aria-label="Goal weight unit">
+              <option value="kg">kg</option>
+              <option value="lb">lb</option>
+            </select>
+          </div>
+          <small class="pp-hint" id="goalWeightHint">20 – 300 kg</small>
+        </div>
+      </div>
+      <div class="pp-field"><label for="healthTarget">Target date</label><input type="date" id="healthTarget"></div>
+      <button class="pp-btn pp-btn-primary" type="submit"><i class="fa-solid fa-check"></i> Save profile</button>
+    </form>
+  </div>
+  <div class="pp-card">
+    <div class="pp-card-head"><h3>Log weight</h3><span class="pp-muted">One entry per day</span></div>
+    <form id="weightForm" class="pp-inline-form" novalidate>
+      <input type="date" id="weightDate" aria-label="Weight date">
+      <div class="pp-unit-row">
+        <input type="number" id="weightKg" min="44" max="660" step="0.1" placeholder="Weight" aria-label="Weight">
+        <select id="weightUnit" class="pp-unit-select" aria-label="Weight unit">
+          <option value="kg">kg</option>
+          <option value="lb">lb</option>
+        </select>
+      </div>
+      <button class="pp-btn pp-btn-primary" type="submit">Add</button>
+    </form>
+    <div id="weightList" class="pp-mini-list"></div>
+  </div>
+</div>
+<div class="pp-card" style="margin-bottom:18px">
+  <div class="pp-card-head"><h3>Weight trend</h3><span class="pp-muted">Latest 30 entries</span></div>
+  <div id="weightChart" class="pp-chart"></div>
+</div>
+<div class="pp-two">
+  <div class="pp-card">
+    <div class="pp-card-head"><h3>Goals</h3><span class="pp-muted">Check them off as you go</span></div>
+    <form id="goalForm" class="pp-inline-form" novalidate>
+      <input id="goalText" maxlength="120" placeholder="e.g. Train 4 times a week" aria-label="Goal">
+      <input type="date" id="goalDue" aria-label="Due date">
+      <button class="pp-btn pp-btn-primary" type="submit">Add</button>
+    </form>
+    <ul id="goalList" class="pp-goal-list"></ul>
+  </div>
+  <div class="pp-card pp-note">
+    <h3>Good to know</h3>
+    <p>This is for your own tracking. BMI is a rough guide and does not measure body fat or muscle. Check with a doctor or dietitian before big changes to your diet or training.</p>
+  </div>
+</div>
+    </div>
+    <div class="pp-tool-panel" data-panel="profile" hidden>
+      <section class="panel member-panel" style="margin-bottom:16px"><div id="trainerCard"></div></section>
+<div id="profileRoot"></div>
+    </div>
+    <div class="pp-tool-panel" data-panel="settings" hidden>
+<div id="memberSettingsRoot"></div>
+    </div>
+  </main>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const safe = value => String(value ?? "—");
+  const date = value => {
+    if (!value) return "—";
+    const d = new Date(value);
+    return Number.isNaN(d.getTime()) ? "—" : d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+  };
+  const todayKey = () => new Date().toISOString().slice(0, 10);
+  const demoCheckinsKey = "profit-member-demo-checkins";
+  const readDemoCheckins = () => {
+    try { return JSON.parse(localStorage.getItem(demoCheckinsKey) || "[]"); } catch { return []; }
+  };
+  const writeDemoCheckins = items => localStorage.setItem(demoCheckinsKey, JSON.stringify(items));
+  const demoData = () => {
+    const generated = readDemoCheckins();
+    const base = [0, 1, 2, 4, 6, 9].map(daysAgo => {
+      const d = new Date(); d.setDate(d.getDate() - daysAgo);
+      return { date: d.toISOString(), location: "ProFit Gym", source: "demo" };
+    });
+    return {
+      user: window.ProFitAuth?.user || { name: "Demo Member", email: "member@profit.test", phone: "0917 000 0000" },
+      membership: { planName: "Monthly Plan", plan: "Monthly", status: "Active", expiresAt: new Date(Date.now() + 18 * 86400000).toISOString(), daysRemaining: 18 },
+      attendance: [...generated, ...base],
+      payments: [{ reference: "P-0008", date: new Date(Date.now() - 3 * 86400000).toISOString(), method: "GCash", amountFormatted: "₱800" }]
+    };
+  };
+  const list = (id, items, empty, render) => {
+    const el = $(id); el.replaceChildren();
+    if (!Array.isArray(items) || !items.length) { el.textContent = empty; return; }
+    items.slice(0, 5).forEach(item => {
+      const row = document.createElement("div");
+      row.className = "member-list-row";
+      row.innerHTML = render(item);
+      el.append(row);
+    });
+  };
+  function calcStreak(attendance) {
+    const days = new Set((attendance || []).map(x => new Date(x.date).toISOString().slice(0, 10)));
+    let streak = 0;
+    for (let i = 0; i < 90; i++) {
+      const d = new Date(); d.setDate(d.getDate() - i);
+      if (days.has(d.toISOString().slice(0, 10))) streak++; else break;
+    }
+    return streak;
+  }
+  function renderProgress(data) {
+    const attendance = data.attendance || [];
+    const streak = calcStreak(attendance);
+    const weekStart = new Date(); weekStart.setDate(weekStart.getDate() - 6);
+    const weekly = attendance.filter(x => new Date(x.date) >= weekStart).length;
+    const goal = 4;
+    const achievements = [streak >= 3, weekly >= goal, attendance.length >= 10].filter(Boolean).length;
+    $("streakCount").textContent = `${streak} day${streak === 1 ? "" : "s"}`;
+    $("weeklyGoalText").textContent = `${Math.min(weekly, goal)} / ${goal} visits`;
+    $("weeklyGoalBar").style.width = `${Math.min(100, (weekly / goal) * 100)}%`;
+    $("achievementCount").textContent = `${achievements} unlocked`;
+    $("achievementHint").textContent = achievements ? "Great momentum. Keep collecting badges." : "Start checking in to earn badges.";
+    const challenges = [
+      { title: "3-day consistency", done: streak >= 3, detail: "Check in 3 days in a row" },
+      { title: "Weekly finisher", done: weekly >= goal, detail: "Complete 4 visits this week" },
+      { title: "First 10 visits", done: attendance.length >= 10, detail: "Reach your first 10 check-ins" }
+    ];
+    const box = $("challengeList"); box.replaceChildren();
+    challenges.forEach(item => {
+      const row = document.createElement("div");
+      row.className = `challenge-row ${item.done ? "done" : ""}`;
+      row.innerHTML = `<span><i class="fa-solid ${item.done ? "fa-circle-check" : "fa-circle"}"></i></span><div><strong>${item.title}</strong><small>${item.detail}</small></div>`;
+      box.append(row);
+    });
+  }
+  function render(data) {
+    const raw = data.membership || {};
+    const m = { ...raw,
+      expiresAt: raw.expiry ? raw.expiry + "T00:00:00" : raw.expiresAt,
+      daysRemaining: raw.expiry ? Math.round((new Date(raw.expiry + "T00:00:00") - new Date(new Date().toDateString())) / 86400000) : raw.daysRemaining };
+    $("membershipName").textContent = safe(m.planName || m.plan);
+    $("membershipDetail").textContent = m.expiresAt ? `Membership expires ${date(m.expiresAt)}${m.daysRemaining != null ? ` · ${m.daysRemaining} days remaining` : ""}` : "Your membership details are not available yet.";
+    $("membershipStatus").textContent = safe(m.status || "Not enrolled");
+    if (data.user && data.user.memberId) window.__pfMemberMe = data;
+    const eh = v => String(v ?? "—").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    const paintProfileCard = () => {
+      const u = (window.__pfMemberMe || data).user || {};
+      $("profileDetails").innerHTML = `<dl class="profile-grid"><div><dt>Name</dt><dd>${eh(u.name)}</dd></div><div><dt>Email</dt><dd>${eh(u.email)}</dd></div><div><dt>Phone</dt><dd>${eh(u.phone || "—")}</dd></div><div><dt>Address</dt><dd>${eh(u.address || "—")}</dd></div></dl>`;
+    };
+    paintProfileCard();
+    window.__pfRefreshProfileCard = paintProfileCard;
+    list("attendanceList", data.attendance, "No attendance records yet.", x => `<span><b>${date(x.date)}</b><small>${safe(x.location || "Gym check-in")}</small></span><i class="fa-solid fa-arrow-right"></i>`);
+    list("paymentList", data.payments, "No payment records yet.", x => `<span><b>${safe(x.reference || "Payment")}</b><small>${date(x.date)} · ${safe(x.method)}</small></span><strong>${safe(x.amountFormatted || x.amount)}</strong><button type="button" class="member-receipt" data-receipt="${safe(x.reference || "Payment")}" data-when="${safe(x.date)}" data-method="${safe(x.method)}" data-amount="${safe(x.amountFormatted || x.amount || "")}"><i class="fa-solid fa-receipt" aria-hidden="true"></i> Receipt</button>`);
+    window.__pfAttendanceDays = (data.attendance || []).map(x => String(x.date).slice(0, 10));
+    renderProgress(data);
+    syncMemberChrome(data);
+    window.__pfRefreshMemberSpace?.();
+  }
+  async function load() {
+    try {
+      if (window.PROFIT_CONFIG?.DEMO_MODE && !window.PROFIT_CONFIG?.API_BASE_URL) render(demoData());
+      else render(await ProFitAPI.get("/member/me"));
+    } catch (e) {
+      render(demoData());
+      const notice = $("memberNotice");
+      notice.hidden = false;
+      notice.classList.add("error");
+      notice.textContent = "Live member data is unavailable, so demo progress is shown for preview.";
+    }
+  }
+  // Gym contact details for signed-in members. Same ProFitGym store the public
+  // portal and footer read, so the number here can never drift from those.
+  $("gymContactBtn")?.addEventListener("click", () => {
+    // `esc` is not global — it lives on PF, which pf-common.js declares as a
+    // lexical const after this script. Resolve it the same way the receipt
+    // handler does, with a plain fallback if the helper is not up yet.
+    const p = (typeof PF === "object" && PF) ? PF : null;
+    const esc = p ? p.esc : s => String(s ?? "");
+    const g = window.ProFitGym || {};
+    const hours = (g.hours || [])
+      .map(h => `<dt>${esc(h.days)}</dt><dd>${esc(h.time)}</dd>`)
+      .join("");
+    const body = `
+      <div class="member-contact">
+        <dl>
+          <dt>Phone</dt><dd><a href="tel:${esc(String(g.phone || "").replace(/\s+/g, ""))}">${esc(g.phone || "—")}</a></dd>
+          <dt>Email</dt><dd><a href="mailto:${esc(g.email || "")}">${esc(g.email || "—")}</a></dd>
+          <dt>Address</dt><dd>${esc(g.address || "—")}</dd>
+          ${hours}
+        </dl>
+      </div>`;
+    if (p && typeof p.modal === "function") {
+      p.modal({ title: "Contact the gym", confirmText: "Close", body });
+    } else {
+      window.location.href = "tel:" + String(g.phone || "").replace(/\s+/g, "");
+    }
+  });
+
+  // "Add a receipt" lives under the month calendar, but the payments the gym
+  // records are what it actually opens — jump there rather than dead-ending.
+  $("addReceiptBtn")?.addEventListener("click", () => {
+    const panel = $("paymentList")?.closest(".member-panel");
+    if (!panel) return;
+    panel.scrollIntoView({ behavior: "smooth", block: "center" });
+    panel.classList.add("is-highlight");
+    // Drop the highlight once it has been seen, so it reads as a nudge and not
+    // as a permanent state.
+    setTimeout(() => panel.classList.remove("is-highlight"), 1600);
+  });
+
+  $("checkInButton").addEventListener("click", () => {
+    const items = readDemoCheckins();
+    if (!items.some(x => String(x.date).slice(0, 10) === todayKey())) {
+      items.unshift({ date: new Date().toISOString(), location: "ProFit Gym", source: "manual" });
+      writeDemoCheckins(items.slice(0, 30));
+    }
+    render(demoData());
+    const notice = $("memberNotice");
+    notice.hidden = false;
+    notice.classList.remove("error");
+    notice.textContent = "Check-in recorded for today. Your streak and weekly goal were updated.";
+    notice.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  });
+
+  // The button has to reflect reality, not just sit there: show "checked in"
+  // once today is already logged, and put the member's name in the header menu.
+  function syncMemberChrome(data) {
+    const already = readDemoCheckins().some(x => String(x.date).slice(0, 10) === todayKey())
+      || (window.__pfAttendanceDays || []).includes(todayKey());
+    const btn = $("checkInButton");
+    if (btn) {
+      btn.disabled = already;
+      btn.classList.toggle("is-done", already);
+      btn.innerHTML = already
+        ? '<i class="fa-solid fa-circle-check"></i> Checked in today'
+        : '<i class="fa-solid fa-location-check"></i> Check in today';
+    }
+    const user = data?.user || {};
+    const name = user.name || "Member";
+    const first = name.split(" ")[0];
+    const initials = name.split(/\s+/).filter(Boolean).slice(0, 2).map(p => p[0].toUpperCase()).join("") || "M";
+    const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
+    set("memberInitials", initials);
+    set("menuInitials", initials);
+    window.__pfPaintAvatars = photo => {
+      ["memberInitials", "menuInitials"].forEach(id => {
+        const el = $(id); if (!el) return;
+        const ok = typeof photo === "string" && photo.startsWith("data:image/jpeg;base64,");
+        el.classList.toggle("has-photo", ok);
+        el.style.backgroundImage = ok ? `url("${photo}")` : "";
+        el.textContent = ok ? "" : initials;
+      });
+    };
+    window.__pfPaintAvatars(user.photo || "");
+    set("memberName", first);
+    set("memberPlan", data?.membership?.planName || data?.membership?.plan || "Membership");
+    set("menuName", name);
+    set("menuEmail", user.email || "member@profit.test");
+    const greeting = $("memberGreeting");
+    if (greeting) greeting.textContent = `Welcome back, ${first}!`;
+  }
+  // Payment rows open the actual receipt rather than being a dead label.
+  // pf-common.js loads after this script and declares `PF` as a lexical binding
+  // (so it is `PF`, not `window.PF`); resolve it lazily, at click time.
+  $("paymentList")?.addEventListener("click", e => {
+    const btn = e.target.closest("[data-receipt]");
+    if (!btn) return;
+    const p = (typeof PF === "object" && PF) ? PF : null;
+    const esc = p ? p.esc : s => String(s ?? "");
+    const ref = btn.dataset.receipt || "Payment";
+    const when = btn.dataset.when || "";
+    const method = btn.dataset.method || "—";
+    const amount = btn.dataset.amount || "—";
+    const paid = when ? new Date(when) : null;
+    const gym = window.ProFitGym || {};
+    const whenText = paid && !isNaN(paid)
+      ? paid.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+      : "—";
+    const raw = String(amount).replace(/[^\d.]/g, "");
+    const money = p ? p.money(raw || 0) : amount;
+    const who = $("menuName")?.textContent || "Member";
+    if (!p || typeof p.modal !== "function") { window.print(); return; }
+    p.modal({
+      title: "Payment receipt",
+      confirmText: "Print receipt",
+      cancelText: "Close",
+      body: `<article class="pp-receipt" id="receiptPrint">
+        <header><strong>${esc(gym.name || "ProFit Gym")}</strong><span>Official receipt</span></header>
+        <dl>
+          <dt>Receipt no.</dt><dd>${esc(ref)}</dd>
+          <dt>Date</dt><dd>${esc(whenText)}</dd>
+          <dt>Member</dt><dd>${esc(who)}</dd>
+          <dt>Method</dt><dd>${esc(method)}</dd>
+        </dl>
+        <div class="pp-receipt-total"><span>Amount paid</span><strong>${esc(money)}</strong></div>
+        <span class="pp-status active">Paid</span>
+      </article>`,
+      onConfirm: () => { window.print(); return false; }
+    });
+  });
+
+  const themeButton = $("memberTheme");
+  let savedTheme = "dark";
+  try { savedTheme = localStorage.getItem("theme") || "light"; } catch (e) {}
+  document.body.classList.toggle("dark", savedTheme === "dark");
+  themeButton?.addEventListener("click", () => {
+    const dark = !document.body.classList.contains("dark");
+    document.body.classList.toggle("dark", dark);
+    try { localStorage.setItem("theme", dark ? "dark" : "light"); } catch (e) {}
+  });
+  load();
+})();
+</script>
+<script src="pf-common.js"></script>
+<script src="member-tabs.js?v=13"></script>
+<script src="change-password.js?v=1"></script>
+<script src="member-pay.js?v=1"></script>
+<script src="portal-fx.js?v=2"></script>
+<style>@media (max-width:760px){body{padding-bottom:112px}}</style>
+<nav class="pf-bottomnav" aria-label="Member sections">
+  <button type="button" data-go-tab="overview"><i class="fa-solid fa-gauge-high" aria-hidden="true"></i><span>Overview</span></button>
+  <button type="button" data-go-tab="schedule"><i class="fa-regular fa-calendar" aria-hidden="true"></i><span>Schedule</span></button>
+  <button type="button" data-go-tab="diary"><i class="fa-solid fa-book-open" aria-hidden="true"></i><span>Diary</span></button>
+  <button type="button" data-go-tab="health"><i class="fa-solid fa-heart-pulse" aria-hidden="true"></i><span>Health</span></button>
+  <button type="button" data-go-tab="profile"><i class="fa-regular fa-id-card" aria-hidden="true"></i><span>Profile</span></button>
+  <button type="button" data-go-tab="settings"><i class="fa-solid fa-sliders" aria-hidden="true"></i><span>Settings</span></button>
+</nav>
+<script>
+(() => {
+  const nav = document.querySelector(".pf-bottomnav");
+  if (!nav) return;
+  const current = () => document.querySelector('.pp-tab[aria-selected="true"]')?.dataset.tab;
+  const hero = document.querySelector('.member-hero');
+  const sync = () => {
+    const now = current();
+    if (hero) hero.hidden = now !== "overview";
+    nav.querySelectorAll("[data-go-tab]").forEach(b => {
+      if (b.dataset.goTab === now) b.setAttribute("aria-current", "page");
+      else b.removeAttribute("aria-current");
+    });
+  };
+  nav.addEventListener("click", e => {
+    const b = e.target.closest("[data-go-tab]");
+    if (!b) return;
+    document.querySelector(`.pp-tab[data-tab="${b.dataset.goTab}"]`)?.click();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+  const tabs = document.querySelector(".pp-tabs");
+  if (tabs) new MutationObserver(sync).observe(tabs, { attributes: true, subtree: true, attributeFilter: ["aria-selected"] });
+  sync();
+})();
+</script>
+<script src="announcements-member.js?v=1" defer></script>
+<script src="trainer-member.js?v=1" defer></script>
+<script src="site-footer.js?v=2" defer></script>
+</body>
+</html>

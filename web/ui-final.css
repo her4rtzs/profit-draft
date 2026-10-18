@@ -1,0 +1,5 @@
+/* Sidebar toggle is one steady menu button in both states (same as on phones). */
+#sidebarToggle.toggle i{display:none}
+#sidebarToggle.toggle::before{content:"\f0c9";font-family:"Font Awesome 6 Free";font-weight:900;font-size:14px}
+#sidebarToggle.toggle{border-radius:8px!important;transition:background-color .2s,color .2s}
+#sidebarToggle.toggle:hover{transform:none}

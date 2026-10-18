@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script>(function(){try{var d=localStorage.getItem('theme')!=='light';var h=document.documentElement;h.style.background=d?'#18191a':'#f0f2f5';h.style.colorScheme=d?'dark':'light';h.classList.add('pf-pre');setTimeout(function(){h.classList.remove('pf-pre')},1500);}catch(e){}})();</script><script src="splash.js?v=2"></script>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProFit | My profile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="styles.css">
+<script src="config.js"></script><script src="api.js"></script><script src="auth.js"></script>
+<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=6"><link rel="stylesheet" href="ui-final.css?v=1">
+<script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script><link rel="stylesheet" href="hover-fx.css?v=1">
+<link rel="stylesheet" href="ui-polish.css?v=1">
+<link rel="stylesheet" href="ui-fixes.css?v=1">
+<link rel="stylesheet" href="pf-modern.css?v=1">
+<link rel="stylesheet" href="sidebar-pro.css?v=1">
+<link rel="stylesheet" href="layout-fixes.css?v=1">
+<script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script></head>
+<body data-page="profile" data-title="My profile" data-welcome="Your staff account">
+<div class="dashboard"><nav class="sidebar" id="sidebar"></nav><main class="main-content"><header class="topbar" id="topbar"></header>
+<section class="pp-settings" aria-label="My profile">
+<div class="portal-result" id="profileNotice" role="status" hidden></div>
+
+  <article id="identity" class="pp-section-card pp-profile-hero">
+    <div class="pp-profile-photo">
+      <span class="pp-avatar-photo" id="profilePhotoBox"><i class="fa-solid fa-user"></i></span>
+      <div class="pp-profile-photo-actions">
+        <label class="pp-btn pp-btn-primary" for="profilePhoto" tabindex="0"><i class="fa-solid fa-camera"></i> Change photo</label>
+        <input type="file" id="profilePhoto" accept="image/*" hidden>
+        <button class="pp-btn" type="button" id="profilePhotoClear">Remove</button>
+        <small>Square JPG or PNG under 900 KB.</small>
+      </div>
+    </div>
+    <div class="pp-profile-identity">
+      <p class="pp-eyebrow">Signed in as</p>
+      <h2 id="identityName">Administrator</h2>
+      <p class="pp-muted" id="identityRole">Gym administrator</p>
+    </div>
+  </article>
+
+  <article class="pp-section-card">
+    <div class="pp-card-head"><div><h2><i class="fa-regular fa-id-card"></i> Your details</h2><p>Shown in the rail, the header avatar and on receipts you send.</p></div></div>
+    <form id="profileForm" class="pp-form-grid" novalidate>
+      <div class="pp-field"><label for="profileName">Full name</label><input id="profileName" maxlength="60" placeholder="Administrator"></div>
+      <div class="pp-field"><label for="profileRole">Role</label><input id="profileRole" maxlength="40" placeholder="Gym administrator"></div>
+      <div class="pp-field"><label for="profileEmail">Email</label><input id="profileEmail" type="email" maxlength="90" placeholder="admin@profit.test"></div>
+      <div class="pp-field"><label for="profilePhone">Mobile number</label><input id="profilePhone" maxlength="30" placeholder="09XX XXX XXXX"></div>
+      <div class="pp-field" style="grid-column:1/-1"><label for="profileBio">Short note</label><textarea id="profileBio" rows="3" maxlength="300" placeholder="Anything your team should know about you."></textarea></div>
+      <div class="pp-field pp-actions" style="grid-column:1/-1"><button class="pp-btn pp-btn-primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save profile</button></div>
+    </form>
+  </article>
+
+  <article class="pp-section-card">
+    <div class="pp-card-head"><div><h2><i class="fa-solid fa-shield-halved"></i> Sign-in</h2><p>Keep this account to yourself.</p></div></div>
+    <form id="passwordForm" class="pp-form-grid" novalidate>
+      <div class="pp-field" style="grid-column:1/-1"><label for="pwCurrent">Current password</label><input id="pwCurrent" type="password" autocomplete="current-password"><small id="pwState" class="pp-muted">Step 1: confirm it is really you.</small></div>
+      <div id="pwStep2" class="pp-form-grid" style="grid-column:1/-1" hidden>
+        <div class="pp-field"><label for="pwNext">New password</label><input id="pwNext" type="password" autocomplete="new-password" minlength="8"></div>
+        <div class="pp-field"><label for="pwConfirm">Confirm new password</label><input id="pwConfirm" type="password" autocomplete="new-password"></div>
+      </div>
+      <div class="pp-field pp-actions" style="grid-column:1/-1"><button class="pp-btn pp-btn-primary" type="submit" id="pwBtn"><i class="fa-solid fa-shield-halved"></i> Verify password</button></div>
+    </form>
+  </article>
+
+</section>
+</main></div>
+<script src="layout.js?v=14"></script><script src="sidebar.js?v=14"></script><script src="data.js"></script><script src="profile.js?v=13"></script>
+<script src="portal-fx.js?v=2"></script>
+<script src="change-password.js?v=2" defer></script>
+<script src="notifications-live.js?v=1" defer></script>
+<script src="site-footer.js?v=2" defer></script>
+</body>
+</html>

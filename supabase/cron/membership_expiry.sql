@@ -1,0 +1,57 @@
+-- =============================================================================
+-- ProFit — membership expiry (pg_cron) STUB
+-- =============================================================================
+--
+-- WHAT THIS IS
+--   A daily pg_cron job that flips expired memberships to 'EXPIRED'. It sets
+--   membership_memberprofile.membership_status = 'EXPIRED' for every row whose
+--   expiry_date is strictly before the current Asia/Manila date.
+--
+-- NOT MANAGED BY DJANGO MIGRATIONS
+--   This SQL is intentionally OUTSIDE the Django ORM and is the SOLE raw-SQL
+--   exception allowed by AGENTS.md (all other DB access goes through the ORM).
+--   It is NOT applied by `python manage.py migrate`. It must be applied MANUALLY
+--   against the Supabase database (e.g. via the Supabase SQL editor) once, by an
+--   operator, and re-applied if the schedule changes.
+--
+-- KEEP IN SYNC WITH THE ORM
+--   The table and column names below are the Django-generated names for
+--   apps.membership.MemberProfile:
+--       table : membership_memberprofile  (app_label "membership" + model name)
+--       column: membership_status, expiry_date
+--   Renaming the model, its app label, or these fields REQUIRES updating this
+--   file by hand — there is no migration to catch the drift.
+--
+-- TIMEZONE
+--   ProFit operates in Asia/Manila. "Expired" is evaluated against the Manila
+--   calendar date, not UTC, so the comparison casts now() into Asia/Manila
+--   before taking its date. pg_cron's schedule string itself is interpreted in
+--   the database server's timezone; "0 1 * * *" is chosen as a quiet early-hours
+--   slot and should be reviewed against the server tz when applied.
+--
+-- PREREQUISITE
+--   The pg_cron extension must be enabled in the target database:
+--       CREATE EXTENSION IF NOT EXISTS pg_cron;
+-- =============================================================================
+
+-- Schedule the daily expiry sweep. Unschedule any prior definition with the
+-- same job name first so re-applying this file is idempotent.
+--
+-- NOTE: left commented so it is never run accidentally by a migration tool or
+-- an editor "run file" action. Uncomment and run manually to install the job.
+
+-- SELECT cron.unschedule('profit_membership_expiry')
+-- WHERE EXISTS (
+--     SELECT 1 FROM cron.job WHERE jobname = 'profit_membership_expiry'
+-- );
+
+-- SELECT cron.schedule(
+--     'profit_membership_expiry',
+--     '0 1 * * *',
+--     $$
+--         UPDATE membership_memberprofile
+--         SET membership_status = 'EXPIRED'
+--         WHERE expiry_date < (now() AT TIME ZONE 'Asia/Manila')::date
+--           AND membership_status <> 'EXPIRED';
+--     $$
+-- );

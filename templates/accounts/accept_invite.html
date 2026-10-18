@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load component_tags %}
+
+{% block title %}Accept invite · ProFit{% endblock %}
+
+{% block content %}
+  <section class="flex justify-center">
+    <div class="card bg-base-100 border border-base-300 w-full max-w-md">
+      <div class="card-body">
+        <div class="flex items-center gap-2">
+          {% component "icon" name="lock" css_class="text-primary" %}{% endcomponent %}
+          <h1 class="card-title">Set up your staff account</h1>
+        </div>
+
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} text-sm">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+
+        <form method="post"
+              action="{% url 'accounts:accept_invite' invite_id token %}"
+              class="space-y-3">
+          {% csrf_token %}
+          {% if form.non_field_errors %}
+            <div class="alert alert-error text-sm">{{ form.non_field_errors }}</div>
+          {% endif %}
+          <label class="form-control w-full">
+            <span class="label-text">Password</span>
+            <input type="password" name="password" required class="input input-bordered w-full" />
+            {% if form.password.errors %}
+              <span class="text-error text-xs">{{ form.password.errors }}</span>
+            {% endif %}
+          </label>
+          <label class="form-control w-full">
+            <span class="label-text">Confirm password</span>
+            <input type="password" name="confirm_password" required class="input input-bordered w-full" />
+          </label>
+          <button type="submit" class="btn btn-primary w-full">Activate account</button>
+        </form>
+      </div>
+    </div>
+  </section>
+{% endblock %}

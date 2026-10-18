@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load component_tags %}
+
+{% block title %}{{ member.user.username }} · ProFit{% endblock %}
+
+{% block content %}
+  <div class="flex items-center gap-2 mb-4">
+    {% component "icon" name="user" css_class="text-primary" %}{% endcomponent %}
+    <h1 class="text-xl font-semibold">{{ member.user.username }}</h1>
+    <span class="badge badge-outline">{{ member.get_membership_status_display }}</span>
+  </div>
+
+  <div class="card bg-base-200 mb-4">
+    <div class="card-body">
+      <p>Joined: {{ member.date_joined }}</p>
+      <p>Expiry: {{ member.expiry_date|default:"—" }}</p>
+    </div>
+  </div>
+
+  <div class="flex items-center gap-2 mb-2">
+    {% component "icon" name="calendar-check" %}{% endcomponent %}
+    <h2 class="text-lg font-semibold">Attendance</h2>
+  </div>
+  <table class="table">
+    <thead>
+      <tr><th>Date</th><th>Checked in at</th></tr>
+    </thead>
+    <tbody>
+      {% for a in attendances %}
+        <tr><td>{{ a.check_in_date }}</td><td>{{ a.check_in_at }}</td></tr>
+      {% empty %}
+        <tr><td colspan="2" class="text-center opacity-70">No attendance yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="mt-4">
+    {% component "button" label="Back to members" variant="ghost" %}{% endcomponent %}
+  </div>
+{% endblock %}

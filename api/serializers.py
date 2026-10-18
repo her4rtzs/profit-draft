@@ -1,0 +1,162 @@
+"""Read-only serializers for the mobile member app.
+
+These expose membership data for reads only; writes are out of scope. No
+business logic lives here — services/models own that.
+"""
+
+from rest_framework import serializers
+
+from apps.membership.models import Attendance, MemberProfile
+from apps.finance.models import ManualPayment
+
+
+class MemberProfileSerializer(serializers.ModelSerializer):
+    """Read-only view of a member's own profile."""
+
+    class Meta:
+        model = MemberProfile
+        fields = ["id", "membership_status", "date_joined", "expiry_date"]
+        read_only_fields = fields
+
+
+class AttendanceSerializer(serializers.ModelSerializer):
+    """Read-only view of a single attendance (check-in) record."""
+
+    class Meta:
+        model = Attendance
+        fields = ["id", "check_in_at", "check_in_date"]
+        read_only_fields = fields
+
+
+# --- Phase 1: staff member management and check-in --------------------------
+
+PLAN_CHOICES = ["monthly", "quarterly", "annual"]
+
+
+class StaffMemberSerializer(serializers.ModelSerializer):
+    """Staff view of a member: identity, contact, and membership state."""
+
+    name = serializers.SerializerMethodField()
+    email = serializers.EmailField(source="user.email", read_only=True)
+    trainer = serializers.SerializerMethodField()
+
+    class Meta:
+        model = MemberProfile
+        fields = [
+            "id",
+            "name",
+            "email",
+            "phone",
+            "address",
+            "membership_status",
+            "date_joined",
+            "expiry_date",
+            "trainer",
+        ]
+        read_only_fields = ["membership_status", "date_joined", "expiry_date", "trainer"]
+
+    def get_name(self, obj):
+        return obj.user.get_full_name() or obj.user.username
+
+    def get_trainer(self, obj):
+        from apps.trainers.services import current_assignment
+        current = current_assignment(obj)
+        if current is None:
+            return None
+        return {"id": current.trainer_id, "name": current.trainer.user.get_full_name() or current.trainer.user.username}
+
+
+class StaffMemberCreateSerializer(serializers.Serializer):
+    """Input for creating a member. ``plan`` is optional; without it the member
+    is created as PENDING until a renewal is recorded."""
+
+    name = serializers.CharField(max_length=120)
+    email = serializers.EmailField(max_length=254)
+    password = serializers.CharField(write_only=True, min_length=8, max_length=128)
+    phone = serializers.CharField(max_length=30, required=False, allow_blank=True)
+    address = serializers.CharField(max_length=255, required=False, allow_blank=True)
+    plan = serializers.ChoiceField(choices=PLAN_CHOICES, required=False)
+    start_date = serializers.DateField(required=False)
+
+
+class StaffMemberUpdateSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=120, required=False)
+    phone = serializers.CharField(max_length=30, required=False, allow_blank=True)
+    address = serializers.CharField(max_length=255, required=False, allow_blank=True)
+
+
+class RenewSerializer(serializers.Serializer):
+    plan = serializers.ChoiceField(choices=PLAN_CHOICES)
+    start_date = serializers.DateField(required=False)
+
+
+class CheckInSerializer(serializers.Serializer):
+    member_id = serializers.IntegerField()
+
+
+class StaffAttendanceSerializer(serializers.ModelSerializer):
+    """One check-in row for the front-desk list."""
+
+    member_id = serializers.IntegerField(source="member.id", read_only=True)
+    name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Attendance
+        fields = ["id", "member_id", "name", "check_in_at", "check_in_date"]
+        read_only_fields = fields
+
+    def get_name(self, obj):
+        user = obj.member.user
+        return user.get_full_name() or user.username
+
+
+# --- Phase 2: desk payments and reports ---------------------------------------
+
+class ManualPaymentSerializer(serializers.ModelSerializer):
+    """One desk payment, as shown in the payments list."""
+
+    ref = serializers.SerializerMethodField()
+    member_id = serializers.IntegerField(source="member.id", read_only=True)
+    name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ManualPayment
+        fields = [
+            "id", "ref", "member_id", "name", "plan", "method",
+            "amount_centavos", "paid_on", "created_at",
+        ]
+        read_only_fields = fields
+
+    def get_ref(self, obj):
+        return f"P-{obj.pk:05d}"
+
+    def get_name(self, obj):
+        user = obj.member.user
+        return user.get_full_name() or user.username
+
+
+class RecordPaymentSerializer(serializers.Serializer):
+    member_id = serializers.IntegerField()
+    plan = serializers.ChoiceField(choices=PLAN_CHOICES)
+    method = serializers.ChoiceField(choices=ManualPayment.Method.values)
+    paid_on = serializers.DateField(required=False)
+
+
+class EditPaymentSerializer(serializers.Serializer):
+    """Fields an owner may correct on a desk payment. Plan and amount are fixed."""
+
+    method = serializers.ChoiceField(choices=ManualPayment.Method.values, required=False)
+    paid_on = serializers.DateField(required=False)
+
+    def validate_paid_on(self, value):
+        from django.utils import timezone
+
+        if value > timezone.localdate():
+            raise serializers.ValidationError("The payment date cannot be in the future.")
+        return value
+
+    def validate(self, attrs):
+        if not attrs:
+            raise serializers.ValidationError("Send a method or a paid_on date to change.")
+        return attrs
+

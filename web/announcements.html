@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script>(function(){try{var d=localStorage.getItem('theme')!=='light';var h=document.documentElement;h.style.background=d?'#18191a':'#f0f2f5';h.style.colorScheme=d?'dark':'light';h.classList.add('pf-pre');setTimeout(function(){h.classList.remove('pf-pre')},1500);}catch(e){}})();</script><script src="splash.js?v=2"></script>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Announcements · ProFit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="styles.css">
+<script src="config.js"></script><script src="api.js"></script><script src="auth.js"></script>
+<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=6"><link rel="stylesheet" href="ui-final.css?v=1">
+<script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script><link rel="stylesheet" href="hover-fx.css?v=1">
+<link rel="stylesheet" href="announcements.css?v=1">
+<link rel="stylesheet" href="ui-polish.css?v=1">
+<link rel="stylesheet" href="ui-fixes.css?v=1">
+<link rel="stylesheet" href="pf-modern.css?v=1">
+<link rel="stylesheet" href="sidebar-pro.css?v=1">
+<link rel="stylesheet" href="layout-fixes.css?v=1">
+<script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script></head>
+<body data-page="announcements" data-title="Announcements" data-welcome="Notices for members and trainers">
+<div class="dashboard"><nav class="sidebar" id="sidebar"></nav><main class="main-content" id="main" tabindex="-1">
+  <header class="topbar" id="topbar"></header>
+  <header class="page-head" style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:18px">
+    <div>
+      <span class="eyebrow">Gym communications</span>
+      <h1 style="margin:4px 0 6px">Announcements</h1>
+      <p style="margin:0;color:var(--muted)">Write notices, choose who sees them, and publish when ready.</p>
+    </div>
+    <button class="ann-btn primary" id="annNew" type="button"><i class="fa-solid fa-plus" aria-hidden="true"></i> New announcement</button>
+  </header>
+  <p class="ann-msg" id="annMsg" role="status" aria-live="polite"></p>
+  <div class="ann-filters" role="group" aria-label="Filter announcements">
+    <button class="ann-chip is-on" type="button" data-filter="">All</button>
+    <button class="ann-chip" type="button" data-filter="DRAFT">Drafts</button>
+    <button class="ann-chip" type="button" data-filter="PUBLISHED">Published</button>
+    <button class="ann-chip" type="button" data-filter="ARCHIVED">Archived</button>
+  </div>
+  <section class="panel" id="annFormPanel" hidden style="padding:20px;margin-bottom:18px">
+    <form class="ann-form" id="annForm" novalidate>
+      <input type="hidden" id="annId">
+      <div class="ann-field"><label for="annTitle">Title</label><input id="annTitle" maxlength="160" required></div>
+      <div class="ann-field"><label for="annMessage">Message</label><textarea id="annMessage" maxlength="4000" required></textarea></div>
+      <div class="ann-field"><label for="annDate">Publication date</label><input id="annDate" type="date"></div>
+      <div class="ann-field"><label for="annAudience">Audience</label>
+        <select id="annAudience"><option value="ALL">All members</option><option value="SELECTED">Selected members</option></select>
+      </div>
+      <div class="ann-field" id="annMembersWrap" hidden>
+        <span class="ann-label">Members</span>
+        <div class="ann-members" id="annMembers"></div>
+      </div>
+      <label class="ann-check"><input type="checkbox" id="annPinned"> Pin this notice (up to 3)</label>
+      <div class="ann-actions">
+        <button class="ann-btn primary" type="submit" id="annSave">Save draft</button>
+        <button class="ann-btn" type="button" id="annPublish">Publish now</button>
+        <button class="ann-btn" type="button" id="annCancel">Cancel</button>
+      </div>
+    </form>
+  </section>
+  <section class="ann-list" id="annList" aria-live="polite"></section>
+</main></div>
+<script src="layout.js?v=14"></script><script src="sidebar.js?v=14"></script><script src="data.js"></script><script src="settings.js?v=13"></script>
+<script src="portal-fx.js?v=2"></script>
+<script src="change-password.js?v=2" defer></script>
+<script src="notifications-live.js?v=1" defer></script>
+<script src="announcements-staff.js?v=1" defer></script>
+<script src="site-footer.js?v=2" defer></script>
+</body>
+</html>

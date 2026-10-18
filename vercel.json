@@ -1,0 +1,15 @@
+{
+  "buildCommand": "npm --prefix static/src install && npm --prefix static/src run build && python manage.py collectstatic --noinput",
+  "functions": {
+    "api/index.py": {
+      "excludeFiles": "{.venv/**,node_modules/**,.git/**,.agents/**,mobile/**,.ruff_cache/**,**/*.pyc,**/__pycache__/**}"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/api"
+    }
+  ],
+  "outputDirectory": "staticfiles"
+}

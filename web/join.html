@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en"><head><script src="splash.js?v=2"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b0b0d"><meta name="description" content="Join ProFit and pay online. Your account is created right after payment."><title>Join · ProFit</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="member-portal.css"><script src="config.js"></script><script src="api.js"></script><script src="auth.js"></script><link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=6"><link rel="stylesheet" href="ui-final.css?v=1"><script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script><link rel="stylesheet" href="hover-fx.css?v=1">
+<link rel="stylesheet" href="ui-polish.css?v=1">
+<link rel="stylesheet" href="ui-fixes.css?v=1">
+<link rel="stylesheet" href="pf-modern.css?v=1">
+<script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script></head>
+<body class="portal-body auth-page dark"><header class="portal-nav"><a class="portal-brand" href="welcome.html"><span class="brand-mark"><i class="fa-solid fa-dumbbell"></i></span><span><strong>ProFit</strong><small>FITNESS MANAGEMENT</small></span></a><span class="secure-label"><i class="fa-solid fa-lock"></i> Secure checkout</span></header>
+<style>
+.jn-plans{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:6px 0 4px}
+.jn-plans .plan{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:6px;min-height:92px;padding:14px;border:1px solid var(--border);border-radius:10px;cursor:pointer;background:var(--hover)}
+.jn-plans .plan input{position:absolute;opacity:0}
+.jn-plans .plan.on{border-color:var(--pf-lime);box-shadow:0 0 0 1px var(--pf-lime) inset}
+.jn-plans .plan strong{font-size:14px}.jn-plans .plan small{color:var(--muted);font-size:12px}.jn-plans .plan b{font-size:18px;color:var(--text)}
+.jn-plans .tag{position:absolute;top:-9px;right:10px;font-size:10px;font-weight:700;background:var(--pf-lime);color:var(--on-accent);border-radius:99px;padding:2px 8px}
+.jn-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.jn-terms{display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-size:14px;color:var(--muted);cursor:pointer}.jn-terms input{width:18px;min-height:18px;height:18px;margin-top:2px;accent-color:#e8b93a;flex:none}.jn-terms a{color:#e8b93a;text-decoration:underline}.jn-err{color:#ff7b7b;font-size:14px;min-height:20px;margin:10px 0 0}
+.jn-note{border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:14px;margin-bottom:12px;background:var(--hover)}
+.jn-ok{text-align:center;padding:10px 0}.jn-ok i{font-size:48px;color:var(--pf-lime);margin-bottom:12px}.jn-ok p{color:var(--muted);margin:8px 0 18px}
+@media(max-width:560px){.jn-plans{grid-template-columns:1fr}.jn-row{grid-template-columns:1fr}.jn-plans .plan{flex-direction:row;align-items:center;min-height:0}}
+</style>
+<main class="auth-shell"><section class="auth-story"><div class="eyebrow"><span></span> JOIN THE GYM</div><h1>Pay once.<br><em>Your account is ready.</em></h1><p>Choose a plan and pay with GCash, Maya, card or QR. As soon as payment is confirmed, your member account is created automatically. No waiting for staff approval.</p><div class="auth-points"><span><i class="fa-solid fa-check"></i> Secure checkout by PayMongo</span><span><i class="fa-solid fa-check"></i> Account and membership start right after you pay</span><span><i class="fa-solid fa-check"></i> Sign in with the email and password you set here</span></div></section>
+<section class="auth-card" id="box"><div class="portal-heading-icon"><i class="fa-solid fa-user-plus"></i></div><p class="portal-kicker">NEW MEMBER</p><h2>Create your account</h2><p class="auth-sub">Pick a plan, add your details, then pay securely.</p>
+<form id="f" novalidate>
+<label class="auth-label">Plan</label>
+<div class="jn-plans" id="plans">
+<label class="plan on"><input type="radio" name="plan" value="monthly" checked><strong>Monthly</strong><small>30 days</small><b>₱800</b></label>
+<label class="plan"><input type="radio" name="plan" value="quarterly"><span class="tag">POPULAR</span><strong>Quarterly</strong><small>90 days</small><b>₱2,100</b></label>
+<label class="plan"><input type="radio" name="plan" value="annual"><strong>Annual</strong><small>365 days</small><b>₱7,500</b></label>
+</div>
+<div id="cancel" class="jn-note" hidden>Payment was cancelled. No account was created and you were not charged.</div>
+<label class="auth-label" for="name">Full name</label><input class="auth-input" id="name" autocomplete="name" maxlength="100" placeholder="Enter your full name">
+<div class="jn-row"><div><label class="auth-label" for="email">Email</label><input class="auth-input" id="email" type="email" autocomplete="email" maxlength="254" placeholder="you@example.com"></div><div><label class="auth-label" for="phone">Mobile number</label><input class="auth-input" id="phone" type="tel" autocomplete="tel" maxlength="20" placeholder="09XX XXX XXXX"></div></div>
+<div class="jn-row"><div><label class="auth-label" for="pw">Password</label><input class="auth-input" id="pw" type="password" autocomplete="new-password" maxlength="128" placeholder="8+ characters"></div><div><label class="auth-label" for="pw2">Confirm password</label><input class="auth-input" id="pw2" type="password" autocomplete="new-password" maxlength="128" placeholder="Repeat password"></div></div>
+<label class="jn-terms"><input type="checkbox" id="terms"><span>I have read and agree to the <a href="terms.html" target="_blank" rel="noopener">Terms of Service</a> and <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</span></label>
+<p class="jn-err" id="err" role="alert"></p>
+<button class="portal-submit auth-submit" id="go" type="submit"><span>Continue to secure payment</span><i class="fa-solid fa-arrow-right"></i></button>
+</form>
+<div class="jn-ok" id="ok" hidden><i class="fa-solid fa-circle-check"></i><h2>Payment received</h2><p id="okmsg">We're creating your account now. This usually takes a few seconds.</p><a class="portal-submit auth-submit" id="okgo" href="login.html" style="display:flex;justify-content:center;text-decoration:none"><span>Sign in</span></a></div>
+<p class="auth-enroll" id="alt">Already a member? <a href="login.html">Sign in</a></p></section></main>
+<script>
+(() => {
+  const $ = id => document.getElementById(id), q = new URLSearchParams(location.search);
+  document.querySelectorAll(".plan input").forEach(r => r.addEventListener("change", () => document.querySelectorAll(".plan").forEach(p => p.classList.toggle("on", p.querySelector("input").checked))));
+  if (q.get("cancelled")) $("cancel").hidden = false;
+  if (q.get("paid")) {
+    $("f").hidden = true; $("ok").hidden = false; $("alt").hidden = true;
+    // The server checks the payment with PayMongo and creates the account. Retry a few times.
+    const token = q.get("t") || "";
+    let tries = 0;
+    const check = async () => {
+      tries++;
+      try {
+        const r = await window.ProFitAPI.post("/join/confirm", { token });
+        if (r.status === "active") {
+          $("okmsg").textContent = "Your account is ready. Sign in with the email and password you set.";
+          $("okgo").hidden = false; return;
+        }
+      } catch (ex) { if (ex.status === 400) { $("okmsg").textContent = "We could not find this signup. Please call 0912 261 7663."; return; } }
+      if (tries < 12) setTimeout(check, 3000);
+      else $("okmsg").textContent = "We have not received the payment confirmation yet. Wait a minute and refresh this page, or call 0912 261 7663.";
+    };
+    $("okgo").hidden = true;
+    check();
+  }
+  $("f").addEventListener("submit", async e => {
+    e.preventDefault();
+    const err = $("err"), btn = $("go"); err.textContent = "";
+    const body = { plan: document.querySelector('input[name=plan]:checked').value, name: $("name").value.trim(), email: $("email").value.trim(), phone: $("phone").value.trim(), password: $("pw").value };
+    if (body.name.length < 2) return err.textContent = "Enter your full name.";
+    if (!/^\S+@\S+\.\S+$/.test(body.email)) return err.textContent = "Enter a valid email address.";
+    if (body.phone.replace(/\D/g, "").length < 10) return err.textContent = "Enter a valid mobile number.";
+    if (body.password.length < 8) return err.textContent = "Password must be at least 8 characters.";
+    if (body.password !== $("pw2").value) return err.textContent = "The two passwords do not match.";
+    if (!$("terms").checked) return err.textContent = "Please accept the Terms of Service and Privacy Policy to continue.";
+    btn.disabled = true; btn.querySelector("span").textContent = "Opening secure checkout...";
+    try { const r = await window.ProFitAPI.post("/join/checkout", body); location.href = r.checkout_url; }
+    catch (ex) { err.textContent = ex.message || "Could not start the payment."; btn.disabled = false; btn.querySelector("span").textContent = "Continue to secure payment"; }
+  });
+})();
+</script>
+<script src="portal-fx.js?v=2"></script>
+<script src="site-footer.js?v=2" defer></script>
+<dialog id="legalDialog" class="legal-dialog" aria-labelledby="legalDialogTitle">
+<div class="legal-dialog-bar"><strong id="legalDialogTitle">Legal</strong><button type="button" class="legal-dialog-close" aria-label="Close">&times;</button></div>
+<div class="legal-dialog-body" id="legalDialogBody"></div>
+</dialog>
+<script>
+(function(){
+  var dlg=document.getElementById('legalDialog'), body=document.getElementById('legalDialogBody'), title=document.getElementById('legalDialogTitle');
+  if(!dlg||!dlg.showModal) return;
+  function openLegal(a){
+    var href=a.getAttribute('href');
+    title.textContent=a.textContent.trim();
+    body.innerHTML='<p class="legal-meta">Loading...</p>';
+    dlg.showModal();
+    fetch(href,{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.text();})
+      .then(function(t){var doc=new DOMParser().parseFromString(t,'text/html');var main=doc.querySelector('.legal-main');body.innerHTML=main?main.innerHTML:'<p>Could not load this page.</p>';body.scrollTop=0;})
+      .catch(function(){body.innerHTML='<p>Could not load this page. Please try again.</p>';});
+  }
+  document.querySelectorAll('a[href="terms.html"],a[href="privacy.html"]').forEach(function(a){
+    a.addEventListener('click',function(e){e.preventDefault();openLegal(a);});
+  });
+  dlg.querySelector('.legal-dialog-close').addEventListener('click',function(){dlg.close();});
+  dlg.addEventListener('click',function(e){if(e.target===dlg)dlg.close();});
+})();
+</script></body></html>

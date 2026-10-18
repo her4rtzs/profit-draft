@@ -1,0 +1,102 @@
+/* ProFit UI polish: one set of rules for every page, phone and desktop.
+   Loaded last. It changes spacing, type, cards, buttons, fields, tables and focus.
+   It does not move layout (no transforms in the page itself) and it leaves the sidebar alone. */
+
+:root {
+  --ui-radius-lg: 20px;
+  --ui-radius: 14px;
+  --ui-gold: #e8b93a;
+  --ui-ring: rgba(232, 185, 58, .45);
+  --ui-shadow: 0 14px 34px rgba(0, 0, 0, .18);
+}
+
+/* Type */
+html body { font-feature-settings: "kern" 1, "liga" 1; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+html body h1 { font-size: clamp(26px, 3.2vw, 34px); line-height: 1.15; letter-spacing: -.02em; }
+html body h2 { font-size: clamp(18px, 2vw, 22px); line-height: 1.25; letter-spacing: -.01em; }
+html body h3 { font-size: 17px; line-height: 1.3; }
+html body .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--ui-gold); }
+html body .stat-card h2, html body .stat-card strong, html body .membership-stats strong { font-variant-numeric: tabular-nums; }
+
+/* Page */
+html body .main-content { max-width: 1280px; margin-inline: auto; padding: clamp(18px, 2.6vw, 34px) clamp(14px, 3vw, 40px) 48px !important; box-sizing: border-box; }
+html body .main-content > * { animation: uiFade .45s ease both; }
+html body .main-content > *:nth-child(2) { animation-delay: .04s; }
+html body .main-content > *:nth-child(3) { animation-delay: .08s; }
+html body .main-content > *:nth-child(4) { animation-delay: .12s; }
+html body .main-content > *:nth-child(n+5) { animation-delay: .16s; }
+@keyframes uiFade { from { opacity: 0; } to { opacity: 1; } }
+
+/* Panels and cards */
+html body .panel {
+  border-radius: var(--ui-radius-lg) !important; border: 1px solid var(--border) !important;
+  background: var(--card) !important; box-shadow: var(--ui-shadow) !important;
+}
+html body .panel-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+html body .panel-header p { margin: 4px 0 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
+html body .panel + .panel { margin-top: 18px; }
+html body .stat-card, html body .pp-card { border-radius: var(--ui-radius-lg) !important; }
+
+/* Buttons */
+html body .btn, html body .pp-btn, html body .ann-btn {
+  min-height: 42px; border-radius: var(--ui-radius) !important; font-weight: 600 !important; font-size: 14px !important;
+  letter-spacing: .01em; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  transition: background-color .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease !important;
+}
+html body .btn:disabled, html body .pp-btn:disabled, html body .ann-btn:disabled { opacity: .5; cursor: not-allowed; }
+html body .btn:active, html body .pp-btn:active, html body .ann-btn:active { transform: scale(.98) !important; }
+
+/* Fields */
+html body main input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+html body main select, html body main textarea {
+  min-height: 44px; border-radius: var(--ui-radius) !important; font: 500 15px/1.4 Inter, system-ui, sans-serif;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+html body main textarea { min-height: 110px; }
+html body main input:focus, html body main select:focus, html body main textarea:focus {
+  border-color: var(--ui-gold) !important; box-shadow: 0 0 0 3px rgba(232, 185, 58, .16) !important; outline: none;
+}
+html body label { font-size: 13px; font-weight: 600; }
+
+/* Keyboard focus is always visible and always gold. */
+html body :focus-visible { outline: 2px solid var(--ui-gold) !important; outline-offset: 2px; }
+
+/* Tables */
+html body table { border-collapse: separate; border-spacing: 0; width: 100%; }
+html body thead th {
+  font-size: 11.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+  padding: 12px 16px; background: transparent; white-space: nowrap;
+}
+html body tbody td { padding: 14px 16px; border-top: 1px solid var(--border); vertical-align: middle; font-size: 14.5px; }
+html body .table-wrapper, html body .pp-table-wrap { border-radius: var(--ui-radius-lg); overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+/* Badges and chips */
+html body .badge, html body .member-status-chip, html body .ann-badge {
+  display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 4px 10px;
+  font-size: 11.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; line-height: 1.2;
+}
+
+/* Empty states read as blocks, not as stray text. */
+html body .pp-empty, html body .member-empty, html body .notification-empty, html body .ann-empty, html body .empty-state {
+  display: grid; justify-items: center; gap: 8px; padding: 34px 18px; text-align: center; color: var(--muted);
+  border: 1px dashed var(--border); border-radius: var(--ui-radius-lg);
+}
+
+/* Phone */
+@media (max-width: 760px) {
+  html body .main-content { padding: 16px 14px 40px !important; }
+  html body .panel { border-radius: 18px !important; }
+  html body h1 { font-size: 26px; }
+  html body .panel-header { flex-direction: column; align-items: stretch; }
+  html body .panel-header .btn, html body .panel-header .pp-btn, html body .panel-header .ann-btn { width: 100%; }
+  html body .btn, html body .pp-btn, html body .ann-btn { min-height: 44px; }
+  html body .main-content > header { flex-direction: column; align-items: stretch !important; }
+  html body .main-content > header .btn, html body .main-content > header .ann-btn { width: 100%; }
+}
+
+/* Motion users who prefer less: no fades or press effects. */
+@media (prefers-reduced-motion: reduce) {
+  html body .main-content > * { animation: none !important; }
+  html body .btn, html body .pp-btn, html body .ann-btn { transition: none !important; }
+  html body .btn:active, html body .pp-btn:active, html body .ann-btn:active { transform: none !important; }
+}

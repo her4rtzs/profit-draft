@@ -1,0 +1,78 @@
+{
+  "verdict": "CHANGES_REQUESTED",
+  "reviewDoc": "c:\\Users\\Sipag\\Desktop\\ProFit\\.agents\\tasks\\profit-scaffold\\design-review.md",
+  "findings": [
+    {
+      "id": "HIGH-1",
+      "severity": "HIGH",
+      "title": "Webhook get_or_create + select_for_update sequence is not actually race-safe",
+      "where": "apps/billing webhook step 2 (idempotency)",
+      "problem": "get_or_create does not lock the created row and select_for_update cannot lock a not-yet-existing row; concurrent same-event deliveries either 500 on an uncaught IntegrityError or both pass the UNKNOWN_PAYMENT gate and double-apply. The described call sequence does not provide the serialization the race fix depends on.",
+      "fix": "Specify the exact sequence: get_or_create(defaults UNKNOWN_PAYMENT), then re-read the row via select_for_update().get(pk=...) in BOTH the created and existing branches before checking terminal status or mutating, and explicitly catch a concurrent-insert IntegrityError on event_id and treat it as 'row exists -> re-read under lock'."
+    },
+    {
+      "id": "HIGH-2",
+      "severity": "HIGH",
+      "title": "Signature test/live mode selection has no valid derivation",
+      "where": "apps/billing webhook step 1; verify_signature(..., *, mode)",
+      "problem": "mode is said to derive from whether the configured key is test or live, but the webhook signing secret (PAYMONGO_WEBHOOK_SECRET, whsec_...) carries no test/live marker and the design conflates it with the API secret key (sk_test_/sk_live_). As written mode is undeterminable and the one test only pins message shape, never which of te/li is compared, so prod can reject every live signature while tests pass.",
+      "fix": "Derive mode from PAYMONGO_SECRET_KEY prefix (sk_test_ -> test, sk_live_ -> live) with an explicit offline default (mode=test when empty), and add a test asserting te is compared in test mode and li in live mode."
+    },
+    {
+      "id": "MEDIUM-1",
+      "severity": "MEDIUM",
+      "title": "Assumed signature scheme shipped in-scope with no bytes-exact handling or structural-mismatch fallback",
+      "where": "apps/billing webhook step 1 confirmation note; scope item 4",
+      "problem": "The scheme is honestly flagged as assumed, but the webhook is still an in-scope deliverable whose unit tests encode the guess and will go green, and f\"{t}.{raw_body.decode()}\" is not byte-exact (corrupts non-UTF-8/re-encoded bodies). No contract is stated for a structurally different real scheme.",
+      "fix": "Operate on raw_body as bytes throughout (sign t.encode() + b'.' + raw_body, never decode()), and state the fallback: if confirmation reveals a structurally different scheme, verify_signature and its fixture are rewritten in the billing pass and no real webhook traffic is accepted until then."
+    },
+    {
+      "id": "MEDIUM-2",
+      "severity": "MEDIUM",
+      "title": "ALLOWED_HOSTS production behavior underspecified; can 400 every request",
+      "where": "Settings & environment table, ALLOWED_HOSTS row",
+      "problem": "The design never states how the Vercel domain enters ALLOWED_HOSTS, nor what happens when the var is unset under DEBUG=False. A localhost-only or empty fallback makes Django raise DisallowedHost (400) on every production request.",
+      "fix": "Read ALLOWED_HOSTS from env (csv) requiring the Vercel + custom domains, document in .env.example, and fail fast with ImproperlyConfigured when unset under DEBUG=False rather than silently falling back to localhost. Optionally default from VERCEL_URL."
+    },
+    {
+      "id": "MEDIUM-3",
+      "severity": "MEDIUM",
+      "title": "Mobile login CSRF path left as an unresolved either/or on the critical path",
+      "where": "mobile/ Auth section (NIT-2 caveat)",
+      "problem": "The one in-scope mobile screen cannot authenticate without a decided login flow, but the design leaves 'CSRF-token-echo OR CSRF-exempt login endpoint' unresolved. The two options have materially different security postures and the token path's prerequisite GET is not sequenced.",
+      "fix": "Pick the CSRF-token-echo path: GET an ensure_csrf_cookie endpoint, then POST credentials with X-CSRFToken and credentials:'include'; state no CSRF-exempt login endpoint is created this pass; document the full request sequence (GET csrf -> POST login -> GET /api/membership/me/ -> GET /api/attendance/)."
+    },
+    {
+      "id": "NIT-1",
+      "severity": "NIT",
+      "title": "django-components==0.100 wiring pinned but unverified against that version",
+      "where": "requirements.txt and Web portal shell sections",
+      "problem": "INSTALLED_APPS entry, template_loader.Loader, and COMPONENTS['dirs'] are unverifiable in-workspace and the 0.100 API shape changed across releases.",
+      "fix": "Keep the pin; add 'manage.py check passes with the component rendering in a template' to the implementation acceptance so a wrong loader path fails the gate."
+    },
+    {
+      "id": "NIT-2",
+      "severity": "NIT",
+      "title": "Pooler port WARNING check misfires on URL-default (empty) port",
+      "where": "Settings, Supabase pooler soft check",
+      "problem": "env.db_url can parse PORT as '' when the URL omits the port, so the '==5432 -> warn' advisory never fires for a direct connection on the default port.",
+      "fix": "Normalize empty port to the scheme default before comparing (or compare against '', '5432', 5432); state the warning is advisory only."
+    },
+    {
+      "id": "NIT-3",
+      "severity": "NIT",
+      "title": "All-traffic rewrite vs WhiteNoise static serving not reconciled",
+      "where": "vercel.json and Static files sections",
+      "problem": "Routing '/(.*)' into the single function means static assets are served by WhiteNoise inside the function rather than Vercel edge/CDN, paying an invocation cost. Consistent but not called out as a deliberate choice.",
+      "fix": "Add one line that static is intentionally served via WhiteNoise in-function for first-build simplicity, with CDN/static-hosting optimization noted as a later task."
+    },
+    {
+      "id": "NIT-4",
+      "severity": "NIT",
+      "title": "No guard against out-of-order paid/failed webhook deliveries",
+      "where": "apps/billing webhook step 3",
+      "problem": "paid and failed are distinct event_ids so idempotency does not merge them; nothing prevents a late failed from overwriting a settled paid (or vice versa). Low impact while billing is stubbed, but the single-writer mutators inherit the gap.",
+      "fix": "Note (even if deferred to the billing pass) that mark_payment_paid/mark_payment_failed guard against illegal/stale transitions so out-of-order redelivery cannot flip a settled payment."
+    }
+  ]
+}
