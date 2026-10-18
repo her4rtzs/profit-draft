@@ -1,137 +1,268 @@
-/* ProFit admin sidebar.
-   One docked panel: brand, grouped navigation, then "Collapse Sidebar" as an ordinary row
-   above the account block. Nothing floats on the edge and nothing overlaps the content.
-   Loaded last on every admin page so it replaces the older layered sidebar rules. */
-:root { --pf-sb-w: 264px; --pf-sb-wc: 84px; --sb-gold: #e8b93a; --sb-gold-2: #f2cb5c; --sb-ink: #1a1407; }
+/* ProFit admin sidebar, built from the "Sidebar Wireframe" (Clean / Modern / Responsive).
+   1. Desktop expanded  240px  - brand, nav list, user card
+   2. Desktop collapsed  72px  - icons only, label tooltip (sidebar.js)
+   3. Mobile drawer            - slides in from the left, X to close
+   4. Mobile bottom nav        - Home, Members, Attendance, Reports, More
+   5. States                   - hover, active, keyboard focus
+   Layout follows the wireframe; colours follow the app theme (gold by default). Everything is scoped to #sidebar and loaded last,
+   so the older stacked sidebar rules in styles.css / spotify.css / portal-ui.css cannot override it.
+   Active pill and accents use the theme's --gold / --gold-grad, so the Appearance colour picker still works. */
 
-html body nav.sidebar {
+:root {
+  --pf-sb-w: 240px;            /* expanded width  */
+  --pf-sb-wc: 72px;            /* collapsed width */
+  --sb-bg: linear-gradient(180deg, #141b27 0%, #0c1119 100%);   /* app's dark navy panel */
+  --sb-hover: rgba(255, 255, 255, .07);
+  --sb-text: #cbd5e1;
+  --sb-muted: #94a3b8;
+  --sb-line: rgba(255, 255, 255, .08);
+  --sb-radius: 10px;
+}
+
+/* Accent tokens are resolved on the elements (not :root) so they pick up the theme's --gold values. */
+html body nav#sidebar, html body .bottom-nav {
+  --sb-active: var(--gold-grad, linear-gradient(110deg, #f2cb5c 0%, #e8b93a 100%));
+  --sb-accent: var(--gold, #e8b93a);
+  --sb-active-ink: var(--on-accent, #1a1407);
+}
+
+/* ---------- 1. Panel ---------- */
+html body nav#sidebar {
   position: fixed; inset: 0 auto 0 0; z-index: 200;
-  width: var(--pf-sb-w) !important; box-sizing: border-box; padding: 18px 14px 14px !important;
-  display: flex !important; flex-direction: column; gap: 0; overflow: visible !important;
-  background: linear-gradient(180deg, #141b27 0%, #0c1119 100%) !important;
-  border: 0 !important; border-right: 1px solid rgba(255,255,255,.07) !important; border-radius: 0 24px 24px 0 !important;
-  box-shadow: 14px 0 40px rgba(0,0,0,.28) !important;
-  transition: width .28s cubic-bezier(.2,.8,.2,1), transform .28s ease !important;
+  width: var(--pf-sb-w) !important; height: 100vh; height: 100dvh;
+  box-sizing: border-box; padding: 16px 12px 12px !important;
+  display: flex !important; flex-direction: column; gap: 0;
+  overflow: visible !important; transform: none;
+  background: var(--sb-bg) !important;
+  border: 0 !important; border-right: 1px solid var(--sb-line) !important; border-radius: 0 !important;
+  box-shadow: none !important;
+  transition: width .24s cubic-bezier(.2, .8, .2, 1), transform .26s ease !important;
 }
-html body nav.sidebar.close { width: var(--pf-sb-wc) !important; }
-html body nav.sidebar ~ .main-content { margin-left: var(--pf-sb-w) !important; }
-html body nav.sidebar.close ~ .main-content { margin-left: var(--pf-sb-wc) !important; }
+html body nav#sidebar::before, html body nav#sidebar::after { display: none !important; }
+html body nav#sidebar.close { width: var(--pf-sb-wc) !important; padding: 16px 12px 12px !important; }
 
-/* Brand */
-html body nav.sidebar .sidebar-brand-row { flex: 0 0 auto; display: flex; align-items: center; gap: 12px; padding: 4px 6px 16px; margin: 0 0 8px; border-bottom: 1px solid rgba(255,255,255,.07); }
-html body nav.sidebar .imgbrand { display: flex; align-items: center; gap: 12px; min-width: 0; text-decoration: none; }
-html body nav.sidebar .imgbrand .image { flex: 0 0 42px; width: 42px !important; height: 42px !important; border-radius: 13px; overflow: hidden; }
-html body nav.sidebar .headertxt { display: grid; gap: 3px; min-width: 0; }
-html body nav.sidebar .headertxt strong { color: #fff; font-size: 16px; font-weight: 800; line-height: 1.1; white-space: nowrap; }
-html body nav.sidebar .headertxt small { color: var(--sb-gold); font-size: 10px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; white-space: nowrap; }
+/* Content always makes room, never sits under the panel. */
+html body nav#sidebar ~ .main-content { margin-left: var(--pf-sb-w) !important; margin-right: 0 !important; max-width: none !important; }
+html body nav#sidebar.close ~ .main-content { margin-left: var(--pf-sb-wc) !important; }
 
-/* Navigation (only this region scrolls) */
-html body nav.sidebar .sidebar-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; display: grid; align-content: start; gap: 10px; padding: 4px 0; }
-html body nav.sidebar .sidebar-scroll::-webkit-scrollbar { display: none; }
-html body nav.sidebar .nav-group { margin: 0; padding: 8px 6px 6px; border-radius: 18px; background: rgba(255,255,255,.035); }
-html body nav.sidebar .nav-group-label { margin: 2px 10px 8px; padding: 0; height: auto; opacity: 1; color: #6b778c; font-size: 10.5px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; line-height: 1.2; }
-html body nav.sidebar .menulist { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
-html body nav.sidebar .menulist li { margin: 0; padding: 0; }
-
-html body nav.sidebar .menulist a,
-html body nav.sidebar .sb-collapse {
-  position: relative; display: flex; align-items: center; gap: 14px; width: 100%; height: 44px; padding: 0 12px; box-sizing: border-box;
-  border: 0; border-radius: 14px; background: transparent !important; box-shadow: none !important;
-  color: #98a2b6 !important; font: 600 14px/1 Inter, system-ui, sans-serif !important; text-decoration: none; text-align: left; cursor: pointer;
-  transition: background-color .18s ease, color .18s ease;
+/* ---------- Brand ---------- */
+html body nav#sidebar .sidebar-brand-row {
+  flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 4px;
+  min-height: 48px; margin: 0 0 14px !important; padding: 0 !important; border: 0 !important;
 }
-html body nav.sidebar .menulist a .icon,
-html body nav.sidebar .sb-collapse .icon { flex: 0 0 22px; width: 22px; text-align: center; font-size: 16px; color: #7f8aa0 !important; display: inline-block !important; visibility: visible !important; opacity: 1 !important; transition: color .18s ease; }
-html body nav.sidebar .menulist a .text,
-html body nav.sidebar .sb-collapse .text { min-width: 0; font-weight: 600 !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: inherit !important; }
-html body nav.sidebar .menulist a::before { display: none !important; }
+html body nav#sidebar .imgbrand { display: flex !important; align-items: center; gap: 10px !important; min-width: 0; flex: 1 1 auto; text-decoration: none; }
+html body nav#sidebar .imgbrand .image {
+  flex: 0 0 36px; width: 36px !important; height: 36px !important; padding: 0 !important; margin: 0;
+  border-radius: 10px !important; overflow: hidden; background: transparent !important; box-shadow: none !important;
+}
+html body nav#sidebar .imgbrand .image img { width: 100%; height: 100%; object-fit: cover; border-radius: 0 !important; display: block; }
+html body nav#sidebar .headertxt { display: block; min-width: 0; }
+html body nav#sidebar .headertxt strong {
+  display: block; color: #fff !important; font: 800 17px/1.1 "Plus Jakarta Sans", Inter, system-ui, sans-serif !important;
+  letter-spacing: -.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+html body nav#sidebar .headertxt small {
+  display: block !important; margin-top: 3px; color: var(--sb-accent) !important; font-size: 8.5px !important; font-weight: 700;
+  letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+html body nav#sidebar .sb-close { display: none; }
 
+/* ---------- Navigation ---------- */
+html body nav#sidebar .sidebar-scroll {
+  flex: 1 1 auto; min-height: 0; padding: 2px 0 !important; margin: 0;
+  overflow-y: auto !important; overflow-x: hidden !important; scrollbar-width: none;
+}
+html body nav#sidebar .sidebar-scroll::-webkit-scrollbar { display: none; width: 0; }
+html body nav#sidebar .menulist { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+html body nav#sidebar .menulist li { margin: 0; padding: 0; }
+
+html body nav#sidebar .menulist a {
+  position: relative; display: flex !important; align-items: center; gap: 12px !important;
+  width: 100%; height: 44px !important; padding: 0 12px !important; box-sizing: border-box;
+  border: 0; border-radius: var(--sb-radius) !important; background: transparent !important; box-shadow: none !important;
+  color: var(--sb-text) !important; font: 500 14px/1 Inter, system-ui, sans-serif !important;
+  text-decoration: none; text-align: left; cursor: pointer; transform: none !important;
+  transition: background-color .16s ease, color .16s ease;
+}
+html body nav#sidebar .menulist a .icon {
+  flex: 0 0 20px; width: 20px; display: inline-block !important; text-align: center; font-size: 17px; line-height: 1;
+  color: var(--sb-muted) !important; visibility: visible !important; opacity: 1 !important; transform: none !important;
+  transition: color .16s ease;
+}
+html body nav#sidebar .menulist a .text {
+  display: inline !important; min-width: 0; color: inherit !important; font-weight: 500 !important;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 1 !important;
+}
+html body nav#sidebar .menulist a::before, html body nav#sidebar .menulist a::after { display: none !important; }
+
+/* Hover: Slate 700 */
 @media (hover: hover) {
-  html body nav.sidebar .menulist a:hover,
-  html body nav.sidebar .sb-collapse:hover { background: rgba(255,255,255,.07) !important; color: #eef1f7 !important; }
-  html body nav.sidebar .menulist a:hover .icon,
-  html body nav.sidebar .sb-collapse:hover .icon { color: #eef1f7 !important; }
+  html body nav#sidebar .menulist a:hover { background: var(--sb-hover) !important; color: #fff !important; }
+  html body nav#sidebar .menulist a:hover .icon { color: #fff !important; }
+  html body nav#sidebar .sb-collapse:hover { background: var(--sb-hover) !important; color: #fff !important; }
 }
-html body nav.sidebar .menulist a:focus-visible,
-html body nav.sidebar .sb-collapse:focus-visible,
-html body nav.sidebar .account-menu-toggle:focus-visible { outline: 2px solid var(--sb-gold); outline-offset: 2px; }
+/* Keyboard focus */
+html body nav#sidebar .menulist a:focus { outline: none; }
+html body nav#sidebar .menulist a:focus-visible,
+html body nav#sidebar .sb-collapse:focus-visible,
+html body nav#sidebar .sb-close:focus-visible,
+html body nav#sidebar .account-menu-toggle:focus-visible,
+html body nav#sidebar .sidebar-user:focus-visible { outline: 2px solid var(--sb-accent) !important; outline-offset: 2px; }
 
-/* Active page: solid gold pill */
-html body nav.sidebar .menulist a.active,
-html body nav.sidebar .menulist a.active:hover {
-  background: linear-gradient(110deg, var(--sb-gold-2) 0%, var(--sb-gold) 100%) !important; color: var(--sb-ink) !important;
-  box-shadow: 0 8px 20px rgba(232,185,58,.22) !important;
+/* Active page: indigo pill, white text and icon */
+html body nav#sidebar .menulist a.active,
+html body nav#sidebar .menulist a.active:hover,
+html body nav#sidebar .menulist a.active:focus {
+  background: var(--sb-active) !important; color: var(--sb-active-ink) !important; font-weight: 600;
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--sb-accent) 22%, transparent) !important;
 }
-html body nav.sidebar .menulist a.active .icon,
-html body nav.sidebar .menulist a.active .text { color: var(--sb-ink) !important; }
+html body nav#sidebar .menulist a.active .icon,
+html body nav#sidebar .menulist a.active .text { color: var(--sb-active-ink) !important; }
 
-/* Footer: collapse row + account */
-html body nav.sidebar .sidebar-foot { flex: 0 0 auto; display: grid; gap: 8px; margin-top: 8px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,.07); }
-html body nav.sidebar .sidebar-account { margin: 0 !important; padding: 0 !important; border: 0 !important; position: relative; }
-html body nav.sidebar .sidebar-user { position: relative; display: flex; align-items: center; gap: 10px; padding: 8px 8px 8px 10px; border-radius: 16px; background: rgba(255,255,255,.045) !important; border: 0; }
-html body nav.sidebar .sidebar-avatar { position: relative; flex: 0 0 38px; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; overflow: hidden; background: linear-gradient(135deg, var(--sb-gold-2), var(--sb-gold)); color: var(--sb-ink); font-weight: 800; font-size: 13px; }
-html body nav.sidebar .sidebar-avatar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-html body nav.sidebar .sidebar-user-copy { flex: 1 1 auto; min-width: 0; display: grid; gap: 2px; }
-html body nav.sidebar .sidebar-user-copy strong { color: #fff !important; font-size: 13px !important; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-html body nav.sidebar .sidebar-user-copy small { color: #8b94a5 !important; font-size: 11px !important; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-html body nav.sidebar .account-menu-toggle { flex: 0 0 32px; width: 32px; height: 32px; display: grid; place-items: center; border: 0; border-radius: 10px; background: transparent; color: #b4bac7 !important; cursor: pointer; }
-html body nav.sidebar .account-menu-toggle:hover { background: rgba(255,255,255,.1); color: #fff !important; }
-
-/* Account menu opens upward inside the panel, so nothing is clipped or overlapped. */
-html body nav.sidebar .account-menu {
-  position: absolute !important; left: 0 !important; right: 0 !important; bottom: calc(100% + 8px) !important; top: auto !important; width: auto !important;
-  display: none; padding: 6px; border-radius: 16px; background: #1a2230 !important; border: 1px solid rgba(255,255,255,.09); box-shadow: 0 18px 40px rgba(0,0,0,.5); z-index: 5;
+/* ---------- Footer: collapse row + user card ---------- */
+html body nav#sidebar .sidebar-foot {
+  flex: 0 0 auto; display: grid; gap: 0; margin: 10px 0 0 !important; padding: 10px 0 0 !important;
+  border-top: 1px solid var(--sb-line);
 }
-html body nav.sidebar .account-menu.is-open { display: grid !important; gap: 2px; }
-html body nav.sidebar .sidebar-user:hover .account-menu:not(.is-open) { display: none !important; }
-html body nav.sidebar .account-menu::after { display: none; }
-html body nav.sidebar .account-menu a,
-html body nav.sidebar .account-menu button { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 12px; border: 0; border-radius: 10px; background: transparent !important; color: #dfe4ee !important; font: 600 13px/1 Inter, system-ui, sans-serif; text-align: left; text-decoration: none; cursor: pointer; }
-html body nav.sidebar .account-menu a i,
-html body nav.sidebar .account-menu button i { width: 16px; text-align: center; color: #98a2b6; }
-html body nav.sidebar .account-menu a:hover,
-html body nav.sidebar .account-menu button:hover { background: rgba(255,255,255,.08) !important; }
-html body nav.sidebar .account-menu button[data-logout],
-html body nav.sidebar .account-menu button[data-logout] i { color: #ff7b7b !important; }
+/* Collapse control: a small button in the brand row at the top, not a floating edge button. */
+html body nav#sidebar .sb-collapse {
+  flex: 0 0 30px; width: 30px; height: 30px; padding: 0; display: grid; place-items: center;
+  border: 0; border-radius: var(--sb-radius); background: transparent !important; color: var(--sb-muted) !important; cursor: pointer;
+  transition: background-color .16s ease, color .16s ease;
+}
+html body nav#sidebar .sb-collapse .icon { font-size: 14px; color: inherit !important; }
+html body nav#sidebar .sb-collapse .text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-/* Collapsed rail: icons only, centred, tooltip on hover */
-html body nav.sidebar.close .headertxt,
-html body nav.sidebar.close .nav-group-label,
-html body nav.sidebar.close .menulist a .text,
-html body nav.sidebar.close .sb-collapse .text,
-html body nav.sidebar.close .sidebar-user-copy,
-html body nav.sidebar.close .account-menu-toggle { display: none !important; }
-html body nav.sidebar.close .sidebar-brand-row { justify-content: center; padding: 4px 0 16px; }
-html body nav.sidebar.close .imgbrand { justify-content: center; width: 100%; }
-html body nav.sidebar.close .nav-group { padding: 6px 4px; background: rgba(255,255,255,.03); }
-html body nav.sidebar.close .menulist a,
-html body nav.sidebar.close .sb-collapse { justify-content: center; padding: 0; gap: 0; }
-html body nav.sidebar.close .sidebar-user { justify-content: center; padding: 6px 0; background: transparent !important; cursor: pointer; }
-html body nav.sidebar.close .account-menu { left: calc(100% + 14px) !important; right: auto !important; bottom: 0 !important; width: 210px !important; }
+html body nav#sidebar .sidebar-account { position: relative; margin: 0 !important; padding: 0 !important; border: 0 !important; }
+html body nav#sidebar .sidebar-user {
+  position: relative; display: flex; align-items: center; gap: 10px; min-width: 0;
+  padding: 6px 4px 6px 6px !important; border: 0 !important; border-radius: var(--sb-radius); background: transparent !important;
+}
+html body nav#sidebar .sidebar-avatar {
+  position: relative; flex: 0 0 32px; width: 32px !important; height: 32px !important; border-radius: 50% !important;
+  display: grid; place-items: center; overflow: hidden;
+  background: var(--sb-active) !important; color: var(--sb-active-ink) !important; font: 700 12px/1 Inter, system-ui, sans-serif !important;
+}
+html body nav#sidebar .sidebar-avatar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+html body nav#sidebar .sidebar-user-copy { flex: 1 1 auto; min-width: 0; display: grid !important; gap: 2px; }
+html body nav#sidebar .sidebar-user-copy strong {
+  display: block; color: #fff !important; font: 600 13px/1.2 Inter, system-ui, sans-serif !important;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+html body nav#sidebar .sidebar-user-copy small { display: block; color: var(--sb-muted) !important; font-size: 11px !important; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+html body nav#sidebar .account-menu-toggle {
+  flex: 0 0 28px; width: 28px; height: 28px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 8px;
+  background: transparent !important; color: var(--sb-muted) !important; font-size: 12px; cursor: pointer;
+}
+html body nav#sidebar .account-menu-toggle:hover { background: var(--sb-hover) !important; color: #fff !important; }
 
-/* Tooltip for the collapsed rail (created in sidebar.js) */
-.pf-tip { position: fixed; z-index: 99990; transform: translateY(-50%) translateX(-4px); opacity: 0; pointer-events: none;
-  background: #1a2230; color: #fff; border: 1px solid rgba(255,255,255,.1); border-radius: 10px; padding: 8px 12px;
-  font: 600 13px/1.2 Inter, system-ui, sans-serif; white-space: nowrap; box-shadow: 0 12px 28px rgba(0,0,0,.45); transition: opacity .15s ease, transform .15s ease; }
+/* Account menu opens upward, inside the viewport. */
+html body nav#sidebar .account-menu {
+  position: absolute !important; left: 0 !important; right: 0 !important; bottom: calc(100% + 8px) !important; top: auto !important;
+  width: auto !important; display: none; padding: 6px; border-radius: 12px;
+  background: #111827 !important; border: 1px solid var(--sb-line); box-shadow: 0 18px 40px rgba(0, 0, 0, .5); z-index: 5;
+}
+html body nav#sidebar .account-menu.is-open { display: grid !important; gap: 2px; opacity: 1 !important; visibility: visible !important; transform: none !important; }
+html body nav#sidebar .sidebar-user:hover .account-menu:not(.is-open) { display: none !important; }
+html body nav#sidebar .account-menu::after { display: none; }
+html body nav#sidebar .account-menu a,
+html body nav#sidebar .account-menu button {
+  display: flex; align-items: center; gap: 10px; width: 100%; height: 40px; padding: 0 12px; border: 0; border-radius: 8px;
+  background: transparent !important; color: #e5e7eb !important; font: 500 13px/1 Inter, system-ui, sans-serif; text-align: left; text-decoration: none; cursor: pointer;
+}
+html body nav#sidebar .account-menu a i, html body nav#sidebar .account-menu button i { width: 16px; text-align: center; color: var(--sb-muted) !important; }
+html body nav#sidebar .account-menu a:hover, html body nav#sidebar .account-menu button:hover { background: var(--sb-hover) !important; color: #fff !important; }
+html body nav#sidebar .account-menu a.active { background: var(--sb-active) !important; color: var(--sb-active-ink) !important; }
+html body nav#sidebar .account-menu a.active i { color: var(--sb-active-ink) !important; }
+html body nav#sidebar .account-menu button[data-logout], html body nav#sidebar .account-menu button[data-logout] i { color: #fca5a5 !important; }
+
+/* ---------- 2. Collapsed rail (72px): icons only ---------- */
+html body nav#sidebar.close .headertxt,
+html body nav#sidebar.close .menulist a .text,
+html body nav#sidebar.close .sidebar-user-copy,
+html body nav#sidebar.close .account-menu-toggle { display: none !important; }
+html body nav#sidebar.close .sidebar-brand-row { flex-direction: column; justify-content: center; gap: 8px; padding: 0 !important; }
+html body nav#sidebar.close .imgbrand { justify-content: center; width: 100%; }
+html body nav#sidebar.close .menulist a { justify-content: center; padding: 0 !important; gap: 0 !important; }
+html body nav#sidebar.close .sidebar-user { justify-content: center; padding: 6px 0 !important; cursor: pointer; }
+html body nav#sidebar.close .account-menu { left: calc(100% + 12px) !important; right: auto !important; bottom: 0 !important; width: 200px !important; }
+
+/* Tooltip for the collapsed rail (sidebar.js adds .pf-tip) */
+.pf-tip {
+  position: fixed; z-index: 99990; transform: translateY(-50%) translateX(-4px); opacity: 0; pointer-events: none;
+  background: #111827; color: #fff; border-radius: 8px; padding: 7px 12px;
+  font: 600 13px/1.2 Inter, system-ui, sans-serif; white-space: nowrap; box-shadow: 0 10px 24px rgba(0, 0, 0, .4);
+  transition: opacity .14s ease, transform .14s ease;
+}
 .pf-tip.show { opacity: 1; transform: translateY(-50%) translateX(0); }
 
-/* Light theme keeps the dark panel for contrast, so no extra rules are needed. */
+/* ---------- 4. Bottom navigation (hidden on desktop) ---------- */
+.bottom-nav { display: none; }
 
-/* Phones: the sidebar is a drawer; there is nothing to collapse. */
+/* ---------- 3 + 4. Phones: drawer + bottom nav ---------- */
 @media (max-width: 760px) {
-  html body nav.sidebar, html body nav.sidebar.close { width: min(300px, 86vw) !important; transform: translateX(-104%); border-radius: 0 24px 24px 0 !important; }
-  html body nav.sidebar.mobile-open { transform: translateX(0); }
-  html body nav.sidebar ~ .main-content, html body nav.sidebar.close ~ .main-content { margin-left: 0 !important; }
-  html body nav.sidebar .sb-collapse { display: none; }
-  html body nav.sidebar.close .headertxt { display: grid !important; }
-  html body nav.sidebar.close .nav-group-label, html body nav.sidebar.close .sidebar-user-copy { display: block !important; }
-  html body nav.sidebar.close .menulist a .text { display: block !important; }
-  html body nav.sidebar.close .account-menu-toggle { display: grid !important; }
-  html body nav.sidebar.close .menulist a { justify-content: flex-start; padding: 0 12px; gap: 14px; }
-  html body nav.sidebar.close .sidebar-brand-row { justify-content: flex-start; }
-  html body nav.sidebar.close .sidebar-user { justify-content: flex-start; padding: 8px 8px 8px 10px; background: rgba(255,255,255,.045) !important; }
-  html body nav.sidebar.close .account-menu { left: 0 !important; right: 0 !important; bottom: calc(100% + 8px) !important; width: auto !important; }
+  /* Drawer */
+  html body nav#sidebar,
+  html body nav#sidebar.close {
+    width: min(300px, 86vw) !important; padding: 16px 12px 12px !important; z-index: 1100;
+    transform: translateX(-105%); visibility: hidden; box-shadow: none !important;
+    transition: transform .26s ease, visibility 0s linear .26s !important;
+  }
+  html body nav#sidebar.mobile-open {
+    transform: translateX(0); visibility: visible; box-shadow: 24px 0 60px rgba(0, 0, 0, .45) !important;
+    transition: transform .26s ease, visibility 0s !important;
+  }
+  html body nav#sidebar ~ .main-content,
+  html body nav#sidebar.close ~ .main-content { margin-left: 0 !important; }
+  /* Drawer slides over the page (wireframe 3); older rules pushed the whole page aside instead. */
+  html body.drawer-open .main-content { transform: none !important; pointer-events: auto; }
+  html body .sidebar-shade.visible {
+    left: 0 !important; inset: 0 !important; z-index: 1050 !important;
+    background: rgba(3, 7, 18, .6) !important; backdrop-filter: blur(2px) !important;
+  }
+
+  html body nav#sidebar .sb-close {
+    display: grid; place-items: center; flex: 0 0 36px; width: 36px; height: 36px; padding: 0;
+    border: 0; border-radius: 10px; background: transparent; color: var(--sb-text); font-size: 18px; cursor: pointer;
+  }
+  html body nav#sidebar .sb-close:hover { background: var(--sb-hover); color: #fff; }
+  html body nav#sidebar .sb-collapse { display: none !important; }
+
+  /* Always show full labels in the drawer, even if the desktop rail was left collapsed. */
+  html body nav#sidebar.close .headertxt { display: block !important; }
+  html body nav#sidebar.close .menulist a .text { display: inline !important; }
+  html body nav#sidebar.close .sidebar-user-copy { display: grid !important; }
+  html body nav#sidebar.close .account-menu-toggle { display: grid !important; }
+  html body nav#sidebar.close .sidebar-brand-row { flex-direction: row; justify-content: space-between; gap: 8px; padding: 0 4px !important; }
+  html body nav#sidebar.close .imgbrand { justify-content: flex-start; width: auto; }
+  html body nav#sidebar.close .menulist a { justify-content: flex-start; padding: 0 12px !important; gap: 12px !important; }
+  html body nav#sidebar.close .sidebar-user { justify-content: flex-start; padding: 6px 4px 6px 6px !important; }
+  html body nav#sidebar.close .account-menu { left: 0 !important; right: 0 !important; bottom: calc(100% + 8px) !important; width: auto !important; }
+
+  /* Bottom nav */
+  .bottom-nav {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 900;
+    display: grid; grid-template-columns: repeat(5, 1fr); align-items: stretch;
+    padding: 6px 6px calc(6px + env(safe-area-inset-bottom, 0px));
+    background: var(--card, #1f2937); border-top: 1px solid var(--border, rgba(255, 255, 255, .1));
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, .18);
+  }
+  .bottom-nav a, .bottom-nav button {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+    min-height: 52px; padding: 4px 2px; border: 0; border-radius: 10px; background: transparent;
+    color: var(--muted, #94a3b8); font: 600 11px/1 Inter, system-ui, sans-serif; text-decoration: none; cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .bottom-nav i { font-size: 18px; line-height: 1; }
+  .bottom-nav a.active { color: var(--sb-accent); }
+  .bottom-nav a:focus-visible, .bottom-nav button:focus-visible { outline: 2px solid var(--sb-accent); outline-offset: -2px; }
+  .bottom-nav button[aria-expanded="true"] { color: var(--sb-accent); }
+
+  /* Keep page content and the footer clear of the bar. */
+  html body .main-content { padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px)) !important; }
+  body.drawer-open .bottom-nav { visibility: hidden; }
 }
+
 @media (prefers-reduced-motion: reduce) {
-  html body nav.sidebar, html body nav.sidebar .menulist a, html body nav.sidebar .sb-collapse, .pf-tip { transition: none !important; }
+  html body nav#sidebar, html body nav#sidebar .menulist a, html body nav#sidebar .sb-collapse, .pf-tip { transition: none !important; }
 }

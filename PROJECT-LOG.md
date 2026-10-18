@@ -512,3 +512,28 @@ When a navigation change removes a layout column, reset the width and offset var
 - Font Awesome could not load in the build environment, so icons were not visible in screenshots. Layout was checked by measurement. Please look at the icons in a real browser.
 ### Decision-log skill
 When a UI has many stacked override stylesheets, add one last stylesheet with its own variable names instead of editing each layer, and check layout by measuring overlaps across widths rather than by eye. Check body data-page and data-title on every page, because the sidebar highlight depends on them.
+
+## 2026-10-18 (Asia/Manila): Admin sidebar rebuilt from the Sidebar Wireframe
+### What I asked for
+- Fix the sidebar problems and rebuild it from the wireframe without removing any module.
+### What the agent decided and why
+- Nav is now one flat list in wireframe order: Dashboard, Members, Trainers, Attendance, Payments, Reports, Announcements, Settings. All earlier modules are kept; Settings is now also a nav item (it stays in the account menu).
+- Widths follow the wireframe: 240px expanded, 72px collapsed with a label tooltip. Colors use the wireframe tokens (Slate 800 panel, Slate 700 hover, indigo active). Change `--sb-active` at the top of sidebar-pro.css to recolor.
+- Phones: drawer with an X button, plus a bottom nav (Home, Members, Attendance, Reports, More). "More" opens the drawer.
+- Root causes of the mobile problems: the drawer sat at z-index 200 under its own shade (z-index 1000), and spotify.css pushed the whole page sideways when the drawer opened. Both are overridden in sidebar-pro.css.
+- Everything is scoped to `#sidebar` so the older stacked sidebar rules cannot override it. Bumped sidebar-pro.css to v2, layout.js and sidebar.js to v15, and the service worker cache to v10 so browsers drop stale copies.
+- Checked in headless Chromium on all 9 admin pages, dark and light, at 1280px and 390px: correct active item, no horizontal scroll, no script errors. Font Awesome could not load offline, so please look at the icons in a real browser.
+### Decision-log skill
+When the sidebar is wrong only on some machines, suspect cached CSS/JS or the service worker first. Bump versions and the cache name with every sidebar change.
+
+## 2026-10-18 (Asia/Manila): Sidebar follow-up after owner review
+### What I asked for
+- Old nav names back, gold theme colours back, "FUNCTIONAL FITNESS" tagline back, collapse button at the top.
+### What the agent decided and why
+- Names restored in layout.js: Member List, Payments & Billing, Financial Reports. The mobile bottom bar keeps short labels (Home, Members, Attendance, Reports) so five items fit.
+- Panel is the app's dark navy again; the active pill, avatar, tagline and focus rings use the theme's --gold / --gold-grad, so the Appearance colour picker still works. The tokens are resolved on the sidebar element, not :root, because the accent values are set below the root.
+- The collapse button is now a small icon button in the brand row (id sidebarToggle kept). When collapsed it sits under the logo. Hidden on phones, where the X closes the drawer.
+- Tagline shrunk to 8.5px with tighter tracking so "FUNCTIONAL FITNESS" fits beside the button without truncating (measured scrollWidth equals clientWidth).
+- Bumped sidebar-pro.css to v3, layout.js to v16, service worker cache to v11.
+### Decision-log skill
+Resolve theme tokens on the element that uses them, not :root, when the theme sets them on html[data-accent] or body.dark.
