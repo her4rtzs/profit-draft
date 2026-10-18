@@ -1,11 +1,13 @@
-/* ProFit Staff Dashboard - Fixed Desktop Sidebar & Mobile Drawer.
-   The desktop sidebar remains permanently fixed, stable, and visible at 260px.
-   The mobile sidebar acts strictly as a sliding drawer on screens <= 768px.
-   Loaded last so layout invariants are guaranteed. */
+/* ProFit Staff Dashboard - Icon Rail, Manual Collapse & Mobile Drawer.
+   On desktop the sidebar is an icon rail that expands to the full 260px panel
+   while the pointer hovers it or the keyboard focus is inside it. The chevron
+   in the brand row pins it permanently collapsed instead (the .close state).
+   The mobile sidebar acts strictly as a sliding drawer on screens <= 768px. */
 
 :root {
   --sidebar-w: 260px;
   --pf-sb-w: 260px;
+  --sb-rail: 78px;              /* collapsed icon rail width (matches .close) */
   --sb-gold: #e8b93a;
   --sb-gold-2: #f2cb5c;
   --sb-ink: #1a1407;
@@ -594,5 +596,110 @@ html body nav.sidebar .account-menu button[data-logout] i {
   }
   .sidebar-shade {
     display: none !important;
+  }
+}
+
+/* ==========================================================================
+   HOVER-EXPAND ICON RAIL (desktop default)
+   By default the sidebar rests as an icon rail and expands to the full panel
+   while the pointer hovers it or the keyboard focus is inside it. Only
+   `width` animates and the icons keep their x-position, so the page column
+   never reflows: the expanded panel slides over the content.
+   Everything here is scoped to `:not(.close)`, so when the chevron pins the
+   sidebar collapsed the manual `.close` rail (with its tooltips) keeps its
+   own look and hover does not fight it.
+   Scoped to desktop, so the <=768px drawer keeps its full-width layout.
+   ========================================================================== */
+
+@media (min-width: 769px) {
+  /* The rail and the page column are one width, and only `width` is animated,
+     so min/max must not clamp the transition. */
+  html body nav.sidebar#sidebar {
+    min-width: 0 !important;
+    max-width: none !important;
+    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1),
+                width 0.22s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+  }
+
+  html body nav.sidebar#sidebar:not(.close):not(:hover):not(:focus-within) {
+    width: var(--sb-rail) !important;
+  }
+
+  /* Resting rail: icons only, centred. */
+  html body nav.sidebar#sidebar:not(.close):not(:hover):not(:focus-within) .sidebar-brand-row,
+  html body nav.sidebar#sidebar:not(.close):not(:hover):not(:focus-within) .sidebar-user {
+    justify-content: center !important;
+  }
+
+  html body nav.sidebar#sidebar:not(.close):not(:hover):not(:focus-within) .menulist a {
+    justify-content: center !important;
+    gap: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Text that only makes sense while the panel is open. The nav label is
+     clipped further down instead, so links keep their accessible names. */
+  html body nav.sidebar#sidebar:not(.close):not(:hover):not(:focus-within) .headertxt,
+  html body nav.sidebar#sidebar:not(.close):not(:hover):not(:focus-within) .nav-group-label,
+  html body nav.sidebar#sidebar:not(.close):not(:hover):not(:focus-within) .sidebar-user-copy,
+  html body nav.sidebar#sidebar:not(.close):not(:hover):not(:focus-within) .account-menu-toggle,
+  html body nav.sidebar#sidebar:not(.close):not(:hover):not(:focus-within) .account-menu,
+  html body nav.sidebar#sidebar:not(.close):not(:hover):not(:focus-within) #sidebarToggle {
+    display: none !important;
+  }
+
+  html body nav.sidebar#sidebar:not(.close):not(:hover):not(:focus-within) .menulist a .text {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    margin: -1px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    clip-path: inset(50%) !important;
+  }
+
+  /* Reveal: labels fade in only after the panel has widened, so they are never
+     painted across the page content mid-transition. */
+  html body nav.sidebar#sidebar:hover .headertxt,
+  html body nav.sidebar#sidebar:focus-within .headertxt,
+  html body nav.sidebar#sidebar:hover .sidebar-user-copy,
+  html body nav.sidebar#sidebar:focus-within .sidebar-user-copy,
+  html body nav.sidebar#sidebar:hover .menulist a .text,
+  html body nav.sidebar#sidebar:focus-within .menulist a .text {
+    animation: sb-rail-reveal 0.16s ease 0.08s both !important;
+  }
+
+  html body nav.sidebar#sidebar:hover .nav-group-label,
+  html body nav.sidebar#sidebar:focus-within .nav-group-label {
+    animation: sb-rail-fade 0.16s ease 0.08s both !important;
+  }
+
+  /* The page column always reserves the rail, so the expanded panel slides
+     over the content rather than pushing it. */
+  html body nav.sidebar#sidebar ~ .main-content {
+    margin-left: var(--sb-rail) !important;
+    width: calc(100% - var(--sb-rail)) !important;
+    max-width: calc(100% - var(--sb-rail)) !important;
+  }
+}
+
+@keyframes sb-rail-reveal {
+  from { opacity: 0; transform: translateX(-6px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes sb-rail-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html body nav.sidebar#sidebar,
+  html body nav.sidebar#sidebar .headertxt,
+  html body nav.sidebar#sidebar .nav-group-label,
+  html body nav.sidebar#sidebar .sidebar-user-copy,
+  html body nav.sidebar#sidebar .menulist a .text {
+    transition: none !important;
+    animation: none !important;
   }
 }

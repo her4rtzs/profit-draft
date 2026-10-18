@@ -673,3 +673,18 @@ Organize all the files and remove duplicate files or unnecessary.
 ### Decision-log skill
 When organizing codebases and removing duplicate directories, verify that the canonical paths specified in the architecture/rules documentation (`AGENTS.md`) are preserved. Audit all file usages across HTML, JS, CSS, Python, and configuration files before deleting, and run the test suite to guarantee zero regressions.
 
+## 2026-10-19 00:05 (Asia/Manila): Staff sidebar becomes a hover-expanding icon rail
+### What I asked for
+Change the staff portal navigation bar to behave like Instagram: collapsed to icons, and it shows in full only while you hover it.
+### What the agent decided and why
+- Built it as CSS only, in `sidebar-pro.css`, scoped to `@media (min-width: 769px)`, so the <=768px drawer keeps its full-width look and no page needed new markup.
+- Put `#sidebar` into every rail selector: `layout-fixes.css` loads after `sidebar-pro.css` and pins the sidebar to a hard 260px with `!important`, so the id is what lets the rail win without editing that file.
+- Animated `width` alone (78px -> 260px) and released `min-width`/`max-width`, because the 260px max-width clamp would otherwise have snapped the expansion instantly.
+- A teammate's manual collapse rail (chevron button, `.close`, `body.sidebar-collapsed`, localStorage) landed on the remote mid-session. Kept both instead of overwriting: every hover-rail rule is scoped to `:not(.close)`, so the chevron still pins a permanently collapsed rail with tooltips and the two mechanisms never fight each other.
+- Settled the rail at the teammate's 78px instead of the 80px chosen from the width comparison, so the rail and the content offset stay identical when the chevron is toggled: no 2px seam against the sidebar and no content jump.
+- Re-bumped `sidebar-pro.css` to `?v=6` on the 9 staff pages and the service worker shell cache to `v15`, because the file changed a second time on top of the teammate's `v5`.
+- The collapsed label is clipped to 1px instead of `display: none`, so every link keeps its accessible name; the brand text, group headings and account copy are hidden outright because they name nothing. The account menu and the chevron are hidden only while the rail rests, because both need the full-width panel to fit.
+- The page column always reserves the rail, so the expanded panel slides over the content and the page never reflows. The icons keep the same x-position in both states, so only the panel edge moves.
+- Verified by measuring the live DOM: rail 78px, icon centre = rail centre, page offset 78px, expanded 260px, no horizontal overflow. The desktop pointer cannot be driven in this environment, so the hover state was proven through the identical `:focus-within` branch.
+### Decision-log skill
+When a later stylesheet pins a value with `!important`, raise your own selector's specificity (an id) instead of editing that file, and keep the pinned property out of the animated set: animating `width` while `min-width`/`max-width` still hold the old value turns the transition into a no-op. When two mechanisms target the same element, scope the newer one with `:not()` on the older one's state class rather than deleting a teammate's work. For a collapsed nav, hide label text by clipping it rather than `display: none`, so the links keep their accessible names.
