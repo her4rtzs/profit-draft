@@ -140,3 +140,34 @@ def verify_password_view(request):
     if not user.check_password(current):
         return JsonResponse({"detail": "That is not your current password."}, status=400)
     return JsonResponse({"detail": "Verified."})
+
+
+def _json_body(request):
+    try:
+        data = json.loads(request.body.decode("utf-8"))
+    except (ValueError, UnicodeDecodeError):
+        return None
+    return data if isinstance(data, dict) else None
+
+
+@require_POST
+def forgot_password_view(request):
+    """Email a reset code. Always answers 200 so it cannot reveal which emails exist."""
+    from apps.accounts.services import request_password_reset
+
+    data = _json_body(request)
+    if data is None:
+        return JsonResponse({"detail": "Invalid request body."}, status=400)
+    request_password_reset(data.get("email"))
+    return JsonResponse({"detail": "If that email has an account, a code is on its way."})
+
+
+@require_POST
+def reset_password_view(request):
+    from apps.accounts.services import reset_password
+
+    data = _json_body(request)
+    if data is None:
+        return JsonResponse({"detail": "Invalid request body."}, status=400)
+    ok, message = reset_password(data.get("email"), data.get("code"), data.get("new_password"))
+    return JsonResponse({"detail": message}, status=200 if ok else 400)

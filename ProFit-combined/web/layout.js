@@ -11,8 +11,10 @@
     { label: 'FINANCE', items: [
       { id: 'payments', label: 'Payments & Billing', icon: 'fa-wallet', href: 'payments.html' },
       { id: 'reports', label: 'Financial Reports', icon: 'fa-chart-column', href: 'reports.html' },
-      { id: 'announcements', label: 'Announcements', icon: 'fa-bullhorn', href: 'announcements.html' },
+    ]},
+    { label: 'GYM', items: [
       { id: 'trainers', label: 'Trainers', icon: 'fa-dumbbell', href: 'trainers.html' },
+      { id: 'announcements', label: 'Announcements', icon: 'fa-bullhorn', href: 'announcements.html' },
     ]},
   ];
   const body = document.body, current = body.dataset.page;
@@ -32,36 +34,23 @@
         </a>
       </div>
       <div class="sidebar-scroll">
-        ${groups.map(g => `<section class="nav-group"><p class="nav-group-label">${g.label}</p><ul class="menulist">${g.items.map(item => `<li><a href="${item.href}" class="${item.id===current?'active':''}" ${item.id===current?'aria-current="page"':''}><i class="fa-solid ${item.icon} icon"></i><span class="text nav-text">${item.label}</span></a></li>`).join('')}</ul></section>`).join('')}
+        ${groups.map(g => `<section class="nav-group"><p class="nav-group-label">${g.label}</p><ul class="menulist">${g.items.map(item => `<li><a href="${item.href}" data-tip="${item.label}" class="${item.id===current?'active':''}" ${item.id===current?'aria-current="page"':''}><i class="fa-solid ${item.icon} icon" aria-hidden="true"></i><span class="text nav-text">${item.label}</span></a></li>`).join('')}</ul></section>`).join('')}
       </div>
-
-      <div class="sidebar-account">
-        <div class="sidebar-user">
-          <span class="sidebar-avatar" data-user-initials id="railAvatar">AD</span>
-          <div class="sidebar-user-copy"><strong data-user-name>Administrator</strong><small data-user-role>Gym administrator</small></div>
-          <button type="button" class="account-menu-toggle" id="accountMenuToggle" aria-haspopup="menu" aria-expanded="false" aria-controls="accountMenu" aria-label="Account actions" title="Account"><i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i></button>
-          <div class="account-menu" id="accountMenu" role="menu" aria-label="Account actions">
-            <a href="profile.html" role="menuitem" class="${current==='profile'?'active':''}"><i class="fa-regular fa-user" aria-hidden="true"></i> My profile</a>
-            <a href="settings.html#appearance" role="menuitem" class="${current==='settings'?'active':''}"><i class="fa-solid fa-sliders" aria-hidden="true"></i> Settings</a>
-            <button type="button" role="menuitem" data-logout><i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i> Log out</button>
+      <div class="sidebar-foot">
+        <div class="sidebar-account">
+          <div class="sidebar-user">
+            <span class="sidebar-avatar" data-user-initials id="railAvatar">AD</span>
+            <div class="sidebar-user-copy"><strong data-user-name>Administrator</strong><small data-user-role>Gym administrator</small></div>
+            <button type="button" class="account-menu-toggle" id="accountMenuToggle" aria-haspopup="menu" aria-expanded="false" aria-controls="accountMenu" aria-label="Account actions" title="Account"><i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i></button>
+            <div class="account-menu" id="accountMenu" role="menu" aria-label="Account actions">
+              <a href="profile.html" role="menuitem" class="${current==='profile'?'active':''}"><i class="fa-regular fa-user" aria-hidden="true"></i> My profile</a>
+              <a href="settings.html#appearance" role="menuitem" class="${current==='settings'?'active':''}"><i class="fa-solid fa-sliders" aria-hidden="true"></i> Settings</a>
+              <button type="button" role="menuitem" data-logout><i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i> Log out</button>
+            </div>
           </div>
         </div>
       </div>
       `;
-  }
-
-  // The collapse control lives OUTSIDE the rail, pinned to its right edge, so
-  // it can never land on top of the gym logo or the account avatar.
-  if (nav && !document.getElementById('sidebarToggle')) {
-    const edge = document.createElement('button');
-    edge.className = 'toggle';
-    edge.type = 'button';
-    edge.id = 'sidebarToggle';
-    edge.setAttribute('aria-label', 'Collapse sidebar');
-    edge.setAttribute('aria-expanded', 'true');
-    edge.title = 'Collapse sidebar';
-    edge.innerHTML = '<i class="fa-solid fa-angles-left"></i>';
-    nav.insertAdjacentElement('afterend', edge);
   }
 
   const top = document.getElementById('topbar');
@@ -69,11 +58,11 @@
     const title = body.dataset.title || 'Dashboard', welcome = body.dataset.welcome || 'Welcome back';
     top.innerHTML = `
       <div class="topbar-heading">
+        <button class="mobile-nav-toggle" id="mobileNavToggle" type="button" aria-label="Open navigation" aria-expanded="false"><i class="fa-solid fa-bars"></i></button>
         <div class="topbar-nav">
           <button type="button" id="navBack" aria-label="Go back" title="Back"><i class="fa-solid fa-chevron-left"></i></button>
           <button type="button" id="navFwd" aria-label="Go forward" title="Forward"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
-        <button class="mobile-nav-toggle" id="mobileNavToggle" type="button" aria-label="Open navigation" aria-expanded="false"><i class="fa-solid fa-bars"></i></button>
         <div class="topbar-title">
           <p class="welcome">${welcome}</p>
           <h1>${title}</h1>
@@ -112,6 +101,8 @@
       });
     };
     paintAccount();
+    const rail = document.getElementById('railAvatar');
+    if (rail) { rail.setAttribute('role', 'button'); rail.setAttribute('tabindex', '0'); rail.setAttribute('aria-label', 'Account menu'); const open = () => document.getElementById('accountMenuToggle')?.click(); rail.addEventListener('click', open); rail.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } }); }
     window.addEventListener('profit-account-changed', paintAccount);
 
     // Back / forward mirror the browser history stack.

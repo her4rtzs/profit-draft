@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en"><head><script src="early.js?v=1"></script><script src="splash.js?v=2"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b0b0d"><meta name="description" content="Secure sign in to ProFit gym management."><title>Sign in · ProFit</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="member-portal.css"><link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=6"><link rel="stylesheet" href="ui-final.css?v=1"><script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><link rel="stylesheet" href="hover-fx.css?v=1">
+<link rel="stylesheet" href="ui-polish.css?v=1">
+<link rel="stylesheet" href="ui-fixes.css?v=1">
+<link rel="stylesheet" href="pf-modern.css?v=1">
+<script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script></head>
+<body class="portal-body auth-page dark"><header class="portal-nav"><a class="portal-brand" href="welcome.html"><span class="brand-mark"><i class="fa-solid fa-dumbbell"></i></span><span><strong>ProFit</strong><small>FITNESS MANAGEMENT</small></span></a><span class="secure-label"><i class="fa-solid fa-shield-halved"></i> Secure account access</span></header><main class="auth-shell"><section class="auth-story"><div class="eyebrow"><span></span> YOUR GYM. ONE PLATFORM.</div><h1>Reset your<br><em>password.</em></h1><p>We will email you a 6-digit code. Enter it with a new password and you are back in.</p></section><section class="auth-card"><div class="portal-heading-icon"><i class="fa-solid fa-key"></i></div><p class="portal-kicker">PASSWORD RESET</p><h2 id="fpTitle">Forgot your password?</h2><p class="auth-sub" id="fpSub">Enter the email on your account and we will send you a code.</p>
+<form id="fpForm1" novalidate><label class="auth-label" for="fpEmail">Email</label><input class="auth-input" id="fpEmail" type="email" autocomplete="email" maxlength="254" required placeholder="you@example.com"><div id="fpMsg1" class="portal-result" role="alert" aria-live="polite" hidden></div><button class="portal-submit auth-submit" type="submit"><span>Send code</span><i class="fa-solid fa-arrow-right"></i></button></form>
+<form id="fpForm2" novalidate hidden><label class="auth-label" for="fpCode">6-digit code</label><input class="auth-input" id="fpCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required placeholder="123456"><label class="auth-label" for="fpNew">New password</label><input class="auth-input" id="fpNew" type="password" autocomplete="new-password" maxlength="256" required placeholder="At least 8 characters"><label class="auth-label" for="fpConf">Confirm new password</label><input class="auth-input" id="fpConf" type="password" autocomplete="new-password" maxlength="256" required placeholder="Type it again"><div id="fpMsg2" class="portal-result" role="alert" aria-live="polite" hidden></div><button class="portal-submit auth-submit" type="submit"><span>Reset password</span><i class="fa-solid fa-arrow-right"></i></button><p class="auth-sub" style="margin-top:14px"><a href="#" id="fpResend">Send a new code</a></p></form>
+<p class="auth-sub" style="margin-top:18px"><a href="login.html">Back to sign in</a></p></section></main><script src="config.js"></script><script src="api.js"></script><script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const show = (el, text, bad) => { el.hidden = false; el.textContent = text; el.classList.toggle("error", !!bad); };
+  const api = (path, body) => window.ProFitAPI.post(path, body);
+  let email = "";
+  const send = async (msgEl) => {
+    try { await api("/auth/forgot-password", { email }); show(msgEl, "If that email has an account, a code is on its way. It expires in 10 minutes.", false); return true; }
+    catch (e) { show(msgEl, e.message || "Could not send the code. Please try again.", true); return false; }
+  };
+  $("fpForm1").addEventListener("submit", async e => {
+    e.preventDefault(); email = $("fpEmail").value.trim();
+    if (!email || !email.includes("@")) return show($("fpMsg1"), "Enter a valid email address.", true);
+    const btn = e.submitter || e.target.querySelector("button"); btn.disabled = true;
+    if (await send($("fpMsg1"))) { $("fpForm1").hidden = true; $("fpForm2").hidden = false; $("fpTitle").textContent = "Check your email"; $("fpSub").textContent = "Enter the code we sent and choose a new password."; $("fpCode").focus(); }
+    btn.disabled = false;
+  });
+  $("fpResend").addEventListener("click", async e => { e.preventDefault(); await send($("fpMsg2")); });
+  $("fpForm2").addEventListener("submit", async e => {
+    e.preventDefault();
+    const code = $("fpCode").value.trim(), pw = $("fpNew").value;
+    if (!/^\d{6}$/.test(code)) return show($("fpMsg2"), "Enter the 6-digit code from your email.", true);
+    if (pw.length < 8) return show($("fpMsg2"), "Use at least 8 characters for the new password.", true);
+    if (pw !== $("fpConf").value) return show($("fpMsg2"), "The two passwords do not match.", true);
+    const btn = e.submitter || e.target.querySelector("button[type=submit]"); btn.disabled = true;
+    try { await api("/auth/reset-password", { email, code, new_password: pw }); $("fpForm2").hidden = true; $("fpTitle").textContent = "Password updated"; $("fpSub").innerHTML = 'You can now <a href="login.html">sign in</a> with your new password.'; }
+    catch (err) { show($("fpMsg2"), err.message || "Could not reset the password.", true); }
+    btn.disabled = false;
+  });
+})();
+</script></body></html>

@@ -13,6 +13,7 @@ window.PFChart = (function () {
   var pad = function (n) { return (n < 10 ? "0" : "") + n; };
   var iso = function (d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); };
   var startOfDay = function (d) { return new Date(d.getFullYear(), d.getMonth(), d.getDate()); };
+  var WEEK_OFFSET = 0; // weeks back from the current one, used by the Days view
   var addDays = function (d, n) { var x = new Date(d.getTime()); x.setDate(x.getDate() + n); return x; };
   var peso = function (n) {
     var v = Number(n || 0);
@@ -60,11 +61,12 @@ window.PFChart = (function () {
     var out = [];
     var i, d, s;
     if (period === "days") {
-      for (i = 13; i >= 0; i--) {
-        d = addDays(today, -i);
+      var wkStart = addDays(today, -((today.getDay() + 6) % 7) + 7 * WEEK_OFFSET);
+      for (i = 0; i < 7; i++) {
+        d = addDays(wkStart, i);
         out.push({
           key: iso(d), from: d, to: addDays(d, 1),
-          label: String(d.getDate()),
+          label: DAYS[d.getDay()],
           title: DAYS[d.getDay()] + ", " + MONTHS[d.getMonth()] + " " + d.getDate()
         });
       }
@@ -164,7 +166,7 @@ window.PFChart = (function () {
     visits: { days: "Daily attendance", week: "Weekly attendance", month: "Monthly attendance", year: "Yearly attendance" }
   };
   var SUB = {
-    days: "Last 14 days",
+    days: "This week",
     week: "Last 8 weeks",
     month: "Jan to Dec",
     year: "5 years"
@@ -184,6 +186,7 @@ window.PFChart = (function () {
     var sub = opts.sub;
     var year = new Date().getFullYear();
     var picker = null;
+    var weekOffset = 0, weekBox = null;
 
     // A year picker lives beside the period chips. It only matters for the
     // Month (Jan to Dec of that year) and Year (five years ending then) views.
@@ -208,13 +211,36 @@ window.PFChart = (function () {
       picker.hidden = !(period === "month" || period === "year");
     }
 
+    function weekRange() {
+      var t = new Date(); t.setHours(0, 0, 0, 0);
+      var a = addDays(t, -((t.getDay() + 6) % 7) + 7 * weekOffset), b = addDays(a, 6);
+      return MONTHS[a.getMonth()] + " " + a.getDate() + " \u2013 " + (a.getMonth() === b.getMonth() ? "" : MONTHS[b.getMonth()] + " ") + b.getDate();
+    }
+    function buildWeek() {
+      if (!chips || weekBox) return;
+      weekBox = document.createElement("span");
+      weekBox.className = "year-stepper week-stepper";
+      weekBox.innerHTML = '<button type="button" data-wk="-1" aria-label="Previous week">\u2039</button><span class="wk-label"></span><button type="button" data-wk="1" aria-label="Next week">\u203a</button>';
+      chips.appendChild(weekBox);
+      weekBox.addEventListener("click", function (e) {
+        var b = e.target.closest("[data-wk]"); if (!b) return;
+        weekOffset = Math.min(0, weekOffset + Number(b.dataset.wk)); draw();
+      });
+    }
     function draw() {
+      buildWeek();
+      WEEK_OFFSET = weekOffset;
       var s = series(kind, period, undefined, year);
+      if (weekBox) {
+        weekBox.hidden = period !== "days";
+        weekBox.querySelector(".wk-label").textContent = weekRange();
+        weekBox.querySelector('[data-wk="1"]').disabled = weekOffset >= 0;
+      }
       fillPicker();
       renderAxis(opts.axis, s, kind);
       renderBars(opts.bars, s, kind);
       if (title) title.textContent = COPY[kind][period];
-      if (sub) sub.textContent = subFor(period, year) + (s.empty ? " \u00b7 no records yet" : "");
+      if (sub) sub.textContent = (period === "days" ? weekRange() : subFor(period, year)) + (s.empty ? " \u00b7 no records yet" : "");
       if (chips) {
         chips.querySelectorAll("[data-period]").forEach(function (b) {
           var on = b.dataset.period === period;

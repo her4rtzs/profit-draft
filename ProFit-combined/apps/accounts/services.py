@@ -19,7 +19,7 @@ from django.core.validators import validate_email
 from django.db import IntegrityError, transaction
 from django.utils import timezone
 
-from .emails import send_otp_email
+from .emails import send_otp_email, send_reset_email
 from .models import EmailOTP, OTPPurpose, Role, StaffInvite, User
 from .permissions import can_manage_staff_invites
 
@@ -202,6 +202,58 @@ def resend_otp(user):
     """
     code = issue_otp(user, OTPPurpose.SIGNUP)
     send_otp_email(user, code)
+
+
+# --- Password reset ---------------------------------------------------------
+
+
+def request_password_reset(email):
+    """Email a reset code if an active account has this address.
+
+    Returns None whether or not the account exists, so the caller can answer the
+    same way either way (no account enumeration). Cooldown and delivery problems
+    are swallowed for the same reason; nothing about the address is logged.
+    """
+    email = normalize_email(email or "")
+    user = User.objects.filter(email__iexact=email, is_active=True).first() if email else None
+    if user is None:
+        return
+    try:
+        send_reset_email(user, issue_otp(user, OTPPurpose.PASSWORD_RESET))
+    except Exception:  # cooldown or delivery failure: stay silent to the caller
+        logger.info("event=password_reset_not_sent user_id=%s", user.id)
+
+
+def reset_password(email, code, new_password):
+    """Verify the emailed code and set a new password. Returns (ok, message)."""
+    email = normalize_email(email or "")
+    generic = "That code is not valid. Request a new one and try again."
+    user = User.objects.filter(email__iexact=email, is_active=True).first() if email else None
+    if user is None or not isinstance(code, str) or not code or not isinstance(new_password, str):
+        return False, generic
+    now = timezone.now()
+    with transaction.atomic():
+        row = (
+            EmailOTP.objects.select_for_update()
+            .filter(user=user, purpose=OTPPurpose.PASSWORD_RESET)
+            .order_by("-created_at")
+            .first()
+        )
+        if row is None or row.is_consumed() or row.is_expired(now) or row.attempts >= EmailOTP.MAX_ATTEMPTS:
+            return False, generic
+        if not check_password(code, row.code_hash):
+            row.attempts += 1
+            row.save(update_fields=["attempts"])
+            return False, generic
+        try:
+            validate_password(new_password, user)
+        except ValidationError as exc:
+            return False, " ".join(exc.messages)
+        row.consumed_at = now
+        row.save(update_fields=["consumed_at"])
+        user.set_password(new_password)
+        user.save(update_fields=["password"])
+    return True, "Password updated."
 
 
 # --- Invite ----------------------------------------------------------------

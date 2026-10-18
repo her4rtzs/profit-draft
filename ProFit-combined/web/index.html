@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script>(function(){try{var d=localStorage.getItem('theme')!=='light';var h=document.documentElement;h.style.background=d?'#18191a':'#f0f2f5';h.style.colorScheme=d?'dark':'light';h.classList.add('pf-pre');setTimeout(function(){h.classList.remove('pf-pre')},1500);}catch(e){}})();</script><script src="splash.js?v=2"></script>
+<head><script src="early.js?v=1"></script><script>(function(){try{var d=localStorage.getItem('theme')!=='light';var h=document.documentElement;h.style.background=d?'#18191a':'#f0f2f5';h.style.colorScheme=d?'dark':'light';h.classList.add('pf-pre');setTimeout(function(){h.classList.remove('pf-pre')},1500);}catch(e){}})();</script><script src="splash.js?v=2"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ProFit | Dashboard</title>
@@ -34,11 +34,12 @@
 @keyframes pfPop{from{opacity:0;transform:translateY(-4px) scale(.98)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion: reduce){.pf-skel span,.pf-row-in,.pf-menu{animation:none!important}}
 </style>
-<link rel="stylesheet" href="sidebar-fx.css?v=1">
 <link rel="stylesheet" href="hover-fx.css?v=1">
 <link rel="stylesheet" href="ui-polish.css?v=1">
 <link rel="stylesheet" href="ui-fixes.css?v=1">
 <link rel="stylesheet" href="pf-modern.css?v=1">
+<link rel="stylesheet" href="sidebar-pro.css?v=1">
+<link rel="stylesheet" href="layout-fixes.css?v=1"><link rel="stylesheet" href="sidebar-drawing.css?v=1">
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script></head>
 
 <body data-page="dashboard" data-title="Dashboard" data-welcome="Welcome back ">
@@ -244,8 +245,8 @@
 </div>
 
 <script src="data.js"></script>
-<script src="layout.js?v=13"></script>
-<script src="sidebar.js?v=13"></script>
+<script src="layout.js?v=14"></script>
+<script src="sidebar.js?v=14"></script>
 <script src="chart-periods.js?v=914"></script>
 <script src="portal-fx.js?v=2"></script>
 <script src="change-password.js?v=2" defer></script>
@@ -366,8 +367,8 @@
     const newThisMonth = members.filter(m => m.joined && m.joined >= monthStart).length;
     const sub = cardFor("Total members")?.querySelector("small");
     if (sub) sub.textContent = newThisMonth
-      ? `+${newThisMonth} member${newThisMonth === 1 ? "" : "s"} ngayong buwan`
-      : "Walang bagong member ngayong buwan";
+      ? `+${newThisMonth} member${newThisMonth === 1 ? "" : "s"} this month`
+      : "No new members this month";
     put("Expired members", expired);
     put("Expiring soon", expiring);
 

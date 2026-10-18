@@ -33,6 +33,7 @@ class OTPPurpose(models.TextChoices):
     """What an issued one-time code is for. Reserved for future reuse."""
 
     SIGNUP = "SIGNUP", "Signup"
+    PASSWORD_RESET = "PASSWORD_RESET", "Password reset"
 
 
 class EmailOTP(models.Model):

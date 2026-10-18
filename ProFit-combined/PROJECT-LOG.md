@@ -496,3 +496,31 @@ When a design sample includes placeholder text, replace it with the real detail 
 - Could not run a browser in the build environment. Verified script syntax and markup.
 ### Decision-log skill
 When a navigation change removes a layout column, reset the width and offset variables as well. Check for every toggle that was part of the old layout, and remove the ones the new layout replaces.
+
+## 2026-10-18 15:35 (Asia/Manila): Admin sidebar rebuild, overlap fixes, automatic role on login
+### What I asked for
+- Rebuild the admin sidebar like the reference (no floating or middle toggle), stop containers and info from overlapping, remove the Staff/Trainer/Member choice on login so the role is automatic, and fix the overall UI.
+### What the agent decided and why
+- "Collapse Sidebar" is now a normal row at the bottom of the sidebar (id sidebarToggle kept so sidebar.js and settings.js still work). The old edge button and its CSS no longer match anything, so nothing floats.
+- New stylesheet sidebar-pro.css replaces sidebar-fx.css on the admin pages. It uses its own width variables (--pf-sb-w, --pf-sb-wc) because spotify.css redefines --sidebar-w. sidebar-fx.css stays only for trainer-portal.html.
+- Collapsed icons show a tooltip from sidebar.js (data-tip), since the sidebar scroll area would clip a CSS-only tooltip. The account menu opens upward inside the panel so it is never clipped.
+- Nav groups were regrouped (Announcements to Workspace, Trainers to Membership) because Finance held items that are not finance.
+- trainers.html and announcements.html had data-page="settings", so the sidebar highlighted nothing and the title read Settings. Both now use their own page id and title.
+- Overlaps were found by measuring: a script flags sibling boxes that intersect and text that escapes its card, across 9 admin pages and 5 widths. The fixes are in layout-fixes.css (quick-action cards no longer a fixed height, panels share one top edge and height, stray panel margins removed, settings colour swatches wrap, form controls cap at card width).
+- Login no longer shows a role picker or the trainer-portal link. The real flow already took the role from /auth/session; demo mode now infers it from the demo username (coach/trainer, member, else admin) because it has no server.
+- Bumped layout.js and sidebar.js to v14 and the service worker cache to v9 so browsers do not serve old files.
+- Font Awesome could not load in the build environment, so icons were not visible in screenshots. Layout was checked by measurement. Please look at the icons in a real browser.
+### Decision-log skill
+When a UI has many stacked override stylesheets, add one last stylesheet with its own variable names instead of editing each layer, and check layout by measuring overlaps across widths rather than by eye. Check body data-page and data-title on every page, because the sidebar highlight depends on them.
+
+## Session: sidebar per drawing, forgot password, flicker and layout pass
+- Sidebar: the collapse row and the edge toggle are gone. A hamburger in the top bar collapses or expands it on desktop and opens the drawer on phones; only the profile circle sits at the bottom and it opens the account menu (profile, settings, log out). Width comes from two variables, so light and dark are the same size.
+- Menu groups: Workspace (Dashboard), Membership (Member List, Attendance), Finance (Payments, Reports), Gym (Trainers, Announcements).
+- Flicker: early.js sets theme and sidebar state before first paint and keeps transitions off until the first frame. The intro animation now plays only on the landing page. portal-fx.js no longer adds a load bar, scroll reveal or page fade.
+- Table / Cards is now one button that switches to the other view (view-toggle.js).
+- Chart: the Days view shows one Monday to Sunday week with previous/next week arrows instead of 14 days.
+- Forgot password now works: POST /api/auth/forgot-password/ emails a 6-digit code (always answers 200, no account enumeration) and POST /api/auth/reset-password/ verifies it once and sets the new password. New OTP purpose PASSWORD_RESET (migration accounts 0003). Page: forgot.html. Tests: apps/accounts/tests/test_password_reset.py (not run in the build environment: Django could not be installed).
+- Dashboard stat cards each have their own colour; the member picker uses the full width; side-by-side panels stretch to equal height. English copy fixed on the dashboard.
+- Not done: dashboard redesign beyond colours, equal-width audit of every page, 2-step reconfirm on Join.
+### Decision-log skill
+Put theme and layout state on the html element in a script at the top of the head, before first paint, and keep transitions off until the first frame. Setting them after load is what makes every page flicker.

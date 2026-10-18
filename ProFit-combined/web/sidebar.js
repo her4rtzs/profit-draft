@@ -10,18 +10,52 @@
   let drawerShade = $("#sidebarShade");
   if (!drawerShade) { drawerShade = document.createElement("button"); drawerShade.type="button"; drawerShade.id="sidebarShade"; drawerShade.className="sidebar-shade"; drawerShade.setAttribute("aria-label","Close navigation"); document.body.appendChild(drawerShade); }
   const setDrawer = open => { if(!sidebar) return; sidebar.classList.toggle("mobile-open",open); drawerShade.classList.toggle("visible",open); if(mobileToggle){mobileToggle.setAttribute("aria-expanded",String(open));mobileToggle.setAttribute("aria-label",open?"Close navigation":"Open navigation");mobileToggle.innerHTML=`<i class="fa-solid ${open?'fa-xmark':'fa-bars'}"></i>`;} document.body.classList.toggle("drawer-open",open); };
-  mobileToggle?.addEventListener("click",()=>setDrawer(!sidebar?.classList.contains("mobile-open")));
+  mobileToggle?.addEventListener("click",()=>{
+    if (window.matchMedia("(max-width: 760px)").matches) return setDrawer(!sidebar?.classList.contains("mobile-open"));
+    const closed = sidebar.classList.toggle("close");
+    store.set("sidebar", closed ? "closed" : "open");
+    document.documentElement.dataset.sb = closed ? "closed" : "open";
+    mobileToggle.setAttribute("aria-expanded", String(!closed));
+    mobileToggle.setAttribute("aria-label", closed ? "Expand sidebar" : "Collapse sidebar");
+  });
   drawerShade.addEventListener("click",()=>setDrawer(false));
   sidebar?.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{if(window.matchMedia("(max-width: 760px)").matches)setDrawer(false)}));
   window.addEventListener("resize",()=>{if(!window.matchMedia("(max-width: 760px)").matches)setDrawer(false)});
   if (sidebar && store.get("sidebar")==="closed") sidebar.classList.add("close");
+  // The collapse control is a normal item at the bottom of the sidebar, like every other row.
+  const paintToggle = () => {
+    if (!toggle || !sidebar) return;
+    const closed = sidebar.classList.contains("close");
+    toggle.setAttribute("aria-label", closed ? "Expand sidebar" : "Collapse sidebar");
+    toggle.setAttribute("aria-expanded", String(!closed));
+    toggle.dataset.tip = closed ? "Expand sidebar" : "Collapse sidebar";
+    const label = toggle.querySelector(".text"); if (label) label.textContent = closed ? "Expand Sidebar" : "Collapse Sidebar";
+    const ico = toggle.querySelector("i"); if (ico) ico.className = "fa-solid " + (closed ? "fa-angles-right" : "fa-angles-left") + " icon";
+  };
   if(toggle) toggle.dataset.profitBound="1";
   toggle?.addEventListener("click", () => {
     sidebar.classList.toggle("close");
     store.set("sidebar", sidebar.classList.contains("close") ? "closed" : "open");
-    toggle.setAttribute("aria-label", sidebar.classList.contains("close") ? "Expand sidebar" : "Collapse sidebar");
-    toggle.setAttribute("aria-expanded",String(!sidebar.classList.contains("close")));
+    paintToggle();
   });
+  paintToggle();
+  // Collapsed rail: show each label as a tooltip beside the icon.
+  (() => {
+    if (!sidebar) return;
+    const tip = document.createElement("div"); tip.className = "pf-tip"; tip.setAttribute("role","tooltip"); document.body.appendChild(tip);
+    const hide = () => tip.classList.remove("show");
+    const show = el => {
+      if (!sidebar.classList.contains("close") || window.matchMedia("(max-width: 760px)").matches) return hide();
+      const r = el.getBoundingClientRect();
+      tip.textContent = el.dataset.tip || ""; tip.style.left = (r.right + 12) + "px"; tip.style.top = (r.top + r.height / 2) + "px";
+      tip.classList.add("show");
+    };
+    sidebar.querySelectorAll("[data-tip]").forEach(el => {
+      el.addEventListener("mouseenter", () => show(el)); el.addEventListener("focus", () => show(el));
+      el.addEventListener("mouseleave", hide); el.addEventListener("blur", hide);
+    });
+    sidebar.addEventListener("click", hide);
+  })();
   const applyTheme = dark => {
     document.body.classList.toggle("dark", !!dark);
     if (themeToggle) {

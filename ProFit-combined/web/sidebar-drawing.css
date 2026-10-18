@@ -1,0 +1,47 @@
+/* Sidebar like the approved drawing, plus layout, colour and motion fixes.
+   Loaded last on every admin page. Own rules only; the older layers stay untouched. */
+
+/* Sidebar: no toggle inside it. A hamburger in the top bar collapses it; only the profile circle sits at the bottom. */
+html body .mobile-nav-toggle{display:inline-grid!important;place-items:center;flex:0 0 44px;width:44px;height:44px;border-radius:12px;font-size:17px;cursor:pointer;transition:background-color .2s,color .2s}
+html body nav.sidebar .sb-collapse{display:none!important}
+html body nav.sidebar .sidebar-user-copy,html body nav.sidebar .account-menu-toggle{display:none!important}
+html body nav.sidebar .sidebar-foot{padding-top:12px;margin-top:auto;border-top:1px solid rgba(255,255,255,.08)}
+html body nav.sidebar .sidebar-user{position:relative;display:flex;justify-content:flex-start;padding:0;background:none!important;border:0!important}
+html body nav.sidebar .sidebar-avatar{flex:0 0 44px;width:44px;height:44px;cursor:pointer;transition:transform .2s}
+html body nav.sidebar .sidebar-avatar:hover{transform:scale(1.06)}
+html body nav.sidebar.close .sidebar-user{justify-content:center}
+html body nav.sidebar .account-menu{left:0!important;right:auto!important;width:224px!important;min-width:224px}
+/* Same sidebar size in light and dark mode. */
+html body nav.sidebar{width:var(--pf-sb-w)!important}
+html body nav.sidebar.close,html[data-sb="closed"] body nav.sidebar{width:var(--pf-sb-wc)!important}
+html body nav.sidebar ~ .main-content{margin-left:var(--pf-sb-w)!important}
+html body nav.sidebar.close ~ .main-content,html[data-sb="closed"] body nav.sidebar ~ .main-content{margin-left:var(--pf-sb-wc)!important}
+@media (max-width:760px){html body nav.sidebar ~ .main-content,html[data-sb="closed"] body nav.sidebar ~ .main-content{margin-left:0!important}}
+
+/* Motion: nothing animates while the page loads, and entrance effects finish instantly. */
+html:not(.pf-ready) *,html:not(.pf-ready) *::before,html:not(.pf-ready) *::after{transition:none!important}
+body *:not(.fa-spin){animation-duration:.001s!important;animation-delay:0s!important;animation-iteration-count:1!important}
+
+/* Containers: full width, equal height side by side, nothing stacked on top of anything. */
+.main-content{width:auto;max-width:none}
+.pp-picker{max-width:none!important;width:100%}
+.pp-picker-list{grid-template-columns:repeat(auto-fill,minmax(360px,1fr))!important;gap:12px!important}
+.stats,.quick-actions,.dashboard-grid,.payments-grid,.pp-grid,.pp-two,.two-col{align-items:stretch!important}
+.stat-card,.panel,.revenue-card{min-width:0;height:100%}
+
+/* Dashboard: each metric gets its own colour. */
+.stats .stat-card{border-top:3px solid var(--ac,#e8b93a)}
+.stats .stat-card:nth-child(1){--ac:#22a06b}.stats .stat-card:nth-child(2){--ac:#e5484d}.stats .stat-card:nth-child(3){--ac:#f5a524}.stats .stat-card:nth-child(4){--ac:#e8b93a}
+.stats .stat-card .stat-icon{background:color-mix(in srgb,var(--ac,#e8b93a) 16%,transparent)!important;color:var(--ac,#8a6200)!important}
+.stats .stat-card .stat-content strong,.stats .stat-card .stat-content b{letter-spacing:-.01em}
+
+/* One view button (Spotify style): shows the view you will switch to. */
+.pp-view-toggle button[data-view-mode]{display:none!important}
+.pp-view-one{display:inline-flex;align-items:center;gap:10px;height:42px;padding:0 18px;border-radius:999px;border:1px solid rgba(232,185,58,.5);background:transparent;color:inherit;font:600 14px/1 inherit;cursor:pointer;transition:background-color .2s,border-color .2s}
+.pp-view-one:hover{background:rgba(232,185,58,.14);border-color:#e8b93a}
+.pp-view-one i{color:#e8b93a}
+
+/* Chart controls stay on one tidy row, also on phones. */
+.week-stepper .wk-label{min-width:118px;text-align:center;font-weight:700;font-size:13px}
+.week-stepper button:disabled{opacity:.35;cursor:default}
+@media (max-width:640px){.year-stepper{margin-left:0;margin-top:8px}.chips,.chart-chips{flex-wrap:wrap}}
