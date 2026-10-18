@@ -1,7 +1,0 @@
-{
-  "task_id": "task-profit-scaffold",
-  "task_description": "First-build scaffold of the ProFit gym operations management system: Django + DRF serverless (Vercel) monorepo with Supabase PG via the ORM, custom User + single-sourced RBAC, membership Module 1 (real models + DRF read API + staff web shell), billing Module 2 (stubs + a concrete race-safe PayMongo webhook per Revision 4), finance Module 3 (stubs + Owner-only gate), pg_cron expiry SQL stub, web portal shell (build-time Tailwind/daisyUI, one django-component, one HTMX partial, inline Lucide SVG), and an RN mobile skeleton using the binding CSRF token-echo auth sequence. Acceptance: python manage.py check and test pass offline on Python 3.13; verification recorded to verification.md.",
-  "status": "completed",
-  "feature_order": ["FEAT-001", "FEAT-002", "FEAT-003", "FEAT-004"],
-  "blocked_reason": null
-}
