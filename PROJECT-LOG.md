@@ -688,3 +688,17 @@ Change the staff portal navigation bar to behave like Instagram: collapsed to ic
 - Verified by measuring the live DOM: rail 78px, icon centre = rail centre, page offset 78px, expanded 260px, no horizontal overflow. The desktop pointer cannot be driven in this environment, so the hover state was proven through the identical `:focus-within` branch.
 ### Decision-log skill
 When a later stylesheet pins a value with `!important`, raise your own selector's specificity (an id) instead of editing that file, and keep the pinned property out of the animated set: animating `width` while `min-width`/`max-width` still hold the old value turns the transition into a no-op. When two mechanisms target the same element, scope the newer one with `:not()` on the older one's state class rather than deleting a teammate's work. For a collapsed nav, hide label text by clipping it rather than `display: none`, so the links keep their accessible names.
+
+## 2026-10-19 00:14 (Asia/Manila): Hover only - remove the click-collapse rail
+### What I asked for
+Keep the Instagram-style sidebar, but hover only: drop the chevron that could pin the sidebar permanently collapsed.
+### What the agent decided and why
+- Removed the whole manual-collapse mechanism rather than only hiding the button: the `#sidebarToggle` markup in `layout.js`, the click handler and its `localStorage` state in `sidebar.js`, and the `.close` rail CSS. A hidden button that still owns state would have been a trap, and leaving the `sidebar` key unread is harmless because nothing applies `.close` any more.
+- That CSS existed twice, in `sidebar-pro.css` and in `layout-fixes.css`, so both copies went. The double-scrollbar fix from the same session stayed untouched.
+- Put the rail back to 80px. It had only been 78px to line up with the teammate collapse rail, so with that rail gone the invented constraint went with it and the width that was actually chosen stands.
+- Dropped the `.close` hover variant in `layout-fixes.css` and reverted its `:not(.close)` guards to plain selectors, but kept the link hover micro-animation.
+- Re-bumped `sidebar-pro.css` to `?v=7`, `layout-fixes.css` to `?v=5`, `layout.js` to `?v=17`, `sidebar.js` to `?v=17` and the service worker shell cache to `v16`.
+- Caught a self-inflicted bug before committing: the regex that stripped the mobile `.close` selector also swallowed the opening brace of the shared mobile rule, leaving a stray `}`. Found by scanning per-line brace depth with comments stripped, not by eye.
+- Verified on the live DOM: rail 80px, icon centre 40 = rail centre, expanded 260px with the icon centre unmoved, page offset 80px in both states, 7 of 7 links keep an accessible name, no `#sidebarToggle` in the DOM, no console messages, no horizontal overflow.
+### Decision-log skill
+Removing a feature means finding every copy of it: this one lived in two stylesheets, one markup template and one script, and the second CSS copy only surfaced by grepping the state class instead of the feature name. Never trust a fresh `getComputedStyle` right after a state change - it returns the mid-transition value, so measure with transitions disabled. When a regex targets one selector inside a multi-selector rule, it can delete the rule opening brace: verify with a comment-stripped per-line brace depth scan before committing.

@@ -1,13 +1,12 @@
-/* ProFit Staff Dashboard - Icon Rail, Manual Collapse & Mobile Drawer.
+/* ProFit Staff Dashboard - Hover-Expand Icon Rail & Mobile Drawer.
    On desktop the sidebar is an icon rail that expands to the full 260px panel
-   while the pointer hovers it or the keyboard focus is inside it. The chevron
-   in the brand row pins it permanently collapsed instead (the .close state).
+   while the pointer hovers it or the keyboard focus is inside it.
    The mobile sidebar acts strictly as a sliding drawer on screens <= 768px. */
 
 :root {
   --sidebar-w: 260px;
   --pf-sb-w: 260px;
-  --sb-rail: 78px;              /* collapsed icon rail width (matches .close) */
+  --sb-rail: 80px;              /* collapsed icon rail width */
   --sb-gold: #e8b93a;
   --sb-gold-2: #f2cb5c;
   --sb-ink: #1a1407;
@@ -41,138 +40,6 @@ html body nav.sidebar {
 }
 
 /* ==========================================================================
-   SIDEBAR COLLAPSE TOGGLE & COMPACT RAIL (78px)
-   ========================================================================== */
-
-/* Toggle Button in brand row */
-html body nav.sidebar #sidebarToggle,
-html body #sidebarToggle {
-  display: grid !important;
-  place-items: center !important;
-  flex: 0 0 30px !important;
-  width: 30px !important;
-  height: 30px !important;
-  border-radius: 9px !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  background: rgba(255, 255, 255, 0.05) !important;
-  color: #94a3b8 !important;
-  font-size: 13px !important;
-  cursor: pointer !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
-}
-
-html body nav.sidebar #sidebarToggle:hover,
-html body #sidebarToggle:hover {
-  background: color-mix(in srgb, var(--sb-gold, #e8b93a) 20%, transparent) !important;
-  border-color: var(--sb-gold, #e8b93a) !important;
-  color: var(--sb-gold, #e8b93a) !important;
-  transform: scale(1.08) !important;
-  box-shadow: 0 2px 10px rgba(232, 185, 58, 0.25) !important;
-}
-
-/* Collapsed rail state (78px) */
-html body nav.sidebar.close {
-  width: 78px !important;
-  min-width: 78px !important;
-  max-width: 78px !important;
-  padding: 16px 8px 14px !important;
-}
-
-html body nav.sidebar.close .sidebar-brand-row {
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 8px !important;
-  padding: 2px 0 14px !important;
-}
-
-html body nav.sidebar.close .imgbrand {
-  flex: 0 0 auto !important;
-  justify-content: center !important;
-  width: auto !important;
-}
-
-html body nav.sidebar.close .headertxt {
-  display: none !important;
-}
-
-html body nav.sidebar.close #sidebarToggle {
-  display: grid !important;
-  margin: 0 auto !important;
-}
-
-html body nav.sidebar.close .nav-group-label {
-  display: none !important;
-}
-
-html body nav.sidebar.close .menulist a {
-  justify-content: center !important;
-  padding: 0 !important;
-  width: 44px !important;
-  height: 44px !important;
-  margin: 0 auto 6px !important;
-  border-radius: 12px !important;
-}
-
-html body nav.sidebar.close .menulist a .text {
-  display: none !important;
-}
-
-html body nav.sidebar.close .menulist a .icon {
-  margin: 0 !important;
-  font-size: 17px !important;
-}
-
-/* Tooltip on collapsed menu items */
-html body nav.sidebar.close .menulist a::after {
-  content: attr(data-tip);
-  position: absolute;
-  left: calc(100% + 12px);
-  top: 50%;
-  transform: translateY(-50%);
-  background: #1e293b;
-  color: #fff;
-  font-size: 12px;
-  font-weight: 600;
-  padding: 6px 12px;
-  border-radius: 8px;
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.15s ease, transform 0.15s ease;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  z-index: 1000;
-}
-
-html body nav.sidebar.close .menulist a:hover::after {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(-50%) translateX(2px);
-}
-
-html body nav.sidebar.close .sidebar-foot {
-  padding: 10px 4px 0 !important;
-}
-
-html body nav.sidebar.close .sidebar-user {
-  justify-content: center !important;
-  padding: 4px !important;
-  width: 44px !important;
-  height: 44px !important;
-  border-radius: 50% !important;
-  margin: 0 auto !important;
-}
-
-html body nav.sidebar.close .sidebar-user-copy,
-html body nav.sidebar.close .account-menu-toggle {
-  display: none !important;
-}
-
-/* ==========================================================================
    MAIN DASHBOARD WRAPPER
    ========================================================================== */
 
@@ -200,14 +67,6 @@ html body .dashboard > main.main-content {
   overflow-x: clip !important;
   overflow-y: visible !important;
   transition: margin-left 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), width 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
-}
-
-html body nav.sidebar.close ~ .main-content,
-html body .dashboard > main.main-content.sidebar-collapsed,
-body.sidebar-collapsed .main-content {
-  margin-left: 78px !important;
-  width: calc(100% - 78px) !important;
-  max-width: calc(100% - 78px) !important;
 }
 
 /* ==========================================================================
@@ -575,8 +434,7 @@ html body nav.sidebar .account-menu button[data-logout] i {
   }
 
   html body nav.sidebar ~ .main-content,
-  html body .dashboard > main.main-content,
-  html body nav.sidebar.close ~ .main-content {
+  html body .dashboard > main.main-content {
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
@@ -600,14 +458,11 @@ html body nav.sidebar .account-menu button[data-logout] i {
 }
 
 /* ==========================================================================
-   HOVER-EXPAND ICON RAIL (desktop default)
-   By default the sidebar rests as an icon rail and expands to the full panel
-   while the pointer hovers it or the keyboard focus is inside it. Only
-   `width` animates and the icons keep their x-position, so the page column
-   never reflows: the expanded panel slides over the content.
-   Everything here is scoped to `:not(.close)`, so when the chevron pins the
-   sidebar collapsed the manual `.close` rail (with its tooltips) keeps its
-   own look and hover does not fight it.
+   HOVER-EXPAND ICON RAIL (desktop)
+   The sidebar rests as an icon rail and expands to the full panel while the
+   pointer hovers it or the keyboard focus is inside it. Only `width` animates
+   and the icons keep their x-position, so the page column never reflows: the
+   expanded panel slides over the content instead of pushing it.
    Scoped to desktop, so the <=768px drawer keeps its full-width layout.
    ========================================================================== */
 
@@ -621,17 +476,17 @@ html body nav.sidebar .account-menu button[data-logout] i {
                 width 0.22s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
   }
 
-  html body nav.sidebar#sidebar:not(.close):not(:hover):not(:focus-within) {
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) {
     width: var(--sb-rail) !important;
   }
 
   /* Resting rail: icons only, centred. */
-  html body nav.sidebar#sidebar:not(.close):not(:hover):not(:focus-within) .sidebar-brand-row,
-  html body nav.sidebar#sidebar:not(.close):not(:hover):not(:focus-within) .sidebar-user {
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-brand-row,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user {
     justify-content: center !important;
   }
 
-  html body nav.sidebar#sidebar:not(.close):not(:hover):not(:focus-within) .menulist a {
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a {
     justify-content: center !important;
     gap: 0 !important;
     padding: 0 !important;
@@ -639,16 +494,15 @@ html body nav.sidebar .account-menu button[data-logout] i {
 
   /* Text that only makes sense while the panel is open. The nav label is
      clipped further down instead, so links keep their accessible names. */
-  html body nav.sidebar#sidebar:not(.close):not(:hover):not(:focus-within) .headertxt,
-  html body nav.sidebar#sidebar:not(.close):not(:hover):not(:focus-within) .nav-group-label,
-  html body nav.sidebar#sidebar:not(.close):not(:hover):not(:focus-within) .sidebar-user-copy,
-  html body nav.sidebar#sidebar:not(.close):not(:hover):not(:focus-within) .account-menu-toggle,
-  html body nav.sidebar#sidebar:not(.close):not(:hover):not(:focus-within) .account-menu,
-  html body nav.sidebar#sidebar:not(.close):not(:hover):not(:focus-within) #sidebarToggle {
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .headertxt,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-group-label,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user-copy,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .account-menu-toggle,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .account-menu {
     display: none !important;
   }
 
-  html body nav.sidebar#sidebar:not(.close):not(:hover):not(:focus-within) .menulist a .text {
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .text {
     position: absolute !important;
     width: 1px !important;
     height: 1px !important;
