@@ -132,6 +132,132 @@ header.top{background:#0b0c10;backdrop-filter:none;-webkit-backdrop-filter:none}
 .pc-img{aspect-ratio:4/3;overflow:hidden;border-radius:14px;border:1px solid var(--line);margin-bottom:18px}
 .pc-img img{display:block;width:100%;height:100%;object-fit:cover}
 
+/* =========================================================
+   Aesthetic Section-Specific Scroll Animations
+   ========================================================= */
+
+/* 1. Section Header: Expanding eyebrow line & smooth text rise */
+.anim-header{opacity:0;transform:translateY(20px);filter:blur(4px);transition:opacity .75s cubic-bezier(.16,1,.3,1),transform .75s cubic-bezier(.16,1,.3,1),filter .75s cubic-bezier(.16,1,.3,1);will-change:opacity,transform,filter}
+.anim-header .eyebrow::before{width:0;transition:width .6s cubic-bezier(.16,1,.3,1) .2s}
+.anim-header.is-visible{opacity:1;transform:translateY(0);filter:blur(0)}
+.anim-header.is-visible .eyebrow::before{width:24px}
+
+/* 2. Ticker Strip: Lateral cascade & icon spring */
+.anim-ticker > *{opacity:0;transform:translateX(-22px);filter:blur(4px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1),filter .7s cubic-bezier(.16,1,.3,1);will-change:opacity,transform}
+.anim-ticker > * i{transform:scale(.7) rotate(-12deg);transition:transform .6s cubic-bezier(.34,1.56,0.64,1) .15s}
+.anim-ticker.is-visible > *:nth-child(1){transition-delay:.05s}
+.anim-ticker.is-visible > *:nth-child(2){transition-delay:.15s}
+.anim-ticker.is-visible > *:nth-child(3){transition-delay:.25s}
+.anim-ticker.is-visible > *:nth-child(4){transition-delay:.35s}
+.anim-ticker.is-visible > *{opacity:1;transform:translateX(0);filter:blur(0)}
+.anim-ticker.is-visible > * i{transform:scale(1) rotate(0deg)}
+
+/* 3. Features: 3D perspective tilt & icon glow aura */
+.anim-features > *{opacity:0;transform:perspective(900px) rotateX(12deg) translateY(36px);filter:blur(6px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1),filter .8s,box-shadow .8s;will-change:opacity,transform}
+.anim-features > * .ic{transform:scale(.75) translateY(4px);transition:transform .6s cubic-bezier(.34,1.56,0.64,1) .15s,box-shadow .6s}
+.anim-features.is-visible > *:nth-child(1){transition-delay:.06s}
+.anim-features.is-visible > *:nth-child(2){transition-delay:.16s}
+.anim-features.is-visible > *:nth-child(3){transition-delay:.26s}
+.anim-features.is-visible > *:nth-child(4){transition-delay:.36s}
+.anim-features.is-visible > *{opacity:1;transform:perspective(900px) rotateX(0) translateY(0);filter:blur(0)}
+.anim-features.is-visible > * .ic{transform:scale(1) translateY(0);box-shadow:0 0 18px rgba(232,185,58,.25)}
+
+/* 4. The Difference Cards: Opposing magnetic slide & gold aura */
+.anim-diff-trad{opacity:0;transform:translateX(-38px) scale(.97);filter:blur(8px);transition:opacity .85s cubic-bezier(.16,1,.3,1),transform .85s cubic-bezier(.16,1,.3,1),filter .85s;will-change:opacity,transform}
+.anim-diff-trad.is-visible{opacity:.92;transform:translateX(0) scale(1);filter:blur(0)}
+.anim-diff-trad li i{opacity:0;transform:scale(.5);transition:opacity .4s ease .3s,transform .5s cubic-bezier(.34,1.56,0.64,1) .3s}
+.anim-diff-trad.is-visible li i{opacity:1;transform:scale(1)}
+
+.anim-diff-profit{opacity:0;transform:translateX(38px) scale(.97);filter:blur(8px);box-shadow:0 0 0 rgba(232,185,58,0);transition:opacity .85s cubic-bezier(.16,1,.3,1) .1s,transform .85s cubic-bezier(.16,1,.3,1) .1s,filter .85s,box-shadow 1s cubic-bezier(.16,1,.3,1) .2s;will-change:opacity,transform,box-shadow}
+.anim-diff-profit.is-visible{opacity:1;transform:translateX(0) scale(1);filter:blur(0);box-shadow:0 20px 48px rgba(0,0,0,.5),0 0 32px rgba(232,185,58,.16)}
+.anim-diff-profit .diff-badge{transform:translateY(-8px) scale(.8);opacity:0;transition:transform .6s cubic-bezier(.34,1.56,0.64,1) .35s,opacity .4s ease .35s}
+.anim-diff-profit.is-visible .diff-badge{transform:translateY(0) scale(1);opacity:1}
+.anim-diff-profit li i{opacity:0;transform:scale(0) rotate(-45deg);transition:opacity .4s ease .35s,transform .55s cubic-bezier(.34,1.56,0.64,1) .35s}
+.anim-diff-profit.is-visible li i{opacity:1;transform:scale(1) rotate(0deg)}
+
+/* 5. Programs: Depth-lift & parallax image settle */
+.anim-programs > *{opacity:0;transform:translateY(42px) scale(.95);filter:blur(6px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1),filter .8s;will-change:opacity,transform}
+.anim-programs > * .pic img{transform:scale(1.16);transition:transform 1.3s cubic-bezier(.16,1,.3,1)}
+.anim-programs.is-visible > *:nth-child(1){transition-delay:.06s;transform:translateY(0) scale(1)}
+.anim-programs.is-visible > *:nth-child(2){transition-delay:.18s;transform:translateY(0) scale(1)}
+.anim-programs.is-visible > *:nth-child(3){transition-delay:.3s;transform:translateY(0) scale(1)}
+.anim-programs.is-visible > *{opacity:1;filter:blur(0)}
+.anim-programs.is-visible > * .pic img{transform:scale(1)}
+
+/* 6. Gallery: Cinematic aperture mosaic pop */
+.anim-gallery > *{opacity:0;transform:scale(.86) translateY(20px);filter:blur(8px);transition:opacity .75s cubic-bezier(.16,1,.3,1),transform .75s cubic-bezier(.16,1,.3,1),filter .75s;will-change:opacity,transform}
+.anim-gallery.is-visible > *:nth-child(1){transition-delay:.04s}
+.anim-gallery.is-visible > *:nth-child(2){transition-delay:.14s}
+.anim-gallery.is-visible > *:nth-child(3){transition-delay:.24s}
+.anim-gallery.is-visible > *:nth-child(4){transition-delay:.34s}
+.anim-gallery.is-visible > *{opacity:1;transform:scale(1) translateY(0);filter:blur(0)}
+
+/* 7. Membership Plans: Elevated podium spotlight */
+.anim-plans > *:nth-child(1){opacity:0;transform:translateY(38px) scale(.96);filter:blur(6px);transition:opacity .8s cubic-bezier(.16,1,.3,1) .05s,transform .8s cubic-bezier(.16,1,.3,1) .05s,filter .8s}
+.anim-plans > *:nth-child(2){opacity:0;transform:translateY(52px) scale(.92);filter:blur(8px);transition:opacity .85s cubic-bezier(.16,1,.3,1) .15s,transform .85s cubic-bezier(.16,1,.3,1) .15s,filter .85s,box-shadow .85s}
+.anim-plans > *:nth-child(3){opacity:0;transform:translateY(38px) scale(.96);filter:blur(6px);transition:opacity .8s cubic-bezier(.16,1,.3,1) .25s,transform .8s cubic-bezier(.16,1,.3,1) .25s,filter .8s}
+.anim-plans.is-visible > *:nth-child(1){opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
+.anim-plans.is-visible > *:nth-child(2){opacity:1;transform:translateY(-6px) scale(1.02);filter:blur(0);box-shadow:0 18px 44px rgba(0,0,0,.5),0 0 28px rgba(232,185,58,.14)}
+.anim-plans.is-visible > *:nth-child(3){opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
+.anim-plans > *:nth-child(2) .badge{transform:scale(0);transition:transform .6s cubic-bezier(.34,1.56,0.64,1) .35s}
+.anim-plans.is-visible > *:nth-child(2) .badge{transform:scale(1)}
+
+/* 8. Story Section: Split narrative reveal */
+.anim-story-pic{opacity:0;transform:translateX(-48px) scale(.95);filter:blur(10px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1),filter .9s;will-change:opacity,transform}
+.anim-story-pic.is-visible{opacity:1;transform:translateX(0) scale(1);filter:blur(0)}
+.anim-story-text{opacity:0;transform:translateX(48px);filter:blur(6px);transition:opacity .9s cubic-bezier(.16,1,.3,1) .15s,transform .9s cubic-bezier(.16,1,.3,1) .15s,filter .9s .15s;will-change:opacity,transform}
+.anim-story-text.is-visible{opacity:1;transform:translateX(0);filter:blur(0)}
+
+/* 9. CTA Band: Luminous glow expand */
+.anim-cta{opacity:0;transform:translateY(28px) scale(.97);filter:blur(8px);transition:opacity .85s cubic-bezier(.16,1,.3,1),transform .85s cubic-bezier(.16,1,.3,1),filter .85s;will-change:opacity,transform}
+.anim-cta.is-visible{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
+.anim-cta .btn{transition:transform .3s ease,box-shadow .3s ease,background-color .15s,border-color .15s,filter .15s}
+.anim-cta.is-visible .btn{box-shadow:0 0 20px rgba(232,185,58,.3)}
+
+/* 10. Visit / Contact: Card cascade & marker bounce */
+.anim-visit > *{opacity:0;transform:translateY(32px) scale(.96);filter:blur(6px);transition:opacity .75s cubic-bezier(.16,1,.3,1),transform .75s cubic-bezier(.16,1,.3,1),filter .75s;will-change:opacity,transform}
+.anim-visit > * .ic{transform:scale(.5) rotate(-18deg);transition:transform .6s cubic-bezier(.34,1.56,0.64,1) .15s}
+.anim-visit.is-visible > *:nth-child(1){transition-delay:.06s}
+.anim-visit.is-visible > *:nth-child(2){transition-delay:.18s}
+.anim-visit.is-visible > *:nth-child(3){transition-delay:.3s}
+.anim-visit.is-visible > *{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
+.anim-visit.is-visible > * .ic{transform:scale(1) rotate(0deg)}
+
+/* Accessibility override */
+@media(prefers-reduced-motion:reduce){
+  .anim-header,.anim-header.is-visible,.anim-header .eyebrow::before,
+  .anim-ticker > *,.anim-ticker > * i,
+  .anim-features > *,.anim-features > * .ic,
+  .anim-diff-trad,.anim-diff-profit,.anim-diff-profit .diff-badge,.anim-diff-trad li i,.anim-diff-profit li i,
+  .anim-programs > *,.anim-programs > * .pic img,
+  .anim-gallery > *,
+  .anim-plans > *,
+  .anim-story-pic,.anim-story-text,
+  .anim-cta,
+  .anim-visit > *,.anim-visit > * .ic{
+    opacity:1!important;transform:none!important;filter:none!important;transition:none!important;box-shadow:none!important;width:auto!important;
+  }
+}
+
+/* Difference section */
+.diff-grid{display:grid;grid-template-columns:1fr 1.08fr;gap:24px;align-items:stretch}
+.diff-card{position:relative;display:flex;flex-direction:column;padding:32px 28px;border-radius:var(--r);background:var(--card);border:1px solid var(--line)}
+.diff-card.trad{background:rgba(17,19,32,.55);opacity:.88}
+.diff-card.profit-card{border:2px solid var(--lime);background:linear-gradient(180deg,rgba(232,185,58,.04) 0%,rgba(17,19,32,.95) 100%)}
+.diff-badge{position:absolute;top:-12px;left:24px;background:var(--lime);color:var(--on);font-size:11px;font-weight:800;letter-spacing:.08em;padding:4px 12px;border-radius:99px}
+.diff-head{margin-bottom:24px}
+.diff-tag{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);margin-bottom:8px}
+.diff-tag.hl{color:var(--lime)}
+.diff-head h3{font-size:22px;margin-bottom:8px}
+.diff-head p{color:var(--mu);font-size:14.5px;line-height:1.5}
+.diff-list{list-style:none;padding:0;margin:0 0 28px;display:grid;gap:16px;flex:1}
+.diff-list li{display:flex;align-items:flex-start;gap:12px;font-size:14.5px;line-height:1.45}
+.diff-card.trad .diff-list li i{color:#e05a5a;font-size:14px;margin-top:3px;flex:none}
+.diff-card.profit-card .diff-list li i{color:var(--lime);font-size:14px;margin-top:3px;flex:none}
+.diff-foot{margin-top:auto}
+.diff-foot .btn{width:100%}
+@media(max-width:860px){.diff-grid{grid-template-columns:1fr}}
+
 /* Mobile navigation: the menu button opens the links on small screens. */
 .menu-btn{display:none;margin-left:auto;cursor:pointer;font-size:22px;padding:6px 8px;color:inherit}
 .m-only{display:none}
@@ -144,7 +270,7 @@ header.top{background:#0b0c10;backdrop-filter:none;-webkit-backdrop-filter:none}
 </style><script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script><link rel="preload" as="image" href="img/hero.jpg"></head>
 <body class="dark pf-glow">
 <input id="navt" type="checkbox" hidden><header class="top"><div class="wrap"><a class="brand" href="welcome.html"><img src="logo.jpg" alt="ProFit logo" width="40" height="40">ProFit</a>
-<nav aria-label="Primary"><a href="#home">Home</a><a href="#why">Features</a><a href="#programs">Programs</a><a href="#plans">Membership</a><a href="#about">About</a><a href="#visit">Contact</a><a class="m-only" href="login.html">Sign in</a></nav><label class="menu-btn" for="navt" aria-label="Open menu"><i class="fa-solid fa-bars"></i></label>
+<nav aria-label="Primary"><a href="#home">Home</a><a href="#why">Features</a><a href="#difference">Difference</a><a href="#programs">Programs</a><a href="#plans">Membership</a><a href="#about">About</a><a href="#visit">Contact</a><a class="m-only" href="login.html">Sign in</a></nav><label class="menu-btn" for="navt" aria-label="Open menu"><i class="fa-solid fa-bars"></i></label>
 <div class="cta"><a class="btn" href="login.html">Sign in</a><a class="btn p" href="join.html">Join now</a></div></div></header>
 <main id="home">
 <section class="hero"><div class="wrap"><div>
@@ -173,37 +299,55 @@ header.top{background:#0b0c10;backdrop-filter:none;-webkit-backdrop-filter:none}
 </div>
 <button type="button" class="c-arrow c-next" aria-label="Next image"><i class="fa-solid fa-chevron-right"></i></button>
 </div></div></div></section>
-<div class="strip"><div class="wrap">
+<div class="strip"><div class="wrap anim-ticker">
 <div><i class="fa-solid fa-ticket"></i>3 flexible plans</div><div><i class="fa-solid fa-credit-card"></i>Pay online, account ready</div><div><i class="fa-solid fa-mobile-screen"></i>Member portal on your phone</div><div><i class="fa-solid fa-user-group"></i>Coaches on the floor</div></div></div>
 
-<section class="s" id="why"><div class="wrap"><div class="sh"><div><span class="eyebrow">Why choose us</span><h2>Everything you need to keep showing up</h2></div><p>From your first workout to your hundredth, ProFit keeps your plan, schedule and progress in one place.</p></div>
-<div class="grid4">
+<section class="s" id="why"><div class="wrap"><div class="sh anim-header"><div><span class="eyebrow">Why choose us</span><h2>Everything you need to keep showing up</h2></div><p>From your first workout to your hundredth, ProFit keeps your plan, schedule and progress in one place.</p></div>
+<div class="grid4 anim-features">
 <div class="box"><div class="ic"><i class="fa-solid fa-dumbbell"></i></div><h3>Functional training</h3><p>Strength, conditioning and mobility built around real-life movement.</p></div>
 <div class="box"><div class="ic"><i class="fa-solid fa-user-check"></i></div><h3>Coach guidance</h3><p>Trainers assigned to you, with schedules and notes inside your portal.</p></div>
 <div class="box"><div class="ic"><i class="fa-solid fa-chart-line"></i></div><h3>Track progress</h3><p>Attendance, health goals and your diary, all in one dashboard.</p></div>
 <div class="box"><div class="ic"><i class="fa-solid fa-shield-halved"></i></div><h3>Secure payments</h3><p>Checkout by PayMongo. Your membership starts as soon as you pay.</p></div></div></div></section>
 
-<section class="s" id="programs" style="padding-top:0"><div class="wrap"><div class="sh"><div><span class="eyebrow">Programs</span><h2>Train the way that fits you</h2></div><p>Sample programs. Final schedules and offerings are confirmed by the gym.</p></div>
-<div class="grid3">
+<section class="s" id="difference" style="padding-top:0"><div class="wrap"><div class="sh anim-header"><div><span class="eyebrow">The Difference</span><h2>Why ProFit is not your typical gym</h2></div><p>We built Functional Fitness Gym to solve the friction of traditional gyms — from transparent pricing to real coaching on the floor.</p></div>
+<div class="diff-grid">
+<div class="box diff-card trad anim-diff-trad"><div class="diff-head"><div class="diff-tag">Traditional Gyms</div><h3>The Old Way</h3><p>Overcrowded floors, confusing machines, and feeling like just another barcode.</p></div>
+<ul class="diff-list">
+<li><i class="fa-solid fa-xmark"></i><span>Isolated machines with long queues and zero workout direction</span></li>
+<li><i class="fa-solid fa-xmark"></i><span>Paper sign-up forms, lost logbooks, and manual attendance records</span></li>
+<li><i class="fa-solid fa-xmark"></i><span>Hidden lock-in contracts and complicated cancellation policies</span></li>
+<li><i class="fa-solid fa-xmark"></i><span>Coaches only engage if you pay expensive separate hourly rates</span></li>
+</ul></div>
+<div class="box diff-card profit-card anim-diff-profit"><div class="diff-badge">THE PROFIT ADVANTAGE</div><div class="diff-head"><div class="diff-tag hl">Functional Fitness Gym</div><h3>The ProFit Way</h3><p>Every member gets purposeful coaching, modern technology, and a supportive community.</p></div>
+<ul class="diff-list">
+<li><i class="fa-solid fa-check"></i><span>Functional free-weight &amp; movement floor built around real-life strength</span></li>
+<li><i class="fa-solid fa-check"></i><span>Instant digital member portal with live attendance &amp; workout history</span></li>
+<li><i class="fa-solid fa-check"></i><span>Simple, transparent pricing paid via GCash, Maya, or card with zero surprises</span></li>
+<li><i class="fa-solid fa-check"></i><span>Floor coaches who know your name and actively guide your lifting form</span></li>
+</ul>
+<div class="diff-foot"><a class="btn p" href="join.html">Experience the difference <i class="fa-solid fa-arrow-right"></i></a></div></div></div></div></section>
+
+<section class="s" id="programs" style="padding-top:0"><div class="wrap"><div class="sh anim-header"><div><span class="eyebrow">Programs</span><h2>Train the way that fits you</h2></div><p>Sample programs. Final schedules and offerings are confirmed by the gym.</p></div>
+<div class="grid3 anim-programs">
 <article class="box prog"><div class="pic"><img src="img/gym-1.jpg" alt="" onerror="this.remove()"><div class="pc-img"><img src="img/prog-1.jpg" alt="Member training at the squat rack" loading="lazy"></div></div><div class="in"><h3>Strength &amp; conditioning</h3><p>Guided lifting and circuits for all levels.</p><div class="tags"><span>All levels</span><span>Group</span></div></div></article>
 <article class="box prog"><div class="pic"><img src="img/gym-2.jpg" alt="" onerror="this.remove()"><div class="pc-img"><img src="img/prog-2.jpg" alt="Bench and equipment on the ProFit gym floor" loading="lazy"></div></div><div class="in"><h3>HIIT &amp; functional</h3><p>Short, high-energy sessions that build stamina.</p><div class="tags"><span>Intermediate</span><span>Group</span></div></div></article>
 <article class="box prog"><div class="pic"><img src="img/gym-3.jpg" alt="" onerror="this.remove()"><div class="pc-img"><img src="img/prog-3.jpg" alt="Group of members posing together in the gym" loading="lazy"></div></div><div class="in"><h3>Personal coaching</h3><p>One-on-one attention and a plan made for your goals.</p><div class="tags"><span>1-on-1</span><span>By schedule</span></div></div></article></div></div></section>
 
-<section class="s gal" aria-label="Inside ProFit"><div class="wrap"><h2>Inside ProFit</h2><div class="gal-grid"><figure><img src="img/gal-1.jpg" alt="Team photo at the ProFit gym" loading="lazy"></figure><figure><img src="img/gal-2.jpg" alt="Group of members posing together in the gym" loading="lazy"></figure><figure><img src="img/gal-3.jpg" alt="Member training at the squat rack" loading="lazy"></figure><figure><img src="img/gal-4.jpg" alt="Equipment on the ProFit gym floor" loading="lazy"></figure></div></div></section>
-<section class="s plans" id="plans"><div class="wrap"><div class="sh"><div><span class="eyebrow">Membership</span><h2>Simple plans, no surprises</h2></div><p>Choose a plan, pay online, and your account is created right away.</p></div>
-<div class="grid3">
+<section class="s gal" aria-label="Inside ProFit"><div class="wrap"><h2 class="anim-header">Inside ProFit</h2><div class="gal-grid anim-gallery"><figure><img src="img/gal-1.jpg" alt="Team photo at the ProFit gym" loading="lazy"></figure><figure><img src="img/gal-2.jpg" alt="Group of members posing together in the gym" loading="lazy"></figure><figure><img src="img/gal-3.jpg" alt="Member training at the squat rack" loading="lazy"></figure><figure><img src="img/gal-4.jpg" alt="Equipment on the ProFit gym floor" loading="lazy"></figure></div></div></section>
+<section class="s plans" id="plans"><div class="wrap"><div class="sh anim-header"><div><span class="eyebrow">Membership</span><h2>Simple plans, no surprises</h2></div><p>Choose a plan, pay online, and your account is created right away.</p></div>
+<div class="grid3 anim-plans">
 <div class="box plan"><h3>Monthly</h3><div class="price">₱800<small> / 30 days</small></div><ul><li><i class="fa-solid fa-check"></i>Gym access</li><li><i class="fa-solid fa-check"></i>Member portal</li><li><i class="fa-solid fa-check"></i>Attendance tracking</li></ul><a class="btn" href="join.html?plan=monthly">Choose plan</a></div>
 <div class="box plan hot"><span class="badge">MOST POPULAR</span><h3>Quarterly</h3><div class="price">₱2,100<small> / 90 days</small></div><ul><li><i class="fa-solid fa-check"></i>Gym access</li><li><i class="fa-solid fa-check"></i>Member portal</li><li><i class="fa-solid fa-check"></i>Attendance tracking</li></ul><a class="btn p" href="join.html?plan=quarterly">Choose plan</a></div>
 <div class="box plan"><h3>Annual</h3><div class="price">₱7,500<small> / 365 days</small></div><ul><li><i class="fa-solid fa-check"></i>Gym access</li><li><i class="fa-solid fa-check"></i>Member portal</li><li><i class="fa-solid fa-check"></i>Attendance tracking</li></ul><a class="btn" href="join.html?plan=annual">Choose plan</a></div></div></div></section>
 
-<section class="s" id="about"><div class="wrap story"><div class="pic"><img src="img/hero.jpg" alt="ProFit members posing together in the gym" onerror="this.remove()"></div>
-<div><span class="eyebrow">Our story</span><h2>A neighborhood gym built on community</h2><p>Functional Fitness Gym is a local gym in Alfonso, Calabarzon. We focus on practical strength, steady habits and a friendly floor where everyone belongs.</p><p>ProFit is the system behind it: join online, check in, and follow your progress without paperwork.</p>
+<section class="s" id="about"><div class="wrap story"><div class="pic anim-story-pic"><img src="img/hero.jpg" alt="ProFit members posing together in the gym" onerror="this.remove()"></div>
+<div class="anim-story-text"><span class="eyebrow">Our story</span><h2>A neighborhood gym built on community</h2><p>Functional Fitness Gym is a local gym in Alfonso, Calabarzon. We focus on practical strength, steady habits and a friendly floor where everyone belongs.</p><p>ProFit is the system behind it: join online, check in, and follow your progress without paperwork.</p>
 <ul><li><i class="fa-solid fa-circle-check"></i>Friendly, beginner-welcome environment</li><li><i class="fa-solid fa-circle-check"></i>Coaches who track your progress</li><li><i class="fa-solid fa-circle-check"></i>Clear pricing, paid online</li></ul></div></div></section>
 
-<div class="cta-band"><div class="wrap"><div><h2>Ready to start?</h2><p>Pick a plan and your account is ready after payment.</p></div><a class="btn" href="join.html">Join now <i class="fa-solid fa-arrow-right"></i></a></div></div>
+<div class="cta-band"><div class="wrap anim-cta"><div><h2>Ready to start?</h2><p>Pick a plan and your account is ready after payment.</p></div><a class="btn" href="join.html">Join now <i class="fa-solid fa-arrow-right"></i></a></div></div>
 
-<section class="s" id="visit"><div class="wrap"><div class="sh"><div><span class="eyebrow">Visit</span><h2>Come train with us</h2></div></div>
-<div class="visit">
+<section class="s" id="visit"><div class="wrap"><div class="sh anim-header"><div><span class="eyebrow">Visit</span><h2>Come train with us</h2></div></div>
+<div class="visit anim-visit">
 <div class="box"><div class="ic"><i class="fa-solid fa-location-dot"></i></div><div><h3>Address</h3><p>259 Luksuhin-Mangas Road<br>Alfonso, Calabarzon</p></div></div>
 <div class="box"><div class="ic"><i class="fa-solid fa-phone"></i></div><div><h3>Call us</h3><a href="tel:09122617663">0912 261 7663</a><p>Opens at 7 AM</p></div></div>
 <div class="box"><div class="ic"><i class="fa-brands fa-facebook-f"></i></div><div><h3>Facebook</h3><a href="https://www.facebook.com/FunctionalPerformance.2022" target="_blank" rel="noopener">Functional Fitness Gym</a></div></div></div></div></section>
@@ -258,5 +402,26 @@ document.querySelectorAll('header nav a').forEach(function(a){a.addEventListener
     }
   }, {passive: true});
   start();
+})();
+(function(){
+  var targets = document.querySelectorAll(
+    '.anim-header, .anim-ticker, .anim-features, .anim-diff-trad, .anim-diff-profit, .anim-programs, .anim-gallery, .anim-plans, .anim-story-pic, .anim-story-text, .anim-cta, .anim-visit'
+  );
+  if(!('IntersectionObserver' in window)){
+    targets.forEach(function(el){ el.classList.add('is-visible'); });
+    return;
+  }
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  },{
+    rootMargin: '0px 0px -40px 0px',
+    threshold: 0.08
+  });
+  targets.forEach(function(el){ observer.observe(el); });
 })();
 </script></body></html>

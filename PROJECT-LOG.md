@@ -735,3 +735,37 @@ Add an image carousel to the first part (hero section) of the ProFit welcome pag
 ### Decision-log skill
 When introducing carousels inside established hero layouts containing floating badge overlays, place slide transitions inside a dedicated absolute track behind the badges. Prefer crossfades over sliding tracks to avoid horizontal overflow, badge clipping, or jittering coordinates during animation.
 
+## 2026-10-20 16:46 (Asia/Manila): Scroll animations & "The Difference" comparison section
+### What I asked for
+Add scroll animations to the landing page and create a difference section, providing an interactive output preview so the user can review and request changes.
+### What the agent decided and why
+- Implemented lightweight, hardware-accelerated scroll reveal entrance animations (`.reveal` and `.reveal-stagger`) using `IntersectionObserver` with a fallback for older browsers and support for `prefers-reduced-motion`.
+- Added "The Difference" section (`#difference`) comparing Traditional Gyms vs. ProFit Functional Fitness Gym, positioned between "Why choose us" and "Programs" to address common customer hesitations and highlight ProFit's coaching, community, and digital member experience.
+- Preserved the ProFit brand tokens (`--lime: #e8b93a`, `--card: #111320`, `--line: #232636`, `--tx: #f6efdc`) and added responsive 2-column to 1-column layouts for mobile viewports (`<= 860px`).
+- Updated the primary navigation bar to include a direct anchor jump link to `#difference`.
+- Created an interactive preview artifact (`welcome-scroll-diff-preview.html`) embedded directly in chat with jump controls and a replay button so the user can review the scroll animations and content.
+### Decision-log skill
+When introducing scroll-driven entrance animations to static web pages, use staggered CSS transition delays (`reveal-stagger`) paired with a single decoupled `IntersectionObserver` with an offset `rootMargin`. Always provide an immediate fallback where elements remain visible if observers or JavaScript are disabled, and respect `prefers-reduced-motion`.
+
+## 2026-10-20 16:52 (Asia/Manila): Tailored aesthetic scroll animations for all landing sections
+### What I asked for
+Add different, more aesthetic scroll animations tailored specifically for each section of the welcome landing page.
+### What the agent decided and why
+- Replaced uniform fade-up reveals with 10 distinct, bespoke entrance animations matched to each component's function:
+  1. Section headers (`.anim-header`): Expanding accent line (`eyebrow::before`) and blur-to-sharp text ascent.
+  2. Ticker strip (`.anim-ticker`): Lateral horizontal slide with spring-rotating gold icons.
+  3. Feature boxes (`.anim-features`): 3D perspective tilt (`rotateX(12deg)`) with glowing gold icon auras.
+  4. The Difference cards (`.anim-diff-trad`, `.anim-diff-profit`): Opposing magnetic slide-in where Traditional sinks from left and ProFit surges from right with gold drop shadow and spring-bouncing checkmarks.
+  5. Program cards (`.anim-programs`): Depth-lift with internal parallax photo settling (`scale(1.16) -> scale(1)`).
+  6. Inside ProFit gallery (`.anim-gallery`): Aperture mosaic zoom with staggered lens expansion.
+  7. Membership plans (`.anim-plans`): Podium spotlight entrance elevating the center "Most Popular" quarterly plan with active gold aura.
+  8. Our Story (`.anim-story-pic`, `.anim-story-text`): Editorial split reveal sliding the photo and narrative from opposite sides.
+  9. CTA band (`.anim-cta`): Luminous scale-expand with gold button halo.
+  10. Visit & contact (`.anim-visit`): Spring-loaded card cascade with bouncing map/phone/social markers.
+- Leveraged hardware-accelerated transforms (`transform`, `opacity`, `filter: blur()`) with cubic-bezier curves (`cubic-bezier(.16, 1, .3, 1)` and spring `cubic-bezier(.34, 1.56, 0.64, 1)`), eliminating layout reflows.
+- Updated the interactive preview artifact with quick-jump filters and live replay controls.
+### Decision-log skill
+To create a high-aesthetic motion design experience on landing pages, vary the motion vocabulary per section (e.g. 3D tilts for feature grids, opposing lateral slides for comparisons, podium elevations for pricing tiers) rather than repeating a single uniform fade-up. Combine subtle blur filters with spring easing to give a premium, tactile feel while preserving performance.
+
+
+
