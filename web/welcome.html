@@ -35,14 +35,25 @@ header.top{position:sticky;top:0;z-index:50;background:rgba(7,8,12,.85);backdrop
 .hero h1 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
 .hero p.lead{color:var(--mu);font-size:18px;max-width:520px}
 .hero .acts{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap}
-.hero-media{position:relative;aspect-ratio:4/5;border-radius:24px;border:1px solid var(--line);background:var(--card);overflow:hidden;display:grid;place-items:center}
-.hero-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero-media{position:relative;aspect-ratio:4/5;border-radius:24px;border:1px solid var(--line);background:var(--card);overflow:hidden}
+.carousel-track{position:absolute;inset:0;width:100%;height:100%}
+.carousel-slide{position:absolute;inset:0;opacity:0;transition:opacity .7s cubic-bezier(.4,0,.2,1);pointer-events:none}
+.carousel-slide.active{opacity:1;pointer-events:auto;z-index:1}
+.carousel-slide img{width:100%;height:100%;object-fit:cover;display:block}
 .ph{display:grid;place-items:center;gap:10px;text-align:center;color:var(--mu);font-size:13px;padding:24px}
 .ph i{font-size:44px;color:var(--lime)}
-.chip{position:absolute;display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:14px;background:rgba(17,19,32,.94);border:1px solid var(--line);font-size:13px;font-weight:600}
+.chip{position:absolute;display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:14px;background:rgba(17,19,32,.94);border:1px solid var(--line);font-size:13px;font-weight:600;z-index:3;backdrop-filter:blur(6px)}
 .chip i{color:var(--lime)}.chip small{display:block;color:var(--mu);font-weight:500}
 .chip.a{left:16px;bottom:18px}.chip.b{right:16px;top:18px}
+.carousel-ctrls{position:absolute;bottom:18px;right:16px;display:flex;align-items:center;gap:6px;background:rgba(17,19,32,.88);border:1px solid var(--line);border-radius:999px;padding:5px 8px;z-index:3;backdrop-filter:blur(8px)}
+.c-arrow{width:26px;height:26px;border-radius:50%;border:0;background:transparent;color:var(--tx);display:grid;place-items:center;cursor:pointer;font-size:11px;padding:0;transition:background .15s,color .15s}
+.c-arrow:hover{background:var(--lime);color:var(--on)}
+.c-dots{display:flex;align-items:center;gap:5px;padding:0 3px}
+.c-dot{width:6px;height:6px;border-radius:999px;border:0;padding:0;background:rgba(246,239,220,.35);cursor:pointer;transition:all .25s ease}
+.c-dot:hover{background:var(--mu)}
+.c-dot.active{width:18px;background:var(--lime)}
 @media(max-width:860px){.hero .wrap{grid-template-columns:1fr}.hero{padding-top:40px}.hero-media{aspect-ratio:16/10}}
+@media(max-width:480px){.chip.a small{display:none}.chip{padding:8px 12px;font-size:12px}.carousel-ctrls{bottom:14px;right:14px;padding:4px 6px}}
 /* ticker strip */
 .strip{border-block:1px solid var(--line);background:var(--bg2)}
 .strip .wrap{display:grid;grid-template-columns:repeat(4,1fr)}
@@ -141,9 +152,27 @@ header.top{background:#0b0c10;backdrop-filter:none;-webkit-backdrop-filter:none}
 <h1>Stronger people.<br><em>Healthier</em> community.</h1>
 <p class="lead">Train with coaches who know your name. Join online in minutes, pay with GCash, Maya or card, and manage everything in your member portal.</p>
 <div class="acts"><a class="btn p" href="join.html">Join now <i class="fa-solid fa-arrow-right"></i></a><a class="btn" href="#plans">View plans</a></div></div>
-<div class="hero-media"><img src="img/hero-side.jpg" alt="ProFit gym interior with members training" onerror="this.remove()">
+<div class="hero-media" id="heroCarousel" aria-roledescription="carousel" aria-label="Gym highlights">
+<div class="carousel-track">
+<div class="carousel-slide active" aria-hidden="false"><img src="img/hero-side.jpg" alt="ProFit gym interior with members training"></div>
+<div class="carousel-slide" aria-hidden="true"><img src="img/gal-1.jpg" alt="Functional fitness training floor" loading="lazy"></div>
+<div class="carousel-slide" aria-hidden="true"><img src="img/gal-2.jpg" alt="ProFit community workout session" loading="lazy"></div>
+<div class="carousel-slide" aria-hidden="true"><img src="img/gal-3.jpg" alt="Strength and squat rack training" loading="lazy"></div>
+<div class="carousel-slide" aria-hidden="true"><img src="img/gal-4.jpg" alt="Weights and gym equipment" loading="lazy"></div>
+</div>
 <div class="chip b"><i class="fa-solid fa-bolt"></i><span>Pay online<small>GCash · Maya · Card</small></span></div>
-<div class="chip a"><i class="fa-solid fa-location-dot"></i><span>Alfonso, Calabarzon<small>Luksuhin-Mangas Road</small></span></div></div></div></section>
+<div class="chip a"><i class="fa-solid fa-location-dot"></i><span>Alfonso, Calabarzon<small>Luksuhin-Mangas Road</small></span></div>
+<div class="carousel-ctrls">
+<button type="button" class="c-arrow c-prev" aria-label="Previous image"><i class="fa-solid fa-chevron-left"></i></button>
+<div class="c-dots" role="tablist" aria-label="Slide dots">
+<button type="button" class="c-dot active" aria-label="Slide 1" aria-selected="true"></button>
+<button type="button" class="c-dot" aria-label="Slide 2" aria-selected="false"></button>
+<button type="button" class="c-dot" aria-label="Slide 3" aria-selected="false"></button>
+<button type="button" class="c-dot" aria-label="Slide 4" aria-selected="false"></button>
+<button type="button" class="c-dot" aria-label="Slide 5" aria-selected="false"></button>
+</div>
+<button type="button" class="c-arrow c-next" aria-label="Next image"><i class="fa-solid fa-chevron-right"></i></button>
+</div></div></div></section>
 <div class="strip"><div class="wrap">
 <div><i class="fa-solid fa-ticket"></i>3 flexible plans</div><div><i class="fa-solid fa-credit-card"></i>Pay online, account ready</div><div><i class="fa-solid fa-mobile-screen"></i>Member portal on your phone</div><div><i class="fa-solid fa-user-group"></i>Coaches on the floor</div></div></div>
 
@@ -180,4 +209,54 @@ header.top{background:#0b0c10;backdrop-filter:none;-webkit-backdrop-filter:none}
 <div class="box"><div class="ic"><i class="fa-brands fa-facebook-f"></i></div><div><h3>Facebook</h3><a href="https://www.facebook.com/FunctionalPerformance.2022" target="_blank" rel="noopener">Functional Fitness Gym</a></div></div></div></div></section>
 </main>
 <script src="site-footer.js?v=5" defer></script>
-<script>document.querySelectorAll('header nav a').forEach(function(a){a.addEventListener('click',function(){document.getElementById('navt').checked=false;});});</script></body></html>
+<script>
+document.querySelectorAll('header nav a').forEach(function(a){a.addEventListener('click',function(){document.getElementById('navt').checked=false;});});
+(function(){
+  var media = document.getElementById('heroCarousel');
+  if(!media) return;
+  var slides = media.querySelectorAll('.carousel-slide');
+  var dots = media.querySelectorAll('.c-dot');
+  var prevBtn = media.querySelector('.c-prev');
+  var nextBtn = media.querySelector('.c-next');
+  if(!slides.length) return;
+  var current = 0;
+  var timer = null;
+  var delay = 4500;
+  var isPaused = false;
+  function show(idx){
+    current = (idx + slides.length) % slides.length;
+    slides.forEach(function(s, i){
+      var active = (i === current);
+      s.classList.toggle('active', active);
+      s.setAttribute('aria-hidden', !active);
+    });
+    dots.forEach(function(d, i){
+      var active = (i === current);
+      d.classList.toggle('active', active);
+      d.setAttribute('aria-selected', active);
+    });
+  }
+  function next(){ show(current + 1); }
+  function prev(){ show(current - 1); }
+  function start(){ stop(); timer = setInterval(function(){ if(!isPaused) next(); }, delay); }
+  function stop(){ if(timer){ clearInterval(timer); timer = null; } }
+  if(nextBtn) nextBtn.addEventListener('click', function(e){ e.preventDefault(); next(); start(); });
+  if(prevBtn) prevBtn.addEventListener('click', function(e){ e.preventDefault(); prev(); start(); });
+  dots.forEach(function(dot, i){
+    dot.addEventListener('click', function(e){ e.preventDefault(); show(i); start(); });
+  });
+  media.addEventListener('mouseenter', function(){ isPaused = true; });
+  media.addEventListener('mouseleave', function(){ isPaused = false; });
+  var touchStartX = 0;
+  media.addEventListener('touchstart', function(e){ if(e.changedTouches) touchStartX = e.changedTouches[0].screenX; }, {passive: true});
+  media.addEventListener('touchend', function(e){
+    if(!e.changedTouches) return;
+    var diff = e.changedTouches[0].screenX - touchStartX;
+    if(Math.abs(diff) > 40){
+      if(diff < 0) next(); else prev();
+      start();
+    }
+  }, {passive: true});
+  start();
+})();
+</script></body></html>

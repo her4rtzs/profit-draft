@@ -722,3 +722,16 @@ Fix the UI for mobile devices across all staff pages, and merge changes with Ang
 ### Decision-log skill
 When reconciling responsive mobile drawer navigation with a desktop hover-expanding icon rail, keep desktop rules strictly gated within `@media (min-width: 769px)` and mobile drawer rules within `@media (max-width: 768px)`. This prevents hover state animations from colliding with off-canvas slide-out drawers and eliminates redundant click toggle states.
 
+## 2026-10-20 16:15 (Asia/Manila): Welcome page hero image carousel
+### What I asked for
+Add an image carousel to the first part (hero section) of the ProFit welcome page without altering any existing design or color palette, and provide an interactive preview of how it looks.
+### What the agent decided and why
+- Implemented the carousel within the existing `.hero-media` showcase container on `web/welcome.html`, cycling through 5 high-resolution gym photos (`hero-side.jpg`, `gal-1.jpg`, `gal-2.jpg`, `gal-3.jpg`, `gal-4.jpg`).
+- Preserved the hero's darkened background (`rgba(9,9,7,.82)`) and floating feature badges (`.chip.a` for Alfonso location and `.chip.b` for online payment) so all existing branding and layout remain untouched.
+- Used a crossfade transition (`transition: opacity .7s`) combined with a subtle zoom reset, ensuring floating badges remain visually stable without layout shifting.
+- Kept the color palette 100% faithful to the ProFit design system tokens (`--gold: #e8b93a`, `--line: #232636`, `--card: #111320`, `--tx: #f6efdc`, `--mu: #9a9788`).
+- Built controls as a compact floating glass pill in the bottom-right corner with prev/next buttons and active pill dot indicators, pausing on hover and supporting touch swiping on mobile.
+- Created an interactive preview artifact (`welcome-carousel-preview.html`) embedded directly in chat via generative UI so the user can test all carousel interactions live.
+### Decision-log skill
+When introducing carousels inside established hero layouts containing floating badge overlays, place slide transitions inside a dedicated absolute track behind the badges. Prefer crossfades over sliding tracks to avoid horizontal overflow, badge clipping, or jittering coordinates during animation.
+
