@@ -3,6 +3,7 @@ recent check-ins, paid invoices). Read-only and scoped to the caller."""
 
 import base64
 import binascii
+from datetime import timedelta
 
 from django.utils import timezone
 from rest_framework import status
@@ -61,7 +62,31 @@ class MemberMeView(APIView):
         if profile is None:
             raise NotFound("No member profile.")
 
-        visits = Attendance.objects.filter(member=profile).order_by("-check_in_date")[:30]
+        # Fetch last 90 days of attendance for streak/weekly calculations,
+        # but only send the most recent 30 to the client for the list display.
+        today = timezone.localdate()
+        # Monday of the current ISO week (Mon=0 … Sun=6 in isoweekday)
+        week_monday = today - timedelta(days=today.isoweekday() - 1)
+
+        all_visits = list(
+            Attendance.objects.filter(member=profile)
+            .order_by("-check_in_date")
+            .values_list("check_in_date", flat=True)[:90]
+        )
+        # Streak: consecutive days ending today (or yesterday if not yet checked in today)
+        visit_set = set(all_visits)
+        streak = 0
+        for i in range(90):
+            d = today - timedelta(days=i)
+            if d in visit_set:
+                streak += 1
+            else:
+                break
+
+        # Weekly visits: distinct check-in dates in the current ISO week (Mon–Sun)
+        weekly_visits = sum(1 for d in visit_set if d >= week_monday)
+
+        visits_for_display = all_visits[:30]
         paid = (Payment.objects.filter(subscription__member=profile, status=Payment.Status.PAID)
                 .order_by("-created_at")[:20])
         user = request.user
@@ -76,7 +101,12 @@ class MemberMeView(APIView):
                 "status": profile.membership_status,
                 "expiry": profile.expiry_date.isoformat() if profile.expiry_date else None,
             },
-            "attendance": [{"date": v.check_in_date.isoformat(), "location": "Gym check-in"} for v in visits],
+            # attendance: YYYY-MM-DD strings (localdate) — no UTC shift on the client
+            "attendance": [{"date": d.isoformat(), "location": "Gym check-in"} for d in visits_for_display],
+            # streak/weekly are pre-computed server-side so the client doesn't
+            # have to recalculate from an incomplete 30-record window
+            "streak": streak,
+            "weeklyVisits": weekly_visits,
             "payments": [{
                 "reference": f"PF-{p.pk:06d}",
                 "date": timezone.localdate(p.created_at).isoformat(),

@@ -770,16 +770,19 @@ To create a high-aesthetic motion design experience on landing pages, vary the m
 
 
 
-## 2026-10-29 16:35 (Asia/Manila): Skeleton loading for the staff portal lists
+## 2026-10-29 17:09 (Asia/Manila): Fix weekly goal, streaks, calendar, and recent attendance bugs
+
 ### What I asked for
-Lagyan ng skeleton loading ang website.
+Fix the weekly goal, streaks, the calendar, and recent attendance — they were showing members as having already completed their weekly goal even after only 1 check-in. Also fix the UI so the weekly goal card is visible on the overview tab without requiring a check-in first.
+
 ### What the agent decided and why
-- Reused the skeleton the dashboard already had (`.pf-skel` rows + `pfShimmer`) instead of inventing a second pattern, and moved it into `portal-ui.css` as one shared kit (`.pf-sk` bar, `.pf-skel` row, `.pf-skel-block` stand-in card) because seven pages needed it.
-- Bars are drawn with `color-mix(...currentColor...)` rather than the old white-alpha gradient so they stay visible in both the dark and light themes; the text colour, not a hardcoded white, drives the shimmer.
-- Added `window.pfAfterSync` in `data.js`: first renders wait for the sync but for at least 400 ms and never more than 4 s. Without the floor, the local demo rows painted first and were replaced a frame later, which read as a flicker instead of a load.
-- Gated only the first draw in `members.js` and `pages.js` (attendance, payments, reports); every later redraw stays immediate so filters and pagination never feel slow.
-- Fixed a pre-existing race in `index.html`: its `profit:synced` listener was registered after a fast 401/404 could fire, so the placeholder rows stayed forever. It now renders immediately when `DB.synced` is already true.
-- A failed trainers request now replaces the placeholder cards with the error text; a shimmer that never resolves would hide the failure.
-- Skipped settings, profile, trainer-portal (no server-backed list) and member-home (it already has `.member-loading`), and left the mobile drawer and hover rail untouched.
+- **Removed hardcoded demo base check-ins** (`demoData()` in `member-home.html`): The original `demoData()` always merged 6 hardcoded check-ins (today, -1, -2, -4, -6, -9 days ago) so the weekly goal was always pre-filled to 4+/4 from the first page load. Removed that array entirely; demo mode now starts with zero check-ins and only records explicit "Check in today" button presses.
+- **Fixed weekly goal: rolling 7-day window → current ISO week (Mon–Sun)**: The old `weekStart = today - 6 days` is a rolling window, meaning a member who checked in Monday last week and Monday this week would count both. Replaced with `weekMondayKey()` that finds the most recent Monday, and counts only distinct days in `[monday, today]`. 1 check-in = 1/4, regardless of what happened before Monday.
+- **Fixed streak and date comparisons: UTC shift bug**: `new Date("2026-10-29").toISOString().slice(0,10)` returns `"2026-10-28"` in UTC+8 at midnight because the date-only string parses as UTC midnight. Added `localDateStr()` helper that detects `YYYY-MM-DD` strings and uses them directly, and extracts local date parts from full ISO timestamps via `new Date().getFullYear()/.getMonth()/.getDate()` (local, not UTC). All streak, weekly, todayKey, and checkinDays comparisons now use this helper.
+- **Fixed calendar dot markers**: `checkinDays()` in `member-tabs.js` was calling `.slice(0,10)` on ISO timestamps — fine for the first 10 chars, but those 10 chars are UTC date. Replaced with the same local-date-extraction logic matching `localDateStr()`.
+- **Fixed recent attendance display**: The `date()` formatter now parses `YYYY-MM-DD` strings as local midnight using `new Date(y, mo-1, d)` instead of `new Date(value)` which UTC-shifts.
+- **Server-side streak and weeklyVisits in API**: `GET /api/member/me/` now pre-computes streak and `weeklyVisits` server-side (Django `timezone.localdate()` is already Manila-local) and sends them in the response. The client prefers these authoritative values and falls back to the client-side calculation only for demo/offline mode. This also fixes the case where a member has > 30 check-ins but the API was only sending 30, making the client-side streak calculation incorrect for active long-term members.
+- **Bumped `member-tabs.js` cache version** to `?v=14` to ensure the fixed `checkinDays()` logic is not served from the browser cache.
+
 ### Decision-log skill
-Skeletons belong in the real containers in the HTML, not injected by script: the first render then replaces them in place and the layout never jumps. Give the handover a short minimum and a hard fallback, or a fast failure shows the placeholder as permanent. When you move a style to a shared file, delete the old copy in the same commit, or the next theme fix silently misses one page.
+Date-only strings like `"2026-10-29"` always parse as UTC midnight in `new Date()`. In UTC+8, this is 8 hours before local midnight, so the local date is `"2026-10-28"` — one day behind. Never pass a bare `YYYY-MM-DD` string through `new Date().toISOString()` for comparison. Instead: (a) use the string directly for `>=` / `===` comparisons since ISO date strings sort lexicographically, or (b) construct a local Date with `new Date(y, m-1, d)`. Also: "this week" means the current Mon–Sun ISO week, not a rolling 7-day window; pre-compute stats on the server where the timezone is authoritative.
