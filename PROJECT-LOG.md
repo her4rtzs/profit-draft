@@ -832,3 +832,34 @@ Remove the back and forward buttons from the staff page header.
 - Verified 9 pages x 3 widths (834, 1366, 390), 27/27 renders: arrows hidden and 0px wide, title left edge equal to the header's left edge, no horizontal overflow.
 ### Decision-log skill
 Hiding a control that a shared script builds is a CSS one-liner and keeps the history wiring intact; deleting it from the script would touch every page that loads that layout. Scope the hide to the page class so the other portals keep their header.
+
+## 2026-10-30 00:14 (Asia/Manila): fix phone-width card and search layout
+### What I asked for
+Fix the blank space inside the Record a payment card on phones, and the bloated search bar on the Subscription monitor, and every card with the same problem.
+### What the agent decided and why
+- Root cause is one pattern, not two bugs: .panel-header > div:first-child (layout-fixes.css) and .pf-staff .search (staff-design.css) keep a row flex-basis when their parent turns into a column at phone width, so the basis becomes a fixed height (220px blank header, 320px search).
+- Reset the basis only inside @media (max-width:768px) in staff-design.css, scoped to .pf-staff, so desktop rows are untouched.
+- Kept the fix in the scoped staff stylesheet instead of editing shared layout-fixes.css.
+### Decision-log skill
+When a flex row becomes a column on mobile, always reset flex-basis to auto; a px basis is a width in a row and a height in a column.
+## 2026-10-30 00:47 (Asia/Manila): move member settings into the profile menu
+### What I asked for
+Remove Settings from the member navigation bar and make it reachable only from the profile icon/button.
+### What the agent decided and why
+- Deleted the Settings tab from .pp-tabs and the Settings button from the mobile bottom nav in member-home.html, so both nav bars now end at My profile.
+- Kept the settings panel and the profile-menu Settings item; goTab("settings") still works without a tab because it shows the panel directly.
+- Kept one tab in the keyboard order while Settings is open, so the tablist stays reachable after opening it from the menu.
+- Fixed the announcement bell chip, which called goTab("settings") instead of goTab("announcements") and scrolled the settings card.
+- Bumped member-tabs.js to v14 so browsers pick up the JS change.
+### Decision-log skill
+A hidden nav entry only needs its nav buttons removed if the panel is driven by a name-based show function, not by the button element itself.
+## 2026-10-30 00:59 (Asia/Manila): member nav spacing and mobile announcements
+### What I asked for
+Fix the member navigation spacing and make the announcement section reachable in mobile view.
+### What the agent decided and why
+- Added a Notices item to the phone bottom nav; the top .pp-tabs is hidden below 760px, so announcements had no nav entry there.
+- Used the short label Notices because Announcements clips in the six-column bar at 360px.
+- The bottom nav grid already had six columns, so the new item also fills the empty column left by the removed Settings item; no CSS change was needed there.
+- Set justify-content: space-between on the member .pp-tabs so the six tabs fill the bar instead of bunching left with empty space on the right.
+### Decision-log skill
+A grid sized for the old item count leaves a visible hole after an item is removed; check the column count when the nav changes.

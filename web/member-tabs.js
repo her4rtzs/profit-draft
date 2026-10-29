@@ -64,6 +64,8 @@
         t.setAttribute("aria-selected", String(on));
         t.tabIndex = on ? 0 : -1;
       });
+      // Settings has no tab; keep one tab in the keyboard order for the tablist.
+      if (!names.includes(name)) tabs[0].tabIndex = 0;
       document.querySelectorAll("[data-panel]").forEach(p => { p.hidden = p.dataset.panel !== name; });
       if (updateHash) history.replaceState(null, "", "#" + name);
     };
@@ -1339,9 +1341,7 @@
       chip.setAttribute("tabindex", "0");
       chip.setAttribute("aria-label", `${count} gym announcement${count === 1 ? "" : "s"}`);
       chip.addEventListener("click", () => {
-        goTab("settings");
-        const list = $("memberSettingsRoot");
-        list?.scrollIntoView({ behavior: "smooth", block: "start" });
+        goTab("announcements");
         const latest = window.ProFitAnnouncements.forAudience("Members")[0];
         if (latest) toast(latest.title);
       });

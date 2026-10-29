@@ -72,7 +72,6 @@
       <button class="pp-tab" type="button" role="tab" data-tab="diary" aria-selected="false"><i class="fa-solid fa-book-open"></i> Diary</button>
       <button class="pp-tab" type="button" role="tab" data-tab="health" aria-selected="false"><i class="fa-solid fa-heart-pulse"></i> Health &amp; goals</button>
       <button class="pp-tab" type="button" role="tab" data-tab="profile" aria-selected="false"><i class="fa-regular fa-id-card"></i> My profile</button>
-      <button class="pp-tab" type="button" role="tab" data-tab="settings" aria-selected="false"><i class="fa-solid fa-sliders"></i> Settings</button>
     </nav>
     <div class="portal-result" id="memberNotice" role="status" hidden></div>
     <div class="pp-tool-panel" data-panel="overview">
@@ -509,18 +508,18 @@
 })();
 </script>
 <script src="pf-common.js"></script>
-<script src="member-tabs.js?v=13"></script>
+<script src="member-tabs.js?v=14"></script>
 <script src="change-password.js?v=1"></script>
 <script src="member-pay.js?v=1"></script>
 <script src="portal-fx.js?v=2"></script>
-<style>@media (max-width:760px){body{padding-bottom:112px}}</style>
+<style>@media (max-width:760px){body{padding-bottom:112px}}body.member-home .pp-tabs{justify-content:space-between}</style>
 <nav class="pf-bottomnav" aria-label="Member sections">
   <button type="button" data-go-tab="overview"><i class="fa-solid fa-gauge-high" aria-hidden="true"></i><span>Overview</span></button>
   <button type="button" data-go-tab="schedule"><i class="fa-regular fa-calendar" aria-hidden="true"></i><span>Schedule</span></button>
+  <button type="button" data-go-tab="announcements"><i class="fa-solid fa-bullhorn" aria-hidden="true"></i><span>Notices</span></button>
   <button type="button" data-go-tab="diary"><i class="fa-solid fa-book-open" aria-hidden="true"></i><span>Diary</span></button>
   <button type="button" data-go-tab="health"><i class="fa-solid fa-heart-pulse" aria-hidden="true"></i><span>Health</span></button>
   <button type="button" data-go-tab="profile"><i class="fa-regular fa-id-card" aria-hidden="true"></i><span>Profile</span></button>
-  <button type="button" data-go-tab="settings"><i class="fa-solid fa-sliders" aria-hidden="true"></i><span>Settings</span></button>
 </nav>
 <script>
 (() => {

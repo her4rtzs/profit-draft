@@ -474,3 +474,12 @@ html body.pf-staff .topbar {position:static!important}
   .pf-staff .topbar-actions .notification-wrap {width:42px;height:42px;display:flex;align-items:center;justify-content:center}
   .pf-staff .topbar-actions .topbar-avatar {width:42px;height:42px;flex:none}
 }
+
+/* ProFit fix: on phones two rows become columns but keep their row flex-basis,
+   so the basis turns into a fixed height. The card header reserved 220px of
+   blank space and every toolbar search grew into a 320px pill. Reset the basis
+   only while the parent is a column. */
+@media (max-width:768px) {
+  html body.pf-staff .panel-header > div:first-child {flex:0 0 auto!important}
+  .pf-staff .toolbar .search {flex:0 0 auto}
+}
