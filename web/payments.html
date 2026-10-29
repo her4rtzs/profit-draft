@@ -12,7 +12,7 @@
     <script src="config.js"></script>
     <script src="api.js"></script>
     <script src="auth.js"></script>
-<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=6"><link rel="stylesheet" href="ui-final.css?v=1"><script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script><link rel="stylesheet" href="hover-fx.css?v=2">
+<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=9"><link rel="stylesheet" href="ui-final.css?v=1"><script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script><link rel="stylesheet" href="hover-fx.css?v=2">
 <link rel="stylesheet" href="ui-polish.css?v=1">
 <link rel="stylesheet" href="ui-fixes.css?v=1">
 <link rel="stylesheet" href="pf-modern.css?v=1">
@@ -76,7 +76,11 @@
                         <h2 id="todayTotal">₱0</h2>
                         <p class="muted" id="todayCount"></p>
                     </div>
-                    <ul class="feed" id="todayFeed"></ul>
+                    <ul class="feed" id="todayFeed">
+                        <li aria-hidden="true"><span class="pf-sk" style="width:100%"></span></li>
+                        <li aria-hidden="true"><span class="pf-sk" style="width:100%"></span></li>
+                        <li aria-hidden="true"><span class="pf-sk" style="width:100%"></span></li>
+                    </ul>
                 </div>
             </div>
         </section>
@@ -105,7 +109,11 @@
                         <thead>
                             <tr><th>Member</th><th>Expires</th><th>Time left</th><th>Status</th><th></th></tr>
                         </thead>
-                        <tbody id="subRows"></tbody>
+                        <tbody id="subRows">
+                            <tr class="pf-skel" aria-hidden="true"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr>
+                            <tr class="pf-skel" aria-hidden="true"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr>
+                            <tr class="pf-skel" aria-hidden="true"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -126,7 +134,11 @@
                 <div class="table-wrapper">
                     <table>
                         <thead><tr><th>Ref</th><th>Member</th><th>Plan</th><th>Method</th><th>Date</th><th>Amount</th><th></th></tr></thead>
-                        <tbody id="histRows"></tbody>
+                        <tbody id="histRows">
+                            <tr class="pf-skel" aria-hidden="true"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr>
+                            <tr class="pf-skel" aria-hidden="true"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr>
+                            <tr class="pf-skel" aria-hidden="true"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr>
+                        </tbody>
                     </table>
                 </div>
             </div>

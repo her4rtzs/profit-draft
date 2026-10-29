@@ -769,3 +769,17 @@ To create a high-aesthetic motion design experience on landing pages, vary the m
 
 
 
+
+## 2026-10-29 16:35 (Asia/Manila): Skeleton loading for the staff portal lists
+### What I asked for
+Lagyan ng skeleton loading ang website.
+### What the agent decided and why
+- Reused the skeleton the dashboard already had (`.pf-skel` rows + `pfShimmer`) instead of inventing a second pattern, and moved it into `portal-ui.css` as one shared kit (`.pf-sk` bar, `.pf-skel` row, `.pf-skel-block` stand-in card) because seven pages needed it.
+- Bars are drawn with `color-mix(...currentColor...)` rather than the old white-alpha gradient so they stay visible in both the dark and light themes; the text colour, not a hardcoded white, drives the shimmer.
+- Added `window.pfAfterSync` in `data.js`: first renders wait for the sync but for at least 400 ms and never more than 4 s. Without the floor, the local demo rows painted first and were replaced a frame later, which read as a flicker instead of a load.
+- Gated only the first draw in `members.js` and `pages.js` (attendance, payments, reports); every later redraw stays immediate so filters and pagination never feel slow.
+- Fixed a pre-existing race in `index.html`: its `profit:synced` listener was registered after a fast 401/404 could fire, so the placeholder rows stayed forever. It now renders immediately when `DB.synced` is already true.
+- A failed trainers request now replaces the placeholder cards with the error text; a shimmer that never resolves would hide the failure.
+- Skipped settings, profile, trainer-portal (no server-backed list) and member-home (it already has `.member-loading`), and left the mobile drawer and hover rail untouched.
+### Decision-log skill
+Skeletons belong in the real containers in the HTML, not injected by script: the first render then replaces them in place and the layout never jumps. Give the handover a short minimum and a hard fallback, or a fast failure shows the placeholder as permanent. When you move a style to a shared file, delete the old copy in the same commit, or the next theme fix silently misses one page.

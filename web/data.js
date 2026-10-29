@@ -266,8 +266,8 @@ DB.sync = async function (reload = false) {
             fetch("/api/staff/payments/", { credentials: "same-origin" }),
             fetch("/api/staff/attendance/", { credentials: "same-origin" })
         ]);
-    } catch { document.dispatchEvent(new CustomEvent("profit:synced", { detail: { ok: false } })); return false; }
-    if (responses.some(r => !r.ok)) { document.dispatchEvent(new CustomEvent("profit:synced", { detail: { ok: false } })); return false; }
+    } catch { window.pfSyncSettled = true; document.dispatchEvent(new CustomEvent("profit:synced", { detail: { ok: false } })); return false; }
+    if (responses.some(r => !r.ok)) { window.pfSyncSettled = true; document.dispatchEvent(new CustomEvent("profit:synced", { detail: { ok: false } })); return false; }
 
     const [rows, pays, atts] = await Promise.all(responses.map(r => r.json()));
 
@@ -304,6 +304,7 @@ DB.sync = async function (reload = false) {
         try { localStorage.setItem(SIG_KEY, sig); } catch { /* storage blocked */ }
         if (reload) { location.reload(); return true; }
     }
+    window.pfSyncSettled = true;
     document.dispatchEvent(new CustomEvent("profit:synced", { detail: { ok: true, changed } }));
     return true;
 };
@@ -315,6 +316,29 @@ DB.sync = async function (reload = false) {
     };
 }
 DB.sync(false);
+
+// Skeleton gate: holds the shimmer placeholders for one short beat and no
+// longer than the first server sync, then runs the page's first render. Without
+// it the local demo rows paint first and get replaced, which reads as a flicker.
+window.pfAfterSync = (() => {
+    const MIN = 400;                     // shortest time the placeholder stays up
+    const started = performance.now();
+    const queue = [];
+    let settled = false, done = false;
+    const run = () => { if (done) return; done = true; queue.splice(0).forEach(fn => fn()); };
+    // A request that hangs must not leave the page shimmering forever.
+    const settle = () => {
+        if (settled) return;
+        settled = true;
+        setTimeout(run, Math.max(0, MIN - (performance.now() - started)));
+    };
+    if (window.pfSyncSettled) settle();
+    else {
+        document.addEventListener("profit:synced", settle, { once: true });
+        setTimeout(settle, 4000);
+    }
+    return fn => (done ? fn() : queue.push(fn));
+})();
 
 // Class and trainer catalogue used by the member portal schedules.
 const TRAINERS = [

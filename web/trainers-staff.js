@@ -39,7 +39,11 @@
       document.getElementById("asTrainer").innerHTML = active.length
         ? active.map(t => opt(t.id, `${t.name}${t.is_full ? " (full)" : ""}`, t.is_full ? "disabled" : "")).join("")
         : opt("", "No active trainers");
-    } catch (err) { say(err.message, true); }
+    } catch (err) {
+      // Clear the placeholder cards, or a failed request leaves them shimmering.
+      list.innerHTML = `<div class="ann-empty"><p>${esc(err.message || "Could not load the trainers.")}</p></div>`;
+      say(err.message, true);
+    }
   }
 
   async function loadCandidates() {

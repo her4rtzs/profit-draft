@@ -8,6 +8,8 @@
     const $$ = (s, r = document) => [...r.querySelectorAll(s)];
     const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
     const params = new URLSearchParams(location.search);
+    // Waits for the skeleton placeholders to hand over; falls back to immediate if data.js is absent.
+    const afterSync = window.pfAfterSync || (fn => fn());
 
     // ---------- shared bits ----------
     let toastTimer;
@@ -197,8 +199,7 @@
             toast(`${m.name} is enrolled`);
         });
 
-        draw();
-        drawProfile();
+        afterSync(() => { draw(); drawProfile(); });
         initTabs();
         if (params.get("q")) showTab("all");
     }
@@ -266,7 +267,7 @@
 
         $("#ciBtn").addEventListener("click", checkIn);
         input.addEventListener("keydown", e => { if (e.key === "Enter") checkIn(); });
-        draw();
+        afterSync(draw);
     }
 
     // =====================================================
@@ -476,9 +477,7 @@
         initChips($("#subChips"), f => { filter = f; drawSubs(); });
         // Typing narrows as you go, same as the reports search.
         $("#subSearch")?.addEventListener("input", drawSubs);
-        drawToday();
-        drawSubs();
-        drawHist();
+        afterSync(() => { drawToday(); drawSubs(); drawHist(); });
         initTabs();
 
         // Listen for server sync updates
@@ -625,8 +624,7 @@
             }, 350);
         });
 
-        drawTx();
-        drawSummary();
+        afterSync(() => { drawTx(); drawSummary(); });
         initTabs();
     }
 

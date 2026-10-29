@@ -708,8 +708,9 @@
   });
   document.querySelectorAll("[data-view-mode]").forEach(b => b.addEventListener("click", () => { state.view = b.dataset.viewMode; renderBrowse(); }));
 
-  document.addEventListener("profit:synced", () => renderAll());
+  const afterSync = window.pfAfterSync || (fn => fn());
+  document.addEventListener("profit:synced", () => afterSync(renderAll));
   buildEnroll();
-  renderAll();
+  afterSync(renderAll);
   tabFromHash();
 })();
