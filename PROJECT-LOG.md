@@ -783,3 +783,18 @@ Lagyan ng skeleton loading ang website.
 - Skipped settings, profile, trainer-portal (no server-backed list) and member-home (it already has `.member-loading`), and left the mobile drawer and hover rail untouched.
 ### Decision-log skill
 Skeletons belong in the real containers in the HTML, not injected by script: the first render then replaces them in place and the layout never jumps. Give the handover a short minimum and a hard fallback, or a fast failure shows the placeholder as permanent. When you move a style to a shared file, delete the old copy in the same commit, or the next theme fix silently misses one page.
+
+## 2026-10-29 18:21 (Asia/Manila): Apply the staff front end visual design to the staff pages
+### What I asked for
+Combine the visual design of the staff front end prototype (staff/staff/assets/css/staff.css) with the ProFit staff pages in web/. Keep the sidebar, features, modules, logic, routes, and backend unchanged. Only the 9 staff pages are restyled.
+### What the agent decided and why
+- Put the prototype sheet in a new file, `web/staff-design.css`, with every selector scoped under `.pf-staff`, and added `class="pf-staff"`, the two font links and the stylesheet link to the 9 staff pages only. Member, trainer and login pages are untouched.
+- Left out the prototype's sidebar, scrim, mobile bottom nav and app-shell rules: the ProFit rail is owned by `sidebar-pro.css` and must stay as it is.
+- Dark mode follows ProFit's `body.dark`, accents follow `html[data-accent]`, so the page keeps using the existing theme controls instead of a second theme system.
+- Dropped the prototype's `[hidden]` rule (it hid ProFit's notification dot and dropdowns) and its `.bar-track` / `.bar-fill` rules (ProFit's revenue chart uses those exact class names).
+- Removed the prototype's `--sidebar:252px` token: in ProFit `--sidebar` is a colour, so a length there silently killed `.sidebar{background:var(--sidebar)}`. The rail keeps its own `--sidebar-w` / `--sb-*` tokens.
+- Restored ProFit's compact `.chip-row .chip` size inside the chart header. The bigger prototype chip wrapped the "Monthly revenue" and "Daily attendance" headers onto two lines and took 63px off the chart area.
+- Kept the gold active chip with dark ink; measured contrast went from 1.0:1 to 9.8:1 in dark mode and 1.66:1 to 5.82:1 in light mode.
+- Verified against the original build served from `HEAD` at 9 pages x 2 widths x 2 themes: sidebar rect/background/colour identical, no button, link, field, row or icon lost, no new console errors, no new horizontal overflow.
+### Decision-log skill
+Before pasting a prototype stylesheet into a live app, scope it under a page class and grep every class name it defines against the app's own CSS and JS: names like `--sidebar`, `[hidden]`, `.bar-track` and `.chip` carry app-specific meaning. Then diff computed geometry of the affected containers (not just colours) against the original build, because a slightly wider control is enough to wrap a header and resize a chart.
