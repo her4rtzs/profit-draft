@@ -444,3 +444,33 @@ html[data-accent="indigo"] .pf-staff.dark {--gold-ink:#b9b0fa}
    63px off the revenue/attendance chart. Restore the compact size ProFit already
    gives `.chip-row .chip`; the gold active colour above still applies. */
 .pf-staff .chip-row .chip {height:30px;padding:0 13px;border:1px solid var(--border);border-radius:999px;font-size:11.5px;font-weight:600;white-space:nowrap}
+
+/* ProFit fix: the staff header scrolls away with the page instead of sticking.
+   `!important` + the .pf-staff class beats the `html body .topbar` sticky rule in
+   layout-fixes.css, and the scroll-condense state sidebar.js toggles past 8px is
+   reset so the static header does not shrink/shadow while it leaves the viewport. */
+html body.pf-staff .topbar {position:static!important}
+.pf-staff .topbar.is-scrolled {padding:10px 0 12px!important;background:none!important;backdrop-filter:none!important;border-bottom-color:transparent!important;box-shadow:none!important}
+@media (min-width:769px) {.pf-staff .topbar.is-scrolled {padding:14px 0 16px!important}}
+
+/* ProFit fix: no back/forward arrows in the staff header. Mobile already hides
+   them; this drops them at every width. The buttons still work if re-shown. */
+.pf-staff .topbar-nav {display:none}
+
+/* ProFit fix: above 768px the header had no `.topbar-actions` rule at all, so the
+   theme, bell and avatar stacked in a 42px column and the search squeezed in beside
+   them. Lay the header out like the mobile header (heading | icons, search below on
+   its own full-width row) at every desktop width. Everything needs `!important` and
+   the .pf-staff class to outrank the `html body .topbar*` rules in layout-fixes.css. */
+@media (min-width:769px) {
+  html body.pf-staff .topbar {display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:10px 16px!important}
+  html body.pf-staff .topbar-heading {grid-column:1;grid-row:1;min-width:0}
+  html body.pf-staff .topbar-right {display:contents!important}
+  html body.pf-staff .topbar-actions {grid-column:2;grid-row:1;display:flex;align-items:center;justify-content:flex-end;gap:10px}
+  html body.pf-staff .topbar .search {grid-column:1/-1;grid-row:2;width:100%!important;max-width:none!important;box-sizing:border-box}
+  /* Rounded-square tiles like the prototype's header; the avatar stays a circle. */
+  .pf-staff .topbar-actions .theme-toggle,
+  .pf-staff .topbar-actions .notification {width:42px;height:42px;border-radius:12px!important;display:grid;place-items:center}
+  .pf-staff .topbar-actions .notification-wrap {width:42px;height:42px;display:flex;align-items:center;justify-content:center}
+  .pf-staff .topbar-actions .topbar-avatar {width:42px;height:42px;flex:none}
+}

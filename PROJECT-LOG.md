@@ -798,3 +798,37 @@ Combine the visual design of the staff front end prototype (staff/staff/assets/c
 - Verified against the original build served from `HEAD` at 9 pages x 2 widths x 2 themes: sidebar rect/background/colour identical, no button, link, field, row or icon lost, no new console errors, no new horizontal overflow.
 ### Decision-log skill
 Before pasting a prototype stylesheet into a live app, scope it under a page class and grep every class name it defines against the app's own CSS and JS: names like `--sidebar`, `[hidden]`, `.bar-track` and `.chip` carry app-specific meaning. Then diff computed geometry of the affected containers (not just colours) against the original build, because a slightly wider control is enough to wrap a header and resize a chart.
+## 2026-10-29 18:52 (Asia/Manila): Let the staff header scroll away instead of sticking
+### What I asked for
+Make the page header on the staff pages not sticky while scrolling.
+### What the agent decided and why
+- Added one scoped rule to `web/staff-design.css`: `html body.pf-staff .topbar { position: static !important }`. `layout-fixes.css` pins `html body .topbar` to `position: sticky !important`; the extra `.pf-staff` class outranks it, so the shared sheet and the sidebar files stay untouched.
+- Also neutralised `.topbar.is-scrolled`, the "condense on scroll" state `sidebar.js` toggles past 8px: on a static header it would shrink the padding by 10px and add a border and shadow as the header leaves the viewport. The reset keeps the same padding as the resting header (10/12 mobile, 14/16 above 768px) and drops the blur, border and shadow.
+- Verified 9 pages x 2 widths (1366, 390) x 2 themes: `position` is `static` everywhere, the header leaves the viewport as soon as the page scrolls, padding/height/shadow do not change at the 8px toggle, no horizontal overflow, no new console errors. Topbar and sidebar rects are identical to the original build; only the topbar `position` changed.
+- Note: short pages (`payments.html` scrolls 118px at 1366) cannot scroll the 214px header fully out of view. That is the page length, not the header.
+### Decision-log skill
+Stacked `!important` stylesheets are resolved by specificity, so the cheapest override is one extra class on a selector you already own, not `!important` on a new rule in a shared file. When a scroll listener adds a class that changes geometry, disabling the property it was built for (`position`) leaves the class still firing, so reset that class too or the header jumps 10px while scrolling.
+
+## 2026-10-29 19:05 (Asia/Manila): Fix the header settings, notification and profile icons on desktop
+### What I asked for
+The gear, bell and profile icons in the staff header should sit in one row on the right, like the reference: heading on the left, icons on the right, search across the full width underneath. It should hold at desktop widths too, not only on mobile.
+### What the agent decided and why
+- Root cause: `layout-fixes.css` only styles `.topbar-actions` inside `@media (max-width: 768px)`. Above that the div fell back to `display:block`, so the three 42px controls stacked into a 42x118px column and the 280px search sat beside them.
+- Added one `@media (min-width:769px)` block at the end of `web/staff-design.css`: the header becomes a two-column grid, `.topbar-right` is `display:contents` so the search can be pulled out of the icons group into row 2 spanning both columns, and `.topbar-actions` is a flex row on row 1. Needed `!important` plus the `.pf-staff` class to outrank the `html body .topbar*` rules.
+- Matched the reference's shape: the gear and bell are 42px rounded squares (radius 12px, `!important` because `spotify.css` pins 50%) and the avatar is a 42px circle, all at a 10px gap. The bell's unread marker was already a plain red dot.
+- Mobile stays on the existing shared rules: the new block starts at 769px, so ≤768 renders byte-identical (36px tiles, 10px radius).
+- Verified 9 pages x 3 widths (834, 1366, 390) x 2 themes: 54/54 renders have the icons in a horizontal row with the avatar last, the search exactly as wide and as left-aligned as the header, no horizontal overflow, no new console errors. Also swept 769, 780, 820, 900, 1024, 1280, 1600 and 1920px. The notification panel opens fully inside the viewport at 834, 1366 and 390.
+- Not touched: the squeezed "Color theme" label on Settings at 834px. It reproduces with `staff-design.css` disabled, so it is a pre-existing `.pp-setting-copy` issue, not part of this change.
+### Decision-log skill
+When icons "stack" only above one breakpoint, look for the rule that exists solely in the smaller media query: shared sheets often style a desktop bar in the mobile block only, and the default `display:block` then wins. To move one child out of a flex group without touching markup, `display:contents` on the group is enough.
+
+## 2026-10-29 19:22 (Asia/Manila): Remove the back and forward arrows from the staff header
+### What I asked for
+Remove the back and forward buttons from the staff page header.
+### What the agent decided and why
+- One rule in `web/staff-design.css`: `.pf-staff .topbar-nav {display:none}`. The arrows are injected by `web/layout.js`, which is shared with other areas, so hiding them in the staff sheet avoids editing shared JS or markup.
+- Scoped to `.pf-staff`, so the member/trainer portals keep their own header. Mobile already hid the arrows; this makes every width match.
+- The title now starts at the same left edge as the search and the cards, since the heading's first child is gone; no gap left behind.
+- Verified 9 pages x 3 widths (834, 1366, 390), 27/27 renders: arrows hidden and 0px wide, title left edge equal to the header's left edge, no horizontal overflow.
+### Decision-log skill
+Hiding a control that a shared script builds is a CSS one-liner and keeps the history wiring intact; deleting it from the script would touch every page that loads that layout. Scope the hide to the page class so the other portals keep their header.
