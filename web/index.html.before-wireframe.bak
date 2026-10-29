@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script>(function(){try{var d=localStorage.getItem('theme')!=='light';var h=document.documentElement;h.style.background=d?'#18191a':'#f0f2f5';h.style.colorScheme=d?'dark':'light';h.classList.add('pf-pre');setTimeout(function(){h.classList.remove('pf-pre')},1500);}catch(e){}})();</script><script src="splash.js?v=2"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProFit | Dashboard</title>
+
+    <!-- Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <script src="config.js"></script>
+    <script src="api.js"></script>
+    <script src="auth.js"></script>
+<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=6"><link rel="stylesheet" href="ui-final.css?v=1"><script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script><style id="pf-dash-fx">
+.pf-skel td{padding:18px 16px}
+.pf-skel span{display:block;height:14px;border-radius:8px;background:linear-gradient(90deg,rgba(255,255,255,.05),rgba(255,255,255,.13),rgba(255,255,255,.05));background-size:200% 100%;animation:pfShimmer 1.2s linear infinite}
+.pf-skel td:nth-child(1) span{width:80px}.pf-skel td:nth-child(2) span{width:70%}.pf-skel td:nth-child(3) span{width:110px}.pf-skel td:nth-child(4) span{width:90px}.pf-skel td:nth-child(5) span{width:28px;margin-left:auto}
+@keyframes pfShimmer{to{background-position:-200% 0}}
+.pf-row-in{animation:pfRowIn .42s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0) * 55ms)}
+@keyframes pfRowIn{from{opacity:0}to{opacity:1}}
+.pf-empty{text-align:center;padding:28px 16px;color:var(--muted)}
+.pf-menu{position:absolute;z-index:60;min-width:210px;padding:6px;border-radius:14px;background:var(--card);border:1px solid var(--border);box-shadow:0 18px 40px rgba(0,0,0,.45);animation:pfPop .18s ease-out}
+.pf-menu[hidden]{display:none}
+.pf-menu a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:var(--text);text-decoration:none;font-weight:600;font-size:14px}
+.pf-menu a:hover,.pf-menu a:focus-visible{background:color-mix(in srgb,var(--gold) 14%,transparent);outline:none}
+.pf-menu a i{color:var(--gold);width:16px;text-align:center}
+@keyframes pfPop{from{opacity:0;transform:translateY(-4px) scale(.98)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.pf-skel span,.pf-row-in,.pf-menu{animation:none!important}}
+</style>
+<link rel="stylesheet" href="hover-fx.css?v=2">
+<link rel="stylesheet" href="ui-polish.css?v=1">
+<link rel="stylesheet" href="ui-fixes.css?v=1">
+<link rel="stylesheet" href="pf-modern.css?v=1">
+<link rel="stylesheet" href="sidebar-pro.css?v=7">
+<link rel="stylesheet" href="layout-fixes.css?v=5">
+<link rel="stylesheet" href="dashboard.css?v=1">
+<script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script></head>
+
+<body data-page="dashboard" data-title="Dashboard" data-welcome="Welcome back " data-subtitle="Overview of members, attendance and revenue">
+
+<div class="dashboard">
+
+    <!-- ===================== SIDEBAR ===================== -->
+    <nav class="sidebar" id="sidebar"></nav>
+
+
+    <!-- ===================== MAIN ===================== -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <header class="topbar" id="topbar"></header>
+
+        <!-- STATS -->
+        <section class="stats">
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <div class="stat-icon green"><i class="fa-solid fa-users"></i></div>
+                    <span class="trend positive"><i class="fa-solid fa-arrow-up"></i> 12.5%</span>
+                </div>
+                <div class="stat-content">
+                    <p>Total members</p>
+                    <h2>—</h2>
+                    <small>Compared to last month</small>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <div class="stat-icon red"><i class="fa-solid fa-user-xmark"></i></div>
+                    <span class="trend negative"><i class="fa-solid fa-arrow-down"></i> 4.2%</span>
+                </div>
+                <div class="stat-content">
+                    <p>Expired members</p>
+                    <h2>—</h2>
+                    <small>Memberships expired</small>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <div class="stat-icon yellow"><i class="fa-solid fa-hourglass-half"></i></div>
+                    <span class="status-warning">Needs attention</span>
+                </div>
+                <div class="stat-content">
+                    <p>Expiring soon</p>
+                    <h2>—</h2>
+                    <small>Within the next 7 days</small>
+                </div>
+            </div>
+
+            <div class="stat-card revenue-card">
+                <div class="stat-top">
+                    <div class="stat-icon gold"><i class="fa-solid fa-peso-sign"></i></div>
+                    <span class="trend positive"><i class="fa-solid fa-arrow-up"></i> 8.3%</span>
+                </div>
+                <div class="stat-content">
+                    <p>Total revenue</p>
+                    <h2>₱10,000</h2>
+                    <small>Revenue this month</small>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- CHART + DONUT -->
+        <section class="content-grid">
+
+            <div class="panel revenue-panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h2 id="revenueTitle">Monthly revenue</h2>
+                        <p id="revenueSub">Revenue overview for 2026</p>
+                    </div>
+                    <div class="chip-row" id="revenuePeriods" role="group" aria-label="Revenue period">
+                        <button type="button" class="chip" data-period="days" aria-pressed="false">Days</button>
+                        <button type="button" class="chip" data-period="week" aria-pressed="false">Week</button>
+                        <button type="button" class="chip active" data-period="month" aria-pressed="true">Month</button>
+                        <button type="button" class="chip" data-period="year" aria-pressed="false">Year</button>
+                    </div>
+                </div>
+
+                <div class="chart-area">
+
+                    <div class="chart-y" id="revenueAxis">
+                        <span>₱12k</span>
+                        <span>₱10k</span>
+                        <span>₱8k</span>
+                        <span>₱6k</span>
+                        <span>₱4k</span>
+                        <span>₱2k</span>
+                        <span>₱0</span>
+                    </div>
+
+                    <div class="chart">
+                        <div class="grid-lines"></div>
+                        <div class="bar-container" id="revenueBars"></div>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="panel summary-panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h2>Membership overview</h2>
+                        <p>Current membership status</p>
+                    </div>
+                    <div class="menu-wrap">
+                        <button class="icon-btn" type="button" data-menu aria-haspopup="true" aria-expanded="false" aria-label="More options">
+                            <i class="fa-solid fa-ellipsis"></i>
+                        </button>
+                        <div class="dropdown" hidden role="menu">
+                            <a href="members.html"><i class="fa-solid fa-user-group"></i> View all members</a>
+                            <a href="payments.html#subscription"><i class="fa-solid fa-hourglass-half"></i> Subscription monitor</a>
+                            <a href="reports.html#summary"><i class="fa-solid fa-chart-column"></i> Revenue summary</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- change --active / --expired to update the donut (expiring is the remainder) -->
+                <div class="membership-circle">
+                    <div class="circle" style="--active:0; --expired:0;">
+                        <strong>—</strong>
+                        <span>Members</span>
+                    </div>
+                </div>
+
+                <div class="membership-stats">
+                    <div>
+                        <span class="dot active-dot"></span>
+                        <p>Active</p>
+                        <strong>—</strong>
+                        <div class="mini-progress"><span style="width:0%"></span></div>
+                    </div>
+                    <div>
+                        <span class="dot expired-dot"></span>
+                        <p>Expired</p>
+                        <strong>—</strong>
+                        <div class="mini-progress"><span class="danger" style="width:0%"></span></div>
+                    </div>
+                    <div>
+                        <span class="dot expiring-dot"></span>
+                        <p>Expiring</p>
+                        <strong>—</strong>
+                        <div class="mini-progress"><span class="warning" style="width:0%"></span></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- RECENT REGISTRATIONS -->
+        <section class="panel registrations-panel">
+
+            <div class="panel-header">
+                <div>
+                    <h2>Recent registrations</h2>
+                    <p>Latest members who joined the gym</p>
+                </div>
+                <a href="members.html" class="view-all">View all <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Member</th>
+                            <th>Registration date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="recentRows" aria-live="polite"><tr class="pf-skel"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr><tr class="pf-skel"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr><tr class="pf-skel"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr><tr class="pf-skel"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr></tbody>
+                </table>
+            </div>
+
+        </section>
+
+        <!-- QUICK ACTIONS -->
+        <section class="panel quick-actions" aria-labelledby="quickActionsTitle">
+          <div class="panel-header">
+            <div>
+              <h2 id="quickActionsTitle">Quick actions</h2>
+              <p>Shortcuts to the tasks you use most</p>
+            </div>
+          </div>
+          <div class="quick-grid">
+          <a class="quick-action" href="members.html#enrollment"><span class="quick-action-icon"><i class="fa-solid fa-user-plus"></i></span><span><strong>Enroll a member</strong><small>Add a new gym member</small></span><i class="fa-solid fa-arrow-up-right-from-square action-arrow"></i></a>
+          <a class="quick-action" href="attendance.html"><span class="quick-action-icon"><i class="fa-solid fa-calendar-check"></i></span><span><strong>Record attendance</strong><small>Manage today's check-ins</small></span><i class="fa-solid fa-arrow-up-right-from-square action-arrow"></i></a>
+          <a class="quick-action" href="payments.html"><span class="quick-action-icon"><i class="fa-solid fa-credit-card"></i></span><span><strong>Record a payment</strong><small>Update member billing</small></span><i class="fa-solid fa-arrow-up-right-from-square action-arrow"></i></a>
+          <a class="quick-action" href="reports.html"><span class="quick-action-icon"><i class="fa-solid fa-chart-line"></i></span><span><strong>View reports</strong><small>Review gym performance</small></span><i class="fa-solid fa-arrow-up-right-from-square action-arrow"></i></a>
+        </div>
+        </section>
+
+    </main>
+
+</div>
+
+<nav class="pf-tabbar" aria-label="Primary">
+  <a class="pf-tab" href="index.html" aria-current="page"><i class="fa-solid fa-house" aria-hidden="true"></i><span>Home</span></a>
+  <a class="pf-tab" href="members.html"><i class="fa-solid fa-users" aria-hidden="true"></i><span>Members</span></a>
+  <a class="pf-tab" href="attendance.html"><i class="fa-solid fa-calendar-check" aria-hidden="true"></i><span>Attendance</span></a>
+  <button class="pf-tab" type="button" id="pfTabMore" aria-haspopup="true" aria-expanded="false" aria-controls="sidebar"><i class="fa-solid fa-ellipsis" aria-hidden="true"></i><span>More</span></button>
+</nav>
+
+<script src="data.js"></script>
+<script src="layout.js?v=18"></script>
+<script src="sidebar.js?v=17"></script>
+<script src="chart-periods.js?v=914"></script>
+<script src="portal-fx.js?v=2"></script>
+<script src="change-password.js?v=2" defer></script>
+<script>
+(() => {
+  const body = document.getElementById("recentRows");
+  if (!body) return;
+  const table = body.closest("table");
+  const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const initials = n => (String(n || "?").trim().split(/\s+/).map(w => w[0] || "").join("").slice(0, 2).toUpperCase()) || "?";
+  const startOfToday = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
+  const statusFor = m => {
+    if (!m.end) return ["expired", "Pending"];
+    const days = Math.round((m.end - startOfToday()) / 86400000);
+    if (days < 0) return ["expired", "Expired"];
+    if (days <= 7) return ["expiring", "Expiring"];
+    return ["active", "Active"];
+  };
+  const rowHTML = (m, i) => {
+    const [cls, label] = statusFor(m);
+    const joined = m.joined ? fmtShort(m.joined) : "—";
+    return `<tr class="pf-row-in" style="--i:${i}">
+      <td><span class="member-id">${esc(m.id)}</span></td>
+      <td><div class="member"><div class="mini-avatar">${esc(initials(m.name))}</div><div><strong>${esc(m.name)}</strong><small>Member</small></div></div></td>
+      <td>${esc(joined)}</td>
+      <td><span class="badge ${cls}">${label}</span></td>
+      <td><div class="row-menu-wrap pf-menu-wrap">
+        <button class="action-btn pf-menu-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="More actions for ${esc(m.name)}"><i class="fa-solid fa-ellipsis" aria-hidden="true"></i></button>
+        <div class="pf-menu" role="menu" hidden>
+          <a role="menuitem" href="members.html?q=${encodeURIComponent(m.id)}"><i class="fa-regular fa-id-card" aria-hidden="true"></i> Member profile</a>
+          <a role="menuitem" href="payments.html"><i class="fa-solid fa-wallet" aria-hidden="true"></i> Billing</a>
+          <a role="menuitem" href="attendance.html"><i class="fa-solid fa-calendar-check" aria-hidden="true"></i> Attendance</a>
+        </div></div></td></tr>`;
+  };
+
+  // The open menu is moved to <body> while open, so the table wrapper never clips it.
+  let openMenu = null;
+  function closeMenus() {
+    if (!openMenu) return;
+    const { menu, btn, wrap } = openMenu;
+    menu.hidden = true;
+    menu.removeAttribute("style");
+    wrap.appendChild(menu);
+    btn.setAttribute("aria-expanded", "false");
+    openMenu = null;
+  }
+  body.addEventListener("click", e => {
+    const btn = e.target.closest(".pf-menu-btn");
+    if (!btn) return;
+    const wrap = btn.parentElement, menu = wrap.querySelector(".pf-menu");
+    const same = openMenu && openMenu.btn === btn;
+    closeMenus();
+    if (same) return;
+    const r = btn.getBoundingClientRect();
+    document.body.appendChild(menu);
+    menu.hidden = false;
+    menu.style.position = "fixed";
+    const h = menu.offsetHeight;
+    const above = r.top - h - 8;
+    menu.style.top = (above >= 12 ? above : r.bottom + 8) + "px";
+    menu.style.left = Math.max(12, r.right - 210) + "px";
+    btn.setAttribute("aria-expanded", "true");
+    openMenu = { menu, btn, wrap };
+    menu.querySelector("a")?.focus();
+  });
+  document.addEventListener("click", e => {
+    if (openMenu && !e.target.closest(".pf-menu") && !e.target.closest(".pf-menu-btn")) closeMenus();
+  });
+  document.addEventListener("keydown", e => {
+    if (e.key !== "Escape" || !openMenu) return;
+    const btn = openMenu.btn;
+    closeMenus();
+    btn.focus();
+  });
+  window.addEventListener("resize", closeMenus);
+
+  function render(ok) {
+    closeMenus();
+    if (table) table.setAttribute("aria-busy", "false");
+    if (!ok && !DB.synced) {
+      body.innerHTML = `<tr><td colspan="5" class="pf-empty">Hindi ma-load ang listahan. I-refresh ang page.</td></tr>`;
+      return;
+    }
+    const newest = (DB.members || []).slice()
+      .sort((a, b) => ((b.joined && b.joined.getTime()) || 0) - ((a.joined && a.joined.getTime()) || 0)
+        || String(b.id).localeCompare(String(a.id)))
+      .slice(0, 5);
+    if (!newest.length) {
+      body.innerHTML = `<tr><td colspan="5" class="pf-empty">Wala pang member. Magdagdag sa Members page.</td></tr>`;
+      return;
+    }
+    const html = newest.map(rowHTML).join("");
+    if (body.dataset.sig !== html) { body.innerHTML = html; body.dataset.sig = html; }
+  }
+
+  document.addEventListener("profit:synced", e => render(e.detail?.ok !== false));
+  if (DB.synced) render(true);
+})();
+</script>
+<script>
+(() => {
+  const startOfToday = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
+  const daysLeft = m => (m.end ? Math.round((m.end - startOfToday()) / 86400000) : -1);
+  const cardFor = label => [...document.querySelectorAll(".stat-card .stat-content")]
+    .find(c => c.querySelector("p")?.textContent.trim() === label);
+
+  function paint() {
+    if (!DB.synced) return;
+    const members = DB.members || [];
+    const total = members.length;
+    let expired = 0, expiring = 0;
+    members.forEach(m => { const d = daysLeft(m); if (d < 0) expired++; else if (d <= 7) expiring++; });
+    const active = total - expired - expiring;
+
+    const put = (label, value) => { const h = cardFor(label)?.querySelector("h2"); if (h) h.textContent = value; };
+    put("Total members", total);
+    const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+    const newThisMonth = members.filter(m => m.joined && m.joined >= monthStart).length;
+    const sub = cardFor("Total members")?.querySelector("small");
+    if (sub) sub.textContent = newThisMonth
+      ? `+${newThisMonth} member${newThisMonth === 1 ? "" : "s"} ngayong buwan`
+      : "Walang bagong member ngayong buwan";
+    put("Expired members", expired);
+    put("Expiring soon", expiring);
+
+    // The trend chips were fixed numbers, not real comparisons, so they are hidden.
+    document.querySelectorAll(".stat-top .trend").forEach(t => { t.style.display = "none"; });
+
+    const pct = n => (total ? Math.round((n / total) * 100) : 0);
+    const circle = document.querySelector(".membership-circle .circle");
+    if (circle) {
+      circle.style.setProperty("--active", pct(active));
+      circle.style.setProperty("--expired", pct(expired));
+      circle.querySelector("strong").textContent = total;
+    }
+    document.querySelectorAll(".membership-stats > div").forEach((row, i) => {
+      const n = [active, expired, expiring][i];
+      if (n === undefined) return;
+      row.querySelector("strong").textContent = n;
+      row.querySelector(".mini-progress span").style.width = pct(n) + "%";
+    });
+  }
+  document.addEventListener("profit:synced", paint);
+  paint();
+})();
+</script>
+<script src="notifications-live.js?v=1" defer></script>
+<script>
+(() => {
+  // Greeting: time of day plus the signed-in first name (plain greeting if no name yet).
+  const greet = () => {
+    const el = document.querySelector('.topbar-title .welcome');
+    if (!el) return;
+    const h = new Date().getHours();
+    const part = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+    const raw = (document.querySelector('.sidebar-user-copy [data-user-name]')?.textContent || '').trim();
+    const first = raw && raw !== 'Administrator' ? raw.split(/\s+/)[0] : '';
+    el.textContent = first ? part + ', ' + first : part;
+  };
+  greet();
+  window.addEventListener('profit-account-changed', greet);
+
+  // Phones: the bottom "More" tab opens the existing side navigation (the only menu on this page).
+  const more = document.getElementById('pfTabMore');
+  const menuBtn = document.getElementById('mobileNavToggle');
+  if (more && menuBtn) {
+    more.addEventListener('click', () => menuBtn.click());
+    new MutationObserver(() => more.setAttribute('aria-expanded', String(document.body.classList.contains('drawer-open'))))
+      .observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  }
+})();
+</script>
+</body>
+</html>
