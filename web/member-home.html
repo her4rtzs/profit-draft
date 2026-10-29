@@ -12,7 +12,7 @@
   <script src="config.js"></script>
   <script src="api.js"></script>
   <script src="auth.js"></script>
-<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=9"><link rel="stylesheet" href="ui-final.css?v=1"><script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script><link rel="stylesheet" href="hover-fx.css?v=1">
+<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=6"><link rel="stylesheet" href="ui-final.css?v=1"><script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script><link rel="stylesheet" href="hover-fx.css?v=1">
 <link rel="stylesheet" href="announcements.css?v=1">
 <link rel="stylesheet" href="ui-polish.css?v=1">
 <link rel="stylesheet" href="ui-fixes.css?v=1">
@@ -262,27 +262,55 @@
 (() => {
   const $ = id => document.getElementById(id);
   const safe = value => String(value ?? "—");
+
+  // ── Date helpers ────────────────────────────────────────────────────────────
+  // localDateStr: converts any date value to a Manila-local YYYY-MM-DD string,
+  // avoiding the UTC-shift bug that occurs when you pass an ISO date string
+  // (e.g. "2026-10-29") to `new Date()` — that parses as midnight UTC, which
+  // is 8 hours behind Manila and rolls back to the previous local day.
+  const localDateStr = value => {
+    if (!value) return "";
+    const s = String(value).slice(0, 10); // already "YYYY-MM-DD" from the API
+    if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s; // use as-is, no UTC shift
+    // Fallback for full ISO timestamps: interpret in the local timezone
+    const d = new Date(value);
+    const pad = n => String(n).padStart(2, "0");
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  };
   const date = value => {
     if (!value) return "—";
-    const d = new Date(value);
-    return Number.isNaN(d.getTime()) ? "—" : d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+    // Parse YYYY-MM-DD without UTC shift: treat it as local midnight
+    const s = localDateStr(value);
+    if (!s) return "—";
+    const [y, mo, d] = s.split("-").map(Number);
+    const obj = new Date(y, mo - 1, d);
+    return Number.isNaN(obj.getTime()) ? "—" : obj.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
   };
-  const todayKey = () => new Date().toISOString().slice(0, 10);
+  // todayKey: local YYYY-MM-DD (not UTC)
+  const todayKey = () => localDateStr(new Date());
+  // weekMondayKey: ISO date string of the most recent Monday (or today if Monday)
+  const weekMondayKey = () => {
+    const d = new Date();
+    const dow = d.getDay(); // 0=Sun … 6=Sat
+    const diffToMon = dow === 0 ? 6 : dow - 1; // days since last Monday
+    d.setDate(d.getDate() - diffToMon);
+    return localDateStr(d);
+  };
+
   const demoCheckinsKey = "profit-member-demo-checkins";
   const readDemoCheckins = () => {
     try { return JSON.parse(localStorage.getItem(demoCheckinsKey) || "[]"); } catch { return []; }
   };
   const writeDemoCheckins = items => localStorage.setItem(demoCheckinsKey, JSON.stringify(items));
+  // demoData: removed the hardcoded 6-check-in base array that was pre-filling
+  // the weekly goal from day one. The member starts with no check-ins; only
+  // explicit "Check in today" clicks (stored in demoCheckinsKey) are counted.
   const demoData = () => {
     const generated = readDemoCheckins();
-    const base = [0, 1, 2, 4, 6, 9].map(daysAgo => {
-      const d = new Date(); d.setDate(d.getDate() - daysAgo);
-      return { date: d.toISOString(), location: "ProFit Gym", source: "demo" };
-    });
     return {
       user: window.ProFitAuth?.user || { name: "Demo Member", email: "member@profit.test", phone: "0917 000 0000" },
       membership: { planName: "Monthly Plan", plan: "Monthly", status: "Active", expiresAt: new Date(Date.now() + 18 * 86400000).toISOString(), daysRemaining: 18 },
-      attendance: [...generated, ...base],
+      attendance: generated,
       payments: [{ reference: "P-0008", date: new Date(Date.now() - 3 * 86400000).toISOString(), method: "GCash", amountFormatted: "₱800" }]
     };
   };
@@ -296,20 +324,40 @@
       el.append(row);
     });
   };
+
+  // ── Streak ──────────────────────────────────────────────────────────────────
+  // Uses localDateStr() so UTC-midnight ISO timestamps don't shift the date.
   function calcStreak(attendance) {
-    const days = new Set((attendance || []).map(x => new Date(x.date).toISOString().slice(0, 10)));
+    const days = new Set((attendance || []).map(x => localDateStr(x.date)));
     let streak = 0;
+    const today = new Date();
     for (let i = 0; i < 90; i++) {
-      const d = new Date(); d.setDate(d.getDate() - i);
-      if (days.has(d.toISOString().slice(0, 10))) streak++; else break;
+      const d = new Date(today.getFullYear(), today.getMonth(), today.getDate() - i);
+      if (days.has(localDateStr(d))) streak++; else break;
     }
     return streak;
   }
+
+  // ── Weekly goal ─────────────────────────────────────────────────────────────
+  // Counts distinct check-in dates from the start of the current ISO week
+  // (Monday 00:00 local time), NOT a rolling 7-day window. This means 1 visit
+  // on Monday of a new week resets the count to 1, exactly as expected.
+  function calcWeeklyVisits(attendance) {
+    const monday = weekMondayKey();
+    const uniqueDays = new Set(
+      (attendance || [])
+        .map(x => localDateStr(x.date))
+        .filter(d => d >= monday)
+    );
+    return uniqueDays.size;
+  }
+
   function renderProgress(data) {
     const attendance = data.attendance || [];
-    const streak = calcStreak(attendance);
-    const weekStart = new Date(); weekStart.setDate(weekStart.getDate() - 6);
-    const weekly = attendance.filter(x => new Date(x.date) >= weekStart).length;
+    // Prefer server-computed values (present when the live API is used).
+    // Fall back to client-side calculation for demo/offline mode.
+    const streak = (typeof data.streak === "number") ? data.streak : calcStreak(attendance);
+    const weekly = (typeof data.weeklyVisits === "number") ? data.weeklyVisits : calcWeeklyVisits(attendance);
     const goal = 4;
     const achievements = [streak >= 3, weekly >= goal, attendance.length >= 10].filter(Boolean).length;
     $("streakCount").textContent = `${streak} day${streak === 1 ? "" : "s"}`;
@@ -346,9 +394,13 @@
     };
     paintProfileCard();
     window.__pfRefreshProfileCard = paintProfileCard;
-    list("attendanceList", data.attendance, "No attendance records yet.", x => `<span><b>${date(x.date)}</b><small>${safe(x.location || "Gym check-in")}</small></span><i class="fa-solid fa-arrow-right"></i>`);
+    // Attendance dates from the API are already "YYYY-MM-DD" strings; use date()
+    // which calls localDateStr() internally to avoid the UTC midnight shift.
+    list("attendanceList", data.attendance, "No attendance records yet.", x => `<span><b>${date(localDateStr(x.date))}</b><small>${safe(x.location || "Gym check-in")}</small></span><i class="fa-solid fa-arrow-right"></i>`);
     list("paymentList", data.payments, "No payment records yet.", x => `<span><b>${safe(x.reference || "Payment")}</b><small>${date(x.date)} · ${safe(x.method)}</small></span><strong>${safe(x.amountFormatted || x.amount)}</strong><button type="button" class="member-receipt" data-receipt="${safe(x.reference || "Payment")}" data-when="${safe(x.date)}" data-method="${safe(x.method)}" data-amount="${safe(x.amountFormatted || x.amount || "")}"><i class="fa-solid fa-receipt" aria-hidden="true"></i> Receipt</button>`);
-    window.__pfAttendanceDays = (data.attendance || []).map(x => String(x.date).slice(0, 10));
+    // Store attendance days as local YYYY-MM-DD strings so the calendar and
+    // syncMemberChrome todayKey comparison are timezone-consistent.
+    window.__pfAttendanceDays = (data.attendance || []).map(x => localDateStr(x.date));
     renderProgress(data);
     syncMemberChrome(data);
     window.__pfRefreshMemberSpace?.();
@@ -407,8 +459,11 @@
 
   $("checkInButton").addEventListener("click", () => {
     const items = readDemoCheckins();
-    if (!items.some(x => String(x.date).slice(0, 10) === todayKey())) {
-      items.unshift({ date: new Date().toISOString(), location: "ProFit Gym", source: "manual" });
+    const today = todayKey();
+    // Use localDateStr so stored ISO timestamps don't UTC-shift to a different date
+    if (!items.some(x => localDateStr(x.date) === today)) {
+      // Store as plain YYYY-MM-DD to avoid future timezone confusion
+      items.unshift({ date: today, location: "ProFit Gym", source: "manual" });
       writeDemoCheckins(items.slice(0, 30));
     }
     render(demoData());
@@ -422,8 +477,10 @@
   // The button has to reflect reality, not just sit there: show "checked in"
   // once today is already logged, and put the member's name in the header menu.
   function syncMemberChrome(data) {
-    const already = readDemoCheckins().some(x => String(x.date).slice(0, 10) === todayKey())
-      || (window.__pfAttendanceDays || []).includes(todayKey());
+    const today = todayKey();
+    // Use localDateStr for robustness against ISO timestamps stored in either format
+    const already = readDemoCheckins().some(x => localDateStr(x.date) === today)
+      || (window.__pfAttendanceDays || []).includes(today);
     const btn = $("checkInButton");
     if (btn) {
       btn.disabled = already;
@@ -509,7 +566,7 @@
 })();
 </script>
 <script src="pf-common.js"></script>
-<script src="member-tabs.js?v=13"></script>
+<script src="member-tabs.js?v=14"></script>
 <script src="change-password.js?v=1"></script>
 <script src="member-pay.js?v=1"></script>
 <script src="portal-fx.js?v=2"></script>

@@ -982,8 +982,29 @@
   const plansOn = dateISO => (state.plans || []).filter(p => p.date === dateISO).sort((a, b) => a.time.localeCompare(b.time));
   function checkinDays() {
     const set = new Set(state.diary.map(x => x.date));
+    // window.__pfAttendanceDays is already stored as local YYYY-MM-DD strings
+    // (fixed in member-home.html render())
     (window.__pfAttendanceDays || []).forEach(d => set.add(d));
-    try { JSON.parse(localStorage.getItem("profit-member-demo-checkins") || "[]").forEach(x => set.add(String(x.date).slice(0, 10))); } catch { /* ignore */ }
+    // Demo checkins may have been stored as ISO timestamps or plain YYYY-MM-DD.
+    // Parse safely: slice the first 10 chars gives YYYY-MM-DD in either case,
+    // but a full ISO timestamp parses as UTC midnight which can shift the date
+    // by a day for UTC+8 (Manila). Instead, if it looks like a full timestamp,
+    // reconstruct the local date via Date object without relying on .toISOString().
+    try {
+      JSON.parse(localStorage.getItem("profit-member-demo-checkins") || "[]").forEach(x => {
+        const raw = String(x.date || "");
+        if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+          set.add(raw); // already a local date string, use as-is
+        } else if (raw.length > 10) {
+          // Full ISO timestamp — parse and extract local date parts
+          const d = new Date(raw);
+          if (!isNaN(d.getTime())) {
+            const pad = n => String(n).padStart(2, "0");
+            set.add(`${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`);
+          }
+        }
+      });
+    } catch { /* ignore */ }
     return set;
   }
   function monthCells(anchor) {
