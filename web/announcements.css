@@ -33,5 +33,5 @@
 .ann-msg.err { color: #f87171; }
 .ann-empty { text-align: center; padding: 40px 16px; color: var(--muted); border: 1px dashed var(--border); border-radius: 20px; display: grid; justify-items: center; gap: 8px; }
 .ann-empty i { font-size: 22px; color: #e8b93a; }
-.ann-overview { margin-top: 14px; }
+.ann-overview { margin-top: 14px; margin-bottom: 20px; }
 @media (prefers-reduced-motion: reduce) { .ann-chip, .ann-btn { transition: none; } }

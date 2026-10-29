@@ -769,3 +769,13 @@ To create a high-aesthetic motion design experience on landing pages, vary the m
 
 
 
+## 2026-10-29 15:39 (Asia/Manila): Member home announcement overview padding & margin fix
+### What I asked for
+Add padding/spacing to the "Latest from the gym" announcement preview and "MEMBERSHIP OVERVIEW" status card on the member home overview tab because they were touching each other.
+### What the agent decided and why
+- Identified that `.ann-overview` in `web/announcements.css` previously only had `margin-top: 14px;` and no `margin-bottom`, while `.member-status-card` had no `margin-top`, causing the two cards to touch with 0px spacing.
+- Added `margin-bottom: 20px;` to `.ann-overview` in `web/announcements.css` to match the standard 18px–22px section spacing found across cards on the member portal.
+- Bumped `announcements.css?v=2` query parameters on `web/member-home.html`, `web/announcements.html`, and `web/trainers.html` for immediate cache busting.
+### Decision-log skill
+When introducing new banner or preview cards (such as announcements or alerts) directly above existing page sections, define both `margin-top` and `margin-bottom` (or rely on consistent container gap/stack rules) to prevent 0px element collision against sibling cards that do not specify top margins.
+
