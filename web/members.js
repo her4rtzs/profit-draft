@@ -5,7 +5,7 @@
   const { esc, money, initialsOf, fmt, today, toast, modal, dayDiff, media, parseISO, iso, todayISO, fmtDateTime } = PF;
   const PER_PAGE = 12;
   const PLAN_KEYS = Object.keys(PLANS);
-  const state = { view: "table", tab: "browse", filter: "all", query: "", page: 1, app: "pending", selectedId: null, subtab: "overview", pickerQuery: "" };
+  const state = { view: matchMedia("(max-width: 768px)").matches ? "cards" : "table", tab: "browse", filter: "all", query: "", page: 1, app: "pending", selectedId: null, subtab: "overview", pickerQuery: "" };
 
   // ---------- Rules ----------
   const left = m => dayDiff(new Date(), m.end);
@@ -707,6 +707,8 @@
     if ((e.key === "Enter" || e.key === " ") && e.target.matches("[data-row]")) { e.preventDefault(); openDetail(e.target.dataset.row); }
   });
   document.querySelectorAll("[data-view-mode]").forEach(b => b.addEventListener("click", () => { state.view = b.dataset.viewMode; renderBrowse(); }));
+  // A phone gets cards, a desktop gets the table, even if the window is resized after load.
+  matchMedia("(max-width: 768px)").addEventListener("change", e => { state.view = e.matches ? "cards" : "table"; renderBrowse(); });
 
   const afterSync = window.pfAfterSync || (fn => fn());
   document.addEventListener("profit:synced", () => afterSync(renderAll));

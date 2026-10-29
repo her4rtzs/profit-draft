@@ -236,4 +236,27 @@
     const s = document.getElementById('stripGymName');
     if (s) s.textContent = g.name;
   });
+
+  // ---- Phone card lists --------------------------------------------------
+  // Under 768px the CSS turns every table row into a card, so each cell has to
+  // say which column it came from. Copy the header text onto the cells, and
+  // redo it whenever a page redraws its rows (search, filters, pagination).
+  const labelTable = table => {
+    const headRow = table.tHead && table.tHead.rows[0];
+    const heads = headRow ? [...headRow.cells].map(th => th.textContent.trim()) : [];
+    if (!heads.length) return;
+    [...table.tBodies].forEach(tb => [...tb.rows].forEach(row => [...row.cells].forEach(td => {
+      const wanted = td.colSpan > 1 ? '' : (heads[td.cellIndex] || '');
+      if (wanted === (td.dataset.label || '')) return;
+      if (wanted) td.dataset.label = wanted; else delete td.dataset.label;
+    })));
+  };
+  const labelTables = () => document.querySelectorAll('table').forEach(labelTable);
+  let labelQueued = false;
+  labelTables();
+  new MutationObserver(records => {
+    if (labelQueued || !records.some(r => r.target.closest && r.target.closest('table'))) return;
+    labelQueued = true;
+    requestAnimationFrame(() => { labelQueued = false; labelTables(); });
+  }).observe(document.body, { childList: true, subtree: true });
 })();

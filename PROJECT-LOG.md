@@ -863,3 +863,17 @@ Fix the member navigation spacing and make the announcement section reachable in
 - Set justify-content: space-between on the member .pp-tabs so the six tabs fill the bar instead of bunching left with empty space on the right.
 ### Decision-log skill
 A grid sized for the old item count leaves a visible hole after an item is removed; check the column count when the nav changes.
+## 2026-10-30 01:29 (Asia/Manila): member lists become cards on phones
+### What I asked for
+Make every member list show as cards on mobile instead of a table that has to be scrolled sideways.
+### What the agent decided and why
+- Did it in one place: a mobile block in staff-design.css turns every staff .table-wrapper row into a card, so all five list pages changed without touching their row renderers.
+- layout.js copies each column header onto its cells as data-label, because a card cannot show the header row; a MutationObserver does it again after search/filter re-renders so the labels never go stale.
+- Had to override three existing fixed heights (tbody tr 56px from pf-modern, td 60px from spotify, table min-width 580px from layout-fixes) or the cells overflowed their card.
+- Two columns per card: the member keeps the wider left cell, the next value sits beside it, and the trailing action (Renew, edit buttons, amount) is pushed right. A one-column card wasted half the width and made five lines where three fit.
+- The right column is right-aligned and the time-left bar was moved to the last row, so the expiry date lines up under the Renew button. Column-2 cells need text-align:right!important because layout-fixes.css forces every td left with !important.
+- Where the table puts a reference or a time before the member, the member cell is pinned to column 1 and that cell to column 2, so the card title always reads first even though the source order differs.
+- members.html already had a Table/Cards toggle, so it now opens in Cards under 768px instead of restyling its table twice. A matchMedia change listener also switches the view if the window is resized across that width, which the Review pane does after load.
+- Bumped layout.js to v18 and members.js to v16 so the change is not served from cache.
+### Decision-log skill
+When a table's cells carry no column identity, copy the thead text onto the cells once with a small script instead of editing every row template.

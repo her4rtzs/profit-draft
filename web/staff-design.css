@@ -483,3 +483,74 @@ html body.pf-staff .topbar {position:static!important}
   html body.pf-staff .panel-header > div:first-child {flex:0 0 auto!important}
   .pf-staff .toolbar .search {flex:0 0 auto}
 }
+
+/* ProFit: on phones each list row becomes its own card, because the columns
+   never fit and sideways scrolling hides information. The header row is
+   hidden and layout.js copies each column name onto its cells as data-label,
+   so every value still says what it is. */
+@media (max-width:768px) {
+  html body.pf-staff .table-wrapper {
+    overflow:visible!important;
+    border:0!important;
+    background:transparent!important;
+    border-radius:0!important;
+    padding:0!important;
+    box-shadow:none!important;
+    margin-bottom:0!important;
+  }
+  html body.pf-staff .table-wrapper > table {display:block;width:100%!important;min-width:0!important}
+  html body.pf-staff .table-wrapper thead {display:none}
+  html body.pf-staff .table-wrapper tbody {display:grid;gap:10px}
+  html body.pf-staff .table-wrapper tbody tr {
+    display:grid;
+    /* Two columns: the member sits left and the next value shares its row, so a
+       four-field card reads in three lines instead of five. */
+    grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);
+    column-gap:14px;
+    row-gap:12px;
+    height:auto!important;
+    padding:14px 15px;
+    border:1px solid var(--border);
+    border-radius:16px;
+    background:var(--card);
+  }
+  html body.pf-staff .table-wrapper tbody td {display:block;height:auto!important;padding:0!important;border:0!important;min-width:0;text-align:left}
+  html body.pf-staff .table-wrapper tbody td[data-label]::before {
+    content:attr(data-label);
+    display:block;
+    margin-bottom:3px;
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--faint);
+  }
+  /* The member cell is the card title, so it keeps the wider left column even
+     when the table puts a reference or a time before it. */
+  html body.pf-staff .table-wrapper tbody tr:has(> td:nth-child(2) .member) > td:first-child {grid-column:2;grid-row:1}
+  html body.pf-staff .table-wrapper tbody tr:has(> td:nth-child(2) .member) > td:nth-child(2) {grid-column:1;grid-row:1}
+  /* The right column reads as one column: its value sits against the same edge
+     as the trailing button below it. */
+  html body.pf-staff .table-wrapper tbody td:nth-child(2):not(:has(.member)) {text-align:right!important}
+  /* The progress bar needs the whole card and goes last, under the status. */
+  html body.pf-staff .table-wrapper tbody td:has(.timeleft) {grid-column:1/-1;grid-row:3}
+  html body.pf-staff .table-wrapper tbody td:has(.timeleft) ~ td {grid-row:2}
+  /* The trailing action (Renew, edit buttons, amount) keeps the right column. */
+  html body.pf-staff .table-wrapper tbody td:last-child:not([colspan]) {grid-column:2;justify-self:end;text-align:right!important}
+  html body.pf-staff .table-wrapper tbody tr.pf-skel td::before {content:none}
+  /* Reports keeps a total row under the table; give it the same card. */
+  html body.pf-staff .table-wrapper tfoot {display:block;margin-top:10px}
+  html body.pf-staff .table-wrapper tfoot tr {
+    display:grid;
+    grid-template-columns:1fr auto;
+    align-items:center;
+    gap:10px;
+    padding:12px 15px;
+    border:1px solid var(--border);
+    border-radius:16px;
+    background:var(--card);
+  }
+  html body.pf-staff .table-wrapper tfoot td {display:block;padding:0!important;border:0!important;text-align:left}
+  html body.pf-staff .table-wrapper tfoot td[colspan] {grid-column:1}
+  html body.pf-staff .table-wrapper tfoot td.num {text-align:right}
+}
