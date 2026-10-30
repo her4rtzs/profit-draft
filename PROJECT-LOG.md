@@ -877,3 +877,35 @@ Make every member list show as cards on mobile instead of a table that has to be
 - Bumped layout.js to v18 and members.js to v16 so the change is not served from cache.
 ### Decision-log skill
 When a table's cells carry no column identity, copy the thead text onto the cells once with a small script instead of editing every row template.
+## 2026-10-30 13:12 (Asia/Manila): program cards scroll sideways
+### What I asked for
+Make the program cards scroll horizontally smoothly, on desktop and mobile.
+### What the agent decided and why
+- The three program cards in welcome.html were a 3-column grid that stacked to one column under 980px. They are now one horizontal flex row with overflow-x:auto, so the same markup works at every width.
+- Card width is min(78vw, 480px): one card plus a peek of the next on a phone, two-and-a-bit on a desktop, so there is always something to scroll to.
+- scroll-snap-type:x mandatory plus scroll-snap-align:start makes each swipe land on a card edge; scroll-behavior:smooth keeps programmatic and wheel movement smooth, and the row still uses native momentum on touch.
+- A mouse wheel only scrolls sideways while the row has somewhere to go (target clamped to the row's max). At either end the handler returns without preventDefault, so the page keeps scrolling instead of trapping the user.
+### Decision-log skill
+For a horizontal card rail, convert the wheel only when the clamped target actually changes; otherwise the row steals the page scroll forever at its end.
+## 2026-10-30 13:40 (Asia/Manila): program cards become a sticky stack
+### What I asked for
+Show one program card at a time, stacked vertically, with each next card scrolling up over the previous one as the page scrolls. Remove the horizontal row.
+### What the agent decided and why
+- Only welcome.html changed: the horizontal flex/scroll rules and the wheel handler were deleted, and each .prog card became position:sticky at top:88px (68px sticky header + 20px).
+- z-index 1/2/3 by nth-child so the newer card paints over the older one; .box already has a solid --card background, so nothing shows through.
+- Capped the stack at 640px and centred it, because a full-width card is ~900px tall with the 16:10 image and would not fit under the header on a laptop.
+- Checked the sticky traps: body{overflow-x:hidden} is the only ancestor overflow and it propagates to the viewport, so sticky still pins (measured tops at 88px at 1366 and 390).
+### Decision-log skill
+Before using position:sticky, find every ancestor overflow and transform; then measure the pinned offset in the browser instead of trusting the CSS.
+## 2026-10-30 13:56 (Asia/Manila): programs section pins and slides sideways
+### What I asked for
+Turn the Programs section into a pinned horizontal-scroll section: the section stays put while vertical page scroll moves the cards horizontally, smoothly, on desktop and mobile. Remove the horizontal scroll row and the sticky-card stack.
+### What the agent decided and why
+- Kept it in welcome.html only: #programs is 300vh (3 cards x 100vh), .prog-pin is the 100vh sticky frame, .grid3 is the flex track, and one vanilla script turns scroll progress into translate3d.
+- Progress comes from section.getBoundingClientRect().top divided by (section height - viewport height), clamped 0 to 1, inside a rAF-throttled passive scroll listener; resize re-measures travel and span.
+- Measured travel from the last card's offsetLeft + offsetWidth, not scrollWidth, because the reveal animation scales the cards to .95 and scrollWidth follows that scale (it measured 427px where the real travel is 440px). Added position:relative to the track so offsetLeft is reliably track-relative.
+- The reveal observer watched .anim-programs, which is the track itself, and the track is what gets transformed; on a reload mid-section the track started off-screen and the cards stayed at opacity 0. A second observer on #programs adds is-visible to the track instead.
+- prefers-reduced-motion drops the pin in CSS (auto height, static frame, overflow-x:auto + scroll snap) and the script clears the transform.
+- body{overflow-x:hidden} was left as-is: it propagates to the viewport, so sticky still pins (measured .prog-pin top at 0 through the whole span at 1366x768 and 390x844).
+### Decision-log skill
+When a scroll-driven transform moves the element an IntersectionObserver is watching, observe its stationary parent instead, or the reveal never fires after a scroll restore.
