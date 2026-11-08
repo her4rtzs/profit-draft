@@ -474,13 +474,17 @@ html body .sidebar .account-menu button[data-logout] i {
 }
 
 /* ==========================================================================
-   6. STAFF PORTAL: DESKTOP HOVER-EXPAND ICON RAIL (> 768px)
-   Exact commit 46ab02d behavior: rests as 80px rail, expands to 260px on hover.
-   The page column reserves 80px so the expanded panel floats smoothly over content.
+   6. ALL PORTALS: DESKTOP HOVER-EXPAND ICON RAIL (> 768px)
+   Applies to Staff, Trainer, and Member portals.
+   The sidebar rests as an 80px compact icon rail; smoothly widens to 260px
+   while the pointer hovers it or focus is inside it. The page column always
+   reserves 80px so the expanded panel floats smoothly over content with zero layout shift.
    ========================================================================== */
 
 @media (min-width: 769px) {
-  html body nav.sidebar#sidebar {
+  html body nav.sidebar#sidebar,
+  html body aside.sidebar#sidebar,
+  html body .sidebar#sidebar {
     position: fixed !important;
     inset: 0 auto 0 0 !important;
     z-index: 100 !important;
@@ -503,32 +507,91 @@ html body .sidebar .account-menu button[data-logout] i {
                 width 0.22s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
   }
 
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) {
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within),
+  html body aside.sidebar#sidebar:not(:hover):not(:focus-within),
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) {
     width: var(--sb-rail) !important;
   }
 
   /* Resting rail: icons only, centred */
   html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-brand-row,
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user {
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .brand,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .side-user,
+  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-brand-row,
+  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .brand,
+  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user,
+  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .side-user,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-brand-row,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .brand,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .side-user {
     justify-content: center !important;
   }
 
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a {
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-link,
+  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a,
+  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a,
+  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-link,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .menulist a,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .nav-link {
     justify-content: center !important;
     gap: 0 !important;
     padding: 0 !important;
   }
 
-  /* Text that only makes sense while the panel is open */
+  /* Text elements hidden during resting rail */
   html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .headertxt,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .brand-txt,
   html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-group-label,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-label,
   html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user-copy,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .side-user .who,
   html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .account-menu-toggle,
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .account-menu {
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) #accountBtn,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .account-menu,
+  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .headertxt,
+  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .brand-txt,
+  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-group-label,
+  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-label,
+  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user-copy,
+  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .side-user .who,
+  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .account-menu-toggle,
+  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) #accountBtn,
+  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .account-menu,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .headertxt,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .brand-txt,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .nav-group-label,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .nav-label,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user-copy,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .side-user .who,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .account-menu-toggle,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) #accountBtn,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .account-menu {
     display: none !important;
   }
 
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .text {
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .text,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .nav-text,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a .text,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a .nav-text,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-link .text,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-link .nav-text,
+  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .text,
+  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .nav-text,
+  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a .text,
+  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a .nav-text,
+  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-link .text,
+  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-link .nav-text,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .text,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .nav-text,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a .text,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a .nav-text,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .nav-link .text,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .nav-link .nav-text {
     position: absolute !important;
     width: 1px !important;
     height: 1px !important;
@@ -538,24 +601,87 @@ html body .sidebar .account-menu button[data-logout] i {
     clip-path: inset(50%) !important;
   }
 
-  /* Reveal: labels fade in only after the panel has widened */
+  /* Reveal: labels fade in smoothly once the panel has expanded */
   html body nav.sidebar#sidebar:hover .headertxt,
   html body nav.sidebar#sidebar:focus-within .headertxt,
+  html body nav.sidebar#sidebar:hover .brand-txt,
+  html body nav.sidebar#sidebar:focus-within .brand-txt,
   html body nav.sidebar#sidebar:hover .sidebar-user-copy,
   html body nav.sidebar#sidebar:focus-within .sidebar-user-copy,
+  html body nav.sidebar#sidebar:hover .side-user .who,
+  html body nav.sidebar#sidebar:focus-within .side-user .who,
   html body nav.sidebar#sidebar:hover .menulist a .text,
-  html body nav.sidebar#sidebar:focus-within .menulist a .text {
+  html body nav.sidebar#sidebar:focus-within .menulist a .text,
+  html body nav.sidebar#sidebar:hover .nav-link .nav-text,
+  html body nav.sidebar#sidebar:focus-within .nav-link .nav-text,
+  html body aside.sidebar#sidebar:hover .headertxt,
+  html body aside.sidebar#sidebar:focus-within .headertxt,
+  html body aside.sidebar#sidebar:hover .brand-txt,
+  html body aside.sidebar#sidebar:focus-within .brand-txt,
+  html body aside.sidebar#sidebar:hover .sidebar-user-copy,
+  html body aside.sidebar#sidebar:focus-within .sidebar-user-copy,
+  html body aside.sidebar#sidebar:hover .side-user .who,
+  html body aside.sidebar#sidebar:focus-within .side-user .who,
+  html body aside.sidebar#sidebar:hover .menulist a .text,
+  html body aside.sidebar#sidebar:focus-within .menulist a .text,
+  html body aside.sidebar#sidebar:hover .nav-link .nav-text,
+  html body aside.sidebar#sidebar:focus-within .nav-link .nav-text,
+  html body .sidebar#sidebar:hover .headertxt,
+  html body .sidebar#sidebar:focus-within .headertxt,
+  html body .sidebar#sidebar:hover .brand-txt,
+  html body .sidebar#sidebar:focus-within .brand-txt,
+  html body .sidebar#sidebar:hover .sidebar-user-copy,
+  html body .sidebar#sidebar:focus-within .sidebar-user-copy,
+  html body .sidebar#sidebar:hover .side-user .who,
+  html body .sidebar#sidebar:focus-within .side-user .who,
+  html body .sidebar#sidebar:hover .menulist a .text,
+  html body .sidebar#sidebar:focus-within .menulist a .text,
+  html body .sidebar#sidebar:hover .nav-link .nav-text,
+  html body .sidebar#sidebar:focus-within .nav-link .nav-text {
     animation: sb-rail-reveal 0.16s ease 0.08s both !important;
   }
 
   html body nav.sidebar#sidebar:hover .nav-group-label,
-  html body nav.sidebar#sidebar:focus-within .nav-group-label {
+  html body nav.sidebar#sidebar:focus-within .nav-group-label,
+  html body nav.sidebar#sidebar:hover .nav-label,
+  html body nav.sidebar#sidebar:focus-within .nav-label,
+  html body aside.sidebar#sidebar:hover .nav-group-label,
+  html body aside.sidebar#sidebar:focus-within .nav-group-label,
+  html body aside.sidebar#sidebar:hover .nav-label,
+  html body aside.sidebar#sidebar:focus-within .nav-label,
+  html body .sidebar#sidebar:hover .nav-group-label,
+  html body .sidebar#sidebar:focus-within .nav-group-label,
+  html body .sidebar#sidebar:hover .nav-label,
+  html body .sidebar#sidebar:focus-within .nav-label {
     animation: sb-rail-fade 0.16s ease 0.08s both !important;
   }
 
-  /* The staff page column always reserves the rail */
+  /* When expanded, restore flex-start alignment and padding */
+  html body nav.sidebar#sidebar:hover .menulist a,
+  html body nav.sidebar#sidebar:focus-within .menulist a,
+  html body nav.sidebar#sidebar:hover .nav-link,
+  html body nav.sidebar#sidebar:focus-within .nav-link,
+  html body aside.sidebar#sidebar:hover .menulist a,
+  html body aside.sidebar#sidebar:focus-within .menulist a,
+  html body aside.sidebar#sidebar:hover .nav-link,
+  html body aside.sidebar#sidebar:focus-within .nav-link,
+  html body .sidebar#sidebar:hover .menulist a,
+  html body .sidebar#sidebar:focus-within .menulist a,
+  html body .sidebar#sidebar:hover .nav-link,
+  html body .sidebar#sidebar:focus-within .nav-link {
+    justify-content: flex-start !important;
+    padding: 0 12px !important;
+    gap: 12px !important;
+  }
+
+  /* All page columns across Staff, Trainer, and Member reserve 80px */
   html body nav.sidebar#sidebar ~ .main-content,
-  html body .dashboard > main.main-content {
+  html body .dashboard > main.main-content,
+  html body aside.sidebar#sidebar ~ .main,
+  html body .app > .main,
+  html body .main,
+  html body.member-home .member-content,
+  html body.member-home .member-top {
     display: block !important;
     box-sizing: border-box !important;
     margin-left: var(--sb-rail) !important;
@@ -569,111 +695,6 @@ html body .sidebar .account-menu button[data-logout] i {
     overflow-x: clip !important;
     overflow-y: visible !important;
     transition: margin-left 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), width 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
-  }
-}
-
-/* ==========================================================================
-   7. TRAINER PORTAL: DESKTOP STABLE SIDEBAR (> 768px)
-   Stable fixed 260px sidebar with ZERO content overlap and permanently visible labels.
-   ========================================================================== */
-
-@media (min-width: 769px) {
-  html body[data-portal="trainer"] aside.sidebar#sidebar,
-  html body aside.sidebar#sidebar {
-    position: fixed !important;
-    inset: 0 auto 0 0 !important;
-    z-index: 100 !important;
-    width: var(--sidebar-w) !important;
-    min-width: var(--sidebar-w) !important;
-    max-width: var(--sidebar-w) !important;
-    height: 100vh !important;
-    box-sizing: border-box !important;
-    padding: 18px 14px 14px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 0 !important;
-    overflow: visible !important;
-    background: linear-gradient(180deg, #141b27 0%, #0c1119 100%) !important;
-    border: 0 !important;
-    border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
-    border-radius: 0 20px 20px 0 !important;
-    box-shadow: 10px 0 35px rgba(0, 0, 0, 0.25) !important;
-    transform: none !important;
-    transition: none !important;
-  }
-
-  /* All trainer text labels permanently visible */
-  html body[data-portal="trainer"] aside.sidebar#sidebar .headertxt,
-  html body[data-portal="trainer"] aside.sidebar#sidebar .brand-txt,
-  html body[data-portal="trainer"] aside.sidebar#sidebar .nav-group-label,
-  html body[data-portal="trainer"] aside.sidebar#sidebar .nav-label,
-  html body[data-portal="trainer"] aside.sidebar#sidebar .sidebar-user-copy,
-  html body[data-portal="trainer"] aside.sidebar#sidebar .side-user .who,
-  html body aside.sidebar#sidebar .headertxt,
-  html body aside.sidebar#sidebar .brand-txt,
-  html body aside.sidebar#sidebar .nav-group-label,
-  html body aside.sidebar#sidebar .nav-label,
-  html body aside.sidebar#sidebar .sidebar-user-copy,
-  html body aside.sidebar#sidebar .side-user .who {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
-
-  html body[data-portal="trainer"] aside.sidebar#sidebar .menulist a .text,
-  html body[data-portal="trainer"] aside.sidebar#sidebar .menulist a .nav-text,
-  html body[data-portal="trainer"] aside.sidebar#sidebar .nav-list a .text,
-  html body[data-portal="trainer"] aside.sidebar#sidebar .nav-list a .nav-text,
-  html body[data-portal="trainer"] aside.sidebar#sidebar .nav-link .text,
-  html body[data-portal="trainer"] aside.sidebar#sidebar .nav-link .nav-text,
-  html body aside.sidebar#sidebar .menulist a .text,
-  html body aside.sidebar#sidebar .menulist a .nav-text,
-  html body aside.sidebar#sidebar .nav-list a .text,
-  html body aside.sidebar#sidebar .nav-list a .nav-text,
-  html body aside.sidebar#sidebar .nav-link .text,
-  html body aside.sidebar#sidebar .nav-link .nav-text {
-    position: static !important;
-    display: inline-block !important;
-    width: auto !important;
-    height: auto !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    clip: auto !important;
-    clip-path: none !important;
-  }
-
-  html body[data-portal="trainer"] aside.sidebar#sidebar .nav-link,
-  html body aside.sidebar#sidebar .nav-link {
-    justify-content: flex-start !important;
-    padding: 0 12px !important;
-    gap: 12px !important;
-  }
-
-  /* Trainer main content column reserves 260px - ZERO OVERLAP */
-  html body[data-portal="trainer"] .main,
-  html body aside.sidebar#sidebar ~ .main,
-  html body .app > .main {
-    display: block !important;
-    box-sizing: border-box !important;
-    margin-left: var(--sidebar-w) !important;
-    margin-right: 0 !important;
-    margin-inline: 0 !important;
-    width: calc(100% - var(--sidebar-w)) !important;
-    max-width: calc(100% - var(--sidebar-w)) !important;
-    min-width: 0 !important;
-    flex: none !important;
-    padding: 24px clamp(20px, 3vw, 40px) 48px !important;
-    overflow-x: clip !important;
-    overflow-y: visible !important;
-    transition: none !important;
-  }
-
-  /* Member portal desktop layout */
-  html body.member-home .member-content,
-  html body.member-home .member-top {
-    margin-left: var(--sidebar-w) !important;
-    width: calc(100% - var(--sidebar-w)) !important;
-    max-width: calc(100% - var(--sidebar-w)) !important;
   }
 }
 

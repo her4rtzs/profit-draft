@@ -3,9 +3,41 @@
 (() => {
   const $ = id => document.getElementById(id);
   const { esc, money, initialsOf, fmt, today, toast, modal, dayDiff, media, parseISO, iso, todayISO, fmtDateTime } = PF;
-  const PER_PAGE = 12;
+  const PER_PAGE = 5;
   const PLAN_KEYS = Object.keys(PLANS);
-  const state = { view: matchMedia("(max-width: 768px)").matches ? "cards" : "table", tab: "browse", filter: "all", query: "", page: 1, app: "pending", selectedId: null, subtab: "overview", pickerQuery: "" };
+  const state = { view: matchMedia("(max-width: 768px)").matches ? "cards" : "table", tab: "browse", filter: "all", sort: "name-asc", query: "", page: 1, app: "pending", selectedId: null, subtab: "overview", pickerQuery: "" };
+
+  const AVATAR_PALETTES = [
+    '#2563EB', // Blue
+    '#7C3AED', // Purple
+    '#059669', // Emerald Green
+    '#D97706', // Amber / Orange
+    '#0284C7', // Cyan
+    '#DC2626', // Red
+    '#4F46E5', // Indigo
+    '#DB2777'  // Pink
+  ];
+  function avatarColor(name) {
+    let hash = 0;
+    for (let i = 0; i < (name || '').length; i++) hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
+    return AVATAR_PALETTES[hash % AVATAR_PALETTES.length];
+  }
+
+  function updateStats() {
+    const members = DB.members || [];
+    const total = members.length;
+    let active = 0, expiring = 0, expired = 0;
+    members.forEach(m => {
+      const k = statusFor(m).key;
+      if (k === 'active') active++;
+      else if (k === 'expiring') expiring++;
+      else if (['expired', 'cancelled'].includes(k)) expired++;
+    });
+    if ($('statTotal')) $('statTotal').textContent = total;
+    if ($('statActive')) $('statActive').textContent = active;
+    if ($('statExpiring')) $('statExpiring').textContent = expiring;
+    if ($('statExpired')) $('statExpired').textContent = expired;
+  }
 
   // ---------- Rules ----------
   const left = m => dayDiff(new Date(), m.end);
@@ -100,15 +132,31 @@
 
   // ---------- Browse ----------
   const memberCard = m => {
-    const s = statusFor(m), d = Math.max(0, left(m)), total = PLANS[m.plan]?.days || 30;
-    const pct = Math.min(100, Math.round((d / total) * 100));
-    return `<article class="pp-member" tabindex="0" role="button" data-open="${esc(m.id)}" aria-label="Open ${esc(m.name)}">
-      <header>${avatar(m)}<div class="pp-member-title"><h3>${esc(m.name)}</h3><span>${esc(m.id)}</span></div><span class="pp-status ${s.key}">${s.label}</span></header>
-      <dl class="pp-kv"><div><dt>Plan</dt><dd>${esc(planLabel(m.plan))}</dd></div><div><dt>Email</dt><dd class="pp-truncate">${esc(m.email)}</dd></div></dl>
-      <p class="pp-expiry">${esc(expiryText(m))}</p>
-      <div class="pp-meter" aria-hidden="true"><span style="width:${pct}%"></span></div>
+    const s = statusFor(m), d = left(m);
+    const bg = avatarColor(m.name);
+    const sub = d < 0 ? "Expired" : (d === 0 ? "Expires today" : `${d} days left`);
+    return `<article class="member-grid-card" tabindex="0" role="button" data-open="${esc(m.id)}" aria-label="Open ${esc(m.name)}">
+      <div class="card-top-row">
+        <div class="member-cell">
+          <span class="member-avatar-pill" style="background:${bg};">${esc(initialsOf(m.name))}</span>
+          <div class="member-info-col">
+            <strong>${esc(m.name)}</strong>
+            <small>${esc(m.email)}</small>
+          </div>
+        </div>
+        <button class="members-action-btn" type="button" data-row-menu="${esc(m.id)}" aria-haspopup="menu" aria-expanded="false" aria-label="Actions for ${esc(m.name)}">
+          <i class="fa-solid fa-ellipsis"></i>
+        </button>
+      </div>
+      <dl class="card-mid-info">
+        <div><dt>Plan</dt><dd>${esc(planLabel(m.plan))}</dd></div>
+        <div><dt>Status</dt><dd><span class="badge-status badge-${s.key}"><span class="badge-dot"></span> ${s.label}</span></dd></div>
+        <div><dt>Expiry</dt><dd>${esc(fmt(m.end))}</dd></div>
+        <div><dt>Remaining</dt><dd>${esc(sub)}</dd></div>
+      </dl>
     </article>`;
   };
+
   const MENU_ITEMS = m => [
     { act: "profile", icon: "fa-id-card", label: "View full profile" },
     { act: "edit", icon: "fa-pen-to-square", label: "Edit details" },
@@ -117,55 +165,134 @@
     { sep: true },
     { act: "cancel", icon: "fa-ban", label: "Cancel membership", danger: true, disabled: !!m.cancelledAt }
   ];
+
   const rowHTML = m => {
     const s = statusFor(m);
+    const d = left(m);
+    const bg = avatarColor(m.name);
+    const sub = d < 0 ? "-" : (d === 0 ? "Expires today" : `${d} day${d === 1 ? "" : "s"} left`);
     return `<tr data-row="${esc(m.id)}" tabindex="0">
-      <td><div class="pp-cell-member">${avatar(m, "sm")}<div><strong>${esc(m.name)}</strong><small>${esc(m.id)} · ${esc(m.email)}</small></div></div></td>
-      <td>${esc(planLabel(m.plan))}</td>
-      <td><span class="pp-status ${s.key}">${s.label}</span></td>
-      <td>${esc(fmt(m.end))}<small class="pp-muted pp-block">${esc(expiryText(m))}</small></td>
-      <td class="pp-actions-cell"><button class="pp-icon-btn" type="button" data-row-menu="${esc(m.id)}" aria-haspopup="menu" aria-expanded="false" aria-label="More actions for ${esc(m.name)}" title="More actions"><i class="fa-solid fa-ellipsis" aria-hidden="true"></i></button></td>
+      <td>
+        <div class="member-cell">
+          <span class="member-avatar-pill" style="background:${bg};">${esc(initialsOf(m.name))}</span>
+          <div class="member-info-col">
+            <strong>${esc(m.name)}</strong>
+            <small>${esc(m.email)}</small>
+          </div>
+        </div>
+      </td>
+      <td><span class="member-plan-text">${esc(planLabel(m.plan))}</span></td>
+      <td><span class="badge-status badge-${s.key}"><span class="badge-dot"></span> ${s.label}</span></td>
+      <td>
+        <div class="member-expiry-cell">
+          <span class="member-expiry-date">${esc(fmt(m.end))}</span>
+          <span class="member-expiry-sub">${esc(sub)}</span>
+        </div>
+      </td>
+      <td style="text-align:right">
+        <button class="members-action-btn" type="button" data-row-menu="${esc(m.id)}" aria-haspopup="menu" aria-expanded="false" aria-label="More actions for ${esc(m.name)}" title="More actions">
+          <i class="fa-solid fa-ellipsis" aria-hidden="true"></i>
+        </button>
+      </td>
     </tr>`;
   };
+
+  function renderPagination(current, totalPages) {
+    if (totalPages <= 1) return "";
+    let html = `<button class="pager-btn" type="button" data-page="${current - 1}" ${current <= 1 ? "disabled" : ""} aria-label="Previous page"><i class="fa-solid fa-chevron-left"></i></button>`;
+    
+    const delta = 1;
+    const range = [];
+    for (let i = Math.max(2, current - delta); i <= Math.min(totalPages - 1, current + delta); i++) {
+      range.push(i);
+    }
+    
+    html += `<button class="pager-btn ${current === 1 ? "active" : ""}" type="button" data-page="1">1</button>`;
+    if (range.length && range[0] > 2) html += `<span class="pager-ellipsis">...</span>`;
+    
+    range.forEach(p => {
+      html += `<button class="pager-btn ${current === p ? "active" : ""}" type="button" data-page="${p}">${p}</button>`;
+    });
+    
+    if (range.length && range[range.length - 1] < totalPages - 1) html += `<span class="pager-ellipsis">...</span>`;
+    if (totalPages > 1) {
+      html += `<button class="pager-btn ${current === totalPages ? "active" : ""}" type="button" data-page="${totalPages}">${totalPages}</button>`;
+    }
+    
+    html += `<button class="pager-btn" type="button" data-page="${current + 1}" ${current >= totalPages ? "disabled" : ""} aria-label="Next page"><i class="fa-solid fa-chevron-right"></i></button>`;
+    return html;
+  }
+
   function renderBrowse() {
+    updateStats();
     const q = state.query.trim().toLowerCase();
-    const all = [...DB.members].sort((a, b) => a.name.localeCompare(b.name));
+    let all = [...DB.members];
+
+    if (state.sort === "name-asc") {
+      all.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (state.sort === "name-desc") {
+      all.sort((a, b) => b.name.localeCompare(a.name));
+    } else if (state.sort === "expiry-soon") {
+      all.sort((a, b) => (new Date(a.end) - new Date(b.end)));
+    } else if (state.sort === "plan") {
+      all.sort((a, b) => String(a.plan || '').localeCompare(String(b.plan || '')));
+    }
+
     const list = all.filter(m => {
       const k = statusFor(m).key;
       const byStatus = state.filter === "all" || k === state.filter || (state.filter === "expired" && k === "cancelled");
       return byStatus && (!q || [m.name, m.id, m.email, m.phone].some(v => String(v || "").toLowerCase().includes(q)));
     });
+
     const pages = Math.max(1, Math.ceil(list.length / PER_PAGE));
     state.page = Math.min(state.page, pages);
     const start = (state.page - 1) * PER_PAGE;
     const slice = list.slice(start, start + PER_PAGE);
     const empty = emptyBlock("fa-user-slash", "No members match", q || state.filter !== "all" ? "Try another search or clear the filter to see everyone." : "Enroll your first member from the New enrollment tab.");
-    $("countBrowse").textContent = all.length;
-    $("memberSummary").textContent = list.length ? `Showing ${start + 1}–${start + slice.length} of ${list.length} member${list.length === 1 ? "" : "s"}` : "";
+    
+    if ($("countBrowse")) $("countBrowse").textContent = all.length;
+    $("memberSummary").textContent = list.length ? `Showing ${start + 1}–${start + slice.length} of ${list.length} members` : "No members found";
+    
     const table = state.view === "table";
     $("memberTableWrap").hidden = !table;
     $("memberGrid").hidden = table;
+    
     if (table) {
       $("memberTableWrap").innerHTML = slice.length
-        ? `<table class="pp-table pp-members-table"><thead><tr><th scope="col">Member</th><th scope="col">Plan</th><th scope="col">Status</th><th scope="col">Ends</th><th scope="col"><span class="pp-sr">Actions</span></th></tr></thead><tbody>${slice.map(rowHTML).join("")}</tbody></table>`
+        ? `<table class="members-table">
+            <thead>
+              <tr>
+                <th scope="col">Member</th>
+                <th scope="col">Membership Plan</th>
+                <th scope="col">Status</th>
+                <th scope="col">Expiry Date</th>
+                <th scope="col" style="text-align:right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>${slice.map(rowHTML).join("")}</tbody>
+          </table>`
         : empty;
     } else {
       $("memberGrid").innerHTML = slice.length ? slice.map(memberCard).join("") : empty;
     }
-    $("memberPager").innerHTML = pages <= 1 ? "" :
-      `<button class="pp-btn" type="button" data-page="${state.page - 1}" ${state.page <= 1 ? "disabled" : ""}><i class="fa-solid fa-chevron-left"></i> Previous</button>
-       <span class="pp-muted">Page ${state.page} of ${pages}</span>
-       <button class="pp-btn" type="button" data-page="${state.page + 1}" ${state.page >= pages ? "disabled" : ""}>Next <i class="fa-solid fa-chevron-right"></i></button>`;
-    document.querySelectorAll("#memberFilters [data-filter]").forEach(b => {
-      const on = b.dataset.filter === state.filter;
-      b.classList.toggle("active", on);
-      b.setAttribute("aria-pressed", String(on));
+    
+    $("memberPager").innerHTML = renderPagination(state.page, pages);
+
+    // Update filter dropdown items
+    document.querySelectorAll("#filterDropdownMenu [data-filter]").forEach(b => {
+      b.classList.toggle("active", b.dataset.filter === state.filter);
     });
-    document.querySelectorAll("[data-view-mode]").forEach(b => {
-      const on = b.dataset.viewMode === state.view;
-      b.classList.toggle("active", on);
-      b.setAttribute("aria-pressed", String(on));
+    // Update sort dropdown items
+    document.querySelectorAll("#sortDropdownMenu [data-sort]").forEach(b => {
+      b.classList.toggle("active", b.dataset.sort === state.sort);
     });
+    // Update view dropdown items
+    document.querySelectorAll("#viewDropdownMenu [data-view]").forEach(b => {
+      b.classList.toggle("active", b.dataset.view === state.view);
+    });
+    if ($("viewIcon")) {
+      $("viewIcon").className = state.view === "table" ? "fa-solid fa-table-list" : "fa-solid fa-table-cells-large";
+    }
   }
 
   // ---------- Member actions: freeze, unfreeze, cancel, and the "..." menu ----------
@@ -710,8 +837,85 @@
   // A phone gets cards, a desktop gets the table, even if the window is resized after load.
   matchMedia("(max-width: 768px)").addEventListener("change", e => { state.view = e.matches ? "cards" : "table"; renderBrowse(); });
 
+  function setupDropdowns() {
+    const pairs = [
+      { btn: "filterDropdownBtn", menu: "filterDropdownMenu" },
+      { btn: "sortDropdownBtn", menu: "sortDropdownMenu" },
+      { btn: "viewDropdownBtn", menu: "viewDropdownMenu" }
+    ];
+
+    pairs.forEach(({ btn, menu }) => {
+      const b = $(btn), m = $(menu);
+      if (!b || !m) return;
+      b.addEventListener("click", e => {
+        e.stopPropagation();
+        const open = !m.hidden;
+        pairs.forEach(p => {
+          const om = $(p.menu), ob = $(p.btn);
+          if (om) om.hidden = true;
+          if (ob) ob.setAttribute("aria-expanded", "false");
+        });
+        m.hidden = open;
+        b.setAttribute("aria-expanded", String(!open));
+      });
+    });
+
+    document.addEventListener("click", e => {
+      pairs.forEach(({ btn, menu }) => {
+        const m = $(menu), b = $(btn);
+        if (m && !m.contains(e.target) && b && !b.contains(e.target)) {
+          m.hidden = true;
+          b.setAttribute("aria-expanded", "false");
+        }
+      });
+    });
+
+    const fMenu = $("filterDropdownMenu");
+    if (fMenu) {
+      fMenu.addEventListener("click", e => {
+        const item = e.target.closest("[data-filter]");
+        if (!item) return;
+        state.filter = item.dataset.filter;
+        state.page = 1;
+        const lbl = $("filterLabel");
+        if (lbl) lbl.textContent = item.textContent.trim();
+        fMenu.hidden = true;
+        $("filterDropdownBtn")?.setAttribute("aria-expanded", "false");
+        renderBrowse();
+      });
+    }
+
+    const sMenu = $("sortDropdownMenu");
+    if (sMenu) {
+      sMenu.addEventListener("click", e => {
+        const item = e.target.closest("[data-sort]");
+        if (!item) return;
+        state.sort = item.dataset.sort;
+        state.page = 1;
+        const lbl = $("sortLabel");
+        if (lbl) lbl.textContent = item.textContent.trim();
+        sMenu.hidden = true;
+        $("sortDropdownBtn")?.setAttribute("aria-expanded", "false");
+        renderBrowse();
+      });
+    }
+
+    const vMenu = $("viewDropdownMenu");
+    if (vMenu) {
+      vMenu.addEventListener("click", e => {
+        const item = e.target.closest("[data-view]");
+        if (!item) return;
+        state.view = item.dataset.view;
+        vMenu.hidden = true;
+        $("viewDropdownBtn")?.setAttribute("aria-expanded", "false");
+        renderBrowse();
+      });
+    }
+  }
+
   const afterSync = window.pfAfterSync || (fn => fn());
   document.addEventListener("profit:synced", () => afterSync(renderAll));
+  setupDropdowns();
   buildEnroll();
   afterSync(renderAll);
   tabFromHash();

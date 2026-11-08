@@ -1177,3 +1177,16 @@ Revert the staff portal sidebar back to its original design (smooth desktop hove
 - Maintained the Instagram-style frosted 5-tab bottom navigation bar across all portals on mobile screens (<= 768px).
 ### Decision-log skill
 When different portals have different shell architectures (e.g. Staff using hover-rail icon-bar with `.main-content` vs Trainer using a dedicated workspace shell with `.main`), scope the hover-expand icon rail strictly to `nav.sidebar#sidebar` and provide a dedicated, stable fixed layout for `body[data-portal="trainer"] aside.sidebar#sidebar` to prevent cross-portal style leakage.
+
+
+## 2026-11-09 05:15 (Asia/Manila): Unified hover-expand sidebar across all portals & Members page redesign matching design reference
+### What I asked for
+1. Enforce the collapsing, hover-expand sidebar behavior across all portals (Staff, Trainer, Member) so it rests at 80px and automatically expands on cursor hover.
+2. Redesign the Members page UI to match the design reference screenshot (`media_1794172132128_f5fe6127.jpg`) with centered 3-tabs navigation, 4 membership statistics cards, unified search & toolbar (Filter, Sort By, single View dropdown with Table/Cards), table with colored avatar pills and status dot badges, and responsive pagination.
+### What the agent decided and why
+- In `web/sidebar-pro.css` and `web/layout-fixes.css`: Unified the desktop (> 768px) hover-rail icon rail across all portals (`nav.sidebar#sidebar`, `aside.sidebar#sidebar`, `.sidebar#sidebar`). Sidebar rests at 80px (`--sb-rail: 80px`) with centered icons, and expands smoothly to 260px (`var(--sidebar-w)`) on `:hover` and `:focus-within`. All page content wrappers (`.main-content`, `.main`, `.member-content`) reserve 80px (`margin-left: var(--sb-rail) !important; width: calc(100% - var(--sb-rail)) !important;`) so the expanded panel floats over content with zero layout shift.
+- In `web/members.html`: Built the hero header ("Members", "Manage and view all your gym members."), centered container with 3 equal tabs (`Browse Members`, `Member Detail`, `New Enrollment`), 4 summary cards (`Total Members`, `Active Members`, `Expiring Soon`, `Expired Members`), and the unified toolbar with search input and 3 dropdowns (`filterDropdownBtn`, `sortDropdownBtn`, `viewDropdownBtn`).
+- In `web/members-ui.css`: Authored the complete styling matching the design screenshot using ProFit enterprise palette (`#0A0E17` background, `#111827` cards, `#F59E0B` amber accent, `#10B981` green, `#EF4444` red, `#2563EB` blue), status pill badges with glowing colored dots, and numbered pagination pills.
+- In `web/members.js`: Wired live statistics calculation (`updateStats()`), dynamic initials avatar colors from an enterprise palette, single View dropdown toggling between Table and Cards views, Filter and Sort dropdown menus, and numbered pagination (`< 1 2 3 ... 25 >`).
+### Decision-log skill
+When standardizing responsive navigation behaviors (like hover-expand icon rails) across heterogeneous layouts, ensure the page content margins (`margin-left: 80px`) match the resting width of the rail across all semantic wrappers (`nav.sidebar ~ .main-content`, `aside.sidebar ~ .main`), and implement custom dropdowns with outside-click dismissal to eliminate reliance on native form controls for a polished enterprise SaaS interface.
