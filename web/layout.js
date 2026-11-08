@@ -117,6 +117,30 @@
 
   }
 
+  // Mobile Instagram-style bottom navigation bar
+  let bnav = document.getElementById('mobileBottomNav');
+  if (!bnav) {
+    bnav = document.createElement('nav');
+    bnav.id = 'mobileBottomNav';
+    bnav.className = 'instagram-bottom-nav pf-bottomnav';
+    bnav.setAttribute('aria-label', 'Mobile navigation');
+    document.body.appendChild(bnav);
+  }
+  const curPage = current;
+  const staffTabs = [
+    { id: 'dashboard', label: 'Home', icon: 'fa-house', href: 'index.html' },
+    { id: 'members', label: 'Members', icon: 'fa-users', href: 'members.html' },
+    { id: 'attendance', label: 'Attendance', icon: 'fa-clipboard-check', href: 'attendance.html' },
+    { id: 'announcements', label: 'Notices', icon: 'fa-bullhorn', href: 'announcements.html' },
+    { id: 'profile', label: 'Profile', icon: 'fa-user', href: 'profile.html' }
+  ];
+  bnav.innerHTML = staffTabs.map(t => `
+    <a href="${t.href}" class="${t.id === curPage ? 'active' : ''}" ${t.id === curPage ? 'aria-current="page"' : ''}>
+      <i class="fa-solid ${t.icon}" aria-hidden="true"></i>
+      <span>${t.label}</span>
+    </a>
+  `).join('');
+
   // ---- Status strip removed per request ----
 
   // ---- Gym branding -----------------------------------------------------

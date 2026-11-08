@@ -1368,8 +1368,96 @@
     }
   }
 
+  function initMemberSidebar() {
+    const sb = document.getElementById("sidebar");
+    if (!sb) return;
+    const member = sessionMember() || { name: 'Member', email: 'member@profit.test' };
+    const name = member.name || 'Member';
+    const initials = initialsOf ? initialsOf(name) : 'M';
+    let gym = { name: 'ProFit', tagline: 'FUNCTIONAL FITNESS', logo: '' };
+    try { gym = { ...gym, ...(JSON.parse(localStorage.getItem('profit-gym-profile') || 'null') || {}) }; } catch {}
+
+    sb.setAttribute('aria-label', 'Main navigation');
+    sb.innerHTML = `
+      <div class="sidebar-brand-row brand">
+        <a class="imgbrand" href="member-home.html" aria-label="${esc(gym.name)} member space">
+          <span class="image"><img id="gymLogoImg" src="${gym.logo || 'logo.jpg'}" alt="${esc(gym.name)}" onerror="this.style.display='none'"></span>
+          <span class="headertxt brand-txt"><strong>${esc(gym.name)}</strong><small>MEMBER SPACE</small></span>
+        </a>
+      </div>
+      <div class="sidebar-scroll side-scroll" aria-label="Main navigation">
+        <section class="nav-group">
+          <p class="nav-group-label nav-label">WORKSPACE</p>
+          <ul class="menulist nav-list">
+            <li><a class="nav-link active" href="#overview" data-sb-tab="overview" title="Overview" aria-current="page"><span class="icon"><i class="fa-solid fa-house" aria-hidden="true"></i></span><span class="text nav-text">Overview</span></a></li>
+            <li><a class="nav-link" href="#schedule" data-sb-tab="schedule" title="Schedule"><span class="icon"><i class="fa-regular fa-calendar" aria-hidden="true"></i></span><span class="text nav-text">Schedule</span></a></li>
+            <li><a class="nav-link" href="#announcements" data-sb-tab="announcements" title="Announcements"><span class="icon"><i class="fa-solid fa-bullhorn" aria-hidden="true"></i></span><span class="text nav-text">Announcements</span></a></li>
+            <li><a class="nav-link" href="#diary" data-sb-tab="diary" title="Training Diary"><span class="icon"><i class="fa-solid fa-book-open" aria-hidden="true"></i></span><span class="text nav-text">Training Diary</span></a></li>
+            <li><a class="nav-link" href="#health" data-sb-tab="health" title="Health & Goals"><span class="icon"><i class="fa-solid fa-heart-pulse" aria-hidden="true"></i></span><span class="text nav-text">Health &amp; Goals</span></a></li>
+          </ul>
+        </section>
+        <section class="nav-group">
+          <p class="nav-group-label nav-label">ACCOUNT</p>
+          <ul class="menulist nav-list">
+            <li><a class="nav-link" href="#profile" data-sb-tab="profile" title="My Profile"><span class="icon"><i class="fa-regular fa-id-card" aria-hidden="true"></i></span><span class="text nav-text">My Profile</span></a></li>
+            <li><a class="nav-link" href="join.html" title="Explore Plans"><span class="icon"><i class="fa-solid fa-credit-card" aria-hidden="true"></i></span><span class="text nav-text">Explore Plans</span></a></li>
+          </ul>
+        </section>
+      </div>
+      <div class="sidebar-foot side-foot">
+        <div class="sidebar-account">
+          <div class="sidebar-user side-user">
+            <span class="sidebar-avatar" id="memberRailAvatar">${initials}</span>
+            <div class="sidebar-user-copy who"><strong>${esc(name)}</strong><small>Gym member</small></div>
+            <button type="button" class="account-menu-toggle icon-btn" id="memberSbMenuToggle" aria-label="Account actions"><i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i></button>
+            <div class="account-menu" id="memberSbMenu" role="menu">
+              <a href="#profile" data-sb-tab="profile"><i class="fa-regular fa-id-card"></i> My profile</a>
+              <button type="button" data-logout><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign out</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const toggle = sb.querySelector('#memberSbMenuToggle');
+    const menu = sb.querySelector('#memberSbMenu');
+    toggle?.addEventListener('click', e => {
+      e.stopPropagation();
+      menu?.classList.toggle('is-open');
+    });
+    document.addEventListener('click', e => {
+      if (menu && !menu.contains(e.target) && !toggle?.contains(e.target)) {
+        menu.classList.remove('is-open');
+      }
+    });
+
+    sb.addEventListener('click', e => {
+      const a = e.target.closest('[data-sb-tab]');
+      if (!a) return;
+      e.preventDefault();
+      const tabName = a.dataset.sbTab;
+      goTab(tabName);
+      menu?.classList.remove('is-open');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    const syncActive = () => {
+      const active = document.querySelector('.pp-tab[aria-selected="true"]')?.dataset.tab || 'overview';
+      sb.querySelectorAll('[data-sb-tab]').forEach(a => {
+        const on = a.dataset.sbTab === active;
+        a.classList.toggle('active', on);
+        if (on) a.setAttribute('aria-current', 'page');
+        else a.removeAttribute('aria-current');
+      });
+    };
+    const tabs = document.querySelector(".pp-tabs");
+    if (tabs) new MutationObserver(syncActive).observe(tabs, { attributes: true, subtree: true, attributeFilter: ["aria-selected"] });
+    syncActive();
+  }
+
   function init() {
     initHomeTabs();
+    initMemberSidebar();
     syncThemeIcon();
     portalThemeSetup();
     markMemberLayout();

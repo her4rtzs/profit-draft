@@ -38,24 +38,26 @@ html body .dashboard {
   overflow: visible !important;
 }
 
-html body nav.sidebar {
+html body nav.sidebar,
+html body aside.sidebar,
+html body .sidebar {
   position: fixed !important;
   left: 0 !important;
   top: 0 !important;
   bottom: 0 !important;
-  width: 260px !important;
-  min-width: 260px !important;
-  max-width: 260px !important;
+  min-width: 0 !important;
   height: 100vh !important;
   z-index: 100 !important;
 }
 
-html body .main-content {
-  margin-left: var(--sidebar-w, 260px) !important;
+html body .main-content,
+html body aside.sidebar ~ .main,
+html body .app > .main {
+  margin-left: var(--sb-rail, 80px) !important;
   margin-right: 0 !important;
   margin-inline: 0 !important;
-  width: calc(100% - var(--sidebar-w, 260px)) !important;
-  max-width: calc(100% - var(--sidebar-w, 260px)) !important;
+  width: calc(100% - var(--sb-rail, 80px)) !important;
+  max-width: calc(100% - var(--sb-rail, 80px)) !important;
   min-width: 0 !important;
   box-sizing: border-box !important;
   padding: 24px clamp(20px, 3vw, 40px) 48px !important;
@@ -589,48 +591,19 @@ html body .notification-panel {
    9. MOBILE BREAKPOINT (<= 768px)
    -------------------------------------------------------------------------- */
 @media (max-width: 768px) {
-  html body nav.sidebar {
-    position: fixed !important;
-    top: 0 !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    width: min(300px, 86vw) !important;
-    min-width: 0 !important;
-    max-width: min(300px, 86vw) !important;
-    height: 100vh !important;
-    z-index: 1000 !important;
-    transform: translateX(-105%) !important;
-    border-radius: 0 20px 20px 0 !important;
-    box-shadow: 10px 0 50px rgba(0, 0, 0, 0.6) !important;
-    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
-  }
-
-  html body nav.sidebar.mobile-open {
-    transform: translateX(0) !important;
-  }
-
-  html body nav.sidebar #sidebarToggle {
+  html body nav.sidebar,
+  html body aside.sidebar,
+  html body .sidebar,
+  html body #sidebar,
+  html body .sidebar-shade,
+  html body #sidebarShade,
+  html body .scrim,
+  html body #scrim,
+  html body .mobile-nav-toggle,
+  html body #mobileNavToggle {
     display: none !important;
-  }
-
-  html body nav.sidebar .headertxt {
-    display: grid !important;
-  }
-
-  html body nav.sidebar .nav-group-label {
-    display: block !important;
-  }
-
-  html body nav.sidebar .menulist a .text {
-    display: inline !important;
-  }
-
-  html body nav.sidebar .sidebar-user-copy {
-    display: grid !important;
-  }
-
-  html body nav.sidebar .account-menu-toggle {
-    display: grid !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
   }
 
   html body .main-content {

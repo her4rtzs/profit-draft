@@ -1,7 +1,8 @@
-/* ProFit Staff Dashboard - Hover-Expand Icon Rail & Mobile Drawer.
-   On desktop the sidebar is an icon rail that expands to the full 260px panel
-   while the pointer hovers it or the keyboard focus is inside it.
-   The mobile sidebar acts strictly as a sliding drawer on screens <= 768px. */
+/* ProFit Unified Sidebar & Instagram-Style Mobile Navigation
+   - Desktop (> 768px): Permanent left sidebar resting as an 80px compact icon rail,
+     smoothly expanding to 260px on hover/focus-within over content without layout shift.
+   - Mobile (<= 768px): Desktop sidebar and drawers hidden; clean edge-to-edge
+     Instagram-style frosted bottom navigation bar across Staff, Trainer, and Member portals. */
 
 :root {
   --sidebar-w: 260px;
@@ -16,7 +17,9 @@
    DESKTOP SIDEBAR (Permanent, stable, fixed on the left)
    ========================================================================== */
 
-html body nav.sidebar {
+html body .sidebar,
+html body nav.sidebar,
+html body aside.sidebar {
   position: fixed !important;
   inset: 0 auto 0 0 !important;
   z-index: 100 !important;
@@ -49,20 +52,25 @@ html.pf-pre * {
 }
 
 /* ==========================================================================
-   MAIN DASHBOARD WRAPPER
+   MAIN DASHBOARD WRAPPER & COLUMN OFFSETS
    ========================================================================== */
 
-html body .dashboard {
+html body .dashboard,
+html body .app {
   display: block !important;
   width: 100% !important;
   min-width: 0 !important;
   min-height: 100vh !important;
   position: relative !important;
-  background: var(--bg) !important;
+  background: var(--bg, #0a0e16) !important;
 }
 
 html body nav.sidebar ~ .main-content,
-html body .dashboard > main.main-content {
+html body .dashboard > main.main-content,
+html body aside.sidebar ~ .main,
+html body .app > .main,
+html body.member-home .member-content,
+html body.member-home .member-top {
   display: block !important;
   box-sizing: border-box !important;
   margin-left: var(--sidebar-w) !important;
@@ -82,7 +90,8 @@ html body .dashboard > main.main-content {
    BRAND SECTION
    ========================================================================== */
 
-html body nav.sidebar .sidebar-brand-row {
+html body .sidebar .sidebar-brand-row,
+html body .sidebar .brand {
   flex: 0 0 auto !important;
   display: flex !important;
   align-items: center !important;
@@ -93,7 +102,8 @@ html body nav.sidebar .sidebar-brand-row {
   border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
-html body nav.sidebar .imgbrand {
+html body .sidebar .imgbrand,
+html body .sidebar .brand > a {
   display: flex !important;
   align-items: center !important;
   gap: 12px !important;
@@ -101,7 +111,8 @@ html body nav.sidebar .imgbrand {
   text-decoration: none !important;
 }
 
-html body nav.sidebar .imgbrand .image {
+html body .sidebar .imgbrand .image,
+html body .sidebar .brand-logo {
   flex: 0 0 42px !important;
   width: 42px !important;
   height: 42px !important;
@@ -110,20 +121,23 @@ html body nav.sidebar .imgbrand .image {
   background: #000 !important;
 }
 
-html body nav.sidebar .imgbrand .image img {
+html body .sidebar .imgbrand .image img,
+html body .sidebar .brand-logo {
   width: 100% !important;
   height: 100% !important;
   object-fit: contain !important;
   display: block !important;
 }
 
-html body nav.sidebar .headertxt {
+html body .sidebar .headertxt,
+html body .sidebar .brand-txt {
   display: grid !important;
   gap: 3px !important;
   min-width: 0 !important;
 }
 
-html body nav.sidebar .headertxt strong {
+html body .sidebar .headertxt strong,
+html body .sidebar .brand-txt strong {
   color: #fff !important;
   font-size: 16px !important;
   font-weight: 800 !important;
@@ -132,7 +146,8 @@ html body nav.sidebar .headertxt strong {
   letter-spacing: -0.01em !important;
 }
 
-html body nav.sidebar .headertxt small {
+html body .sidebar .headertxt small,
+html body .sidebar .brand-txt small {
   color: var(--sb-gold) !important;
   font-size: 10px !important;
   font-weight: 700 !important;
@@ -145,7 +160,8 @@ html body nav.sidebar .headertxt small {
    NAVIGATION GROUPS & MENU ITEMS
    ========================================================================== */
 
-html body nav.sidebar .sidebar-scroll {
+html body .sidebar .sidebar-scroll,
+html body .sidebar .side-scroll {
   flex: 1 1 auto !important;
   min-height: 0 !important;
   overflow-y: auto !important;
@@ -157,18 +173,20 @@ html body nav.sidebar .sidebar-scroll {
   padding: 4px 0 !important;
 }
 
-html body nav.sidebar .sidebar-scroll::-webkit-scrollbar {
+html body .sidebar .sidebar-scroll::-webkit-scrollbar,
+html body .sidebar .side-scroll::-webkit-scrollbar {
   display: none !important;
 }
 
-html body nav.sidebar .nav-group {
+html body .sidebar .nav-group {
   margin: 0 !important;
   padding: 8px 6px 6px !important;
   border-radius: 16px !important;
   background: rgba(255, 255, 255, 0.035) !important;
 }
 
-html body nav.sidebar .nav-group-label {
+html body .sidebar .nav-group-label,
+html body .sidebar .nav-label {
   margin: 2px 10px 8px !important;
   padding: 0 !important;
   color: #6b778c !important;
@@ -179,7 +197,8 @@ html body nav.sidebar .nav-group-label {
   line-height: 1.2 !important;
 }
 
-html body nav.sidebar .menulist {
+html body .sidebar .menulist,
+html body .sidebar .nav-list {
   list-style: none !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -188,12 +207,15 @@ html body nav.sidebar .menulist {
   gap: 4px !important;
 }
 
-html body nav.sidebar .menulist li {
+html body .sidebar .menulist li,
+html body .sidebar .nav-list li {
   margin: 0 !important;
   padding: 0 !important;
 }
 
-html body nav.sidebar .menulist a {
+html body .sidebar .menulist a,
+html body .sidebar .nav-list a,
+html body .sidebar .nav-link {
   position: relative !important;
   display: flex !important;
   align-items: center !important;
@@ -213,19 +235,25 @@ html body nav.sidebar .menulist a {
   transition: background-color 0.15s ease, color 0.15s ease !important;
 }
 
-html body nav.sidebar .menulist a .icon {
+html body .sidebar .menulist a .icon,
+html body .sidebar .menulist a .ico,
+html body .sidebar .menulist a i,
+html body .sidebar .nav-link .ico {
   flex: 0 0 20px !important;
   width: 20px !important;
+  height: 20px !important;
   text-align: center !important;
   font-size: 15px !important;
   color: #64748b !important;
-  display: inline-block !important;
+  display: inline-grid !important;
+  place-items: center !important;
   visibility: visible !important;
   opacity: 1 !important;
   transition: color 0.15s ease !important;
 }
 
-html body nav.sidebar .menulist a .text {
+html body .sidebar .menulist a .text,
+html body .sidebar .nav-link .nav-text {
   min-width: 0 !important;
   font-weight: 600 !important;
   white-space: nowrap !important;
@@ -234,39 +262,57 @@ html body nav.sidebar .menulist a .text {
   color: inherit !important;
 }
 
-html body nav.sidebar .menulist a:hover {
+html body .sidebar .menulist a:hover,
+html body .sidebar .nav-link:hover {
   background: rgba(255, 255, 255, 0.07) !important;
   color: #f1f5f9 !important;
 }
 
-html body nav.sidebar .menulist a:hover .icon {
+html body .sidebar .menulist a:hover .icon,
+html body .sidebar .menulist a:hover .ico,
+html body .sidebar .menulist a:hover i,
+html body .sidebar .nav-link:hover .ico {
   color: #f1f5f9 !important;
 }
 
-html body nav.sidebar .menulist a:focus-visible {
+html body .sidebar .menulist a:focus-visible,
+html body .sidebar .nav-link:focus-visible {
   outline: 2px solid var(--sb-gold) !important;
   outline-offset: 2px !important;
 }
 
 /* Active Navigation Item (Solid Gold Gradient Pill) */
-html body nav.sidebar .menulist a.active,
-html body nav.sidebar .menulist a.active:hover {
+html body .sidebar .menulist a.active,
+html body .sidebar .menulist a.active:hover,
+html body .sidebar .nav-link.active,
+html body .sidebar .nav-link.active:hover,
+html body .sidebar [aria-current="page"] {
   background: linear-gradient(110deg, var(--sb-gold-2) 0%, var(--sb-gold) 100%) !important;
   color: var(--sb-ink) !important;
   font-weight: 700 !important;
   box-shadow: 0 6px 18px rgba(232, 185, 58, 0.28) !important;
 }
 
-html body nav.sidebar .menulist a.active .icon,
-html body nav.sidebar .menulist a.active .text {
+html body .sidebar .menulist a.active .icon,
+html body .sidebar .menulist a.active .ico,
+html body .sidebar .menulist a.active i,
+html body .sidebar .menulist a.active .text,
+html body .sidebar .nav-link.active .ico,
+html body .sidebar .nav-link.active .nav-text,
+html body .sidebar [aria-current="page"] .icon,
+html body .sidebar [aria-current="page"] .ico,
+html body .sidebar [aria-current="page"] i,
+html body .sidebar [aria-current="page"] .text {
   color: var(--sb-ink) !important;
+  stroke: var(--sb-ink) !important;
 }
 
 /* ==========================================================================
-   FOOTER & STAFF ACCOUNT SECTION
+   FOOTER & USER ACCOUNT SECTION
    ========================================================================== */
 
-html body nav.sidebar .sidebar-foot {
+html body .sidebar .sidebar-foot,
+html body .sidebar .side-foot {
   flex: 0 0 auto !important;
   display: flex !important;
   flex-direction: column !important;
@@ -277,14 +323,15 @@ html body nav.sidebar .sidebar-foot {
   position: relative !important;
 }
 
-html body nav.sidebar .sidebar-account {
+html body .sidebar .sidebar-account {
   margin: 0 !important;
   padding: 0 !important;
   border: 0 !important;
   position: relative !important;
 }
 
-html body nav.sidebar .sidebar-user {
+html body .sidebar .sidebar-user,
+html body .sidebar .side-user {
   position: relative !important;
   display: flex !important;
   align-items: center !important;
@@ -295,7 +342,8 @@ html body nav.sidebar .sidebar-user {
   border: 1px solid rgba(255, 255, 255, 0.04) !important;
 }
 
-html body nav.sidebar .sidebar-avatar {
+html body .sidebar .sidebar-avatar,
+html body .sidebar .avatar {
   position: relative !important;
   flex: 0 0 36px !important;
   width: 36px !important;
@@ -310,7 +358,8 @@ html body nav.sidebar .sidebar-avatar {
   font-size: 13px !important;
 }
 
-html body nav.sidebar .sidebar-avatar img {
+html body .sidebar .sidebar-avatar img,
+html body .sidebar .avatar img {
   position: absolute !important;
   inset: 0 !important;
   width: 100% !important;
@@ -318,14 +367,16 @@ html body nav.sidebar .sidebar-avatar img {
   object-fit: cover !important;
 }
 
-html body nav.sidebar .sidebar-user-copy {
+html body .sidebar .sidebar-user-copy,
+html body .sidebar .side-user .who {
   flex: 1 1 auto !important;
   min-width: 0 !important;
   display: grid !important;
   gap: 2px !important;
 }
 
-html body nav.sidebar .sidebar-user-copy strong {
+html body .sidebar .sidebar-user-copy strong,
+html body .sidebar .side-user .who strong {
   color: #fff !important;
   font-size: 13px !important;
   line-height: 1.2 !important;
@@ -334,7 +385,8 @@ html body nav.sidebar .sidebar-user-copy strong {
   white-space: nowrap !important;
 }
 
-html body nav.sidebar .sidebar-user-copy small {
+html body .sidebar .sidebar-user-copy small,
+html body .sidebar .side-user .who small {
   color: #8b94a5 !important;
   font-size: 11px !important;
   line-height: 1.2 !important;
@@ -343,7 +395,9 @@ html body nav.sidebar .sidebar-user-copy small {
   white-space: nowrap !important;
 }
 
-html body nav.sidebar .account-menu-toggle {
+html body .sidebar .account-menu-toggle,
+html body .sidebar .side-user .icon-btn,
+html body .sidebar #accountBtn {
   flex: 0 0 30px !important;
   width: 30px !important;
   height: 30px !important;
@@ -357,13 +411,15 @@ html body nav.sidebar .account-menu-toggle {
   transition: background-color 0.15s ease, color 0.15s ease !important;
 }
 
-html body nav.sidebar .account-menu-toggle:hover {
+html body .sidebar .account-menu-toggle:hover,
+html body .sidebar .side-user .icon-btn:hover,
+html body .sidebar #accountBtn:hover {
   background: rgba(255, 255, 255, 0.1) !important;
   color: #fff !important;
 }
 
 /* Account Popup Menu (opens upward above the account card) */
-html body nav.sidebar .account-menu {
+html body .sidebar .account-menu {
   position: absolute !important;
   left: 0 !important;
   right: 0 !important;
@@ -379,14 +435,14 @@ html body nav.sidebar .account-menu {
   z-index: 250 !important;
 }
 
-html body nav.sidebar .account-menu.is-open {
+html body .sidebar .account-menu.is-open {
   display: flex !important;
   flex-direction: column !important;
   gap: 2px !important;
 }
 
-html body nav.sidebar .account-menu a,
-html body nav.sidebar .account-menu button {
+html body .sidebar .account-menu a,
+html body .sidebar .account-menu button {
   display: flex !important;
   align-items: center !important;
   gap: 10px !important;
@@ -403,174 +459,72 @@ html body nav.sidebar .account-menu button {
   transition: background-color 0.15s ease !important;
 }
 
-html body nav.sidebar .account-menu a i,
-html body nav.sidebar .account-menu button i {
+html body .sidebar .account-menu a i,
+html body .sidebar .account-menu button i {
   width: 16px !important;
   text-align: center !important;
   color: #98a2b6 !important;
 }
 
-html body nav.sidebar .account-menu a:hover,
-html body nav.sidebar .account-menu button:hover {
+html body .sidebar .account-menu a:hover,
+html body .sidebar .account-menu button:hover {
   background: rgba(255, 255, 255, 0.08) !important;
 }
 
-html body nav.sidebar .account-menu button[data-logout],
-html body nav.sidebar .account-menu button[data-logout] i {
+html body .sidebar .account-menu button[data-logout],
+html body .sidebar .account-menu button[data-logout] i {
   color: #ff7b7b !important;
 }
 
 /* ==========================================================================
-   MOBILE RESPONSIVENESS (<= 768px Drawer Navigation)
-   ========================================================================== */
-
-@media (max-width: 768px) {
-  html body nav.sidebar {
-    position: fixed !important;
-    top: 0 !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    width: min(300px, 86vw) !important;
-    min-width: 0 !important;
-    max-width: min(300px, 86vw) !important;
-    height: 100vh !important;
-    z-index: 1000 !important;
-    transform: translateX(-105%) !important;
-    border-radius: 0 20px 20px 0 !important;
-    box-shadow: 10px 0 40px rgba(0, 0, 0, 0.55) !important;
-    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
-  }
-
-  html body nav.sidebar.mobile-open {
-    transform: translateX(0) !important;
-  }
-
-  /* In mobile drawer, always show full labels and hide desktop chevron */
-  html body nav.sidebar #sidebarToggle {
-    display: none !important;
-  }
-
-  html body nav.sidebar .headertxt {
-    display: grid !important;
-  }
-
-  html body nav.sidebar .nav-group-label {
-    display: block !important;
-  }
-
-  html body nav.sidebar .menulist a .text {
-    display: inline !important;
-  }
-
-  html body nav.sidebar .sidebar-user-copy {
-    display: grid !important;
-  }
-
-  html body nav.sidebar .account-menu-toggle {
-    display: grid !important;
-  }
-
-  html body nav.sidebar ~ .main-content,
-  html body .dashboard > main.main-content,
-  html body .main-content {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    margin-left: 0 !important;
-    transform: none !important;
-    padding: 16px 14px 40px !important;
-  }
-
-  body.drawer-open .main-content {
-    transform: none !important;
-    pointer-events: none !important;
-  }
-
-  body.drawer-open {
-    overflow: hidden !important;
-  }
-
-  .mobile-nav-toggle {
-    display: grid !important;
-    place-items: center !important;
-  }
-
-  .sidebar-shade {
-    position: fixed !important;
-    inset: 0 !important;
-    z-index: 999 !important;
-    background: rgba(0, 0, 0, 0.6) !important;
-    backdrop-filter: blur(4px) !important;
-    -webkit-backdrop-filter: blur(4px) !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    transition: opacity 0.25s ease !important;
-    border: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-
-  .sidebar-shade.visible {
-    opacity: 1 !important;
-    pointer-events: auto !important;
-  }
-}
-
-@media (min-width: 769px) {
-  .mobile-nav-toggle {
-    display: none !important;
-  }
-  .sidebar-shade {
-    display: none !important;
-  }
-}
-
-/* ==========================================================================
-   HOVER-EXPAND ICON RAIL (desktop)
-   The sidebar rests as an icon rail and expands to the full panel while the
-   pointer hovers it or the keyboard focus is inside it. Only `width` animates
-   and the icons keep their x-position, so the page column never reflows: the
-   expanded panel slides over the content instead of pushing it.
-   Scoped to desktop, so the <=768px drawer keeps its full-width layout.
+   DESKTOP HOVER-EXPAND ICON RAIL (> 768px)
    ========================================================================== */
 
 @media (min-width: 769px) {
-  /* The rail and the page column are one width, and only `width` is animated,
-     so min/max must not clamp the transition. */
-  html body nav.sidebar#sidebar {
+  html body .sidebar#sidebar {
     min-width: 0 !important;
     max-width: none !important;
     transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1),
                 width 0.22s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
   }
 
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) {
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) {
     width: var(--sb-rail) !important;
   }
 
   /* Resting rail: icons only, centred. */
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-brand-row,
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user {
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-brand-row,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .brand,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .side-user {
     justify-content: center !important;
   }
 
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a {
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .menulist a,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .nav-link {
     justify-content: center !important;
     gap: 0 !important;
     padding: 0 !important;
   }
 
-  /* Text that only makes sense while the panel is open. The nav label is
-     clipped further down instead, so links keep their accessible names. */
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .headertxt,
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-group-label,
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user-copy,
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .account-menu-toggle,
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .account-menu {
+  /* Text elements hidden during resting rail */
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .headertxt,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .brand-txt,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .nav-group-label,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .nav-label,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user-copy,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .side-user .who,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .account-menu-toggle,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) #accountBtn,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .collapse-btn,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .account-menu {
     display: none !important;
   }
 
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .text {
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .text,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a .text,
+  html body .sidebar#sidebar:not(:hover):not(:focus-within) .nav-link .nav-text {
     position: absolute !important;
     width: 1px !important;
     height: 1px !important;
@@ -580,28 +534,53 @@ html body nav.sidebar .account-menu button[data-logout] i {
     clip-path: inset(50%) !important;
   }
 
-  /* Reveal: labels fade in only after the panel has widened, so they are never
-     painted across the page content mid-transition. */
-  html body nav.sidebar#sidebar:hover .headertxt,
-  html body nav.sidebar#sidebar:focus-within .headertxt,
-  html body nav.sidebar#sidebar:hover .sidebar-user-copy,
-  html body nav.sidebar#sidebar:focus-within .sidebar-user-copy,
-  html body nav.sidebar#sidebar:hover .menulist a .text,
-  html body nav.sidebar#sidebar:focus-within .menulist a .text {
+  /* Reveal animations on hover */
+  html body .sidebar#sidebar:hover .headertxt,
+  html body .sidebar#sidebar:focus-within .headertxt,
+  html body .sidebar#sidebar:hover .brand-txt,
+  html body .sidebar#sidebar:focus-within .brand-txt,
+  html body .sidebar#sidebar:hover .sidebar-user-copy,
+  html body .sidebar#sidebar:focus-within .sidebar-user-copy,
+  html body .sidebar#sidebar:hover .side-user .who,
+  html body .sidebar#sidebar:focus-within .side-user .who,
+  html body .sidebar#sidebar:hover .menulist a .text,
+  html body .sidebar#sidebar:focus-within .menulist a .text,
+  html body .sidebar#sidebar:hover .nav-link .nav-text,
+  html body .sidebar#sidebar:focus-within .nav-link .nav-text {
     animation: sb-rail-reveal 0.16s ease 0.08s both !important;
   }
 
-  html body nav.sidebar#sidebar:hover .nav-group-label,
-  html body nav.sidebar#sidebar:focus-within .nav-group-label {
+  html body .sidebar#sidebar:hover .nav-group-label,
+  html body .sidebar#sidebar:focus-within .nav-group-label,
+  html body .sidebar#sidebar:hover .nav-label,
+  html body .sidebar#sidebar:focus-within .nav-label {
     animation: sb-rail-fade 0.16s ease 0.08s both !important;
   }
 
-  /* The page column always reserves the rail, so the expanded panel slides
-     over the content rather than pushing it. */
-  html body nav.sidebar#sidebar ~ .main-content {
+  /* Page column offsets */
+  html body .sidebar#sidebar ~ .main-content,
+  html body .dashboard > main.main-content,
+  html body aside.sidebar ~ .main,
+  html body .app > .main,
+  html body.member-home .member-content,
+  html body.member-home .member-top {
     margin-left: var(--sb-rail) !important;
     width: calc(100% - var(--sb-rail)) !important;
     max-width: calc(100% - var(--sb-rail)) !important;
+  }
+
+  /* Hide bottom nav on desktop */
+  .instagram-bottom-nav,
+  .bottom-nav,
+  .pf-bottomnav {
+    display: none !important;
+  }
+
+  .mobile-nav-toggle {
+    display: none !important;
+  }
+  .sidebar-shade {
+    display: none !important;
   }
 }
 
@@ -615,13 +594,191 @@ html body nav.sidebar .account-menu button[data-logout] i {
   to { opacity: 1; }
 }
 
+/* ==========================================================================
+   MOBILE (<= 768px): INSTAGRAM-STYLE FROSTED BOTTOM NAVIGATION BAR
+   Desktop sidebar is completely hidden. 5 clean tabs docked edge-to-edge
+   with dark blur, active gold icon + label, tactile active bounce.
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  /* Hide desktop sidebar, drawer, and scrims completely */
+  html body .sidebar,
+  html body nav.sidebar,
+  html body aside.sidebar,
+  html body #sidebar,
+  html body .sidebar-shade,
+  html body #sidebarShade,
+  html body .scrim,
+  html body #scrim,
+  html body .mobile-nav-toggle,
+  html body #mobileNavToggle,
+  html body #collapseBtn,
+  html body #menuBtn,
+  html body .t-menu {
+    display: none !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
+  }
+
+  /* Reset main margins so content uses full screen width */
+  html body nav.sidebar ~ .main-content,
+  html body .dashboard > main.main-content,
+  html body aside.sidebar ~ .main,
+  html body .app > .main,
+  html body .main,
+  html body .main-content,
+  html body.member-home .member-content,
+  html body.member-home .member-top,
+  html body .member-content,
+  html body .member-top {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    transform: none !important;
+    padding: 16px 14px !important;
+  }
+
+  /* Add bottom padding so content never gets covered by the bottom bar */
+  body,
+  html body .main,
+  html body .main-content,
+  html body .member-content {
+    padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  /* Instagram-Style Bottom Navigation Bar */
+  .instagram-bottom-nav,
+  .bottom-nav,
+  .pf-bottomnav {
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: calc(58px + env(safe-area-inset-bottom, 0px)) !important;
+    padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px)) !important;
+    box-sizing: border-box !important;
+    background: rgba(12, 17, 25, 0.96) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.45) !important;
+    display: flex !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    z-index: 9999 !important;
+  }
+
+  .instagram-bottom-nav a,
+  .instagram-bottom-nav button,
+  .bottom-nav a,
+  .bottom-nav button,
+  .pf-bottomnav a,
+  .pf-bottomnav button {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 3px !important;
+    background: transparent !important;
+    border: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    text-decoration: none !important;
+    color: #8b99ad !important;
+    cursor: pointer !important;
+    -webkit-tap-highlight-color: transparent !important;
+    transition: transform 0.12s cubic-bezier(0.2, 0.8, 0.2, 1), color 0.15s ease !important;
+    position: relative !important;
+  }
+
+  /* Tap bounce feel (Instagram style) */
+  .instagram-bottom-nav a:active,
+  .instagram-bottom-nav button:active,
+  .bottom-nav a:active,
+  .bottom-nav button:active,
+  .pf-bottomnav a:active,
+  .pf-bottomnav button:active {
+    transform: scale(0.92) !important;
+  }
+
+  .instagram-bottom-nav a i,
+  .instagram-bottom-nav button i,
+  .bottom-nav a i,
+  .bottom-nav button i,
+  .bottom-nav .ico,
+  .pf-bottomnav a i,
+  .pf-bottomnav button i {
+    font-size: 20px !important;
+    width: 22px !important;
+    height: 22px !important;
+    display: grid !important;
+    place-items: center !important;
+    color: inherit !important;
+    stroke: currentColor !important;
+    transition: color 0.15s ease, filter 0.15s ease !important;
+  }
+
+  .instagram-bottom-nav a span,
+  .instagram-bottom-nav button span,
+  .bottom-nav a span,
+  .bottom-nav button span,
+  .pf-bottomnav a span,
+  .pf-bottomnav button span {
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.02em !important;
+    line-height: 1 !important;
+    color: inherit !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+    max-width: 100% !important;
+  }
+
+  /* Active Instagram tab */
+  .instagram-bottom-nav a.active,
+  .instagram-bottom-nav button.active,
+  .instagram-bottom-nav a[aria-current="page"],
+  .bottom-nav a.active,
+  .bottom-nav button.active,
+  .bottom-nav a[aria-current="page"],
+  .pf-bottomnav a.active,
+  .pf-bottomnav button.active,
+  .pf-bottomnav button[aria-current="page"],
+  .pf-bottomnav a[aria-current="page"] {
+    color: #f2cb5c !important;
+    font-weight: 700 !important;
+  }
+
+  .instagram-bottom-nav a.active i,
+  .instagram-bottom-nav button.active i,
+  .bottom-nav a.active i,
+  .bottom-nav a.active .ico,
+  .bottom-nav a.active svg,
+  .pf-bottomnav button[aria-current="page"] i {
+    color: #f2cb5c !important;
+    stroke: #f2cb5c !important;
+    filter: drop-shadow(0 0 8px rgba(242, 203, 92, 0.5)) !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  html body nav.sidebar#sidebar,
-  html body nav.sidebar#sidebar .headertxt,
-  html body nav.sidebar#sidebar .nav-group-label,
-  html body nav.sidebar#sidebar .sidebar-user-copy,
-  html body nav.sidebar#sidebar .menulist a .text {
+  html body .sidebar#sidebar,
+  html body .sidebar#sidebar .headertxt,
+  html body .sidebar#sidebar .nav-group-label,
+  html body .sidebar#sidebar .sidebar-user-copy,
+  html body .sidebar#sidebar .menulist a .text,
+  .instagram-bottom-nav a,
+  .bottom-nav a,
+  .pf-bottomnav button {
     transition: none !important;
     animation: none !important;
+    transform: none !important;
   }
 }

@@ -1141,3 +1141,16 @@ Remove the topbar "Search members..." search bar from the header across all tabs
 - Added CSS suppression rules in web/layout-fixes.css (html body .topbar .search, html body .topbar-right .search, html body .topbar .search-wrap { display: none !important; }) to ensure header search bars are hidden across all desktop and mobile viewports while preserving local in-page search toolbars.
 ### Decision-log skill
 When removing a global header search input, scope CSS suppression strictly to .topbar / .topbar-right so in-page table and module toolbars (such as Member List and Announcements search bars) remain unaffected.
+
+
+## 2026-11-09 04:30 (Asia/Manila): Apply staff sidebar to trainer and member portals and add Instagram-style mobile bottom navigation
+### What I asked for
+Apply the staff portal sidebar (dark navy gradient, 80px resting compact icon rail expanding on hover/focus to 260px, solid gold active pill) to both Trainer Workspace and Member Portal. In mobile view (<= 768px), move navigation to the bottom styled like Instagram.
+### What the agent decided and why
+- Generalized `web/sidebar-pro.css` to universally target `.sidebar`, `nav.sidebar`, and `aside.sidebar`, smoothly supporting Staff, Trainer (`.app > .main`), and Member (`body.member-home .member-content`) layouts.
+- Linked `sidebar-pro.css` and FontAwesome into all 8 trainer workspace pages (`web/trainer/*.html`) and `web/member-home.html`.
+- Updated `initMemberSidebar()` in `web/member-tabs.js` to render the desktop hover-expand sidebar with two-way tab synchronization.
+- Created an edge-to-edge Instagram-style mobile bottom navigation bar (`position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999; backdrop-filter: blur(20px);`) with 5 balanced tabs, tactile active bounce (`transform: scale(0.92)`), 20px icons, 10px micro-labels, and glowing gold active states across Staff, Trainer, and Member portals.
+- Fully suppressed desktop sidebars, drawer overlays, and toggles on screens <= 768px (`display: none !important;`) and added bottom safe-area padding to avoid content obstruction.
+### Decision-log skill
+For unified cross-portal navigation, build universal sidebar selectors that adapt to varying semantic wrappers (`nav.sidebar`, `aside.sidebar`) on desktop, and replace responsive drawers on mobile with an edge-to-edge frosted glass 5-tab bottom navigation bar matching native mobile app patterns like Instagram.
