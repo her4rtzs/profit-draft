@@ -16,13 +16,17 @@ class Announcement(models.Model):
         ARCHIVED = "ARCHIVED", "Archived"
 
     class Audience(models.TextChoices):
+        EVERYONE = "everyone", "Members and trainers"
+        MEMBERS = "members", "Members only"
+        TRAINERS = "trainers", "Trainers only"
         ALL = "ALL", "All members"
         SELECTED = "SELECTED", "Selected members"
 
     title = models.CharField(max_length=160)
-    message = models.TextField()
+    message = models.TextField(blank=True, default="")
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.DRAFT)
-    audience = models.CharField(max_length=20, choices=Audience.choices, default=Audience.ALL)
+    audience = models.CharField(max_length=20, choices=Audience.choices, default=Audience.EVERYONE)
+    event_date = models.DateField(null=True, blank=True)
     publish_on = models.DateField(null=True, blank=True)
     pinned = models.BooleanField(default=False)
     recipients = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name="targeted_announcements")

@@ -59,9 +59,23 @@
       ${footItems.length ? `<div class="modal-foot">${footItems.map((b, i) => `<button type="button" class="btn ${b.cls || ''}" data-i="${i}">${b.icon ? PF.icon(b.icon) : ''}${esc(b.label)}</button>`).join('')}</div>` : ''}
     </div>`;
     document.body.appendChild(back);
-    const prev = document.activeElement;
+    const prev = opts.trigger || document.activeElement;
     const close = () => { back.remove(); document.removeEventListener('keydown', onKey); if (prev && prev.focus) prev.focus(); if (opts.onClose) opts.onClose(); };
-    const onKey = e => { if (e.key === 'Escape') close(); };
+    const onKey = e => {
+      if (e.key === 'Escape') { e.preventDefault(); close(); return; }
+      if (e.key === 'Tab') {
+        const focusables = $$('a[href],button:not([disabled]),input:not([disabled]):not([type=hidden]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])', back).filter(el => !el.hidden && el.offsetParent !== null);
+        if (!focusables.length) return;
+        const firstEl = focusables[0], lastEl = focusables[focusables.length - 1];
+        if (e.shiftKey && (document.activeElement === firstEl || !back.contains(document.activeElement))) {
+          e.preventDefault();
+          lastEl.focus();
+        } else if (!e.shiftKey && (document.activeElement === lastEl || !back.contains(document.activeElement))) {
+          e.preventDefault();
+          firstEl.focus();
+        }
+      }
+    };
     document.addEventListener('keydown', onKey);
     back.addEventListener('mousedown', e => { if (e.target === back) close(); });
     $('.x', back).onclick = close;

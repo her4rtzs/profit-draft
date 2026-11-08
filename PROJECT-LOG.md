@@ -1074,3 +1074,16 @@ Match the exact header and filter control layout from the screenshot: `Daily att
 - Preserved the warm cream light-mode palette (`#F2EEE5` page, `#FAF8F3` cards, `#F3EEE4` controls) and full SVG area/line/dot entrance animations.
 ### Decision-log skill
 Keep card-level view switchers (like period granularity tabs) in the card header opposite the title when filter inputs (`MEMBER`, `FROM`, `TO`) use stacked labels above each field, so vertical alignment stays uniform across the filter row.
+
+
+## 2026-11-09 02:37 (Asia/Manila): Port Staff Announcements Page Design & Connect to Backend API
+### What I asked for
+Port the standalone mockup design of the Staff Announcements page into the real ProFit Staff portal (`/announcements.html` and `/staff/announcements.html`), replacing in-memory sample data with the real Django REST Framework backend (`/api/staff/announcements/`) with server-computed stats and filter pill counts, 300ms debounced server-side search, form validation (`title` max 80 chars, `body` max 600 chars), optimistic delete with rollback, modal focus trapping, audience notifications, and backend unit tests.
+### What the agent decided and why
+- Extended `Announcement` in `apps/announcements/models.py` (migration `0002`) with `event_date` and audience choices (`everyone`, `members`, `trainers`, plus legacy `ALL` and `SELECTED` for backwards compatibility).
+- Updated `apps/announcements/services.py` and `api/announcements.py` (`StaffAnnouncementListView` and `StaffAnnouncementDetailView`) to support `GET /api/staff/announcements/?status=all|draft|published|archived&q=<search>`, `POST`, `PATCH`, and `DELETE`, returning server-computed `stats` (`total`, `published_this_month`, `drafts`, `live_now`, `people_count`) and filter `counts` (`all`, `draft`, `published`, `archived`) so the browser never recomputes them.
+- Updated `visible_to(user)` in `apps/announcements/services.py` and `TrainerDashboardView` in `api/trainers.py` so only `PUBLISHED` announcements matching the user's role (`MEMBER` or `TRAINER`) are returned, ensuring `DRAFT` and `ARCHIVED` items never appear in member or trainer portals.
+- Wired `services.publish()` to notify active members and/or trainers via `apps.notifications.services.notify_many` according to the announcement's `audience` (`everyone`, `members`, or `trainers`).
+- Replaced the in-memory `PF.db.announcements()` usage in `web/assets/js/pages/announcements.js` and `web/staff/assets/js/pages/announcements.js` with live API calls, skeleton loading cards, error retry state, empty states (`No announcements yet` and `Nothing matches`), inline validation (`Please add a title.`), double-submit prevention, optimistic delete with rollback, and `Tab`/`Escape` focus trapping in `PF.modal`.
+### Decision-log skill
+When filter pill counts and summary KPI cards sit above a server-filtered list, compute and return both `stats` and unfiltered per-status `counts` alongside `items` in the list and mutation responses so active search queries or status filters never zero out sibling filter pill badges on the client.

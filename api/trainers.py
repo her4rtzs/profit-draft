@@ -475,15 +475,23 @@ class TrainerDashboardView(APIView):
         ]
 
         announcements = (
-            Announcement.objects.filter(status=Announcement.Status.PUBLISHED)
+            Announcement.objects.filter(
+                status=Announcement.Status.PUBLISHED,
+                audience__in=["ALL", "everyone", "EVERYONE", "trainers", "TRAINERS"],
+            )
+            .filter(Q(publish_on__isnull=True) | Q(publish_on__lte=today))
             .order_by("-pinned", "-publish_on", "-id")[:4]
         )
         ann_list = [
             {
                 "id": ann.pk,
                 "title": ann.title,
+                "body": ann.message,
                 "message": ann.message,
+                "audience": "trainers" if str(ann.audience).lower() == "trainers" else "everyone",
+                "event_date": ann.event_date.isoformat() if ann.event_date else None,
                 "publish_on": ann.publish_on.isoformat() if ann.publish_on else None,
+                "published_at": ann.published_at.isoformat() if ann.published_at else None,
                 "pinned": ann.pinned,
             }
             for ann in announcements
