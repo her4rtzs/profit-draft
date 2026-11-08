@@ -326,12 +326,15 @@
 
   // ── Streak ──────────────────────────────────────────────────────────────────
   // Uses localDateStr() so UTC-midnight ISO timestamps don't shift the date.
+  // If not checked in today, streak stays alive from yesterday until the day ends.
   function calcStreak(attendance) {
     const days = new Set((attendance || []).map(x => localDateStr(x.date)));
-    let streak = 0;
     const today = new Date();
+    const todayStr = localDateStr(today);
+    const startOffset = days.has(todayStr) ? 0 : 1;
+    let streak = 0;
     for (let i = 0; i < 90; i++) {
-      const d = new Date(today.getFullYear(), today.getMonth(), today.getDate() - i);
+      const d = new Date(today.getFullYear(), today.getMonth(), today.getDate() - (startOffset + i));
       if (days.has(localDateStr(d))) streak++; else break;
     }
     return streak;
@@ -456,7 +459,30 @@
     setTimeout(() => panel.classList.remove("is-highlight"), 1600);
   });
 
-  $("checkInButton").addEventListener("click", () => {
+  $("checkInButton").addEventListener("click", async () => {
+    const btn = $("checkInButton");
+    btn.disabled = true;
+    const notice = $("memberNotice");
+    notice.hidden = true;
+
+    let serverSuccess = false;
+    try {
+      if (!window.PROFIT_CONFIG?.DEMO_MODE && window.PROFIT_CONFIG?.API_BASE_URL) {
+        await ProFitAPI.post("/member/check-in/", {});
+        serverSuccess = true;
+      }
+    } catch (err) {
+      if (err.status === 400 && err.message) {
+        notice.hidden = false;
+        notice.classList.add("error");
+        notice.textContent = err.message;
+        btn.disabled = false;
+        notice.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        return;
+      }
+      // Offline / fallback to demo check-ins
+    }
+
     const items = readDemoCheckins();
     const today = todayKey();
     // Use localDateStr so stored ISO timestamps don't UTC-shift to a different date
@@ -465,8 +491,13 @@
       items.unshift({ date: today, location: "ProFit Gym", source: "manual" });
       writeDemoCheckins(items.slice(0, 30));
     }
-    render(demoData());
-    const notice = $("memberNotice");
+
+    if (serverSuccess) {
+      await load();
+    } else {
+      render(demoData());
+    }
+
     notice.hidden = false;
     notice.classList.remove("error");
     notice.textContent = "Check-in recorded for today. Your streak and weekly goal were updated.";

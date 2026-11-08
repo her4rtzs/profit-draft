@@ -916,3 +916,26 @@ Turn the Programs section into a pinned horizontal-scroll section: the section s
 - body{overflow-x:hidden} was left as-is: it propagates to the viewport, so sticky still pins (measured .prog-pin top at 0 through the whole span at 1366x768 and 390x844).
 ### Decision-log skill
 When a scroll-driven transform moves the element an IntersectionObserver is watching, observe its stationary parent instead, or the reveal never fires after a scroll restore.
+
+## 2026-11-08 12:38 (Asia/Manila): Add Daily plan at PHP 80
+### What I asked for
+Add a new subscription plan named "Daily" priced at ₱80.
+### What the agent decided and why
+- Added `"daily": 8_000` to `PLAN_PRICE_CENTAVOS` in `apps/finance/services.py` — the single source of truth for plan prices (centavos). ₱80 = 8000 centavos.
+- Added `"daily": 1` to `PLAN_DAYS` in `apps/membership/services.py` — the single source of truth for plan durations. 1 day makes the membership expire the following day, consistent with how the other plans work.
+- Added `daily` entry to `PLANS` in `web/data.js` so the staff UI (members list, payments, reports mock data) recognises the plan label and price.
+- Added the Daily plan to `web/member-pay.js` (the "Explore plans" modal shown to logged-in members) with label "Daily", price "₱80", duration "1 day".
+- Added a Daily plan card to `web/join.html` (the public sign-up / join page) as the first option, and updated the grid from 3 to 4 columns (2×2 on mobile).
+### Decision-log skill
+Plan definitions live in exactly two backend constants (`PLAN_PRICE_CENTAVOS` and `PLAN_DAYS`) and two frontend constants (`web/data.js` PLANS and `web/member-pay.js` PLANS). Adding a plan requires touching all four plus any static HTML plan pickers — grep for the existing plan keys to find them all in one pass.
+
+## 2026-11-08 12:57 (Asia/Manila): Connect member check-in to backend API and fix streak persistence
+### What I asked for
+Connect member check-in on member-home.html to the backend so visits and streaks persist across reloads and navigation.
+### What the agent decided and why
+- Added `MemberCheckInView` (`POST /api/member/check-in/`) in `api/member.py` and registered the route in `api/urls.py`. Calls `check_in_member(profile, recorded_by=request.user)` inside `apps/membership/services.py`, enforcing that only active memberships can check in and ensuring same-day idempotency.
+- Fixed streak calculation in both `api/member.py` (`MemberMeView.get()`) and `web/member-home.html` (`calcStreak`): if today is not yet checked in, check from yesterday so active streaks remain intact throughout the day until midnight instead of prematurely breaking on day 0.
+- Updated `$("checkInButton")` in `web/member-home.html` to send `POST /api/member/check-in/` and await `load()`. If the backend is unreachable or in demo mode, it smoothly falls back to local storage check-ins.
+- Added comprehensive unit tests in `apps/membership/tests/test_api.py` covering successful check-in, same-day idempotency, inactive membership rejection, and verification that check-ins persist in `GET /api/member/me/`.
+### Decision-log skill
+Self-service member check-in should route through the shared `check_in_member` service rather than updating client state in isolation. Also, streak calculation loops must consider that on a new calendar day before check-in, a streak is still active if yesterday had a check-in (start check from `yesterday` if `today` is absent).

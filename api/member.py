@@ -75,9 +75,10 @@ class MemberMeView(APIView):
         )
         # Streak: consecutive days ending today (or yesterday if not yet checked in today)
         visit_set = set(all_visits)
+        start_day = today if today in visit_set else today - timedelta(days=1)
         streak = 0
         for i in range(90):
-            d = today - timedelta(days=i)
+            d = start_day - timedelta(days=i)
             if d in visit_set:
                 streak += 1
             else:
@@ -143,3 +144,29 @@ class MemberCheckoutView(APIView):
         except CheckoutError as exc:
             return Response({"detail": str(exc)}, status=503)
         return Response({"checkout_url": url})
+
+
+class MemberCheckInView(APIView):
+    """POST /api/member/check-in/: self check-in for the authenticated member."""
+
+    def post(self, request):
+        from django.core.exceptions import ValidationError as DjangoValidationError
+        from apps.membership.services import check_in_member
+
+        profile = MemberProfile.objects.filter(user=request.user).first()
+        if profile is None:
+            raise NotFound("No member profile.")
+        try:
+            record = check_in_member(profile, recorded_by=request.user)
+        except DjangoValidationError as exc:
+            return Response(
+                {"detail": " ".join(exc.messages)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        return Response({
+            "status": "ok",
+            "attendance": {
+                "date": record.check_in_date.isoformat(),
+                "location": "Gym check-in",
+            },
+        })
