@@ -74,3 +74,49 @@ class TrainerTests(TestCase):
         self.assertEqual(req.status, TrainerRequest.Status.CANCELLED)
         with self.assertRaises(Exception):
             services.cancel_request(req)
+
+    def test_trainer_endpoints_profile_and_members(self):
+        # Assign m to t1
+        services.assign_trainer(self.m, self.t1, actor=self.owner)
+
+        # 1. Unauthenticated gets 401/403
+        res = self.client.get("/api/trainer/profile/")
+        self.assertIn(res.status_code, (401, 403))
+
+        # 2. Member gets 403
+        self.client.force_login(self.m_user)
+        res = self.client.get("/api/trainer/profile/")
+        self.assertEqual(res.status_code, 403)
+
+        # 3. Trainer can get own profile
+        self.client.force_login(self.t1_user)
+        res = self.client.get("/api/trainer/profile/")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.json()["name"], "Mika")
+        self.assertEqual(res.json()["load"], 1)
+
+        # 4. Trainer can update own profile
+        res = self.client.patch("/api/trainer/profile/", {"specialization": "Kettlebell & HIIT", "availability": "Mon-Fri 7AM-1PM"}, content_type="application/json")
+        self.assertEqual(res.status_code, 200)
+        self.t1.refresh_from_db()
+        self.assertEqual(self.t1.specialization, "Kettlebell & HIIT")
+
+        # 5. Trainer can get assigned members
+        res = self.client.get("/api/trainer/members/")
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]["id"], self.m.pk)
+        self.assertEqual(data[0]["name"], "Ana")
+
+        # 6. Trainer dashboard
+        res = self.client.get("/api/trainer/dashboard/")
+        self.assertEqual(res.status_code, 200)
+        dash = res.json()
+        self.assertEqual(dash["stats"]["assigned_members"], 1)
+
+        # 7. Trainer schedule note sends notification
+        res = self.client.post("/api/trainer/schedule/note/", {"session_name": "Sunrise HIIT", "note": "Moving to Studio 2"}, content_type="application/json")
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(Notification.objects.filter(recipient=self.m_user, kind="TRAINER", title__contains="Sunrise HIIT").exists())
+

@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Settings — ProFit Trainer</title>
+  <meta name="theme-color" content="#0a1220">
+  <link rel="icon" href="../assets/img/logo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="../assets/css/staff.css">
+  <script src="../assets/js/staff-boot.js"></script>
+</head>
+<body data-portal="trainer" data-page="settings" data-title="Settings" data-eyebrow="Preferences" data-sub="Customize your workspace appearance and interface options." data-icon="settings">
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="scrim" id="scrim"></div>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="content" id="content">
+      <div style="max-width:880px;display:grid;gap:24px">
+        <!-- Theme Mode Card -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2 class="card-title">Theme Mode</h2>
+              <p class="card-sub">Choose between light, dark, or system matching theme</p>
+            </div>
+          </div>
+          <div class="grid grid-3" style="gap:14px;margin-top:16px">
+            <label class="card" style="cursor:pointer;border:2px solid var(--line);padding:16px;text-align:center" id="themeOptLight">
+              <input type="radio" name="themeMode" value="light" style="display:none">
+              <div style="font-size:24px;margin-bottom:8px">☀️</div>
+              <strong style="display:block">Light Cream</strong>
+              <small class="muted">Clean cream & gold</small>
+            </label>
+            <label class="card" style="cursor:pointer;border:2px solid var(--line);padding:16px;text-align:center" id="themeOptDark">
+              <input type="radio" name="themeMode" value="dark" style="display:none">
+              <div style="font-size:24px;margin-bottom:8px">🌙</div>
+              <strong style="display:block">Obsidian Dark</strong>
+              <small class="muted">Navy & black night mode</small>
+            </label>
+            <label class="card" style="cursor:pointer;border:2px solid var(--line);padding:16px;text-align:center" id="themeOptSystem">
+              <input type="radio" name="themeMode" value="system" style="display:none">
+              <div style="font-size:24px;margin-bottom:8px">💻</div>
+              <strong style="display:block">System Auto</strong>
+              <small class="muted">Sync with OS setting</small>
+            </label>
+          </div>
+        </div>
+
+        <!-- Accent Color Card -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2 class="card-title">Workspace Accent Color</h2>
+              <p class="card-sub">Personalize highlight colors across buttons, badges, and active states</p>
+            </div>
+          </div>
+          <div class="grid grid-4" style="gap:14px;margin-top:16px">
+            <button type="button" class="btn" id="accentGold" style="display:flex;align-items:center;gap:10px;padding:14px;border:2px solid var(--line);background:var(--card);text-align:left">
+              <span style="width:20px;height:20px;border-radius:50%;background:#e3ae2b;display:inline-block;flex:none"></span>
+              <strong>Gold (Default)</strong>
+            </button>
+            <button type="button" class="btn" id="accentOcean" style="display:flex;align-items:center;gap:10px;padding:14px;border:2px solid var(--line);background:var(--card);text-align:left">
+              <span style="width:20px;height:20px;border-radius:50%;background:#2f8fe0;display:inline-block;flex:none"></span>
+              <strong>Ocean Blue</strong>
+            </button>
+            <button type="button" class="btn" id="accentEmerald" style="display:flex;align-items:center;gap:10px;padding:14px;border:2px solid var(--line);background:var(--card);text-align:left">
+              <span style="width:20px;height:20px;border-radius:50%;background:#12a57f;display:inline-block;flex:none"></span>
+              <strong>Emerald</strong>
+            </button>
+            <button type="button" class="btn" id="accentIndigo" style="display:flex;align-items:center;gap:10px;padding:14px;border:2px solid var(--line);background:var(--card);text-align:left">
+              <span style="width:20px;height:20px;border-radius:50%;background:#6a5be2;display:inline-block;flex:none"></span>
+              <strong>Indigo</strong>
+            </button>
+          </div>
+        </div>
+
+        <!-- Gym Information Block -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2 class="card-title">Gym Information</h2>
+              <p class="card-sub">Functional Fitness Gym facility details</p>
+            </div>
+          </div>
+          <div class="grid grid-2" style="gap:16px;margin-top:16px;font-size:13.5px">
+            <div>
+              <small class="muted">Facility Name</small>
+              <div style="font-weight:700" id="gymNameDisplay">ProFit Gym</div>
+            </div>
+            <div>
+              <small class="muted">Tagline</small>
+              <div style="font-weight:700" id="gymTagDisplay">FUNCTIONAL FITNESS</div>
+            </div>
+            <div>
+              <small class="muted">Desk Contact Phone</small>
+              <div style="font-weight:700" id="gymPhoneDisplay">+63 917 555 0142</div>
+            </div>
+            <div>
+              <small class="muted">Support Email</small>
+              <div style="font-weight:700" id="gymEmailDisplay">hello@profitgym.ph</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Session / Logout Block -->
+        <div class="card" style="border:1px solid var(--line-strong)">
+          <div class="card-head">
+            <div>
+              <h3 class="card-title">Session Security</h3>
+              <p class="card-sub">End your active coaching session securely</p>
+            </div>
+            <button class="btn btn-danger" type="button" id="btnSettingsLogout">
+              Log out of Coach Portal
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <nav class="bottom-nav" id="bottomNav" aria-label="Quick navigation"></nav>
+</div>
+
+<!-- Scripts -->
+<script src="../config.js"></script>
+<script src="../api.js"></script>
+<script src="../auth.js"></script>
+<script src="../assets/js/staff-icons.js"></script>
+<script src="../assets/js/staff-data.js"></script>
+<script src="../assets/js/staff.js"></script>
+<script src="trainer.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const PF = window.PF || {};
+
+  // Theme Mode
+  const curTheme = localStorage.getItem('pf-theme') || 'light';
+  function updateThemeUI(t) {
+    ['light','dark','system'].forEach(mode => {
+      const el = document.getElementById('themeOpt' + mode.charAt(0).toUpperCase() + mode.slice(1));
+      if (el) {
+        el.style.borderColor = (t === mode) ? 'var(--gold)' : 'var(--line)';
+        el.style.background = (t === mode) ? 'rgba(227,174,43,0.06)' : 'var(--card)';
+      }
+    });
+  }
+  updateThemeUI(curTheme);
+
+  document.querySelectorAll('input[name="themeMode"]').forEach(radio => {
+    radio.onchange = () => {
+      PF.setTheme(radio.value);
+      updateThemeUI(radio.value);
+      PF.toast(`Theme set to ${radio.value}`, 'success');
+    };
+  });
+
+  // Accents
+  const curAccent = localStorage.getItem('pf-accent') || 'gold';
+  function updateAccentUI(a) {
+    ['gold','ocean','emerald','indigo'].forEach(c => {
+      const btn = document.getElementById('accent' + c.charAt(0).toUpperCase() + c.slice(1));
+      if (btn) {
+        btn.style.borderColor = (a === c) ? 'var(--gold)' : 'var(--line)';
+        btn.style.boxShadow = (a === c) ? '0 0 0 2px var(--gold-soft)' : 'none';
+      }
+    });
+  }
+  updateAccentUI(curAccent);
+
+  document.getElementById('accentGold').onclick = () => { PF.setAccent('gold'); updateAccentUI('gold'); PF.toast('Accent set to Gold', 'success'); };
+  document.getElementById('accentOcean').onclick = () => { PF.setAccent('ocean'); updateAccentUI('ocean'); PF.toast('Accent set to Ocean Blue', 'success'); };
+  document.getElementById('accentEmerald').onclick = () => { PF.setAccent('emerald'); updateAccentUI('emerald'); PF.toast('Accent set to Emerald', 'success'); };
+  document.getElementById('accentIndigo').onclick = () => { PF.setAccent('indigo'); updateAccentUI('indigo'); PF.toast('Accent set to Indigo', 'success'); };
+
+  // Gym Profile Info
+  const gym = window.ProFitGym || {};
+  if (gym.name) document.getElementById('gymNameDisplay').textContent = gym.name;
+  if (gym.tag) document.getElementById('gymTagDisplay').textContent = gym.tag;
+  if (gym.phone) document.getElementById('gymPhoneDisplay').textContent = gym.phone;
+  if (gym.email) document.getElementById('gymEmailDisplay').textContent = gym.email;
+
+  // Logout
+  document.getElementById('btnSettingsLogout').onclick = async () => {
+    if (await PF.confirm({
+      title: 'Log out?',
+      message: 'Are you sure you want to log out of the trainer workspace?',
+      confirm: 'Log out'
+    })) {
+      PF.logout();
+    }
+  };
+});
+</script>
+</body>
+</html>
+

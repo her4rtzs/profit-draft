@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Notifications — ProFit Trainer</title>
+  <meta name="theme-color" content="#0a1220">
+  <link rel="icon" href="../assets/img/logo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="../assets/css/staff.css">
+  <script src="../assets/js/staff-boot.js"></script>
+</head>
+<body data-portal="trainer" data-page="notifications" data-title="Notifications" data-eyebrow="Alerts & Activity" data-sub="Recent updates, member assignments, and system alerts." data-icon="bell">
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="scrim" id="scrim"></div>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="content" id="content">
+      <!-- Toolbar -->
+      <div class="card" style="margin-bottom:20px;padding:12px 18px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+          <div class="tab-bar" style="margin:0;padding:3px">
+            <button class="tab-btn active" type="button" id="tabNotifAll">All Alerts</button>
+            <button class="tab-btn" type="button" id="tabNotifUnread">Unread Only</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <button class="btn btn-ghost btn-sm" type="button" id="btnMarkAllRead">
+              <span id="icoCheckAll"></span>
+              <span>Mark all as read</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notifications List -->
+      <div class="card" style="padding:0;overflow:hidden;max-width:880px">
+        <div id="notifListWrap" style="display:grid;divide-y:1px solid var(--line)">
+          <div class="empty compact" style="padding:40px 0">Loading notifications...</div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <nav class="bottom-nav" id="bottomNav" aria-label="Quick navigation"></nav>
+</div>
+
+<!-- Scripts -->
+<script src="../config.js"></script>
+<script src="../api.js"></script>
+<script src="../auth.js"></script>
+<script src="../assets/js/staff-icons.js"></script>
+<script src="../assets/js/staff-data.js"></script>
+<script src="../assets/js/staff.js"></script>
+<script src="trainer.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const PF = window.PF || {};
+  const T = window.Trainer;
+
+  document.getElementById('icoCheckAll').innerHTML = PF.icon('check');
+
+  let allNotifs = [];
+  let filterMode = 'all';
+
+  async function loadNotifications() {
+    try {
+      allNotifs = await T.api.getNotifications();
+      renderNotifs();
+    } catch (e) {
+      console.error(e);
+      PF.toast('Failed to load notifications: ' + e.message, 'error');
+    }
+  }
+
+  function renderNotifs() {
+    const list = allNotifs.filter(n => filterMode === 'all' || !n.read_at);
+    const box = document.getElementById('notifListWrap');
+
+    if (!list.length) {
+      box.innerHTML = `<div class="empty" style="padding:40px 0">${PF.icon('bell')}<h3>No notifications</h3><p>You are all caught up with your alerts.</p></div>`;
+      return;
+    }
+
+    box.innerHTML = list.map(n => `
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--line);background:${n.read_at ? 'transparent' : 'rgba(227,174,43,0.04)'};gap:14px;cursor:pointer" onclick="handleNotifClick(${n.id}, '${PF.esc(n.link || '')}')">
+        <div style="display:flex;align-items:flex-start;gap:14px;min-width:0">
+          <span class="stat-ico tone-${n.read_at ? 'blue' : 'gold'}" style="width:38px;height:38px;border-radius:10px;flex:none">
+            ${PF.icon(n.kind === 'TRAINER' ? 'dumbbell' : 'bell')}
+          </span>
+          <div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+              <strong style="font-size:14px">${PF.esc(n.title)}</strong>
+              ${!n.read_at ? '<span class="badge-dot" style="display:inline-block"></span>' : ''}
+            </div>
+            <p style="font-size:13px;color:var(--text-2);margin:0 0 6px;line-height:1.4">${PF.esc(n.body)}</p>
+            <small style="color:var(--muted);font-size:11.5px">${T.format.timeAgo(n.created_at)}</small>
+          </div>
+        </div>
+        <div style="flex:none">
+          ${!n.read_at ? `<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();markSingleRead(${n.id})">Mark read</button>` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  window.handleNotifClick = async (id, link) => {
+    await T.api.markNotifRead(id);
+    const item = allNotifs.find(n => n.id === id);
+    if (item) item.read_at = new Date().toISOString();
+    renderNotifs();
+    if (link) {
+      if (link.includes('trainer-portal.html')) location.href = 'index.html';
+      else location.href = link;
+    }
+  };
+
+  window.markSingleRead = async (id) => {
+    await T.api.markNotifRead(id);
+    const item = allNotifs.find(n => n.id === id);
+    if (item) item.read_at = new Date().toISOString();
+    renderNotifs();
+    PF.toast('Marked as read', 'success');
+  };
+
+  document.getElementById('btnMarkAllRead').onclick = async () => {
+    await T.api.markAllNotifsRead();
+    allNotifs.forEach(n => { n.read_at = new Date().toISOString(); });
+    renderNotifs();
+    PF.toast('All marked as read', 'success');
+  };
+
+  document.getElementById('tabNotifAll').onclick = () => {
+    document.getElementById('tabNotifAll').classList.add('active');
+    document.getElementById('tabNotifUnread').classList.remove('active');
+    filterMode = 'all';
+    renderNotifs();
+  };
+  document.getElementById('tabNotifUnread').onclick = () => {
+    document.getElementById('tabNotifUnread').classList.add('active');
+    document.getElementById('tabNotifAll').classList.remove('active');
+    filterMode = 'unread';
+    renderNotifs();
+  };
+
+  loadNotifications();
+});
+</script>
+</body>
+</html>
+

@@ -722,3 +722,15 @@ Fix the UI for mobile devices across all staff pages, and merge changes with Ang
 ### Decision-log skill
 When reconciling responsive mobile drawer navigation with a desktop hover-expanding icon rail, keep desktop rules strictly gated within `@media (min-width: 769px)` and mobile drawer rules within `@media (max-width: 768px)`. This prevents hover state animations from colliding with off-canvas slide-out drawers and eliminates redundant click toggle states.
 
+
+## 2026-11-08 16:54 (Asia/Manila): Integrate Dedicated Trainer Frontend with Unified Staff Design System & Backend API
+### What I asked for
+Integrate the Trainer frontend into the existing ProFit system using the same sidebar design, layout, styling, and overall UI/UX of the redesigned Staff frontend, connected to the actual Django backend with role-based access control.
+### What the agent decided and why
+- Shared the redesigned Staff CSS (`web/assets/css/staff.css`) and shell script (`web/assets/js/staff.js`, `staff-boot.js`, `staff-icons.js`, `staff-data.js`) across both the Staff and Trainer portals instead of duplicating stylesheets or building a separate sidebar.
+- Made `web/assets/js/staff.js` role-aware (`isTrainerContext()` / `getNav()`), rendering `TRAINER_NAV` (`Dashboard`, `Announcements`, `My Members`, `Attendance`, `My Schedule`, `Notifications`, `My Profile`, `Settings`) when `data-portal="trainer"` or `/trainer/` is active, while keeping `STAFF_NAV` intact for Owner/Cashier views.
+- Enhanced `PF.modal` and `PF.toast` in `staff.js` to support both Staff (`{ html, foot }`) and Trainer (`{ body, confirm, onConfirm }` with async callbacks) call signatures, and added `PF.syncShellProfile()` so `trainer.js` hydrates the sidebar user identity and search cache from the live API.
+- Implemented 7 Trainer DRF endpoints in `api/trainers.py` (`TrainerSelfProfileView`, `TrainerDashboardView`, `TrainerAssignedMembersView`, `TrainerMemberDetailView`, `TrainerAttendanceView`, `TrainerScheduleView`, `TrainerScheduleNoteView`) guarded by `IsTrainerOrOwner`, ensuring Trainers only see their own assigned roster and cannot access Owner/Cashier financial endpoints.
+- Updated `web/login.html`, `web/auth.js`, and `web/trainer-portal.html` so Trainer logins route to `trainer/index.html` and subfolder auth redirects resolve `../login.html` cleanly without breaking existing Staff, Owner, or Member flows.
+### Decision-log skill
+When unifying multiple role portals under a single design system in a static/WhiteNoise frontend, parameterize the shared shell (`data-portal="trainer"` + URL path detection) to switch navigation trees and bottom bars while reusing one CSS bundle and shell script, and always pair frontend navigation scoping with server-side DRF permission classes (`IsTrainerOrOwner`) so hidden sidebar links are never the sole access control.

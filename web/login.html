@@ -14,7 +14,7 @@
  const form=$('signInForm'), submit=form.querySelector('[type=submit]');
  // Nobody picks an account type. The server reads the role from the account itself
  // and the page opens the matching workspace.
- const HOME={admin:'index.html',trainer:'trainer-portal.html',member:'member-home.html'};
+ const HOME={admin:'index.html',trainer:'trainer/index.html',member:'member-home.html'};
  $('showPassword').addEventListener('click',()=>{const f=$('password'),show=f.type==='password';f.type=show?'text':'password';$('showPassword').setAttribute('aria-label',show?'Hide password':'Show password');$('showPassword').innerHTML=`<i class="fa-regular ${show?'fa-eye-slash':'fa-eye'}"></i>`});
  function message(text,error){const box=$('authMessage');box.hidden=false;box.classList.toggle('error',!!error);box.textContent=text}
  form.addEventListener('submit',async e=>{

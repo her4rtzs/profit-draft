@@ -8,9 +8,13 @@ from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.membership.models import MemberProfile
+from apps.announcements.models import Announcement
+from apps.membership.models import Attendance, MemberProfile
+from apps.notifications.models import Notification
+from apps.notifications.services import notify_many
 from apps.trainers import services
-from apps.trainers.models import TrainerProfile, TrainerRequest
+from apps.trainers.models import TrainerAssignment, TrainerProfile, TrainerRequest
+from django.utils import timezone
 
 
 class IsOwner(BasePermission):
@@ -21,6 +25,15 @@ class IsOwner(BasePermission):
 class IsMember(BasePermission):
     def has_permission(self, request, view):
         return bool(request.user.is_authenticated and getattr(request.user, "role", "") == "MEMBER")
+
+
+class IsTrainerOrOwner(BasePermission):
+    """Permits access to users with role TRAINER or OWNER."""
+    def has_permission(self, request, view):
+        return bool(
+            request.user.is_authenticated and
+            getattr(request.user, "role", "") in ("TRAINER", "OWNER")
+        )
 
 
 def _name(user):
@@ -251,3 +264,358 @@ class MemberTrainerRequestCancelView(APIView):
         except DjangoValidationError as exc:
             _fail(exc)
         return Response(_request_json(req))
+
+
+# ----- trainer portal views -----------------------------------------------------------
+
+def _get_trainer_profile_for_user(user):
+    if getattr(user, "role", "") == "TRAINER":
+        profile, _ = TrainerProfile.objects.get_or_create(
+            user=user,
+            defaults={
+                "specialization": "Functional Training & Conditioning",
+                "max_members": 20,
+                "is_active": True,
+            },
+        )
+        return profile
+    elif getattr(user, "role", "") == "OWNER":
+        profile = TrainerProfile.objects.filter(user=user).first()
+        if not profile:
+            profile = TrainerProfile.objects.first()
+        return profile
+    return None
+
+
+class TrainerProfileView(APIView):
+    """GET/PATCH the logged-in trainer's own profile and settings."""
+
+    permission_classes = [IsTrainerOrOwner]
+
+    def get(self, request):
+        profile = _get_trainer_profile_for_user(request.user)
+        if profile is None:
+            return Response({"detail": "Trainer profile not found."}, status=404)
+        load = services.load(profile)
+        return Response({
+            "id": profile.pk,
+            "user_id": profile.user_id,
+            "name": _name(profile.user),
+            "email": profile.user.email,
+            "username": profile.user.username,
+            "specialization": profile.specialization,
+            "bio": profile.bio,
+            "availability": profile.availability,
+            "max_members": profile.max_members,
+            "load": load,
+            "is_full": load >= profile.max_members,
+            "is_active": profile.is_active,
+            "created_at": profile.created_at,
+        })
+
+    def patch(self, request):
+        profile = _get_trainer_profile_for_user(request.user)
+        if profile is None:
+            return Response({"detail": "Trainer profile not found."}, status=404)
+        data = request.data
+        if "specialization" in data:
+            profile.specialization = str(data["specialization"] or "")[:120]
+        if "bio" in data:
+            profile.bio = str(data["bio"] or "")[:500]
+        if "availability" in data:
+            profile.availability = str(data["availability"] or "")[:160]
+        profile.save()
+        return Response({
+            "detail": "Profile updated successfully.",
+            "specialization": profile.specialization,
+            "bio": profile.bio,
+            "availability": profile.availability,
+        })
+
+
+class TrainerMembersView(APIView):
+    """GET members currently assigned to the logged-in trainer."""
+
+    permission_classes = [IsTrainerOrOwner]
+
+    def get(self, request):
+        profile = _get_trainer_profile_for_user(request.user)
+        if profile is None:
+            return Response([])
+        today = timezone.localdate()
+        assignments = (
+            TrainerAssignment.objects.filter(trainer=profile, ended_at__isnull=True)
+            .select_related("member__user")
+            .order_by("-assigned_at")
+        )
+        res = []
+        for a in assignments:
+            m = a.member
+            last_att = Attendance.objects.filter(member=m).order_by("-check_in_at").first()
+            total_checkins = Attendance.objects.filter(member=m).count()
+            today_in = Attendance.objects.filter(member=m, check_in_date=today).exists()
+            res.append({
+                "id": m.pk,
+                "user_id": m.user_id,
+                "name": _name(m.user),
+                "email": m.user.email,
+                "phone": m.phone,
+                "membership_status": m.membership_status,
+                "is_active": m.is_active_on(today),
+                "expiry_date": m.expiry_date.isoformat() if m.expiry_date else None,
+                "date_joined": m.date_joined.isoformat() if m.date_joined else None,
+                "assigned_at": a.assigned_at.isoformat() if a.assigned_at else None,
+                "total_checkins": total_checkins,
+                "last_checkin": last_att.check_in_at.isoformat() if last_att else None,
+                "today_checked_in": today_in,
+            })
+        return Response(res)
+
+
+class TrainerMemberDetailView(APIView):
+    """GET detailed profile and attendance log for one assigned member."""
+
+    permission_classes = [IsTrainerOrOwner]
+
+    def get(self, request, pk):
+        profile = _get_trainer_profile_for_user(request.user)
+        assignment = (
+            TrainerAssignment.objects.filter(trainer=profile, member_id=pk, ended_at__isnull=True)
+            .select_related("member__user")
+            .first()
+        )
+        if not assignment:
+            if getattr(request.user, "role", "") == "OWNER":
+                m = MemberProfile.objects.select_related("user").filter(pk=pk).first()
+                if not m:
+                    return Response({"detail": "Member not found."}, status=404)
+            else:
+                return Response({"detail": "Member not assigned to you."}, status=404)
+        else:
+            m = assignment.member
+
+        today = timezone.localdate()
+        attendances = Attendance.objects.filter(member=m).select_related("recorded_by").order_by("-check_in_at")[:40]
+        att_rows = [
+            {
+                "id": att.pk,
+                "check_in_at": att.check_in_at.isoformat(),
+                "check_in_date": att.check_in_date.isoformat(),
+                "recorded_by": _name(att.recorded_by),
+            }
+            for att in attendances
+        ]
+        return Response({
+            "id": m.pk,
+            "user_id": m.user_id,
+            "name": _name(m.user),
+            "email": m.user.email,
+            "phone": m.phone,
+            "membership_status": m.membership_status,
+            "is_active": m.is_active_on(today),
+            "expiry_date": m.expiry_date.isoformat() if m.expiry_date else None,
+            "date_joined": m.date_joined.isoformat() if m.date_joined else None,
+            "assigned_at": assignment.assigned_at.isoformat() if assignment else None,
+            "total_checkins": Attendance.objects.filter(member=m).count(),
+            "attendances": att_rows,
+        })
+
+
+class TrainerDashboardView(APIView):
+    """GET aggregate stats, today's check-ins, announcements, and notif count for trainer dashboard."""
+
+    permission_classes = [IsTrainerOrOwner]
+
+    def get(self, request):
+        profile = _get_trainer_profile_for_user(request.user)
+        if profile is None:
+            return Response({"detail": "Trainer profile not found."}, status=404)
+        today = timezone.localdate()
+        week_ago = today - timezone.timedelta(days=7)
+
+        assigned_ids = list(
+            TrainerAssignment.objects.filter(trainer=profile, ended_at__isnull=True).values_list("member_id", flat=True)
+        )
+        assigned_count = len(assigned_ids)
+        max_members = profile.max_members or 20
+        cap_pct = round((assigned_count / max_members) * 100) if max_members else 0
+
+        today_checkins = Attendance.objects.filter(member_id__in=assigned_ids, check_in_date=today).count()
+        week_checkins = Attendance.objects.filter(member_id__in=assigned_ids, check_in_date__gte=week_ago).count()
+
+        recent_att = (
+            Attendance.objects.filter(member_id__in=assigned_ids)
+            .select_related("member__user")
+            .order_by("-check_in_at")[:12]
+        )
+        recent_list = [
+            {
+                "id": a.pk,
+                "member_id": a.member_id,
+                "member_name": _name(a.member.user),
+                "check_in_at": a.check_in_at.isoformat(),
+                "check_in_date": a.check_in_date.isoformat(),
+            }
+            for a in recent_att
+        ]
+
+        announcements = (
+            Announcement.objects.filter(status=Announcement.Status.PUBLISHED)
+            .order_by("-pinned", "-publish_on", "-id")[:4]
+        )
+        ann_list = [
+            {
+                "id": ann.pk,
+                "title": ann.title,
+                "message": ann.message,
+                "publish_on": ann.publish_on.isoformat() if ann.publish_on else None,
+                "pinned": ann.pinned,
+            }
+            for ann in announcements
+        ]
+
+        unread_count = Notification.objects.filter(recipient=request.user, read_at__isnull=True).count()
+
+        return Response({
+            "trainer": {
+                "id": profile.pk,
+                "name": _name(profile.user),
+                "specialization": profile.specialization,
+                "bio": profile.bio,
+                "availability": profile.availability,
+            },
+            "stats": {
+                "assigned_members": assigned_count,
+                "max_members": max_members,
+                "capacity_pct": min(100, cap_pct),
+                "today_checkins": today_checkins,
+                "week_checkins": week_checkins,
+                "is_full": assigned_count >= max_members,
+                "is_active": profile.is_active,
+            },
+            "recent_attendances": recent_list,
+            "announcements": ann_list,
+            "unread_notifications": unread_count,
+        })
+
+
+class TrainerAttendanceListView(APIView):
+    """GET check-in logs for a given date, with indicator whether each member is assigned to this trainer."""
+
+    permission_classes = [IsTrainerOrOwner]
+
+    def get(self, request):
+        profile = _get_trainer_profile_for_user(request.user)
+        assigned_ids = set(
+            TrainerAssignment.objects.filter(trainer=profile, ended_at__isnull=True).values_list("member_id", flat=True)
+        ) if profile else set()
+
+        raw_date = request.query_params.get("date")
+        try:
+            day = timezone.datetime.fromisoformat(raw_date).date() if raw_date else timezone.localdate()
+        except (ValueError, TypeError):
+            day = timezone.localdate()
+
+        qs = Attendance.objects.filter(check_in_date=day).select_related("member__user", "recorded_by").order_by("-check_in_at")
+
+        filter_type = request.query_params.get("filter", "all")
+        if filter_type == "mine":
+            qs = qs.filter(member_id__in=assigned_ids)
+
+        rows = [
+            {
+                "id": a.pk,
+                "member_id": a.member_id,
+                "member_name": _name(a.member.user),
+                "member_phone": a.member.phone,
+                "membership_status": a.member.membership_status,
+                "is_my_member": a.member_id in assigned_ids,
+                "check_in_at": a.check_in_at.isoformat(),
+                "check_in_date": a.check_in_date.isoformat(),
+                "recorded_by": _name(a.recorded_by),
+            }
+            for a in qs
+        ]
+        return Response({
+            "date": day.isoformat(),
+            "total": len(rows),
+            "my_members_count": sum(1 for r in rows if r["is_my_member"]),
+            "attendances": rows,
+        })
+
+
+TIMETABLE_SESSIONS = [
+    {"id": 1, "dow": 0, "day": "Sunday", "time": "09:00", "mins": 45, "name": "Recovery & Stretch", "coach": "Coach Bea", "cap": 18, "room": "Studio 1"},
+    {"id": 2, "dow": 1, "day": "Monday", "time": "06:00", "mins": 45, "name": "Sunrise HIIT", "coach": "Coach Mika", "cap": 12, "room": "Main Floor"},
+    {"id": 3, "dow": 1, "day": "Monday", "time": "18:30", "mins": 60, "name": "Strength Basics", "coach": "Coach Jun", "cap": 10, "room": "Weight Area"},
+    {"id": 4, "dow": 2, "day": "Tuesday", "time": "07:00", "mins": 40, "name": "Cardio Club", "coach": "Coach Rei", "cap": 16, "room": "Cardio Deck"},
+    {"id": 5, "dow": 2, "day": "Tuesday", "time": "19:00", "mins": 50, "name": "Boxing Fitness", "coach": "Coach Dan", "cap": 12, "room": "Studio 2"},
+    {"id": 6, "dow": 3, "day": "Wednesday", "time": "06:00", "mins": 45, "name": "Sunrise HIIT", "coach": "Coach Mika", "cap": 12, "room": "Main Floor"},
+    {"id": 7, "dow": 3, "day": "Wednesday", "time": "19:00", "mins": 50, "name": "Mobility Flow", "coach": "Coach Bea", "cap": 14, "room": "Studio 1"},
+    {"id": 8, "dow": 4, "day": "Thursday", "time": "18:00", "mins": 60, "name": "Barbell Club", "coach": "Coach Jun", "cap": 8, "room": "Weight Area"},
+    {"id": 9, "dow": 5, "day": "Friday", "time": "07:00", "mins": 40, "name": "Cardio Club", "coach": "Coach Rei", "cap": 16, "room": "Cardio Deck"},
+    {"id": 10, "dow": 5, "day": "Friday", "time": "17:30", "mins": 45, "name": "Friday Finisher", "coach": "Coach Mika", "cap": 12, "room": "Main Floor"},
+    {"id": 11, "dow": 6, "day": "Saturday", "time": "08:00", "mins": 75, "name": "Team Sweat", "coach": "Coaches", "cap": 20, "room": "Main Floor"},
+]
+
+
+class TrainerScheduleView(APIView):
+    """GET weekly timetable sessions, and POST a schedule update note to all assigned members."""
+
+    permission_classes = [IsTrainerOrOwner]
+
+    def get(self, request):
+        profile = _get_trainer_profile_for_user(request.user)
+        coach_name = _name(request.user)
+        assigned_members = []
+        if profile:
+            assignments = (
+                TrainerAssignment.objects.filter(trainer=profile, ended_at__isnull=True)
+                .select_related("member__user")
+            )
+            assigned_members = [{"id": a.member.pk, "name": _name(a.member.user)} for a in assignments]
+
+        sessions = []
+        for s in TIMETABLE_SESSIONS:
+            item = dict(s)
+            item["is_mine"] = (
+                coach_name.lower() in s["coach"].lower() or
+                s["coach"].lower() in coach_name.lower() or
+                s["coach"] == "Coaches"
+            )
+            sessions.append(item)
+
+        return Response({
+            "coach_name": coach_name,
+            "sessions": sessions,
+            "assigned_members": assigned_members,
+        })
+
+    def post(self, request):
+        note = str(request.data.get("note") or "").strip()
+        session_name = str(request.data.get("session_name") or "Schedule Update").strip()
+        if not note:
+            return Response({"detail": "Note content is required."}, status=400)
+
+        profile = _get_trainer_profile_for_user(request.user)
+        if not profile:
+            return Response({"detail": "Trainer profile not found."}, status=404)
+
+        assignments = (
+            TrainerAssignment.objects.filter(trainer=profile, ended_at__isnull=True)
+            .select_related("member__user")
+        )
+        member_users = [a.member.user for a in assignments]
+
+        if member_users:
+            notify_many(
+                member_users,
+                title=f"Schedule Update: {session_name}",
+                kind=Notification.Kind.TRAINER,
+                body=f"{_name(request.user)}: {note}",
+                link="member-home.html#timetable",
+            )
+        return Response({
+            "detail": f"Schedule update sent to {len(member_users)} assigned members.",
+            "recipient_count": len(member_users),
+        })

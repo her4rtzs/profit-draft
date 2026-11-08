@@ -37,7 +37,7 @@ DEBUG = env.bool("DEBUG", default=False)
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
 if not ALLOWED_HOSTS:
     if DEBUG:
-        ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+        ALLOWED_HOSTS = ["localhost", "127.0.0.1", "testserver"]
     else:
         raise ImproperlyConfigured(
             "ALLOWED_HOSTS must be set when DEBUG=False. Refusing to fall "

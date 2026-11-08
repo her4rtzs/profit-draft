@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Announcements — ProFit Trainer</title>
+  <meta name="theme-color" content="#0a1220">
+  <link rel="icon" href="../assets/img/logo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="../assets/css/staff.css">
+  <script src="../assets/js/staff-boot.js"></script>
+</head>
+<body data-portal="trainer" data-page="announcements" data-title="Announcements" data-eyebrow="Gym Notices" data-sub="Official announcements and notices from gym management." data-icon="megaphone">
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="scrim" id="scrim"></div>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="content" id="content">
+      <!-- Filter Bar -->
+      <div class="card" style="margin-bottom:20px;padding:12px 18px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+          <div class="tab-bar" style="margin:0;padding:3px">
+            <button class="tab-btn active" type="button" id="tabAll">All Notices</button>
+            <button class="tab-btn" type="button" id="tabPinned">Pinned Only</button>
+          </div>
+          <div style="font-size:13px;color:var(--muted)" id="annCountLabel">Loading notices...</div>
+        </div>
+      </div>
+
+      <!-- Announcements Feed -->
+      <div id="annFeed" style="display:grid;gap:16px;max-width:880px">
+        <div class="empty compact">Loading announcements...</div>
+      </div>
+    </main>
+  </div>
+  <nav class="bottom-nav" id="bottomNav" aria-label="Quick navigation"></nav>
+</div>
+
+<!-- Scripts -->
+<script src="../config.js"></script>
+<script src="../api.js"></script>
+<script src="../auth.js"></script>
+<script src="../assets/js/staff-icons.js"></script>
+<script src="../assets/js/staff-data.js"></script>
+<script src="../assets/js/staff.js"></script>
+<script src="trainer.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const PF = window.PF || {};
+  const T = window.Trainer;
+
+  let allAnnouncements = [];
+  let filterMode = 'all';
+
+  async function loadAnnouncements() {
+    try {
+      allAnnouncements = await T.api.getAnnouncements();
+      renderFeed();
+    } catch (e) {
+      console.error(e);
+      PF.toast('Failed to load announcements: ' + e.message, 'error');
+    }
+  }
+
+  function renderFeed() {
+    const list = allAnnouncements.filter(a => filterMode === 'all' || a.pinned);
+    document.getElementById('annCountLabel').textContent = `${list.length} announcement${list.length === 1 ? '' : 's'}`;
+    const box = document.getElementById('annFeed');
+
+    if (!list.length) {
+      box.innerHTML = `<div class="empty" style="padding:40px 0">${PF.icon('megaphone')}<h3>No announcements found</h3><p>You're all caught up with gym updates.</p></div>`;
+      return;
+    }
+
+    box.innerHTML = list.map(a => `
+      <article class="card" style="border-left:4px solid ${a.pinned ? 'var(--gold)' : 'var(--line-strong)'};padding:20px 24px">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:10px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <span class="stat-ico tone-${a.pinned ? 'gold' : 'blue'}" style="width:36px;height:36px;border-radius:10px">
+              ${PF.icon(a.pinned ? 'sparkles' : 'megaphone')}
+            </span>
+            <h2 style="font-size:17px;font-weight:700;margin:0">${PF.esc(a.title)}</h2>
+          </div>
+          ${a.pinned ? '<span class="pill gold">Pinned Notice</span>' : ''}
+        </div>
+        <p style="font-size:14px;line-height:1.6;color:var(--text-2);margin:0 0 14px;white-space:pre-line">${PF.esc(a.message)}</p>
+        <div style="display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding-top:10px;font-size:12px;color:var(--muted)">
+          <span>Published: ${T.format.date(a.publish_on || a.created_at)}</span>
+          <span>ProFit Management</span>
+        </div>
+      </article>
+    `).join('');
+  }
+
+  document.getElementById('tabAll').onclick = () => {
+    document.getElementById('tabAll').classList.add('active');
+    document.getElementById('tabPinned').classList.remove('active');
+    filterMode = 'all';
+    renderFeed();
+  };
+  document.getElementById('tabPinned').onclick = () => {
+    document.getElementById('tabPinned').classList.add('active');
+    document.getElementById('tabAll').classList.remove('active');
+    filterMode = 'pinned';
+    renderFeed();
+  };
+
+  loadAnnouncements();
+});
+</script>
+</body>
+</html>
+

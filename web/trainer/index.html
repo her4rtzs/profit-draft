@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Dashboard — ProFit Trainer</title>
+  <meta name="theme-color" content="#0a1220">
+  <link rel="icon" href="../assets/img/logo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="../assets/css/staff.css">
+  <script src="../assets/js/staff-boot.js"></script>
+</head>
+<body data-portal="trainer" data-page="dashboard" data-title="Coach Dashboard" data-eyebrow="Trainer Workspace" data-sub="Welcome back. Here is your training overview." data-icon="home">
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="scrim" id="scrim"></div>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="content" id="content">
+      <!-- KPI Stats Grid -->
+      <section class="grid grid-4" id="kpiStats">
+        <div class="stat-card">
+          <div class="stat-ico tone-gold" id="icoMembers"></div>
+          <div>
+            <div class="stat-num" id="statMembers">—</div>
+            <div class="stat-label">Assigned Members</div>
+            <small class="muted" id="statCapacity">Loading capacity...</small>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-ico tone-green" id="icoToday"></div>
+          <div>
+            <div class="stat-num" id="statToday">—</div>
+            <div class="stat-label">Today's Check-ins</div>
+            <small class="muted" id="statTodaySub">My roster today</small>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-ico tone-blue" id="icoWeek"></div>
+          <div>
+            <div class="stat-num" id="statWeek">—</div>
+            <div class="stat-label">This Week's Check-ins</div>
+            <small class="muted">Past 7 days activity</small>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-ico tone-purple" id="icoStatus"></div>
+          <div>
+            <div class="stat-num" id="statCapPct" style="font-size:22px">—</div>
+            <div class="stat-label">Roster Capacity</div>
+            <small class="muted" id="statStatusPill">Roster Status</small>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quick Actions Bar -->
+      <div style="display:flex;align-items:center;gap:12px;margin:20px 0;flex-wrap:wrap">
+        <button class="btn btn-primary" type="button" id="btnQuickCheckIn">
+          <span id="icoBtnCheckIn"></span>
+          <span>Record Member Check-in</span>
+        </button>
+        <button class="btn btn-ghost" type="button" id="btnSendNote">
+          <span id="icoBtnNote"></span>
+          <span>Send Schedule Update</span>
+        </button>
+        <a class="btn btn-ghost" href="schedule.html">
+          <span id="icoBtnSchedule"></span>
+          <span>View Weekly Schedule</span>
+        </a>
+      </div>
+
+      <!-- Main Layout -->
+      <div class="grid grid-3" style="gap:24px;align-items:start">
+        <!-- Left: 2 cols -->
+        <div style="grid-column:span 2;display:grid;gap:24px">
+          <!-- Today's Sessions Card -->
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h2 class="card-title">Today's Coaching Schedule</h2>
+                <p class="card-sub" id="todayScheduleDate">Scheduled classes & training sessions for today</p>
+              </div>
+              <a class="link-btn" href="schedule.html">Full timetable &rarr;</a>
+            </div>
+            <div id="todaySessionsList" style="display:grid;gap:12px;margin-top:12px">
+              <div class="empty compact"><span>Loading schedule...</span></div>
+            </div>
+          </div>
+
+          <!-- Recent Attendance Card -->
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h2 class="card-title">Recent Member Check-ins</h2>
+                <p class="card-sub">Recent attendance activity from your assigned roster</p>
+              </div>
+              <a class="link-btn" href="attendance.html">All attendance &rarr;</a>
+            </div>
+            <div class="table-wrap" style="margin-top:12px">
+              <table class="tbl">
+                <thead>
+                  <tr>
+                    <th>Member</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="recentAttendanceTbody">
+                  <tr><td colspan="4" class="empty compact">Loading check-ins...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: 1 col -->
+        <div style="display:grid;gap:24px">
+          <!-- My Roster Preview Card -->
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h2 class="card-title">My Roster</h2>
+                <p class="card-sub" id="rosterCountSub">Assigned members</p>
+              </div>
+              <a class="link-btn" href="members.html">View all &rarr;</a>
+            </div>
+            <div id="rosterMiniList" style="display:grid;gap:10px;margin-top:12px">
+              <div class="empty compact">Loading roster...</div>
+            </div>
+          </div>
+
+          <!-- Gym Announcements Card -->
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h2 class="card-title">Gym Notices</h2>
+                <p class="card-sub">From gym management</p>
+              </div>
+              <a class="link-btn" href="announcements.html">All notices &rarr;</a>
+            </div>
+            <div id="dashAnnounceList" style="display:grid;gap:12px;margin-top:12px">
+              <div class="empty compact">Loading announcements...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <nav class="bottom-nav" id="bottomNav" aria-label="Quick navigation"></nav>
+</div>
+
+<!-- Scripts -->
+<script src="../config.js"></script>
+<script src="../api.js"></script>
+<script src="../auth.js"></script>
+<script src="../assets/js/staff-icons.js"></script>
+<script src="../assets/js/staff-data.js"></script>
+<script src="../assets/js/staff.js"></script>
+<script src="trainer.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const PF = window.PF || {};
+  const T = window.Trainer;
+
+  // Insert icons
+  document.getElementById('icoMembers').innerHTML = PF.icon('users');
+  document.getElementById('icoToday').innerHTML = PF.icon('calendar-check');
+  document.getElementById('icoWeek').innerHTML = PF.icon('chart');
+  document.getElementById('icoStatus').innerHTML = PF.icon('dumbbell');
+  document.getElementById('icoBtnCheckIn').innerHTML = PF.icon('plus');
+  document.getElementById('icoBtnNote').innerHTML = PF.icon('megaphone');
+  document.getElementById('icoBtnSchedule').innerHTML = PF.icon('calendar');
+
+  // Load Dashboard Data
+  async function loadDashboard() {
+    try {
+      const data = await T.api.getDashboard();
+      const stats = data.stats || {};
+
+      document.getElementById('statMembers').textContent = stats.assigned_members ?? 0;
+      document.getElementById('statCapacity').textContent = `${stats.assigned_members ?? 0} of ${stats.max_members ?? 20} slots filled`;
+      document.getElementById('statToday').textContent = stats.today_checkins ?? 0;
+      document.getElementById('statWeek').textContent = stats.week_checkins ?? 0;
+      document.getElementById('statCapPct').textContent = `${stats.capacity_pct ?? 0}%`;
+      document.getElementById('statStatusPill').innerHTML = stats.is_full
+        ? '<span class="pill red">Roster Full</span>'
+        : '<span class="pill green">Accepting Members</span>';
+
+      // Recent Attendance
+      const tbody = document.getElementById('recentAttendanceTbody');
+      const atts = data.recent_attendances || [];
+      if (!atts.length) {
+        tbody.innerHTML = '<tr><td colspan="4" class="empty compact">No recent check-ins for your roster yet.</td></tr>';
+      } else {
+        tbody.innerHTML = atts.map(a => `
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:10px">
+                ${PF.avatar ? PF.avatar(a.member_name, 'sm') : ''}
+                <strong>${PF.esc(a.member_name)}</strong>
+              </div>
+            </td>
+            <td>${T.format.date(a.check_in_date)}</td>
+            <td>${T.format.time(a.check_in_at)}</td>
+            <td>
+              <a class="btn btn-ghost btn-sm" href="members.html#detail=${a.member_id}">Profile</a>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      // Announcements
+      const annBox = document.getElementById('dashAnnounceList');
+      const anns = data.announcements || [];
+      if (!anns.length) {
+        annBox.innerHTML = '<div class="empty compact"><span>No notices right now.</span></div>';
+      } else {
+        annBox.innerHTML = anns.map(an => `
+          <div style="padding:12px;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--card-2)">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px">
+              <strong style="font-size:13px">${PF.esc(an.title)}</strong>
+              ${an.pinned ? '<span class="pill gold">Pinned</span>' : ''}
+            </div>
+            <p style="font-size:12.5px;color:var(--text-2);line-height:1.4">${PF.esc(an.message)}</p>
+            <small style="color:var(--muted);font-size:11px;display:block;margin-top:6px">${T.format.date(an.publish_on)}</small>
+          </div>
+        `).join('');
+      }
+    } catch (e) {
+      console.error(e);
+      PF.toast('Error loading dashboard: ' + e.message, 'error');
+    }
+
+    // Load Roster Mini List
+    try {
+      const members = await T.api.getMembers();
+      const list = document.getElementById('rosterMiniList');
+      document.getElementById('rosterCountSub').textContent = `${members.length} active member${members.length === 1 ? '' : 's'}`;
+      if (!members.length) {
+        list.innerHTML = '<div class="empty compact"><span>No members assigned yet. Contact gym management.</span></div>';
+      } else {
+        list.innerHTML = members.slice(0, 6).map(m => `
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;border-radius:10px;border:1px solid var(--line)">
+            <div style="display:flex;align-items:center;gap:10px;min-width:0">
+              ${PF.avatar ? PF.avatar(m.name, 'sm') : ''}
+              <div style="min-width:0;overflow:hidden;text-overflow:ellipsis">
+                <div style="font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${PF.esc(m.name)}</div>
+                <small style="color:var(--muted);font-size:11px">${m.today_checked_in ? '<span style="color:var(--green)">● Checked in today</span>' : 'Not yet in today'}</small>
+              </div>
+            </div>
+            <a class="btn btn-ghost btn-sm" href="members.html#detail=${m.id}" style="flex:none">View</a>
+          </div>
+        `).join('');
+      }
+    } catch (e) {
+      console.error(e);
+    }
+
+    // Load Today's Sessions
+    try {
+      const sch = await T.api.getSchedule();
+      const now = new Date();
+      const todayDOW = now.getDay();
+      const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      document.getElementById('todayScheduleDate').textContent = `${days[todayDOW]} training timetable`;
+
+      const todaySessions = (sch.sessions || []).filter(s => s.dow === todayDOW);
+      const sessBox = document.getElementById('todaySessionsList');
+      if (!todaySessions.length) {
+        sessBox.innerHTML = '<div class="empty compact"><span>No group classes scheduled for today.</span></div>';
+      } else {
+        sessBox.innerHTML = todaySessions.map(s => `
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--card-2);gap:12px">
+            <div style="display:flex;align-items:center;gap:14px">
+              <span class="stat-ico tone-gold" style="width:36px;height:36px;border-radius:10px">${PF.icon('clock')}</span>
+              <div>
+                <strong style="font-size:14px">${PF.esc(s.name)}</strong>
+                <div style="font-size:12px;color:var(--muted)">${s.time} • ${s.mins} mins • ${s.room || 'Main Floor'}</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span class="pill ${s.is_mine ? 'gold' : 'gray'}">${s.is_mine ? 'Coached by you' : PF.esc(s.coach)}</span>
+              ${s.is_mine ? `<button class="btn btn-ghost btn-sm" onclick="openNoteModal('${PF.esc(s.name)}')">Update</button>` : ''}
+            </div>
+          </div>
+        `).join('');
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  // Quick Check-in Modal
+  document.getElementById('btnQuickCheckIn').onclick = async () => {
+    let members = [];
+    try { members = await T.api.getMembers(); } catch(e){}
+    const opts = members.map(m => `<option value="${m.id}">${PF.esc(m.name)} (ID: ${m.id})</option>`).join('');
+    
+    PF.modal({
+      title: 'Record Member Check-in',
+      body: `
+        <form id="quickCheckInForm">
+          <p class="muted" style="margin-bottom:14px">Select an assigned member or enter their ID to record attendance today.</p>
+          <div class="form-grp">
+            <label for="modalMemberSelect">My Members</label>
+            <select id="modalMemberSelect" style="width:100%">
+              <option value="">-- Choose from your roster --</option>
+              ${opts}
+            </select>
+          </div>
+          <div class="form-grp" style="margin-top:12px">
+            <label for="modalMemberId">Or Member ID</label>
+            <input id="modalMemberId" type="number" placeholder="e.g. 5" min="1" style="width:100%">
+          </div>
+        </form>
+      `,
+      confirm: 'Check In Member',
+      onConfirm: async (mEl) => {
+        const sel = mEl.querySelector('#modalMemberSelect').value;
+        const input = mEl.querySelector('#modalMemberId').value;
+        const memberId = sel || input;
+        if (!memberId) {
+          PF.toast('Please select a member or enter an ID.', 'error');
+          return false;
+        }
+        try {
+          const res = await T.api.checkIn(memberId);
+          PF.toast(res.detail || 'Check-in recorded successfully!', 'success');
+          loadDashboard();
+          return true;
+        } catch (err) {
+          PF.toast(err.message || 'Check-in failed.', 'error');
+          return false;
+        }
+      }
+    });
+  };
+
+  // Send Note Modal
+  window.openNoteModal = (defaultSession = '') => {
+    PF.modal({
+      title: 'Send Schedule Update',
+      body: `
+        <form id="noteForm">
+          <p class="muted" style="margin-bottom:14px">This update will be sent directly to all members assigned to your training roster.</p>
+          <div class="form-grp">
+            <label for="noteSession">Class / Session Name</label>
+            <input id="noteSession" type="text" value="${defaultSession || 'Daily Coaching Update'}" style="width:100%" required>
+          </div>
+          <div class="form-grp" style="margin-top:12px">
+            <label for="noteBody">Update Message</label>
+            <textarea id="noteBody" rows="4" placeholder="e.g. Moving Friday HIIT to Studio 2. Bring your jump ropes!" style="width:100%" required></textarea>
+          </div>
+        </form>
+      `,
+      confirm: 'Send to Members',
+      onConfirm: async (mEl) => {
+        const sess = mEl.querySelector('#noteSession').value.trim();
+        const body = mEl.querySelector('#noteBody').value.trim();
+        if (!body) {
+          PF.toast('Please enter a message.', 'error');
+          return false;
+        }
+        try {
+          const res = await T.api.sendScheduleNote(sess, body);
+          PF.toast(res.detail || 'Update sent to members!', 'success');
+          return true;
+        } catch (err) {
+          PF.toast(err.message || 'Failed to send update.', 'error');
+          return false;
+        }
+      }
+    });
+  };
+
+  document.getElementById('btnSendNote').onclick = () => window.openNoteModal();
+
+  loadDashboard();
+});
+</script>
+</body>
+</html>
+

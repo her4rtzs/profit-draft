@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>My Schedule — ProFit Trainer</title>
+  <meta name="theme-color" content="#0a1220">
+  <link rel="icon" href="../assets/img/logo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="../assets/css/staff.css">
+  <script src="../assets/js/staff-boot.js"></script>
+</head>
+<body data-portal="trainer" data-page="schedule" data-title="My Schedule" data-eyebrow="Training Timetable" data-sub="Weekly training classes and scheduled coaching slots." data-icon="calendar">
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="scrim" id="scrim"></div>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="content" id="content">
+      <!-- Day Selector Tabs -->
+      <div class="card" style="margin-bottom:20px;padding:10px 16px">
+        <div class="tab-bar" id="dowTabBar" style="margin:0;display:flex;flex-wrap:wrap;gap:6px">
+          <button class="tab-btn" type="button" data-dow="1">Monday</button>
+          <button class="tab-btn" type="button" data-dow="2">Tuesday</button>
+          <button class="tab-btn" type="button" data-dow="3">Wednesday</button>
+          <button class="tab-btn" type="button" data-dow="4">Thursday</button>
+          <button class="tab-btn" type="button" data-dow="5">Friday</button>
+          <button class="tab-btn" type="button" data-dow="6">Saturday</button>
+          <button class="tab-btn" type="button" data-dow="0">Sunday</button>
+        </div>
+      </div>
+
+      <!-- Main Layout -->
+      <div class="grid grid-3" style="gap:24px;align-items:start">
+        <!-- Left: Sessions list for selected day (2 cols) -->
+        <div style="grid-column:span 2;display:grid;gap:16px">
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h2 class="card-title" id="selectedDayTitle">Monday Sessions</h2>
+                <p class="card-sub">Group classes and scheduled sessions</p>
+              </div>
+              <button class="btn btn-primary btn-sm" type="button" id="btnBroadcastDayNote">
+                <span id="icoBroadcast"></span>
+                <span>Send Update to Roster</span>
+              </button>
+            </div>
+            <div id="daySessionsContainer" style="display:grid;gap:14px;margin-top:16px">
+              <div class="empty compact">Loading sessions...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: My Assigned Athletes Sidebar (1 col) -->
+        <div style="display:grid;gap:20px">
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h3 class="card-title">Assigned Athletes</h3>
+                <p class="card-sub" id="assignedAthletesSub">Your active coaching roster</p>
+              </div>
+              <a class="link-btn" href="members.html">Manage &rarr;</a>
+            </div>
+            <div id="assignedAthletesList" style="display:grid;gap:10px;margin-top:14px">
+              <div class="empty compact">Loading roster...</div>
+            </div>
+          </div>
+
+          <div class="card" style="background:var(--card-2);border:1px dashed var(--line-strong)">
+            <h4 style="font-size:14px;margin-bottom:6px">Quick Coaching Tip</h4>
+            <p style="font-size:12.5px;color:var(--text-2);line-height:1.4">
+              Posting a schedule update automatically sends an alert directly to all members assigned to your training roster.
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <nav class="bottom-nav" id="bottomNav" aria-label="Quick navigation"></nav>
+</div>
+
+<!-- Scripts -->
+<script src="../config.js"></script>
+<script src="../api.js"></script>
+<script src="../auth.js"></script>
+<script src="../assets/js/staff-icons.js"></script>
+<script src="../assets/js/staff-data.js"></script>
+<script src="../assets/js/staff.js"></script>
+<script src="trainer.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const PF = window.PF || {};
+  const T = window.Trainer;
+
+  document.getElementById('icoBroadcast').innerHTML = PF.icon('megaphone');
+
+  let allSessions = [];
+  let assignedMembers = [];
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  let currentDOW = new Date().getDay();
+
+  // Highlight default tab
+  function updateTabs() {
+    document.querySelectorAll('#dowTabBar button').forEach(btn => {
+      btn.classList.toggle('active', Number(btn.dataset.dow) === currentDOW);
+    });
+  }
+
+  async function loadSchedule() {
+    try {
+      const data = await T.api.getSchedule();
+      allSessions = data.sessions || [];
+      assignedMembers = data.assigned_members || [];
+
+      // Render assigned members mini list
+      const mList = document.getElementById('assignedAthletesList');
+      document.getElementById('assignedAthletesSub').textContent = `${assignedMembers.length} athletes assigned`;
+      if (!assignedMembers.length) {
+        mList.innerHTML = '<div class="empty compact">No members assigned yet.</div>';
+      } else {
+        mList.innerHTML = assignedMembers.map(m => `
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--card)">
+            <div style="display:flex;align-items:center;gap:10px">
+              ${PF.avatar ? PF.avatar(m.name, 'sm') : ''}
+              <span style="font-size:13px;font-weight:600">${PF.esc(m.name)}</span>
+            </div>
+            <a class="btn btn-ghost btn-sm" href="members.html#detail=${m.id}">Profile</a>
+          </div>
+        `).join('');
+      }
+
+      renderDaySessions();
+    } catch (e) {
+      console.error(e);
+      PF.toast('Failed to load schedule: ' + e.message, 'error');
+    }
+  }
+
+  function renderDaySessions() {
+    document.getElementById('selectedDayTitle').textContent = `${days[currentDOW]} Sessions`;
+    const box = document.getElementById('daySessionsContainer');
+    const daySessions = allSessions.filter(s => s.dow === currentDOW);
+
+    if (!daySessions.length) {
+      box.innerHTML = `<div class="empty" style="padding:40px 0">${PF.icon('calendar')}<h3>No sessions on this day</h3><p>Enjoy your rest day or check other days of the week.</p></div>`;
+      return;
+    }
+
+    box.innerHTML = daySessions.map(s => `
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 18px;border-radius:var(--r);border:1px solid ${s.is_mine ? 'var(--gold)' : 'var(--line)'};background:${s.is_mine ? 'rgba(227,174,43,0.04)' : 'var(--card-2)'};flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:16px">
+          <div class="stat-ico tone-${s.is_mine ? 'gold' : 'blue'}" style="width:44px;height:44px;border-radius:12px">
+            ${PF.icon('clock')}
+          </div>
+          <div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+              <strong style="font-size:16px">${PF.esc(s.name)}</strong>
+              <span class="pill ${s.is_mine ? 'gold' : 'gray'}">${s.is_mine ? 'Coached by you' : PF.esc(s.coach)}</span>
+            </div>
+            <div style="font-size:13px;color:var(--text-2)">
+              ${s.time} • ${s.mins} mins • Capacity: ${s.cap} • Room: ${PF.esc(s.room || 'Main Floor')}
+            </div>
+          </div>
+        </div>
+        <div>
+          ${s.is_mine ? `<button class="btn btn-primary btn-sm" onclick="openSessionUpdateModal('${PF.esc(s.name)}')">Send Update</button>` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Day Tab Click Handlers
+  document.querySelectorAll('#dowTabBar button').forEach(btn => {
+    btn.onclick = () => {
+      currentDOW = Number(btn.dataset.dow);
+      updateTabs();
+      renderDaySessions();
+    };
+  });
+
+  // Broadcast Note Modal
+  window.openSessionUpdateModal = (sessName = '') => {
+    PF.modal({
+      title: 'Send Schedule Update',
+      body: `
+        <form id="scheduleNoteForm">
+          <p class="muted" style="margin-bottom:14px">This update is broadcast directly to all members assigned to your training roster.</p>
+          <div class="form-grp">
+            <label for="sessInput">Class or Session</label>
+            <input id="sessInput" type="text" value="${sessName || days[currentDOW] + ' Training Update'}" style="width:100%" required>
+          </div>
+          <div class="form-grp" style="margin-top:12px">
+            <label for="sessMsg">Notice to Members</label>
+            <textarea id="sessMsg" rows="4" placeholder="e.g. Please bring your training journals. Today we test 1RM squats." style="width:100%" required></textarea>
+          </div>
+        </form>
+      `,
+      confirm: 'Send to Members',
+      onConfirm: async (mEl) => {
+        const title = mEl.querySelector('#sessInput').value.trim();
+        const note = mEl.querySelector('#sessMsg').value.trim();
+        if (!note) {
+          PF.toast('Please write a message.', 'error');
+          return false;
+        }
+        try {
+          const res = await T.api.sendScheduleNote(title, note);
+          PF.toast(res.detail || 'Update sent to members!', 'success');
+          return true;
+        } catch (e) {
+          PF.toast(e.message || 'Failed to send update.', 'error');
+          return false;
+        }
+      }
+    });
+  };
+
+  document.getElementById('btnBroadcastDayNote').onclick = () => window.openSessionUpdateModal();
+
+  updateTabs();
+  loadSchedule();
+});
+</script>
+</body>
+</html>
+

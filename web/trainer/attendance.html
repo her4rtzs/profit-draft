@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Attendance — ProFit Trainer</title>
+  <meta name="theme-color" content="#0a1220">
+  <link rel="icon" href="../assets/img/logo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="../assets/css/staff.css">
+  <script src="../assets/js/staff-boot.js"></script>
+</head>
+<body data-portal="trainer" data-page="attendance" data-title="Attendance" data-eyebrow="Check-in Log" data-sub="Monitor gym check-ins and athlete attendance history." data-icon="calendar-check">
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="scrim" id="scrim"></div>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="content" id="content">
+      <!-- Attendance Stats -->
+      <section class="grid grid-4" style="margin-bottom:20px">
+        <div class="stat-card">
+          <div class="stat-ico tone-gold" id="icoTotalAtt"></div>
+          <div>
+            <div class="stat-num" id="statDayTotal">—</div>
+            <div class="stat-label">Gym Total Check-ins</div>
+            <small class="muted" id="statDateLabel">Selected Date</small>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-ico tone-green" id="icoMyMembers"></div>
+          <div>
+            <div class="stat-num" id="statMyAtt">—</div>
+            <div class="stat-label">My Members Present</div>
+            <small class="muted">Assigned athletes</small>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-ico tone-blue" id="icoMorning"></div>
+          <div>
+            <div class="stat-num" id="statMorning">—</div>
+            <div class="stat-label">Morning Sessions</div>
+            <small class="muted">Before 12:00 PM</small>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-ico tone-purple" id="icoEvening"></div>
+          <div>
+            <div class="stat-num" id="statEvening">—</div>
+            <div class="stat-label">Evening Sessions</div>
+            <small class="muted">After 12:00 PM</small>
+          </div>
+        </div>
+      </section>
+
+      <!-- Date & Filter Controls -->
+      <div class="card" style="margin-bottom:20px;padding:14px 18px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <button class="icon-btn" type="button" id="prevDayBtn" title="Previous day"><span id="icoPrev"></span></button>
+            <input type="date" id="datePicker" style="padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-weight:600">
+            <button class="icon-btn" type="button" id="nextDayBtn" title="Next day"><span id="icoNext"></span></button>
+            <button class="btn btn-ghost btn-sm" type="button" id="todayBtn">Today</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            <div class="tab-bar" style="margin:0;padding:3px">
+              <button class="tab-btn active" type="button" id="filterAll">All Check-ins</button>
+              <button class="tab-btn" type="button" id="filterMine">My Members Only</button>
+            </div>
+            <button class="btn btn-primary" type="button" id="btnRecordCheckIn">
+              <span id="icoCheckInPlus"></span>
+              <span>Record Check-in</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Attendance Table -->
+      <div class="card" style="padding:0;overflow:hidden">
+        <div class="table-wrap">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>Check-in Time</th>
+                <th>Member</th>
+                <th>Phone</th>
+                <th>Roster Status</th>
+                <th>Membership</th>
+                <th>Recorded By</th>
+                <th style="text-align:right">Action</th>
+              </tr>
+            </thead>
+            <tbody id="attendanceTbody">
+              <tr><td colspan="7" class="empty compact">Loading attendance log...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+  <nav class="bottom-nav" id="bottomNav" aria-label="Quick navigation"></nav>
+</div>
+
+<!-- Scripts -->
+<script src="../config.js"></script>
+<script src="../api.js"></script>
+<script src="../auth.js"></script>
+<script src="../assets/js/staff-icons.js"></script>
+<script src="../assets/js/staff-data.js"></script>
+<script src="../assets/js/staff.js"></script>
+<script src="trainer.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const PF = window.PF || {};
+  const T = window.Trainer;
+
+  // Insert icons
+  document.getElementById('icoTotalAtt').innerHTML = PF.icon('calendar-check');
+  document.getElementById('icoMyMembers').innerHTML = PF.icon('users');
+  document.getElementById('icoMorning').innerHTML = PF.icon('sun');
+  document.getElementById('icoEvening').innerHTML = PF.icon('moon');
+  document.getElementById('icoPrev').innerHTML = PF.icon('chevron-left');
+  document.getElementById('icoNext').innerHTML = PF.icon('chevron-right');
+  document.getElementById('icoCheckInPlus').innerHTML = PF.icon('plus');
+
+  const datePicker = document.getElementById('datePicker');
+  const todayISO = new Date().toISOString().slice(0, 10);
+  datePicker.value = todayISO;
+
+  let currentFilter = 'all';
+
+  async function loadAttendance() {
+    const selDate = datePicker.value || todayISO;
+    document.getElementById('statDateLabel').textContent = T.format.date(selDate);
+
+    try {
+      const data = await T.api.getAttendance(selDate, currentFilter);
+      const rows = data.attendances || [];
+
+      document.getElementById('statDayTotal').textContent = data.total ?? rows.length;
+      document.getElementById('statMyAtt').textContent = data.my_members_count ?? rows.filter(r => r.is_my_member).length;
+
+      let morning = 0, evening = 0;
+      rows.forEach(r => {
+        const h = new Date(r.check_in_at).getHours();
+        if (h < 12) morning++; else evening++;
+      });
+      document.getElementById('statMorning').textContent = morning;
+      document.getElementById('statEvening').textContent = evening;
+
+      const tbody = document.getElementById('attendanceTbody');
+      if (!rows.length) {
+        tbody.innerHTML = `<tr><td colspan="7" class="empty" style="padding:40px 0">${PF.icon('calendar-check')}<h3>No check-ins recorded for this date</h3><p>Use the "Record Check-in" button to check in an athlete.</p></td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = rows.map(r => `
+        <tr style="${r.is_my_member ? 'background:rgba(227,174,43,0.04)' : ''}">
+          <td>
+            <strong>${T.format.time(r.check_in_at)}</strong>
+          </td>
+          <td>
+            <div style="display:flex;align-items:center;gap:10px">
+              ${PF.avatar ? PF.avatar(r.member_name, 'sm') : ''}
+              <div>
+                <strong>${PF.esc(r.member_name)}</strong>
+                <div style="font-size:11px;color:var(--muted)">ID: #${r.member_id}</div>
+              </div>
+            </div>
+          </td>
+          <td>${PF.esc(r.member_phone || '—')}</td>
+          <td>
+            ${r.is_my_member 
+              ? '<span class="pill gold">● My Athlete</span>' 
+              : '<span class="pill gray">Gym Member</span>'}
+          </td>
+          <td>${T.format.statusPill(r.membership_status, true)}</td>
+          <td>${PF.esc(r.recorded_by || 'Staff')}</td>
+          <td style="text-align:right">
+            ${r.is_my_member 
+              ? `<a class="btn btn-ghost btn-sm" href="members.html#detail=${r.member_id}">Profile</a>` 
+              : '—'}
+          </td>
+        </tr>
+      `).join('');
+
+    } catch (e) {
+      console.error(e);
+      PF.toast('Failed to load attendance: ' + e.message, 'error');
+    }
+  }
+
+  // Date controls
+  datePicker.addEventListener('change', loadAttendance);
+  document.getElementById('todayBtn').onclick = () => {
+    datePicker.value = todayISO;
+    loadAttendance();
+  };
+  document.getElementById('prevDayBtn').onclick = () => {
+    const cur = new Date(datePicker.value || todayISO);
+    cur.setDate(cur.getDate() - 1);
+    datePicker.value = cur.toISOString().slice(0, 10);
+    loadAttendance();
+  };
+  document.getElementById('nextDayBtn').onclick = () => {
+    const cur = new Date(datePicker.value || todayISO);
+    cur.setDate(cur.getDate() + 1);
+    datePicker.value = cur.toISOString().slice(0, 10);
+    loadAttendance();
+  };
+
+  // Filter tabs
+  document.getElementById('filterAll').onclick = () => {
+    document.getElementById('filterAll').classList.add('active');
+    document.getElementById('filterMine').classList.remove('active');
+    currentFilter = 'all';
+    loadAttendance();
+  };
+  document.getElementById('filterMine').onclick = () => {
+    document.getElementById('filterMine').classList.add('active');
+    document.getElementById('filterAll').classList.remove('active');
+    currentFilter = 'mine';
+    loadAttendance();
+  };
+
+  // Record Check-in Button
+  document.getElementById('btnRecordCheckIn').onclick = async () => {
+    let members = [];
+    try { members = await T.api.getMembers(); } catch(e){}
+    const opts = members.map(m => `<option value="${m.id}">${PF.esc(m.name)} (ID: ${m.id})</option>`).join('');
+
+    PF.modal({
+      title: 'Record Member Check-in',
+      body: `
+        <form id="checkInModalForm">
+          <p class="muted" style="margin-bottom:14px">Select an athlete from your roster or enter any member ID to record check-in.</p>
+          <div class="form-grp">
+            <label for="attModalSelect">My Roster</label>
+            <select id="attModalSelect" style="width:100%">
+              <option value="">-- Choose member from roster --</option>
+              ${opts}
+            </select>
+          </div>
+          <div class="form-grp" style="margin-top:12px">
+            <label for="attModalInput">Or Member ID</label>
+            <input id="attModalInput" type="number" placeholder="e.g. 1" min="1" style="width:100%">
+          </div>
+        </form>
+      `,
+      confirm: 'Confirm Check-in',
+      onConfirm: async (mEl) => {
+        const sel = mEl.querySelector('#attModalSelect').value;
+        const inp = mEl.querySelector('#attModalInput').value;
+        const id = sel || inp;
+        if (!id) {
+          PF.toast('Please select or enter a member ID.', 'error');
+          return false;
+        }
+        try {
+          const res = await T.api.checkIn(id);
+          PF.toast(res.detail || 'Check-in recorded!', 'success');
+          loadAttendance();
+          return true;
+        } catch (err) {
+          PF.toast(err.message || 'Check-in failed.', 'error');
+          return false;
+        }
+      }
+    });
+  };
+
+  loadAttendance();
+});
+</script>
+</body>
+</html>
+

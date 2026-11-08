@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>My Members — ProFit Trainer</title>
+  <meta name="theme-color" content="#0a1220">
+  <link rel="icon" href="../assets/img/logo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="../assets/css/staff.css">
+  <script src="../assets/js/staff-boot.js"></script>
+</head>
+<body data-portal="trainer" data-page="members" data-title="My Members" data-eyebrow="Coaching Roster" data-sub="Athletes and members currently assigned to you." data-icon="users">
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="scrim" id="scrim"></div>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="content" id="content">
+      <!-- Roster Summary Bar -->
+      <section class="grid grid-4" style="margin-bottom:20px">
+        <div class="stat-card">
+          <div class="stat-ico tone-gold" id="icoTotal"></div>
+          <div>
+            <div class="stat-num" id="statTotal">—</div>
+            <div class="stat-label">Total Assigned</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-ico tone-green" id="icoActive"></div>
+          <div>
+            <div class="stat-num" id="statActive">—</div>
+            <div class="stat-label">Active Memberships</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-ico tone-blue" id="icoToday"></div>
+          <div>
+            <div class="stat-num" id="statToday">—</div>
+            <div class="stat-label">In Gym Today</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-ico tone-purple" id="icoCapacity"></div>
+          <div>
+            <div class="stat-num" id="statAvailable">—</div>
+            <div class="stat-label">Slots Remaining</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Filter / Search Toolbar -->
+      <div class="card" style="margin-bottom:20px;padding:14px 18px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:260px">
+            <div class="search-wrap" style="flex:1">
+              <label class="search" style="border:1px solid var(--line);background:var(--card-2)">
+                <span id="icoSearch"></span>
+                <input type="search" id="memberSearch" placeholder="Search by member name, phone or email..." autocomplete="off">
+              </label>
+            </div>
+            <select id="statusFilter" style="padding:9px 14px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-weight:600">
+              <option value="ALL">All Statuses</option>
+              <option value="ACTIVE">Active Only</option>
+              <option value="EXPIRED">Expired</option>
+              <option value="TODAY">Checked In Today</option>
+            </select>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="tab-bar" style="margin:0;padding:3px">
+              <button class="tab-btn active" type="button" id="btnViewTable" title="Table view"><span id="icoTbl"></span></button>
+              <button class="tab-btn" type="button" id="btnViewCards" title="Card view"><span id="icoGrd"></span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table View -->
+      <div class="card" id="tableViewWrap" style="padding:0;overflow:hidden">
+        <div class="table-wrap">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>Member</th>
+                <th>Contact</th>
+                <th>Membership</th>
+                <th>Expiry Date</th>
+                <th>Assigned Since</th>
+                <th>Total Check-ins</th>
+                <th>Today's Status</th>
+                <th style="text-align:right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="membersTbody">
+              <tr><td colspan="8" class="empty compact">Loading roster members...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Card View (Hidden by default) -->
+      <div id="cardViewWrap" class="grid grid-3" style="gap:18px" hidden></div>
+
+      <!-- Member Detail Drawer / Modal -->
+      <dialog class="modal" id="memberDetailModal">
+        <div class="modal-box" style="max-width:680px;width:95%">
+          <div class="modal-head" style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--line)">
+            <strong style="font-size:16px">Member Coaching Profile</strong>
+            <button class="icon-btn" type="button" id="closeDetailBtn" aria-label="Close modal">&times;</button>
+          </div>
+          <div class="modal-body" id="memberDetailContent" style="padding:20px;max-height:80vh;overflow-y:auto">
+            <div class="empty compact">Loading profile...</div>
+          </div>
+        </div>
+      </dialog>
+    </main>
+  </div>
+  <nav class="bottom-nav" id="bottomNav" aria-label="Quick navigation"></nav>
+</div>
+
+<!-- Scripts -->
+<script src="../config.js"></script>
+<script src="../api.js"></script>
+<script src="../auth.js"></script>
+<script src="../assets/js/staff-icons.js"></script>
+<script src="../assets/js/staff-data.js"></script>
+<script src="../assets/js/staff.js"></script>
+<script src="trainer.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const PF = window.PF || {};
+  const T = window.Trainer;
+
+  // Insert icons
+  document.getElementById('icoTotal').innerHTML = PF.icon('users');
+  document.getElementById('icoActive').innerHTML = PF.icon('check');
+  document.getElementById('icoToday').innerHTML = PF.icon('calendar-check');
+  document.getElementById('icoCapacity').innerHTML = PF.icon('sparkles');
+  document.getElementById('icoSearch').innerHTML = PF.icon('search');
+  document.getElementById('icoTbl').innerHTML = PF.icon('menu');
+  document.getElementById('icoGrd').innerHTML = PF.icon('home');
+
+  let allMembers = [];
+  let currentView = 'table';
+
+  async function fetchRoster() {
+    try {
+      allMembers = await T.api.getMembers();
+      updateStats();
+      renderRoster();
+      checkHash();
+    } catch (e) {
+      console.error(e);
+      PF.toast('Failed to load roster: ' + e.message, 'error');
+    }
+  }
+
+  function updateStats() {
+    const total = allMembers.length;
+    const active = allMembers.filter(m => m.is_active || m.membership_status === 'ACTIVE').length;
+    const today = allMembers.filter(m => m.today_checked_in).length;
+    document.getElementById('statTotal').textContent = total;
+    document.getElementById('statActive').textContent = active;
+    document.getElementById('statToday').textContent = today;
+    document.getElementById('statAvailable').textContent = Math.max(0, 20 - total);
+  }
+
+  function getFilteredMembers() {
+    const q = document.getElementById('memberSearch').value.trim().toLowerCase();
+    const st = document.getElementById('statusFilter').value;
+    return allMembers.filter(m => {
+      const matchQ = !q || (m.name + ' ' + (m.phone || '') + ' ' + (m.email || '')).toLowerCase().includes(q);
+      let matchSt = true;
+      if (st === 'ACTIVE') matchSt = m.is_active || m.membership_status === 'ACTIVE';
+      else if (st === 'EXPIRED') matchSt = m.membership_status === 'EXPIRED' || !m.is_active;
+      else if (st === 'TODAY') matchSt = !!m.today_checked_in;
+      return matchQ && matchSt;
+    });
+  }
+
+  function renderRoster() {
+    const list = getFilteredMembers();
+    const tbody = document.getElementById('membersTbody');
+    const cardWrap = document.getElementById('cardViewWrap');
+
+    if (!list.length) {
+      const emptyHtml = `<div class="empty" style="padding:40px 0">${PF.icon('users')}<h3>No members match your criteria</h3><p>Try adjusting your search or filter.</p></div>`;
+      tbody.innerHTML = `<tr><td colspan="8">${emptyHtml}</td></tr>`;
+      cardWrap.innerHTML = emptyHtml;
+      return;
+    }
+
+    // Render Table
+    tbody.innerHTML = list.map(m => `
+      <tr>
+        <td>
+          <div style="display:flex;align-items:center;gap:12px">
+            ${PF.avatar ? PF.avatar(m.name, 'md') : ''}
+            <div>
+              <strong style="font-size:14px">${PF.esc(m.name)}</strong>
+              <div style="font-size:11.5px;color:var(--muted)">ID: #${m.id}</div>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div style="font-size:13px">${PF.esc(m.email || '—')}</div>
+          <small style="color:var(--muted)">${PF.esc(m.phone || '—')}</small>
+        </td>
+        <td>${T.format.statusPill(m.membership_status, m.is_active)}</td>
+        <td>${T.format.date(m.expiry_date)}</td>
+        <td>${T.format.date(m.assigned_at)}</td>
+        <td><strong>${m.total_checkins ?? 0}</strong> visits</td>
+        <td>
+          ${m.today_checked_in 
+            ? '<span class="pill green">● In Gym Today</span>' 
+            : '<span class="pill gray">Not in today</span>'}
+        </td>
+        <td style="text-align:right">
+          <div style="display:inline-flex;gap:6px">
+            <button class="btn btn-ghost btn-sm" onclick="openMemberDetail(${m.id})">Profile</button>
+            ${!m.today_checked_in ? `<button class="btn btn-primary btn-sm" onclick="quickCheckInMember(${m.id}, '${PF.esc(m.name)}')">Check In</button>` : ''}
+          </div>
+        </td>
+      </tr>
+    `).join('');
+
+    // Render Cards
+    cardWrap.innerHTML = list.map(m => `
+      <div class="card" style="display:flex;flex-direction:column;justify-content:space-between">
+        <div>
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px">
+            <div style="display:flex;align-items:center;gap:12px">
+              ${PF.avatar ? PF.avatar(m.name, 'md') : ''}
+              <div>
+                <strong style="font-size:15px">${PF.esc(m.name)}</strong>
+                <div style="font-size:12px;color:var(--muted)">#${m.id}</div>
+              </div>
+            </div>
+            ${T.format.statusPill(m.membership_status, m.is_active)}
+          </div>
+          <div style="display:grid;gap:6px;font-size:12.5px;color:var(--text-2);border-top:1px solid var(--line);padding-top:12px">
+            <div><span style="color:var(--muted)">Email:</span> ${PF.esc(m.email || '—')}</div>
+            <div><span style="color:var(--muted)">Phone:</span> ${PF.esc(m.phone || '—')}</div>
+            <div><span style="color:var(--muted)">Expires:</span> ${T.format.date(m.expiry_date)}</div>
+            <div><span style="color:var(--muted)">Check-ins:</span> <strong>${m.total_checkins ?? 0}</strong> visits</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:16px;border-top:1px solid var(--line);padding-top:12px">
+          <button class="btn btn-ghost btn-sm" style="flex:1" onclick="openMemberDetail(${m.id})">View History</button>
+          ${!m.today_checked_in ? `<button class="btn btn-primary btn-sm" style="flex:1" onclick="quickCheckInMember(${m.id}, '${PF.esc(m.name)}')">Check In</button>` : '<span class="pill green" style="margin:auto">Checked in</span>'}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Toggle Table / Card view
+  document.getElementById('btnViewTable').onclick = () => {
+    document.getElementById('btnViewTable').classList.add('active');
+    document.getElementById('btnViewCards').classList.remove('active');
+    document.getElementById('tableViewWrap').hidden = false;
+    document.getElementById('cardViewWrap').hidden = true;
+  };
+  document.getElementById('btnViewCards').onclick = () => {
+    document.getElementById('btnViewCards').classList.add('active');
+    document.getElementById('btnViewTable').classList.remove('active');
+    document.getElementById('tableViewWrap').hidden = true;
+    document.getElementById('cardViewWrap').hidden = false;
+  };
+
+  document.getElementById('memberSearch').addEventListener('input', PF.debounce(renderRoster, 120));
+  document.getElementById('statusFilter').addEventListener('change', renderRoster);
+
+  // Quick Check In
+  window.quickCheckInMember = async (id, name) => {
+    try {
+      const res = await T.api.checkIn(id);
+      PF.toast(res.detail || `${name} checked in!`, 'success');
+      fetchRoster();
+    } catch (err) {
+      PF.toast(err.message || 'Check-in failed.', 'error');
+    }
+  };
+
+  // Detail Modal
+  const modal = document.getElementById('memberDetailModal');
+  document.getElementById('closeDetailBtn').onclick = () => {
+    modal.close();
+    if (location.hash.startsWith('#detail=')) history.replaceState(null, '', location.pathname);
+  };
+
+  window.openMemberDetail = async (id) => {
+    location.hash = `detail=${id}`;
+    const box = document.getElementById('memberDetailContent');
+    box.innerHTML = '<div class="empty compact">Loading member profile and attendance records...</div>';
+    modal.showModal();
+
+    try {
+      const d = await T.api.getMemberDetail(id);
+      box.innerHTML = `
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:14px">
+            ${PF.avatar ? PF.avatar(d.name, 'lg') : ''}
+            <div>
+              <h2 style="font-size:18px;margin:0 0 4px">${PF.esc(d.name)}</h2>
+              <div style="color:var(--muted);font-size:13px">${PF.esc(d.email || '')} • ${PF.esc(d.phone || '')}</div>
+            </div>
+          </div>
+          <div>${T.format.statusPill(d.membership_status, d.is_active)}</div>
+        </div>
+
+        <div class="grid grid-3" style="gap:12px;margin-bottom:20px;padding:12px;background:var(--card-2);border-radius:var(--r-sm)">
+          <div><small class="muted">Expiry Date</small><div style="font-weight:700">${T.format.date(d.expiry_date)}</div></div>
+          <div><small class="muted">Date Joined</small><div style="font-weight:700">${T.format.date(d.date_joined)}</div></div>
+          <div><small class="muted">Assigned Coach</small><div style="font-weight:700">${T.format.date(d.assigned_at)}</div></div>
+        </div>
+
+        <div style="margin-top:20px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <strong style="font-size:14px">Attendance History (${d.total_checkins ?? 0} total check-ins)</strong>
+            <button class="btn btn-primary btn-sm" onclick="quickCheckInMember(${d.id}, '${PF.esc(d.name)}')">Record Check-in Today</button>
+          </div>
+          <div class="table-wrap" style="max-height:260px;overflow-y:auto;border:1px solid var(--line);border-radius:10px">
+            <table class="tbl">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Recorded By</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${(d.attendances || []).length ? d.attendances.map(a => `
+                  <tr>
+                    <td><strong>${T.format.date(a.check_in_date)}</strong></td>
+                    <td>${T.format.time(a.check_in_at)}</td>
+                    <td>${PF.esc(a.recorded_by || 'Front Desk')}</td>
+                  </tr>
+                `).join('') : '<tr><td colspan="3" class="empty compact">No recorded check-ins yet.</td></tr>'}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    } catch (e) {
+      box.innerHTML = `<div class="empty"><h3>Failed to load member</h3><p>${PF.esc(e.message)}</p></div>`;
+    }
+  };
+
+  function checkHash() {
+    const m = location.hash.match(/#detail=(\d+)/);
+    if (m) openMemberDetail(m[1]);
+  }
+
+  window.addEventListener('hashchange', checkHash);
+  fetchRoster();
+});
+</script>
+</body>
+</html>
+
