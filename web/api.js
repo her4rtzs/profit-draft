@@ -44,10 +44,20 @@
     const payload = await response.json().catch(() => ({}));
     if (!response.ok) {
       const error = new Error(response.status === 401 ? "Your session has expired. Please sign in again."
-        : response.status === 403 ? "You do not have permission to perform this action."
+        : response.status === 403 ? (payload.detail || "You do not have permission to perform this action.")
         : (payload.detail || payload.message || `Request failed (${response.status}).`));
       error.status = response.status;
       throw error;
+    }
+    if (method === "POST" && /check-in/i.test(path)) {
+      try {
+        localStorage.setItem("profit-last-checkin-ts", String(Date.now()));
+        if (window.BroadcastChannel) {
+          const bc = new BroadcastChannel("profit-attendance-sync");
+          bc.postMessage({ type: "checkin", path, ts: Date.now() });
+          bc.close();
+        }
+      } catch (_) {}
     }
     return payload;
   }

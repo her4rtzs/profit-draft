@@ -61,24 +61,39 @@
           return Trainer.demo.getAttendance(dateStr, filter);
         }
       },
-      async getAttendanceSeries({ period = 'days', from = '', to = '', memberId = 'all' } = {}) {
-        if (!api) return Trainer.demo.getAttendanceSeries({ period, from, to, memberId });
+      async getAttendanceSeries({ granularity = 'day', period = '', from = '', to = '', memberId = 'all' } = {}) {
+        const granMap = { days: 'day', day: 'day', weeks: 'week', week: 'week', months: 'month', month: 'month', years: 'year', year: 'year' };
+        const gran = granMap[String(granularity || period || 'day').toLowerCase()] || 'day';
+        if (!api) return Trainer.demo.getAttendanceSeries({ granularity: gran, from, to, memberId });
         try {
           const q = new URLSearchParams();
-          q.set('period', period);
+          q.set('granularity', gran);
           if (from) q.set('from', from);
           if (to) q.set('to', to);
           q.set('member_id', memberId && memberId !== 'all' ? String(memberId) : 'all');
           return await api.get(`/trainer/attendance/?${q.toString()}`);
         } catch (e) {
-          if (e && e.status === 403) throw e;
+          if (e && (e.status === 403 || e.status === 400)) throw e;
           console.warn('API error, using demo fallback:', e);
-          return Trainer.demo.getAttendanceSeries({ period, from, to, memberId });
+          return Trainer.demo.getAttendanceSeries({ granularity: gran, from, to, memberId });
         }
       },
       async checkIn(memberId) {
-        if (!api) return Trainer.demo.checkIn(memberId);
-        return await api.post('/staff/attendance/check-in/', { member_id: Number(memberId) });
+        let res;
+        if (!api) {
+          res = await Trainer.demo.checkIn(memberId);
+        } else {
+          res = await api.post('/staff/attendance/check-in/', { member_id: Number(memberId) });
+        }
+        try {
+          localStorage.setItem('profit-last-checkin-ts', String(Date.now()));
+          if (window.BroadcastChannel) {
+            const bc = new BroadcastChannel('profit-attendance-sync');
+            bc.postMessage({ type: 'checkin', memberId: Number(memberId), ts: Date.now() });
+            bc.close();
+          }
+        } catch (_) {}
+        return res;
       },
       async getSchedule() {
         if (!api) return Trainer.demo.getSchedule();
@@ -215,9 +230,17 @@
           ]
         };
       },
-      getAttendanceSeries({ period = 'days', from = '', to = '', memberId = 'all' } = {}) {
+      getAttendanceSeries({ granularity = 'day', period = '', from = '', to = '', memberId = 'all' } = {}) {
+        const granMap = { days: 'day', day: 'day', weeks: 'week', week: 'week', months: 'month', month: 'month', years: 'year', year: 'year' };
+        const gran = granMap[String(granularity || period || 'day').toLowerCase()] || 'day';
+        const periodAlias = { day: 'days', week: 'weeks', month: 'months', year: 'years' }[gran];
+
         const parseDate = s => {
           if (!s) return null;
+          if (/^\d{2}\/\d{2}\/\d{4}$/.test(String(s))) {
+            const [mm, dd, yy] = String(s).split('/').map(Number);
+            return new Date(yy, mm - 1, dd);
+          }
           const [y, m, d] = String(s).split('-').map(Number);
           return (!y || !m || !d) ? null : new Date(y, m - 1, d);
         };
@@ -236,9 +259,9 @@
         let dFrom = parseDate(from);
         if (!dFrom) {
           dFrom = new Date(dTo);
-          if (period === 'weeks') dFrom.setDate(dFrom.getDate() - 55);
-          else if (period === 'months') dFrom = new Date(dTo.getFullYear(), dTo.getMonth() - 5, 1);
-          else if (period === 'years') dFrom = new Date(dTo.getFullYear() - 2, 0, 1);
+          if (gran === 'week') dFrom.setDate(dFrom.getDate() - 55);
+          else if (gran === 'month') dFrom = new Date(dTo.getFullYear(), dTo.getMonth() - 5, 1);
+          else if (gran === 'year') dFrom = new Date(dTo.getFullYear() - 2, 0, 1);
           else dFrom.setDate(dFrom.getDate() - 13);
         }
         if (dFrom > dTo) { const t = dFrom; dFrom = dTo; dTo = t; }
@@ -265,39 +288,48 @@
             cur.setDate(cur.getDate() + 1);
           }
           const missed = Math.max(0, s - c);
-          const rate = s > 0 ? Math.round((c / s) * 100) : 0;
-          return { checked_in: c, scheduled: s, missed, rate };
+          const rate = s > 0 ? Math.round((c / s) * 1000) / 10 : null;
+          return { checked_in: c, scheduled: s, missed, attendance_rate: rate, rate };
         };
 
         const buckets = [];
-        if (period === 'days') {
+        if (gran === 'day') {
           const cur = new Date(dFrom);
           while (cur <= dTo) {
             const t = rangeTally(cur, cur);
+            const iso = toIso(cur);
             buckets.push({
-              key: toIso(cur),
+              start: iso,
+              key: iso,
               label: shortFmt(cur),
               tooltip_label: fullFmt(cur),
               ...t
             });
             cur.setDate(cur.getDate() + 1);
           }
-        } else if (period === 'weeks') {
-          const cur = new Date(dFrom);
-          while (cur <= dTo) {
-            const wEnd = new Date(cur);
-            wEnd.setDate(wEnd.getDate() + 6);
-            if (wEnd > dTo) wEnd.setTime(dTo.getTime());
-            const t = rangeTally(cur, wEnd);
+        } else if (gran === 'week') {
+          // Weeks start on Monday
+          const firstMon = new Date(dFrom);
+          const dow = (firstMon.getDay() + 6) % 7; // Mon=0 .. Sun=6
+          firstMon.setDate(firstMon.getDate() - dow);
+          const curMon = new Date(firstMon);
+          while (curMon <= dTo) {
+            const curSun = new Date(curMon);
+            curSun.setDate(curSun.getDate() + 6);
+            const wStart = curMon < dFrom ? dFrom : curMon;
+            const wEnd = curSun > dTo ? dTo : curSun;
+            const t = rangeTally(wStart, wEnd);
+            const iso = toIso(curMon);
             buckets.push({
-              key: toIso(cur),
-              label: shortFmt(cur),
-              tooltip_label: `${shortFmt(cur)} – ${fullFmt(wEnd)}`,
+              start: iso,
+              key: iso,
+              label: shortFmt(curMon),
+              tooltip_label: `${shortFmt(curMon)} – ${fullFmt(curSun)}`,
               ...t
             });
-            cur.setDate(cur.getDate() + 7);
+            curMon.setDate(curMon.getDate() + 7);
           }
-        } else if (period === 'months') {
+        } else if (gran === 'month') {
           let y = dFrom.getFullYear(), m = dFrom.getMonth();
           const sameYear = dFrom.getFullYear() === dTo.getFullYear();
           while (y < dTo.getFullYear() || (y === dTo.getFullYear() && m <= dTo.getMonth())) {
@@ -306,8 +338,10 @@
             const mStart = first < dFrom ? dFrom : first;
             const mEnd = last > dTo ? dTo : last;
             const t = rangeTally(mStart, mEnd);
+            const iso = toIso(first);
             buckets.push({
-              key: `${y}-${String(m + 1).padStart(2, '0')}`,
+              start: iso,
+              key: iso,
               label: first.toLocaleDateString('en-US', sameYear ? { month: 'short' } : { month: 'short', year: '2-digit' }),
               tooltip_label: first.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
               ...t
@@ -322,8 +356,10 @@
             const yStart = first < dFrom ? dFrom : first;
             const yEnd = last > dTo ? dTo : last;
             const t = rangeTally(yStart, yEnd);
+            const iso = toIso(first);
             buckets.push({
-              key: String(y),
+              start: iso,
+              key: iso,
               label: String(y),
               tooltip_label: String(y),
               ...t
@@ -333,19 +369,22 @@
 
         const totalC = buckets.reduce((a, b) => a + b.checked_in, 0);
         const totalS = buckets.reduce((a, b) => a + b.scheduled, 0);
-        const totalM = buckets.reduce((a, b) => a + b.missed, 0);
-        const avgR = totalS > 0 ? Math.round((totalC / totalS) * 100) : 0;
+        const totalM = Math.max(0, totalS - totalC);
+        const avgR = totalS > 0 ? Math.round((totalC / totalS) * 1000) / 10 : null;
 
         return {
-          period,
+          granularity: gran,
+          period: periodAlias,
           from: toIso(dFrom),
           to: toIso(dTo),
           member_id: singleMember ? Number(memberId) : 'all',
+          updated_at: new Date().toISOString(),
           buckets,
           summary: {
             checked_in: totalC,
             scheduled: totalS,
             missed: totalM,
+            attendance_rate: avgR,
             rate: avgR
           }
         };

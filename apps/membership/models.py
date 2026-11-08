@@ -116,6 +116,10 @@ class Attendance(models.Model):
                 name="unique_member_check_in_date",
             ),
         ]
+        indexes = [
+            models.Index(fields=["check_in_date"], name="attendance_date_idx"),
+            models.Index(fields=["member", "check_in_date"], name="attendance_member_date_idx"),
+        ]
 
     def __str__(self):
         return f"Attendance<{self.member_id} {self.check_in_date}>"

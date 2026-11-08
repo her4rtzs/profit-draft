@@ -124,7 +124,67 @@ class TrainerTests(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertTrue(Notification.objects.filter(recipient=self.m_user, kind="TRAINER", title__contains="Sunrise HIIT").exists())
 
-    def test_trainer_attendance_series_and_rbac(self):
+    def test_attendance_week_bucketing_across_month_boundaries(self):
+        """Monday-start week spanning Sep 28 – Oct 4 aggregates Sep and Oct check-ins into one bucket."""
+        self.m.date_joined = timezone.datetime(2026, 9, 1).date()
+        self.m.save(update_fields=["date_joined"])
+        services.assign_trainer(self.m, self.t1, actor=self.owner)
+
+        # Create check-ins on Tue Sep 29, 2026 and Thu Oct 1, 2026 (Manila time)
+        tz = timezone.get_current_timezone()
+        Attendance.objects.create(
+            member=self.m,
+            recorded_by=self.t1_user,
+            check_in_at=timezone.datetime(2026, 9, 29, 9, 0, tzinfo=tz),
+        )
+        Attendance.objects.create(
+            member=self.m,
+            recorded_by=self.t1_user,
+            check_in_at=timezone.datetime(2026, 10, 1, 10, 0, tzinfo=tz),
+        )
+
+        self.client.force_login(self.t1_user)
+        res = self.client.get(
+            f"/api/trainer/attendance/?granularity=week&from=2026-09-28&to=2026-10-04&member_id={self.m.pk}"
+        )
+        self.assertEqual(res.status_code, 200)
+        payload = res.json()
+        self.assertEqual(payload["granularity"], "week")
+        self.assertEqual(payload["from"], "2026-09-28")
+        self.assertEqual(payload["to"], "2026-10-04")
+        self.assertEqual(len(payload["buckets"]), 1)
+
+        bucket = payload["buckets"][0]
+        self.assertEqual(bucket["start"], "2026-09-28")
+        self.assertEqual(bucket["label"], "Sep 28")
+        self.assertEqual(bucket["checked_in"], 2)
+        self.assertEqual(bucket["scheduled"], 7)
+        self.assertEqual(bucket["missed"], 5)
+        self.assertAlmostEqual(bucket["attendance_rate"], round(2 / 7 * 100, 1))
+        self.assertEqual(payload["summary"]["checked_in"], 2)
+        self.assertEqual(payload["summary"]["scheduled"], 7)
+
+    def test_attendance_scheduled_zero_returns_null_rate(self):
+        """When scheduled is 0 for a bucket or summary, attendance_rate is None (JSON null)."""
+        self.m.membership_status = MemberProfile.MembershipStatus.PENDING
+        self.m.save(update_fields=["membership_status"])
+        services.assign_trainer(self.m, self.t1, actor=self.owner)
+
+        self.client.force_login(self.t1_user)
+        res = self.client.get(
+            "/api/trainer/attendance/?granularity=day&from=2026-10-01&to=2026-10-03&member_id=all"
+        )
+        self.assertEqual(res.status_code, 200)
+        payload = res.json()
+        self.assertEqual(payload["summary"]["scheduled"], 0)
+        self.assertEqual(payload["summary"]["checked_in"], 0)
+        self.assertIsNone(payload["summary"]["attendance_rate"])
+        for b in payload["buckets"]:
+            self.assertEqual(b["scheduled"], 0)
+            self.assertEqual(b["missed"], 0)
+            self.assertIsNone(b["attendance_rate"])
+
+    def test_trainer_attendance_series_rbac_and_bucket_cap(self):
         services.assign_trainer(self.m, self.t1, actor=self.owner)
         today = timezone.localdate()
         Attendance.objects.create(member=self.m, recorded_by=self.t1_user)
@@ -134,20 +194,28 @@ class TrainerTests(TestCase):
 
         # Query assigned member attendance series (with swapped dates to test auto-swap)
         res = self.client.get(
-            f"/api/trainer/attendance/?period=days&from={today.isoformat()}&to={(today - timezone.timedelta(days=3)).isoformat()}&member_id={self.m.pk}"
+            f"/api/trainer/attendance/?granularity=day&from={today.isoformat()}&to={(today - timezone.timedelta(days=3)).isoformat()}&member_id={self.m.pk}"
         )
         self.assertEqual(res.status_code, 200)
         payload = res.json()
-        self.assertEqual(payload["period"], "days")
+        self.assertEqual(payload["granularity"], "day")
         self.assertEqual(payload["from"], (today - timezone.timedelta(days=3)).isoformat())
         self.assertEqual(payload["to"], today.isoformat())
         self.assertEqual(payload["summary"]["checked_in"], 1)
         self.assertEqual(len(payload["buckets"]), 4)
 
-        # Querying unassigned member (self.m2) is forbidden (403)
+        # Querying unassigned member (self.m2) returns 403 Forbidden
         res_forbidden = self.client.get(
-            f"/api/trainer/attendance/?period=days&member_id={self.m2.pk}"
+            f"/api/trainer/attendance/?granularity=day&member_id={self.m2.pk}"
         )
         self.assertEqual(res_forbidden.status_code, 403)
+
+        # Requesting > 60 buckets returns 400 Bad Request with error detail
+        res_too_large = self.client.get(
+            "/api/trainer/attendance/?granularity=day&from=2026-01-01&to=2026-06-01&member_id=all"
+        )
+        self.assertEqual(res_too_large.status_code, 400)
+        self.assertIn("detail", res_too_large.json())
+
 
 
