@@ -22,9 +22,11 @@
 html body nav.sidebar,
 html body aside.sidebar,
 html body .sidebar {
-  position: fixed !important;
-  inset: 0 auto 0 0 !important;
+  position: sticky !important;
+  top: 0 !important;
+  left: 0 !important;
   z-index: 100 !important;
+  flex: 0 0 auto !important;
   width: var(--sidebar-w) !important;
   height: 100vh !important;
   box-sizing: border-box !important;
@@ -39,6 +41,7 @@ html body .sidebar {
   border-radius: 0 20px 20px 0 !important;
   box-shadow: 10px 0 35px rgba(0, 0, 0, 0.25) !important;
   transform: none !important;
+  transition: width 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
 }
 
 /* Prevent full-page opacity blank flash during early page paint */
@@ -51,17 +54,22 @@ html.pf-pre * {
 }
 
 /* ==========================================================================
-   2. MAIN DASHBOARD WRAPPER
+   2. MAIN DASHBOARD WRAPPER (Flexbox shared layout across all portals)
    ========================================================================== */
 
 html body .dashboard,
 html body .app {
-  display: block !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: stretch !important;
   width: 100% !important;
   min-width: 0 !important;
   min-height: 100vh !important;
   position: relative !important;
-  background: var(--bg, #0a0e16) !important;
+  background: var(--pf-page-bg, var(--bg, #0a0e16)) !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 /* ==========================================================================
@@ -485,9 +493,11 @@ html body .sidebar .account-menu button[data-logout] i {
   html body nav.sidebar#sidebar,
   html body aside.sidebar#sidebar,
   html body .sidebar#sidebar {
-    position: fixed !important;
-    inset: 0 auto 0 0 !important;
+    position: sticky !important;
+    top: 0 !important;
+    left: 0 !important;
     z-index: 100 !important;
+    flex: 0 0 auto !important;
     min-width: 0 !important;
     max-width: none !important;
     height: 100vh !important;
@@ -503,14 +513,25 @@ html body .sidebar .account-menu button[data-logout] i {
     border-radius: 0 20px 20px 0 !important;
     box-shadow: 10px 0 35px rgba(0, 0, 0, 0.25) !important;
     transform: none !important;
-    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1),
-                width 0.22s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+    transition: width 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
   }
 
   html body nav.sidebar#sidebar:not(:hover):not(:focus-within),
   html body aside.sidebar#sidebar:not(:hover):not(:focus-within),
   html body .sidebar#sidebar:not(:hover):not(:focus-within) {
     width: var(--sb-rail) !important;
+  }
+
+  html body nav.sidebar#sidebar:hover,
+  html body nav.sidebar#sidebar:focus-within,
+  html body aside.sidebar#sidebar:hover,
+  html body aside.sidebar#sidebar:focus-within,
+  html body .sidebar#sidebar:hover,
+  html body .sidebar#sidebar:focus-within,
+  html body.sb-expanded nav.sidebar#sidebar,
+  html body.sb-expanded aside.sidebar#sidebar,
+  html body.sb-expanded .sidebar#sidebar {
+    width: var(--sidebar-w) !important;
   }
 
   /* Resting rail: icons only, centred */
@@ -674,59 +695,106 @@ html body .sidebar .account-menu button[data-logout] i {
     gap: 12px !important;
   }
 
-  /* All page columns across Staff, Trainer, and Member reserve 80px when sidebar is resting */
+  /* On desktop (> 768px): Hide scrim backdrop so it never intercepts layout or clicks */
+  html body .scrim,
+  html body #scrim {
+    display: none !important;
+  }
+
+  /* Member Portal Desktop Layout (CSS Grid) */
+  html body.member-home {
+    display: grid !important;
+    grid-template-columns: var(--sb-rail, 80px) 1fr !important;
+    grid-template-rows: auto 1fr !important;
+    grid-template-areas:
+      "sidebar topbar"
+      "sidebar content" !important;
+    min-height: 100vh !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transition: grid-template-columns 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+  }
+  html body.member-home.sb-expanded,
+  html body.member-home:has(nav.sidebar:hover),
+  html body.member-home:has(nav.sidebar:focus-within) {
+    grid-template-columns: var(--sidebar-w, 260px) 1fr !important;
+  }
+  html body.member-home > nav.sidebar {
+    grid-area: sidebar !important;
+    position: sticky !important;
+    top: 0 !important;
+    height: 100vh !important;
+    width: 100% !important;
+  }
+  html body.member-home > .member-top {
+    grid-area: topbar !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+  }
+  html body.member-home > .member-content {
+    grid-area: content !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    min-width: 0 !important;
+  }
+
+  /* Shared Flexbox Main Content across Staff, Trainer, and Admin Portals */
   html body nav.sidebar#sidebar ~ .main-content,
   html body .dashboard > main.main-content,
+  html body .dashboard > .main-content,
   html body aside.sidebar#sidebar ~ .main,
   html body aside.sidebar#sidebar ~ .content,
   html body aside.sidebar#sidebar ~ .scrim ~ .main,
   html body .app > .main,
   html body .app > .content,
   html body .main,
-  html body .main-content,
-  html body.member-home .member-content,
-  html body.member-home .member-top {
-    display: block !important;
-    box-sizing: border-box !important;
-    margin-left: var(--sb-rail) !important;
-    margin-right: 0 !important;
-    margin-inline: 0 !important;
-    width: calc(100% - var(--sb-rail)) !important;
-    max-width: calc(100% - var(--sb-rail)) !important;
+  html body .main-content {
+    flex: 1 1 0% !important;
     min-width: 0 !important;
-    flex: none !important;
-    padding: 24px clamp(24px, 3vw, 40px) 48px !important;
+    width: auto !important;
+    max-width: none !important;
+    margin: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 24px clamp(24px, 3vw, 42px) 48px !important;
+    box-sizing: border-box !important;
     overflow-x: clip !important;
     overflow-y: visible !important;
-    transition: margin-left 0.22s cubic-bezier(0.2, 0.8, 0.2, 1), width 0.22s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+    transition: none !important;
   }
 
-  /* When sidebar expands on hover / focus-within:
-     MAIN CONTENT AUTOMATICALLY ADJUSTS TO 260px (ZERO OVERLAP!) */
+  /* When sidebar expands on hover / focus-within / sb-expanded:
+     Flexbox automatically adjusts the main content with zero overlap! */
   html body nav.sidebar#sidebar:hover ~ .main-content,
   html body nav.sidebar#sidebar:focus-within ~ .main-content,
   html body .dashboard:has(nav.sidebar#sidebar:hover) > main.main-content,
   html body .dashboard:has(nav.sidebar#sidebar:focus-within) > main.main-content,
   html body aside.sidebar#sidebar:hover ~ .main,
   html body aside.sidebar#sidebar:focus-within ~ .main,
-  html body aside.sidebar#sidebar:hover ~ .content,
-  html body aside.sidebar#sidebar:focus-within ~ .content,
   html body aside.sidebar#sidebar:hover ~ .scrim ~ .main,
   html body aside.sidebar#sidebar:focus-within ~ .scrim ~ .main,
   html body .app:has(aside.sidebar#sidebar:hover) > .main,
   html body .app:has(aside.sidebar#sidebar:focus-within) > .main,
-  html body .app:has(aside.sidebar#sidebar:hover) > .content,
-  html body .app:has(aside.sidebar#sidebar:focus-within) > .content,
-  html body nav.sidebar#sidebar:hover ~ .member-content,
-  html body nav.sidebar#sidebar:focus-within ~ .member-content,
   html body.sb-expanded .main-content,
   html body.sb-expanded .main,
-  html body.sb-expanded .content,
-  html body.sb-expanded .member-content,
-  html body.sb-expanded .member-top {
-    margin-left: var(--sidebar-w) !important;
-    width: calc(100% - var(--sidebar-w)) !important;
-    max-width: calc(100% - var(--sidebar-w)) !important;
+  html body.sb-expanded .content {
+    margin-left: 0 !important;
+    flex: 1 1 0% !important;
+    width: auto !important;
+  }
+
+  /* Prevent negative margins on topbar from pulling underneath the sidebar */
+  html body .topbar,
+  html body header.topbar {
+    margin: 0 0 24px 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
 }
 

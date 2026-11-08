@@ -1431,6 +1431,19 @@
       }
     });
 
+    sb.addEventListener('mouseenter', () => {
+      if (window.matchMedia('(min-width: 769px)').matches) document.body.classList.add('sb-expanded');
+    });
+    sb.addEventListener('mouseleave', () => {
+      document.body.classList.remove('sb-expanded');
+    });
+    sb.addEventListener('focusin', () => {
+      if (window.matchMedia('(min-width: 769px)').matches) document.body.classList.add('sb-expanded');
+    });
+    sb.addEventListener('focusout', e => {
+      if (!sb.contains(e.relatedTarget)) document.body.classList.remove('sb-expanded');
+    });
+
     sb.addEventListener('click', e => {
       const a = e.target.closest('[data-sb-tab]');
       if (!a) return;
