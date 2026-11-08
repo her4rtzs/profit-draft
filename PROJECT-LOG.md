@@ -990,3 +990,16 @@ Fix the Trainer Workspace "Coach Dashboard" (route /trainer/) of the ProFit gym 
 - Updated `web/auth.js` to recognize `location.protocol === 'file:'` and default to `Coach Mika` / `TRAINER` when loading trainer pages in offline/file mode.
 ### Decision-log skill
 When writing general selector queries like `document.querySelectorAll('[data-icon]')` on pages that share shell attributes on `<body data-icon="...">`, always exclude `body` (`[data-icon]:not(body)`) to prevent accidental destruction of the entire page DOM by inline icon injectors.
+
+
+## 2026-11-08 22:10 (Asia/Manila): Port Target Coach Dashboard Design with Membership Donut & Attendance Analytics Chart
+### What I asked for
+Port the target visual design and specification for the Trainer Workspace "Coach Dashboard" (`/trainer/`) into the real app: 4 Quick Action tiles, Row 1 Membership overview (donut chart + roster capacity bar) alongside Attendance chart (stacked bars + secondary rate line + period/date/member filters + summary cards), Row 2 Today's Coaching Schedule and Recent Member Check-ins, Row 3 full-width My Roster, and backend RBAC enforcement so trainers can only query attendance for their assigned members.
+### What the agent decided and why
+- Removed KPI stat cards, Gym Notices, and any revenue metrics from `web/trainer/index.html` so the Attendance chart is the sole time-series chart on the Coach Dashboard alongside the Membership Overview status donut.
+- Extended `GET /api/trainer/dashboard/` (`TrainerDashboardView` in `api/trainers.py`) to compute and return `active_members`, `expiring_soon_members` (active and expiring within 7 days), and `expired_members` for the trainer's assigned roster.
+- Extended `GET /api/trainer/attendance/` (`TrainerAttendanceListView` in `api/trainers.py`) with `_build_attendance_series()` supporting `period` (`days`, `weeks`, `months`, `years`), `from`, `to` (auto-swapping when `from > to`), and `member_id` (`all` or a specific assigned member ID). Enforced server-side RBAC so querying an unassigned `member_id` returns `403 Forbidden`, and covered both analytics aggregation and `403` rejection with unit tests in `apps/trainers/tests/test_trainers.py`.
+- Built the SVG Membership Overview donut (`240px` desktop, `200px` mobile, `48px` center count, `1.1s` `stroke-dashoffset` draw-in) and the SVG Attendance stacked bar + secondary rate line chart (`30ms` per-bar staggered grow, polyline draw-in, hover tooltip, dynamic x-axis label thinning, and `ResizeObserver` redraw) in `web/trainer/index.html` and `web/trainer/trainer.css`, respecting `prefers-reduced-motion`.
+- Wired Quick Action deep-links (`attendance.html#checkin` and `schedule.html#update`) to auto-open their respective modals on navigation.
+### Decision-log skill
+When adding interactive analytics filters (`member_id`, `period`, `from`, `to`) to a role-scoped dashboard, enforce ownership checks on the backend query parameter (`member_id in assigned_ids` -> `403 Forbidden` if not) rather than only filtering the frontend dropdown, and verify exact responsive breakpoints (`1440px`, `768px`, `375px`) inside exact-width iframes when headless Chrome on Windows enforces a ~500px minimum outer window width.

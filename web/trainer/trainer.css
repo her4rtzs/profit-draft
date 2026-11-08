@@ -1,8 +1,8 @@
-/* ProFit Trainer Workspace — layout, components and motion.
+/* ProFit Trainer Workspace — Coach Dashboard layout, components and motion.
    Loaded after ../assets/css/staff.css and scoped to body[data-portal="trainer"],
    so the Staff portal is never affected. Plain CSS, no build step. */
 
-/* ---------- Tokens: amber accent + deep navy dark theme ---------- */
+/* ---------- Tokens: dark #0A0E17 base, #111827 cards, #F59E0B amber ---------- */
 html:not([data-accent]) body[data-portal="trainer"] {
   --gold: #F59E0B;
   --gold-2: #FBBF24;
@@ -10,7 +10,7 @@ html:not([data-accent]) body[data-portal="trainer"] {
   --gold-soft: rgba(245, 158, 11, .14);
 }
 html[data-theme="dark"]:not([data-accent]) body[data-portal="trainer"] {
-  --gold-3: #FBBF24;
+  --gold-3: #F59E0B;
   --gold-ink: #FCD34D;
 }
 html[data-theme="dark"] body[data-portal="trainer"] {
@@ -18,46 +18,210 @@ html[data-theme="dark"] body[data-portal="trainer"] {
   --card: #111827;
   --card-alpha: #111827;
   --card-2: #0D1320;
-  --line: rgba(255, 255, 255, .08);
-  --line-strong: rgba(255, 255, 255, .16);
+  --line: rgba(255, 255, 255, .07);
+  --line-strong: rgba(255, 255, 255, .14);
   --text: #F3F4F6;
   --text-2: #D1D5DB;
   --muted: #9CA3AF;
+  --green: #10B981;
+  --green-soft: rgba(16, 185, 129, .14);
+  --red: #EF4444;
+  --red-soft: rgba(239, 68, 68, .14);
+  --blue: #60A5FA;
+  --blue-soft: rgba(96, 165, 250, .14);
+  --purple: #A78BFA;
+  --purple-soft: rgba(167, 139, 250, .14);
 }
+
 body[data-portal="trainer"] {
+  --tw-bg: #0A0E17;
+  --tw-card: #111827;
+  --tw-card-2: #0D1320;
+  --tw-border: rgba(255, 255, 255, .07);
   --tw-amber: #F59E0B;
   --tw-amber-ink: #1B1300;
+  --tw-green: #10B981;
+  --tw-red: #EF4444;
+  --tw-blue: #60A5FA;
+  --tw-purple: #8B5CF6;
   --tw-radius: 16px;
-  --tw-pad: 20px;
+  --tw-pad: 22px;
   --tw-gap: 20px;
   --tw-ease: cubic-bezier(.2, .8, .2, 1);
+  font-family: 'Inter', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   overflow-x: hidden;
 }
 
 /* ---------- Page container ---------- */
 body[data-portal="trainer"][data-page="dashboard"] .content {
-  max-width: 1200px;
+  max-width: 1320px;
   width: 100%;
   margin: 0 auto;
-  padding: 20px 28px 32px;
+  padding: 20px 28px 36px;
   gap: var(--tw-gap);
+  box-sizing: border-box;
 }
 body[data-portal="trainer"] .content > * { min-width: 0; }
+body[data-portal="trainer"][data-page="dashboard"] .topbar {
+  max-width: 1320px;
+  width: 100%;
+  margin: 0 auto;
+}
+body[data-portal="trainer"] .page-head .tagline {
+  display: none !important;
+}
+
+/* ---------- Section label ---------- */
+.tw-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+/* ---------- Quick actions (4 tiles in 1 row on desktop) ---------- */
+.tw-qa-section {
+  display: flex;
+  flex-direction: column;
+}
+.tw-qa-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+.tw-qa-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: var(--tw-radius);
+  border: 1px solid var(--qa-border, var(--tw-border));
+  background: var(--qa-bg, var(--card));
+  color: var(--text);
+  text-decoration: none;
+  min-width: 0;
+  cursor: pointer;
+  transition: transform .2s var(--tw-ease), border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+.tw-qa-tile:hover {
+  transform: translateY(-2px);
+  border-color: var(--qa-hover-border, rgba(245, 158, 11, .55));
+  box-shadow: 0 10px 26px -8px var(--qa-glow, rgba(245, 158, 11, .22));
+}
+.tw-qa-tile:active {
+  transform: scale(.98);
+}
+.tw-qa-tile.is-amber {
+  --qa-bg: linear-gradient(135deg, rgba(245, 158, 11, .13) 0%, rgba(17, 24, 39, .95) 85%);
+  --qa-border: rgba(245, 158, 11, .28);
+  --qa-hover-border: rgba(245, 158, 11, .6);
+  --qa-glow: rgba(245, 158, 11, .22);
+  --qa-ico-bg: rgba(245, 158, 11, .18);
+  --qa-ico-fg: #F59E0B;
+}
+.tw-qa-tile.is-green {
+  --qa-bg: linear-gradient(135deg, rgba(16, 185, 129, .13) 0%, rgba(17, 24, 39, .95) 85%);
+  --qa-border: rgba(16, 185, 129, .28);
+  --qa-hover-border: rgba(16, 185, 129, .6);
+  --qa-glow: rgba(16, 185, 129, .22);
+  --qa-ico-bg: rgba(16, 185, 129, .18);
+  --qa-ico-fg: #10B981;
+}
+.tw-qa-tile.is-purple {
+  --qa-bg: linear-gradient(135deg, rgba(139, 92, 246, .14) 0%, rgba(17, 24, 39, .95) 85%);
+  --qa-border: rgba(139, 92, 246, .28);
+  --qa-hover-border: rgba(139, 92, 246, .6);
+  --qa-glow: rgba(139, 92, 246, .22);
+  --qa-ico-bg: rgba(139, 92, 246, .18);
+  --qa-ico-fg: #A78BFA;
+}
+.tw-qa-tile.is-blue {
+  --qa-bg: linear-gradient(135deg, rgba(59, 130, 246, .14) 0%, rgba(17, 24, 39, .95) 85%);
+  --qa-border: rgba(59, 130, 246, .28);
+  --qa-hover-border: rgba(59, 130, 246, .6);
+  --qa-glow: rgba(59, 130, 246, .22);
+  --qa-ico-bg: rgba(59, 130, 246, .18);
+  --qa-ico-fg: #60A5FA;
+}
+.tw-qa-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+.tw-qa-ico {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: var(--qa-ico-bg);
+  color: var(--qa-ico-fg);
+  flex: none;
+}
+.tw-qa-ico .ico { width: 18px; height: 18px; }
+.tw-qa-arrow {
+  color: var(--qa-ico-fg);
+  opacity: .75;
+  transition: transform .2s ease, opacity .2s ease;
+}
+.tw-qa-arrow .ico { width: 15px; height: 15px; }
+.tw-qa-tile:hover .tw-qa-arrow {
+  opacity: 1;
+  transform: translate(2px, -2px);
+}
+.tw-qa-body { min-width: 0; }
+.tw-qa-body strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tw-qa-body small {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- Main 3-column dashboard grid ---------- */
+.tw-dash-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--tw-gap);
+  align-items: stretch;
+}
+.tw-span-1 { grid-column: span 1; }
+.tw-span-2 { grid-column: span 2; }
+.tw-span-3 { grid-column: 1 / -1; }
 
 /* ---------- Card ---------- */
 .tw-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: var(--tw-radius);
   padding: var(--tw-pad);
   box-shadow: var(--shadow);
   min-width: 0;
+  box-sizing: border-box;
   transition: transform .2s var(--tw-ease), border-color .2s ease, box-shadow .2s ease;
 }
 .tw-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(245, 158, 11, .45);
-  box-shadow: 0 0 0 1px rgba(245, 158, 11, .16), 0 12px 28px rgba(245, 158, 11, .10);
+  border-color: rgba(245, 158, 11, .35);
 }
 .tw-card-head {
   display: flex;
@@ -68,90 +232,142 @@ body[data-portal="trainer"] .content > * { min-width: 0; }
 }
 .tw-card-head > div { min-width: 0; }
 .tw-card-title {
-  display: flex;
-  align-items: center;
-  gap: 9px;
+  margin: 0;
   font-size: 16px;
   font-weight: 700;
   color: var(--text);
   line-height: 1.3;
 }
-.tw-card-title .ico { width: 18px; height: 18px; color: var(--gold-3); }
-.tw-card-sub { margin-top: 3px; font-size: 12.5px; color: var(--muted); line-height: 1.45; }
+.tw-card-sub {
+  margin: 3px 0 0;
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.45;
+}
 .tw-link {
   flex: none;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
-  border-radius: 10px;
+  gap: 5px;
+  padding: 4px 8px;
+  border-radius: 8px;
   font-size: 12.5px;
   font-weight: 700;
-  color: var(--gold-3);
+  color: var(--tw-amber);
+  text-decoration: none;
   white-space: nowrap;
   transition: background .2s ease, color .2s ease;
 }
-.tw-link .ico { width: 14px; height: 14px; transition: transform .2s ease; }
 .tw-link:hover { background: var(--gold-soft); }
-.tw-link:hover .ico { transform: translateX(2px); }
 
-/* ---------- Stat grid: 4 on desktop, 2 on tablet, 1 on phone ---------- */
-.tw-stats {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
+/* ---------- Membership Overview (Donut + Status List + Roster Capacity) ---------- */
+.tw-donut-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 8px 0 18px;
 }
-.tw-stat {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: start;
-  gap: 14px;
-  height: 100%;
-}
-.tw-stat-ico {
-  width: 46px;
-  height: 46px;
-  border-radius: 14px;
+.tw-donut-box {
+  position: relative;
+  width: 240px;
+  height: 240px;
   display: grid;
   place-items: center;
-  background: var(--gold-soft);
-  color: var(--gold-3);
-  flex: none;
 }
-.tw-stat-ico .ico { width: 22px; height: 22px; }
-.tw-stat-ico.is-green { background: var(--green-soft); color: var(--green); }
-.tw-stat-ico.is-blue { background: var(--blue-soft); color: var(--blue); }
-.tw-stat-ico.is-purple { background: var(--purple-soft); color: var(--purple); }
-.tw-stat-body { min-width: 0; }
-.tw-stat-label {
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--text-2);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.tw-donut-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+  overflow: visible;
 }
-.tw-stat-num {
-  margin: 2px 0 2px;
-  font-size: 28px;
+.tw-donut-track {
+  fill: none;
+  stroke: rgba(255, 255, 255, .06);
+}
+.tw-donut-arc {
+  fill: none;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1.1s cubic-bezier(.22, 1, .36, 1);
+}
+.tw-donut-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
+}
+.tw-donut-num {
+  font-size: 48px;
   font-weight: 800;
-  line-height: 1.15;
+  line-height: 1;
   color: var(--text);
   font-variant-numeric: tabular-nums;
-  min-height: 32px;
 }
-.tw-stat-help {
-  font-size: 11.5px;
+.tw-donut-lbl {
+  margin-top: 6px;
+  font-size: 14px;
+  font-weight: 500;
   color: var(--muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+}
+
+.tw-status-list {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.tw-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text-2);
+}
+.tw-status-row > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+.tw-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+.tw-status-row strong {
+  font-weight: 700;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.tw-cap-footer {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.tw-cap-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.tw-cap-head strong {
+  color: var(--text);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 .tw-progress {
-  margin-top: 8px;
   height: 6px;
   border-radius: 99px;
-  background: var(--line);
+  background: rgba(255, 255, 255, .07);
   overflow: hidden;
 }
 .tw-progress > i {
@@ -159,62 +375,266 @@ body[data-portal="trainer"] .content > * { min-width: 0; }
   width: 0;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--gold-2), var(--tw-amber));
-  transition: width .6s var(--tw-ease);
+  background: linear-gradient(90deg, #FBBF24, #F59E0B);
+  transition: width .7s var(--tw-ease);
 }
-.tw-progress.is-full > i { background: var(--red); }
+.tw-progress.is-full > i { background: var(--tw-red); }
 
-/* ---------- Action row ---------- */
-.tw-actions {
+/* ---------- Attendance Card & Controls ---------- */
+.tw-att-controls {
   display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
+  margin-bottom: 16px;
 }
-.tw-btn {
+.tw-att-filters {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+.tw-ctrl-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+.tw-ctrl-field label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.tw-input,
+.tw-select {
+  height: 36px;
+  padding: 0 11px;
+  border-radius: 10px;
+  border: 1px solid var(--line-strong);
+  background: var(--card-2);
+  color: var(--text);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  outline: none;
+  transition: border-color .18s ease;
+}
+.tw-input:focus,
+.tw-select:focus {
+  border-color: var(--tw-amber);
+}
+.tw-select {
+  padding-right: 28px;
+  min-width: 140px;
+}
+
+.tw-period-tabs {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  height: 42px;
-  padding: 0 18px;
-  border-radius: 12px;
-  border: 1px solid transparent;
-  font: inherit;
-  font-size: 13.5px;
-  font-weight: 700;
-  white-space: nowrap;
-  cursor: pointer;
-  text-decoration: none;
-  transition: transform .2s ease, background-color .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease;
+  padding: 3px;
+  border-radius: 10px;
+  border: 1px solid var(--line-strong);
+  background: var(--card-2);
+  gap: 2px;
 }
-.tw-btn .ico { width: 17px; height: 17px; }
-.tw-btn:active { transform: scale(.98); }
-.tw-btn-primary {
-  background: var(--tw-amber);
-  color: var(--tw-amber-ink);
-  box-shadow: 0 6px 16px rgba(245, 158, 11, .25);
-}
-.tw-btn-primary:hover { background: #FBBF24; }
-.tw-btn-outline {
+.tw-period-tab {
+  height: 30px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 7px;
   background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .18s ease, color .18s ease;
+}
+.tw-period-tab:hover {
   color: var(--text);
-  border-color: var(--line-strong);
 }
-.tw-btn-outline:hover { border-color: var(--tw-amber); color: var(--gold-3); background: var(--gold-soft); }
-.tw-btn-sm { height: 32px; padding: 0 12px; border-radius: 10px; font-size: 12.5px; }
-.tw-btn-sm .ico { width: 14px; height: 14px; }
+.tw-period-tab.active {
+  background: rgba(255, 255, 255, .1);
+  color: var(--text);
+}
 
-/* ---------- Section layout ---------- */
-.tw-split {
+/* ---------- Attendance SVG Chart Stage ---------- */
+.tw-chart-stage {
+  position: relative;
+  width: 100%;
+  height: 270px;
+  margin-bottom: 12px;
+  user-select: none;
+}
+.tw-chart-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+.tw-chart-grid-line {
+  stroke: rgba(255, 255, 255, .06);
+  stroke-width: 1;
+}
+.tw-chart-axis-txt {
+  font-size: 11px;
+  font-weight: 500;
+  fill: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.tw-chart-axis-rate {
+  font-size: 11px;
+  font-weight: 600;
+  fill: var(--tw-blue);
+  font-variant-numeric: tabular-nums;
+}
+.tw-bar-group {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: tw-bar-grow .48s var(--tw-ease) backwards;
+  animation-delay: calc(var(--bi, 0) * 30ms);
+}
+@keyframes tw-bar-grow {
+  from { transform: scaleY(0); opacity: .2; }
+  to { transform: scaleY(1); opacity: 1; }
+}
+.tw-rate-line {
+  fill: none;
+  stroke: var(--tw-blue);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: var(--path-len, 1200);
+  stroke-dashoffset: var(--path-len, 1200);
+  animation: tw-line-draw .9s cubic-bezier(.22, 1, .36, 1) .15s forwards;
+}
+@keyframes tw-line-draw {
+  to { stroke-dashoffset: 0; }
+}
+.tw-rate-dot {
+  fill: #0A0E17;
+  stroke: var(--tw-blue);
+  stroke-width: 2.2;
+  transition: r .15s ease, fill .15s ease;
+}
+.tw-hit-col {
+  fill: transparent;
+  cursor: pointer;
+}
+.tw-hit-col:hover {
+  fill: rgba(255, 255, 255, .03);
+}
+
+/* Tooltip */
+.tw-chart-tip {
+  position: absolute;
+  z-index: 20;
+  pointer-events: none;
+  min-width: 165px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(10, 14, 23, .96);
+  border: 1px solid rgba(255, 255, 255, .14);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, .5);
+  font-size: 12px;
+  color: var(--text);
+  transform: translate(-50%, -100%);
+  margin-top: -10px;
+  transition: opacity .12s ease;
+}
+.tw-chart-tip[hidden] { display: none !important; }
+.tw-chart-tip-title {
+  font-weight: 700;
+  font-size: 12.5px;
+  margin-bottom: 6px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--line);
+  color: var(--text);
+}
+.tw-chart-tip-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 3px;
+  color: var(--text-2);
+}
+.tw-chart-tip-row strong {
+  color: var(--text);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Chart Legend */
+.tw-chart-legend {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+.tw-leg-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.tw-leg-box {
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+  display: inline-block;
+}
+.tw-leg-box.is-green { background: var(--tw-green); }
+.tw-leg-box.is-amber { background: var(--tw-amber); }
+.tw-leg-line {
+  width: 14px;
+  height: 2.5px;
+  border-radius: 2px;
+  background: var(--tw-blue);
+  display: inline-block;
+  position: relative;
+}
+
+/* Attendance Summary Cards */
+.tw-att-summary {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--tw-gap);
-  align-items: start;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: auto;
 }
-.tw-list { display: grid; gap: 10px; }
+.tw-sum-card {
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--card-2);
+  min-width: 0;
+}
+.tw-sum-card span {
+  display: block;
+  font-size: 11.5px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.tw-sum-card strong {
+  display: block;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
 
-/* Schedule rows */
+/* ---------- Today's Coaching Schedule ---------- */
+.tw-list {
+  display: grid;
+  gap: 10px;
+}
 .tw-session {
   display: flex;
   align-items: center;
@@ -226,89 +646,83 @@ body[data-portal="trainer"] .content > * { min-width: 0; }
   background: var(--card-2);
   min-width: 0;
 }
-.tw-session.is-mine { border-color: rgba(245, 158, 11, .4); }
-.tw-session-main { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1 1 auto; }
-.tw-session-ico {
-  flex: none;
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  display: grid;
-  place-items: center;
-  background: var(--gold-soft);
-  color: var(--gold-3);
+.tw-session.is-mine {
+  border-color: rgba(245, 158, 11, .42);
+  background: linear-gradient(90deg, rgba(245, 158, 11, .08) 0%, var(--card-2) 100%);
 }
-.tw-session-ico .ico { width: 17px; height: 17px; }
-.tw-session-text { min-width: 0; }
-.tw-session-text strong, .tw-truncate {
+.tw-session-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.tw-time-badge {
+  flex: none;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: rgba(245, 158, 11, .14);
+  border: 1px solid rgba(245, 158, 11, .26);
+  text-align: center;
+  min-width: 58px;
+}
+.tw-time-badge strong {
   display: block;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--tw-amber);
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+.tw-time-badge small {
+  display: block;
+  font-size: 10.5px;
+  color: var(--muted);
+  line-height: 1.2;
+  margin-top: 1px;
+}
+.tw-session-text { min-width: 0; }
+.tw-session-text strong {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.tw-session-text strong { font-size: 14px; color: var(--text); }
-.tw-session-text small { display: block; font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.tw-session-side { display: flex; align-items: center; gap: 8px; flex: 0 1 auto; min-width: 0; }
+.tw-session-text small {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tw-session-side {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
 .tw-pill {
   display: inline-block;
-  max-width: 160px;
+  max-width: 140px;
   height: 26px;
   line-height: 26px;
   padding: 0 11px;
   border-radius: 99px;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 700;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  vertical-align: middle;
 }
-.tw-pill.is-amber { background: var(--gold-soft); color: var(--gold-ink); }
-.tw-pill.is-gray { background: var(--line); color: var(--muted); }
-.tw-pill.is-green { background: var(--green-soft); color: var(--green); }
-.tw-pill.is-red { background: var(--red-soft); color: var(--red); }
+.tw-pill.is-amber { background: var(--gold-soft); color: var(--tw-amber); }
+.tw-pill.is-gray { background: rgba(255, 255, 255, .07); color: var(--text-2); }
 
-/* Roster rows */
-.tw-person {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 9px 10px;
-  border-radius: 12px;
-  border: 1px solid var(--line);
-  min-width: 0;
-}
-.tw-person-main { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1 1 auto; }
-.tw-person-text { min-width: 0; }
-.tw-person-text strong { display: block; font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.tw-person-text small { display: flex; align-items: center; gap: 5px; font-size: 11.5px; color: var(--muted); }
-.tw-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--line-strong); flex: none; }
-.tw-dot.is-in { background: var(--green); }
-
-/* Notices */
-.tw-notice {
-  padding: 12px 14px;
-  border-radius: 12px;
-  border: 1px solid var(--line);
-  background: var(--card-2);
-  min-width: 0;
-}
-.tw-notice-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; min-width: 0; }
-.tw-notice-head strong { font-size: 13px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.tw-notice p {
-  font-size: 12.5px;
-  line-height: 1.45;
-  color: var(--text-2);
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  overflow-wrap: anywhere;
-}
-.tw-notice small { display: block; margin-top: 6px; font-size: 11px; color: var(--muted); }
-
-/* ---------- Table (scrolls sideways on small screens) ---------- */
+/* ---------- Recent Member Check-ins Table ---------- */
 .tw-table-wrap {
   width: 100%;
   max-width: 100%;
@@ -316,72 +730,162 @@ body[data-portal="trainer"] .content > * { min-width: 0; }
   -webkit-overflow-scrolling: touch;
   border: 1px solid var(--line);
   border-radius: 12px;
+  background: var(--card-2);
 }
-.tw-table { width: 100%; min-width: 520px; border-collapse: collapse; }
+.tw-table {
+  width: 100%;
+  min-width: 500px;
+  border-collapse: collapse;
+}
 .tw-table th {
-  padding: 10px 14px;
+  padding: 11px 16px;
   text-align: left;
   font-size: 10.5px;
   font-weight: 700;
-  letter-spacing: 1px;
+  letter-spacing: .08em;
   text-transform: uppercase;
   color: var(--muted);
-  background: var(--card-2);
+  border-bottom: 1px solid var(--line);
   white-space: nowrap;
 }
 .tw-table td {
-  padding: 11px 14px;
+  padding: 12px 16px;
   border-top: 1px solid var(--line);
   font-size: 13px;
-  color: var(--text-2);
+  font-weight: 600;
+  color: var(--text);
   vertical-align: middle;
   white-space: nowrap;
 }
-.tw-table tbody tr { transition: background-color .2s ease; }
-.tw-table tbody tr:hover { background: var(--gold-soft); }
-.tw-table th:last-child, .tw-table td:last-child { text-align: right; }
-.tw-member-cell { display: flex; align-items: center; gap: 10px; min-width: 0; max-width: 240px; }
-.tw-member-cell strong { color: var(--text); overflow: hidden; text-overflow: ellipsis; }
+.tw-table tbody tr:first-child td { border-top: 0; }
+.tw-table tbody tr { transition: background-color .18s ease; }
+.tw-table tbody tr:hover { background: rgba(255, 255, 255, .03); }
+.tw-table th:last-child,
+.tw-table td:last-child { text-align: right; }
+.tw-member-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  max-width: 240px;
+}
+.tw-member-cell strong {
+  color: var(--text);
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
-/* ---------- Empty states ---------- */
+/* ---------- Buttons ---------- */
+.tw-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 13px;
+  border-radius: 9px;
+  border: 1px solid var(--line-strong);
+  background: rgba(255, 255, 255, .03);
+  color: var(--text);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform .18s ease, border-color .18s ease, background .18s ease, color .18s ease;
+}
+.tw-btn:hover {
+  border-color: var(--tw-amber);
+  color: var(--tw-amber);
+  background: var(--gold-soft);
+}
+.tw-btn:active { transform: scale(.98); }
+
+/* ---------- My Roster (2 columns on desktop, 1 on phone) ---------- */
+.tw-roster-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.tw-person {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--card-2);
+  min-width: 0;
+}
+.tw-person-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.tw-person-text { min-width: 0; }
+.tw-person-text strong {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tw-person-text small {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.tw-person-text small.is-in { color: var(--tw-green); }
+
+/* ---------- Empty states & Skeletons ---------- */
 .tw-empty {
   display: grid;
   justify-items: center;
+  align-content: center;
   text-align: center;
   gap: 6px;
   padding: 28px 16px;
   color: var(--muted);
+  min-height: 140px;
 }
 .tw-empty-ico {
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
   display: grid;
   place-items: center;
   background: var(--gold-soft);
-  color: var(--gold-3);
+  color: var(--tw-amber);
   margin-bottom: 4px;
 }
-.tw-empty-ico .ico { width: 22px; height: 22px; }
-.tw-empty strong { font-size: 14px; color: var(--text); }
-.tw-empty p { font-size: 12.5px; max-width: 320px; line-height: 1.45; }
-.tw-table .tw-empty { white-space: normal; }
+.tw-empty-ico .ico { width: 20px; height: 20px; }
+.tw-empty strong { font-size: 13.5px; color: var(--text); }
+.tw-empty p { margin: 0; font-size: 12px; max-width: 300px; line-height: 1.45; }
 
-/* ---------- Skeleton shimmer ---------- */
 .tw-skel {
   display: block;
-  border-radius: 8px;
-  background: linear-gradient(90deg, var(--line) 25%, rgba(127, 127, 127, .16) 37%, var(--line) 63%);
+  border-radius: 10px;
+  background: linear-gradient(90deg, var(--line) 25%, rgba(255, 255, 255, .12) 37%, var(--line) 63%);
   background-size: 400% 100%;
   animation: tw-shimmer 1.3s ease-in-out infinite;
 }
-.tw-skel-num { width: 64px; height: 28px; margin: 4px 0; }
-.tw-skel-row { height: 56px; border-radius: 12px; }
-.tw-skel-line { height: 12px; width: 70%; }
+.tw-skel-row { height: 58px; border-radius: 12px; }
+.tw-skel-line { height: 14px; width: 75%; }
+.tw-skel-chart { width: 100%; height: 100%; border-radius: 12px; }
 
-/* ---------- Motion ---------- */
+/* ---------- Page Entrance Motion ---------- */
 .tw-anim {
-  animation: tw-rise .28s var(--tw-ease) backwards;
+  animation: tw-rise .3s var(--tw-ease) backwards;
   animation-delay: calc(var(--i, 0) * 60ms);
 }
 @keyframes tw-rise {
@@ -392,68 +896,112 @@ body[data-portal="trainer"] .content > * { min-width: 0; }
   0% { background-position: 100% 0; }
   100% { background-position: 0 0; }
 }
-@keyframes tw-fade { from { opacity: 0; } to { opacity: 1; } }
 
-/* Sidebar: width already animates in staff.css; fade labels back in on expand. */
-@media (min-width: 981px) {
-  body[data-portal="trainer"]:not(.mini) .nav-text,
-  body[data-portal="trainer"]:not(.mini) .brand-txt,
-  body[data-portal="trainer"]:not(.mini) .nav-label,
-  body[data-portal="trainer"]:not(.mini) .side-user .who {
-    animation: tw-fade .2s ease .1s backwards;
+/* ---------- Responsive Breakpoints ---------- */
+/* Tablet (768px - 1279px): 2-column grid, quick actions as 2x2 */
+@media (max-width: 1279px) {
+  .tw-qa-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  body[data-portal="trainer"] .nav-link .ico { transition: transform .2s ease; }
-  body[data-portal="trainer"].mini .nav-link:hover .ico { transform: scale(1.08); }
+  .tw-dash-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .tw-span-1,
+  .tw-span-2 {
+    grid-column: span 2;
+  }
+  .tw-dash-grid > .tw-card.tw-tablet-half {
+    grid-column: span 1;
+  }
 }
 
-/* ---------- Breakpoints & Responsiveness ---------- */
-body[data-portal="trainer"][data-page="dashboard"] .topbar {
-  max-width: 1200px;
-  width: 100%;
-  margin: 0 auto;
-}
-body[data-portal="trainer"] .page-head .tagline {
-  display: none !important;
-}
-
-@media (max-width: 1024px) {
-  .tw-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
 @media (max-width: 980px) {
-  body[data-portal="trainer"][data-page="dashboard"] .content { padding: 16px 18px 28px; }
-}
-@media (max-width: 768px) {
-  .tw-split { grid-template-columns: minmax(0, 1fr); }
-}
-@media (max-width: 760px) {
-  body[data-portal="trainer"][data-page="dashboard"] .content { padding: 14px 14px 96px; }
-  .tw-card { padding: 16px; }
-  .tw-session { flex-wrap: wrap; }
-  .tw-session-side { width: 100%; justify-content: space-between; padding-left: 48px; }
-}
-@media (max-width: 640px) {
-  .tw-stats { grid-template-columns: minmax(0, 1fr); gap: 12px; }
-  .tw-actions .tw-btn { flex: 1 1 100%; }
-  .tw-card-head { flex-wrap: wrap; }
+  body[data-portal="trainer"][data-page="dashboard"] .content {
+    padding: 16px 18px 32px;
+  }
 }
 
-/* ---------- Reduced motion ---------- */
+/* Phone (<760px): single column, quick actions 2x2, bottom nav bar, chart height 260px */
+@media (max-width: 759px) {
+  body[data-portal="trainer"][data-page="dashboard"] .content {
+    padding: 14px 14px 96px;
+  }
+  .tw-dash-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tw-span-1,
+  .tw-span-2,
+  .tw-span-3,
+  .tw-dash-grid > .tw-card.tw-tablet-half {
+    grid-column: 1 / -1;
+  }
+  .tw-card {
+    padding: 16px;
+  }
+  .tw-donut-box {
+    width: 200px;
+    height: 200px;
+  }
+  .tw-chart-stage {
+    height: 260px;
+  }
+  .tw-roster-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tw-att-summary {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .tw-sum-card {
+    padding: 10px;
+  }
+  .tw-sum-card strong {
+    font-size: 18px;
+  }
+}
+
+/* Phone under 420px: quick actions 1 column */
+@media (max-width: 420px) {
+  .tw-qa-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tw-att-filters {
+    width: 100%;
+  }
+  .tw-ctrl-field {
+    flex: 1 1 calc(50% - 6px);
+  }
+  .tw-ctrl-field.is-member {
+    flex: 1 1 100%;
+  }
+  .tw-input,
+  .tw-select {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+/* ---------- Reduced Motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   .tw-anim,
   .tw-skel,
-  body[data-portal="trainer"] .nav-text,
-  body[data-portal="trainer"] .brand-txt,
-  body[data-portal="trainer"] .nav-label,
-  body[data-portal="trainer"] .side-user .who { animation: none !important; }
-  .tw-card,
-  .tw-btn,
-  .tw-link,
-  .tw-link .ico,
-  .tw-table tbody tr,
+  .tw-bar-group,
+  .tw-rate-line {
+    animation: none !important;
+  }
+  .tw-rate-line {
+    stroke-dashoffset: 0 !important;
+  }
+  .tw-donut-arc,
   .tw-progress > i,
-  body[data-portal="trainer"] .sidebar,
-  body[data-portal="trainer"] .main { transition: none !important; }
-  .tw-card:hover { transform: none; }
-  .tw-btn:active { transform: none; }
+  .tw-qa-tile,
+  .tw-card,
+  .tw-btn {
+    transition: none !important;
+  }
+  .tw-qa-tile:hover,
+  .tw-qa-tile:active,
+  .tw-btn:active {
+    transform: none !important;
+  }
 }
-

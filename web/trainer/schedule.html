@@ -220,7 +220,11 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnBroadcastDayNote').onclick = () => window.openSessionUpdateModal();
 
   updateTabs();
-  loadSchedule();
+  loadSchedule().then(() => {
+    if (location.hash === '#update') {
+      window.openSessionUpdateModal();
+    }
+  });
 });
 </script>
 </body>

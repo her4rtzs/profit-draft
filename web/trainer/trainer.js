@@ -61,6 +61,21 @@
           return Trainer.demo.getAttendance(dateStr, filter);
         }
       },
+      async getAttendanceSeries({ period = 'days', from = '', to = '', memberId = 'all' } = {}) {
+        if (!api) return Trainer.demo.getAttendanceSeries({ period, from, to, memberId });
+        try {
+          const q = new URLSearchParams();
+          q.set('period', period);
+          if (from) q.set('from', from);
+          if (to) q.set('to', to);
+          q.set('member_id', memberId && memberId !== 'all' ? String(memberId) : 'all');
+          return await api.get(`/trainer/attendance/?${q.toString()}`);
+        } catch (e) {
+          if (e && e.status === 403) throw e;
+          console.warn('API error, using demo fallback:', e);
+          return Trainer.demo.getAttendanceSeries({ period, from, to, memberId });
+        }
+      },
       async checkIn(memberId) {
         if (!api) return Trainer.demo.checkIn(memberId);
         return await api.post('/staff/attendance/check-in/', { member_id: Number(memberId) });
@@ -146,6 +161,9 @@
           trainer: this.getProfile(),
           stats: {
             assigned_members: 6,
+            active_members: 4,
+            expiring_soon_members: 1,
+            expired_members: 1,
             max_members: 20,
             capacity_pct: 30,
             today_checkins: 4,
@@ -188,14 +206,148 @@
         const today = new Date().toISOString().slice(0, 10);
         return {
           date: dateStr || today,
-          total: 8,
+          total: 3,
           my_members_count: 3,
           attendances: [
             { id: 301, member_id: 1, member_name: 'Ana Santos', member_phone: '0917-555-0101', membership_status: 'ACTIVE', is_my_member: true, check_in_at: new Date().toISOString(), recorded_by: 'Coach Mika' },
             { id: 302, member_id: 2, member_name: 'Ben Reyes', member_phone: '0917-555-0102', membership_status: 'ACTIVE', is_my_member: true, check_in_at: new Date(Date.now() - 3600000).toISOString(), recorded_by: 'Front Desk' },
-            { id: 303, member_id: 10, member_name: 'Marco Tan', member_phone: '0912-345-6789', membership_status: 'ACTIVE', is_my_member: false, check_in_at: new Date(Date.now() - 5400000).toISOString(), recorded_by: 'Front Desk' },
             { id: 304, member_id: 3, member_name: 'Carlos Dizon', member_phone: '0918-555-0203', membership_status: 'ACTIVE', is_my_member: true, check_in_at: new Date(Date.now() - 7200000).toISOString(), recorded_by: 'Coach Mika' }
           ]
+        };
+      },
+      getAttendanceSeries({ period = 'days', from = '', to = '', memberId = 'all' } = {}) {
+        const parseDate = s => {
+          if (!s) return null;
+          const [y, m, d] = String(s).split('-').map(Number);
+          return (!y || !m || !d) ? null : new Date(y, m - 1, d);
+        };
+        const toIso = d => {
+          const y = d.getFullYear();
+          const m = String(d.getMonth() + 1).padStart(2, '0');
+          const day = String(d.getDate()).padStart(2, '0');
+          return `${y}-${m}-${day}`;
+        };
+        const shortFmt = d => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        const fullFmt = d => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        let dTo = parseDate(to) || new Date(today);
+        let dFrom = parseDate(from);
+        if (!dFrom) {
+          dFrom = new Date(dTo);
+          if (period === 'weeks') dFrom.setDate(dFrom.getDate() - 55);
+          else if (period === 'months') dFrom = new Date(dTo.getFullYear(), dTo.getMonth() - 5, 1);
+          else if (period === 'years') dFrom = new Date(dTo.getFullYear() - 2, 0, 1);
+          else dFrom.setDate(dFrom.getDate() - 13);
+        }
+        if (dFrom > dTo) { const t = dFrom; dFrom = dTo; dTo = t; }
+
+        const singleMember = memberId && memberId !== 'all';
+        const baseTargets = singleMember ? 1 : 5;
+        const seedOffset = singleMember ? Number(memberId) || 1 : 0;
+
+        const dayTally = d => {
+          if (d > today) return { c: 0, s: 0 };
+          const h = (d.getFullYear() * 372 + (d.getMonth() + 1) * 31 + d.getDate() + seedOffset * 7) % 11;
+          const s = singleMember ? 1 : Math.max(3, baseTargets - (h % 2));
+          const c = singleMember ? (h % 3 === 0 ? 0 : 1) : Math.min(s, Math.max(1, s - (h % 3)));
+          return { c, s };
+        };
+
+        const rangeTally = (sDate, eDate) => {
+          let c = 0, s = 0;
+          const cur = new Date(sDate);
+          while (cur <= eDate) {
+            const r = dayTally(cur);
+            c += r.c;
+            s += r.s;
+            cur.setDate(cur.getDate() + 1);
+          }
+          const missed = Math.max(0, s - c);
+          const rate = s > 0 ? Math.round((c / s) * 100) : 0;
+          return { checked_in: c, scheduled: s, missed, rate };
+        };
+
+        const buckets = [];
+        if (period === 'days') {
+          const cur = new Date(dFrom);
+          while (cur <= dTo) {
+            const t = rangeTally(cur, cur);
+            buckets.push({
+              key: toIso(cur),
+              label: shortFmt(cur),
+              tooltip_label: fullFmt(cur),
+              ...t
+            });
+            cur.setDate(cur.getDate() + 1);
+          }
+        } else if (period === 'weeks') {
+          const cur = new Date(dFrom);
+          while (cur <= dTo) {
+            const wEnd = new Date(cur);
+            wEnd.setDate(wEnd.getDate() + 6);
+            if (wEnd > dTo) wEnd.setTime(dTo.getTime());
+            const t = rangeTally(cur, wEnd);
+            buckets.push({
+              key: toIso(cur),
+              label: shortFmt(cur),
+              tooltip_label: `${shortFmt(cur)} – ${fullFmt(wEnd)}`,
+              ...t
+            });
+            cur.setDate(cur.getDate() + 7);
+          }
+        } else if (period === 'months') {
+          let y = dFrom.getFullYear(), m = dFrom.getMonth();
+          const sameYear = dFrom.getFullYear() === dTo.getFullYear();
+          while (y < dTo.getFullYear() || (y === dTo.getFullYear() && m <= dTo.getMonth())) {
+            const first = new Date(y, m, 1);
+            const last = new Date(y, m + 1, 0);
+            const mStart = first < dFrom ? dFrom : first;
+            const mEnd = last > dTo ? dTo : last;
+            const t = rangeTally(mStart, mEnd);
+            buckets.push({
+              key: `${y}-${String(m + 1).padStart(2, '0')}`,
+              label: first.toLocaleDateString('en-US', sameYear ? { month: 'short' } : { month: 'short', year: '2-digit' }),
+              tooltip_label: first.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+              ...t
+            });
+            m++;
+            if (m > 11) { m = 0; y++; }
+          }
+        } else {
+          for (let y = dFrom.getFullYear(); y <= dTo.getFullYear(); y++) {
+            const first = new Date(y, 0, 1);
+            const last = new Date(y, 11, 31);
+            const yStart = first < dFrom ? dFrom : first;
+            const yEnd = last > dTo ? dTo : last;
+            const t = rangeTally(yStart, yEnd);
+            buckets.push({
+              key: String(y),
+              label: String(y),
+              tooltip_label: String(y),
+              ...t
+            });
+          }
+        }
+
+        const totalC = buckets.reduce((a, b) => a + b.checked_in, 0);
+        const totalS = buckets.reduce((a, b) => a + b.scheduled, 0);
+        const totalM = buckets.reduce((a, b) => a + b.missed, 0);
+        const avgR = totalS > 0 ? Math.round((totalC / totalS) * 100) : 0;
+
+        return {
+          period,
+          from: toIso(dFrom),
+          to: toIso(dTo),
+          member_id: singleMember ? Number(memberId) : 'all',
+          buckets,
+          summary: {
+            checked_in: totalC,
+            scheduled: totalS,
+            missed: totalM,
+            rate: avgR
+          }
         };
       },
       checkIn(memberId) {

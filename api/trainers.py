@@ -433,12 +433,27 @@ class TrainerDashboardView(APIView):
         today = timezone.localdate()
         week_ago = today - timezone.timedelta(days=7)
 
-        assigned_ids = list(
-            TrainerAssignment.objects.filter(trainer=profile, ended_at__isnull=True).values_list("member_id", flat=True)
+        assignments = list(
+            TrainerAssignment.objects.filter(trainer=profile, ended_at__isnull=True)
+            .select_related("member__user")
         )
+        assigned_ids = [a.member_id for a in assignments]
         assigned_count = len(assigned_ids)
         max_members = profile.max_members or 20
         cap_pct = round((assigned_count / max_members) * 100) if max_members else 0
+
+        active_count = 0
+        expiring_soon_count = 0
+        expired_count = 0
+        for a in assignments:
+            m = a.member
+            if m.is_active_on(today):
+                if m.expiry_date is not None and 0 <= (m.expiry_date - today).days <= 7:
+                    expiring_soon_count += 1
+                else:
+                    active_count += 1
+            else:
+                expired_count += 1
 
         today_checkins = Attendance.objects.filter(member_id__in=assigned_ids, check_in_date=today).count()
         week_checkins = Attendance.objects.filter(member_id__in=assigned_ids, check_in_date__gte=week_ago).count()
@@ -486,6 +501,9 @@ class TrainerDashboardView(APIView):
             },
             "stats": {
                 "assigned_members": assigned_count,
+                "active_members": active_count,
+                "expiring_soon_members": expiring_soon_count,
+                "expired_members": expired_count,
                 "max_members": max_members,
                 "capacity_pct": min(100, cap_pct),
                 "today_checkins": today_checkins,
@@ -499,8 +517,183 @@ class TrainerDashboardView(APIView):
         })
 
 
+def _parse_iso_date(raw, default):
+    if not raw:
+        return default
+    try:
+        return timezone.datetime.fromisoformat(str(raw)).date()
+    except (ValueError, TypeError):
+        return default
+
+
+def _month_end(year, month):
+    if month == 12:
+        return timezone.datetime.date(timezone.datetime(year, 12, 31))
+    first_next = timezone.datetime(year, month + 1, 1).date()
+    return first_next - timezone.timedelta(days=1)
+
+
+def _build_attendance_series(request, assigned_ids):
+    today = timezone.localdate()
+    period = str(request.query_params.get("period") or "days").lower()
+    if period not in ("days", "weeks", "months", "years"):
+        period = "days"
+
+    raw_member = request.query_params.get("member_id") or request.query_params.get("member") or "all"
+    if str(raw_member).lower() not in ("all", ""):
+        try:
+            mid = int(raw_member)
+        except (ValueError, TypeError):
+            return Response({"detail": "Invalid member ID."}, status=400)
+        if mid not in assigned_ids:
+            return Response({"detail": "You can only query attendance for members assigned to you."}, status=403)
+        target_ids = {mid}
+        member_filter = mid
+    else:
+        target_ids = set(assigned_ids)
+        member_filter = "all"
+
+    if period == "weeks":
+        default_from = today - timezone.timedelta(days=55)
+    elif period == "months":
+        y, m = today.year, today.month - 5
+        while m <= 0:
+            m += 12
+            y -= 1
+        default_from = timezone.datetime(y, m, 1).date()
+    elif period == "years":
+        default_from = timezone.datetime(today.year - 2, 1, 1).date()
+    else:
+        default_from = today - timezone.timedelta(days=13)
+
+    from_date = _parse_iso_date(request.query_params.get("from"), default_from)
+    to_date = _parse_iso_date(request.query_params.get("to"), today)
+    if from_date > to_date:
+        from_date, to_date = to_date, from_date
+
+    # Cap excessive date ranges to 3 years (1096 days) to keep serverless responses fast
+    if (to_date - from_date).days > 1096:
+        from_date = to_date - timezone.timedelta(days=1096)
+
+    daily_counts = {}
+    if target_ids:
+        qs = Attendance.objects.filter(
+            member_id__in=target_ids,
+            check_in_date__gte=from_date,
+            check_in_date__lte=to_date,
+        ).values_list("check_in_date", flat=True)
+        for d in qs:
+            daily_counts[d] = daily_counts.get(d, 0) + 1
+
+    n_targets = len(target_ids)
+
+    def tally(d_start, d_end):
+        c_total = 0
+        s_total = 0
+        cur = d_start
+        one_day = timezone.timedelta(days=1)
+        while cur <= d_end:
+            c = daily_counts.get(cur, 0)
+            c_total += c
+            if cur <= today and n_targets > 0:
+                s_total += max(c, n_targets)
+            else:
+                s_total += c
+            cur += one_day
+        missed = max(0, s_total - c_total)
+        rate = round((c_total / s_total) * 100) if s_total > 0 else 0
+        return c_total, s_total, missed, rate
+
+    buckets = []
+    if period == "days":
+        cur = from_date
+        one_day = timezone.timedelta(days=1)
+        while cur <= to_date:
+            c, s, missed, rate = tally(cur, cur)
+            buckets.append({
+                "key": cur.isoformat(),
+                "label": f"{cur.strftime('%b')} {cur.day}",
+                "tooltip_label": f"{cur.strftime('%b')} {cur.day}, {cur.year}",
+                "checked_in": c,
+                "scheduled": s,
+                "missed": missed,
+                "rate": rate,
+            })
+            cur += one_day
+    elif period == "weeks":
+        cur = from_date
+        while cur <= to_date:
+            w_end = min(to_date, cur + timezone.timedelta(days=6))
+            c, s, missed, rate = tally(cur, w_end)
+            buckets.append({
+                "key": cur.isoformat(),
+                "label": f"{cur.strftime('%b')} {cur.day}",
+                "tooltip_label": f"{cur.strftime('%b')} {cur.day} – {w_end.strftime('%b')} {w_end.day}, {w_end.year}",
+                "checked_in": c,
+                "scheduled": s,
+                "missed": missed,
+                "rate": rate,
+            })
+            cur = w_end + timezone.timedelta(days=1)
+    elif period == "months":
+        y, m = from_date.year, from_date.month
+        same_year = from_date.year == to_date.year
+        while (y, m) <= (to_date.year, to_date.month):
+            first_d = timezone.datetime(y, m, 1).date()
+            last_d = _month_end(y, m)
+            m_start = max(from_date, first_d)
+            m_end = min(to_date, last_d)
+            c, s, missed, rate = tally(m_start, m_end)
+            buckets.append({
+                "key": f"{y:04d}-{m:02d}",
+                "label": first_d.strftime("%b") if same_year else first_d.strftime("%b '%y"),
+                "tooltip_label": first_d.strftime("%B %Y"),
+                "checked_in": c,
+                "scheduled": s,
+                "missed": missed,
+                "rate": rate,
+            })
+            m += 1
+            if m > 12:
+                m = 1
+                y += 1
+    else:  # years
+        for y in range(from_date.year, to_date.year + 1):
+            y_start = max(from_date, timezone.datetime(y, 1, 1).date())
+            y_end = min(to_date, timezone.datetime(y, 12, 31).date())
+            c, s, missed, rate = tally(y_start, y_end)
+            buckets.append({
+                "key": str(y),
+                "label": str(y),
+                "tooltip_label": str(y),
+                "checked_in": c,
+                "scheduled": s,
+                "missed": missed,
+                "rate": rate,
+            })
+
+    total_checked_in = sum(b["checked_in"] for b in buckets)
+    total_scheduled = sum(b["scheduled"] for b in buckets)
+    total_missed = sum(b["missed"] for b in buckets)
+    avg_rate = round((total_checked_in / total_scheduled) * 100) if total_scheduled > 0 else 0
+
+    return Response({
+        "period": period,
+        "from": from_date.isoformat(),
+        "to": to_date.isoformat(),
+        "member_id": member_filter,
+        "buckets": buckets,
+        "summary": {
+            "checked_in": total_checked_in,
+            "scheduled": total_scheduled,
+            "missed": total_missed,
+            "rate": avg_rate,
+        },
+    })
+
+
 class TrainerAttendanceListView(APIView):
-    """GET check-in logs for a given date, with indicator whether each member is assigned to this trainer."""
+    """GET check-in logs or aggregated attendance analytics for members assigned to this trainer."""
 
     permission_classes = [IsTrainerOrOwner]
 
@@ -510,17 +703,20 @@ class TrainerAttendanceListView(APIView):
             TrainerAssignment.objects.filter(trainer=profile, ended_at__isnull=True).values_list("member_id", flat=True)
         ) if profile else set()
 
+        if any(k in request.query_params for k in ("period", "from", "to", "member_id", "member")):
+            return _build_attendance_series(request, assigned_ids)
+
         raw_date = request.query_params.get("date")
         try:
             day = timezone.datetime.fromisoformat(raw_date).date() if raw_date else timezone.localdate()
         except (ValueError, TypeError):
             day = timezone.localdate()
 
-        qs = Attendance.objects.filter(check_in_date=day).select_related("member__user", "recorded_by").order_by("-check_in_at")
-
-        filter_type = request.query_params.get("filter", "all")
-        if filter_type == "mine":
-            qs = qs.filter(member_id__in=assigned_ids)
+        qs = (
+            Attendance.objects.filter(check_in_date=day, member_id__in=assigned_ids)
+            .select_related("member__user", "recorded_by")
+            .order_by("-check_in_at")
+        )
 
         rows = [
             {
@@ -529,7 +725,7 @@ class TrainerAttendanceListView(APIView):
                 "member_name": _name(a.member.user),
                 "member_phone": a.member.phone,
                 "membership_status": a.member.membership_status,
-                "is_my_member": a.member_id in assigned_ids,
+                "is_my_member": True,
                 "check_in_at": a.check_in_at.isoformat(),
                 "check_in_date": a.check_in_date.isoformat(),
                 "recorded_by": _name(a.recorded_by),
@@ -539,7 +735,7 @@ class TrainerAttendanceListView(APIView):
         return Response({
             "date": day.isoformat(),
             "total": len(rows),
-            "my_members_count": sum(1 for r in rows if r["is_my_member"]),
+            "my_members_count": len(rows),
             "attendances": rows,
         })
 

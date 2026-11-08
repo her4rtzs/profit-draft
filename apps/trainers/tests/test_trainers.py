@@ -2,8 +2,9 @@
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
+from django.utils import timezone
 
-from apps.membership.models import MemberProfile
+from apps.membership.models import Attendance, MemberProfile
 from apps.notifications.models import Notification
 from apps.trainers import services
 from apps.trainers.models import TrainerAssignment, TrainerProfile, TrainerRequest
@@ -114,9 +115,39 @@ class TrainerTests(TestCase):
         self.assertEqual(res.status_code, 200)
         dash = res.json()
         self.assertEqual(dash["stats"]["assigned_members"], 1)
+        self.assertEqual(dash["stats"]["active_members"], 1)
+        self.assertEqual(dash["stats"]["expiring_soon_members"], 0)
+        self.assertEqual(dash["stats"]["expired_members"], 0)
 
         # 7. Trainer schedule note sends notification
         res = self.client.post("/api/trainer/schedule/note/", {"session_name": "Sunrise HIIT", "note": "Moving to Studio 2"}, content_type="application/json")
         self.assertEqual(res.status_code, 200)
         self.assertTrue(Notification.objects.filter(recipient=self.m_user, kind="TRAINER", title__contains="Sunrise HIIT").exists())
+
+    def test_trainer_attendance_series_and_rbac(self):
+        services.assign_trainer(self.m, self.t1, actor=self.owner)
+        today = timezone.localdate()
+        Attendance.objects.create(member=self.m, recorded_by=self.t1_user)
+        Attendance.objects.create(member=self.m2, recorded_by=self.t2_user)
+
+        self.client.force_login(self.t1_user)
+
+        # Query assigned member attendance series (with swapped dates to test auto-swap)
+        res = self.client.get(
+            f"/api/trainer/attendance/?period=days&from={today.isoformat()}&to={(today - timezone.timedelta(days=3)).isoformat()}&member_id={self.m.pk}"
+        )
+        self.assertEqual(res.status_code, 200)
+        payload = res.json()
+        self.assertEqual(payload["period"], "days")
+        self.assertEqual(payload["from"], (today - timezone.timedelta(days=3)).isoformat())
+        self.assertEqual(payload["to"], today.isoformat())
+        self.assertEqual(payload["summary"]["checked_in"], 1)
+        self.assertEqual(len(payload["buckets"]), 4)
+
+        # Querying unassigned member (self.m2) is forbidden (403)
+        res_forbidden = self.client.get(
+            f"/api/trainer/attendance/?period=days&member_id={self.m2.pk}"
+        )
+        self.assertEqual(res_forbidden.status_code, 403)
+
 

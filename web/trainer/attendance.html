@@ -271,7 +271,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
 
-  loadAttendance();
+  loadAttendance().then(() => {
+    if (location.hash === '#checkin') {
+      document.getElementById('btnRecordCheckIn').click();
+    }
+  });
 });
 </script>
 </body>
