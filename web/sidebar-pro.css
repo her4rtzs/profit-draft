@@ -75,7 +75,7 @@ html body .dashboard > main.main-content {
   padding: 24px clamp(20px, 3vw, 40px) 48px !important;
   overflow-x: clip !important;
   overflow-y: visible !important;
-  transition: none !important;
+  transition: margin-left 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), width 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
 }
 
 /* ==========================================================================
@@ -526,175 +526,102 @@ html body nav.sidebar .account-menu button[data-logout] i {
 }
 
 /* ==========================================================================
-   DESKTOP COLLAPSIBLE SIDEBAR
-   Full 260px panel by default; collapses into an 80px icon rail via #sidebarToggle
-   or when .close / .sidebar-collapsed is active.
+   HOVER-EXPAND ICON RAIL (desktop)
+   The sidebar rests as an icon rail and expands to the full panel while the
+   pointer hovers it or the keyboard focus is inside it. Only `width` animates
+   and the icons keep their x-position, so the page column never reflows: the
+   expanded panel slides over the content instead of pushing it.
+   Scoped to desktop, so the <=768px drawer keeps its full-width layout.
    ========================================================================== */
 
-/* Toggle Button in brand row */
-html body nav.sidebar #sidebarToggle {
-  display: grid !important;
-  place-items: center !important;
-  flex: 0 0 30px !important;
-  width: 30px !important;
-  height: 30px !important;
-  border-radius: 9px !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  background: rgba(255, 255, 255, 0.05) !important;
-  color: #94a3b8 !important;
-  font-size: 13px !important;
-  cursor: pointer !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
-}
-
-html body nav.sidebar #sidebarToggle:hover {
-  background: rgba(232, 185, 58, 0.2) !important;
-  border-color: var(--sb-gold, #e8b93a) !important;
-  color: var(--sb-gold, #e8b93a) !important;
-  transform: scale(1.08) !important;
-  box-shadow: 0 2px 10px rgba(232, 185, 58, 0.25) !important;
-}
-
 @media (min-width: 769px) {
+  /* The rail and the page column are one width, and only `width` is animated,
+     so min/max must not clamp the transition. */
   html body nav.sidebar#sidebar {
-    width: var(--sidebar-w) !important;
-    min-width: var(--sidebar-w) !important;
-    max-width: var(--sidebar-w) !important;
-    transform: none !important;
-    transition: width 0.22s cubic-bezier(0.2, 0.8, 0.2, 1), padding 0.22s ease !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1),
+                width 0.22s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
   }
 
-  html body nav.sidebar#sidebar ~ .main-content,
-  html body .dashboard > main.main-content {
-    margin-left: var(--sidebar-w) !important;
-    width: calc(100% - var(--sidebar-w)) !important;
-    max-width: calc(100% - var(--sidebar-w)) !important;
-    transition: margin-left 0.22s cubic-bezier(0.2, 0.8, 0.2, 1), width 0.22s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) {
+    width: var(--sb-rail) !important;
   }
 
-  /* ---- Collapsed Icon Rail (80px) ---- */
-  html body nav.sidebar#sidebar.close,
-  html body.sidebar-collapsed nav.sidebar#sidebar {
-    width: 80px !important;
-    min-width: 80px !important;
-    max-width: 80px !important;
-    padding: 16px 8px 14px !important;
-  }
-
-  html body nav.sidebar#sidebar.close ~ .main-content,
-  html body.sidebar-collapsed .main-content,
-  html body.sidebar-collapsed .dashboard > main.main-content {
-    margin-left: 80px !important;
-    width: calc(100% - 80px) !important;
-    max-width: calc(100% - 80px) !important;
-  }
-
-  html body nav.sidebar#sidebar.close .sidebar-brand-row,
-  html body.sidebar-collapsed nav.sidebar#sidebar .sidebar-brand-row {
-    flex-direction: column !important;
-    align-items: center !important;
+  /* Resting rail: icons only, centred. */
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-brand-row,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user {
     justify-content: center !important;
-    gap: 10px !important;
-    padding: 2px 0 14px !important;
   }
 
-  html body nav.sidebar#sidebar.close .imgbrand,
-  html body.sidebar-collapsed nav.sidebar#sidebar .imgbrand {
-    flex: 0 0 auto !important;
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a {
     justify-content: center !important;
-    width: auto !important;
-  }
-
-  html body nav.sidebar#sidebar.close .headertxt,
-  html body.sidebar-collapsed nav.sidebar#sidebar .headertxt {
-    display: none !important;
-  }
-
-  html body nav.sidebar#sidebar.close #sidebarToggle,
-  html body.sidebar-collapsed nav.sidebar#sidebar #sidebarToggle {
-    margin: 0 auto !important;
-  }
-
-  html body nav.sidebar#sidebar.close #sidebarToggle i,
-  html body.sidebar-collapsed nav.sidebar#sidebar #sidebarToggle i {
-    transform: rotate(180deg) !important;
-  }
-
-  html body nav.sidebar#sidebar.close .nav-group-label,
-  html body.sidebar-collapsed nav.sidebar#sidebar .nav-group-label {
-    display: none !important;
-  }
-
-  html body nav.sidebar#sidebar.close .menulist a,
-  html body.sidebar-collapsed nav.sidebar#sidebar .menulist a {
-    justify-content: center !important;
-    padding: 0 !important;
-    width: 44px !important;
-    height: 44px !important;
-    margin: 0 auto 6px !important;
-    border-radius: 12px !important;
-  }
-
-  html body nav.sidebar#sidebar.close .menulist a .text,
-  html body.sidebar-collapsed nav.sidebar#sidebar .menulist a .text {
-    display: none !important;
-  }
-
-  html body nav.sidebar#sidebar.close .menulist a .icon,
-  html body.sidebar-collapsed nav.sidebar#sidebar .menulist a .icon {
-    margin: 0 !important;
-    font-size: 17px !important;
-  }
-
-  /* Tooltip for collapsed nav items */
-  html body nav.sidebar#sidebar.close .menulist a::after,
-  html body.sidebar-collapsed nav.sidebar#sidebar .menulist a::after {
-    content: attr(data-tip);
-    position: absolute;
-    left: calc(100% + 12px);
-    top: 50%;
-    transform: translateY(-50%);
-    background: #1e293b;
-    color: #fff;
-    font-size: 12px;
-    font-weight: 600;
-    padding: 6px 12px;
-    border-radius: 8px;
-    white-space: nowrap;
-    pointer-events: none;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.15s ease, transform 0.15s ease;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    z-index: 1000;
-  }
-
-  html body nav.sidebar#sidebar.close .menulist a:hover::after,
-  html body.sidebar-collapsed nav.sidebar#sidebar .menulist a:hover::after {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(-50%) translateX(2px);
-  }
-
-  html body nav.sidebar#sidebar.close .sidebar-foot,
-  html body.sidebar-collapsed nav.sidebar#sidebar .sidebar-foot {
-    padding: 10px 4px 0 !important;
-  }
-
-  html body nav.sidebar#sidebar.close .sidebar-user,
-  html body.sidebar-collapsed nav.sidebar#sidebar .sidebar-user {
-    justify-content: center !important;
-    padding: 6px !important;
     gap: 0 !important;
+    padding: 0 !important;
   }
 
-  html body nav.sidebar#sidebar.close .sidebar-user-copy,
-  html body.sidebar-collapsed nav.sidebar#sidebar .sidebar-user-copy,
-  html body nav.sidebar#sidebar.close .account-menu-toggle,
-  html body.sidebar-collapsed nav.sidebar#sidebar .account-menu-toggle {
+  /* Text that only makes sense while the panel is open. The nav label is
+     clipped further down instead, so links keep their accessible names. */
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .headertxt,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-group-label,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user-copy,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .account-menu-toggle,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .account-menu {
     display: none !important;
+  }
+
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .text {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    margin: -1px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    clip-path: inset(50%) !important;
+  }
+
+  /* Reveal: labels fade in only after the panel has widened, so they are never
+     painted across the page content mid-transition. */
+  html body nav.sidebar#sidebar:hover .headertxt,
+  html body nav.sidebar#sidebar:focus-within .headertxt,
+  html body nav.sidebar#sidebar:hover .sidebar-user-copy,
+  html body nav.sidebar#sidebar:focus-within .sidebar-user-copy,
+  html body nav.sidebar#sidebar:hover .menulist a .text,
+  html body nav.sidebar#sidebar:focus-within .menulist a .text {
+    animation: sb-rail-reveal 0.16s ease 0.08s both !important;
+  }
+
+  html body nav.sidebar#sidebar:hover .nav-group-label,
+  html body nav.sidebar#sidebar:focus-within .nav-group-label {
+    animation: sb-rail-fade 0.16s ease 0.08s both !important;
+  }
+
+  /* The page column always reserves the rail, so the expanded panel slides
+     over the content rather than pushing it. */
+  html body nav.sidebar#sidebar ~ .main-content {
+    margin-left: var(--sb-rail) !important;
+    width: calc(100% - var(--sb-rail)) !important;
+    max-width: calc(100% - var(--sb-rail)) !important;
+  }
+}
+
+@keyframes sb-rail-reveal {
+  from { opacity: 0; transform: translateX(-6px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes sb-rail-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html body nav.sidebar#sidebar,
+  html body nav.sidebar#sidebar .headertxt,
+  html body nav.sidebar#sidebar .nav-group-label,
+  html body nav.sidebar#sidebar .sidebar-user-copy,
+  html body nav.sidebar#sidebar .menulist a .text {
+    transition: none !important;
+    animation: none !important;
   }
 }

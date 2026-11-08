@@ -1109,3 +1109,14 @@ Match the Staff Announcements page exactly to the provided mockup (dark cards, 4
 - Restored the collapsible sidebar mechanism across `web/layout.js`, `web/sidebar.js`, `web/sidebar-pro.css`, and `web/layout-fixes.css`: added `#sidebarToggle` chevron in `.sidebar-brand-row`, synchronous pre-paint restoration from `localStorage.getItem("sidebar") === "closed"`, smooth 80px icon-rail collapse with centered icons and hover tooltips, and dynamic main content margin adjustment (80px vs 260px) without layout flicker.
 ### Decision-log skill
 When aligning a page to a visual mockup, strictly compare container hierarchy (removing extraneous sections like stat strips if absent in the target design) and ensure collapsible layouts adjust both the navigation rail and the sibling main content offset with zero-flicker pre-paint initialization.
+
+
+## 2026-11-09 03:50 (Asia/Manila): Restore hover-expand icon rail sidebar from commit 46ab02d
+### What I asked for
+Restore the sidebar behavior from commit 46ab02d where the sidebar automatically rests as an icon rail and expands when hovering the mouse arrow/cursor over it.
+### What the agent decided and why
+- Extracted and restored the exact sidebar implementation from commit 46ab02d across web/sidebar-pro.css, web/sidebar.js, web/layout.js, and web/layout-fixes.css.
+- Re-enabled the automatic hover-expand desktop behavior: the sidebar rests at 80px (--sb-rail: 80px) with centered icons, and automatically expands to 260px while hovered or focused (:hover / :focus-within), with labels fading in (sb-rail-reveal).
+- Removed the manual click toggle (#sidebarToggle) and .close class overrides to allow pure hover-driven automatic expansion without layout fighting.
+### Decision-log skill
+When the user refers to hover-driven responsive controls ("kusa nag-aadjust kapag pinunta arrow") versus manual toggle buttons, restore the pure :hover / :focus-within rail styles from the designated reference commit without injecting click-toggle buttons into the brand header.
