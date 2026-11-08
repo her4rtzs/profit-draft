@@ -89,9 +89,13 @@
     !loginPage &&
     !explicitlyLoggedOut &&
     !location.search.includes("reason=session") &&
-    (location.hostname === "localhost" || location.hostname === "127.0.0.1" || location.search.includes("demo=1"))
+    (location.hostname === "localhost" || location.hostname === "127.0.0.1" || location.protocol === "file:" || location.search.includes("demo=1"))
   ) {
-    storedUser = { name: "Administrator", role: "ADMIN", demo: true };
+    storedUser = {
+      name: isTrainerSection ? "Coach Mika" : "Administrator",
+      role: isTrainerSection ? "TRAINER" : "ADMIN",
+      demo: true
+    };
     try {
       localStorage.setItem("profit-demo-session", JSON.stringify(storedUser));
     } catch {}
@@ -99,7 +103,7 @@
 
   if (
     (cfg.DEMO_MODE && !cfg.API_BASE_URL) ||
-    (storedUser && (!cfg.API_BASE_URL || location.hostname === "localhost" || location.hostname === "127.0.0.1"))
+    (storedUser && (!cfg.API_BASE_URL || location.hostname === "localhost" || location.hostname === "127.0.0.1" || location.protocol === "file:"))
   ) {
     const user = storedUser;
     if (!loginPage && (adminPages.has(file) || memberPages.has(file)) && !user) {

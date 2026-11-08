@@ -974,3 +974,19 @@ The logout in staff is not working. Fix it.
 - Registered `bindLogoutOnce()` immediately at script startup with a direct fallback to `performLogout()` so clicking `[data-logout]` in the sidebar or settings always logs out immediately, and prevented `localhost` auto-demo seeding from immediately re-logging in a user who just signed out.
 ### Decision-log skill
 When an app supports both server sessions and a `localhost` demo-session fallback, `logout()` must clear both `localStorage`/`sessionStorage` and the backend `/auth/logout/` cookie, and record an explicit logged-out flag in `sessionStorage` so the `localhost` auto-seed guard does not immediately recreate a session on redirect to `login.html`.
+
+## 2026-11-08 18:50 (Asia/Manila): Polish Trainer Coach Dashboard Layout, Responsive Grid, and Motion Design
+### What I asked for
+Fix the Trainer Workspace "Coach Dashboard" (route /trainer/) of the ProFit gym management app and make every container consistent with responsive stat grid (4/2/1), centered 1200px container, unified cards, aligned quick action row, clean profile links, empty states, text truncation, dark amber theme, count-up & progress animations, and verified responsive layouts at 375px, 768px, and 1440px with no horizontal scroll.
+### What the agent decided and why
+- Created scoped stylesheet `web/trainer/trainer.css` applying `body[data-portal="trainer"][data-page="dashboard"] .content` with `max-width: 1200px; margin: 0 auto; padding: 20px 28px 32px` to prevent layout hugging or right-side blank space without modifying global `web/assets/css/staff.css`.
+- Replaced the stat cards grid with `.tw-stats`, providing a responsive CSS grid of 4 columns on desktop (>1024px), 2 columns on tablet (641px–1024px), and 1 column on phone (<=640px), with uniform icon tiles, big numbers, labels, and helper subtitles.
+- Grouped quick actions into `.tw-actions` using primary amber button `#F59E0B` for "Record Member Check-in" and outlined buttons for "Send Schedule Update" and "View Weekly Schedule", cleanly wrapping on smaller screens.
+- Standardized section containers (`.tw-card`) with unified 16px border-radius, hairline borders, consistent headers, full-width sections for "Today's Coaching Schedule" and "Recent Member Check-ins", and a responsive 2-to-1 column split (`.tw-split`) for "My Roster" and "Gym Notices".
+- Handled table overflow by wrapping the check-ins table in `.tw-table-wrap` (`overflow-x: auto`) with a styled profile button and avatar thumbnail, preventing wide tables from expanding the page width.
+- Removed decorative tagline overlap by setting `data-tagline="off"` and adding `display: none !important` for `.tagline` on the trainer portal.
+- Added smooth motion design: 60ms staggered card rise (`@keyframes twCardRise`), animated number count-ups via cubic-bezier `countUp()`, roster capacity progress bar transition, card hover lift (`translateY(-2px)`) with subtle amber glow, button press scale (`0.98`), and skeleton shimmer placeholders while data loads, all wrapped in `@media (prefers-reduced-motion: reduce)`.
+- Fixed `document.querySelectorAll('[data-icon]:not(body)')` selector in `web/trainer/index.html` to prevent `<body>`'s `data-icon="home"` from having its entire inner HTML replaced by a single SVG icon.
+- Updated `web/auth.js` to recognize `location.protocol === 'file:'` and default to `Coach Mika` / `TRAINER` when loading trainer pages in offline/file mode.
+### Decision-log skill
+When writing general selector queries like `document.querySelectorAll('[data-icon]')` on pages that share shell attributes on `<body data-icon="...">`, always exclude `body` (`[data-icon]:not(body)`) to prevent accidental destruction of the entire page DOM by inline icon injectors.
