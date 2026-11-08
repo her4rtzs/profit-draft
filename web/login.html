@@ -24,6 +24,7 @@
   if(!password){$('passwordError').textContent='Enter your password.';return}
   submit.disabled=true;submit.querySelector('span').textContent='Signing in…';
   try{
+   try{sessionStorage.removeItem('profit-logged-out');}catch(e){}
    if(window.PROFIT_CONFIG?.DEMO_MODE && !window.PROFIT_CONFIG?.API_BASE_URL){
     // Demo mode has no server, so the role is inferred from the demo username only.
     const hint=identity.toLowerCase(), role=/coach|trainer/.test(hint)?'trainer':/member/.test(hint)?'member':'admin';
@@ -37,11 +38,12 @@
    } else {
     await window.ProFitAPI.post('/auth/login',{identity,password});
     const session=await window.ProFitAPI.get('/auth/session');const r=String(session.user?.role||'').toUpperCase();
-    const home=r==='ADMIN'?'index.html':(r==='TRAINER'||r==='COACH')?'trainer-portal.html':r==='MEMBER'?'member-home.html':null;
+    const home=r==='ADMIN'?'index.html':(r==='TRAINER'||r==='COACH')?'trainer/index.html':r==='MEMBER'?'member-home.html':null;
     if(home)location.replace(home);else message('Your account role could not be verified. Contact the gym administrator.',true)
    }
   }catch(err){
     if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+      try{sessionStorage.removeItem('profit-logged-out');}catch(e){}
       const hint=identity.toLowerCase(), role=/coach|trainer/.test(hint)?'trainer':/member/.test(hint)?'member':'admin';
       const isTrainer=role==='trainer', isMember=role==='member';
       const session={name:isMember?'Demo Member':isTrainer?'Coach Mika':'Administrator',role:isTrainer?'TRAINER':isMember?'MEMBER':'ADMIN',demo:true};

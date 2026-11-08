@@ -418,13 +418,16 @@
   }
   PF.logout = async () => {
     try {
+      localStorage.removeItem("pp-accent");
+      localStorage.removeItem("profit-member-demo-checkins");
       localStorage.removeItem("profit-demo-session");
       sessionStorage.removeItem("profit-demo-session");
+      sessionStorage.setItem("profit-logged-out", "1");
       if (window.ProFitAPI) await window.ProFitAPI.post("/auth/logout", {});
     } catch (e) { /* ignore */ }
     const isSub = location.pathname.includes('/staff/') || location.pathname.includes('/trainer/');
     const target = PF.config.loginUrl || (isSub ? '../login.html' : 'login.html');
-    location.href = target;
+    location.replace(target);
   };
 
   // asset base (for logo) — derived from this script's own URL
