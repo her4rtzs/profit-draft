@@ -24,6 +24,12 @@
   const nav = document.getElementById('sidebar');
   if (nav) {
     nav.setAttribute('aria-label', 'Main navigation');
+    try {
+      if (localStorage.getItem('sidebar') === 'closed' && window.innerWidth > 768) {
+        nav.classList.add('close');
+        body.classList.add('sidebar-collapsed');
+      }
+    } catch (e) {}
     if (!nav.querySelector('.menulist')) {
       nav.innerHTML = `
         <div class="sidebar-brand-row">
@@ -31,6 +37,9 @@
             <span class="image"><img id="gymLogoImg" src="${GYM.logo || 'logo.jpg'}" alt="${GYM.name}" onerror="this.style.display='none'"></span>
             <span class="headertxt"><strong id="gymNameTxt">${GYM.name}</strong><small id="gymTagTxt">${GYM.tagline}</small></span>
           </a>
+          <button id="sidebarToggle" class="toggle" type="button" aria-label="Collapse sidebar" title="Collapse sidebar">
+            <i class="fa-solid ${nav.classList.contains('close') ? 'fa-chevron-right' : 'fa-chevron-left'}" aria-hidden="true"></i>
+          </button>
         </div>
         <div class="sidebar-scroll">
           ${groups.map(g => `<section class="nav-group"><p class="nav-group-label">${g.label}</p><ul class="menulist">${g.items.map(item => `<li><a href="${item.href}" data-page-id="${item.id}" data-tip="${item.label}" class="${item.id===current?'active':''}" ${item.id===current?'aria-current="page"':''}><i class="fa-solid ${item.icon} icon" aria-hidden="true"></i><span class="text nav-text">${item.label}</span></a></li>`).join('')}</ul></section>`).join('')}

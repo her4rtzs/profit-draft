@@ -39,23 +39,23 @@
     published: {
       badge: "Active",
       pillCls: "published",
-      thumbCls: "theme-published",
+      thumbImg: "img/gal-1.jpg",
       icon: "fa-dumbbell",
-      tag: "LIVE UPDATE"
+      tag: "Active"
     },
     draft: {
-      badge: "Draft",
+      badge: "Upcoming",
       pillCls: "draft",
-      thumbCls: "theme-draft",
+      thumbImg: "img/gal-2.jpg",
       icon: "fa-calendar-day",
-      tag: "UPCOMING"
+      tag: "Upcoming"
     },
     archived: {
-      badge: "Archived",
+      badge: "Info",
       pillCls: "archived",
-      thumbCls: "theme-archived",
+      thumbImg: "img/prog-1.jpg",
       icon: "fa-box-archive",
-      tag: "ARCHIVE"
+      tag: "Info"
     }
   };
 
@@ -217,10 +217,19 @@
     }
   }
 
+  function getThumbFor(item, meta) {
+    const t = String(item.title || "").toLowerCase();
+    if (t.includes("operation") || t.includes("hour")) return "img/gal-1.jpg";
+    if (t.includes("maintenance") || t.includes("close")) return "img/gal-2.jpg";
+    if (t.includes("program") || t.includes("launch") || t.includes("hiit")) return "img/prog-1.jpg";
+    if (t.includes("schedule")) return "img/gal-3.jpg";
+    return meta.thumbImg || "img/gal-1.jpg";
+  }
+
   function renderCard(item) {
     const meta = STATUS_META[item.status] || STATUS_META.draft;
     const displayDate = fmtDate(item.event_date || item.published_at || item.created_at);
-    const audienceLabel = AUDIENCE_LABELS[item.audience] || "Members and trainers";
+    const thumbSrc = getThumbFor(item, meta);
 
     const menuActions = [];
     if (item.status === "draft") {
@@ -242,9 +251,8 @@
 
     return `
       <article class="ann-item" data-id="${esc(item.id)}">
-        <div class="ann-thumb ${meta.thumbCls}" aria-hidden="true">
-          <i class="fa-solid ${meta.icon}"></i>
-          <span>${meta.tag}</span>
+        <div class="ann-thumb" aria-hidden="true">
+          <img src="${thumbSrc}" alt="" onerror="this.parentElement.innerHTML='<i class=\\'fa-solid ${meta.icon}\\'></i>'">
         </div>
         <div class="ann-item-content">
           <div class="ann-item-title-row">
@@ -254,9 +262,7 @@
           <div class="ann-item-meta">
             <span class="ann-meta-chip"><i class="fa-regular fa-calendar" aria-hidden="true"></i> ${esc(displayDate)}</span>
             <span class="ann-meta-sep" aria-hidden="true">|</span>
-            <span class="ann-meta-chip"><i class="fa-solid fa-user-shield" aria-hidden="true"></i> ${esc(item.author)}</span>
-            <span class="ann-meta-sep" aria-hidden="true">|</span>
-            <span class="ann-meta-chip"><i class="fa-solid fa-users" aria-hidden="true"></i> ${esc(audienceLabel)}</span>
+            <span class="ann-meta-chip"><i class="fa-regular fa-user" aria-hidden="true"></i> ${esc(item.author || "Admin")}</span>
           </div>
         </div>
         <div class="ann-item-right">

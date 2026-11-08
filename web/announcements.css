@@ -649,48 +649,30 @@ body:not(.dark) .ann-item:hover {
 /* Left Visual Thumbnail Card with Gold Accent Bar (matching screenshot 3) */
 .ann-thumb {
   position: relative;
-  width: 148px;
-  height: 82px;
-  border-radius: 12px;
+  width: 140px;
+  height: 78px;
+  border-radius: 10px;
   overflow: hidden;
-  flex: 0 0 148px;
+  flex: 0 0 140px;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-left: 4px solid #f59e0b;
-  box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.45);
+  background: #0b111a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 3.5px solid #f59e0b;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
 }
 
-.ann-thumb.theme-published {
-  background: radial-gradient(circle at 30% 25%, rgba(16, 185, 129, 0.28), rgba(15, 23, 42, 0.95) 75%);
-  border-left-color: #f59e0b;
-}
-
-.ann-thumb.theme-draft {
-  background: radial-gradient(circle at 30% 25%, rgba(245, 158, 11, 0.3), rgba(15, 23, 42, 0.95) 75%);
-  border-left-color: #fbbf24;
-}
-
-.ann-thumb.theme-archived {
-  background: radial-gradient(circle at 30% 25%, rgba(59, 130, 246, 0.28), rgba(15, 23, 42, 0.95) 75%);
-  border-left-color: #3b82f6;
+.ann-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .ann-thumb i {
-  font-size: 22px;
-  color: #f8fafc;
-  opacity: 0.9;
-}
-
-.ann-thumb span {
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(248, 250, 252, 0.78);
+  font-size: 24px;
+  color: #f59e0b;
 }
 
 .ann-item-content {
@@ -698,29 +680,28 @@ body:not(.dark) .ann-item:hover {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
 }
 
 .ann-item-title-row {
   display: flex;
   align-items: center;
   gap: 10px;
-  flex-wrap: wrap;
 }
 
 .ann-item-content h3 {
   margin: 0;
-  font-size: 16.5px;
+  font-size: 16px;
   font-weight: 700;
-  color: var(--text);
+  color: #fff;
   line-height: 1.3;
 }
 
 .ann-item-body {
   margin: 0;
   font-size: 13.5px;
-  color: var(--muted);
-  line-height: 1.5;
+  color: #94a3b8;
+  line-height: 1.45;
   white-space: pre-line;
   word-break: break-word;
 }
@@ -728,11 +709,11 @@ body:not(.dark) .ann-item:hover {
 .ann-item-meta {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   flex-wrap: wrap;
   margin-top: 2px;
   font-size: 12px;
-  color: var(--muted);
+  color: #64748b;
 }
 
 .ann-meta-chip {
@@ -742,7 +723,7 @@ body:not(.dark) .ann-item:hover {
 }
 
 .ann-meta-chip i {
-  font-size: 12px;
+  font-size: 11px;
   opacity: 0.8;
 }
 
@@ -758,43 +739,43 @@ body:not(.dark) .ann-item:hover {
   margin-left: auto;
 }
 
-/* Status Pill (Active green, Draft/Upcoming amber, Archived blue) */
+/* Status Pill (Active green, Upcoming amber, Info blue) */
 .ann-status-pill {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  height: 30px;
-  padding: 0 13px;
+  height: 28px;
+  padding: 0 12px;
   border-radius: 999px;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
 }
 
 .ann-status-pill::before {
   content: "";
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: currentColor;
 }
 
 .ann-status-pill.published {
-  background: rgba(16, 185, 129, 0.16);
-  color: #34d399;
-  border: 1px solid rgba(16, 185, 129, 0.32);
+  background: rgba(16, 185, 129, 0.14);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
 .ann-status-pill.draft {
-  background: rgba(245, 158, 11, 0.16);
-  color: #fbbf24;
-  border: 1px solid rgba(245, 158, 11, 0.32);
+  background: rgba(245, 158, 11, 0.14);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .ann-status-pill.archived {
-  background: rgba(59, 130, 246, 0.16);
-  color: #60a5fa;
-  border: 1px solid rgba(59, 130, 246, 0.32);
+  background: rgba(59, 130, 246, 0.14);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
 /* 3-Dot Action Menu Button & Popover */

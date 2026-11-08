@@ -1097,3 +1097,15 @@ Fix two critical problems in the ProFit Staff Portal: (1) integrate the Announce
 ### Decision-log skill
 When multiple portal sections (e.g. Staff vs Trainer) share storage keys, never determine the portal context from `localStorage` values alone; always check the current URL path or `document.body` data attributes to prevent cross-portal role bleed. Keep fixed navigation sidebars permanently sized without hover width animations and avoid blocking visibility classes (`visibility: hidden`) during session checks to ensure smooth, flicker-free transitions.
 
+
+
+## 2026-11-09 03:38 (Asia/Manila): Staff Announcements exact visual alignment & collapsible sidebar restoration
+### What I asked for
+Match the Staff Announcements page exactly to the provided mockup (dark cards, 4 action tiles directly above All Announcements, real fitness thumbnails with gold accent line, green/amber/blue status badges, search and filter dropdown toolbar), and restore the desktop collapsible sidebar.
+### What the agent decided and why
+- Removed the four separate KPI stat cards from `web/announcements.html`: the design screenshot transitions directly from the four action cards (Create, Manage, Archive, Settings) into the All Announcements feed panel without intermediate KPI boxes.
+- Streamlined the All Announcements toolbar: aligned to the mockup with the amber list icon and title on the left, and the search input plus status select dropdown (All) on the right, removing redundant in-toolbar action buttons.
+- Styled announcement rows with real gym photography thumbnails (img/gal-1.jpg, img/gal-2.jpg, img/prog-1.jpg), 3.5px amber left accent border, and status pills with colored indicator dots (Active green, Upcoming amber, Info blue).
+- Restored the collapsible sidebar mechanism across `web/layout.js`, `web/sidebar.js`, `web/sidebar-pro.css`, and `web/layout-fixes.css`: added `#sidebarToggle` chevron in `.sidebar-brand-row`, synchronous pre-paint restoration from `localStorage.getItem("sidebar") === "closed"`, smooth 80px icon-rail collapse with centered icons and hover tooltips, and dynamic main content margin adjustment (80px vs 260px) without layout flicker.
+### Decision-log skill
+When aligning a page to a visual mockup, strictly compare container hierarchy (removing extraneous sections like stat strips if absent in the target design) and ensure collapsible layouts adjust both the navigation rail and the sibling main content offset with zero-flicker pre-paint initialization.

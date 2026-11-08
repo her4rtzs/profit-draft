@@ -50,6 +50,13 @@ html body nav.sidebar {
   z-index: 100 !important;
 }
 
+html body nav.sidebar.close,
+html body.sidebar-collapsed nav.sidebar {
+  width: 80px !important;
+  min-width: 80px !important;
+  max-width: 80px !important;
+}
+
 html body .main-content {
   margin-left: var(--sidebar-w, 260px) !important;
   margin-right: 0 !important;
@@ -62,6 +69,14 @@ html body .main-content {
   overflow-x: clip !important;
   overflow-y: visible !important;
   transition: none !important;
+}
+
+html body nav.sidebar.close ~ .main-content,
+html body.sidebar-collapsed .main-content,
+html body.sidebar-collapsed .dashboard > main.main-content {
+  margin-left: 80px !important;
+  width: calc(100% - 80px) !important;
+  max-width: calc(100% - 80px) !important;
 }
 
 html body .main-content > * {

@@ -34,9 +34,8 @@
       </div>
       <div class="ann-hero-copy">
         <h2>Announcements</h2>
-        <p>Stay updated with the latest announcements from your gym management team. Share important updates, gym news, events, and reminders with your members and trainers.</p>
+        <p>Stay updated with the latest announcements from your gym management team.</p>
       </div>
-      <div class="ann-hero-tagline" aria-hidden="true">Stronger<br>Healthier<br>Happier</div>
     </div>
   </section>
 
@@ -79,53 +78,6 @@
     </a>
   </section>
 
-  <!-- 4 Server KPI Stat Cards -->
-  <section class="stats ann-stats-grid" aria-label="Announcement statistics">
-    <div class="stat-card">
-      <div class="stat-top">
-        <div class="stat-icon blue"><i class="fa-solid fa-bullhorn"></i></div>
-      </div>
-      <div class="stat-content">
-        <p>Total announcements</p>
-        <h2 id="statTotal">0</h2>
-        <small>All statuses</small>
-      </div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-top">
-        <div class="stat-icon green"><i class="fa-regular fa-calendar-check"></i></div>
-      </div>
-      <div class="stat-content">
-        <p>Published this month</p>
-        <h2 id="statPublishedMonth">0</h2>
-        <small id="statLiveNow">0 live now</small>
-      </div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-top">
-        <div class="stat-icon purple"><i class="fa-solid fa-users"></i></div>
-      </div>
-      <div class="stat-content">
-        <p>People who can see them</p>
-        <h2 id="statAudienceReach">0</h2>
-        <small>Members + trainers</small>
-      </div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-top">
-        <div class="stat-icon gold"><i class="fa-regular fa-file-lines"></i></div>
-      </div>
-      <div class="stat-content">
-        <p>Drafts</p>
-        <h2 id="statDrafts">0</h2>
-        <small>Need your attention</small>
-      </div>
-    </div>
-  </section>
-
   <!-- Main All Announcements Panel -->
   <section class="panel ann-panel" id="annMainPanel" aria-label="All announcements">
     <div class="ann-toolbar">
@@ -134,7 +86,7 @@
           <i class="fa-solid fa-list-ul" aria-hidden="true"></i>
           <h2>All Announcements</h2>
         </div>
-        <div class="ann-pills" id="annFilterPills" role="tablist" aria-label="Filter announcements by status">
+        <div class="ann-pills" id="annFilterPills" role="tablist" aria-label="Filter announcements by status" style="display:none;">
           <button type="button" class="ann-pill active" role="tab" aria-selected="true" data-status="all">
             <span>All</span>
             <span class="ann-pill-count" id="countAll">0</span>
@@ -170,7 +122,7 @@
           </select>
         </div>
 
-        <button type="button" class="ann-btn primary" id="annNewBtn">
+        <button type="button" class="ann-btn primary" id="annNewBtn" style="display:none;">
           <i class="fa-solid fa-plus" aria-hidden="true"></i>
           <span>New announcement</span>
         </button>
