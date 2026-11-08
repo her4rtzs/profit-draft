@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="../assets/css/staff.css">
-  <link rel="stylesheet" href="trainer.css?v=5">
+  <link rel="stylesheet" href="trainer.css?v=6">
   <script src="../assets/js/staff-boot.js"></script>
 </head>
 <body data-portal="trainer" data-page="dashboard" data-tagline="off" data-title="Coach Dashboard" data-eyebrow="Trainer Workspace" data-sub="Your roster, today's sessions, and recent check-ins in one place." data-icon="home">
@@ -127,54 +127,49 @@
           <div class="tw-card-head tw-att-head">
             <div class="tw-att-head-left">
               <h2 class="tw-card-title" id="attChartTitle">Daily attendance</h2>
-              <p class="tw-card-sub" id="attSubtitle">Last 14 days · ending Nov 8, 2026</p>
-              <div class="tw-att-legend-row" aria-hidden="true">
-                <span class="tw-leg-item"><i class="tw-leg-dot is-green"></i>Present</span>
-                <span class="tw-leg-item"><i class="tw-leg-dot is-red"></i>Absent</span>
-              </div>
-            </div>
-
-            <div class="tw-att-head-right">
-              <div class="tw-period-tabs" id="attPeriodTabs" role="tablist" aria-label="Chart granularity">
-                <button type="button" class="tw-period-tab active" data-granularity="day" data-period="days" role="tab" aria-selected="true" tabindex="0">Days</button>
-                <button type="button" class="tw-period-tab" data-granularity="week" data-period="weeks" role="tab" aria-selected="false" tabindex="-1">Week</button>
-                <button type="button" class="tw-period-tab" data-granularity="month" data-period="months" role="tab" aria-selected="false" tabindex="-1">Month</button>
-                <button type="button" class="tw-period-tab" data-granularity="year" data-period="years" role="tab" aria-selected="false" tabindex="-1">Year</button>
-              </div>
-
-              <div class="tw-chart-nav-group" aria-label="Step date range">
-                <button type="button" class="tw-chart-nav-btn" id="attNavPrev" title="Previous period" aria-label="Previous period"><span data-icon="chevron-left"></span></button>
-                <button type="button" class="tw-chart-nav-btn" id="attNavNext" title="Next period" aria-label="Next period"><span data-icon="chevron-right"></span></button>
-              </div>
-
-              <span class="tw-updated-badge" id="attUpdatedLabel" title="Live sync active (polls every 30s and on tab focus)">Updated just now</span>
+              <p class="tw-card-sub" id="attSubtitle">Daily</p>
             </div>
           </div>
 
           <div class="tw-att-controls">
-            <div class="tw-att-filters">
-              <div class="tw-ctrl-field is-member">
-                <label for="attMember">Member</label>
-                <select id="attMember" class="tw-select">
-                  <option value="all">All members</option>
-                </select>
+            <div class="tw-period-tabs" id="attPeriodTabs" role="tablist" aria-label="Chart granularity">
+              <button type="button" class="tw-period-tab active" data-granularity="day" data-period="days" role="tab" aria-selected="true" tabindex="0">Days</button>
+              <button type="button" class="tw-period-tab" data-granularity="week" data-period="weeks" role="tab" aria-selected="false" tabindex="-1">Week</button>
+              <button type="button" class="tw-period-tab" data-granularity="month" data-period="months" role="tab" aria-selected="false" tabindex="-1">Month</button>
+              <button type="button" class="tw-period-tab" data-granularity="year" data-period="years" role="tab" aria-selected="false" tabindex="-1">Year</button>
+            </div>
+            <label class="tw-pill-field is-member" for="attMember">
+              <span>Member</span>
+              <select id="attMember" class="tw-select">
+                <option value="all">All members</option>
+              </select>
+            </label>
+            <div class="tw-pill-field">
+              <label for="attFrom">From</label>
+              <div class="tw-date-wrap">
+                <input type="text" id="attFrom" class="tw-input tw-date-text" inputmode="numeric" placeholder="MM/DD/YYYY" autocomplete="off" aria-label="From date (MM/DD/YYYY)">
+                <input type="date" id="attFromPicker" class="tw-date-picker" style="position:absolute;width:0;height:0;opacity:0;pointer-events:none" tabindex="-1" aria-hidden="true">
+                <button type="button" class="tw-date-btn" data-picker="attFromPicker" aria-label="Pick From date"><span data-icon="calendar"></span></button>
               </div>
-              <div class="tw-ctrl-field">
-                <label for="attFrom">From</label>
-                <div class="tw-date-wrap">
-                  <input type="text" id="attFrom" class="tw-input tw-date-text" inputmode="numeric" placeholder="MM/DD/YYYY" autocomplete="off" aria-label="From date (MM/DD/YYYY)">
-                  <input type="date" id="attFromPicker" class="tw-date-picker" style="position:absolute;width:0;height:0;opacity:0;pointer-events:none" tabindex="-1" aria-hidden="true">
-                  <button type="button" class="tw-date-btn" data-picker="attFromPicker" aria-label="Pick From date"><span data-icon="calendar"></span></button>
-                </div>
+            </div>
+            <div class="tw-pill-field">
+              <label for="attTo">To</label>
+              <div class="tw-date-wrap">
+                <input type="text" id="attTo" class="tw-input tw-date-text" inputmode="numeric" placeholder="MM/DD/YYYY" autocomplete="off" aria-label="To date (MM/DD/YYYY)">
+                <input type="date" id="attToPicker" class="tw-date-picker" style="position:absolute;width:0;height:0;opacity:0;pointer-events:none" tabindex="-1" aria-hidden="true">
+                <button type="button" class="tw-date-btn" data-picker="attToPicker" aria-label="Pick To date"><span data-icon="calendar"></span></button>
               </div>
-              <div class="tw-ctrl-field">
-                <label for="attTo">To</label>
-                <div class="tw-date-wrap">
-                  <input type="text" id="attTo" class="tw-input tw-date-text" inputmode="numeric" placeholder="MM/DD/YYYY" autocomplete="off" aria-label="To date (MM/DD/YYYY)">
-                  <input type="date" id="attToPicker" class="tw-date-picker" style="position:absolute;width:0;height:0;opacity:0;pointer-events:none" tabindex="-1" aria-hidden="true">
-                  <button type="button" class="tw-date-btn" data-picker="attToPicker" aria-label="Pick To date"><span data-icon="calendar"></span></button>
-                </div>
-              </div>
+            </div>
+          </div>
+
+          <div class="tw-att-legend-bar">
+            <div class="tw-att-legend-row" aria-hidden="true">
+              <span class="tw-leg-item"><i class="tw-leg-dot is-green"></i>Present</span>
+              <span class="tw-leg-item"><i class="tw-leg-dot is-red"></i>Absent</span>
+            </div>
+            <div class="tw-chart-nav-group" aria-label="Step date range">
+              <button type="button" class="tw-chart-nav-btn" id="attNavPrev" title="Previous period" aria-label="Previous period"><span data-icon="chevron-left"></span></button>
+              <button type="button" class="tw-chart-nav-btn" id="attNavNext" title="Next period" aria-label="Next period"><span data-icon="chevron-right"></span></button>
             </div>
           </div>
 
@@ -194,7 +189,7 @@
 
           <div class="tw-att-summary" aria-label="Attendance summary">
             <div class="tw-sum-card">
-              <span>Checked in (Present)</span>
+              <span>Checked in</span>
               <strong id="sumCheckedIn">0</strong>
             </div>
             <div class="tw-sum-card">
@@ -206,6 +201,7 @@
               <strong id="sumRate">0%</strong>
             </div>
           </div>
+          <span class="tw-updated-badge is-foot" id="attUpdatedLabel" title="Live sync active (polls every 30s and on tab focus)">Updated just now</span>
         </section>
 
         <!-- Row 2, Col 1: Today's Coaching Schedule -->
@@ -563,19 +559,14 @@ document.addEventListener('DOMContentLoaded', () => {
       ? ''
       : (rosterLookup[memberId] || `Member #${memberId}`);
 
-    const def = defaultRangeForGranularity(granularity);
-    let spanText = '';
-    if (fromIso === def.from && toIso === def.to) {
-      const spanLabels = {
-        day: 'Last 14 days',
-        week: 'Last 8 weeks',
-        month: 'Last 6 months',
-        year: 'Last 2 years'
-      };
-      spanText = `${spanLabels[granularity] || 'Last 14 days'} · ending ${formatIsoNice(toIso)}`;
-    } else {
-      spanText = `${formatIsoNice(fromIso)} to ${formatIsoNice(toIso)}`;
-    }
+    const granWord = { day: 'Daily', week: 'Weekly', month: 'Monthly', year: 'Yearly' }[granularity] || 'Daily';
+    const fromShort = (() => {
+      const d = new Date(fromIso + 'T00:00:00');
+      if (isNaN(d)) return formatIsoNice(fromIso);
+      const sameYear = String(fromIso).slice(0, 4) === String(toIso).slice(0, 4);
+      return d.toLocaleDateString('en-US', sameYear ? { month: 'short', day: 'numeric' } : { month: 'short', day: 'numeric', year: 'numeric' });
+    })();
+    const spanText = `${granWord} · ${fromShort} – ${formatIsoNice(toIso)}`;
 
     if ($('attSubtitle')) {
       $('attSubtitle').textContent = mLabel ? `${spanText} · ${mLabel}` : spanText;
@@ -635,9 +626,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const sumRateVal = summary.attendance_rate !== undefined ? summary.attendance_rate : summary.rate;
 
     // Populate summary cards directly from API summary (never recomputed on frontend)
-    $('sumCheckedIn').textContent = String(summary.checked_in ?? 0);
-    $('sumScheduled').textContent = String(summary.scheduled ?? 0);
-    $('sumRate').textContent = formatRateDisplay(sumRateVal);
+    const setSum = (id, val) => {
+      const el = $(id);
+      if (!el || el.textContent === val) return;
+      el.textContent = val;
+      if (!reduceMotion) {
+        el.classList.remove('is-bump');
+        void el.offsetWidth;
+        el.classList.add('is-bump');
+      }
+    };
+    setSum('sumCheckedIn', String(summary.checked_in ?? 0));
+    setSum('sumScheduled', String(summary.scheduled ?? 0));
+    setSum('sumRate', formatRateDisplay(sumRateVal));
     $('sumRate').title = formatRateExact(sumRateVal);
 
     // Empty state when no buckets or scheduled is 0
@@ -738,7 +739,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const firstX = ptsPresent[0].cx.toFixed(1);
       const lastX = ptsPresent[ptsPresent.length - 1].cx.toFixed(1);
       const areaPoints = `${firstX},${yBase.toFixed(1)} ${polyPresent} ${lastX},${yBase.toFixed(1)}`;
-      areaPolygonHtml = `<polygon class="tw-area-present" points="${areaPoints}"></polygon>`;
+      areaPolygonHtml = `<polygon class="__AREA_CLS__" points="${areaPoints}"></polygon>`;
     }
 
     // Path lengths for animation
@@ -750,18 +751,31 @@ document.addEventListener('DOMContentLoaded', () => {
     pathLenP = Math.ceil(pathLenP + 20);
     pathLenA = Math.ceil(pathLenA + 20);
 
-    const shouldAnim = !reduceMotion && !hasAnimatedLineOnce && !isUpdate;
+    // Animate on every fresh render (load, tab switch, member/date change, < > step).
+    // Polls and resizes redraw silently; only changed points pulse on a poll.
+    const shouldAnim = !reduceMotion && !isUpdate;
     if (ptsPresent.length > 1) hasAnimatedLineOnce = true;
     const animClsP = shouldAnim ? 'tw-line-present is-anim' : 'tw-line-present';
     const animClsA = shouldAnim ? 'tw-line-absent is-anim' : 'tw-line-absent';
+    const areaCls = shouldAnim ? 'tw-area-present is-anim' : 'tw-area-present';
+    const dotDelay = idx => (n > 1 ? (idx / (n - 1)) * 0.8 : 0).toFixed(3);
+    const changedIdx = new Set();
+    if (isUpdate && changedStarts && !reduceMotion) {
+      buckets.forEach((b, i) => { if (changedStarts.has(b.start || b.key)) changedIdx.add(i); });
+    }
+    const dotCls = (base, idx) => {
+      if (shouldAnim) return `${base} is-pop`;
+      if (changedIdx.has(idx)) return `${base} is-pulse`;
+      return base;
+    };
 
     // Circular point markers
     const dotsPresentHtml = ptsPresent.map(p =>
-      `<circle class="tw-dot-present" data-dot-p="${p.idx}" cx="${p.cx.toFixed(1)}" cy="${p.cy.toFixed(1)}" r="4.5"></circle>`
+      `<circle class="${dotCls('tw-dot-present', p.idx)}" style="--dd:${dotDelay(p.idx)}s" data-dot-p="${p.idx}" cx="${p.cx.toFixed(1)}" cy="${p.cy.toFixed(1)}" r="4.5"></circle>`
     ).join('');
 
     const dotsAbsentHtml = ptsAbsent.map(p =>
-      `<circle class="tw-dot-absent" data-dot-a="${p.idx}" cx="${p.cx.toFixed(1)}" cy="${p.cy.toFixed(1)}" r="4.5"></circle>`
+      `<circle class="${dotCls('tw-dot-absent', p.idx)}" style="--dd:${dotDelay(p.idx)}s" data-dot-a="${p.idx}" cx="${p.cx.toFixed(1)}" cy="${p.cy.toFixed(1)}" r="4.5"></circle>`
     ).join('');
 
     // Invisible hit targets
@@ -780,12 +794,13 @@ document.addEventListener('DOMContentLoaded', () => {
       <svg class="tw-chart-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(chartAriaSummary)}">
         <defs>
           <linearGradient id="twGradPresentArea" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#10B981" stop-opacity="0.25"/>
-            <stop offset="100%" stop-color="#10B981" stop-opacity="0.0"/>
+            <stop offset="0%" stop-color="#10B981" stop-opacity="0.38"/>
+            <stop offset="60%" stop-color="#10B981" stop-opacity="0.14"/>
+            <stop offset="100%" stop-color="#10B981" stop-opacity="0.02"/>
           </linearGradient>
         </defs>
         <g>${gridLines.join('')}</g>
-        ${areaPolygonHtml}
+        ${areaPolygonHtml.replace('__AREA_CLS__', areaCls)}
         <line class="tw-chart-guide" id="twChartGuide" x1="0" y1="${padT}" x2="0" y2="${yBase}"></line>
         ${ptsPresent.length > 1 ? `<polyline class="${animClsP}" style="--path-len:${pathLenP}" points="${polyPresent}"></polyline>` : ''}
         ${ptsAbsent.length > 1 ? `<polyline class="${animClsA}" style="--path-len:${pathLenA}" points="${polyAbsent}"></polyline>` : ''}

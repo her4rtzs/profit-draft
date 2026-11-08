@@ -18,16 +18,17 @@ html[data-theme="dark"]:not([data-accent]) body[data-portal="trainer"] {
 /* Light Mode Theme: clean, crisp, comfortable slate-zinc palette (no dirty beige or harsh contrast) */
 html:not([data-theme="dark"]) body[data-portal="trainer"],
 html[data-theme="light"] body[data-portal="trainer"] {
-  --bg: #F8FAFC;
-  --bg-glow: rgba(245, 158, 11, .06);
-  --card: #FFFFFF;
-  --card-alpha: #FFFFFF;
-  --card-2: #F8FAFC;
-  --line: #E2E8F0;
-  --line-strong: #CBD5E1;
-  --text: #0F172A;
-  --text-2: #334155;
-  --muted: #64748B;
+  /* Warm cream palette: soft on the eyes, never pure white */
+  --bg: #F2EEE5;
+  --bg-glow: rgba(245, 158, 11, .05);
+  --card: #FAF8F3;
+  --card-alpha: #FAF8F3;
+  --card-2: #F3EEE4;
+  --line: #E8E1D3;
+  --line-strong: #DAD1BF;
+  --text: #1F2430;
+  --text-2: #444A57;
+  --muted: #727684;
   --green: #10B981;
   --green-soft: rgba(16, 185, 129, .12);
   --red: #EF4444;
@@ -36,18 +37,18 @@ html[data-theme="light"] body[data-portal="trainer"] {
   --blue-soft: rgba(37, 99, 235, .12);
   --purple: #7C3AED;
   --purple-soft: rgba(124, 58, 237, .12);
-  --tw-bg: #F8FAFC;
-  --tw-card: #FFFFFF;
-  --tw-card-2: #F8FAFC;
-  --tw-border: #E2E8F0;
-  --tw-border-strong: #CBD5E1;
-  --tw-dot-fill: #FFFFFF;
-  --tw-donut-track: #E2E8F0;
-  --tw-grid-line: #E2E8F0;
-  --tw-chart-tip-bg: #0F172A;
-  --tw-chart-tip-border: #334155;
-  --tw-chart-tip-text: #F8FAFC;
-  --shadow: 0 1px 3px rgba(15, 23, 42, .04), 0 6px 18px -4px rgba(15, 23, 42, .05);
+  --tw-bg: #F2EEE5;
+  --tw-card: #FAF8F3;
+  --tw-card-2: #F3EEE4;
+  --tw-border: #E8E1D3;
+  --tw-border-strong: #DAD1BF;
+  --tw-dot-fill: #FAF8F3;
+  --tw-donut-track: #EAE4D7;
+  --tw-grid-line: #E6DFD0;
+  --tw-chart-tip-bg: #FAF8F3;
+  --tw-chart-tip-border: #E0D8C8;
+  --tw-chart-tip-text: #1F2430;
+  --shadow: 0 1px 2px rgba(60, 45, 15, .04), 0 8px 22px -10px rgba(60, 45, 15, .10);
 }
 
 /* Dark Mode Theme: deep navy #0A0E17 base with charcoal #111827 cards */
@@ -200,7 +201,7 @@ body[data-portal="trainer"] .page-head .tagline {
 /* Quick action tiles - light mode pastel tints */
 html:not([data-theme="dark"]) .tw-qa-tile.is-amber,
 html[data-theme="light"] .tw-qa-tile.is-amber {
-  --qa-bg: linear-gradient(135deg, #FFFBEB 0%, #FFFFFF 100%);
+  --qa-bg: linear-gradient(135deg, #FFFBEB 0%, #FAF8F3 100%);
   --qa-border: #FDE68A;
   --qa-hover-border: #F59E0B;
   --qa-glow: rgba(245, 158, 11, .16);
@@ -209,7 +210,7 @@ html[data-theme="light"] .tw-qa-tile.is-amber {
 }
 html:not([data-theme="dark"]) .tw-qa-tile.is-green,
 html[data-theme="light"] .tw-qa-tile.is-green {
-  --qa-bg: linear-gradient(135deg, #ECFDF5 0%, #FFFFFF 100%);
+  --qa-bg: linear-gradient(135deg, #ECFDF5 0%, #FAF8F3 100%);
   --qa-border: #A7F3D0;
   --qa-hover-border: #10B981;
   --qa-glow: rgba(16, 185, 129, .16);
@@ -218,7 +219,7 @@ html[data-theme="light"] .tw-qa-tile.is-green {
 }
 html:not([data-theme="dark"]) .tw-qa-tile.is-purple,
 html[data-theme="light"] .tw-qa-tile.is-purple {
-  --qa-bg: linear-gradient(135deg, #F5F3FF 0%, #FFFFFF 100%);
+  --qa-bg: linear-gradient(135deg, #F5F3FF 0%, #FAF8F3 100%);
   --qa-border: #DDD6FE;
   --qa-hover-border: #8B5CF6;
   --qa-glow: rgba(139, 92, 246, .16);
@@ -227,7 +228,7 @@ html[data-theme="light"] .tw-qa-tile.is-purple {
 }
 html:not([data-theme="dark"]) .tw-qa-tile.is-blue,
 html[data-theme="light"] .tw-qa-tile.is-blue {
-  --qa-bg: linear-gradient(135deg, #EFF6FF 0%, #FFFFFF 100%);
+  --qa-bg: linear-gradient(135deg, #EFF6FF 0%, #FAF8F3 100%);
   --qa-border: #BFDBFE;
   --qa-hover-border: #3B82F6;
   --qa-glow: rgba(59, 130, 246, .16);
@@ -370,7 +371,7 @@ html[data-theme="light"] .tw-qa-tile.is-blue {
 }
 .tw-donut-track {
   fill: none;
-  stroke: rgba(255, 255, 255, .06);
+  stroke: var(--tw-donut-track, rgba(255, 255, 255, .06));
 }
 .tw-donut-arc {
   fill: none;
@@ -454,7 +455,7 @@ html[data-theme="light"] .tw-qa-tile.is-blue {
 .tw-progress {
   height: 6px;
   border-radius: 99px;
-  background: rgba(255, 255, 255, .07);
+  background: var(--tw-donut-track, rgba(255, 255, 255, .07));
   overflow: hidden;
 }
 .tw-progress > i {
@@ -722,22 +723,22 @@ html[data-theme="light"] .tw-qa-tile.is-blue {
 /* Light mode period tabs */
 html:not([data-theme="dark"]) .tw-period-tabs,
 html[data-theme="light"] .tw-period-tabs {
-  background: #F1F5F9;
-  border-color: #E2E8F0;
+  background: #EDE7DB;
+  border-color: #E8E1D3;
 }
 html:not([data-theme="dark"]) .tw-period-tab,
 html[data-theme="light"] .tw-period-tab {
-  color: #64748B;
+  color: #727684;
 }
 html:not([data-theme="dark"]) .tw-period-tab:hover,
 html[data-theme="light"] .tw-period-tab:hover {
-  color: #0F172A;
+  color: #1F2430;
 }
 html:not([data-theme="dark"]) .tw-period-tab.active,
 html[data-theme="light"] .tw-period-tab.active {
-  background: #FFFFFF;
-  color: #0F172A;
-  border-color: #E2E8F0;
+  background: #FAF8F3;
+  color: #1F2430;
+  border-color: #E8E1D3;
   box-shadow: 0 1px 3px rgba(15, 23, 42, .08);
 }
 
@@ -1241,18 +1242,18 @@ html[data-theme="light"] .tw-hit-col:hover {
 /* ---------- Light Mode Overrides for Containers, Tables, Buttons, & Skeletons ---------- */
 html:not([data-theme="dark"]) .tw-card,
 html[data-theme="light"] .tw-card {
-  background: #FFFFFF;
-  border-color: #E2E8F0;
+  background: #FAF8F3;
+  border-color: #E8E1D3;
   box-shadow: 0 1px 3px rgba(15, 23, 42, .04), 0 4px 16px -2px rgba(15, 23, 42, .04);
 }
 html:not([data-theme="dark"]) .tw-session,
 html[data-theme="light"] .tw-session {
-  background: #F8FAFC;
-  border-color: #E2E8F0;
+  background: #F3EEE4;
+  border-color: #E8E1D3;
 }
 html:not([data-theme="dark"]) .tw-session.is-mine,
 html[data-theme="light"] .tw-session.is-mine {
-  background: linear-gradient(90deg, #FFFBEB 0%, #FFFFFF 100%);
+  background: linear-gradient(90deg, #FFFBEB 0%, #FAF8F3 100%);
   border-color: #FDE68A;
 }
 html:not([data-theme="dark"]) .tw-time-badge,
@@ -1266,44 +1267,44 @@ html[data-theme="light"] .tw-time-badge strong {
 }
 html:not([data-theme="dark"]) .tw-pill.is-gray,
 html[data-theme="light"] .tw-pill.is-gray {
-  background: #E2E8F0;
+  background: #E8E1D3;
   color: #334155;
 }
 html:not([data-theme="dark"]) .tw-table-wrap,
 html[data-theme="light"] .tw-table-wrap {
-  background: #FFFFFF;
-  border-color: #E2E8F0;
+  background: #FAF8F3;
+  border-color: #E8E1D3;
 }
 html:not([data-theme="dark"]) .tw-table th,
 html[data-theme="light"] .tw-table th {
-  background: #F8FAFC;
-  color: #64748B;
-  border-bottom-color: #E2E8F0;
+  background: #F3EEE4;
+  color: #727684;
+  border-bottom-color: #E8E1D3;
 }
 html:not([data-theme="dark"]) .tw-table td,
 html[data-theme="light"] .tw-table td {
-  color: #0F172A;
-  border-top-color: #E2E8F0;
+  color: #1F2430;
+  border-top-color: #E8E1D3;
 }
 html:not([data-theme="dark"]) .tw-table tbody tr:hover,
 html[data-theme="light"] .tw-table tbody tr:hover {
-  background: #F8FAFC;
+  background: #F3EEE4;
 }
 html:not([data-theme="dark"]) .tw-person,
 html[data-theme="light"] .tw-person {
-  background: #F8FAFC;
-  border-color: #E2E8F0;
+  background: #F3EEE4;
+  border-color: #E8E1D3;
 }
 html:not([data-theme="dark"]) .tw-sum-card,
 html[data-theme="light"] .tw-sum-card {
-  background: #F8FAFC;
-  border-color: #E2E8F0;
+  background: #F3EEE4;
+  border-color: #E8E1D3;
 }
 html:not([data-theme="dark"]) .tw-btn,
 html[data-theme="light"] .tw-btn {
-  background: #FFFFFF;
-  border-color: #CBD5E1;
-  color: #1E293B;
+  background: #FAF8F3;
+  border-color: #DAD1BF;
+  color: #1F2430;
 }
 html:not([data-theme="dark"]) .tw-btn:hover,
 html[data-theme="light"] .tw-btn:hover {
@@ -1313,7 +1314,7 @@ html[data-theme="light"] .tw-btn:hover {
 }
 html:not([data-theme="dark"]) .tw-skel,
 html[data-theme="light"] .tw-skel {
-  background: linear-gradient(90deg, #F1F5F9 25%, #E2E8F0 37%, #F1F5F9 63%);
+  background: linear-gradient(90deg, #EDE7DB 25%, #E8E1D3 37%, #EDE7DB 63%);
   background-size: 400% 100%;
 }
 html:not([data-theme="dark"]) .tw-skel-bars,
@@ -1322,7 +1323,7 @@ html[data-theme="light"] .tw-skel-bars {
 }
 html:not([data-theme="dark"]) .tw-skel-bar,
 html[data-theme="light"] .tw-skel-bar {
-  background: linear-gradient(90deg, #E2E8F0 25%, #CBD5E1 37%, #E2E8F0 63%);
+  background: linear-gradient(90deg, #E8E1D3 25%, #DAD1BF 37%, #E8E1D3 63%);
   background-size: 400% 100%;
 }
 
@@ -1460,3 +1461,198 @@ html[data-theme="light"] .tw-skel-bar {
     transform: none !important;
   }
 }
+
+
+/* ==========================================================================
+   Attendance card v2: inline pill controls, legend bar, animated area chart
+   ========================================================================== */
+.tw-att-head { margin-bottom: 14px; }
+.tw-att-head .tw-card-title { font-size: 18px; }
+
+.tw-att-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+.tw-att-controls .tw-period-tabs { margin-left: 0; }
+
+/* Pill field: label sits inside the control, like "Member  All members  v" */
+.tw-pill-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 4px 0 12px;
+  border-radius: 99px;
+  border: 1px solid var(--line-strong);
+  background: var(--card-2);
+  box-sizing: border-box;
+  min-width: 0;
+  flex: 0 1 auto;
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+.tw-pill-field:focus-within {
+  border-color: var(--tw-amber);
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, .15);
+}
+.tw-pill-field > span,
+.tw-pill-field > label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.tw-pill-field .tw-input,
+.tw-pill-field .tw-select {
+  height: 32px;
+  border: 0;
+  background: transparent;
+  padding-left: 0;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text);
+  box-shadow: none;
+}
+.tw-pill-field .tw-select {
+  width: auto;
+  min-width: 118px;
+  max-width: 170px;
+  padding-right: 22px;
+  cursor: pointer;
+}
+.tw-pill-field .tw-date-text { width: 112px; padding-right: 28px; }
+.tw-pill-field .tw-date-btn { right: 2px; }
+
+.tw-att-legend-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+.tw-att-legend-bar .tw-att-legend-row { margin-top: 0; }
+.tw-att-legend-bar .tw-leg-item { font-size: 12.5px; font-weight: 500; color: var(--text-2); }
+.tw-chart-nav-btn { border-radius: 9px; }
+
+.tw-updated-badge.is-foot {
+  align-self: flex-start;
+  margin-top: 12px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+.tw-att-summary { margin-top: 2px; }
+
+/* ---------- Chart animations ---------- */
+/* Area sweeps in left -> right together with the line draw */
+.tw-area-present.is-anim {
+  animation: tw-area-sweep 1s cubic-bezier(.22, 1, .36, 1) both;
+}
+@keyframes tw-area-sweep {
+  from { clip-path: inset(0 100% 0 0); opacity: 0; }
+  30%  { opacity: 1; }
+  to   { clip-path: inset(0 0 0 0); opacity: 1; }
+}
+.tw-line-present.is-anim,
+.tw-line-absent.is-anim {
+  animation: tw-line-draw 1s cubic-bezier(.22, 1, .36, 1) forwards;
+}
+.tw-line-absent.is-anim { animation-delay: .08s; }
+
+/* Points pop in one after another as the line reaches them */
+.tw-dot-present,
+.tw-dot-absent {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.tw-dot-present.is-pop,
+.tw-dot-absent.is-pop {
+  animation: tw-dot-pop .38s cubic-bezier(.34, 1.56, .64, 1) both;
+  animation-delay: calc(var(--dd, 0s) + .12s);
+}
+@keyframes tw-dot-pop {
+  from { transform: scale(0); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+/* Live update: a point whose value changed pulses once */
+.tw-dot-present.is-pulse,
+.tw-dot-absent.is-pulse {
+  animation: tw-dot-pulse .9s ease-out 1;
+}
+@keyframes tw-dot-pulse {
+  0%   { transform: scale(1); }
+  35%  { transform: scale(1.7); }
+  100% { transform: scale(1); }
+}
+/* Hover: active point grows smoothly, guide line fades in */
+.tw-dot-present.is-active,
+.tw-dot-absent.is-active {
+  filter: drop-shadow(0 0 4px rgba(16, 185, 129, .45));
+}
+.tw-dot-absent.is-active { filter: drop-shadow(0 0 4px rgba(239, 68, 68, .45)); }
+.tw-chart-tip { animation: tw-tip-in .16s ease-out; }
+@keyframes tw-tip-in {
+  from { opacity: 0; transform: translate(-50%, calc(-100% + 6px)); }
+  to   { opacity: 1; transform: translate(-50%, -100%); }
+}
+/* Summary numbers fade up when they change */
+.tw-sum-card strong.is-bump { animation: tw-num-bump .45s var(--tw-ease); }
+@keyframes tw-num-bump {
+  from { opacity: .2; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Light (warm cream) tooltip shadow */
+html:not([data-theme="dark"]) .tw-chart-tip,
+html[data-theme="light"] .tw-chart-tip {
+  box-shadow: 0 12px 28px -8px rgba(60, 45, 15, .22);
+}
+html:not([data-theme="dark"]) .tw-chart-tip-row,
+html[data-theme="light"] .tw-chart-tip-row { color: #444A57; }
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-qa-tile,
+html[data-theme="light"] body[data-portal="trainer"] .tw-qa-tile {
+  box-shadow: 0 1px 2px rgba(60, 45, 15, .04);
+}
+
+@media (max-width: 639px) {
+  .tw-att-controls .tw-period-tabs { width: 100%; }
+  .tw-pill-field { flex: 1 1 calc(50% - 4px); }
+  .tw-pill-field.is-member { flex: 1 1 100%; }
+  .tw-pill-field .tw-select { max-width: none; flex: 1 1 auto; }
+  .tw-pill-field .tw-date-wrap { flex: 1 1 auto; }
+  .tw-pill-field .tw-date-text { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tw-area-present.is-anim,
+  .tw-line-present.is-anim,
+  .tw-line-absent.is-anim,
+  .tw-dot-present,
+  .tw-dot-absent,
+  .tw-chart-tip,
+  .tw-sum-card strong.is-bump {
+    animation: none !important;
+    clip-path: none !important;
+    stroke-dashoffset: 0 !important;
+    opacity: 1 !important;
+  }
+}
+
+/* Fit tabs + Member + From + To on one row on tablet/desktop */
+.tw-card-title { font-size: 17px; }
+.tw-att-head .tw-card-title { font-size: 17px; }
+.tw-att-controls { gap: 6px; flex-wrap: nowrap; }
+.tw-att-controls .tw-period-tabs { flex: none; }
+.tw-att-controls .tw-period-tab { padding: 0 10px; font-size: 12px; }
+.tw-pill-field { gap: 6px; padding-left: 10px; flex: none; }
+.tw-pill-field.is-member { flex: 1 1 auto; min-width: 0; }
+.tw-pill-field.is-member .tw-select { width: 100%; min-width: 0; max-width: none; flex: 1 1 auto; }
+.tw-pill-field .tw-date-text { width: 94px; padding-right: 24px; font-size: 12px; }
+@media (max-width: 760px) { .tw-att-controls { flex-wrap: wrap; } }

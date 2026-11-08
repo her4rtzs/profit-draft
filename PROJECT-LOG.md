@@ -1052,3 +1052,15 @@ Replace the attendance chart on the Trainer Coach Dashboard (`/trainer/`) with t
 - Verified DOM rendering, light/dark theme toggles, and responsive layouts across 375px, 768px, and 1440px with no horizontal scroll.
 ### Decision-log skill
 When introducing themes to a portal with embedded SVG charts and colored tiles, provide complete first-class color tokens for both light and dark modes (including chart gridlines, tracks, dot fills, and card backgrounds) rather than relying on global fallbacks, ensuring clean contrast without eye strain in either mode.
+
+## 2026-11-09 02:00 (Asia/Manila): Warm cream light mode and animated attendance area chart
+### What I asked for
+Light mode should use the warm cream tones from the reference screenshot instead of pure white (too harsh), and the attendance graph should match the reference with animation.
+### What the agent decided and why
+- Changed the trainer light-mode tokens to a warm cream palette (`#F2EEE5` page, `#FAF8F3` cards, `#F3EEE4` inner surfaces, `#E8E1D3` borders, `#1F2430` text) and remapped every hardcoded white/slate light override, so nothing in light mode stays pure white.
+- Donut and capacity tracks now read `--tw-donut-track`, so they stay visible in both themes.
+- Rebuilt the Attendance card layout to match the reference: title + "Daily · Oct 27 – Nov 9, 2026" subtitle, one row with period tabs + inline-label pill fields (Member / From / To), legend with `<` `>` buttons on the right, then chart, summary cards, and the "Updated" badge at the bottom. The Member pill flexes so the row fits on one line on desktop and tablet and wraps only on phones.
+- Animation: the area fill sweeps left to right (`clip-path`) while both lines draw in, points pop in one after another timed to the line, the tooltip slides in, and summary numbers bump when they change. Fresh renders (load, tab/member/date change, `<` `>`) animate. Polls and resizes redraw silently, and only changed points pulse. All of it is disabled under `prefers-reduced-motion`.
+- Repaired a double-encoding (mojibake) of `index.html` caused by a PowerShell `Get-Content`/`Set-Content` round-trip.
+### Decision-log skill
+Never rewrite UTF-8 files with Windows PowerShell 5 `Get-Content -Raw | Set-Content`: it reads BOM-less UTF-8 as ANSI and double-encodes non-ASCII characters (`·` becomes `Â·`). Use Python with an explicit `encoding='utf-8'` for scripted edits.
