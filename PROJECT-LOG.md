@@ -939,3 +939,15 @@ Connect member check-in on member-home.html to the backend so visits and streaks
 - Added comprehensive unit tests in `apps/membership/tests/test_api.py` covering successful check-in, same-day idempotency, inactive membership rejection, and verification that check-ins persist in `GET /api/member/me/`.
 ### Decision-log skill
 Self-service member check-in should route through the shared `check_in_member` service rather than updating client state in isolation. Also, streak calculation loops must consider that on a new calendar day before check-in, a streak is still active if yesterday had a check-in (start check from `yesterday` if `today` is absent).
+
+## 2026-11-08 13:10 (Asia/Manila): Prevent demo check-in leakage across member accounts
+### What I asked for
+Fix the bug where logging in as a different member who hasn't checked in yet already shows as "Checked in today".
+### What the agent decided and why
+- Root cause: `syncMemberChrome()` in `web/member-home.html` was evaluating `already` by checking `readDemoCheckins()` from global browser `localStorage` (`profit-member-demo-checkins`) before checking `window.__pfAttendanceDays`. When Account A checked in, it wrote to that un-scoped key, so Account B on the same browser inherited Account A's check-in state.
+- Scoped `syncMemberChrome()`: for an authenticated live member (`Boolean(data?.user?.memberId)`), check-in status is strictly evaluated from `window.__pfAttendanceDays` (the actual attendance list returned from the server for that specific member). Demo local storage is ignored.
+- Only write to demo local storage when `serverSuccess` is false (demo/offline mode); live check-ins never write to the global demo key.
+- Automatically clear `profit-member-demo-checkins` in `render()` when a real member session loads and in `auth.js` on logout.
+- In `web/member-tabs.js`, updated `checkinDays()` so calendar dots only pull from demo local storage if `!window.__pfMemberMe` (offline/demo mode).
+### Decision-log skill
+Never use un-scoped global `localStorage` keys for user-specific state when multiple user accounts can log into the same browser. For authenticated sessions, UI state must derive strictly from the authenticated user's server payload.

@@ -59,7 +59,7 @@
       if (isMember && role !== "MEMBER") { location.replace(role === "ADMIN" ? "index.html" : "login.html"); return; }
       if (isTrainer && role !== "TRAINER") { location.replace(role === "ADMIN" ? "index.html" : role === "MEMBER" ? "member-home.html" : "login.html"); return; }
       document.documentElement.classList.remove("auth-checking");
-      window.ProFitAuth = { user, role, async logout() { try{localStorage.removeItem("pp-accent");}catch(e){} await window.ProFitAPI.post("/auth/logout", {}); location.replace("login.html"); } };
+      window.ProFitAuth = { user, role, async logout() { try{localStorage.removeItem("pp-accent");localStorage.removeItem("profit-member-demo-checkins");}catch(e){} await window.ProFitAPI.post("/auth/logout", {}); location.replace("login.html"); } };
       document.querySelectorAll("[data-user-name]").forEach(el => el.textContent = user.name || user.email || "Account");
       bindLogoutOnce();
     } catch (error) {

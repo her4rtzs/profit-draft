@@ -388,7 +388,11 @@
     $("membershipName").textContent = safe(m.planName || m.plan);
     $("membershipDetail").textContent = m.expiresAt ? `Membership expires ${date(m.expiresAt)}${m.daysRemaining != null ? ` · ${m.daysRemaining} days remaining` : ""}` : "Your membership details are not available yet.";
     $("membershipStatus").textContent = safe(m.status || "Not enrolled");
-    if (data.user && data.user.memberId) window.__pfMemberMe = data;
+    if (data.user && data.user.memberId) {
+      window.__pfMemberMe = data;
+      // Real member session: clear any leftover demo check-ins from previous sessions or accounts
+      try { localStorage.removeItem(demoCheckinsKey); } catch (e) {}
+    }
     const eh = v => String(v ?? "—").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
     const paintProfileCard = () => {
       const u = (window.__pfMemberMe || data).user || {};
@@ -483,18 +487,17 @@
       // Offline / fallback to demo check-ins
     }
 
-    const items = readDemoCheckins();
-    const today = todayKey();
-    // Use localDateStr so stored ISO timestamps don't UTC-shift to a different date
-    if (!items.some(x => localDateStr(x.date) === today)) {
-      // Store as plain YYYY-MM-DD to avoid future timezone confusion
-      items.unshift({ date: today, location: "ProFit Gym", source: "manual" });
-      writeDemoCheckins(items.slice(0, 30));
-    }
-
     if (serverSuccess) {
       await load();
     } else {
+      const items = readDemoCheckins();
+      const today = todayKey();
+      // Use localDateStr so stored ISO timestamps don't UTC-shift to a different date
+      if (!items.some(x => localDateStr(x.date) === today)) {
+        // Store as plain YYYY-MM-DD to avoid future timezone confusion
+        items.unshift({ date: today, location: "ProFit Gym", source: "manual" });
+        writeDemoCheckins(items.slice(0, 30));
+      }
       render(demoData());
     }
 
@@ -508,9 +511,13 @@
   // once today is already logged, and put the member's name in the header menu.
   function syncMemberChrome(data) {
     const today = todayKey();
-    // Use localDateStr for robustness against ISO timestamps stored in either format
-    const already = readDemoCheckins().some(x => localDateStr(x.date) === today)
-      || (window.__pfAttendanceDays || []).includes(today);
+    const isLive = Boolean(data?.user?.memberId);
+    // For a live logged-in member, check-in status is strictly driven by their own
+    // records from the database (window.__pfAttendanceDays). Never pollute a live member
+    // with un-scoped demo check-ins stored in browser localStorage from other accounts.
+    const already = isLive
+      ? (window.__pfAttendanceDays || []).includes(today)
+      : ((window.__pfAttendanceDays || []).includes(today) || readDemoCheckins().some(x => localDateStr(x.date) === today));
     const btn = $("checkInButton");
     if (btn) {
       btn.disabled = already;
@@ -596,7 +603,7 @@
 })();
 </script>
 <script src="pf-common.js"></script>
-<script src="member-tabs.js?v=14"></script>
+<script src="member-tabs.js?v=15"></script>
 <script src="change-password.js?v=1"></script>
 <script src="member-pay.js?v=1"></script>
 <script src="portal-fx.js?v=2"></script>
