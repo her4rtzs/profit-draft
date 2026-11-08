@@ -1130,3 +1130,14 @@ Remove the top status strip ribbon ("PROFIT | 0 in today | 16 members | ₱800 t
 - Added explicit display: none !important; rules for .status-strip and #statusStrip in web/layout-fixes.css across desktop and responsive breakpoints to guarantee the strip never renders on any portal view.
 ### Decision-log skill
 When eliminating globally injected status ribbons, remove both the dynamic element creation/timers in the shared layout builder script and enforce a blanket CSS suppression rule to safeguard against cached templates.
+
+
+## 2026-11-09 04:03 (Asia/Manila): Remove topbar 'Search members...' input across all tabs
+### What I asked for
+Remove the topbar "Search members..." search bar from the header across all tabs since individual tabs already have their own dedicated search controls.
+### What the agent decided and why
+- Removed the topbar `<label class="search">...<input placeholder="Search members...">` markup and its Enter-to-navigate listener from web/layout.js.
+- Removed .search-wrap from topbarHTML() in web/assets/js/staff.js and web/staff/assets/js/staff.js.
+- Added CSS suppression rules in web/layout-fixes.css (html body .topbar .search, html body .topbar-right .search, html body .topbar .search-wrap { display: none !important; }) to ensure header search bars are hidden across all desktop and mobile viewports while preserving local in-page search toolbars.
+### Decision-log skill
+When removing a global header search input, scope CSS suppression strictly to .topbar / .topbar-right so in-page table and module toolbars (such as Member List and Announcements search bars) remain unaffected.

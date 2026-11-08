@@ -140,10 +140,10 @@ html body .topbar-right {
   min-width: 0 !important;
 }
 
-html body .topbar-right .search {
-  min-width: 200px !important;
-  max-width: 280px !important;
-  box-sizing: border-box !important;
+html body .topbar .search,
+html body .topbar-right .search,
+html body .topbar .search-wrap {
+  display: none !important;
 }
 
 html body .status-strip,
@@ -829,18 +829,9 @@ html body .notification-panel {
     border: 1px solid var(--border) !important;
   }
 
+  html body .topbar .search,
   html body .topbar-right .search,
-  html body .search {
-    grid-column: 1 / -1 !important;
-    grid-row: 2 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    margin: 0 !important;
-    box-sizing: border-box !important;
-  }
-
-  html body .topbar-right .search kbd {
+  html body .topbar .search-wrap {
     display: none !important;
   }
 

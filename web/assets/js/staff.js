@@ -302,7 +302,6 @@
     const me = PF.db.profile(), n = PF.db.unread();
     const back = document.body.dataset.page === 'dashboard' ? '' : `<button class="icon-btn" id="backBtn" type="button" aria-label="Go back">${PF.icon('chevron-left')}</button>`;
     return `<div class="t-left"><button class="icon-btn t-menu" id="menuBtn" type="button" aria-label="Open navigation">${PF.icon('menu')}</button>${back}</div><div class="t-spacer"></div>
-      <div class="search-wrap"><label class="search">${PF.icon('search')}<input id="gSearch" type="search" placeholder="Search members, payments, trainers…" autocomplete="off" aria-label="Search"><kbd>Ctrl K</kbd></label><div class="search-results" id="gResults" hidden></div></div>
       <button class="icon-btn" id="themeBtn" type="button" aria-label="Toggle dark mode"></button>
       <div style="position:relative"><button class="icon-btn" id="bellBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Notifications">${PF.icon('bell')}<span class="badge-dot" id="bellBadge" ${n ? '' : 'hidden'}>${n}</span></button><section class="npanel" id="npanel" hidden aria-label="Notifications"></section></div>
       <a class="avatar-btn" href="profile.html" aria-label="My profile" title="My profile">${PF.avatar(me.name, 'md', me.photo)}</a>`;

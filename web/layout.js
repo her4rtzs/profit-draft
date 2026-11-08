@@ -67,7 +67,6 @@
         </div>
       </div>
       <div class="topbar-right">
-        <label class="search"><i class="fa-solid fa-magnifying-glass"></i><input type="search" placeholder="Search members..." aria-label="Search members"><kbd>Ctrl K</kbd></label>
         <div class="topbar-actions">
           <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode" title="Toggle theme"><i class="fa-solid fa-moon"></i></button>
           <div class="notification-wrap"><button class="notification" id="notificationToggle" type="button" aria-label="Notifications" aria-haspopup="true" aria-expanded="false"><i class="fa-regular fa-bell"></i><span class="notification-badge" id="notificationBadge" hidden>0</span></button>
@@ -115,8 +114,7 @@
     window.addEventListener('popstate', syncNav);
     syncNav();
 
-    const q = top.querySelector('.search input');
-    q?.addEventListener('keydown', e => { if (e.key==='Enter' && q.value.trim()) location.href='members.html?q='+encodeURIComponent(q.value.trim()); });
+
   }
 
   // ---- Status strip removed per request ----
