@@ -78,6 +78,21 @@ section.s{padding:84px 0}
 .prog .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .prog .in{padding:22px;flex:1}.prog .in h3{font-size:18px;margin-bottom:6px}.prog .in p{color:var(--mu);font-size:14.5px}
 .prog .tags{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}.prog .tags span{font-size:12px;font-weight:600;border:1px solid var(--line);border-radius:99px;padding:4px 10px;color:var(--mu)}
+/* Programs: the section is three viewports tall (one per card). While it passes
+   the screen the frame below stays pinned and the track slides sideways; the
+   script at the bottom turns vertical scroll into that slide.
+   shortcut: 300vh assumes 3 cards, bump it to cards x 100vh if you add one. */
+#programs{padding:0;height:300vh}
+#programs .prog-pin{position:sticky;top:0;height:100vh;padding-top:68px;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+#programs .wrap{overflow:hidden}
+#programs .grid3{display:flex;gap:var(--gap);position:relative;will-change:transform}
+#programs .prog{flex:0 0 min(86vw,520px)}
+@media (prefers-reduced-motion:reduce){
+  #programs{height:auto}
+  #programs .prog-pin{position:static;height:auto;padding:0;display:block;overflow:visible}
+  #programs .grid3{overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:thin}
+  #programs .prog{scroll-snap-align:start}
+}
 /* plans */
 .plans{background:var(--bg2);border-block:1px solid var(--line)}
 .plan{position:relative;display:flex;flex-direction:column;padding:28px}
@@ -327,11 +342,11 @@ header.top{background:#0b0c10;backdrop-filter:none;-webkit-backdrop-filter:none}
 </ul>
 <div class="diff-foot"><a class="btn p" href="join.html">Experience the difference <i class="fa-solid fa-arrow-right"></i></a></div></div></div></div></section>
 
-<section class="s" id="programs" style="padding-top:0"><div class="wrap"><div class="sh anim-header"><div><span class="eyebrow">Programs</span><h2>Train the way that fits you</h2></div><p>Sample programs. Final schedules and offerings are confirmed by the gym.</p></div>
+<section class="s" id="programs" style="padding-top:0"><div class="prog-pin"><div class="wrap"><div class="sh anim-header"><div><span class="eyebrow">Programs</span><h2>Train the way that fits you</h2></div><p>Sample programs. Final schedules and offerings are confirmed by the gym.</p></div>
 <div class="grid3 anim-programs">
 <article class="box prog"><div class="pic"><img src="img/gym-1.jpg" alt="" onerror="this.remove()"><div class="pc-img"><img src="img/prog-1.jpg" alt="Member training at the squat rack" loading="lazy"></div></div><div class="in"><h3>Strength &amp; conditioning</h3><p>Guided lifting and circuits for all levels.</p><div class="tags"><span>All levels</span><span>Group</span></div></div></article>
 <article class="box prog"><div class="pic"><img src="img/gym-2.jpg" alt="" onerror="this.remove()"><div class="pc-img"><img src="img/prog-2.jpg" alt="Bench and equipment on the ProFit gym floor" loading="lazy"></div></div><div class="in"><h3>HIIT &amp; functional</h3><p>Short, high-energy sessions that build stamina.</p><div class="tags"><span>Intermediate</span><span>Group</span></div></div></article>
-<article class="box prog"><div class="pic"><img src="img/gym-3.jpg" alt="" onerror="this.remove()"><div class="pc-img"><img src="img/prog-3.jpg" alt="Group of members posing together in the gym" loading="lazy"></div></div><div class="in"><h3>Personal coaching</h3><p>One-on-one attention and a plan made for your goals.</p><div class="tags"><span>1-on-1</span><span>By schedule</span></div></div></article></div></div></section>
+<article class="box prog"><div class="pic"><img src="img/gym-3.jpg" alt="" onerror="this.remove()"><div class="pc-img"><img src="img/prog-3.jpg" alt="Group of members posing together in the gym" loading="lazy"></div></div><div class="in"><h3>Personal coaching</h3><p>One-on-one attention and a plan made for your goals.</p><div class="tags"><span>1-on-1</span><span>By schedule</span></div></div></article></div></div></div></section>
 
 <section class="s gal" aria-label="Inside ProFit"><div class="wrap"><h2 class="anim-header">Inside ProFit</h2><div class="gal-grid anim-gallery"><figure><img src="img/gal-1.jpg" alt="Team photo at the ProFit gym" loading="lazy"></figure><figure><img src="img/gal-2.jpg" alt="Group of members posing together in the gym" loading="lazy"></figure><figure><img src="img/gal-3.jpg" alt="Member training at the squat rack" loading="lazy"></figure><figure><img src="img/gal-4.jpg" alt="Equipment on the ProFit gym floor" loading="lazy"></figure></div></div></section>
 <section class="s plans" id="plans"><div class="wrap"><div class="sh anim-header"><div><span class="eyebrow">Membership</span><h2>Simple plans, no surprises</h2></div><p>Choose a plan, pay online, and your account is created right away.</p></div>
@@ -423,5 +438,50 @@ document.querySelectorAll('header nav a').forEach(function(a){a.addEventListener
     threshold: 0.08
   });
   targets.forEach(function(el){ observer.observe(el); });
+})();
+/* Programs pin: vertical page scroll drives the card track sideways. */
+(function(){
+  var section = document.getElementById('programs');
+  if(!section) return;
+  var track = section.querySelector('.grid3');
+  var cards = track ? track.children : [];
+  if(cards.length < 2) return;
+
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  var travel = 0, span = 1, queued = false;
+
+  function update(){
+    queued = false;
+    if(reduce.matches){ track.style.transform = ''; return; }
+    var top = section.getBoundingClientRect().top;
+    var p = Math.min(1, Math.max(0, -top / span));   // 0 at entry, 1 when the section leaves
+    track.style.transform = 'translate3d(' + (-p * travel).toFixed(2) + 'px,0,0)';
+  }
+  function measure(){
+    // layout widths, so the reveal animation's scale does not skew the travel
+    var last = cards[cards.length - 1];
+    travel = Math.max(0, last.offsetLeft + last.offsetWidth - track.clientWidth);
+    span = Math.max(1, section.offsetHeight - innerHeight);
+    update();
+  }
+  function onScroll(){
+    if(queued) return;
+    queued = true;
+    requestAnimationFrame(update);
+  }
+
+  addEventListener('scroll', onScroll, {passive:true});
+  addEventListener('resize', measure);
+  reduce.addEventListener('change', measure);
+  // the track is transformed, so watch the section for the reveal animation
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      if(entries[0].isIntersecting){ track.classList.add('is-visible'); io.disconnect(); }
+    });
+    io.observe(section);
+  } else {
+    track.classList.add('is-visible');
+  }
+  measure();
 })();
 </script></body></html>
