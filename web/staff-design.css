@@ -5,14 +5,11 @@
    intentionally left out: the ProFit sidebar stays as it is.
    Dark mode: body.dark (ProFit's toggle). Accent: html[data-accent]. */
 
-<<<<<<< HEAD
-=======
 /* ProFit fix: no rail-width tokens live here. In ProFit `--sidebar` is a
    colour (styles.css, spotify.css) and the rail sits inside .pf-staff, so a
    length in that slot silently kills `.sidebar{background:var(--sidebar)}`.
    The rail keeps its own --sidebar-w and --sb-* tokens. */
 
->>>>>>> e8c4a8026a13ebd74c25e3483c3535791f6eb13d
 .pf-staff {--font:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
   --script:'Caveat','Segoe Script','Bradley Hand',cursive;
   --bg:#f7f2e7; --bg-glow:rgba(240,199,94,.28);
@@ -28,11 +25,7 @@
   --purple:#8b5cf6; --purple-soft:rgba(139,92,246,.13);
   --shadow:0 1px 3px rgba(60,40,0,.06);
   --shadow-lg:0 20px 50px rgba(20,15,0,.22);
-<<<<<<< HEAD
-  --r:14px; --r-sm:12px; --sidebar:252px; --sidebar-mini:78px;
-=======
   --r:14px; --r-sm:12px;
->>>>>>> e8c4a8026a13ebd74c25e3483c3535791f6eb13d
   color-scheme:light;}
 .pf-staff.dark {--bg:#0a0e16; --bg-glow:rgba(227,174,43,.07);
   --card:#121926; --card-2:#0f1521; --card-alpha:#121926;
@@ -444,9 +437,6 @@ html[data-accent="indigo"] .pf-staff.dark {--gold-ink:#b9b0fa}
 
 
 /* ProFit fix: the active period chip is solid gold, so its label uses the dark ink from the prototype. */
-<<<<<<< HEAD
-.pf-staff .chip.active {color:#1b1300!important;background:var(--gold)!important;border-color:transparent!important}
-=======
 .pf-staff .chip.active {color:#1b1300!important;background:var(--gold)!important;border-color:transparent!important}
 
 /* ProFit fix: the period chips sit in .panel-header, so the prototype chip size
@@ -564,4 +554,3 @@ html body.pf-staff .topbar {position:static!important}
   html body.pf-staff .table-wrapper tfoot td[colspan] {grid-column:1}
   html body.pf-staff .table-wrapper tfoot td.num {text-align:right}
 }
->>>>>>> e8c4a8026a13ebd74c25e3483c3535791f6eb13d
