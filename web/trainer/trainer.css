@@ -381,6 +381,14 @@ body[data-portal="trainer"] .page-head .tagline {
 .tw-progress.is-full > i { background: var(--tw-red); }
 
 /* ---------- Attendance Card & Controls ---------- */
+.tw-att-head {
+  align-items: center;
+  margin-bottom: 10px;
+}
+.tw-att-head .tw-card-sub {
+  margin-top: 2px;
+  line-height: 1.3;
+}
 .tw-updated-badge {
   flex: none;
   display: inline-flex;
@@ -395,6 +403,7 @@ body[data-portal="trainer"] .page-head .tagline {
   color: var(--muted);
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
+  align-self: flex-start;
 }
 .tw-updated-badge::before {
   content: "";
@@ -409,22 +418,23 @@ body[data-portal="trainer"] .page-head .tagline {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-bottom: 16px;
+  gap: 10px;
+  flex-wrap: nowrap;
+  margin-bottom: 8px;
 }
 .tw-att-filters {
   display: flex;
   align-items: flex-end;
-  gap: 10px;
-  flex-wrap: wrap;
+  gap: 8px;
+  flex-wrap: nowrap;
   min-width: 0;
 }
 .tw-ctrl-field {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 4px;
   min-width: 0;
+  flex: 0 0 auto;
 }
 .tw-ctrl-field label {
   font-size: 10px;
@@ -432,6 +442,7 @@ body[data-portal="trainer"] .page-head .tagline {
   letter-spacing: .08em;
   text-transform: uppercase;
   color: var(--muted);
+  line-height: 1.1;
 }
 .tw-date-wrap {
   position: relative;
@@ -441,29 +452,32 @@ body[data-portal="trainer"] .page-head .tagline {
 .tw-input,
 .tw-select {
   height: 36px;
-  padding: 0 11px;
-  border-radius: 10px;
+  box-sizing: border-box;
+  padding: 0 9px;
+  border-radius: 9px;
   border: 1px solid var(--line-strong);
   background: var(--card-2);
   color: var(--text);
   font: inherit;
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 600;
   outline: none;
   transition: border-color .18s ease;
 }
 .tw-date-text {
-  width: 136px;
-  padding-right: 32px;
+  width: 118px;
+  height: 36px;
+  box-sizing: border-box;
+  padding-right: 26px;
   font-variant-numeric: tabular-nums;
 }
 .tw-date-btn {
   position: absolute;
-  right: 4px;
+  right: 3px;
   top: 50%;
   transform: translateY(-50%);
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   border: 0;
   border-radius: 6px;
   background: transparent;
@@ -474,12 +488,12 @@ body[data-portal="trainer"] .page-head .tagline {
   padding: 0;
 }
 .tw-date-btn:hover { color: var(--text); }
-.tw-date-btn .ico { width: 14px; height: 14px; }
+.tw-date-btn .ico { width: 13px; height: 13px; }
 .tw-date-picker {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
+  width: 0;
+  height: 0;
   opacity: 0;
   pointer-events: none;
 }
@@ -489,29 +503,41 @@ body[data-portal="trainer"] .page-head .tagline {
   border-color: var(--tw-amber);
 }
 .tw-select {
-  padding-right: 28px;
-  min-width: 140px;
+  width: 138px;
+  min-width: 112px;
+  max-width: 156px;
+  height: 36px;
+  box-sizing: border-box;
+  padding-right: 24px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .tw-period-tabs {
   display: inline-flex;
   align-items: center;
+  height: 36px;
+  box-sizing: border-box;
+  margin-left: auto;
+  flex: 0 0 auto;
   padding: 3px;
-  border-radius: 10px;
+  border-radius: 9px;
   border: 1px solid var(--line-strong);
   background: var(--card-2);
   gap: 2px;
 }
 .tw-period-tab {
-  height: 30px;
-  padding: 0 12px;
+  height: 28px;
+  padding: 0 10px;
   border: 1px solid transparent;
-  border-radius: 7px;
+  border-radius: 6px;
   background: transparent;
   color: var(--muted);
   font: inherit;
   font-size: 12px;
   font-weight: 600;
+  white-space: nowrap;
   cursor: pointer;
   outline: none;
   transition: background .18s ease, color .18s ease, border-color .18s ease;
@@ -528,8 +554,11 @@ body[data-portal="trainer"] .page-head .tagline {
 .tw-chart-stage {
   position: relative;
   width: 100%;
-  height: 270px;
-  margin-bottom: 12px;
+  flex: 1 1 auto;
+  min-height: 255px;
+  height: 265px;
+  margin-top: 0;
+  margin-bottom: 10px;
   user-select: none;
 }
 .tw-chart-svg {
@@ -703,7 +732,7 @@ body[data-portal="trainer"] .page-head .tagline {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
-  margin-top: auto;
+  margin-top: 0;
 }
 .tw-sum-card {
   padding: 12px 14px;
@@ -1038,8 +1067,8 @@ body[data-portal="trainer"] .page-head .tagline {
   }
 }
 
-/* Phone (<760px): single column, quick actions 2x2, bottom nav bar, chart height 260px */
-@media (max-width: 759px) {
+/* Phone (<640px): single column, quick actions 2x2, bottom nav bar, chart height 260px */
+@media (max-width: 639px) {
   body[data-portal="trainer"][data-page="dashboard"] .content {
     padding: 14px 14px 96px;
   }
@@ -1055,18 +1084,38 @@ body[data-portal="trainer"] .page-head .tagline {
   .tw-card {
     padding: 16px;
   }
+  .tw-att-controls {
+    flex-wrap: wrap;
+  }
+  .tw-att-filters {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  .tw-period-tabs {
+    margin-left: 0;
+    width: 100%;
+    justify-content: space-between;
+  }
+  .tw-period-tab {
+    flex: 1 1 0;
+    text-align: center;
+  }
   .tw-donut-box {
     width: 200px;
     height: 200px;
   }
   .tw-chart-stage {
     height: 260px;
+    min-height: 240px;
   }
   .tw-bar-val {
     display: none;
   }
   .tw-date-text {
     width: 124px;
+  }
+  .tw-select {
+    max-width: none;
   }
   .tw-roster-grid {
     grid-template-columns: minmax(0, 1fr);

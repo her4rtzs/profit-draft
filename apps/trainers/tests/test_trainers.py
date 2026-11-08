@@ -204,11 +204,22 @@ class TrainerTests(TestCase):
         self.assertEqual(payload["summary"]["checked_in"], 1)
         self.assertEqual(len(payload["buckets"]), 4)
 
-        # Querying unassigned member (self.m2) returns 403 Forbidden
+        # Querying unassigned member (self.m2) returns 403 Forbidden with specific message
         res_forbidden = self.client.get(
             f"/api/trainer/attendance/?granularity=day&member_id={self.m2.pk}"
         )
         self.assertEqual(res_forbidden.status_code, 403)
+        self.assertEqual(
+            res_forbidden.json()["detail"],
+            f"Member {self.m2.pk} is not assigned to this trainer.",
+        )
+
+        # Malformed non-numeric member_id returns 400 Bad Request
+        res_malformed = self.client.get(
+            "/api/trainer/attendance/?granularity=day&member_id=Joyce%20Alvarez"
+        )
+        self.assertEqual(res_malformed.status_code, 400)
+        self.assertIn("Malformed member_id", res_malformed.json()["detail"])
 
         # Requesting > 60 buckets returns 400 Bad Request with error detail
         res_too_large = self.client.get(
@@ -216,6 +227,81 @@ class TrainerTests(TestCase):
         )
         self.assertEqual(res_too_large.status_code, 400)
         self.assertIn("detail", res_too_large.json())
+
+    def test_joyce_alvarez_and_angelo_metillo_oct26_to_nov8_and_unassigned_403(self):
+        """Valid assigned member_ids (Joyce Alvarez & Angelo Metillo) return 200 with buckets for Oct 26 - Nov 8, and unassigned returns 403."""
+        joyce_user = User.objects.create_user(
+            username="joyce@gym.test",
+            email="joyce@gym.test",
+            password=PASSWORD,
+            role="MEMBER",
+            first_name="Joyce",
+            last_name="Alvarez",
+        )
+        angelo_user = User.objects.create_user(
+            username="angelo@gym.test",
+            email="angelo@gym.test",
+            password=PASSWORD,
+            role="MEMBER",
+            first_name="Angelo",
+            last_name="Metillo",
+        )
+        joyce = MemberProfile.objects.create(user=joyce_user, membership_status="ACTIVE")
+        angelo = MemberProfile.objects.create(user=angelo_user, membership_status="ACTIVE")
+
+        services.assign_trainer(joyce, self.t2, actor=self.owner)
+        services.assign_trainer(angelo, self.t2, actor=self.owner)
+
+        tz = timezone.get_current_timezone()
+        Attendance.objects.create(
+            member=joyce,
+            recorded_by=self.t2_user,
+            check_in_at=timezone.datetime(2026, 10, 29, 9, 0, tzinfo=tz),
+        )
+        Attendance.objects.create(
+            member=angelo,
+            recorded_by=self.t2_user,
+            check_in_at=timezone.datetime(2026, 10, 30, 0, 5, tzinfo=tz),
+        )
+
+        self.client.force_login(self.t2_user)
+
+        # 1. Joyce Alvarez returns 200 with 14 buckets for Oct 26 to Nov 8
+        res_joyce = self.client.get(
+            f"/api/trainer/attendance/?granularity=day&from=2026-10-26&to=2026-11-08&member_id={joyce.pk}"
+        )
+        self.assertEqual(res_joyce.status_code, 200)
+        joyce_data = res_joyce.json()
+        self.assertEqual(joyce_data["member_id"], joyce.pk)
+        self.assertEqual(len(joyce_data["buckets"]), 14)
+        self.assertEqual(joyce_data["summary"]["checked_in"], 1)
+        self.assertEqual(joyce_data["summary"]["scheduled"], 14)
+        self.assertEqual(
+            [m["id"] for m in joyce_data["assigned_members"]],
+            sorted([joyce.pk, angelo.pk]),
+        )
+
+        # 2. Angelo Metillo returns 200 with 14 buckets for Oct 26 to Nov 8
+        res_angelo = self.client.get(
+            f"/api/trainer/attendance/?granularity=day&from=2026-10-26&to=2026-11-08&member_id={angelo.pk}"
+        )
+        self.assertEqual(res_angelo.status_code, 200)
+        angelo_data = res_angelo.json()
+        self.assertEqual(angelo_data["member_id"], angelo.pk)
+        self.assertEqual(len(angelo_data["buckets"]), 14)
+        self.assertEqual(angelo_data["summary"]["checked_in"], 1)
+        self.assertEqual(angelo_data["summary"]["scheduled"], 14)
+
+        # 3. Unassigned member (self.m) returns 403
+        res_unassigned = self.client.get(
+            f"/api/trainer/attendance/?granularity=day&from=2026-10-26&to=2026-11-08&member_id={self.m.pk}"
+        )
+        self.assertEqual(res_unassigned.status_code, 403)
+        self.assertEqual(
+            res_unassigned.json()["detail"],
+            f"Member {self.m.pk} is not assigned to this trainer.",
+        )
+
 
 
 

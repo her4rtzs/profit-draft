@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="../assets/css/staff.css">
-  <link rel="stylesheet" href="trainer.css?v=2">
+  <link rel="stylesheet" href="trainer.css?v=5">
   <script src="../assets/js/staff-boot.js"></script>
 </head>
 <body data-portal="trainer" data-page="dashboard" data-tagline="off" data-title="Coach Dashboard" data-eyebrow="Trainer Workspace" data-sub="Your roster, today's sessions, and recent check-ins in one place." data-icon="home">
@@ -124,7 +124,7 @@
 
         <!-- Row 1, Col 2-3: Attendance (the only chart) -->
         <section class="tw-card tw-span-2 tw-anim" style="--i:2" aria-labelledby="attChartTitle">
-          <div class="tw-card-head">
+          <div class="tw-card-head tw-att-head">
             <div>
               <h2 class="tw-card-title" id="attChartTitle">Attendance</h2>
               <p class="tw-card-sub" id="attSubtitle">Daily check-ins · All members</p>
@@ -138,7 +138,7 @@
                 <label for="attFrom">From</label>
                 <div class="tw-date-wrap">
                   <input type="text" id="attFrom" class="tw-input tw-date-text" inputmode="numeric" placeholder="MM/DD/YYYY" autocomplete="off" aria-label="From date (MM/DD/YYYY)">
-                  <input type="date" id="attFromPicker" class="tw-date-picker" tabindex="-1" aria-hidden="true">
+                  <input type="date" id="attFromPicker" class="tw-date-picker" style="position:absolute;width:0;height:0;opacity:0;pointer-events:none" tabindex="-1" aria-hidden="true">
                   <button type="button" class="tw-date-btn" data-picker="attFromPicker" aria-label="Pick From date"><span data-icon="calendar"></span></button>
                 </div>
               </div>
@@ -146,7 +146,7 @@
                 <label for="attTo">To</label>
                 <div class="tw-date-wrap">
                   <input type="text" id="attTo" class="tw-input tw-date-text" inputmode="numeric" placeholder="MM/DD/YYYY" autocomplete="off" aria-label="To date (MM/DD/YYYY)">
-                  <input type="date" id="attToPicker" class="tw-date-picker" tabindex="-1" aria-hidden="true">
+                  <input type="date" id="attToPicker" class="tw-date-picker" style="position:absolute;width:0;height:0;opacity:0;pointer-events:none" tabindex="-1" aria-hidden="true">
                   <button type="button" class="tw-date-btn" data-picker="attToPicker" aria-label="Pick To date"><span data-icon="calendar"></span></button>
                 </div>
               </div>
@@ -265,13 +265,13 @@
 </div>
 
 <!-- Scripts -->
-<script src="../config.js"></script>
-<script src="../api.js"></script>
-<script src="../auth.js"></script>
-<script src="../assets/js/staff-icons.js"></script>
-<script src="../assets/js/staff-data.js"></script>
-<script src="../assets/js/staff.js"></script>
-<script src="trainer.js"></script>
+<script src="../config.js?v=5"></script>
+<script src="../api.js?v=5"></script>
+<script src="../auth.js?v=5"></script>
+<script src="../assets/js/staff-icons.js?v=5"></script>
+<script src="../assets/js/staff-data.js?v=5"></script>
+<script src="../assets/js/staff.js?v=5"></script>
+<script src="trainer.js?v=5"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const PF = window.PF || {};
@@ -452,8 +452,61 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentGranularity = 'day';
   let lastSeriesData = null;
   let rosterLookup = {};
+  let nameToIdLookup = {};
   let hasAnimatedLineOnce = false;
   let lastFetchedAtMs = Date.now();
+
+  function populateMemberSelect(membersList) {
+    if (!Array.isArray(membersList) || !membersList.length) return;
+    const sel = $('attMember');
+    if (!sel) return;
+    const prevRaw = String(sel.value || 'all').trim().replace(/\/+$/, '');
+    const normalized = [];
+    const nextRosterLookup = {};
+    const nextNameToId = {};
+
+    membersList.forEach(m => {
+      if (!m) return;
+      const rawId = m.id !== undefined ? m.id : m.member_id;
+      const numId = Number(rawId);
+      if (!Number.isInteger(numId) || numId <= 0) return;
+      const idStr = String(numId);
+      const name = String(m.name || m.member_name || `Member #${idStr}`).trim();
+      nextRosterLookup[idStr] = name;
+      nextNameToId[name.toLowerCase()] = idStr;
+      normalized.push({ id: idStr, name });
+    });
+
+    if (!normalized.length) return;
+    rosterLookup = nextRosterLookup;
+    nameToIdLookup = nextNameToId;
+
+    sel.innerHTML = `<option value="all">All members</option>` +
+      normalized.map(m => `<option value="${esc(m.id)}">${esc(m.name)}</option>`).join('');
+
+    if (!prevRaw || prevRaw.toLowerCase() === 'all') {
+      sel.value = 'all';
+    } else if (rosterLookup[prevRaw]) {
+      sel.value = prevRaw;
+    } else if (nameToIdLookup[prevRaw.toLowerCase()]) {
+      sel.value = nameToIdLookup[prevRaw.toLowerCase()];
+    } else {
+      sel.value = 'all';
+    }
+  }
+
+  function resolveMemberIdParam() {
+    const sel = $('attMember');
+    const raw = String(sel ? sel.value : 'all').trim().replace(/\/+$/, '');
+    if (!raw || raw.toLowerCase() === 'all') return 'all';
+    if (/^\d+$/.test(raw) && Number(raw) > 0) return String(Number(raw));
+    const mapped = nameToIdLookup[raw.toLowerCase()];
+    if (mapped) {
+      if (sel) sel.value = mapped;
+      return mapped;
+    }
+    return raw;
+  }
 
   function setDateInputsIso(fromIso, toIso) {
     if (fromIso) {
@@ -773,7 +826,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     const { fromIso, toIso } = resolved;
-    const memberVal = $('attMember').value || 'all';
+    const memberVal = resolveMemberIdParam();
 
     updateAttendanceSubtitle(currentGranularity, fromIso, toIso, memberVal);
     if (!isPoll) {
@@ -791,9 +844,13 @@ document.addEventListener('DOMContentLoaded', () => {
       lastFetchedAtMs = Date.now();
       refreshUpdatedBadge();
 
+      if (Array.isArray(res.assigned_members) && res.assigned_members.length) {
+        populateMemberSelect(res.assigned_members);
+      }
+
       if (res.from && res.to) {
         setDateInputsIso(res.from, res.to);
-        updateAttendanceSubtitle(currentGranularity, res.from, res.to, memberVal);
+        updateAttendanceSubtitle(currentGranularity, res.from, res.to, resolveMemberIdParam());
       }
 
       if (isPoll && lastSeriesData && Array.isArray(lastSeriesData.buckets) && Array.isArray(res.buckets)) {
@@ -993,14 +1050,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const activeCount = members.filter(m => m.is_active || String(m.membership_status || '').toUpperCase() === 'ACTIVE').length;
     $('rosterCountSub').textContent = `${activeCount} active member${activeCount === 1 ? '' : 's'}`;
 
-    // Populate Member filter dropdown in Attendance card
-    const sel = $('attMember');
-    const curVal = sel.value || 'all';
-    rosterLookup = {};
-    members.forEach(m => { rosterLookup[String(m.id)] = m.name; });
-    sel.innerHTML = `<option value="all">All members</option>` +
-      members.map(m => `<option value="${esc(m.id)}">${esc(m.name)}</option>`).join('');
-    if (curVal === 'all' || rosterLookup[curVal]) sel.value = curVal;
+    // Populate Member filter dropdown in Attendance card using numeric primary keys
+    populateMemberSelect(members);
 
     if (!members.length) {
       list.innerHTML = `<div style="grid-column: 1 / -1">${emptyState('users', 'No members assigned yet', 'Assigned athletes will appear here once matched to your roster.')}</div>`;
@@ -1032,6 +1083,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const members = membersRes.status === 'fulfilled' ? (membersRes.value || []) : [];
     const sch = schRes.status === 'fulfilled' ? (schRes.value || {}) : {};
 
+    if (Array.isArray(dash.assigned_members) && dash.assigned_members.length) {
+      populateMemberSelect(dash.assigned_members);
+    }
     renderRoster(members);
     renderMembershipOverview(dash.stats || {}, members);
     renderRecentCheckins(dash.recent_attendances || []);

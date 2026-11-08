@@ -7,7 +7,11 @@
   if (location.protocol === "https:" && baseUrl.protocol !== "https:") {
     throw new Error("Secure pages require an HTTPS API endpoint.");
   }
-  const apiUrl = path => new URL(path.replace(/^\/+/, "").replace(/\/?$/, "/"), baseUrl).href;
+  const apiUrl = path => {
+    const [pathname, search] = String(path || "").replace(/^\/+/, "").split("?");
+    const cleanPath = pathname.replace(/\/?$/, "/");
+    return new URL(search !== undefined ? `${cleanPath}?${search}` : cleanPath, baseUrl).href;
+  };
   const csrfToken = () => (document.cookie.match(/(?:^|;\s*)csrftoken=([^;]+)/) || [])[1] || "";
 
   async function ensureCsrf() {

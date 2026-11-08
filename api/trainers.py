@@ -490,6 +490,10 @@ class TrainerDashboardView(APIView):
         ]
 
         unread_count = Notification.objects.filter(recipient=request.user, read_at__isnull=True).count()
+        assigned_members_list = [
+            {"id": a.member_id, "name": _name(a.member.user)}
+            for a in assignments
+        ]
 
         return Response({
             "trainer": {
@@ -511,13 +515,14 @@ class TrainerDashboardView(APIView):
                 "is_full": assigned_count >= max_members,
                 "is_active": profile.is_active,
             },
+            "assigned_members": assigned_members_list,
             "recent_attendances": recent_list,
             "announcements": ann_list,
             "unread_notifications": unread_count,
         })
 
 
-def _build_attendance_series(request, assigned_ids):
+def _build_attendance_series(request, assigned_ids, assigned_members):
     granularity_raw = request.query_params.get("granularity") or request.query_params.get("period") or "day"
     from_raw = request.query_params.get("from")
     to_raw = request.query_params.get("to")
@@ -525,6 +530,7 @@ def _build_attendance_series(request, assigned_ids):
 
     status_code, payload = services.build_trainer_attendance_series(
         assigned_ids=assigned_ids,
+        assigned_members=assigned_members,
         granularity_raw=granularity_raw,
         from_raw=from_raw,
         to_raw=to_raw,
@@ -540,12 +546,10 @@ class TrainerAttendanceListView(APIView):
 
     def get(self, request):
         profile = _get_trainer_profile_for_user(request.user)
-        assigned_ids = set(
-            TrainerAssignment.objects.filter(trainer=profile, ended_at__isnull=True).values_list("member_id", flat=True)
-        ) if profile else set()
+        assigned_ids, assigned_members = services.get_trainer_assigned_members(profile)
 
         if any(k in request.query_params for k in ("granularity", "period", "from", "to", "member_id", "member")):
-            return _build_attendance_series(request, assigned_ids)
+            return _build_attendance_series(request, assigned_ids, assigned_members)
 
         raw_date = request.query_params.get("date")
         try:

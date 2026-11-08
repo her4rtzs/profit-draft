@@ -187,9 +187,35 @@ def _month_end_date(year: int, month: int):
     return timezone.datetime(year, month + 1, 1).date() - timezone.timedelta(days=1)
 
 
+def get_trainer_assigned_members(profile) -> tuple[set[int], list[dict]]:
+    """Return ``(assigned_ids_set, assigned_members_list)`` for ``profile``.
+
+    Shared by ``GET /api/trainer/attendance/``, ``GET /api/trainer/dashboard/``, and
+    ``GET /api/trainer/members/`` so the frontend member dropdown and backend
+    ``member_id`` validation always read from the exact same source.
+    """
+    if profile is None:
+        return set(), []
+    assignments = list(
+        TrainerAssignment.objects.filter(trainer=profile, ended_at__isnull=True)
+        .select_related("member__user")
+        .order_by("member_id")
+    )
+    assigned_ids = {a.member_id for a in assignments}
+    assigned_members = [
+        {
+            "id": a.member_id,
+            "name": _name(a.member.user),
+        }
+        for a in assignments
+    ]
+    return assigned_ids, assigned_members
+
+
 def build_trainer_attendance_series(
     *,
     assigned_ids: set[int],
+    assigned_members: list[dict] | None = None,
     granularity_raw: str | None = None,
     from_raw: str | None = None,
     to_raw: str | None = None,
@@ -199,22 +225,32 @@ def build_trainer_attendance_series(
 
     Returns ``(http_status, payload_dict)``.
     - Enforces that ``member_raw`` belongs to ``assigned_ids`` (returns 403 otherwise).
+    - Returns 400 only when ``member_raw`` is malformed (neither ``'all'`` nor a positive integer).
     - Uses ``Asia/Manila`` local dates and Monday-start weeks.
     - Caps bucket count at ``MAX_ATTENDANCE_BUCKETS`` (60), returning 400 if exceeded.
     """
     from apps.membership.models import Attendance, Enrollment, MemberProfile
 
     today = timezone.localdate()
-    granularity = GRANULARITY_ALIASES.get(str(granularity_raw or "day").strip().lower(), "day")
+    clean_gran = str(granularity_raw or "day").strip().rstrip("/").lower()
+    granularity = GRANULARITY_ALIASES.get(clean_gran, "day")
 
-    raw_member_str = str(member_raw or "all").strip()
+    raw_member_str = str(member_raw or "all").strip().rstrip("/")
     if raw_member_str.lower() not in ("all", ""):
         try:
             mid = int(raw_member_str)
         except (ValueError, TypeError):
-            return 400, {"detail": "Invalid member_id parameter."}
+            return 400, {
+                "detail": f"Malformed member_id '{raw_member_str}': expected a numeric member ID or 'all'."
+            }
+        if mid <= 0:
+            return 400, {
+                "detail": f"Malformed member_id '{raw_member_str}': expected a positive integer ID or 'all'."
+            }
         if mid not in assigned_ids:
-            return 403, {"detail": "You can only query attendance for members assigned to you."}
+            return 403, {
+                "detail": f"Member {mid} is not assigned to this trainer."
+            }
         target_ids = {mid}
         member_filter: str | int = mid
     else:
@@ -237,7 +273,7 @@ def build_trainer_attendance_series(
     def _parse_date(val, fallback):
         if not val:
             return fallback
-        s = str(val).strip()
+        s = str(val).strip().rstrip("/")
         try:
             return timezone.datetime.fromisoformat(s).date()
         except (ValueError, TypeError):
@@ -378,13 +414,7 @@ def build_trainer_attendance_series(
                 continue
             spans = enrollment_spans.get(prof.id, [])
             in_enrollment = any(st <= day <= en for st, en in spans)
-            if in_enrollment:
-                s_count += 1
-            elif (
-                prof.membership_status == MemberProfile.MembershipStatus.ACTIVE
-                and prof.date_joined <= day
-                and (prof.expiry_date is None or day <= prof.expiry_date)
-            ):
+            if in_enrollment or prof.is_active_on(day):
                 s_count += 1
         return c_count, max(c_count, s_count)
 
@@ -417,6 +447,7 @@ def build_trainer_attendance_series(
         "from": from_date.isoformat(),
         "to": to_date.isoformat(),
         "member_id": member_filter,
+        "assigned_members": assigned_members if assigned_members is not None else [],
         "updated_at": timezone.now().isoformat(),
         "buckets": buckets,
         "summary": summary_metrics,

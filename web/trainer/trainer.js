@@ -64,18 +64,20 @@
       async getAttendanceSeries({ granularity = 'day', period = '', from = '', to = '', memberId = 'all' } = {}) {
         const granMap = { days: 'day', day: 'day', weeks: 'week', week: 'week', months: 'month', month: 'month', years: 'year', year: 'year' };
         const gran = granMap[String(granularity || period || 'day').toLowerCase()] || 'day';
-        if (!api) return Trainer.demo.getAttendanceSeries({ granularity: gran, from, to, memberId });
+        const rawMid = String(memberId ?? 'all').trim().replace(/\/+$/, '');
+        const cleanMemberId = (!rawMid || rawMid.toLowerCase() === 'all') ? 'all' : String(Number.isFinite(Number(rawMid)) && Number(rawMid) > 0 ? Math.trunc(Number(rawMid)) : rawMid);
+        if (!api) return Trainer.demo.getAttendanceSeries({ granularity: gran, from, to, memberId: cleanMemberId });
         try {
           const q = new URLSearchParams();
           q.set('granularity', gran);
           if (from) q.set('from', from);
           if (to) q.set('to', to);
-          q.set('member_id', memberId && memberId !== 'all' ? String(memberId) : 'all');
+          q.set('member_id', cleanMemberId);
           return await api.get(`/trainer/attendance/?${q.toString()}`);
         } catch (e) {
           if (e && (e.status === 403 || e.status === 400)) throw e;
           console.warn('API error, using demo fallback:', e);
-          return Trainer.demo.getAttendanceSeries({ granularity: gran, from, to, memberId });
+          return Trainer.demo.getAttendanceSeries({ granularity: gran, from, to, memberId: cleanMemberId });
         }
       },
       async checkIn(memberId) {
@@ -175,20 +177,24 @@
         return {
           trainer: this.getProfile(),
           stats: {
-            assigned_members: 6,
-            active_members: 4,
-            expiring_soon_members: 1,
-            expired_members: 1,
+            assigned_members: 2,
+            active_members: 2,
+            expiring_soon_members: 0,
+            expired_members: 0,
             max_members: 20,
-            capacity_pct: 30,
-            today_checkins: 4,
-            week_checkins: 18,
+            capacity_pct: 10,
+            today_checkins: 1,
+            week_checkins: 8,
             is_full: false,
             is_active: true
           },
+          assigned_members: [
+            { id: 1, name: 'Joyce Alvarez' },
+            { id: 2, name: 'Angelo Metillo' }
+          ],
           recent_attendances: [
-            { id: 101, member_id: 1, member_name: 'Ana Santos', check_in_at: new Date().toISOString(), check_in_date: new Date().toISOString().slice(0, 10) },
-            { id: 102, member_id: 2, member_name: 'Ben Reyes', check_in_at: new Date(Date.now() - 3600000).toISOString(), check_in_date: new Date().toISOString().slice(0, 10) }
+            { id: 101, member_id: 2, member_name: 'Angelo Metillo', check_in_at: '2026-10-30T00:05:00+08:00', check_in_date: '2026-10-30' },
+            { id: 102, member_id: 1, member_name: 'Joyce Alvarez', check_in_at: '2026-10-29T09:00:00+08:00', check_in_date: '2026-10-29' }
           ],
           announcements: [
             { id: 1, title: 'Gym Equipment Upgrades', message: 'New Olympic barbells and bumper plates have arrived in Studio 1.', publish_on: new Date().toISOString().slice(0, 10), pinned: true }
@@ -198,12 +204,8 @@
       },
       getMembers() {
         return [
-          { id: 1, name: 'Ana Santos', email: 'ana@example.com', phone: '0917-555-0101', membership_status: 'ACTIVE', is_active: true, expiry_date: '2026-12-15', date_joined: '2026-09-01', assigned_at: '2026-09-05', total_checkins: 24, last_checkin: new Date().toISOString(), today_checked_in: true },
-          { id: 2, name: 'Ben Reyes', email: 'ben@example.com', phone: '0917-555-0102', membership_status: 'ACTIVE', is_active: true, expiry_date: '2026-11-28', date_joined: '2026-08-10', assigned_at: '2026-08-12', total_checkins: 19, last_checkin: new Date(Date.now() - 3600000).toISOString(), today_checked_in: true },
-          { id: 3, name: 'Carlos Dizon', email: 'carlos@example.com', phone: '0918-555-0203', membership_status: 'ACTIVE', is_active: true, expiry_date: '2026-11-12', date_joined: '2026-07-20', assigned_at: '2026-07-22', total_checkins: 31, last_checkin: new Date(Date.now() - 86400000).toISOString(), today_checked_in: false },
-          { id: 4, name: 'Diana Garcia', email: 'diana@example.com', phone: '0919-555-0304', membership_status: 'ACTIVE', is_active: true, expiry_date: '2026-12-30', date_joined: '2026-10-01', assigned_at: '2026-10-02', total_checkins: 8, last_checkin: new Date(Date.now() - 172800000).toISOString(), today_checked_in: false },
-          { id: 5, name: 'Elena Cruz', email: 'elena@example.com', phone: '0920-555-0405', membership_status: 'EXPIRED', is_active: false, expiry_date: '2026-10-25', date_joined: '2026-06-15', assigned_at: '2026-06-18', total_checkins: 42, last_checkin: '2026-10-24T10:00:00Z', today_checked_in: false },
-          { id: 6, name: 'Francis Lee', email: 'francis@example.com', phone: '0921-555-0506', membership_status: 'ACTIVE', is_active: true, expiry_date: '2026-12-01', date_joined: '2026-10-15', assigned_at: '2026-10-16', total_checkins: 5, last_checkin: new Date(Date.now() - 259200000).toISOString(), today_checked_in: false }
+          { id: 1, name: 'Joyce Alvarez', email: 'joyce.alvarez@example.com', phone: '0917-555-0101', membership_status: 'ACTIVE', is_active: true, expiry_date: '2026-12-15', date_joined: '2026-09-01', assigned_at: '2026-09-05', total_checkins: 24, last_checkin: new Date().toISOString(), today_checked_in: false },
+          { id: 2, name: 'Angelo Metillo', email: 'angelo.metillo@example.com', phone: '0917-555-0102', membership_status: 'ACTIVE', is_active: true, expiry_date: '2026-11-28', date_joined: '2026-08-10', assigned_at: '2026-08-12', total_checkins: 19, last_checkin: new Date(Date.now() - 3600000).toISOString(), today_checked_in: false }
         ];
       },
       getMemberDetail(id) {
@@ -378,6 +380,10 @@
           from: toIso(dFrom),
           to: toIso(dTo),
           member_id: singleMember ? Number(memberId) : 'all',
+          assigned_members: [
+            { id: 1, name: 'Joyce Alvarez' },
+            { id: 2, name: 'Angelo Metillo' }
+          ],
           updated_at: new Date().toISOString(),
           buckets,
           summary: {
