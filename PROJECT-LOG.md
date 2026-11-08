@@ -1165,3 +1165,15 @@ Fix the Trainer Workspace dashboard where the sidebar was overlapping and coveri
 - Preserved mobile responsiveness (<= 768px): desktop sidebar remains completely hidden, full width content (`margin-left: 0 !important;`), and the edge-to-edge Instagram-style 5-tab frosted bottom navigation bar stays docked at the bottom with safe-area padding.
 ### Decision-log skill
 When porting unified sidebars to distinct portal shells (`.app > .main`), ensure desktop page content margins match the exact sidebar width (`margin-left: 260px`) to prevent content obstruction, and neutralize legacy mini-state storage flags that conditionally hide navigation labels.
+
+
+## 2026-11-09 05:05 (Asia/Manila): Revert Staff sidebar to hover rail and isolate Trainer sidebar fix
+### What I asked for
+Revert the staff portal sidebar back to its original design (smooth desktop hover-rail from commit 46ab02d that rests at an 80px icon rail and expands to 260px on hover without content shift), and fix the trainer portal sidebar independently with a stable 260px width and zero content overlap.
+### What the agent decided and why
+- Cleanly separated Staff (`nav.sidebar#sidebar`) and Trainer (`aside.sidebar#sidebar` / `body[data-portal="trainer"]`) rules in `web/sidebar-pro.css`.
+- Reverted Staff desktop sidebar (> 768px) to the exact commit `46ab02d` hover-expand icon rail: rests at 80px (`--sb-rail: 80px`), cleanly widens to 260px on hover/focus-within, with smooth label reveals (`sb-rail-reveal`, `sb-rail-fade`), while `.main-content` reserves the 80px rail for zero layout shift.
+- Fixed Trainer portal desktop sidebar (> 768px): enforced a permanent stable 260px width, permanently visible text labels/headers/user info, gold active pill highlights, hidden collapse button to prevent broken mini states, and `.main` margin-left at 260px for zero overlap with "Coach Dashboard".
+- Maintained the Instagram-style frosted 5-tab bottom navigation bar across all portals on mobile screens (<= 768px).
+### Decision-log skill
+When different portals have different shell architectures (e.g. Staff using hover-rail icon-bar with `.main-content` vs Trainer using a dedicated workspace shell with `.main`), scope the hover-expand icon rail strictly to `nav.sidebar#sidebar` and provide a dedicated, stable fixed layout for `body[data-portal="trainer"] aside.sidebar#sidebar` to prevent cross-portal style leakage.
