@@ -404,7 +404,8 @@
 
   function build() {
     const body = document.body;
-    if (document.documentElement.classList.contains('pre-mini')) body.classList.add('mini');
+    body.classList.remove('mini');
+    try { localStorage.removeItem('pf-mini'); } catch (e) {}
     $('#sidebar').innerHTML = sidebarHTML();
     $('#topbar').innerHTML = topbarHTML();
     $('#bottomNav').innerHTML = bottomHTML();

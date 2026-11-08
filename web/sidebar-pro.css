@@ -1,13 +1,12 @@
 /* ProFit Unified Sidebar & Instagram-Style Mobile Navigation
-   - Desktop (> 768px): Permanent left sidebar resting as an 80px compact icon rail,
-     smoothly expanding to 260px on hover/focus-within over content without layout shift.
+   - Desktop (> 768px): Stable 260px left sidebar across Staff, Trainer, and Member portals.
+     Zero content overlap: page content starts cleanly at margin-left: 260px.
    - Mobile (<= 768px): Desktop sidebar and drawers hidden; clean edge-to-edge
      Instagram-style frosted bottom navigation bar across Staff, Trainer, and Member portals. */
 
 :root {
   --sidebar-w: 260px;
   --pf-sb-w: 260px;
-  --sb-rail: 80px;              /* collapsed icon rail width */
   --sb-gold: #e8b93a;
   --sb-gold-2: #f2cb5c;
   --sb-ink: #1a1407;
@@ -52,7 +51,7 @@ html.pf-pre * {
 }
 
 /* ==========================================================================
-   MAIN DASHBOARD WRAPPER & COLUMN OFFSETS
+   MAIN DASHBOARD WRAPPER & COLUMN OFFSETS (ZERO OVERLAP)
    ========================================================================== */
 
 html body .dashboard,
@@ -65,25 +64,27 @@ html body .app {
   background: var(--bg, #0a0e16) !important;
 }
 
-html body nav.sidebar ~ .main-content,
-html body .dashboard > main.main-content,
-html body aside.sidebar ~ .main,
-html body .app > .main,
-html body.member-home .member-content,
-html body.member-home .member-top {
-  display: block !important;
-  box-sizing: border-box !important;
-  margin-left: var(--sidebar-w) !important;
-  margin-right: 0 !important;
-  margin-inline: 0 !important;
-  width: calc(100% - var(--sidebar-w)) !important;
-  max-width: calc(100% - var(--sidebar-w)) !important;
-  min-width: 0 !important;
-  flex: none !important;
-  padding: 24px clamp(20px, 3vw, 40px) 48px !important;
-  overflow-x: clip !important;
-  overflow-y: visible !important;
-  transition: margin-left 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), width 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+@media (min-width: 769px) {
+  html body nav.sidebar ~ .main-content,
+  html body .dashboard > main.main-content,
+  html body aside.sidebar ~ .main,
+  html body .app > .main,
+  html body .main,
+  html body.member-home .member-content,
+  html body.member-home .member-top {
+    display: block !important;
+    box-sizing: border-box !important;
+    margin-left: var(--sidebar-w) !important;
+    margin-right: 0 !important;
+    margin-inline: 0 !important;
+    width: calc(100% - var(--sidebar-w)) !important;
+    max-width: calc(100% - var(--sidebar-w)) !important;
+    min-width: 0 !important;
+    flex: none !important;
+    padding: 24px clamp(20px, 3vw, 40px) 48px !important;
+    overflow-x: clip !important;
+    overflow-y: visible !important;
+  }
 }
 
 /* ==========================================================================
@@ -195,6 +196,7 @@ html body .sidebar .nav-label {
   letter-spacing: 0.16em !important;
   text-transform: uppercase !important;
   line-height: 1.2 !important;
+  display: block !important;
 }
 
 html body .sidebar .menulist,
@@ -219,6 +221,7 @@ html body .sidebar .nav-link {
   position: relative !important;
   display: flex !important;
   align-items: center !important;
+  justify-content: flex-start !important;
   gap: 12px !important;
   width: 100% !important;
   height: 42px !important;
@@ -238,7 +241,8 @@ html body .sidebar .nav-link {
 html body .sidebar .menulist a .icon,
 html body .sidebar .menulist a .ico,
 html body .sidebar .menulist a i,
-html body .sidebar .nav-link .ico {
+html body .sidebar .nav-link .ico,
+html body .sidebar .nav-link .icon {
   flex: 0 0 20px !important;
   width: 20px !important;
   height: 20px !important;
@@ -253,6 +257,10 @@ html body .sidebar .nav-link .ico {
 }
 
 html body .sidebar .menulist a .text,
+html body .sidebar .menulist a .nav-text,
+html body .sidebar .nav-list a .text,
+html body .sidebar .nav-list a .nav-text,
+html body .sidebar .nav-link .text,
 html body .sidebar .nav-link .nav-text {
   min-width: 0 !important;
   font-weight: 600 !important;
@@ -260,6 +268,14 @@ html body .sidebar .nav-link .nav-text {
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   color: inherit !important;
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  clip: auto !important;
+  clip-path: none !important;
 }
 
 html body .sidebar .menulist a:hover,
@@ -271,7 +287,8 @@ html body .sidebar .nav-link:hover {
 html body .sidebar .menulist a:hover .icon,
 html body .sidebar .menulist a:hover .ico,
 html body .sidebar .menulist a:hover i,
-html body .sidebar .nav-link:hover .ico {
+html body .sidebar .nav-link:hover .ico,
+html body .sidebar .nav-link:hover .icon {
   color: #f1f5f9 !important;
 }
 
@@ -297,14 +314,39 @@ html body .sidebar .menulist a.active .icon,
 html body .sidebar .menulist a.active .ico,
 html body .sidebar .menulist a.active i,
 html body .sidebar .menulist a.active .text,
+html body .sidebar .menulist a.active .nav-text,
 html body .sidebar .nav-link.active .ico,
+html body .sidebar .nav-link.active .icon,
 html body .sidebar .nav-link.active .nav-text,
 html body .sidebar [aria-current="page"] .icon,
 html body .sidebar [aria-current="page"] .ico,
 html body .sidebar [aria-current="page"] i,
-html body .sidebar [aria-current="page"] .text {
+html body .sidebar [aria-current="page"] .text,
+html body .sidebar [aria-current="page"] .nav-text {
   color: var(--sb-ink) !important;
   stroke: var(--sb-ink) !important;
+}
+
+/* Override any stale body.mini rules */
+html body.mini .brand-txt,
+html body.mini .nav-text,
+html body.mini .nav-count,
+html body.mini .nav-label,
+html body.mini .side-user .who,
+html body.mini .side-user .icon-btn,
+html body.mini .sidebar .brand-txt,
+html body.mini .sidebar .nav-text,
+html body.mini .sidebar .nav-label {
+  display: block !important;
+}
+
+html body.mini .menulist a .text,
+html body.mini .nav-link .nav-text {
+  display: inline-block !important;
+}
+
+html body.mini .nav-link {
+  justify-content: flex-start !important;
 }
 
 /* ==========================================================================
@@ -456,7 +498,7 @@ html body .sidebar .account-menu button {
   text-align: left !important;
   text-decoration: none !important;
   cursor: pointer !important;
-  transition: background-color 0.15s ease !important;
+  transition: background-color 0.15s ease, color 0.15s ease !important;
 }
 
 html body .sidebar .account-menu a i,
@@ -476,122 +518,15 @@ html body .sidebar .account-menu button[data-logout] i {
   color: #ff7b7b !important;
 }
 
-/* ==========================================================================
-   DESKTOP HOVER-EXPAND ICON RAIL (> 768px)
-   ========================================================================== */
-
 @media (min-width: 769px) {
-  html body .sidebar#sidebar {
-    min-width: 0 !important;
-    max-width: none !important;
-    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1),
-                width 0.22s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
-  }
-
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) {
-    width: var(--sb-rail) !important;
-  }
-
-  /* Resting rail: icons only, centred. */
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-brand-row,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .brand,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .side-user {
-    justify-content: center !important;
-  }
-
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .menulist a,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .nav-link {
-    justify-content: center !important;
-    gap: 0 !important;
-    padding: 0 !important;
-  }
-
-  /* Text elements hidden during resting rail */
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .headertxt,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .brand-txt,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .nav-group-label,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .nav-label,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user-copy,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .side-user .who,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .account-menu-toggle,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) #accountBtn,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .collapse-btn,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .account-menu {
-    display: none !important;
-  }
-
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .text,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a .text,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .nav-link .nav-text {
-    position: absolute !important;
-    width: 1px !important;
-    height: 1px !important;
-    margin: -1px !important;
-    padding: 0 !important;
-    overflow: hidden !important;
-    clip-path: inset(50%) !important;
-  }
-
-  /* Reveal animations on hover */
-  html body .sidebar#sidebar:hover .headertxt,
-  html body .sidebar#sidebar:focus-within .headertxt,
-  html body .sidebar#sidebar:hover .brand-txt,
-  html body .sidebar#sidebar:focus-within .brand-txt,
-  html body .sidebar#sidebar:hover .sidebar-user-copy,
-  html body .sidebar#sidebar:focus-within .sidebar-user-copy,
-  html body .sidebar#sidebar:hover .side-user .who,
-  html body .sidebar#sidebar:focus-within .side-user .who,
-  html body .sidebar#sidebar:hover .menulist a .text,
-  html body .sidebar#sidebar:focus-within .menulist a .text,
-  html body .sidebar#sidebar:hover .nav-link .nav-text,
-  html body .sidebar#sidebar:focus-within .nav-link .nav-text {
-    animation: sb-rail-reveal 0.16s ease 0.08s both !important;
-  }
-
-  html body .sidebar#sidebar:hover .nav-group-label,
-  html body .sidebar#sidebar:focus-within .nav-group-label,
-  html body .sidebar#sidebar:hover .nav-label,
-  html body .sidebar#sidebar:focus-within .nav-label {
-    animation: sb-rail-fade 0.16s ease 0.08s both !important;
-  }
-
-  /* Page column offsets */
-  html body .sidebar#sidebar ~ .main-content,
-  html body .dashboard > main.main-content,
-  html body aside.sidebar ~ .main,
-  html body .app > .main,
-  html body.member-home .member-content,
-  html body.member-home .member-top {
-    margin-left: var(--sb-rail) !important;
-    width: calc(100% - var(--sb-rail)) !important;
-    max-width: calc(100% - var(--sb-rail)) !important;
-  }
-
-  /* Hide bottom nav on desktop */
+  /* Hide bottom nav and mobile controls on desktop */
   .instagram-bottom-nav,
   .bottom-nav,
-  .pf-bottomnav {
-    display: none !important;
-  }
-
-  .mobile-nav-toggle {
-    display: none !important;
-  }
+  .pf-bottomnav,
+  .mobile-nav-toggle,
   .sidebar-shade {
     display: none !important;
   }
-}
-
-@keyframes sb-rail-reveal {
-  from { opacity: 0; transform: translateX(-6px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-@keyframes sb-rail-fade {
-  from { opacity: 0; }
-  to { opacity: 1; }
 }
 
 /* ==========================================================================

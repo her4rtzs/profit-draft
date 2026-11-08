@@ -1154,3 +1154,14 @@ Apply the staff portal sidebar (dark navy gradient, 80px resting compact icon ra
 - Fully suppressed desktop sidebars, drawer overlays, and toggles on screens <= 768px (`display: none !important;`) and added bottom safe-area padding to avoid content obstruction.
 ### Decision-log skill
 For unified cross-portal navigation, build universal sidebar selectors that adapt to varying semantic wrappers (`nav.sidebar`, `aside.sidebar`) on desktop, and replace responsive drawers on mobile with an edge-to-edge frosted glass 5-tab bottom navigation bar matching native mobile app patterns like Instagram.
+
+
+## 2026-11-09 04:52 (Asia/Manila): Fix Trainer Workspace sidebar text visibility and eliminate content overlap
+### What I asked for
+Fix the Trainer Workspace dashboard where the sidebar was overlapping and covering the page title/cards ("Coach Dashboard", "TRAINER WORKSPACE"), and menu item text labels/group headings were missing.
+### What the agent decided and why
+- Eliminated `body.mini` suppression: removed `pre-mini` auto-assignment from `web/assets/js/staff-boot.js` and `web/assets/js/staff.js`, cleared `pf-mini` from browser storage, and neutralized `.mini` CSS hiding rules in `staff.css` so navigation item labels (`.nav-text`), group labels (`.nav-label`), and user metadata are permanently visible.
+- Re-aligned main content layout (`web/layout-fixes.css` and `web/sidebar-pro.css`) on desktop (> 768px): set `margin-left: 260px !important; width: calc(100% - 260px) !important;` for `.main`, `.main-content`, and `.member-content` to guarantee zero overlap with the 260px sidebar.
+- Preserved mobile responsiveness (<= 768px): desktop sidebar remains completely hidden, full width content (`margin-left: 0 !important;`), and the edge-to-edge Instagram-style 5-tab frosted bottom navigation bar stays docked at the bottom with safe-area padding.
+### Decision-log skill
+When porting unified sidebars to distinct portal shells (`.app > .main`), ensure desktop page content margins match the exact sidebar width (`margin-left: 260px`) to prevent content obstruction, and neutralize legacy mini-state storage flags that conditionally hide navigation labels.

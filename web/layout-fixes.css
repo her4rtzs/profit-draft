@@ -53,11 +53,11 @@ html body .sidebar {
 html body .main-content,
 html body aside.sidebar ~ .main,
 html body .app > .main {
-  margin-left: var(--sb-rail, 80px) !important;
+  margin-left: var(--sidebar-w, 260px) !important;
   margin-right: 0 !important;
   margin-inline: 0 !important;
-  width: calc(100% - var(--sb-rail, 80px)) !important;
-  max-width: calc(100% - var(--sb-rail, 80px)) !important;
+  width: calc(100% - var(--sidebar-w, 260px)) !important;
+  max-width: calc(100% - var(--sidebar-w, 260px)) !important;
   min-width: 0 !important;
   box-sizing: border-box !important;
   padding: 24px clamp(20px, 3vw, 40px) 48px !important;

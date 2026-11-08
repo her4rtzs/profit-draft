@@ -8,6 +8,6 @@
     h.setAttribute('data-theme', t === 'dark' ? 'dark' : 'light');
     var a = localStorage.getItem('pf-accent') || 'gold';
     if (a !== 'gold') h.setAttribute('data-accent', a);
-    if (localStorage.getItem('pf-mini') === '1') h.classList.add('pre-mini');
+    try { localStorage.removeItem('pf-mini'); } catch (e) {}
   } catch (e) { h.setAttribute('data-theme', 'light'); }
 })();
