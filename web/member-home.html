@@ -72,7 +72,6 @@
       <button class="pp-tab" type="button" role="tab" data-tab="diary" aria-selected="false"><i class="fa-solid fa-book-open"></i> Diary</button>
       <button class="pp-tab" type="button" role="tab" data-tab="health" aria-selected="false"><i class="fa-solid fa-heart-pulse"></i> Health &amp; goals</button>
       <button class="pp-tab" type="button" role="tab" data-tab="profile" aria-selected="false"><i class="fa-regular fa-id-card"></i> My profile</button>
-      <button class="pp-tab" type="button" role="tab" data-tab="settings" aria-selected="false"><i class="fa-solid fa-sliders"></i> Settings</button>
     </nav>
     <div class="portal-result" id="memberNotice" role="status" hidden></div>
     <div class="pp-tool-panel" data-panel="overview">
@@ -262,27 +261,55 @@
 (() => {
   const $ = id => document.getElementById(id);
   const safe = value => String(value ?? "—");
+
+  // ── Date helpers ────────────────────────────────────────────────────────────
+  // localDateStr: converts any date value to a Manila-local YYYY-MM-DD string,
+  // avoiding the UTC-shift bug that occurs when you pass an ISO date string
+  // (e.g. "2026-10-29") to `new Date()` — that parses as midnight UTC, which
+  // is 8 hours behind Manila and rolls back to the previous local day.
+  const localDateStr = value => {
+    if (!value) return "";
+    const s = String(value).slice(0, 10); // already "YYYY-MM-DD" from the API
+    if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s; // use as-is, no UTC shift
+    // Fallback for full ISO timestamps: interpret in the local timezone
+    const d = new Date(value);
+    const pad = n => String(n).padStart(2, "0");
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  };
   const date = value => {
     if (!value) return "—";
-    const d = new Date(value);
-    return Number.isNaN(d.getTime()) ? "—" : d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+    // Parse YYYY-MM-DD without UTC shift: treat it as local midnight
+    const s = localDateStr(value);
+    if (!s) return "—";
+    const [y, mo, d] = s.split("-").map(Number);
+    const obj = new Date(y, mo - 1, d);
+    return Number.isNaN(obj.getTime()) ? "—" : obj.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
   };
-  const todayKey = () => new Date().toISOString().slice(0, 10);
+  // todayKey: local YYYY-MM-DD (not UTC)
+  const todayKey = () => localDateStr(new Date());
+  // weekMondayKey: ISO date string of the most recent Monday (or today if Monday)
+  const weekMondayKey = () => {
+    const d = new Date();
+    const dow = d.getDay(); // 0=Sun … 6=Sat
+    const diffToMon = dow === 0 ? 6 : dow - 1; // days since last Monday
+    d.setDate(d.getDate() - diffToMon);
+    return localDateStr(d);
+  };
+
   const demoCheckinsKey = "profit-member-demo-checkins";
   const readDemoCheckins = () => {
     try { return JSON.parse(localStorage.getItem(demoCheckinsKey) || "[]"); } catch { return []; }
   };
   const writeDemoCheckins = items => localStorage.setItem(demoCheckinsKey, JSON.stringify(items));
+  // demoData: removed the hardcoded 6-check-in base array that was pre-filling
+  // the weekly goal from day one. The member starts with no check-ins; only
+  // explicit "Check in today" clicks (stored in demoCheckinsKey) are counted.
   const demoData = () => {
     const generated = readDemoCheckins();
-    const base = [0, 1, 2, 4, 6, 9].map(daysAgo => {
-      const d = new Date(); d.setDate(d.getDate() - daysAgo);
-      return { date: d.toISOString(), location: "ProFit Gym", source: "demo" };
-    });
     return {
       user: window.ProFitAuth?.user || { name: "Demo Member", email: "member@profit.test", phone: "0917 000 0000" },
       membership: { planName: "Monthly Plan", plan: "Monthly", status: "Active", expiresAt: new Date(Date.now() + 18 * 86400000).toISOString(), daysRemaining: 18 },
-      attendance: [...generated, ...base],
+      attendance: generated,
       payments: [{ reference: "P-0008", date: new Date(Date.now() - 3 * 86400000).toISOString(), method: "GCash", amountFormatted: "₱800" }]
     };
   };
@@ -296,20 +323,43 @@
       el.append(row);
     });
   };
+
+  // ── Streak ──────────────────────────────────────────────────────────────────
+  // Uses localDateStr() so UTC-midnight ISO timestamps don't shift the date.
+  // If not checked in today, streak stays alive from yesterday until the day ends.
   function calcStreak(attendance) {
-    const days = new Set((attendance || []).map(x => new Date(x.date).toISOString().slice(0, 10)));
+    const days = new Set((attendance || []).map(x => localDateStr(x.date)));
+    const today = new Date();
+    const todayStr = localDateStr(today);
+    const startOffset = days.has(todayStr) ? 0 : 1;
     let streak = 0;
     for (let i = 0; i < 90; i++) {
-      const d = new Date(); d.setDate(d.getDate() - i);
-      if (days.has(d.toISOString().slice(0, 10))) streak++; else break;
+      const d = new Date(today.getFullYear(), today.getMonth(), today.getDate() - (startOffset + i));
+      if (days.has(localDateStr(d))) streak++; else break;
     }
     return streak;
   }
+
+  // ── Weekly goal ─────────────────────────────────────────────────────────────
+  // Counts distinct check-in dates from the start of the current ISO week
+  // (Monday 00:00 local time), NOT a rolling 7-day window. This means 1 visit
+  // on Monday of a new week resets the count to 1, exactly as expected.
+  function calcWeeklyVisits(attendance) {
+    const monday = weekMondayKey();
+    const uniqueDays = new Set(
+      (attendance || [])
+        .map(x => localDateStr(x.date))
+        .filter(d => d >= monday)
+    );
+    return uniqueDays.size;
+  }
+
   function renderProgress(data) {
     const attendance = data.attendance || [];
-    const streak = calcStreak(attendance);
-    const weekStart = new Date(); weekStart.setDate(weekStart.getDate() - 6);
-    const weekly = attendance.filter(x => new Date(x.date) >= weekStart).length;
+    // Prefer server-computed values (present when the live API is used).
+    // Fall back to client-side calculation for demo/offline mode.
+    const streak = (typeof data.streak === "number") ? data.streak : calcStreak(attendance);
+    const weekly = (typeof data.weeklyVisits === "number") ? data.weeklyVisits : calcWeeklyVisits(attendance);
     const goal = 4;
     const achievements = [streak >= 3, weekly >= goal, attendance.length >= 10].filter(Boolean).length;
     $("streakCount").textContent = `${streak} day${streak === 1 ? "" : "s"}`;
@@ -338,7 +388,11 @@
     $("membershipName").textContent = safe(m.planName || m.plan);
     $("membershipDetail").textContent = m.expiresAt ? `Membership expires ${date(m.expiresAt)}${m.daysRemaining != null ? ` · ${m.daysRemaining} days remaining` : ""}` : "Your membership details are not available yet.";
     $("membershipStatus").textContent = safe(m.status || "Not enrolled");
-    if (data.user && data.user.memberId) window.__pfMemberMe = data;
+    if (data.user && data.user.memberId) {
+      window.__pfMemberMe = data;
+      // Real member session: clear any leftover demo check-ins from previous sessions or accounts
+      try { localStorage.removeItem(demoCheckinsKey); } catch (e) {}
+    }
     const eh = v => String(v ?? "—").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
     const paintProfileCard = () => {
       const u = (window.__pfMemberMe || data).user || {};
@@ -346,9 +400,13 @@
     };
     paintProfileCard();
     window.__pfRefreshProfileCard = paintProfileCard;
-    list("attendanceList", data.attendance, "No attendance records yet.", x => `<span><b>${date(x.date)}</b><small>${safe(x.location || "Gym check-in")}</small></span><i class="fa-solid fa-arrow-right"></i>`);
+    // Attendance dates from the API are already "YYYY-MM-DD" strings; use date()
+    // which calls localDateStr() internally to avoid the UTC midnight shift.
+    list("attendanceList", data.attendance, "No attendance records yet.", x => `<span><b>${date(localDateStr(x.date))}</b><small>${safe(x.location || "Gym check-in")}</small></span><i class="fa-solid fa-arrow-right"></i>`);
     list("paymentList", data.payments, "No payment records yet.", x => `<span><b>${safe(x.reference || "Payment")}</b><small>${date(x.date)} · ${safe(x.method)}</small></span><strong>${safe(x.amountFormatted || x.amount)}</strong><button type="button" class="member-receipt" data-receipt="${safe(x.reference || "Payment")}" data-when="${safe(x.date)}" data-method="${safe(x.method)}" data-amount="${safe(x.amountFormatted || x.amount || "")}"><i class="fa-solid fa-receipt" aria-hidden="true"></i> Receipt</button>`);
-    window.__pfAttendanceDays = (data.attendance || []).map(x => String(x.date).slice(0, 10));
+    // Store attendance days as local YYYY-MM-DD strings so the calendar and
+    // syncMemberChrome todayKey comparison are timezone-consistent.
+    window.__pfAttendanceDays = (data.attendance || []).map(x => localDateStr(x.date));
     renderProgress(data);
     syncMemberChrome(data);
     window.__pfRefreshMemberSpace?.();
@@ -405,14 +463,44 @@
     setTimeout(() => panel.classList.remove("is-highlight"), 1600);
   });
 
-  $("checkInButton").addEventListener("click", () => {
-    const items = readDemoCheckins();
-    if (!items.some(x => String(x.date).slice(0, 10) === todayKey())) {
-      items.unshift({ date: new Date().toISOString(), location: "ProFit Gym", source: "manual" });
-      writeDemoCheckins(items.slice(0, 30));
-    }
-    render(demoData());
+  $("checkInButton").addEventListener("click", async () => {
+    const btn = $("checkInButton");
+    btn.disabled = true;
     const notice = $("memberNotice");
+    notice.hidden = true;
+
+    let serverSuccess = false;
+    try {
+      if (!window.PROFIT_CONFIG?.DEMO_MODE && window.PROFIT_CONFIG?.API_BASE_URL) {
+        await ProFitAPI.post("/member/check-in/", {});
+        serverSuccess = true;
+      }
+    } catch (err) {
+      if (err.status === 400 && err.message) {
+        notice.hidden = false;
+        notice.classList.add("error");
+        notice.textContent = err.message;
+        btn.disabled = false;
+        notice.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        return;
+      }
+      // Offline / fallback to demo check-ins
+    }
+
+    if (serverSuccess) {
+      await load();
+    } else {
+      const items = readDemoCheckins();
+      const today = todayKey();
+      // Use localDateStr so stored ISO timestamps don't UTC-shift to a different date
+      if (!items.some(x => localDateStr(x.date) === today)) {
+        // Store as plain YYYY-MM-DD to avoid future timezone confusion
+        items.unshift({ date: today, location: "ProFit Gym", source: "manual" });
+        writeDemoCheckins(items.slice(0, 30));
+      }
+      render(demoData());
+    }
+
     notice.hidden = false;
     notice.classList.remove("error");
     notice.textContent = "Check-in recorded for today. Your streak and weekly goal were updated.";
@@ -422,8 +510,14 @@
   // The button has to reflect reality, not just sit there: show "checked in"
   // once today is already logged, and put the member's name in the header menu.
   function syncMemberChrome(data) {
-    const already = readDemoCheckins().some(x => String(x.date).slice(0, 10) === todayKey())
-      || (window.__pfAttendanceDays || []).includes(todayKey());
+    const today = todayKey();
+    const isLive = Boolean(data?.user?.memberId);
+    // For a live logged-in member, check-in status is strictly driven by their own
+    // records from the database (window.__pfAttendanceDays). Never pollute a live member
+    // with un-scoped demo check-ins stored in browser localStorage from other accounts.
+    const already = isLive
+      ? (window.__pfAttendanceDays || []).includes(today)
+      : ((window.__pfAttendanceDays || []).includes(today) || readDemoCheckins().some(x => localDateStr(x.date) === today));
     const btn = $("checkInButton");
     if (btn) {
       btn.disabled = already;
@@ -509,18 +603,18 @@
 })();
 </script>
 <script src="pf-common.js"></script>
-<script src="member-tabs.js?v=13"></script>
+<script src="member-tabs.js?v=15"></script>
 <script src="change-password.js?v=1"></script>
 <script src="member-pay.js?v=1"></script>
 <script src="portal-fx.js?v=2"></script>
-<style>@media (max-width:760px){body{padding-bottom:112px}}</style>
+<style>@media (max-width:760px){body{padding-bottom:112px}}body.member-home .pp-tabs{justify-content:space-between}</style>
 <nav class="pf-bottomnav" aria-label="Member sections">
   <button type="button" data-go-tab="overview"><i class="fa-solid fa-gauge-high" aria-hidden="true"></i><span>Overview</span></button>
   <button type="button" data-go-tab="schedule"><i class="fa-regular fa-calendar" aria-hidden="true"></i><span>Schedule</span></button>
+  <button type="button" data-go-tab="announcements"><i class="fa-solid fa-bullhorn" aria-hidden="true"></i><span>Notices</span></button>
   <button type="button" data-go-tab="diary"><i class="fa-solid fa-book-open" aria-hidden="true"></i><span>Diary</span></button>
   <button type="button" data-go-tab="health"><i class="fa-solid fa-heart-pulse" aria-hidden="true"></i><span>Health</span></button>
   <button type="button" data-go-tab="profile"><i class="fa-regular fa-id-card" aria-hidden="true"></i><span>Profile</span></button>
-  <button type="button" data-go-tab="settings"><i class="fa-solid fa-sliders" aria-hidden="true"></i><span>Settings</span></button>
 </nav>
 <script>
 (() => {

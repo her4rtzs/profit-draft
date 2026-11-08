@@ -5,6 +5,14 @@
    intentionally left out: the ProFit sidebar stays as it is.
    Dark mode: body.dark (ProFit's toggle). Accent: html[data-accent]. */
 
+<<<<<<< HEAD
+=======
+/* ProFit fix: no rail-width tokens live here. In ProFit `--sidebar` is a
+   colour (styles.css, spotify.css) and the rail sits inside .pf-staff, so a
+   length in that slot silently kills `.sidebar{background:var(--sidebar)}`.
+   The rail keeps its own --sidebar-w and --sb-* tokens. */
+
+>>>>>>> e8c4a8026a13ebd74c25e3483c3535791f6eb13d
 .pf-staff {--font:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
   --script:'Caveat','Segoe Script','Bradley Hand',cursive;
   --bg:#f7f2e7; --bg-glow:rgba(240,199,94,.28);
@@ -20,7 +28,11 @@
   --purple:#8b5cf6; --purple-soft:rgba(139,92,246,.13);
   --shadow:0 1px 3px rgba(60,40,0,.06);
   --shadow-lg:0 20px 50px rgba(20,15,0,.22);
+<<<<<<< HEAD
   --r:14px; --r-sm:12px; --sidebar:252px; --sidebar-mini:78px;
+=======
+  --r:14px; --r-sm:12px;
+>>>>>>> e8c4a8026a13ebd74c25e3483c3535791f6eb13d
   color-scheme:light;}
 .pf-staff.dark {--bg:#0a0e16; --bg-glow:rgba(227,174,43,.07);
   --card:#121926; --card-2:#0f1521; --card-alpha:#121926;
@@ -432,4 +444,124 @@ html[data-accent="indigo"] .pf-staff.dark {--gold-ink:#b9b0fa}
 
 
 /* ProFit fix: the active period chip is solid gold, so its label uses the dark ink from the prototype. */
+<<<<<<< HEAD
 .pf-staff .chip.active {color:#1b1300!important;background:var(--gold)!important;border-color:transparent!important}
+=======
+.pf-staff .chip.active {color:#1b1300!important;background:var(--gold)!important;border-color:transparent!important}
+
+/* ProFit fix: the period chips sit in .panel-header, so the prototype chip size
+   (18px side padding, 36px tall) wrapped that header onto a second line and cut
+   63px off the revenue/attendance chart. Restore the compact size ProFit already
+   gives `.chip-row .chip`; the gold active colour above still applies. */
+.pf-staff .chip-row .chip {height:30px;padding:0 13px;border:1px solid var(--border);border-radius:999px;font-size:11.5px;font-weight:600;white-space:nowrap}
+
+/* ProFit fix: the staff header scrolls away with the page instead of sticking.
+   `!important` + the .pf-staff class beats the `html body .topbar` sticky rule in
+   layout-fixes.css, and the scroll-condense state sidebar.js toggles past 8px is
+   reset so the static header does not shrink/shadow while it leaves the viewport. */
+html body.pf-staff .topbar {position:static!important}
+.pf-staff .topbar.is-scrolled {padding:10px 0 12px!important;background:none!important;backdrop-filter:none!important;border-bottom-color:transparent!important;box-shadow:none!important}
+@media (min-width:769px) {.pf-staff .topbar.is-scrolled {padding:14px 0 16px!important}}
+
+/* ProFit fix: no back/forward arrows in the staff header. Mobile already hides
+   them; this drops them at every width. The buttons still work if re-shown. */
+.pf-staff .topbar-nav {display:none}
+
+/* ProFit fix: above 768px the header had no `.topbar-actions` rule at all, so the
+   theme, bell and avatar stacked in a 42px column and the search squeezed in beside
+   them. Lay the header out like the mobile header (heading | icons, search below on
+   its own full-width row) at every desktop width. Everything needs `!important` and
+   the .pf-staff class to outrank the `html body .topbar*` rules in layout-fixes.css. */
+@media (min-width:769px) {
+  html body.pf-staff .topbar {display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:10px 16px!important}
+  html body.pf-staff .topbar-heading {grid-column:1;grid-row:1;min-width:0}
+  html body.pf-staff .topbar-right {display:contents!important}
+  html body.pf-staff .topbar-actions {grid-column:2;grid-row:1;display:flex;align-items:center;justify-content:flex-end;gap:10px}
+  html body.pf-staff .topbar .search {grid-column:1/-1;grid-row:2;width:100%!important;max-width:none!important;box-sizing:border-box}
+  /* Rounded-square tiles like the prototype's header; the avatar stays a circle. */
+  .pf-staff .topbar-actions .theme-toggle,
+  .pf-staff .topbar-actions .notification {width:42px;height:42px;border-radius:12px!important;display:grid;place-items:center}
+  .pf-staff .topbar-actions .notification-wrap {width:42px;height:42px;display:flex;align-items:center;justify-content:center}
+  .pf-staff .topbar-actions .topbar-avatar {width:42px;height:42px;flex:none}
+}
+
+/* ProFit fix: on phones two rows become columns but keep their row flex-basis,
+   so the basis turns into a fixed height. The card header reserved 220px of
+   blank space and every toolbar search grew into a 320px pill. Reset the basis
+   only while the parent is a column. */
+@media (max-width:768px) {
+  html body.pf-staff .panel-header > div:first-child {flex:0 0 auto!important}
+  .pf-staff .toolbar .search {flex:0 0 auto}
+}
+
+/* ProFit: on phones each list row becomes its own card, because the columns
+   never fit and sideways scrolling hides information. The header row is
+   hidden and layout.js copies each column name onto its cells as data-label,
+   so every value still says what it is. */
+@media (max-width:768px) {
+  html body.pf-staff .table-wrapper {
+    overflow:visible!important;
+    border:0!important;
+    background:transparent!important;
+    border-radius:0!important;
+    padding:0!important;
+    box-shadow:none!important;
+    margin-bottom:0!important;
+  }
+  html body.pf-staff .table-wrapper > table {display:block;width:100%!important;min-width:0!important}
+  html body.pf-staff .table-wrapper thead {display:none}
+  html body.pf-staff .table-wrapper tbody {display:grid;gap:10px}
+  html body.pf-staff .table-wrapper tbody tr {
+    display:grid;
+    /* Two columns: the member sits left and the next value shares its row, so a
+       four-field card reads in three lines instead of five. */
+    grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);
+    column-gap:14px;
+    row-gap:12px;
+    height:auto!important;
+    padding:14px 15px;
+    border:1px solid var(--border);
+    border-radius:16px;
+    background:var(--card);
+  }
+  html body.pf-staff .table-wrapper tbody td {display:block;height:auto!important;padding:0!important;border:0!important;min-width:0;text-align:left}
+  html body.pf-staff .table-wrapper tbody td[data-label]::before {
+    content:attr(data-label);
+    display:block;
+    margin-bottom:3px;
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--faint);
+  }
+  /* The member cell is the card title, so it keeps the wider left column even
+     when the table puts a reference or a time before it. */
+  html body.pf-staff .table-wrapper tbody tr:has(> td:nth-child(2) .member) > td:first-child {grid-column:2;grid-row:1}
+  html body.pf-staff .table-wrapper tbody tr:has(> td:nth-child(2) .member) > td:nth-child(2) {grid-column:1;grid-row:1}
+  /* The right column reads as one column: its value sits against the same edge
+     as the trailing button below it. */
+  html body.pf-staff .table-wrapper tbody td:nth-child(2):not(:has(.member)) {text-align:right!important}
+  /* The progress bar needs the whole card and goes last, under the status. */
+  html body.pf-staff .table-wrapper tbody td:has(.timeleft) {grid-column:1/-1;grid-row:3}
+  html body.pf-staff .table-wrapper tbody td:has(.timeleft) ~ td {grid-row:2}
+  /* The trailing action (Renew, edit buttons, amount) keeps the right column. */
+  html body.pf-staff .table-wrapper tbody td:last-child:not([colspan]) {grid-column:2;justify-self:end;text-align:right!important}
+  html body.pf-staff .table-wrapper tbody tr.pf-skel td::before {content:none}
+  /* Reports keeps a total row under the table; give it the same card. */
+  html body.pf-staff .table-wrapper tfoot {display:block;margin-top:10px}
+  html body.pf-staff .table-wrapper tfoot tr {
+    display:grid;
+    grid-template-columns:1fr auto;
+    align-items:center;
+    gap:10px;
+    padding:12px 15px;
+    border:1px solid var(--border);
+    border-radius:16px;
+    background:var(--card);
+  }
+  html body.pf-staff .table-wrapper tfoot td {display:block;padding:0!important;border:0!important;text-align:left}
+  html body.pf-staff .table-wrapper tfoot td[colspan] {grid-column:1}
+  html body.pf-staff .table-wrapper tfoot td.num {text-align:right}
+}
+>>>>>>> e8c4a8026a13ebd74c25e3483c3535791f6eb13d

@@ -722,6 +722,7 @@ Fix the UI for mobile devices across all staff pages, and merge changes with Ang
 ### Decision-log skill
 When reconciling responsive mobile drawer navigation with a desktop hover-expanding icon rail, keep desktop rules strictly gated within `@media (min-width: 769px)` and mobile drawer rules within `@media (max-width: 768px)`. This prevents hover state animations from colliding with off-canvas slide-out drawers and eliminates redundant click toggle states.
 
+<<<<<<< HEAD
 
 ## 2026-11-08 16:54 (Asia/Manila): Integrate Dedicated Trainer Frontend with Unified Staff Design System & Backend API
 ### What I asked for
@@ -734,3 +735,234 @@ Integrate the Trainer frontend into the existing ProFit system using the same si
 - Updated `web/login.html`, `web/auth.js`, and `web/trainer-portal.html` so Trainer logins route to `trainer/index.html` and subfolder auth redirects resolve `../login.html` cleanly without breaking existing Staff, Owner, or Member flows.
 ### Decision-log skill
 When unifying multiple role portals under a single design system in a static/WhiteNoise frontend, parameterize the shared shell (`data-portal="trainer"` + URL path detection) to switch navigation trees and bottom bars while reusing one CSS bundle and shell script, and always pair frontend navigation scoping with server-side DRF permission classes (`IsTrainerOrOwner`) so hidden sidebar links are never the sole access control.
+=======
+## 2026-10-20 16:15 (Asia/Manila): Welcome page hero image carousel
+### What I asked for
+Add an image carousel to the first part (hero section) of the ProFit welcome page without altering any existing design or color palette, and provide an interactive preview of how it looks.
+### What the agent decided and why
+- Implemented the carousel within the existing `.hero-media` showcase container on `web/welcome.html`, cycling through 5 high-resolution gym photos (`hero-side.jpg`, `gal-1.jpg`, `gal-2.jpg`, `gal-3.jpg`, `gal-4.jpg`).
+- Preserved the hero's darkened background (`rgba(9,9,7,.82)`) and floating feature badges (`.chip.a` for Alfonso location and `.chip.b` for online payment) so all existing branding and layout remain untouched.
+- Used a crossfade transition (`transition: opacity .7s`) combined with a subtle zoom reset, ensuring floating badges remain visually stable without layout shifting.
+- Kept the color palette 100% faithful to the ProFit design system tokens (`--gold: #e8b93a`, `--line: #232636`, `--card: #111320`, `--tx: #f6efdc`, `--mu: #9a9788`).
+- Built controls as a compact floating glass pill in the bottom-right corner with prev/next buttons and active pill dot indicators, pausing on hover and supporting touch swiping on mobile.
+- Created an interactive preview artifact (`welcome-carousel-preview.html`) embedded directly in chat via generative UI so the user can test all carousel interactions live.
+### Decision-log skill
+When introducing carousels inside established hero layouts containing floating badge overlays, place slide transitions inside a dedicated absolute track behind the badges. Prefer crossfades over sliding tracks to avoid horizontal overflow, badge clipping, or jittering coordinates during animation.
+
+## 2026-10-20 16:46 (Asia/Manila): Scroll animations & "The Difference" comparison section
+### What I asked for
+Add scroll animations to the landing page and create a difference section, providing an interactive output preview so the user can review and request changes.
+### What the agent decided and why
+- Implemented lightweight, hardware-accelerated scroll reveal entrance animations (`.reveal` and `.reveal-stagger`) using `IntersectionObserver` with a fallback for older browsers and support for `prefers-reduced-motion`.
+- Added "The Difference" section (`#difference`) comparing Traditional Gyms vs. ProFit Functional Fitness Gym, positioned between "Why choose us" and "Programs" to address common customer hesitations and highlight ProFit's coaching, community, and digital member experience.
+- Preserved the ProFit brand tokens (`--lime: #e8b93a`, `--card: #111320`, `--line: #232636`, `--tx: #f6efdc`) and added responsive 2-column to 1-column layouts for mobile viewports (`<= 860px`).
+- Updated the primary navigation bar to include a direct anchor jump link to `#difference`.
+- Created an interactive preview artifact (`welcome-scroll-diff-preview.html`) embedded directly in chat with jump controls and a replay button so the user can review the scroll animations and content.
+### Decision-log skill
+When introducing scroll-driven entrance animations to static web pages, use staggered CSS transition delays (`reveal-stagger`) paired with a single decoupled `IntersectionObserver` with an offset `rootMargin`. Always provide an immediate fallback where elements remain visible if observers or JavaScript are disabled, and respect `prefers-reduced-motion`.
+
+## 2026-10-20 16:52 (Asia/Manila): Tailored aesthetic scroll animations for all landing sections
+### What I asked for
+Add different, more aesthetic scroll animations tailored specifically for each section of the welcome landing page.
+### What the agent decided and why
+- Replaced uniform fade-up reveals with 10 distinct, bespoke entrance animations matched to each component's function:
+  1. Section headers (`.anim-header`): Expanding accent line (`eyebrow::before`) and blur-to-sharp text ascent.
+  2. Ticker strip (`.anim-ticker`): Lateral horizontal slide with spring-rotating gold icons.
+  3. Feature boxes (`.anim-features`): 3D perspective tilt (`rotateX(12deg)`) with glowing gold icon auras.
+  4. The Difference cards (`.anim-diff-trad`, `.anim-diff-profit`): Opposing magnetic slide-in where Traditional sinks from left and ProFit surges from right with gold drop shadow and spring-bouncing checkmarks.
+  5. Program cards (`.anim-programs`): Depth-lift with internal parallax photo settling (`scale(1.16) -> scale(1)`).
+  6. Inside ProFit gallery (`.anim-gallery`): Aperture mosaic zoom with staggered lens expansion.
+  7. Membership plans (`.anim-plans`): Podium spotlight entrance elevating the center "Most Popular" quarterly plan with active gold aura.
+  8. Our Story (`.anim-story-pic`, `.anim-story-text`): Editorial split reveal sliding the photo and narrative from opposite sides.
+  9. CTA band (`.anim-cta`): Luminous scale-expand with gold button halo.
+  10. Visit & contact (`.anim-visit`): Spring-loaded card cascade with bouncing map/phone/social markers.
+- Leveraged hardware-accelerated transforms (`transform`, `opacity`, `filter: blur()`) with cubic-bezier curves (`cubic-bezier(.16, 1, .3, 1)` and spring `cubic-bezier(.34, 1.56, 0.64, 1)`), eliminating layout reflows.
+- Updated the interactive preview artifact with quick-jump filters and live replay controls.
+### Decision-log skill
+To create a high-aesthetic motion design experience on landing pages, vary the motion vocabulary per section (e.g. 3D tilts for feature grids, opposing lateral slides for comparisons, podium elevations for pricing tiers) rather than repeating a single uniform fade-up. Combine subtle blur filters with spring easing to give a premium, tactile feel while preserving performance.
+
+
+
+
+## 2026-10-29 17:09 (Asia/Manila): Fix weekly goal, streaks, calendar, and recent attendance bugs
+
+### What I asked for
+Fix the weekly goal, streaks, the calendar, and recent attendance — they were showing members as having already completed their weekly goal even after only 1 check-in. Also fix the UI so the weekly goal card is visible on the overview tab without requiring a check-in first.
+
+### What the agent decided and why
+- **Removed hardcoded demo base check-ins** (`demoData()` in `member-home.html`): The original `demoData()` always merged 6 hardcoded check-ins (today, -1, -2, -4, -6, -9 days ago) so the weekly goal was always pre-filled to 4+/4 from the first page load. Removed that array entirely; demo mode now starts with zero check-ins and only records explicit "Check in today" button presses.
+- **Fixed weekly goal: rolling 7-day window → current ISO week (Mon–Sun)**: The old `weekStart = today - 6 days` is a rolling window, meaning a member who checked in Monday last week and Monday this week would count both. Replaced with `weekMondayKey()` that finds the most recent Monday, and counts only distinct days in `[monday, today]`. 1 check-in = 1/4, regardless of what happened before Monday.
+- **Fixed streak and date comparisons: UTC shift bug**: `new Date("2026-10-29").toISOString().slice(0,10)` returns `"2026-10-28"` in UTC+8 at midnight because the date-only string parses as UTC midnight. Added `localDateStr()` helper that detects `YYYY-MM-DD` strings and uses them directly, and extracts local date parts from full ISO timestamps via `new Date().getFullYear()/.getMonth()/.getDate()` (local, not UTC). All streak, weekly, todayKey, and checkinDays comparisons now use this helper.
+- **Fixed calendar dot markers**: `checkinDays()` in `member-tabs.js` was calling `.slice(0,10)` on ISO timestamps — fine for the first 10 chars, but those 10 chars are UTC date. Replaced with the same local-date-extraction logic matching `localDateStr()`.
+- **Fixed recent attendance display**: The `date()` formatter now parses `YYYY-MM-DD` strings as local midnight using `new Date(y, mo-1, d)` instead of `new Date(value)` which UTC-shifts.
+- **Server-side streak and weeklyVisits in API**: `GET /api/member/me/` now pre-computes streak and `weeklyVisits` server-side (Django `timezone.localdate()` is already Manila-local) and sends them in the response. The client prefers these authoritative values and falls back to the client-side calculation only for demo/offline mode. This also fixes the case where a member has > 30 check-ins but the API was only sending 30, making the client-side streak calculation incorrect for active long-term members.
+- **Bumped `member-tabs.js` cache version** to `?v=14` to ensure the fixed `checkinDays()` logic is not served from the browser cache.
+
+### Decision-log skill
+Date-only strings like `"2026-10-29"` always parse as UTC midnight in `new Date()`. In UTC+8, this is 8 hours before local midnight, so the local date is `"2026-10-28"` — one day behind. Never pass a bare `YYYY-MM-DD` string through `new Date().toISOString()` for comparison. Instead: (a) use the string directly for `>=` / `===` comparisons since ISO date strings sort lexicographically, or (b) construct a local Date with `new Date(y, m-1, d)`. Also: "this week" means the current Mon–Sun ISO week, not a rolling 7-day window; pre-compute stats on the server where the timezone is authoritative.
+
+## 2026-10-29 17:00 (Asia/Manila): Add skeleton loading to the staff portal lists
+### Decision-log skill
+Skeletons belong in the real containers in the HTML, not injected by script: the first render then replaces them in place and the layout never jumps. Give the handover a short minimum and a hard fallback, or a fast failure shows the placeholder as permanent. When you move a style to a shared file, delete the old copy in the same commit, or the next theme fix silently misses one page.
+
+## 2026-10-29 18:21 (Asia/Manila): Apply the staff front end visual design to the staff pages
+### What I asked for
+Combine the visual design of the staff front end prototype (staff/staff/assets/css/staff.css) with the ProFit staff pages in web/. Keep the sidebar, features, modules, logic, routes, and backend unchanged. Only the 9 staff pages are restyled.
+### What the agent decided and why
+- Put the prototype sheet in a new file, `web/staff-design.css`, with every selector scoped under `.pf-staff`, and added `class="pf-staff"`, the two font links and the stylesheet link to the 9 staff pages only. Member, trainer and login pages are untouched.
+- Left out the prototype's sidebar, scrim, mobile bottom nav and app-shell rules: the ProFit rail is owned by `sidebar-pro.css` and must stay as it is.
+- Dark mode follows ProFit's `body.dark`, accents follow `html[data-accent]`, so the page keeps using the existing theme controls instead of a second theme system.
+- Dropped the prototype's `[hidden]` rule (it hid ProFit's notification dot and dropdowns) and its `.bar-track` / `.bar-fill` rules (ProFit's revenue chart uses those exact class names).
+- Removed the prototype's `--sidebar:252px` token: in ProFit `--sidebar` is a colour, so a length there silently killed `.sidebar{background:var(--sidebar)}`. The rail keeps its own `--sidebar-w` / `--sb-*` tokens.
+- Restored ProFit's compact `.chip-row .chip` size inside the chart header. The bigger prototype chip wrapped the "Monthly revenue" and "Daily attendance" headers onto two lines and took 63px off the chart area.
+- Kept the gold active chip with dark ink; measured contrast went from 1.0:1 to 9.8:1 in dark mode and 1.66:1 to 5.82:1 in light mode.
+- Verified against the original build served from `HEAD` at 9 pages x 2 widths x 2 themes: sidebar rect/background/colour identical, no button, link, field, row or icon lost, no new console errors, no new horizontal overflow.
+### Decision-log skill
+Before pasting a prototype stylesheet into a live app, scope it under a page class and grep every class name it defines against the app's own CSS and JS: names like `--sidebar`, `[hidden]`, `.bar-track` and `.chip` carry app-specific meaning. Then diff computed geometry of the affected containers (not just colours) against the original build, because a slightly wider control is enough to wrap a header and resize a chart.
+## 2026-10-29 18:52 (Asia/Manila): Let the staff header scroll away instead of sticking
+### What I asked for
+Make the page header on the staff pages not sticky while scrolling.
+### What the agent decided and why
+- Added one scoped rule to `web/staff-design.css`: `html body.pf-staff .topbar { position: static !important }`. `layout-fixes.css` pins `html body .topbar` to `position: sticky !important`; the extra `.pf-staff` class outranks it, so the shared sheet and the sidebar files stay untouched.
+- Also neutralised `.topbar.is-scrolled`, the "condense on scroll" state `sidebar.js` toggles past 8px: on a static header it would shrink the padding by 10px and add a border and shadow as the header leaves the viewport. The reset keeps the same padding as the resting header (10/12 mobile, 14/16 above 768px) and drops the blur, border and shadow.
+- Verified 9 pages x 2 widths (1366, 390) x 2 themes: `position` is `static` everywhere, the header leaves the viewport as soon as the page scrolls, padding/height/shadow do not change at the 8px toggle, no horizontal overflow, no new console errors. Topbar and sidebar rects are identical to the original build; only the topbar `position` changed.
+- Note: short pages (`payments.html` scrolls 118px at 1366) cannot scroll the 214px header fully out of view. That is the page length, not the header.
+### Decision-log skill
+Stacked `!important` stylesheets are resolved by specificity, so the cheapest override is one extra class on a selector you already own, not `!important` on a new rule in a shared file. When a scroll listener adds a class that changes geometry, disabling the property it was built for (`position`) leaves the class still firing, so reset that class too or the header jumps 10px while scrolling.
+
+## 2026-10-29 19:05 (Asia/Manila): Fix the header settings, notification and profile icons on desktop
+### What I asked for
+The gear, bell and profile icons in the staff header should sit in one row on the right, like the reference: heading on the left, icons on the right, search across the full width underneath. It should hold at desktop widths too, not only on mobile.
+### What the agent decided and why
+- Root cause: `layout-fixes.css` only styles `.topbar-actions` inside `@media (max-width: 768px)`. Above that the div fell back to `display:block`, so the three 42px controls stacked into a 42x118px column and the 280px search sat beside them.
+- Added one `@media (min-width:769px)` block at the end of `web/staff-design.css`: the header becomes a two-column grid, `.topbar-right` is `display:contents` so the search can be pulled out of the icons group into row 2 spanning both columns, and `.topbar-actions` is a flex row on row 1. Needed `!important` plus the `.pf-staff` class to outrank the `html body .topbar*` rules.
+- Matched the reference's shape: the gear and bell are 42px rounded squares (radius 12px, `!important` because `spotify.css` pins 50%) and the avatar is a 42px circle, all at a 10px gap. The bell's unread marker was already a plain red dot.
+- Mobile stays on the existing shared rules: the new block starts at 769px, so ≤768 renders byte-identical (36px tiles, 10px radius).
+- Verified 9 pages x 3 widths (834, 1366, 390) x 2 themes: 54/54 renders have the icons in a horizontal row with the avatar last, the search exactly as wide and as left-aligned as the header, no horizontal overflow, no new console errors. Also swept 769, 780, 820, 900, 1024, 1280, 1600 and 1920px. The notification panel opens fully inside the viewport at 834, 1366 and 390.
+- Not touched: the squeezed "Color theme" label on Settings at 834px. It reproduces with `staff-design.css` disabled, so it is a pre-existing `.pp-setting-copy` issue, not part of this change.
+### Decision-log skill
+When icons "stack" only above one breakpoint, look for the rule that exists solely in the smaller media query: shared sheets often style a desktop bar in the mobile block only, and the default `display:block` then wins. To move one child out of a flex group without touching markup, `display:contents` on the group is enough.
+
+## 2026-10-29 19:22 (Asia/Manila): Remove the back and forward arrows from the staff header
+### What I asked for
+Remove the back and forward buttons from the staff page header.
+### What the agent decided and why
+- One rule in `web/staff-design.css`: `.pf-staff .topbar-nav {display:none}`. The arrows are injected by `web/layout.js`, which is shared with other areas, so hiding them in the staff sheet avoids editing shared JS or markup.
+- Scoped to `.pf-staff`, so the member/trainer portals keep their own header. Mobile already hid the arrows; this makes every width match.
+- The title now starts at the same left edge as the search and the cards, since the heading's first child is gone; no gap left behind.
+- Verified 9 pages x 3 widths (834, 1366, 390), 27/27 renders: arrows hidden and 0px wide, title left edge equal to the header's left edge, no horizontal overflow.
+### Decision-log skill
+Hiding a control that a shared script builds is a CSS one-liner and keeps the history wiring intact; deleting it from the script would touch every page that loads that layout. Scope the hide to the page class so the other portals keep their header.
+
+## 2026-10-30 00:14 (Asia/Manila): fix phone-width card and search layout
+### What I asked for
+Fix the blank space inside the Record a payment card on phones, and the bloated search bar on the Subscription monitor, and every card with the same problem.
+### What the agent decided and why
+- Root cause is one pattern, not two bugs: .panel-header > div:first-child (layout-fixes.css) and .pf-staff .search (staff-design.css) keep a row flex-basis when their parent turns into a column at phone width, so the basis becomes a fixed height (220px blank header, 320px search).
+- Reset the basis only inside @media (max-width:768px) in staff-design.css, scoped to .pf-staff, so desktop rows are untouched.
+- Kept the fix in the scoped staff stylesheet instead of editing shared layout-fixes.css.
+### Decision-log skill
+When a flex row becomes a column on mobile, always reset flex-basis to auto; a px basis is a width in a row and a height in a column.
+## 2026-10-30 00:47 (Asia/Manila): move member settings into the profile menu
+### What I asked for
+Remove Settings from the member navigation bar and make it reachable only from the profile icon/button.
+### What the agent decided and why
+- Deleted the Settings tab from .pp-tabs and the Settings button from the mobile bottom nav in member-home.html, so both nav bars now end at My profile.
+- Kept the settings panel and the profile-menu Settings item; goTab("settings") still works without a tab because it shows the panel directly.
+- Kept one tab in the keyboard order while Settings is open, so the tablist stays reachable after opening it from the menu.
+- Fixed the announcement bell chip, which called goTab("settings") instead of goTab("announcements") and scrolled the settings card.
+- Bumped member-tabs.js to v14 so browsers pick up the JS change.
+### Decision-log skill
+A hidden nav entry only needs its nav buttons removed if the panel is driven by a name-based show function, not by the button element itself.
+## 2026-10-30 00:59 (Asia/Manila): member nav spacing and mobile announcements
+### What I asked for
+Fix the member navigation spacing and make the announcement section reachable in mobile view.
+### What the agent decided and why
+- Added a Notices item to the phone bottom nav; the top .pp-tabs is hidden below 760px, so announcements had no nav entry there.
+- Used the short label Notices because Announcements clips in the six-column bar at 360px.
+- The bottom nav grid already had six columns, so the new item also fills the empty column left by the removed Settings item; no CSS change was needed there.
+- Set justify-content: space-between on the member .pp-tabs so the six tabs fill the bar instead of bunching left with empty space on the right.
+### Decision-log skill
+A grid sized for the old item count leaves a visible hole after an item is removed; check the column count when the nav changes.
+## 2026-10-30 01:29 (Asia/Manila): member lists become cards on phones
+### What I asked for
+Make every member list show as cards on mobile instead of a table that has to be scrolled sideways.
+### What the agent decided and why
+- Did it in one place: a mobile block in staff-design.css turns every staff .table-wrapper row into a card, so all five list pages changed without touching their row renderers.
+- layout.js copies each column header onto its cells as data-label, because a card cannot show the header row; a MutationObserver does it again after search/filter re-renders so the labels never go stale.
+- Had to override three existing fixed heights (tbody tr 56px from pf-modern, td 60px from spotify, table min-width 580px from layout-fixes) or the cells overflowed their card.
+- Two columns per card: the member keeps the wider left cell, the next value sits beside it, and the trailing action (Renew, edit buttons, amount) is pushed right. A one-column card wasted half the width and made five lines where three fit.
+- The right column is right-aligned and the time-left bar was moved to the last row, so the expiry date lines up under the Renew button. Column-2 cells need text-align:right!important because layout-fixes.css forces every td left with !important.
+- Where the table puts a reference or a time before the member, the member cell is pinned to column 1 and that cell to column 2, so the card title always reads first even though the source order differs.
+- members.html already had a Table/Cards toggle, so it now opens in Cards under 768px instead of restyling its table twice. A matchMedia change listener also switches the view if the window is resized across that width, which the Review pane does after load.
+- Bumped layout.js to v18 and members.js to v16 so the change is not served from cache.
+### Decision-log skill
+When a table's cells carry no column identity, copy the thead text onto the cells once with a small script instead of editing every row template.
+## 2026-10-30 13:12 (Asia/Manila): program cards scroll sideways
+### What I asked for
+Make the program cards scroll horizontally smoothly, on desktop and mobile.
+### What the agent decided and why
+- The three program cards in welcome.html were a 3-column grid that stacked to one column under 980px. They are now one horizontal flex row with overflow-x:auto, so the same markup works at every width.
+- Card width is min(78vw, 480px): one card plus a peek of the next on a phone, two-and-a-bit on a desktop, so there is always something to scroll to.
+- scroll-snap-type:x mandatory plus scroll-snap-align:start makes each swipe land on a card edge; scroll-behavior:smooth keeps programmatic and wheel movement smooth, and the row still uses native momentum on touch.
+- A mouse wheel only scrolls sideways while the row has somewhere to go (target clamped to the row's max). At either end the handler returns without preventDefault, so the page keeps scrolling instead of trapping the user.
+### Decision-log skill
+For a horizontal card rail, convert the wheel only when the clamped target actually changes; otherwise the row steals the page scroll forever at its end.
+## 2026-10-30 13:40 (Asia/Manila): program cards become a sticky stack
+### What I asked for
+Show one program card at a time, stacked vertically, with each next card scrolling up over the previous one as the page scrolls. Remove the horizontal row.
+### What the agent decided and why
+- Only welcome.html changed: the horizontal flex/scroll rules and the wheel handler were deleted, and each .prog card became position:sticky at top:88px (68px sticky header + 20px).
+- z-index 1/2/3 by nth-child so the newer card paints over the older one; .box already has a solid --card background, so nothing shows through.
+- Capped the stack at 640px and centred it, because a full-width card is ~900px tall with the 16:10 image and would not fit under the header on a laptop.
+- Checked the sticky traps: body{overflow-x:hidden} is the only ancestor overflow and it propagates to the viewport, so sticky still pins (measured tops at 88px at 1366 and 390).
+### Decision-log skill
+Before using position:sticky, find every ancestor overflow and transform; then measure the pinned offset in the browser instead of trusting the CSS.
+## 2026-10-30 13:56 (Asia/Manila): programs section pins and slides sideways
+### What I asked for
+Turn the Programs section into a pinned horizontal-scroll section: the section stays put while vertical page scroll moves the cards horizontally, smoothly, on desktop and mobile. Remove the horizontal scroll row and the sticky-card stack.
+### What the agent decided and why
+- Kept it in welcome.html only: #programs is 300vh (3 cards x 100vh), .prog-pin is the 100vh sticky frame, .grid3 is the flex track, and one vanilla script turns scroll progress into translate3d.
+- Progress comes from section.getBoundingClientRect().top divided by (section height - viewport height), clamped 0 to 1, inside a rAF-throttled passive scroll listener; resize re-measures travel and span.
+- Measured travel from the last card's offsetLeft + offsetWidth, not scrollWidth, because the reveal animation scales the cards to .95 and scrollWidth follows that scale (it measured 427px where the real travel is 440px). Added position:relative to the track so offsetLeft is reliably track-relative.
+- The reveal observer watched .anim-programs, which is the track itself, and the track is what gets transformed; on a reload mid-section the track started off-screen and the cards stayed at opacity 0. A second observer on #programs adds is-visible to the track instead.
+- prefers-reduced-motion drops the pin in CSS (auto height, static frame, overflow-x:auto + scroll snap) and the script clears the transform.
+- body{overflow-x:hidden} was left as-is: it propagates to the viewport, so sticky still pins (measured .prog-pin top at 0 through the whole span at 1366x768 and 390x844).
+### Decision-log skill
+When a scroll-driven transform moves the element an IntersectionObserver is watching, observe its stationary parent instead, or the reveal never fires after a scroll restore.
+
+## 2026-11-08 12:38 (Asia/Manila): Add Daily plan at PHP 80
+### What I asked for
+Add a new subscription plan named "Daily" priced at ₱80.
+### What the agent decided and why
+- Added `"daily": 8_000` to `PLAN_PRICE_CENTAVOS` in `apps/finance/services.py` — the single source of truth for plan prices (centavos). ₱80 = 8000 centavos.
+- Added `"daily": 1` to `PLAN_DAYS` in `apps/membership/services.py` — the single source of truth for plan durations. 1 day makes the membership expire the following day, consistent with how the other plans work.
+- Added `daily` entry to `PLANS` in `web/data.js` so the staff UI (members list, payments, reports mock data) recognises the plan label and price.
+- Added the Daily plan to `web/member-pay.js` (the "Explore plans" modal shown to logged-in members) with label "Daily", price "₱80", duration "1 day".
+- Added a Daily plan card to `web/join.html` (the public sign-up / join page) as the first option, and updated the grid from 3 to 4 columns (2×2 on mobile).
+### Decision-log skill
+Plan definitions live in exactly two backend constants (`PLAN_PRICE_CENTAVOS` and `PLAN_DAYS`) and two frontend constants (`web/data.js` PLANS and `web/member-pay.js` PLANS). Adding a plan requires touching all four plus any static HTML plan pickers — grep for the existing plan keys to find them all in one pass.
+
+## 2026-11-08 12:57 (Asia/Manila): Connect member check-in to backend API and fix streak persistence
+### What I asked for
+Connect member check-in on member-home.html to the backend so visits and streaks persist across reloads and navigation.
+### What the agent decided and why
+- Added `MemberCheckInView` (`POST /api/member/check-in/`) in `api/member.py` and registered the route in `api/urls.py`. Calls `check_in_member(profile, recorded_by=request.user)` inside `apps/membership/services.py`, enforcing that only active memberships can check in and ensuring same-day idempotency.
+- Fixed streak calculation in both `api/member.py` (`MemberMeView.get()`) and `web/member-home.html` (`calcStreak`): if today is not yet checked in, check from yesterday so active streaks remain intact throughout the day until midnight instead of prematurely breaking on day 0.
+- Updated `$("checkInButton")` in `web/member-home.html` to send `POST /api/member/check-in/` and await `load()`. If the backend is unreachable or in demo mode, it smoothly falls back to local storage check-ins.
+- Added comprehensive unit tests in `apps/membership/tests/test_api.py` covering successful check-in, same-day idempotency, inactive membership rejection, and verification that check-ins persist in `GET /api/member/me/`.
+### Decision-log skill
+Self-service member check-in should route through the shared `check_in_member` service rather than updating client state in isolation. Also, streak calculation loops must consider that on a new calendar day before check-in, a streak is still active if yesterday had a check-in (start check from `yesterday` if `today` is absent).
+
+## 2026-11-08 13:10 (Asia/Manila): Prevent demo check-in leakage across member accounts
+### What I asked for
+Fix the bug where logging in as a different member who hasn't checked in yet already shows as "Checked in today".
+### What the agent decided and why
+- Root cause: `syncMemberChrome()` in `web/member-home.html` was evaluating `already` by checking `readDemoCheckins()` from global browser `localStorage` (`profit-member-demo-checkins`) before checking `window.__pfAttendanceDays`. When Account A checked in, it wrote to that un-scoped key, so Account B on the same browser inherited Account A's check-in state.
+- Scoped `syncMemberChrome()`: for an authenticated live member (`Boolean(data?.user?.memberId)`), check-in status is strictly evaluated from `window.__pfAttendanceDays` (the actual attendance list returned from the server for that specific member). Demo local storage is ignored.
+- Only write to demo local storage when `serverSuccess` is false (demo/offline mode); live check-ins never write to the global demo key.
+- Automatically clear `profit-member-demo-checkins` in `render()` when a real member session loads and in `auth.js` on logout.
+- In `web/member-tabs.js`, updated `checkinDays()` so calendar dots only pull from demo local storage if `!window.__pfMemberMe` (offline/demo mode).
+### Decision-log skill
+Never use un-scoped global `localStorage` keys for user-specific state when multiple user accounts can log into the same browser. For authenticated sessions, UI state must derive strictly from the authenticated user's server payload.
+>>>>>>> e8c4a8026a13ebd74c25e3483c3535791f6eb13d

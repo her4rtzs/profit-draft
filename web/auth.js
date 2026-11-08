@@ -77,6 +77,7 @@
         return;
       }
       document.documentElement.classList.remove("auth-checking");
+<<<<<<< HEAD
       window.ProFitAuth = {
         user,
         role,
@@ -86,6 +87,9 @@
           location.replace(loginTarget);
         }
       };
+=======
+      window.ProFitAuth = { user, role, async logout() { try{localStorage.removeItem("pp-accent");localStorage.removeItem("profit-member-demo-checkins");}catch(e){} await window.ProFitAPI.post("/auth/logout", {}); location.replace("login.html"); } };
+>>>>>>> e8c4a8026a13ebd74c25e3483c3535791f6eb13d
       document.querySelectorAll("[data-user-name]").forEach(el => el.textContent = user.name || user.email || "Account");
       bindLogoutOnce();
     } catch (error) {

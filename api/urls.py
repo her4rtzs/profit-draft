@@ -5,7 +5,7 @@ from rest_framework.routers import DefaultRouter
 
 from . import auth
 from .join import JoinCheckoutView, JoinConfirmView
-from .member import MemberCheckoutView, MemberMeView
+from .member import MemberCheckInView, MemberCheckoutView, MemberMeView
 from rest_framework.routers import SimpleRouter
 
 from .trainers import (
@@ -63,6 +63,7 @@ urlpatterns = [
     path("join/checkout/", JoinCheckoutView.as_view(), name="join-checkout"),
     path("join/confirm/", JoinConfirmView.as_view(), name="join-confirm"),
     path("member/me/", MemberMeView.as_view(), name="member-me"),
+    path("member/check-in/", MemberCheckInView.as_view(), name="member-checkin"),
     path("member/checkout/", MemberCheckoutView.as_view(), name="member-checkout"),
     path("staff/attendance/", StaffAttendanceView.as_view(), name="staff-attendance"),
     path("staff/attendance/check-in/", StaffCheckInView.as_view(), name="staff-checkin"),

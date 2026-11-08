@@ -597,3 +597,24 @@ html body .member-loading { display: block; height: 14px; width: 55%; margin: 12
   background: linear-gradient(90deg, rgba(255,255,255,.05), rgba(255,255,255,.13), rgba(255,255,255,.05)); background-size: 200% 100%;
   animation: pfShimmer 1.2s linear infinite; }
 @media (prefers-reduced-motion: reduce) { html body .member-loading { animation: none; } }
+
+/* Skeleton placeholders for lists and tables. A bar is `.pf-sk` (or any span
+   inside a `.pf-skel` row), and `.pf-skel-block` is a stand-in card. They sit in
+   the real containers in the HTML and the first render replaces them, so the
+   layout never jumps: nothing is reserved beyond the bar's own height. */
+.pf-sk, .pf-skel td span { display: block; height: 14px; border-radius: 8px;
+  background: linear-gradient(90deg, color-mix(in srgb, currentColor 6%, transparent), color-mix(in srgb, currentColor 16%, transparent), color-mix(in srgb, currentColor 6%, transparent));
+  background-size: 200% 100%; animation: pfShimmer 1.2s linear infinite; }
+.pf-skel td { padding: 18px 16px; }
+.pf-skel td:nth-child(1) span { width: 80px; }
+.pf-skel td:nth-child(2) span { width: 70%; }
+.pf-skel td:nth-child(3) span { width: 110px; }
+.pf-skel td:nth-child(4) span { width: 90px; }
+.pf-skel td:nth-child(5) span { width: 28px; margin-left: auto; }
+.pf-skel-block { display: grid; gap: 12px; padding: 18px; margin-bottom: 14px; border-radius: 16px;
+  border: 1px solid color-mix(in srgb, currentColor 12%, transparent); }
+.pf-skel-block:last-child { margin-bottom: 0; }
+.pf-skel-block .pf-sk:first-child { width: 42%; height: 16px; }
+.pf-skel-block .pf-sk:nth-child(2) { width: 92%; }
+.pf-skel-block .pf-sk:nth-child(3) { width: 60%; }
+@media (prefers-reduced-motion: reduce) { .pf-sk, .pf-skel td span { animation: none; } }

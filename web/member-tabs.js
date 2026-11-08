@@ -64,6 +64,8 @@
         t.setAttribute("aria-selected", String(on));
         t.tabIndex = on ? 0 : -1;
       });
+      // Settings has no tab; keep one tab in the keyboard order for the tablist.
+      if (!names.includes(name)) tabs[0].tabIndex = 0;
       document.querySelectorAll("[data-panel]").forEach(p => { p.hidden = p.dataset.panel !== name; });
       if (updateHash) history.replaceState(null, "", "#" + name);
     };
@@ -982,8 +984,27 @@
   const plansOn = dateISO => (state.plans || []).filter(p => p.date === dateISO).sort((a, b) => a.time.localeCompare(b.time));
   function checkinDays() {
     const set = new Set(state.diary.map(x => x.date));
+    // window.__pfAttendanceDays is already stored as local YYYY-MM-DD strings
+    // (fixed in member-home.html render())
     (window.__pfAttendanceDays || []).forEach(d => set.add(d));
-    try { JSON.parse(localStorage.getItem("profit-member-demo-checkins") || "[]").forEach(x => set.add(String(x.date).slice(0, 10))); } catch { /* ignore */ }
+    // Demo checkins are only merged when running in offline/demo mode without a real member session
+    if (!window.__pfMemberMe) {
+      try {
+        JSON.parse(localStorage.getItem("profit-member-demo-checkins") || "[]").forEach(x => {
+          const raw = String(x.date || "");
+          if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+            set.add(raw); // already a local date string, use as-is
+          } else if (raw.length > 10) {
+            // Full ISO timestamp — parse and extract local date parts
+            const d = new Date(raw);
+            if (!isNaN(d.getTime())) {
+              const pad = n => String(n).padStart(2, "0");
+              set.add(`${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`);
+            }
+          }
+        });
+      } catch { /* ignore */ }
+    }
     return set;
   }
   function monthCells(anchor) {
@@ -1339,9 +1360,7 @@
       chip.setAttribute("tabindex", "0");
       chip.setAttribute("aria-label", `${count} gym announcement${count === 1 ? "" : "s"}`);
       chip.addEventListener("click", () => {
-        goTab("settings");
-        const list = $("memberSettingsRoot");
-        list?.scrollIntoView({ behavior: "smooth", block: "start" });
+        goTab("announcements");
         const latest = window.ProFitAnnouncements.forAudience("Members")[0];
         if (latest) toast(latest.title);
       });

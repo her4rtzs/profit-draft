@@ -60,3 +60,50 @@ class AttendanceApiTests(TestCase):
         self.assertEqual(resp.status_code, 200)
         # Bob sees none of Alice's records.
         self.assertEqual(list(resp.data), [])
+
+
+class MemberCheckInApiTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = User.objects.create_user(username="member1", password="x")
+        self.profile = MemberProfile.objects.create(
+            user=self.user,
+            membership_status=MemberProfile.MembershipStatus.ACTIVE,
+        )
+
+    def test_member_checkin_creates_attendance(self):
+        self.client.force_authenticate(user=self.user)
+        resp = self.client.post("/api/member/check-in/")
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.data["status"], "ok")
+        today = timezone.localdate().isoformat()
+        self.assertEqual(resp.data["attendance"]["date"], today)
+        self.assertTrue(Attendance.objects.filter(member=self.profile).exists())
+
+    def test_member_checkin_idempotent_same_day(self):
+        self.client.force_authenticate(user=self.user)
+        resp1 = self.client.post("/api/member/check-in/")
+        self.assertEqual(resp1.status_code, 200)
+        resp2 = self.client.post("/api/member/check-in/")
+        self.assertEqual(resp2.status_code, 200)
+        self.assertEqual(Attendance.objects.filter(member=self.profile).count(), 1)
+
+    def test_member_checkin_inactive_rejected(self):
+        self.profile.membership_status = MemberProfile.MembershipStatus.PENDING
+        self.profile.save()
+        self.client.force_authenticate(user=self.user)
+        resp = self.client.post("/api/member/check-in/")
+        self.assertEqual(resp.status_code, 400)
+        self.assertIn("not active", resp.data["detail"])
+
+    def test_checkin_persists_in_member_me(self):
+        self.client.force_authenticate(user=self.user)
+        # Check in via member endpoint
+        resp_checkin = self.client.post("/api/member/check-in/")
+        self.assertEqual(resp_checkin.status_code, 200)
+        # Load member/me
+        resp_me = self.client.get("/api/member/me/")
+        self.assertEqual(resp_me.status_code, 200)
+        self.assertEqual(resp_me.data["streak"], 1)
+        self.assertEqual(resp_me.data["weeklyVisits"], 1)
+        self.assertEqual(len(resp_me.data["attendance"]), 1)
