@@ -1038,3 +1038,17 @@ Clarify whether `scheduled` and `attendance_rate` have a backend, explain where 
 - Fixed `TrainerAttendanceListView` in `api/trainers.py` to respect `filter=all` vs `filter=mine` so the `All Check-ins` and `My Members Only` tabs in `web/trainer/attendance.html` work as intended.
 ### Decision-log skill
 When computing expected visit attendance over wide temporal granularities (Weeks, Months, Years), ensure member profile validity bounds check both upper (`expiry_date`) and lower (`date_joined`) limits; otherwise, pre-join historical periods will accrue unintended expected sessions.
+
+
+## 2026-11-09 00:05 (Asia/Manila): Implement Dual Line Area Attendance Chart and Clean Light Mode
+### What I asked for
+Replace the attendance chart on the Trainer Coach Dashboard (`/trainer/`) with the dual line area chart matching the target design (emerald green Present line with area gradient fill, coral/red Absent line, circular markers, left dashed Y-axis ticks, spaced date ticks on X-axis, capsule tabs Days/Week/Month/Year, chevron step buttons `<` and `>`), and fix light mode across all containers, tiles, inputs, tracks, and tables so it is clean, crisp, comfortable to the eyes, and devoid of harsh contrast.
+### What the agent decided and why
+- Added first-class light mode tokens in `web/trainer/trainer.css` (`html:not([data-theme="dark"]) body[data-portal="trainer"]` and `html[data-theme="light"]`): modern `#F8FAFC` slate base, `#FFFFFF` cards with `#E2E8F0` borders, `#0F172A` headings, `#64748B` muted text, and soft pastel quick action tile gradients (`#FFFBEB` amber, `#ECFDF5` green, `#F5F3FF` purple, `#EFF6FF` blue) replacing the previous dark navy gradients in light mode.
+- Fixed donut and progress tracks in light mode using visible `#E2E8F0` slate borders so tracks remain crisp and visible on white backgrounds instead of disappearing.
+- Rewrote the attendance SVG renderer in `web/trainer/index.html` to generate the dual line area chart matching the user's reference design: emerald green Present line (`#10B981`) with smooth area gradient fill (`#twGradPresentArea`), coral/red Absent line (`#EF4444`), circular markers (`tw-dot-present`, `tw-dot-absent`), left dashed Y-axis gridlines (e.g. 0, 4, 8, 12, 16), and uncluttered X-axis date labels (`Oct 26`, `28`, `30`, `Nov 1`, `3`, `5`, `7`).
+- Implemented date navigation chevron buttons (`<` and `>`) to step backward and forward in time across granularities (14 days for Day, 8 weeks for Week, 6 months for Month, 2 years for Year), dynamically updating the header title (`Daily attendance`, `Weekly attendance`, etc.) and subtitle (`Last 14 days · ending Nov 9, 2026`).
+- Added vertical dashed crosshairs on hover, circle expansion, and high-contrast tooltip displaying Present, Absent, and Attendance Rate.
+- Verified DOM rendering, light/dark theme toggles, and responsive layouts across 375px, 768px, and 1440px with no horizontal scroll.
+### Decision-log skill
+When introducing themes to a portal with embedded SVG charts and colored tiles, provide complete first-class color tokens for both light and dark modes (including chart gridlines, tracks, dot fills, and card backgrounds) rather than relying on global fallbacks, ensuring clean contrast without eye strain in either mode.

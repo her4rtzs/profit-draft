@@ -125,15 +125,40 @@
         <!-- Row 1, Col 2-3: Attendance (the only chart) -->
         <section class="tw-card tw-span-2 tw-anim" style="--i:2" aria-labelledby="attChartTitle">
           <div class="tw-card-head tw-att-head">
-            <div>
-              <h2 class="tw-card-title" id="attChartTitle">Attendance</h2>
-              <p class="tw-card-sub" id="attSubtitle">Daily check-ins · All members</p>
+            <div class="tw-att-head-left">
+              <h2 class="tw-card-title" id="attChartTitle">Daily attendance</h2>
+              <p class="tw-card-sub" id="attSubtitle">Last 14 days · ending Nov 8, 2026</p>
+              <div class="tw-att-legend-row" aria-hidden="true">
+                <span class="tw-leg-item"><i class="tw-leg-dot is-green"></i>Present</span>
+                <span class="tw-leg-item"><i class="tw-leg-dot is-red"></i>Absent</span>
+              </div>
             </div>
-            <span class="tw-updated-badge" id="attUpdatedLabel" title="Live sync active (polls every 30s and on tab focus)">Updated just now</span>
+
+            <div class="tw-att-head-right">
+              <div class="tw-period-tabs" id="attPeriodTabs" role="tablist" aria-label="Chart granularity">
+                <button type="button" class="tw-period-tab active" data-granularity="day" data-period="days" role="tab" aria-selected="true" tabindex="0">Days</button>
+                <button type="button" class="tw-period-tab" data-granularity="week" data-period="weeks" role="tab" aria-selected="false" tabindex="-1">Week</button>
+                <button type="button" class="tw-period-tab" data-granularity="month" data-period="months" role="tab" aria-selected="false" tabindex="-1">Month</button>
+                <button type="button" class="tw-period-tab" data-granularity="year" data-period="years" role="tab" aria-selected="false" tabindex="-1">Year</button>
+              </div>
+
+              <div class="tw-chart-nav-group" aria-label="Step date range">
+                <button type="button" class="tw-chart-nav-btn" id="attNavPrev" title="Previous period" aria-label="Previous period"><span data-icon="chevron-left"></span></button>
+                <button type="button" class="tw-chart-nav-btn" id="attNavNext" title="Next period" aria-label="Next period"><span data-icon="chevron-right"></span></button>
+              </div>
+
+              <span class="tw-updated-badge" id="attUpdatedLabel" title="Live sync active (polls every 30s and on tab focus)">Updated just now</span>
+            </div>
           </div>
 
           <div class="tw-att-controls">
             <div class="tw-att-filters">
+              <div class="tw-ctrl-field is-member">
+                <label for="attMember">Member</label>
+                <select id="attMember" class="tw-select">
+                  <option value="all">All members</option>
+                </select>
+              </div>
               <div class="tw-ctrl-field">
                 <label for="attFrom">From</label>
                 <div class="tw-date-wrap">
@@ -150,19 +175,6 @@
                   <button type="button" class="tw-date-btn" data-picker="attToPicker" aria-label="Pick To date"><span data-icon="calendar"></span></button>
                 </div>
               </div>
-              <div class="tw-ctrl-field is-member">
-                <label for="attMember">Member</label>
-                <select id="attMember" class="tw-select">
-                  <option value="all">All members</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="tw-period-tabs" id="attPeriodTabs" role="tablist" aria-label="Chart granularity">
-              <button type="button" class="tw-period-tab active" data-granularity="day" data-period="days" role="tab" aria-selected="true" tabindex="0">Days</button>
-              <button type="button" class="tw-period-tab" data-granularity="week" data-period="weeks" role="tab" aria-selected="false" tabindex="-1">Weeks</button>
-              <button type="button" class="tw-period-tab" data-granularity="month" data-period="months" role="tab" aria-selected="false" tabindex="-1">Months</button>
-              <button type="button" class="tw-period-tab" data-granularity="year" data-period="years" role="tab" aria-selected="false" tabindex="-1">Years</button>
             </div>
           </div>
 
@@ -180,19 +192,13 @@
             <div class="tw-chart-tip" id="attChartTip" role="status" aria-live="polite" hidden></div>
           </div>
 
-          <div class="tw-chart-legend" aria-hidden="true">
-            <span class="tw-leg-item"><i class="tw-leg-box is-green"></i>Checked in</span>
-            <span class="tw-leg-item"><i class="tw-leg-box is-amber"></i>Scheduled, missed</span>
-            <span class="tw-leg-item"><i class="tw-leg-line"></i>Attendance rate</span>
-          </div>
-
           <div class="tw-att-summary" aria-label="Attendance summary">
             <div class="tw-sum-card">
-              <span>Checked in</span>
+              <span>Checked in (Present)</span>
               <strong id="sumCheckedIn">0</strong>
             </div>
             <div class="tw-sum-card">
-              <span>Scheduled</span>
+              <span>Scheduled visits</span>
               <strong id="sumScheduled">0</strong>
             </div>
             <div class="tw-sum-card">
@@ -539,20 +545,41 @@ document.addEventListener('DOMContentLoaded', () => {
   setInterval(refreshUpdatedBadge, 15000);
 
   function updateAttendanceSubtitle(granularity, fromIso, toIso, memberId) {
-    const pLabel = {
-      day: 'Daily check-ins',
-      days: 'Daily check-ins',
-      week: 'Weekly check-ins',
-      weeks: 'Weekly check-ins',
-      month: 'Monthly check-ins',
-      months: 'Monthly check-ins',
-      year: 'Yearly check-ins',
-      years: 'Yearly check-ins'
-    }[granularity] || 'Daily check-ins';
+    const titles = {
+      day: 'Daily attendance',
+      days: 'Daily attendance',
+      week: 'Weekly attendance',
+      weeks: 'Weekly attendance',
+      month: 'Monthly attendance',
+      months: 'Monthly attendance',
+      year: 'Yearly attendance',
+      years: 'Yearly attendance'
+    };
+    if ($('attChartTitle')) {
+      $('attChartTitle').textContent = titles[granularity] || 'Attendance';
+    }
+
     const mLabel = (!memberId || memberId === 'all')
-      ? 'All members'
+      ? ''
       : (rosterLookup[memberId] || `Member #${memberId}`);
-    $('attSubtitle').textContent = `${pLabel} · ${formatIsoNice(fromIso)} to ${formatIsoNice(toIso)} · ${mLabel}`;
+
+    const def = defaultRangeForGranularity(granularity);
+    let spanText = '';
+    if (fromIso === def.from && toIso === def.to) {
+      const spanLabels = {
+        day: 'Last 14 days',
+        week: 'Last 8 weeks',
+        month: 'Last 6 months',
+        year: 'Last 2 years'
+      };
+      spanText = `${spanLabels[granularity] || 'Last 14 days'} · ending ${formatIsoNice(toIso)}`;
+    } else {
+      spanText = `${formatIsoNice(fromIso)} to ${formatIsoNice(toIso)}`;
+    }
+
+    if ($('attSubtitle')) {
+      $('attSubtitle').textContent = mLabel ? `${spanText} · ${mLabel}` : spanText;
+    }
   }
 
   function resolveAndSwapDateInputs() {
@@ -572,7 +599,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function computeNiceStep(maxRaw, intervals) {
     const target = Math.max(1, Math.ceil(maxRaw / intervals));
-    const niceSteps = [1, 2, 3, 4, 5, 6, 8, 10, 15, 20, 25, 50, 100, 200, 500];
+    const niceSteps = [1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 25, 50, 100, 200, 500];
     for (const s of niceSteps) {
       if (s >= target) return s;
     }
@@ -613,8 +640,8 @@ document.addEventListener('DOMContentLoaded', () => {
     $('sumRate').textContent = formatRateDisplay(sumRateVal);
     $('sumRate').title = formatRateExact(sumRateVal);
 
-    // Empty state when scheduled is 0 for all buckets
-    if (!buckets.length || buckets.every(b => (Number(b.scheduled) || 0) === 0)) {
+    // Empty state when no buckets or scheduled is 0
+    if (!buckets.length || buckets.every(b => (Number(b.scheduled) || 0) === 0 && (Number(b.checked_in) || 0) === 0)) {
       stage.innerHTML =
         emptyState('calendar-check', 'No sessions scheduled in this range', 'Try selecting a wider date range or another member.') +
         '<div class="tw-chart-tip" id="attChartTip" role="status" aria-live="polite" hidden></div>';
@@ -622,15 +649,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const rect = stage.getBoundingClientRect();
-    const W = Math.max(290, Math.floor(rect.width || 640));
-    const H = Math.max(220, Math.floor(rect.height || 270));
-    const padL = 34, padR = 42, padT = 18, padB = 28;
+    const W = Math.max(300, Math.floor(rect.width || 640));
+    const H = Math.max(220, Math.floor(rect.height || 275));
+    const padL = 36, padR = 24, padT = 20, padB = 30;
     const plotW = Math.max(100, W - padL - padR);
     const plotH = Math.max(100, H - padT - padB);
+    const yBase = padT + plotH;
 
-    // Nice tick steps on the counts axis (e.g. 0, 2, 4, 6, 8, 10) sharing gridlines with 0%..100%
-    const maxValRaw = Math.max(1, ...buckets.map(b => Math.max(Number(b.scheduled) || 0, (Number(b.checked_in) || 0) + (Number(b.missed) || 0))));
-    const intervals = 5; // 0%, 20%, 40%, 60%, 80%, 100% (or 0, 2, 4, 6, 8, 10 when step=2)
+    // Nice tick steps on the counts axis (4 intervals: e.g. 0, 4, 8, 12, 16)
+    const maxValRaw = Math.max(1, ...buckets.map(b => Math.max(Number(b.checked_in) || 0, Number(b.missed) || 0)));
+    const intervals = 4;
     const tickStep = computeNiceStep(maxValRaw, intervals);
     const maxCount = tickStep * intervals;
 
@@ -638,137 +666,131 @@ document.addEventListener('DOMContentLoaded', () => {
     for (let i = 0; i <= intervals; i++) {
       const f = i / intervals;
       const y = (padT + plotH * (1 - f)).toFixed(1);
-      const leftVal = i * tickStep;
-      const rightVal = Math.round(f * 100) + '%';
+      const val = i * tickStep;
       gridLines.push(`
         <line class="tw-chart-grid-line" x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}"></line>
-        <text class="tw-chart-axis-txt" x="${padL - 8}" y="${Number(y) + 4}" text-anchor="end">${leftVal}</text>
-        <text class="tw-chart-axis-rate" x="${W - padR + 8}" y="${Number(y) + 4}" text-anchor="start">${rightVal}</text>
+        <text class="tw-chart-axis-txt" x="${padL - 10}" y="${Number(y) + 4}" text-anchor="end">${val}</text>
       `);
     }
 
     const n = buckets.length;
-    const stepX = plotW / n;
-    // Narrower bars: ~44% of the slot width
-    const barW = Math.max(6, Math.min(24, stepX * 0.44));
-    const segGap = 3;
-    const showValueLabels = W >= 520 && barW >= 14;
-
-    // Thin out x-axis labels when crowded
-    const maxLabels = Math.max(3, Math.floor(plotW / 60));
-    const labelStep = Math.max(1, Math.ceil(n / maxLabels));
-
-    let barsHtml = '';
-    let xLabelsHtml = '';
-    let hitColsHtml = '';
-    let hoverTagsHtml = '';
-    const linePts = [];
+    const ptsPresent = [];
+    const ptsAbsent = [];
     const bucketCoords = [];
 
+    // Helper to format clean X-axis labels
+    let lastMonthSeen = null;
+    let xLabelsHtml = '';
+    const labelStep = n > 28 ? 4 : (n > 16 ? 2 : (n > 8 ? 2 : 1));
+
     buckets.forEach((b, i) => {
-      const bKey = b.start || b.key || String(i);
-      const cx = padL + stepX * (i + 0.5);
-      const bx = cx - barW / 2;
+      const cx = n > 1 ? (padL + (i / (n - 1)) * plotW) : (padL + plotW / 2);
       const checked = Number(b.checked_in) || 0;
-      const scheduled = Number(b.scheduled) || 0;
       const missed = Number(b.missed) || 0;
+      const scheduled = Number(b.scheduled) || 0;
       const rawRate = b.attendance_rate !== undefined ? b.attendance_rate : b.rate;
-      const hasRate = rawRate !== null && rawRate !== undefined && scheduled > 0;
-      const rateNum = hasRate ? Math.max(0, Math.min(100, Number(rawRate))) : null;
 
-      const hChecked = (checked / maxCount) * plotH;
-      const hMissedRaw = (missed / maxCount) * plotH;
-      const yChecked = padT + plotH - hChecked;
+      const yP = padT + plotH * (1 - Math.min(1, checked / maxCount));
+      const yA = padT + plotH * (1 - Math.min(1, missed / maxCount));
 
-      // Small gap between checked-in and missed segments
-      const gap = (hChecked > 0 && hMissedRaw > 0) ? segGap : 0;
-      const hMissed = Math.max(0, hMissedRaw - gap);
-      const yMissed = yChecked - gap - hMissed;
+      ptsPresent.push({ cx, cy: yP, val: checked, idx: i });
+      ptsAbsent.push({ cx, cy: yA, val: missed, idx: i });
+      bucketCoords.push({ cx, yP, yA, b, rawRate });
 
-      const shouldAnimBar = !reduceMotion && (!isUpdate || (changedStarts && changedStarts.has(bKey)));
-      const animCls = shouldAnimBar ? 'tw-bar-group is-anim' : 'tw-bar-group';
-      const staggerIdx = isUpdate ? 0 : i;
+      // Determine label text
+      let showLabel = false;
+      let labelText = b.label || '';
 
-      barsHtml += `<g class="${animCls}" style="--bi:${staggerIdx}">`;
-      if (hChecked > 0) {
-        const rxC = hMissed > 0 ? 3 : 5;
-        barsHtml += `<rect x="${bx.toFixed(1)}" y="${yChecked.toFixed(1)}" width="${barW.toFixed(1)}" height="${Math.max(2, hChecked).toFixed(1)}" rx="${rxC}" fill="url(#twGradCheckin)"></rect>`;
-      }
-      if (hMissed > 0) {
-        barsHtml += `<rect x="${bx.toFixed(1)}" y="${yMissed.toFixed(1)}" width="${barW.toFixed(1)}" height="${Math.max(2, hMissed).toFixed(1)}" rx="5" fill="url(#twGradMissed)"></rect>`;
-      }
-      if (showValueLabels && checked > 0) {
-        if (hChecked >= 18) {
-          barsHtml += `<text class="tw-bar-val" x="${cx.toFixed(1)}" y="${(yChecked + hChecked / 2 + 3.5).toFixed(1)}" text-anchor="middle">${checked}</text>`;
-        } else if (hMissed <= 0 && yChecked > padT + 12) {
-          barsHtml += `<text class="tw-bar-val is-above" x="${cx.toFixed(1)}" y="${(yChecked - 5).toFixed(1)}" text-anchor="middle">${checked}</text>`;
+      if (currentGranularity === 'day') {
+        const dObj = b.start ? new Date(b.start + 'T00:00:00') : null;
+        if (dObj && !isNaN(dObj)) {
+          const mName = dObj.toLocaleDateString('en-US', { month: 'short' });
+          const dayNum = dObj.getDate();
+          if (i === 0 || mName !== lastMonthSeen) {
+            labelText = `${mName} ${dayNum}`;
+            lastMonthSeen = mName;
+            showLabel = true;
+          } else if (i % labelStep === 0) {
+            labelText = String(dayNum);
+            showLabel = true;
+          }
+        } else if (i % labelStep === 0) {
+          showLabel = true;
         }
-      }
-      barsHtml += `</g>`;
-
-      const py = hasRate ? (padT + plotH * (1 - rateNum / 100)) : (padT + plotH * 0.5);
-      bucketCoords.push({ cx, py, b, hasRate, rateNum });
-
-      if (hasRate) {
-        linePts.push({ cx, py, idx: i });
-        const rateTxt = formatRateDisplay(rateNum);
-        const tagW = Math.max(34, rateTxt.length * 7 + 10);
-        const tagH = 18;
-        const tagX = Math.max(padL, Math.min(W - padR - tagW, cx - tagW / 2));
-        const tagY = py > padT + 26 ? (py - 24) : (py + 8);
-        hoverTagsHtml += `
-          <g class="tw-rate-hover-tag" data-rate-tag="${i}">
-            <rect class="tw-rate-hover-bg" x="${tagX.toFixed(1)}" y="${tagY.toFixed(1)}" width="${tagW}" height="${tagH}" rx="5"></rect>
-            <text class="tw-rate-hover-txt" x="${(tagX + tagW / 2).toFixed(1)}" y="${(tagY + 12.5).toFixed(1)}" text-anchor="middle">${esc(rateTxt)}</text>
-          </g>`;
-      }
-
-      if (i % labelStep === 0 || i === n - 1) {
-        if (i !== n - 1 || (i % labelStep === 0) || (n - 1 - Math.floor((n - 2) / labelStep) * labelStep >= Math.ceil(labelStep * 0.6))) {
-          xLabelsHtml += `<text class="tw-chart-axis-txt" x="${cx.toFixed(1)}" y="${H - 6}" text-anchor="middle">${esc(b.label)}</text>`;
+      } else {
+        if (i % labelStep === 0 || i === n - 1) {
+          showLabel = true;
         }
       }
 
-      const srLabel = `${b.tooltip_label || b.label}: ${checked} checked in, ${scheduled} scheduled, ${missed} missed, attendance rate ${formatRateExact(rawRate)}`;
-      hitColsHtml += `<rect class="tw-hit-col" data-idx="${i}" tabindex="0" role="graphics-symbol" aria-label="${esc(srLabel)}" x="${(padL + stepX * i).toFixed(1)}" y="${padT}" width="${stepX.toFixed(1)}" height="${plotH}" rx="4"></rect>`;
+      if (showLabel) {
+        xLabelsHtml += `<text class="tw-chart-axis-txt" x="${cx.toFixed(1)}" y="${H - 8}" text-anchor="middle">${esc(labelText)}</text>`;
+      }
     });
 
-    const polyPoints = linePts.map(p => `${p.cx.toFixed(1)},${p.py.toFixed(1)}`).join(' ');
-    let pathLen = 0;
-    for (let i = 1; i < linePts.length; i++) {
-      const dx = linePts[i].cx - linePts[i - 1].cx;
-      const dy = linePts[i].py - linePts[i - 1].py;
-      pathLen += Math.hypot(dx, dy);
+    // Build polyline points string
+    const polyPresent = ptsPresent.map(p => `${p.cx.toFixed(1)},${p.cy.toFixed(1)}`).join(' ');
+    const polyAbsent = ptsAbsent.map(p => `${p.cx.toFixed(1)},${p.cy.toFixed(1)}`).join(' ');
+
+    // Area polygon under Present line
+    let areaPolygonHtml = '';
+    if (ptsPresent.length > 1) {
+      const firstX = ptsPresent[0].cx.toFixed(1);
+      const lastX = ptsPresent[ptsPresent.length - 1].cx.toFixed(1);
+      const areaPoints = `${firstX},${yBase.toFixed(1)} ${polyPresent} ${lastX},${yBase.toFixed(1)}`;
+      areaPolygonHtml = `<polygon class="tw-area-present" points="${areaPoints}"></polygon>`;
     }
-    pathLen = Math.ceil(pathLen + 20);
 
-    const shouldAnimLine = !reduceMotion && !hasAnimatedLineOnce && !isUpdate;
-    if (linePts.length > 1) hasAnimatedLineOnce = true;
-    const lineCls = shouldAnimLine ? 'tw-rate-line is-anim' : 'tw-rate-line';
+    // Path lengths for animation
+    let pathLenP = 0, pathLenA = 0;
+    for (let i = 1; i < ptsPresent.length; i++) {
+      pathLenP += Math.hypot(ptsPresent[i].cx - ptsPresent[i - 1].cx, ptsPresent[i].cy - ptsPresent[i - 1].cy);
+      pathLenA += Math.hypot(ptsAbsent[i].cx - ptsAbsent[i - 1].cx, ptsAbsent[i].cy - ptsAbsent[i - 1].cy);
+    }
+    pathLenP = Math.ceil(pathLenP + 20);
+    pathLenA = Math.ceil(pathLenA + 20);
 
-    const dotsHtml = linePts.map(p =>
-      `<circle class="tw-rate-dot" data-dot="${p.idx}" cx="${p.cx.toFixed(1)}" cy="${p.py.toFixed(1)}" r="4"></circle>`
+    const shouldAnim = !reduceMotion && !hasAnimatedLineOnce && !isUpdate;
+    if (ptsPresent.length > 1) hasAnimatedLineOnce = true;
+    const animClsP = shouldAnim ? 'tw-line-present is-anim' : 'tw-line-present';
+    const animClsA = shouldAnim ? 'tw-line-absent is-anim' : 'tw-line-absent';
+
+    // Circular point markers
+    const dotsPresentHtml = ptsPresent.map(p =>
+      `<circle class="tw-dot-present" data-dot-p="${p.idx}" cx="${p.cx.toFixed(1)}" cy="${p.cy.toFixed(1)}" r="4.5"></circle>`
     ).join('');
 
-    const chartAriaSummary = `Attendance chart (${data.granularity || currentGranularity}): ${summary.checked_in ?? 0} checked in out of ${summary.scheduled ?? 0} scheduled visits, attendance rate ${formatRateExact(sumRateVal)}.`;
+    const dotsAbsentHtml = ptsAbsent.map(p =>
+      `<circle class="tw-dot-absent" data-dot-a="${p.idx}" cx="${p.cx.toFixed(1)}" cy="${p.cy.toFixed(1)}" r="4.5"></circle>`
+    ).join('');
+
+    // Invisible hit targets
+    const slotW = plotW / Math.max(1, n);
+    let hitColsHtml = '';
+    buckets.forEach((b, i) => {
+      const cx = ptsPresent[i].cx;
+      const srLabel = `${b.tooltip_label || b.label}: ${b.checked_in} present, ${b.missed} absent, rate ${formatRateExact(b.attendance_rate)}`;
+      const hx = (cx - slotW / 2).toFixed(1);
+      hitColsHtml += `<rect class="tw-hit-col" data-idx="${i}" tabindex="0" role="graphics-symbol" aria-label="${esc(srLabel)}" x="${hx}" y="${padT}" width="${slotW.toFixed(1)}" height="${plotH}"></rect>`;
+    });
+
+    const chartAriaSummary = `Daily attendance chart: ${summary.checked_in ?? 0} present, ${summary.missed ?? 0} absent, attendance rate ${formatRateExact(sumRateVal)}.`;
 
     stage.innerHTML = `
       <svg class="tw-chart-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(chartAriaSummary)}">
         <defs>
-          <linearGradient id="twGradCheckin" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#34D399"/>
-            <stop offset="100%" stop-color="#10B981"/>
-          </linearGradient>
-          <linearGradient id="twGradMissed" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#FBBF24"/>
-            <stop offset="100%" stop-color="#B45309"/>
+          <linearGradient id="twGradPresentArea" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#10B981" stop-opacity="0.25"/>
+            <stop offset="100%" stop-color="#10B981" stop-opacity="0.0"/>
           </linearGradient>
         </defs>
         <g>${gridLines.join('')}</g>
-        <g>${barsHtml}</g>
-        ${linePts.length > 1 ? `<polyline class="${lineCls}" style="--path-len:${pathLen}" points="${polyPoints}"></polyline>` : ''}
-        <g>${dotsHtml}</g>
-        <g>${hoverTagsHtml}</g>
+        ${areaPolygonHtml}
+        <line class="tw-chart-guide" id="twChartGuide" x1="0" y1="${padT}" x2="0" y2="${yBase}"></line>
+        ${ptsPresent.length > 1 ? `<polyline class="${animClsP}" style="--path-len:${pathLenP}" points="${polyPresent}"></polyline>` : ''}
+        ${ptsAbsent.length > 1 ? `<polyline class="${animClsA}" style="--path-len:${pathLenA}" points="${polyAbsent}"></polyline>` : ''}
+        <g>${dotsPresentHtml}</g>
+        <g>${dotsAbsentHtml}</g>
         <g>${xLabelsHtml}</g>
         <g>${hitColsHtml}</g>
       </svg>
@@ -776,37 +798,63 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
 
     const tip = $('attChartTip');
+    const guide = stage.querySelector('#twChartGuide');
+
     const showBucketTooltip = idx => {
       const item = bucketCoords[idx];
       if (!item) return;
-      const { cx, py, b } = item;
-      const rawRate = b.attendance_rate !== undefined ? b.attendance_rate : b.rate;
-      const dot = stage.querySelector(`[data-dot="${idx}"]`);
-      if (dot) dot.setAttribute('r', '6');
-      const tag = stage.querySelector(`[data-rate-tag="${idx}"]`);
-      if (tag) tag.classList.add('is-on');
+      const { cx, yP, yA, b, rawRate } = item;
+
+      // Highlight circles
+      stage.querySelectorAll('.tw-dot-present, .tw-dot-absent').forEach(el => el.classList.remove('is-active'));
+      const dotP = stage.querySelector(`[data-dot-p="${idx}"]`);
+      if (dotP) dotP.classList.add('is-active');
+      const dotA = stage.querySelector(`[data-dot-a="${idx}"]`);
+      if (dotA) dotA.classList.add('is-active');
+
+      // Update vertical guide
+      if (guide) {
+        guide.setAttribute('x1', cx.toFixed(1));
+        guide.setAttribute('x2', cx.toFixed(1));
+        guide.classList.add('is-on');
+      }
 
       tip.innerHTML = `
         <div class="tw-chart-tip-title">${esc(b.tooltip_label || b.label)}</div>
-        <div class="tw-chart-tip-row"><span>Checked in</span><strong>${b.checked_in}</strong></div>
-        <div class="tw-chart-tip-row"><span>Scheduled</span><strong>${b.scheduled}</strong></div>
-        <div class="tw-chart-tip-row"><span>Missed</span><strong>${b.missed}</strong></div>
-        <div class="tw-chart-tip-row"><span>Rate</span><strong>${formatRateExact(rawRate)}</strong></div>
+        <div class="tw-chart-tip-row">
+          <span style="color:#10B981;display:inline-flex;align-items:center;gap:6px;">
+            <i class="tw-leg-dot is-green"></i>Present
+          </span>
+          <strong>${b.checked_in}</strong>
+        </div>
+        <div class="tw-chart-tip-row">
+          <span style="color:#EF4444;display:inline-flex;align-items:center;gap:6px;">
+            <i class="tw-leg-dot is-red"></i>Absent
+          </span>
+          <strong>${b.missed}</strong>
+        </div>
+        <div class="tw-chart-tip-row">
+          <span>Attendance rate</span>
+          <strong>${formatRateExact(rawRate)}</strong>
+        </div>
       `;
       tip.hidden = false;
-      const tipW = tip.offsetWidth || 172;
+
+      const tipW = tip.offsetWidth || 170;
       const halfTip = Math.ceil(tipW / 2) + 8;
       const clampedX = Math.max(halfTip, Math.min(W - halfTip, cx));
-      const clampedY = Math.max(92, Math.min(H - 16, py));
+      const targetY = Math.min(yP, yA);
+      const clampedY = Math.max(86, Math.min(H - 16, targetY));
       tip.style.left = clampedX + 'px';
       tip.style.top = clampedY + 'px';
     };
 
     const hideBucketTooltip = idx => {
-      const dot = stage.querySelector(`[data-dot="${idx}"]`);
-      if (dot) dot.setAttribute('r', '4');
-      const tag = stage.querySelector(`[data-rate-tag="${idx}"]`);
-      if (tag) tag.classList.remove('is-on');
+      const dotP = stage.querySelector(`[data-dot-p="${idx}"]`);
+      if (dotP) dotP.classList.remove('is-active');
+      const dotA = stage.querySelector(`[data-dot-a="${idx}"]`);
+      if (dotA) dotA.classList.remove('is-active');
+      if (guide) guide.classList.remove('is-on');
       tip.hidden = true;
     };
 
@@ -950,6 +998,34 @@ document.addEventListener('DOMContentLoaded', () => {
   $('attFrom').addEventListener('change', () => fetchAndRenderAttendance({ isPoll: false }));
   $('attTo').addEventListener('change', () => fetchAndRenderAttendance({ isPoll: false }));
   $('attMember').addEventListener('change', () => fetchAndRenderAttendance({ isPoll: false }));
+
+  // Date range navigation buttons (< and >)
+  function stepDateRange(direction) {
+    const resolved = resolveAndSwapDateInputs();
+    if (!resolved.valid) return;
+    const fromDate = new Date(resolved.fromIso + 'T00:00:00');
+    const toDate = new Date(resolved.toIso + 'T00:00:00');
+
+    if (currentGranularity === 'day') {
+      fromDate.setDate(fromDate.getDate() + direction * 14);
+      toDate.setDate(toDate.getDate() + direction * 14);
+    } else if (currentGranularity === 'week') {
+      fromDate.setDate(fromDate.getDate() + direction * 56);
+      toDate.setDate(toDate.getDate() + direction * 56);
+    } else if (currentGranularity === 'month') {
+      fromDate.setMonth(fromDate.getMonth() + direction * 6);
+      toDate.setMonth(toDate.getMonth() + direction * 6);
+    } else if (currentGranularity === 'year') {
+      fromDate.setFullYear(fromDate.getFullYear() + direction * 2);
+      toDate.setFullYear(toDate.getFullYear() + direction * 2);
+    }
+
+    setDateInputsIso(toIsoDate(fromDate), toIsoDate(toDate));
+    fetchAndRenderAttendance({ isPoll: false });
+  }
+
+  if ($('attNavPrev')) $('attNavPrev').addEventListener('click', () => stepDateRange(-1));
+  if ($('attNavNext')) $('attNavNext').addEventListener('click', () => stepDateRange(1));
 
   // Redraw chart on resize via ResizeObserver
   if (window.ResizeObserver) {

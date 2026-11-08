@@ -2,7 +2,8 @@
    Loaded after ../assets/css/staff.css and scoped to body[data-portal="trainer"],
    so the Staff portal is never affected. Plain CSS, no build step. */
 
-/* ---------- Tokens: dark #0A0E17 base, #111827 cards, #F59E0B amber ---------- */
+/* ---------- 1. Color Tokens & Theme Definitions ---------- */
+/* Trainer accent color */
 html:not([data-accent]) body[data-portal="trainer"] {
   --gold: #F59E0B;
   --gold-2: #FBBF24;
@@ -13,8 +14,46 @@ html[data-theme="dark"]:not([data-accent]) body[data-portal="trainer"] {
   --gold-3: #F59E0B;
   --gold-ink: #FCD34D;
 }
+
+/* Light Mode Theme: clean, crisp, comfortable slate-zinc palette (no dirty beige or harsh contrast) */
+html:not([data-theme="dark"]) body[data-portal="trainer"],
+html[data-theme="light"] body[data-portal="trainer"] {
+  --bg: #F8FAFC;
+  --bg-glow: rgba(245, 158, 11, .06);
+  --card: #FFFFFF;
+  --card-alpha: #FFFFFF;
+  --card-2: #F8FAFC;
+  --line: #E2E8F0;
+  --line-strong: #CBD5E1;
+  --text: #0F172A;
+  --text-2: #334155;
+  --muted: #64748B;
+  --green: #10B981;
+  --green-soft: rgba(16, 185, 129, .12);
+  --red: #EF4444;
+  --red-soft: rgba(239, 68, 68, .12);
+  --blue: #2563EB;
+  --blue-soft: rgba(37, 99, 235, .12);
+  --purple: #7C3AED;
+  --purple-soft: rgba(124, 58, 237, .12);
+  --tw-bg: #F8FAFC;
+  --tw-card: #FFFFFF;
+  --tw-card-2: #F8FAFC;
+  --tw-border: #E2E8F0;
+  --tw-border-strong: #CBD5E1;
+  --tw-dot-fill: #FFFFFF;
+  --tw-donut-track: #E2E8F0;
+  --tw-grid-line: #E2E8F0;
+  --tw-chart-tip-bg: #0F172A;
+  --tw-chart-tip-border: #334155;
+  --tw-chart-tip-text: #F8FAFC;
+  --shadow: 0 1px 3px rgba(15, 23, 42, .04), 0 6px 18px -4px rgba(15, 23, 42, .05);
+}
+
+/* Dark Mode Theme: deep navy #0A0E17 base with charcoal #111827 cards */
 html[data-theme="dark"] body[data-portal="trainer"] {
   --bg: #0A0E17;
+  --bg-glow: rgba(245, 158, 11, .07);
   --card: #111827;
   --card-alpha: #111827;
   --card-2: #0D1320;
@@ -31,13 +70,21 @@ html[data-theme="dark"] body[data-portal="trainer"] {
   --blue-soft: rgba(96, 165, 250, .14);
   --purple: #A78BFA;
   --purple-soft: rgba(167, 139, 250, .14);
-}
-
-body[data-portal="trainer"] {
   --tw-bg: #0A0E17;
   --tw-card: #111827;
   --tw-card-2: #0D1320;
   --tw-border: rgba(255, 255, 255, .07);
+  --tw-border-strong: rgba(255, 255, 255, .14);
+  --tw-dot-fill: #111827;
+  --tw-donut-track: rgba(255, 255, 255, .06);
+  --tw-grid-line: rgba(255, 255, 255, .07);
+  --tw-chart-tip-bg: rgba(10, 14, 23, .96);
+  --tw-chart-tip-border: rgba(255, 255, 255, .14);
+  --tw-chart-tip-text: #F3F4F6;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 10px 30px rgba(0, 0, 0, .28);
+}
+
+body[data-portal="trainer"] {
   --tw-amber: #F59E0B;
   --tw-amber-ink: #1B1300;
   --tw-green: #10B981;
@@ -50,6 +97,8 @@ body[data-portal="trainer"] {
   --tw-ease: cubic-bezier(.2, .8, .2, 1);
   font-family: 'Inter', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   overflow-x: hidden;
+  background: var(--bg);
+  color: var(--text);
 }
 
 /* ---------- Page container ---------- */
@@ -146,6 +195,44 @@ body[data-portal="trainer"] .page-head .tagline {
   --qa-glow: rgba(59, 130, 246, .22);
   --qa-ico-bg: rgba(59, 130, 246, .18);
   --qa-ico-fg: #60A5FA;
+}
+
+/* Quick action tiles - light mode pastel tints */
+html:not([data-theme="dark"]) .tw-qa-tile.is-amber,
+html[data-theme="light"] .tw-qa-tile.is-amber {
+  --qa-bg: linear-gradient(135deg, #FFFBEB 0%, #FFFFFF 100%);
+  --qa-border: #FDE68A;
+  --qa-hover-border: #F59E0B;
+  --qa-glow: rgba(245, 158, 11, .16);
+  --qa-ico-bg: #FEF3C7;
+  --qa-ico-fg: #D97706;
+}
+html:not([data-theme="dark"]) .tw-qa-tile.is-green,
+html[data-theme="light"] .tw-qa-tile.is-green {
+  --qa-bg: linear-gradient(135deg, #ECFDF5 0%, #FFFFFF 100%);
+  --qa-border: #A7F3D0;
+  --qa-hover-border: #10B981;
+  --qa-glow: rgba(16, 185, 129, .16);
+  --qa-ico-bg: #D1FAE5;
+  --qa-ico-fg: #059669;
+}
+html:not([data-theme="dark"]) .tw-qa-tile.is-purple,
+html[data-theme="light"] .tw-qa-tile.is-purple {
+  --qa-bg: linear-gradient(135deg, #F5F3FF 0%, #FFFFFF 100%);
+  --qa-border: #DDD6FE;
+  --qa-hover-border: #8B5CF6;
+  --qa-glow: rgba(139, 92, 246, .16);
+  --qa-ico-bg: #EDE9FE;
+  --qa-ico-fg: #7C3AED;
+}
+html:not([data-theme="dark"]) .tw-qa-tile.is-blue,
+html[data-theme="light"] .tw-qa-tile.is-blue {
+  --qa-bg: linear-gradient(135deg, #EFF6FF 0%, #FFFFFF 100%);
+  --qa-border: #BFDBFE;
+  --qa-hover-border: #3B82F6;
+  --qa-glow: rgba(59, 130, 246, .16);
+  --qa-ico-bg: #DBEAFE;
+  --qa-ico-fg: #2563EB;
 }
 .tw-qa-top {
   display: flex;
@@ -382,13 +469,94 @@ body[data-portal="trainer"] .page-head .tagline {
 
 /* ---------- Attendance Card & Controls ---------- */
 .tw-att-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.tw-att-head-left {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.tw-att-head-right {
+  display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+.tw-card-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.25;
 }
 .tw-att-head .tw-card-sub {
-  margin-top: 2px;
-  line-height: 1.3;
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.35;
 }
+.tw-att-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 12px;
+}
+.tw-leg-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+.tw-leg-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+  display: inline-block;
+}
+.tw-leg-dot.is-green { background: #10B981; }
+.tw-leg-dot.is-red { background: #EF4444; }
+
+.tw-chart-nav-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.tw-chart-nav-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  background: var(--card-2);
+  color: var(--text-2);
+  display: inline-grid;
+  place-items: center;
+  cursor: pointer;
+  padding: 0;
+  flex: none;
+  transition: all .18s ease;
+}
+.tw-chart-nav-btn .ico {
+  width: 14px;
+  height: 14px;
+}
+.tw-chart-nav-btn:hover {
+  border-color: var(--tw-amber);
+  color: var(--tw-amber);
+  background: var(--gold-soft);
+  transform: scale(1.05);
+}
+.tw-chart-nav-btn:active {
+  transform: scale(.95);
+}
+
 .tw-updated-badge {
   flex: none;
   display: inline-flex;
@@ -403,7 +571,6 @@ body[data-portal="trainer"] .page-head .tagline {
   color: var(--muted);
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
-  align-self: flex-start;
 }
 .tw-updated-badge::before {
   content: "";
@@ -419,14 +586,16 @@ body[data-portal="trainer"] .page-head .tagline {
   align-items: flex-end;
   justify-content: space-between;
   gap: 10px;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--line);
 }
 .tw-att-filters {
   display: flex;
   align-items: flex-end;
   gap: 8px;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   min-width: 0;
 }
 .tw-ctrl-field {
@@ -453,7 +622,7 @@ body[data-portal="trainer"] .page-head .tagline {
 .tw-select {
   height: 36px;
   box-sizing: border-box;
-  padding: 0 9px;
+  padding: 0 10px;
   border-radius: 9px;
   border: 1px solid var(--line-strong);
   background: var(--card-2);
@@ -519,46 +688,68 @@ body[data-portal="trainer"] .page-head .tagline {
   align-items: center;
   height: 36px;
   box-sizing: border-box;
-  margin-left: auto;
-  flex: 0 0 auto;
   padding: 3px;
-  border-radius: 9px;
+  border-radius: 99px;
   border: 1px solid var(--line-strong);
   background: var(--card-2);
   gap: 2px;
+  flex: none;
 }
 .tw-period-tab {
   height: 28px;
-  padding: 0 10px;
+  padding: 0 14px;
   border: 1px solid transparent;
-  border-radius: 6px;
+  border-radius: 99px;
   background: transparent;
   color: var(--muted);
   font: inherit;
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
   outline: none;
-  transition: background .18s ease, color .18s ease, border-color .18s ease;
+  transition: all .18s ease;
 }
 .tw-period-tab:hover {
   color: var(--text);
 }
 .tw-period-tab.active {
-  background: rgba(255, 255, 255, .1);
-  color: var(--text);
+  background: #1F2937;
+  color: #FFFFFF;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
 }
 
-/* ---------- Attendance SVG Chart Stage ---------- */
+/* Light mode period tabs */
+html:not([data-theme="dark"]) .tw-period-tabs,
+html[data-theme="light"] .tw-period-tabs {
+  background: #F1F5F9;
+  border-color: #E2E8F0;
+}
+html:not([data-theme="dark"]) .tw-period-tab,
+html[data-theme="light"] .tw-period-tab {
+  color: #64748B;
+}
+html:not([data-theme="dark"]) .tw-period-tab:hover,
+html[data-theme="light"] .tw-period-tab:hover {
+  color: #0F172A;
+}
+html:not([data-theme="dark"]) .tw-period-tab.active,
+html[data-theme="light"] .tw-period-tab.active {
+  background: #FFFFFF;
+  color: #0F172A;
+  border-color: #E2E8F0;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, .08);
+}
+
+/* ---------- Attendance Dual Line Chart Stage ---------- */
 .tw-chart-stage {
   position: relative;
   width: 100%;
   flex: 1 1 auto;
-  min-height: 255px;
-  height: 265px;
-  margin-top: 0;
-  margin-bottom: 10px;
+  min-height: 260px;
+  height: 275px;
+  margin-top: 6px;
+  margin-bottom: 14px;
   user-select: none;
 }
 .tw-chart-svg {
@@ -568,8 +759,9 @@ body[data-portal="trainer"] .page-head .tagline {
   overflow: visible;
 }
 .tw-chart-grid-line {
-  stroke: rgba(255, 255, 255, .06);
+  stroke: var(--tw-grid-line, rgba(255, 255, 255, .06));
   stroke-width: 1;
+  stroke-dasharray: 3, 4;
 }
 .tw-chart-axis-txt {
   font-size: 11px;
@@ -577,74 +769,73 @@ body[data-portal="trainer"] .page-head .tagline {
   fill: var(--muted);
   font-variant-numeric: tabular-nums;
 }
-.tw-chart-axis-rate {
-  font-size: 11px;
-  font-weight: 600;
-  fill: var(--tw-blue);
-  font-variant-numeric: tabular-nums;
-}
-.tw-bar-group {
-  transform-box: fill-box;
-  transform-origin: center bottom;
-}
-.tw-bar-group.is-anim {
-  animation: tw-bar-grow .48s var(--tw-ease) backwards;
-  animation-delay: calc(var(--bi, 0) * 30ms);
-}
-@keyframes tw-bar-grow {
-  from { transform: scaleY(0); opacity: .2; }
-  to { transform: scaleY(1); opacity: 1; }
-}
-.tw-bar-val {
-  font-size: 10.5px;
-  font-weight: 700;
-  fill: #052E1E;
+
+/* Lines & Area */
+.tw-area-present {
+  fill: url(#twGradPresentArea);
   pointer-events: none;
-  font-variant-numeric: tabular-nums;
+  transition: opacity .3s ease;
 }
-.tw-bar-val.is-above {
-  fill: var(--text);
-}
-.tw-rate-line {
+.tw-line-present {
   fill: none;
-  stroke: var(--tw-blue);
+  stroke: #10B981;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.tw-line-absent {
+  fill: none;
+  stroke: #EF4444;
   stroke-width: 2.2;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.tw-rate-line.is-anim {
+.tw-line-present.is-anim,
+.tw-line-absent.is-anim {
   stroke-dasharray: var(--path-len, 1200);
   stroke-dashoffset: var(--path-len, 1200);
-  animation: tw-line-draw .9s cubic-bezier(.22, 1, .36, 1) .15s forwards;
+  animation: tw-line-draw .85s cubic-bezier(.22, 1, .36, 1) forwards;
 }
 @keyframes tw-line-draw {
   to { stroke-dashoffset: 0; }
 }
-.tw-rate-dot {
-  fill: #0A0E17;
-  stroke: var(--tw-blue);
-  stroke-width: 2.2;
-  transition: r .15s ease, fill .15s ease;
+
+/* Circular Markers */
+.tw-dot-present {
+  fill: var(--tw-dot-fill, #111827);
+  stroke: #10B981;
+  stroke-width: 2.4;
+  transition: r .16s ease, stroke-width .16s ease;
+  cursor: pointer;
 }
-.tw-rate-hover-tag {
-  opacity: 0;
+.tw-dot-absent {
+  fill: var(--tw-dot-fill, #111827);
+  stroke: #EF4444;
+  stroke-width: 2.2;
+  transition: r .16s ease, stroke-width .16s ease;
+  cursor: pointer;
+}
+.tw-dot-present:hover,
+.tw-dot-present.is-active,
+.tw-dot-absent:hover,
+.tw-dot-absent.is-active {
+  r: 6.5;
+  stroke-width: 3;
+}
+
+/* Vertical guide line on hover */
+.tw-chart-guide {
+  stroke: var(--line-strong);
+  stroke-width: 1;
+  stroke-dasharray: 3, 3;
   pointer-events: none;
+  opacity: 0;
   transition: opacity .15s ease;
 }
-.tw-rate-hover-tag.is-on {
+.tw-chart-guide.is-on {
   opacity: 1;
 }
-.tw-rate-hover-bg {
-  fill: #0A0E17;
-  stroke: var(--tw-blue);
-  stroke-width: 1;
-}
-.tw-rate-hover-txt {
-  font-size: 10.5px;
-  font-weight: 700;
-  fill: var(--tw-blue);
-  font-variant-numeric: tabular-nums;
-}
+
 .tw-hit-col {
   fill: transparent;
   cursor: pointer;
@@ -652,7 +843,11 @@ body[data-portal="trainer"] .page-head .tagline {
 }
 .tw-hit-col:hover,
 .tw-hit-col:focus-visible {
-  fill: rgba(255, 255, 255, .04);
+  fill: rgba(255, 255, 255, .03);
+}
+html:not([data-theme="dark"]) .tw-hit-col:hover,
+html[data-theme="light"] .tw-hit-col:hover {
+  fill: rgba(15, 23, 42, .03);
 }
 
 /* Tooltip */
@@ -663,13 +858,13 @@ body[data-portal="trainer"] .page-head .tagline {
   min-width: 165px;
   padding: 10px 12px;
   border-radius: 12px;
-  background: rgba(10, 14, 23, .96);
-  border: 1px solid rgba(255, 255, 255, .14);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, .5);
+  background: var(--tw-chart-tip-bg, rgba(10, 14, 23, .96));
+  border: 1px solid var(--tw-chart-tip-border, rgba(255, 255, 255, .14));
+  box-shadow: 0 12px 28px rgba(0, 0, 0, .45);
   font-size: 12px;
-  color: var(--text);
+  color: var(--tw-chart-tip-text, #F3F4F6);
   transform: translate(-50%, -100%);
-  margin-top: -10px;
+  margin-top: -12px;
   transition: opacity .12s ease;
 }
 .tw-chart-tip[hidden] { display: none !important; }
@@ -679,7 +874,7 @@ body[data-portal="trainer"] .page-head .tagline {
   margin-bottom: 6px;
   padding-bottom: 5px;
   border-bottom: 1px solid var(--line);
-  color: var(--text);
+  color: inherit;
 }
 .tw-chart-tip-row {
   display: flex;
@@ -690,7 +885,7 @@ body[data-portal="trainer"] .page-head .tagline {
   color: var(--text-2);
 }
 .tw-chart-tip-row strong {
-  color: var(--text);
+  color: inherit;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
@@ -1041,6 +1236,94 @@ body[data-portal="trainer"] .page-head .tagline {
 @keyframes tw-shimmer {
   0% { background-position: 100% 0; }
   100% { background-position: 0 0; }
+}
+
+/* ---------- Light Mode Overrides for Containers, Tables, Buttons, & Skeletons ---------- */
+html:not([data-theme="dark"]) .tw-card,
+html[data-theme="light"] .tw-card {
+  background: #FFFFFF;
+  border-color: #E2E8F0;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, .04), 0 4px 16px -2px rgba(15, 23, 42, .04);
+}
+html:not([data-theme="dark"]) .tw-session,
+html[data-theme="light"] .tw-session {
+  background: #F8FAFC;
+  border-color: #E2E8F0;
+}
+html:not([data-theme="dark"]) .tw-session.is-mine,
+html[data-theme="light"] .tw-session.is-mine {
+  background: linear-gradient(90deg, #FFFBEB 0%, #FFFFFF 100%);
+  border-color: #FDE68A;
+}
+html:not([data-theme="dark"]) .tw-time-badge,
+html[data-theme="light"] .tw-time-badge {
+  background: #FEF3C7;
+  border-color: #FDE68A;
+}
+html:not([data-theme="dark"]) .tw-time-badge strong,
+html[data-theme="light"] .tw-time-badge strong {
+  color: #D97706;
+}
+html:not([data-theme="dark"]) .tw-pill.is-gray,
+html[data-theme="light"] .tw-pill.is-gray {
+  background: #E2E8F0;
+  color: #334155;
+}
+html:not([data-theme="dark"]) .tw-table-wrap,
+html[data-theme="light"] .tw-table-wrap {
+  background: #FFFFFF;
+  border-color: #E2E8F0;
+}
+html:not([data-theme="dark"]) .tw-table th,
+html[data-theme="light"] .tw-table th {
+  background: #F8FAFC;
+  color: #64748B;
+  border-bottom-color: #E2E8F0;
+}
+html:not([data-theme="dark"]) .tw-table td,
+html[data-theme="light"] .tw-table td {
+  color: #0F172A;
+  border-top-color: #E2E8F0;
+}
+html:not([data-theme="dark"]) .tw-table tbody tr:hover,
+html[data-theme="light"] .tw-table tbody tr:hover {
+  background: #F8FAFC;
+}
+html:not([data-theme="dark"]) .tw-person,
+html[data-theme="light"] .tw-person {
+  background: #F8FAFC;
+  border-color: #E2E8F0;
+}
+html:not([data-theme="dark"]) .tw-sum-card,
+html[data-theme="light"] .tw-sum-card {
+  background: #F8FAFC;
+  border-color: #E2E8F0;
+}
+html:not([data-theme="dark"]) .tw-btn,
+html[data-theme="light"] .tw-btn {
+  background: #FFFFFF;
+  border-color: #CBD5E1;
+  color: #1E293B;
+}
+html:not([data-theme="dark"]) .tw-btn:hover,
+html[data-theme="light"] .tw-btn:hover {
+  border-color: #F59E0B;
+  color: #B45309;
+  background: #FEF3C7;
+}
+html:not([data-theme="dark"]) .tw-skel,
+html[data-theme="light"] .tw-skel {
+  background: linear-gradient(90deg, #F1F5F9 25%, #E2E8F0 37%, #F1F5F9 63%);
+  background-size: 400% 100%;
+}
+html:not([data-theme="dark"]) .tw-skel-bars,
+html[data-theme="light"] .tw-skel-bars {
+  background: rgba(15, 23, 42, .02);
+}
+html:not([data-theme="dark"]) .tw-skel-bar,
+html[data-theme="light"] .tw-skel-bar {
+  background: linear-gradient(90deg, #E2E8F0 25%, #CBD5E1 37%, #E2E8F0 63%);
+  background-size: 400% 100%;
 }
 
 /* ---------- Responsive Breakpoints ---------- */
