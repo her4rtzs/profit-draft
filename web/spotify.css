@@ -3226,14 +3226,10 @@ body.dark input[type="date"] { color-scheme: dark; }
 /* ==========================================================================
    Phase 3: loading and entrance animation, year picker
    ========================================================================== */
-/* While the sign-in check runs the page used to be a blank screen. */
-html.auth-checking { background: #11151c; }
-html.auth-checking body { visibility: hidden; }
-html.auth-checking::before {
-  content: ""; position: fixed; left: 50%; top: 50%; width: 44px; height: 44px; margin: -22px 0 0 -22px;
-  border-radius: 50%; border: 3px solid rgba(255, 255, 255, .14); border-top-color: var(--gold, #e0b13f);
-  animation: pfSpin .8s linear infinite; z-index: 99999;
-}
+/* Keep shell & sidebar visible while session check runs — never blank the screen or show a blocking spinner */
+html.auth-checking { background: var(--bg, #0a0e16); }
+html.auth-checking body { visibility: visible; }
+html.auth-checking::before { display: none !important; content: none !important; }
 @keyframes pfSpin { to { transform: rotate(360deg); } }
 
 /* Top progress bar driven by api.js while requests are in flight. */
@@ -3242,19 +3238,11 @@ html.auth-checking::before {
 #pfProgress.on { opacity: 1; width: 85%; transition: width 6s cubic-bezier(.1, .6, .2, 1); }
 #pfProgress.done { opacity: 0; width: 100%; transition: width .2s ease, opacity .3s ease .15s; }
 
-/* Entrance: cards rise in one after another, bars grow from the baseline. */
-@keyframes pfRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+/* Disable repeated page-level entrance animations during tab navigation */
+@keyframes pfRise { from { opacity: 1; transform: none; } to { opacity: 1; transform: none; } }
 @keyframes pfGrow { from { transform: scaleY(.02); } to { transform: scaleY(1); } }
-.main-content > * { animation: pfRise .45s cubic-bezier(.2, .8, .2, 1) backwards; }
-.main-content > *:nth-child(2) { animation-delay: .04s; }
-.main-content > *:nth-child(3) { animation-delay: .08s; }
-.main-content > *:nth-child(4) { animation-delay: .12s; }
-.main-content > *:nth-child(5) { animation-delay: .16s; }
-.main-content > *:nth-child(n+6) { animation-delay: .2s; }
-.stats > * { animation: pfRise .5s cubic-bezier(.2, .8, .2, 1) backwards; }
-.stats > *:nth-child(2) { animation-delay: .08s; }
-.stats > *:nth-child(3) { animation-delay: .16s; }
-.stats > *:nth-child(4) { animation-delay: .24s; }
+.main-content > * { animation: none !important; }
+.stats > * { animation: none !important; }
 .bar { transform-origin: bottom; animation: pfGrow .7s cubic-bezier(.2, .8, .2, 1) backwards; }
 .bar-column:nth-child(2) .bar { animation-delay: .03s; } .bar-column:nth-child(3) .bar { animation-delay: .06s; }
 .bar-column:nth-child(4) .bar { animation-delay: .09s; } .bar-column:nth-child(5) .bar { animation-delay: .12s; }

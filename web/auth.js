@@ -28,6 +28,7 @@
       localStorage.removeItem("profit-member-demo-checkins");
       localStorage.removeItem("profit-demo-session");
       sessionStorage.removeItem("profit-demo-session");
+      sessionStorage.removeItem("profit-verified-session");
       sessionStorage.setItem("profit-logged-out", "1");
     } catch (e) {}
     if (window.ProFitAPI) {
@@ -67,6 +68,7 @@
   let storedUser = (() => {
     try {
       return JSON.parse(
+        sessionStorage.getItem("profit-verified-session") ||
         localStorage.getItem("profit-demo-session") ||
         sessionStorage.getItem("profit-demo-session") ||
         "null"
@@ -134,27 +136,34 @@
   const isTrainer = isTrainerSection;
   if (!loginPage && !isAdmin && !isMember && !isTrainer) return;
 
-  document.documentElement.classList.add("auth-checking");
-  const authTimeout = setTimeout(() => {
-    document.documentElement.classList.remove("auth-checking");
-  }, 3500);
+  const isStaffRole = r => ["ADMIN", "OWNER", "CASHIER"].includes(String(r || "").toUpperCase());
+
+  if (storedUser && !loginPage) {
+    window.ProFitAuth = {
+      user: storedUser,
+      role: storedUser.role,
+      logout: performLogout
+    };
+  }
 
   document.addEventListener("DOMContentLoaded", async () => {
     try {
       const payload = await window.ProFitAPI.get("/auth/session");
-      clearTimeout(authTimeout);
       const user = payload.user;
-      if (!user || !["ADMIN", "MEMBER", "TRAINER"].includes(String(user.role || "").toUpperCase())) {
+      const role = String(user?.role || "").toUpperCase();
+      if (!user || (!isStaffRole(role) && role !== "MEMBER" && role !== "TRAINER")) {
         throw new Error("No active session.");
       }
-      const role = String(user.role).toUpperCase();
+      try {
+        sessionStorage.setItem("profit-verified-session", JSON.stringify(user));
+      } catch {}
       if (loginPage) {
         location.replace(
-          role === "ADMIN" ? "index.html" : role === "TRAINER" ? "trainer/index.html" : "member-home.html"
+          isStaffRole(role) ? "index.html" : role === "TRAINER" ? "trainer/index.html" : "member-home.html"
         );
         return;
       }
-      if (isAdmin && role !== "ADMIN") {
+      if (isAdmin && !isStaffRole(role)) {
         location.replace(
           role === "TRAINER"
             ? isStaffSection ? "../trainer/index.html" : "trainer/index.html"
@@ -168,7 +177,7 @@
       }
       if (isTrainer && role !== "TRAINER") {
         location.replace(
-          role === "ADMIN"
+          isStaffRole(role)
             ? isTrainerSection ? "../index.html" : "index.html"
             : isTrainerSection ? "../member-home.html" : "member-home.html"
         );
@@ -184,7 +193,6 @@
         el.textContent = user.name || user.email || "Account";
       });
     } catch (error) {
-      clearTimeout(authTimeout);
       if (storedUser) {
         document.documentElement.classList.remove("auth-checking");
         window.ProFitAuth = {

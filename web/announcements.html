@@ -1,33 +1,298 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Announcements · ProFit Staff</title>
-<meta name="theme-color" content="#0a1220">
-<link rel="icon" href="assets/img/logo.jpg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="assets/css/staff.css">
-<script src="assets/js/staff-boot.js"></script>
-<script src="config.js"></script>
-<script src="api.js"></script>
-<script src="auth.js"></script>
-</head>
-<body data-page="announcements" data-title="Announcements" data-eyebrow="Notices for members and trainers" data-sub="Share important updates, gym news, events, and reminders with your members and trainers." data-icon="megaphone" data-roles="Owner,Cashier">
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="scrim" id="scrim"></div>
-  <div class="main">
-    <header class="topbar" id="topbar"></header>
-    <main class="content" id="content"></main>
+<head><script>(function(){try{var d=localStorage.getItem('theme')!=='light';var h=document.documentElement;h.style.background=d?'#0a0e16':'#f0f2f5';h.style.colorScheme=d?'dark':'light';}catch(e){}})();</script><script src="splash.js?v=2"></script>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProFit | Announcements</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="styles.css">
+<script src="config.js"></script><script src="api.js"></script><script src="auth.js"></script>
+<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=9"><link rel="stylesheet" href="ui-final.css?v=1">
+<script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script><link rel="stylesheet" href="hover-fx.css?v=2">
+<link rel="stylesheet" href="announcements.css?v=3">
+<link rel="stylesheet" href="ui-polish.css?v=1">
+<link rel="stylesheet" href="ui-fixes.css?v=1">
+<link rel="stylesheet" href="pf-modern.css?v=1">
+<link rel="stylesheet" href="sidebar-pro.css?v=8">
+<link rel="stylesheet" href="layout-fixes.css?v=6">
+<script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="staff-design.css"></head>
+<body class="pf-staff dark" data-page="announcements" data-title="Announcements" data-welcome="Notices for members and trainers">
+<div class="dashboard"><nav class="sidebar" id="sidebar"></nav><main class="main-content" id="main" tabindex="-1">
+  <header class="topbar" id="topbar"></header>
+
+  <!-- Breadcrumb & Hero Header -->
+  <section class="ann-hero" aria-label="Announcements header">
+    <nav class="ann-breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Dashboard</a>
+      <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+      <span aria-current="page">Announcements</span>
+    </nav>
+    <div class="ann-hero-row">
+      <div class="ann-hero-icon" aria-hidden="true">
+        <i class="fa-solid fa-bullhorn"></i>
+      </div>
+      <div class="ann-hero-copy">
+        <h2>Announcements</h2>
+        <p>Stay updated with the latest announcements from your gym management team. Share important updates, gym news, events, and reminders with your members and trainers.</p>
+      </div>
+      <div class="ann-hero-tagline" aria-hidden="true">Stronger<br>Healthier<br>Happier</div>
+    </div>
+  </section>
+
+  <!-- 4 Colored Action Cards -->
+  <section class="ann-action-grid" aria-label="Announcement actions">
+    <button type="button" class="ann-action-tile tone-amber" id="annTileCreate">
+      <span class="ann-tile-ico" aria-hidden="true"><i class="fa-solid fa-file-circle-plus"></i></span>
+      <span class="ann-tile-body">
+        <strong>Create Announcement</strong>
+        <small>Post a new announcement</small>
+      </span>
+      <span class="ann-tile-arrow" aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></span>
+    </button>
+
+    <button type="button" class="ann-action-tile tone-teal" id="annTileManage">
+      <span class="ann-tile-ico" aria-hidden="true"><i class="fa-solid fa-bullhorn"></i></span>
+      <span class="ann-tile-body">
+        <strong>Manage Announcements</strong>
+        <small id="annTileManageSub">View and edit posts</small>
+      </span>
+      <span class="ann-tile-arrow" aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></span>
+    </button>
+
+    <button type="button" class="ann-action-tile tone-blue" id="annTileArchive">
+      <span class="ann-tile-ico" aria-hidden="true"><i class="fa-solid fa-folder-open"></i></span>
+      <span class="ann-tile-body">
+        <strong>Announcement Archive</strong>
+        <small id="annTileArchiveSub">View past announcements</small>
+      </span>
+      <span class="ann-tile-arrow" aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></span>
+    </button>
+
+    <a href="settings.html" class="ann-action-tile tone-purple" id="annTileSettings">
+      <span class="ann-tile-ico" aria-hidden="true"><i class="fa-solid fa-gear"></i></span>
+      <span class="ann-tile-body">
+        <strong>Settings</strong>
+        <small id="annTileReachSub">Manage preferences</small>
+      </span>
+      <span class="ann-tile-arrow" aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></span>
+    </a>
+  </section>
+
+  <!-- 4 Server KPI Stat Cards -->
+  <section class="stats ann-stats-grid" aria-label="Announcement statistics">
+    <div class="stat-card">
+      <div class="stat-top">
+        <div class="stat-icon blue"><i class="fa-solid fa-bullhorn"></i></div>
+      </div>
+      <div class="stat-content">
+        <p>Total announcements</p>
+        <h2 id="statTotal">0</h2>
+        <small>All statuses</small>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-top">
+        <div class="stat-icon green"><i class="fa-regular fa-calendar-check"></i></div>
+      </div>
+      <div class="stat-content">
+        <p>Published this month</p>
+        <h2 id="statPublishedMonth">0</h2>
+        <small id="statLiveNow">0 live now</small>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-top">
+        <div class="stat-icon purple"><i class="fa-solid fa-users"></i></div>
+      </div>
+      <div class="stat-content">
+        <p>People who can see them</p>
+        <h2 id="statAudienceReach">0</h2>
+        <small>Members + trainers</small>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-top">
+        <div class="stat-icon gold"><i class="fa-regular fa-file-lines"></i></div>
+      </div>
+      <div class="stat-content">
+        <p>Drafts</p>
+        <h2 id="statDrafts">0</h2>
+        <small>Need your attention</small>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main All Announcements Panel -->
+  <section class="panel ann-panel" id="annMainPanel" aria-label="All announcements">
+    <div class="ann-toolbar">
+      <div class="ann-toolbar-left">
+        <div class="ann-panel-title">
+          <i class="fa-solid fa-list-ul" aria-hidden="true"></i>
+          <h2>All Announcements</h2>
+        </div>
+        <div class="ann-pills" id="annFilterPills" role="tablist" aria-label="Filter announcements by status">
+          <button type="button" class="ann-pill active" role="tab" aria-selected="true" data-status="all">
+            <span>All</span>
+            <span class="ann-pill-count" id="countAll">0</span>
+          </button>
+          <button type="button" class="ann-pill" role="tab" aria-selected="false" data-status="draft">
+            <span>Drafts</span>
+            <span class="ann-pill-count" id="countDraft">0</span>
+          </button>
+          <button type="button" class="ann-pill" role="tab" aria-selected="false" data-status="published">
+            <span>Published</span>
+            <span class="ann-pill-count" id="countPublished">0</span>
+          </button>
+          <button type="button" class="ann-pill" role="tab" aria-selected="false" data-status="archived">
+            <span>Archived</span>
+            <span class="ann-pill-count" id="countArchived">0</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="ann-toolbar-right">
+        <label class="ann-search-box" for="annSearchInput">
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          <input id="annSearchInput" type="search" placeholder="Search announcements..." autocomplete="off" aria-label="Search announcements">
+        </label>
+
+        <div class="ann-select-wrap">
+          <i class="fa-solid fa-filter" aria-hidden="true"></i>
+          <select id="annStatusSelect" aria-label="Filter by status">
+            <option value="all">All</option>
+            <option value="draft">Drafts</option>
+            <option value="published">Published</option>
+            <option value="archived">Archived</option>
+          </select>
+        </div>
+
+        <button type="button" class="ann-btn primary" id="annNewBtn">
+          <i class="fa-solid fa-plus" aria-hidden="true"></i>
+          <span>New announcement</span>
+        </button>
+      </div>
+    </div>
+
+    <p class="ann-toast-msg" id="annMsg" role="status" aria-live="polite" hidden></p>
+
+    <div class="ann-feed" id="annList" aria-live="polite">
+      <div class="ann-skel-row" aria-hidden="true"></div>
+      <div class="ann-skel-row" aria-hidden="true"></div>
+      <div class="ann-skel-row" aria-hidden="true"></div>
+    </div>
+
+    <footer class="ann-footer" id="annFooter">
+      <span class="ann-footer-summary" id="annSummaryText">Showing 0 announcements</span>
+      <div class="ann-pager" id="annPager" role="navigation" aria-label="Announcements pagination"></div>
+    </footer>
+  </section>
+
+  <!-- Create / Edit Announcement Modal -->
+  <div class="ann-modal-backdrop" id="annModalBackdrop" hidden aria-hidden="true">
+    <div class="ann-modal" id="annModal" role="dialog" aria-modal="true" aria-labelledby="annModalTitle">
+      <div class="ann-modal-head">
+        <div>
+          <span class="ann-modal-eyebrow" id="annModalEyebrow">Staff Notice</span>
+          <h3 id="annModalTitle">New announcement</h3>
+        </div>
+        <button type="button" class="ann-modal-close" id="annModalClose" aria-label="Close dialog">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <form id="annForm" class="ann-modal-form" novalidate>
+        <input type="hidden" id="annId" value="">
+
+        <div class="ann-field">
+          <div class="ann-label-row">
+            <label for="annTitleInput">Title <span class="req" aria-hidden="true">*</span></label>
+            <span class="ann-char-count" id="annTitleCount">0 / 80</span>
+          </div>
+          <input id="annTitleInput" type="text" maxlength="80" placeholder="e.g. Gym Operations Update" required autocomplete="off">
+          <small class="ann-field-err" id="annTitleErr" role="alert" hidden>Please add a title.</small>
+        </div>
+
+        <div class="ann-field">
+          <div class="ann-label-row">
+            <label for="annBodyInput">Message</label>
+            <span class="ann-char-count" id="annBodyCount">0 / 600</span>
+          </div>
+          <textarea id="annBodyInput" maxlength="600" rows="4" placeholder="Write the announcement details for members and trainers..."></textarea>
+          <small class="ann-field-err" id="annBodyErr" role="alert" hidden></small>
+        </div>
+
+        <div class="ann-form-row">
+          <div class="ann-field">
+            <label for="annAudienceInput">Audience</label>
+            <select id="annAudienceInput">
+              <option value="everyone">Members and trainers</option>
+              <option value="members">Members only</option>
+              <option value="trainers">Trainers only</option>
+            </select>
+          </div>
+
+          <div class="ann-field">
+            <label for="annEventDateInput">Event date <span class="ann-opt">(optional)</span></label>
+            <input id="annEventDateInput" type="date">
+          </div>
+        </div>
+
+        <div class="ann-field">
+          <label for="annStatusInput">Publishing status</label>
+          <select id="annStatusInput">
+            <option value="published">Publish now</option>
+            <option value="draft">Save as draft</option>
+          </select>
+        </div>
+
+        <p class="ann-field-err" id="annFormGeneralErr" role="alert" hidden></p>
+
+        <div class="ann-modal-foot">
+          <button type="button" class="ann-btn" id="annCancelBtn">Cancel</button>
+          <button type="submit" class="ann-btn primary" id="annSubmitBtn">
+            <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+            <span id="annSubmitLabel">Publish announcement</span>
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
-  <nav class="bottom-nav" id="bottomNav" aria-label="Quick navigation"></nav>
-</div>
-<script src="assets/js/staff-icons.js"></script>
-<script src="assets/js/staff-data.js"></script>
-<script src="assets/js/staff.js"></script>
-<script src="assets/js/pages/announcements.js"></script>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="ann-modal-backdrop" id="annDeleteBackdrop" hidden aria-hidden="true">
+    <div class="ann-modal ann-modal-sm" role="alertdialog" aria-modal="true" aria-labelledby="annDeleteTitle" aria-describedby="annDeleteDesc">
+      <div class="ann-modal-head">
+        <div>
+          <span class="ann-modal-eyebrow" style="color:#f87171">Confirm deletion</span>
+          <h3 id="annDeleteTitle">Delete announcement?</h3>
+        </div>
+        <button type="button" class="ann-modal-close" id="annDeleteClose" aria-label="Close dialog">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="ann-modal-body">
+        <p id="annDeleteDesc">This announcement will be permanently removed and will no longer appear in the staff, trainer, or member portals.</p>
+      </div>
+      <div class="ann-modal-foot">
+        <button type="button" class="ann-btn" id="annDeleteCancel">Cancel</button>
+        <button type="button" class="ann-btn danger" id="annDeleteConfirm">
+          <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+          <span>Delete</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</main></div>
+<script src="layout.js?v=18"></script><script src="sidebar.js?v=17"></script><script src="data.js"></script><script src="settings.js?v=13"></script>
+<script src="portal-fx.js?v=2"></script>
+<script src="change-password.js?v=2" defer></script>
+<script src="notifications-live.js?v=1" defer></script>
+<script src="announcements-staff.js?v=3" defer></script>
+<script src="site-footer.js?v=2" defer></script>
 </body>
 </html>

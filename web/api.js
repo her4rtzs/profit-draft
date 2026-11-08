@@ -47,10 +47,17 @@
     const response = await fetch(apiUrl(path), { ...options, method, headers, credentials: "include", cache: "no-store" });
     const payload = await response.json().catch(() => ({}));
     if (!response.ok) {
+      let msg = payload.detail || payload.message;
+      if (!msg && payload && typeof payload === "object") {
+        const firstVal = Object.values(payload)[0];
+        if (Array.isArray(firstVal) && firstVal[0]) msg = String(firstVal[0]);
+        else if (typeof firstVal === "string") msg = firstVal;
+      }
       const error = new Error(response.status === 401 ? "Your session has expired. Please sign in again."
-        : response.status === 403 ? (payload.detail || "You do not have permission to perform this action.")
-        : (payload.detail || payload.message || `Request failed (${response.status}).`));
+        : response.status === 403 ? (msg || "You do not have permission to perform this action.")
+        : (msg || `Request failed (${response.status}).`));
       error.status = response.status;
+      error.payload = payload;
       throw error;
     }
     if (method === "POST" && /check-in/i.test(path)) {
@@ -70,6 +77,8 @@
     request, busy,
     get: path => request(path),
     post: (path, data) => request(path, { method: "POST", body: JSON.stringify(data || {}) }),
-    patch: (path, data) => request(path, { method: "PATCH", body: JSON.stringify(data || {}) })
+    patch: (path, data) => request(path, { method: "PATCH", body: JSON.stringify(data || {}) }),
+    del: path => request(path, { method: "DELETE" }),
+    delete: path => request(path, { method: "DELETE" })
   };
 })();

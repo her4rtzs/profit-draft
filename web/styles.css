@@ -2179,14 +2179,10 @@ body.dark .sidebar li a:hover { background:rgba(255,255,255,.08); color:#fff; }
 .sidebar li a.active .icon, body.dark .sidebar li a.active .icon { color:#19231e; }
 html body .main-content > * { animation:none !important; }
 
-/* Page reveal: one soft fade-and-blur in after the sidebar is built. Replaces the old flicker. */
+/* Page reveal: keep shell immediately visible without blur/fade flicker on route changes. */
 @view-transition { navigation: none; }
-html.pf-pre body { opacity: 0; filter: blur(8px); }
-body { transition: opacity .28s ease, filter .28s ease; }
-@media (prefers-reduced-motion: reduce) {
-  html.pf-pre body { opacity: 1; filter: none; }
-  body { transition: none; }
-}
+html.pf-pre body { opacity: 1 !important; filter: none !important; }
+body { transition: none !important; }
 
 /* Container consistency: one border, radius, padding, and gap for every panel and stat card. */
 .panel, .stat-card {

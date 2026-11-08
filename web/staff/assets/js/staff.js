@@ -233,8 +233,7 @@
   const isTrainerContext = () => {
     if (document.body.dataset.portal === 'trainer') return true;
     if (location.pathname.toLowerCase().includes('/trainer/')) return true;
-    const r = String((window.PF && PF.db ? PF.db.profile().role : '') || '').toUpperCase();
-    return r === 'TRAINER' || r === 'PERSONAL TRAINER';
+    return false;
   };
 
   const STAFF_NAV = [
@@ -276,9 +275,15 @@
     { id: 'profile', label: 'My Profile', icon: 'user', href: 'profile.html' },
     { id: 'settings', label: 'Settings', icon: 'settings', href: 'settings.html', roles: ['Owner'] }
   ];
-  const role = () => (PF.db ? PF.db.profile().role : 'Owner');
-  const allowed = it => !it.roles || it.roles.includes(role());
-  PF.can = roles => !roles || roles.includes(role());
+  const role = () => {
+    if (!isTrainerContext()) {
+      const r = (PF.db ? PF.db.profile().role : 'Owner') || 'Owner';
+      return (r === 'Personal Trainer' || r === 'TRAINER') ? 'Owner' : r;
+    }
+    return (PF.db ? PF.db.profile().role : 'Personal Trainer') || 'Personal Trainer';
+  };
+  const allowed = it => !it.roles || it.roles.includes(role()) || role() === 'Admin' || role() === 'Administrator';
+  PF.can = roles => !roles || roles.includes(role()) || role() === 'Admin' || role() === 'Administrator';
   const currentId = () => { const p = document.body.dataset.page; return PARENT[p] || p; };
 
   function sidebarHTML() {

@@ -63,7 +63,7 @@ html[data-accent="indigo"] .pf-staff.dark {--gold-ink:#b9b0fa}
 .pf-staff .topbar .t-left {display:flex;align-items:center;gap:10px}
 .pf-staff .t-menu {display:none}
 .pf-staff .t-spacer {flex:1}
-.pf-staff .search {display:flex;align-items:center;gap:10px;height:42px;padding:0 14px;min-width:280px;max-width:420px;flex:1 1 320px;border-radius:99px;background:var(--card-alpha);border:1px solid var(--line);color:var(--muted)}
+.pf-staff .topbar .search {display:flex;align-items:center;gap:10px;height:42px;padding:0 14px;min-width:0;max-width:420px;flex:1 1 320px;border-radius:99px;background:var(--card-alpha);border:1px solid var(--line);color:var(--muted)}
 .pf-staff .search input {flex:1;min-width:0;border:0;background:transparent;outline:0;font:inherit;color:var(--text)}
 .pf-staff .search input::placeholder {color:var(--muted)}
 .pf-staff .search kbd {font:600 11px var(--font);padding:3px 8px;border-radius:7px;background:var(--gold-soft);color:var(--gold-ink);border:1px solid var(--line)}

@@ -24,31 +24,40 @@
   const nav = document.getElementById('sidebar');
   if (nav) {
     nav.setAttribute('aria-label', 'Main navigation');
-    nav.innerHTML = `
-      <div class="sidebar-brand-row">
-        <a class="imgbrand" href="index.html" aria-label="${GYM.name} dashboard">
-          <span class="image"><img id="gymLogoImg" src="${GYM.logo || 'logo.jpg'}" alt="${GYM.name}" onerror="this.style.display='none'"></span>
-          <span class="headertxt"><strong id="gymNameTxt">${GYM.name}</strong><small id="gymTagTxt">${GYM.tagline}</small></span>
-        </a>
-      </div>
-      <div class="sidebar-scroll">
-        ${groups.map(g => `<section class="nav-group"><p class="nav-group-label">${g.label}</p><ul class="menulist">${g.items.map(item => `<li><a href="${item.href}" data-tip="${item.label}" class="${item.id===current?'active':''}" ${item.id===current?'aria-current="page"':''}><i class="fa-solid ${item.icon} icon" aria-hidden="true"></i><span class="text nav-text">${item.label}</span></a></li>`).join('')}</ul></section>`).join('')}
-      </div>
-      <div class="sidebar-foot">
-        <div class="sidebar-account">
-          <div class="sidebar-user">
-            <span class="sidebar-avatar" data-user-initials id="railAvatar">AD</span>
-            <div class="sidebar-user-copy"><strong data-user-name>Administrator</strong><small data-user-role>Gym administrator</small></div>
-            <button type="button" class="account-menu-toggle" id="accountMenuToggle" aria-haspopup="menu" aria-expanded="false" aria-controls="accountMenu" aria-label="Account actions" title="Account"><i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i></button>
-            <div class="account-menu" id="accountMenu" role="menu" aria-label="Account actions">
-              <a href="profile.html" role="menuitem" class="${current==='profile'?'active':''}"><i class="fa-regular fa-user" aria-hidden="true"></i> My profile</a>
-              <a href="settings.html#appearance" role="menuitem" class="${current==='settings'?'active':''}"><i class="fa-solid fa-sliders" aria-hidden="true"></i> Settings</a>
-              <button type="button" role="menuitem" data-logout><i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i> Log out</button>
+    if (!nav.querySelector('.menulist')) {
+      nav.innerHTML = `
+        <div class="sidebar-brand-row">
+          <a class="imgbrand" href="index.html" aria-label="${GYM.name} dashboard">
+            <span class="image"><img id="gymLogoImg" src="${GYM.logo || 'logo.jpg'}" alt="${GYM.name}" onerror="this.style.display='none'"></span>
+            <span class="headertxt"><strong id="gymNameTxt">${GYM.name}</strong><small id="gymTagTxt">${GYM.tagline}</small></span>
+          </a>
+        </div>
+        <div class="sidebar-scroll">
+          ${groups.map(g => `<section class="nav-group"><p class="nav-group-label">${g.label}</p><ul class="menulist">${g.items.map(item => `<li><a href="${item.href}" data-page-id="${item.id}" data-tip="${item.label}" class="${item.id===current?'active':''}" ${item.id===current?'aria-current="page"':''}><i class="fa-solid ${item.icon} icon" aria-hidden="true"></i><span class="text nav-text">${item.label}</span></a></li>`).join('')}</ul></section>`).join('')}
+        </div>
+        <div class="sidebar-foot">
+          <div class="sidebar-account">
+            <div class="sidebar-user">
+              <span class="sidebar-avatar" data-user-initials id="railAvatar">AD</span>
+              <div class="sidebar-user-copy"><strong data-user-name>Administrator</strong><small data-user-role>Gym administrator</small></div>
+              <button type="button" class="account-menu-toggle" id="accountMenuToggle" aria-haspopup="menu" aria-expanded="false" aria-controls="accountMenu" aria-label="Account actions" title="Account"><i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i></button>
+              <div class="account-menu" id="accountMenu" role="menu" aria-label="Account actions">
+                <a href="profile.html" data-page-id="profile" role="menuitem" class="${current==='profile'?'active':''}"><i class="fa-regular fa-user" aria-hidden="true"></i> My profile</a>
+                <a href="settings.html#appearance" data-page-id="settings" role="menuitem" class="${current==='settings'?'active':''}"><i class="fa-solid fa-sliders" aria-hidden="true"></i> Settings</a>
+                <button type="button" role="menuitem" data-logout><i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i> Log out</button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      `;
+        `;
+    } else {
+      nav.querySelectorAll('[data-page-id]').forEach(link => {
+        const isCurrent = link.dataset.pageId === current;
+        link.classList.toggle('active', isCurrent);
+        if (isCurrent) link.setAttribute('aria-current', 'page');
+        else link.removeAttribute('aria-current');
+      });
+    }
   }
 
   const top = document.getElementById('topbar');
