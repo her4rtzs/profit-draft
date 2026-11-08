@@ -146,18 +146,9 @@ html body .topbar-right .search {
   box-sizing: border-box !important;
 }
 
-html body .status-strip {
-  margin: 0 0 24px 0 !important;
-  padding: 10px 16px !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
-  display: flex !important;
-  align-items: center !important;
-  flex-wrap: wrap !important;
-  gap: 10px 14px !important;
-  background: var(--card) !important;
-  border: 1px solid var(--border) !important;
-  border-radius: 14px !important;
+html body .status-strip,
+html body #statusStrip {
+  display: none !important;
 }
 
 /* --------------------------------------------------------------------------
@@ -866,57 +857,7 @@ html body .notification-panel {
   html body .status-strip {
     margin: 0 0 16px 0 !important;
     padding: 8px 10px !important;
-    display: flex !important;
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-    gap: 8px !important;
-    scrollbar-width: none !important;
-    border-radius: 14px !important;
-    background: var(--card) !important;
-    border: 1px solid var(--border) !important;
-    box-sizing: border-box !important;
-  }
-
-  html body .status-strip::-webkit-scrollbar {
     display: none !important;
-  }
-
-  html body .status-strip > * {
-    flex: 0 0 auto !important;
-    white-space: nowrap !important;
-  }
-
-  html body .status-strip .strip-label {
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 6px !important;
-    font-size: 12px !important;
-    font-weight: 750 !important;
-    color: var(--text) !important;
-    padding: 0 4px !important;
-  }
-
-  html body .status-strip .strip-dot {
-    width: 8px !important;
-    height: 8px !important;
-    border-radius: 50% !important;
-    background: #10b981 !important;
-    box-shadow: 0 0 8px rgba(16, 185, 129, 0.6) !important;
-  }
-
-  html body .status-strip .topbar-stat {
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 7px !important;
-    padding: 6px 12px !important;
-    border-radius: 999px !important;
-    background: color-mix(in srgb, var(--text) 6%, transparent) !important;
-    border: 1px solid color-mix(in srgb, var(--border) 50%, transparent) !important;
-    font-size: 12px !important;
-    font-weight: 600 !important;
-    color: var(--text) !important;
-    text-decoration: none !important;
   }
 
   html body .panel-header {

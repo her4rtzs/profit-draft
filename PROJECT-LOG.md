@@ -1120,3 +1120,13 @@ Restore the sidebar behavior from commit 46ab02d where the sidebar automatically
 - Removed the manual click toggle (#sidebarToggle) and .close class overrides to allow pure hover-driven automatic expansion without layout fighting.
 ### Decision-log skill
 When the user refers to hover-driven responsive controls ("kusa nag-aadjust kapag pinunta arrow") versus manual toggle buttons, restore the pure :hover / :focus-within rail styles from the designated reference commit without injecting click-toggle buttons into the brand header.
+
+
+## 2026-11-09 03:56 (Asia/Manila): Remove status strip from all portal tabs
+### What I asked for
+Remove the top status strip ribbon ("PROFIT | 0 in today | 16 members | ₱800 this month | 3:53 AM | + Enroll member") from all portal tabs.
+### What the agent decided and why
+- Removed the `#statusStrip` DOM injection and its interval timers from web/layout.js, which was injecting the ribbon into all staff pages.
+- Added explicit display: none !important; rules for .status-strip and #statusStrip in web/layout-fixes.css across desktop and responsive breakpoints to guarantee the strip never renders on any portal view.
+### Decision-log skill
+When eliminating globally injected status ribbons, remove both the dynamic element creation/timers in the shared layout builder script and enforce a blanket CSS suppression rule to safeguard against cached templates.
