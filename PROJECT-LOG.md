@@ -1064,3 +1064,13 @@ Light mode should use the warm cream tones from the reference screenshot instead
 - Repaired a double-encoding (mojibake) of `index.html` caused by a PowerShell `Get-Content`/`Set-Content` round-trip.
 ### Decision-log skill
 Never rewrite UTF-8 files with Windows PowerShell 5 `Get-Content -Raw | Set-Content`: it reads BOM-less UTF-8 as ANSI and double-encodes non-ASCII characters (`·` becomes `Â·`). Use Python with an explicit `encoding='utf-8'` for scripted edits.
+
+## 2026-11-09 02:08 (Asia/Manila): Attendance header with right-aligned period tabs and stacked MEMBER/FROM/TO filter row
+### What I asked for
+Match the exact header and filter control layout from the screenshot: `Daily attendance` title and `Daily · Oct 27 – Nov 9, 2026` subtitle on the left, `Days | Week | Month | Year` period tabs on the right of the header, and `MEMBER`, `FROM`, and `TO` stacked-label input controls on the row below.
+### What the agent decided and why
+- Moved `#attPeriodTabs` back into `.tw-att-head-right` inside `.tw-att-head` so the period tabs sit directly opposite the `Daily attendance` heading.
+- Restored the stacked uppercase labels (`MEMBER`, `FROM`, `TO`) above rounded-rectangle (`10px` radius, `38px` height) select and date inputs in `.tw-att-filters` (`220px` member select, `168px` date inputs on desktop/tablet, responsive wrap on phone).
+- Preserved the warm cream light-mode palette (`#F2EEE5` page, `#FAF8F3` cards, `#F3EEE4` controls) and full SVG area/line/dot entrance animations.
+### Decision-log skill
+Keep card-level view switchers (like period granularity tabs) in the card header opposite the title when filter inputs (`MEMBER`, `FROM`, `TO`) use stacked labels above each field, so vertical alignment stays uniform across the filter row.

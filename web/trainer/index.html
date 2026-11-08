@@ -127,37 +127,41 @@
           <div class="tw-card-head tw-att-head">
             <div class="tw-att-head-left">
               <h2 class="tw-card-title" id="attChartTitle">Daily attendance</h2>
-              <p class="tw-card-sub" id="attSubtitle">Daily</p>
+              <p class="tw-card-sub" id="attSubtitle">Daily · Oct 27 – Nov 9, 2026</p>
+            </div>
+            <div class="tw-att-head-right">
+              <div class="tw-period-tabs" id="attPeriodTabs" role="tablist" aria-label="Chart granularity">
+                <button type="button" class="tw-period-tab active" data-granularity="day" data-period="days" role="tab" aria-selected="true" tabindex="0">Days</button>
+                <button type="button" class="tw-period-tab" data-granularity="week" data-period="weeks" role="tab" aria-selected="false" tabindex="-1">Week</button>
+                <button type="button" class="tw-period-tab" data-granularity="month" data-period="months" role="tab" aria-selected="false" tabindex="-1">Month</button>
+                <button type="button" class="tw-period-tab" data-granularity="year" data-period="years" role="tab" aria-selected="false" tabindex="-1">Year</button>
+              </div>
             </div>
           </div>
 
           <div class="tw-att-controls">
-            <div class="tw-period-tabs" id="attPeriodTabs" role="tablist" aria-label="Chart granularity">
-              <button type="button" class="tw-period-tab active" data-granularity="day" data-period="days" role="tab" aria-selected="true" tabindex="0">Days</button>
-              <button type="button" class="tw-period-tab" data-granularity="week" data-period="weeks" role="tab" aria-selected="false" tabindex="-1">Week</button>
-              <button type="button" class="tw-period-tab" data-granularity="month" data-period="months" role="tab" aria-selected="false" tabindex="-1">Month</button>
-              <button type="button" class="tw-period-tab" data-granularity="year" data-period="years" role="tab" aria-selected="false" tabindex="-1">Year</button>
-            </div>
-            <label class="tw-pill-field is-member" for="attMember">
-              <span>Member</span>
-              <select id="attMember" class="tw-select">
-                <option value="all">All members</option>
-              </select>
-            </label>
-            <div class="tw-pill-field">
-              <label for="attFrom">From</label>
-              <div class="tw-date-wrap">
-                <input type="text" id="attFrom" class="tw-input tw-date-text" inputmode="numeric" placeholder="MM/DD/YYYY" autocomplete="off" aria-label="From date (MM/DD/YYYY)">
-                <input type="date" id="attFromPicker" class="tw-date-picker" style="position:absolute;width:0;height:0;opacity:0;pointer-events:none" tabindex="-1" aria-hidden="true">
-                <button type="button" class="tw-date-btn" data-picker="attFromPicker" aria-label="Pick From date"><span data-icon="calendar"></span></button>
+            <div class="tw-att-filters">
+              <div class="tw-ctrl-field is-member">
+                <label for="attMember">Member</label>
+                <select id="attMember" class="tw-select">
+                  <option value="all">All members</option>
+                </select>
               </div>
-            </div>
-            <div class="tw-pill-field">
-              <label for="attTo">To</label>
-              <div class="tw-date-wrap">
-                <input type="text" id="attTo" class="tw-input tw-date-text" inputmode="numeric" placeholder="MM/DD/YYYY" autocomplete="off" aria-label="To date (MM/DD/YYYY)">
-                <input type="date" id="attToPicker" class="tw-date-picker" style="position:absolute;width:0;height:0;opacity:0;pointer-events:none" tabindex="-1" aria-hidden="true">
-                <button type="button" class="tw-date-btn" data-picker="attToPicker" aria-label="Pick To date"><span data-icon="calendar"></span></button>
+              <div class="tw-ctrl-field">
+                <label for="attFrom">From</label>
+                <div class="tw-date-wrap">
+                  <input type="text" id="attFrom" class="tw-input tw-date-text" inputmode="numeric" placeholder="MM/DD/YYYY" autocomplete="off" aria-label="From date (MM/DD/YYYY)">
+                  <input type="date" id="attFromPicker" class="tw-date-picker" style="position:absolute;width:0;height:0;opacity:0;pointer-events:none" tabindex="-1" aria-hidden="true">
+                  <button type="button" class="tw-date-btn" data-picker="attFromPicker" aria-label="Pick From date"><span data-icon="calendar"></span></button>
+                </div>
+              </div>
+              <div class="tw-ctrl-field">
+                <label for="attTo">To</label>
+                <div class="tw-date-wrap">
+                  <input type="text" id="attTo" class="tw-input tw-date-text" inputmode="numeric" placeholder="MM/DD/YYYY" autocomplete="off" aria-label="To date (MM/DD/YYYY)">
+                  <input type="date" id="attToPicker" class="tw-date-picker" style="position:absolute;width:0;height:0;opacity:0;pointer-events:none" tabindex="-1" aria-hidden="true">
+                  <button type="button" class="tw-date-btn" data-picker="attToPicker" aria-label="Pick To date"><span data-icon="calendar"></span></button>
+                </div>
               </div>
             </div>
           </div>

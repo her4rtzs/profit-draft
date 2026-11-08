@@ -1464,71 +1464,108 @@ html[data-theme="light"] .tw-skel-bar {
 
 
 /* ==========================================================================
-   Attendance card v2: inline pill controls, legend bar, animated area chart
+   Attendance card v2: header with right-aligned period tabs, stacked-label
+   MEMBER / FROM / TO filter row, legend bar, and animated area chart
    ========================================================================== */
-.tw-att-head { margin-bottom: 14px; }
-.tw-att-head .tw-card-title { font-size: 18px; }
+.tw-card-title { font-size: 18px; }
+.tw-att-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.tw-att-head .tw-card-title {
+  font-size: 19px;
+  font-weight: 700;
+}
+.tw-att-head .tw-card-sub {
+  margin-top: 3px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.tw-att-head .tw-period-tabs {
+  border-radius: 10px;
+  padding: 3px;
+  height: 36px;
+  gap: 2px;
+}
+.tw-att-head .tw-period-tab {
+  border-radius: 7px;
+  padding: 0 13px;
+  height: 28px;
+  font-size: 12.5px;
+  font-weight: 600;
+}
 
 .tw-att-controls {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: flex-start;
-  gap: 8px;
+  gap: 14px;
   flex-wrap: wrap;
   margin-bottom: 14px;
   padding-bottom: 0;
   border-bottom: 0;
 }
-.tw-att-controls .tw-period-tabs { margin-left: 0; }
-
-/* Pill field: label sits inside the control, like "Member  All members  v" */
-.tw-pill-field {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  height: 36px;
-  padding: 0 4px 0 12px;
-  border-radius: 99px;
+.tw-att-filters {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+.tw-att-filters .tw-ctrl-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.tw-att-filters .tw-ctrl-field label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.tw-att-filters .tw-ctrl-field.is-member {
+  flex: 0 1 220px;
+}
+.tw-att-filters .tw-ctrl-field:not(.is-member) {
+  flex: 0 1 168px;
+}
+.tw-att-filters .tw-select,
+.tw-att-filters .tw-date-text {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 10px;
   border: 1px solid var(--line-strong);
   background: var(--card-2);
-  box-sizing: border-box;
-  min-width: 0;
-  flex: 0 1 auto;
-  transition: border-color .18s ease, box-shadow .18s ease;
-}
-.tw-pill-field:focus-within {
-  border-color: var(--tw-amber);
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, .15);
-}
-.tw-pill-field > span,
-.tw-pill-field > label {
-  font-size: 11.5px;
-  font-weight: 600;
-  color: var(--muted);
-  white-space: nowrap;
-  letter-spacing: 0;
-  text-transform: none;
-}
-.tw-pill-field .tw-input,
-.tw-pill-field .tw-select {
-  height: 32px;
-  border: 0;
-  background: transparent;
-  padding-left: 0;
-  font-size: 12.5px;
-  font-weight: 700;
   color: var(--text);
-  box-shadow: none;
+  font-size: 13px;
+  font-weight: 500;
 }
-.tw-pill-field .tw-select {
-  width: auto;
-  min-width: 118px;
-  max-width: 170px;
-  padding-right: 22px;
+.tw-att-filters .tw-select {
+  padding-right: 28px;
   cursor: pointer;
 }
-.tw-pill-field .tw-date-text { width: 112px; padding-right: 28px; }
-.tw-pill-field .tw-date-btn { right: 2px; }
+.tw-att-filters .tw-date-text {
+  padding-right: 34px;
+  font-variant-numeric: tabular-nums;
+}
+.tw-att-filters .tw-date-btn {
+  right: 6px;
+  width: 26px;
+  height: 26px;
+}
+.tw-att-filters .tw-date-btn .ico {
+  width: 14px;
+  height: 14px;
+}
 
 .tw-att-legend-bar {
   display: flex;
@@ -1622,12 +1659,9 @@ html[data-theme="light"] body[data-portal="trainer"] .tw-qa-tile {
 }
 
 @media (max-width: 639px) {
-  .tw-att-controls .tw-period-tabs { width: 100%; }
-  .tw-pill-field { flex: 1 1 calc(50% - 4px); }
-  .tw-pill-field.is-member { flex: 1 1 100%; }
-  .tw-pill-field .tw-select { max-width: none; flex: 1 1 auto; }
-  .tw-pill-field .tw-date-wrap { flex: 1 1 auto; }
-  .tw-pill-field .tw-date-text { width: 100%; }
+  .tw-att-head .tw-period-tabs { width: 100%; }
+  .tw-att-filters .tw-ctrl-field.is-member { flex: 1 1 100%; }
+  .tw-att-filters .tw-ctrl-field:not(.is-member) { flex: 1 1 calc(50% - 7px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1644,15 +1678,3 @@ html[data-theme="light"] body[data-portal="trainer"] .tw-qa-tile {
     opacity: 1 !important;
   }
 }
-
-/* Fit tabs + Member + From + To on one row on tablet/desktop */
-.tw-card-title { font-size: 17px; }
-.tw-att-head .tw-card-title { font-size: 17px; }
-.tw-att-controls { gap: 6px; flex-wrap: nowrap; }
-.tw-att-controls .tw-period-tabs { flex: none; }
-.tw-att-controls .tw-period-tab { padding: 0 10px; font-size: 12px; }
-.tw-pill-field { gap: 6px; padding-left: 10px; flex: none; }
-.tw-pill-field.is-member { flex: 1 1 auto; min-width: 0; }
-.tw-pill-field.is-member .tw-select { width: 100%; min-width: 0; max-width: none; flex: 1 1 auto; }
-.tw-pill-field .tw-date-text { width: 94px; padding-right: 24px; font-size: 12px; }
-@media (max-width: 760px) { .tw-att-controls { flex-wrap: wrap; } }
