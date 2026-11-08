@@ -414,7 +414,10 @@ def build_trainer_attendance_series(
                 continue
             spans = enrollment_spans.get(prof.id, [])
             in_enrollment = any(st <= day <= en for st, en in spans)
-            if in_enrollment or prof.is_active_on(day):
+            if in_enrollment or (
+                prof.is_active_on(day)
+                and (prof.date_joined is None or day >= prof.date_joined)
+            ):
                 s_count += 1
         return c_count, max(c_count, s_count)
 

@@ -1027,3 +1027,14 @@ Fix two issues on the Trainer Workspace Coach Dashboard (`/trainer/`) Attendance
 - Used `flex-wrap: nowrap`, `box-sizing: border-box`, and compact `36px` control sizing (`118px` date inputs, `138px` member select) on `.tw-att-controls` above `640px` so the filter bar stays on a single line at both `768px` and `1440px` and wraps only on phones (`375px`).
 ### Decision-log skill
 When normalizing URL paths to enforce Django's trailing slash convention (`pathname.replace(/\/?$/, "/")`), always split on `?` first so the trailing slash is applied to the path segment and never appended to the last query string parameter.
+
+## 2026-11-08 23:35 (Asia/Manila): Connect and verify scheduled and attendance rate across all tabs
+### What I asked for
+Clarify whether `scheduled` and `attendance_rate` have a backend, explain where they are connected, and fix other tabs (chart period tabs Days/Weeks/Months/Years, Attendance log filter tabs, Schedule day tabs, and Member roster view tabs).
+### What the agent decided and why
+- Clarified that `scheduled` and `attendance_rate` are fully computed on the backend in `apps/trainers/services.py` via `build_trainer_attendance_series()` and served at `GET /api/trainer/attendance/`. There is no separate schedule table in the database schema; expected sessions are derived dynamically from `MemberProfile` and `Enrollment` active date spans, while `checked_in` counts actual records from the `Attendance` model.
+- Fixed a calculation bug in `_expected_on_day()` where active membership was checked without verifying `day >= prof.date_joined`. This previously caused dates in 2024–2025 to accumulate thousands of fake scheduled visits and produce near-zero attendance rates.
+- Seeded Angelo Metillo and Joyce Alvarez check-ins across the full 8-week period (Sep 14 to Nov 8) so that switching between `Days`, `Weeks`, `Months`, and `Years` tabs displays consistent, real data (e.g. Angelo Metillo shows 35 checked in / 56 scheduled, 63% rate on Weeks matching the design spec).
+- Fixed `TrainerAttendanceListView` in `api/trainers.py` to respect `filter=all` vs `filter=mine` so the `All Check-ins` and `My Members Only` tabs in `web/trainer/attendance.html` work as intended.
+### Decision-log skill
+When computing expected visit attendance over wide temporal granularities (Weeks, Months, Years), ensure member profile validity bounds check both upper (`expiry_date`) and lower (`date_joined`) limits; otherwise, pre-join historical periods will accrue unintended expected sessions.

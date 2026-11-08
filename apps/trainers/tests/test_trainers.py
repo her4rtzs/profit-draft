@@ -246,8 +246,16 @@ class TrainerTests(TestCase):
             first_name="Angelo",
             last_name="Metillo",
         )
-        joyce = MemberProfile.objects.create(user=joyce_user, membership_status="ACTIVE")
-        angelo = MemberProfile.objects.create(user=angelo_user, membership_status="ACTIVE")
+        joyce = MemberProfile.objects.create(
+            user=joyce_user,
+            membership_status="ACTIVE",
+            date_joined=timezone.datetime(2026, 9, 1).date(),
+        )
+        angelo = MemberProfile.objects.create(
+            user=angelo_user,
+            membership_status="ACTIVE",
+            date_joined=timezone.datetime(2026, 9, 1).date(),
+        )
 
         services.assign_trainer(joyce, self.t2, actor=self.owner)
         services.assign_trainer(angelo, self.t2, actor=self.owner)

@@ -557,11 +557,16 @@ class TrainerAttendanceListView(APIView):
         except (ValueError, TypeError):
             day = timezone.localdate()
 
-        qs = (
-            Attendance.objects.filter(check_in_date=day, member_id__in=assigned_ids)
-            .select_related("member__user", "recorded_by")
-            .order_by("-check_in_at")
-        )
+        filter_mode = str(request.query_params.get("filter") or "all").strip().lower()
+        if filter_mode == "mine":
+            qs = Attendance.objects.filter(check_in_date=day, member_id__in=assigned_ids)
+        else:
+            qs = Attendance.objects.filter(check_in_date=day)
+
+        qs = qs.select_related("member__user", "recorded_by").order_by("-check_in_at")
+
+        total_day_count = Attendance.objects.filter(check_in_date=day).count()
+        my_day_count = Attendance.objects.filter(check_in_date=day, member_id__in=assigned_ids).count()
 
         rows = [
             {
@@ -570,7 +575,7 @@ class TrainerAttendanceListView(APIView):
                 "member_name": _name(a.member.user),
                 "member_phone": a.member.phone,
                 "membership_status": a.member.membership_status,
-                "is_my_member": True,
+                "is_my_member": a.member_id in assigned_ids,
                 "check_in_at": a.check_in_at.isoformat(),
                 "check_in_date": a.check_in_date.isoformat(),
                 "recorded_by": _name(a.recorded_by),
@@ -579,8 +584,8 @@ class TrainerAttendanceListView(APIView):
         ]
         return Response({
             "date": day.isoformat(),
-            "total": len(rows),
-            "my_members_count": len(rows),
+            "total": total_day_count,
+            "my_members_count": my_day_count,
             "attendances": rows,
         })
 

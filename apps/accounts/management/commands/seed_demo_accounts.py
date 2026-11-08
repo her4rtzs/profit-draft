@@ -61,28 +61,44 @@ class Command(BaseCommand):
             },
         )
 
-        # Assign Joyce Alvarez and Angelo Metillo to Coach Mika and seed check-ins for Oct 26 - Nov 8
+        # Assign Joyce Alvarez and Angelo Metillo to Coach Mika and seed check-ins for Sep 14 - Nov 8 (8 weeks)
         tz = timezone.get_current_timezone()
         checkin_schedule = {
             "joyce": [
-                date(2026, 10, 26),
-                date(2026, 10, 27),
-                date(2026, 10, 29),
-                date(2026, 10, 31),
-                date(2026, 11, 2),
-                date(2026, 11, 3),
-                date(2026, 11, 5),
-                date(2026, 11, 7),
+                # Sep 14 - Sep 20
+                date(2026, 9, 14), date(2026, 9, 16), date(2026, 9, 18), date(2026, 9, 20),
+                # Sep 21 - Sep 27
+                date(2026, 9, 22), date(2026, 9, 23), date(2026, 9, 25), date(2026, 9, 26), date(2026, 9, 27),
+                # Sep 28 - Oct 4
+                date(2026, 9, 29), date(2026, 9, 30), date(2026, 10, 2), date(2026, 10, 3),
+                # Oct 5 - Oct 11
+                date(2026, 10, 6), date(2026, 10, 7), date(2026, 10, 8), date(2026, 10, 10),
+                # Oct 12 - Oct 18
+                date(2026, 10, 13), date(2026, 10, 14), date(2026, 10, 16), date(2026, 10, 17), date(2026, 10, 18),
+                # Oct 19 - Oct 25
+                date(2026, 10, 20), date(2026, 10, 21), date(2026, 10, 23), date(2026, 10, 24),
+                # Oct 26 - Nov 1
+                date(2026, 10, 26), date(2026, 10, 27), date(2026, 10, 29), date(2026, 10, 31),
+                # Nov 2 - Nov 8
+                date(2026, 11, 2), date(2026, 11, 3), date(2026, 11, 5), date(2026, 11, 7),
             ],
             "angelo": [
-                date(2026, 10, 26),
-                date(2026, 10, 27),
-                date(2026, 10, 29),
-                date(2026, 10, 30),
-                date(2026, 11, 2),
-                date(2026, 11, 4),
-                date(2026, 11, 5),
-                date(2026, 11, 7),
+                # Sep 14 - Sep 20 (5)
+                date(2026, 9, 14), date(2026, 9, 15), date(2026, 9, 16), date(2026, 9, 18), date(2026, 9, 19),
+                # Sep 21 - Sep 27 (4)
+                date(2026, 9, 21), date(2026, 9, 22), date(2026, 9, 24), date(2026, 9, 25),
+                # Sep 28 - Oct 4 (4)
+                date(2026, 9, 28), date(2026, 9, 29), date(2026, 10, 1), date(2026, 10, 2),
+                # Oct 5 - Oct 11 (5)
+                date(2026, 10, 5), date(2026, 10, 6), date(2026, 10, 7), date(2026, 10, 9), date(2026, 10, 10),
+                # Oct 12 - Oct 18 (4)
+                date(2026, 10, 12), date(2026, 10, 13), date(2026, 10, 15), date(2026, 10, 16),
+                # Oct 19 - Oct 25 (5)
+                date(2026, 10, 19), date(2026, 10, 20), date(2026, 10, 21), date(2026, 10, 23), date(2026, 10, 24),
+                # Oct 26 - Nov 1 (4)
+                date(2026, 10, 26), date(2026, 10, 27), date(2026, 10, 29), date(2026, 10, 30),
+                # Nov 2 - Nov 8 (4)
+                date(2026, 11, 2), date(2026, 11, 4), date(2026, 11, 5), date(2026, 11, 7),
             ],
         }
         for uname, days in checkin_schedule.items():
