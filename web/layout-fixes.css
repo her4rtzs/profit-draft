@@ -28,8 +28,12 @@ body {
   padding: 0 !important;
 }
 
-html body .dashboard {
-  display: block !important;
+html body .dashboard,
+html body .app,
+html body.member-home .member-app {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: stretch !important;
   width: 100% !important;
   min-width: 0 !important;
   min-height: 100vh !important;
@@ -48,6 +52,7 @@ html body .dashboard {
     height: 100vh !important;
     flex: 0 0 auto !important;
     z-index: 100 !important;
+    align-self: flex-start !important;
   }
 
   html body .scrim,
@@ -60,7 +65,7 @@ html body .dashboard {
   html body aside.sidebar ~ .scrim ~ .main,
   html body .app > .main,
   html body .main,
-  html body.member-home .member-content {
+  html body.member-home .member-main {
     flex: 1 1 0% !important;
     min-width: 0 !important;
     width: auto !important;
@@ -72,6 +77,15 @@ html body .dashboard {
     padding: 24px clamp(24px, 3vw, 42px) 48px !important;
     overflow-x: clip !important;
     overflow-y: visible !important;
+  }
+
+  html body.member-home .member-content {
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+    padding: 32px clamp(18px, 3vw, 36px) 60px !important;
   }
 
   /* Hover-expand adjustment: zero overlap via Flexbox layout */
@@ -112,6 +126,30 @@ html body .main-content > * {
   width: 100% !important;
   max-width: 100% !important;
   box-sizing: border-box !important;
+}
+
+/* Specific Members Page Header Override: no duplicate topbar heading */
+html body[data-page="members"] #topbar .topbar-heading,
+html body.pf-staff[data-page="members"] #topbar .topbar-heading {
+  display: none !important;
+}
+html body[data-page="members"] #topbar,
+html body.pf-staff[data-page="members"] #topbar {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  border-bottom: 0 !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  min-height: auto !important;
+  padding: 8px 0 0 0 !important;
+  margin: 0 0 16px 0 !important;
+}
+html body[data-page="members"] #topbar .topbar-right,
+html body.pf-staff[data-page="members"] #topbar .topbar-right {
+  margin-left: auto !important;
+  display: flex !important;
 }
 
 /* --------------------------------------------------------------------------

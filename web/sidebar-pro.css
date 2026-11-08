@@ -516,12 +516,14 @@ html body .sidebar .account-menu button[data-logout] i {
     transition: width 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
   }
 
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within),
-  html body aside.sidebar#sidebar:not(:hover):not(:focus-within),
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) {
+  /* Resting rail (<= 80px): icons only, centred */
+  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within),
+  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within),
+  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) {
     width: var(--sb-rail) !important;
   }
 
+  /* Expanded rail (260px): cursor hover, focus-within, or body.sb-expanded */
   html body nav.sidebar#sidebar:hover,
   html body nav.sidebar#sidebar:focus-within,
   html body aside.sidebar#sidebar:hover,
@@ -535,84 +537,84 @@ html body .sidebar .account-menu button[data-logout] i {
   }
 
   /* Resting rail: icons only, centred */
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-brand-row,
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .brand,
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user,
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .side-user,
-  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-brand-row,
-  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .brand,
-  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user,
-  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .side-user,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-brand-row,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .brand,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .side-user {
+  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-brand-row,
+  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .brand,
+  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user,
+  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .side-user,
+  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-brand-row,
+  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .brand,
+  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user,
+  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .side-user,
+  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-brand-row,
+  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .brand,
+  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user,
+  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .side-user {
     justify-content: center !important;
   }
 
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a,
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a,
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-link,
-  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a,
-  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a,
-  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-link,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .menulist a,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .nav-link {
+  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a,
+  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a,
+  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-link,
+  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a,
+  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a,
+  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-link,
+  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .menulist a,
+  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a,
+  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .nav-link {
     justify-content: center !important;
     gap: 0 !important;
     padding: 0 !important;
   }
 
   /* Text elements hidden during resting rail */
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .headertxt,
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .brand-txt,
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-group-label,
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-label,
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user-copy,
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .side-user .who,
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .account-menu-toggle,
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) #accountBtn,
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .account-menu,
-  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .headertxt,
-  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .brand-txt,
-  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-group-label,
-  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-label,
-  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user-copy,
-  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .side-user .who,
-  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .account-menu-toggle,
-  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) #accountBtn,
-  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .account-menu,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .headertxt,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .brand-txt,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .nav-group-label,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .nav-label,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user-copy,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .side-user .who,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .account-menu-toggle,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) #accountBtn,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .account-menu {
+  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .headertxt,
+  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .brand-txt,
+  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-group-label,
+  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-label,
+  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user-copy,
+  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .side-user .who,
+  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .account-menu-toggle,
+  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) #accountBtn,
+  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .account-menu,
+  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .headertxt,
+  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .brand-txt,
+  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-group-label,
+  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-label,
+  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user-copy,
+  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .side-user .who,
+  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .account-menu-toggle,
+  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) #accountBtn,
+  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .account-menu,
+  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .headertxt,
+  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .brand-txt,
+  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .nav-group-label,
+  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .nav-label,
+  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user-copy,
+  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .side-user .who,
+  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .account-menu-toggle,
+  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) #accountBtn,
+  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .account-menu {
     display: none !important;
   }
 
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .text,
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .nav-text,
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a .text,
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a .nav-text,
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-link .text,
-  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-link .nav-text,
-  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .text,
-  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .nav-text,
-  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a .text,
-  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a .nav-text,
-  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-link .text,
-  html body aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-link .nav-text,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .text,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .nav-text,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a .text,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a .nav-text,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .nav-link .text,
-  html body .sidebar#sidebar:not(:hover):not(:focus-within) .nav-link .nav-text {
+  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .text,
+  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .nav-text,
+  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a .text,
+  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a .nav-text,
+  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-link .text,
+  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-link .nav-text,
+  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .text,
+  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .nav-text,
+  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a .text,
+  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a .nav-text,
+  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-link .text,
+  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-link .nav-text,
+  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .text,
+  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .nav-text,
+  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a .text,
+  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a .nav-text,
+  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .nav-link .text,
+  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .nav-link .nav-text {
     position: absolute !important;
     width: 1px !important;
     height: 1px !important;
@@ -622,7 +624,7 @@ html body .sidebar .account-menu button[data-logout] i {
     clip-path: inset(50%) !important;
   }
 
-  /* Reveal: labels fade in smoothly once the panel has expanded */
+  /* Reveal: labels display smoothly once expanded via hover, focus-within, or body.sb-expanded */
   html body nav.sidebar#sidebar:hover .headertxt,
   html body nav.sidebar#sidebar:focus-within .headertxt,
   html body nav.sidebar#sidebar:hover .brand-txt,
@@ -631,6 +633,8 @@ html body .sidebar .account-menu button[data-logout] i {
   html body nav.sidebar#sidebar:focus-within .sidebar-user-copy,
   html body nav.sidebar#sidebar:hover .side-user .who,
   html body nav.sidebar#sidebar:focus-within .side-user .who,
+  html body nav.sidebar#sidebar:hover .account-menu-toggle,
+  html body nav.sidebar#sidebar:focus-within .account-menu-toggle,
   html body nav.sidebar#sidebar:hover .menulist a .text,
   html body nav.sidebar#sidebar:focus-within .menulist a .text,
   html body nav.sidebar#sidebar:hover .nav-link .nav-text,
@@ -643,6 +647,8 @@ html body .sidebar .account-menu button[data-logout] i {
   html body aside.sidebar#sidebar:focus-within .sidebar-user-copy,
   html body aside.sidebar#sidebar:hover .side-user .who,
   html body aside.sidebar#sidebar:focus-within .side-user .who,
+  html body aside.sidebar#sidebar:hover .account-menu-toggle,
+  html body aside.sidebar#sidebar:focus-within .account-menu-toggle,
   html body aside.sidebar#sidebar:hover .menulist a .text,
   html body aside.sidebar#sidebar:focus-within .menulist a .text,
   html body aside.sidebar#sidebar:hover .nav-link .nav-text,
@@ -655,10 +661,28 @@ html body .sidebar .account-menu button[data-logout] i {
   html body .sidebar#sidebar:focus-within .sidebar-user-copy,
   html body .sidebar#sidebar:hover .side-user .who,
   html body .sidebar#sidebar:focus-within .side-user .who,
+  html body .sidebar#sidebar:hover .account-menu-toggle,
+  html body .sidebar#sidebar:focus-within .account-menu-toggle,
   html body .sidebar#sidebar:hover .menulist a .text,
   html body .sidebar#sidebar:focus-within .menulist a .text,
   html body .sidebar#sidebar:hover .nav-link .nav-text,
-  html body .sidebar#sidebar:focus-within .nav-link .nav-text {
+  html body .sidebar#sidebar:focus-within .nav-link .nav-text,
+  html body.sb-expanded .headertxt,
+  html body.sb-expanded .brand-txt,
+  html body.sb-expanded .sidebar-user-copy,
+  html body.sb-expanded .side-user .who,
+  html body.sb-expanded .account-menu-toggle,
+  html body.sb-expanded .menulist a .text,
+  html body.sb-expanded .nav-list a .text,
+  html body.sb-expanded .nav-link .text,
+  html body.sb-expanded .nav-link .nav-text {
+    display: block !important;
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    clip-path: none !important;
+    overflow: visible !important;
     animation: sb-rail-reveal 0.16s ease 0.08s both !important;
   }
 
@@ -673,11 +697,45 @@ html body .sidebar .account-menu button[data-logout] i {
   html body .sidebar#sidebar:hover .nav-group-label,
   html body .sidebar#sidebar:focus-within .nav-group-label,
   html body .sidebar#sidebar:hover .nav-label,
-  html body .sidebar#sidebar:focus-within .nav-label {
+  html body .sidebar#sidebar:focus-within .nav-label,
+  html body.sb-expanded .nav-group-label,
+  html body.sb-expanded .nav-label {
+    display: block !important;
     animation: sb-rail-fade 0.16s ease 0.08s both !important;
   }
 
-  /* When expanded, restore flex-start alignment and padding */
+  /* When expanded, restore flex-start alignment and full padding */
+  html body nav.sidebar#sidebar:hover .sidebar-brand-row,
+  html body nav.sidebar#sidebar:focus-within .sidebar-brand-row,
+  html body nav.sidebar#sidebar:hover .brand,
+  html body nav.sidebar#sidebar:focus-within .brand,
+  html body nav.sidebar#sidebar:hover .sidebar-user,
+  html body nav.sidebar#sidebar:focus-within .sidebar-user,
+  html body nav.sidebar#sidebar:hover .side-user,
+  html body nav.sidebar#sidebar:focus-within .side-user,
+  html body aside.sidebar#sidebar:hover .sidebar-brand-row,
+  html body aside.sidebar#sidebar:focus-within .sidebar-brand-row,
+  html body aside.sidebar#sidebar:hover .brand,
+  html body aside.sidebar#sidebar:focus-within .brand,
+  html body aside.sidebar#sidebar:hover .sidebar-user,
+  html body aside.sidebar#sidebar:focus-within .sidebar-user,
+  html body aside.sidebar#sidebar:hover .side-user,
+  html body aside.sidebar#sidebar:focus-within .side-user,
+  html body .sidebar#sidebar:hover .sidebar-brand-row,
+  html body .sidebar#sidebar:focus-within .sidebar-brand-row,
+  html body .sidebar#sidebar:hover .brand,
+  html body .sidebar#sidebar:focus-within .brand,
+  html body .sidebar#sidebar:hover .sidebar-user,
+  html body .sidebar#sidebar:focus-within .sidebar-user,
+  html body .sidebar#sidebar:hover .side-user,
+  html body .sidebar#sidebar:focus-within .side-user,
+  html body.sb-expanded .sidebar-brand-row,
+  html body.sb-expanded .brand,
+  html body.sb-expanded .sidebar-user,
+  html body.sb-expanded .side-user {
+    justify-content: flex-start !important;
+  }
+
   html body nav.sidebar#sidebar:hover .menulist a,
   html body nav.sidebar#sidebar:focus-within .menulist a,
   html body nav.sidebar#sidebar:hover .nav-link,
@@ -689,7 +747,10 @@ html body .sidebar .account-menu button[data-logout] i {
   html body .sidebar#sidebar:hover .menulist a,
   html body .sidebar#sidebar:focus-within .menulist a,
   html body .sidebar#sidebar:hover .nav-link,
-  html body .sidebar#sidebar:focus-within .nav-link {
+  html body .sidebar#sidebar:focus-within .nav-link,
+  html body.sb-expanded .menulist a,
+  html body.sb-expanded .nav-list a,
+  html body.sb-expanded .nav-link {
     justify-content: flex-start !important;
     padding: 0 12px !important;
     gap: 12px !important;
@@ -701,44 +762,42 @@ html body .sidebar .account-menu button[data-logout] i {
     display: none !important;
   }
 
-  /* Member Portal Desktop Layout (CSS Grid) */
-  html body.member-home {
-    display: grid !important;
-    grid-template-columns: var(--sb-rail, 80px) 1fr !important;
-    grid-template-rows: auto 1fr !important;
-    grid-template-areas:
-      "sidebar topbar"
-      "sidebar content" !important;
+  /* Member Portal Flexbox Shell (matching Trainer & Staff) */
+  html body.member-home .member-app,
+  html body.member-home .app {
+    display: flex !important;
+    flex-direction: row !important;
     min-height: 100vh !important;
     width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
-    transition: grid-template-columns 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
   }
-  html body.member-home.sb-expanded,
-  html body.member-home:has(nav.sidebar:hover),
-  html body.member-home:has(nav.sidebar:focus-within) {
-    grid-template-columns: var(--sidebar-w, 260px) 1fr !important;
-  }
-  html body.member-home > nav.sidebar {
-    grid-area: sidebar !important;
-    position: sticky !important;
-    top: 0 !important;
-    height: 100vh !important;
-    width: 100% !important;
-  }
-  html body.member-home > .member-top {
-    grid-area: topbar !important;
-    width: 100% !important;
-    max-width: none !important;
-    margin: 0 !important;
-  }
-  html body.member-home > .member-content {
-    grid-area: content !important;
-    width: 100% !important;
-    max-width: none !important;
-    margin: 0 !important;
+  html body.member-home .member-main,
+  html body.member-home .main {
+    flex: 1 1 0% !important;
     min-width: 0 !important;
+    width: auto !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  html body.member-home .member-top {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    min-height: 76px !important;
+    padding: 0 clamp(18px, 4vw, 42px) !important;
+  }
+  html body.member-home .member-content {
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+    padding: 32px clamp(18px, 3vw, 36px) 60px !important;
   }
 
   /* Shared Flexbox Main Content across Staff, Trainer, and Admin Portals */
@@ -877,6 +936,17 @@ html body .sidebar .account-menu button[data-logout] i {
     z-index: 9999 !important;
   }
 
+  html[data-theme="light"] .instagram-bottom-nav,
+  html[data-theme="light"] .bottom-nav,
+  html[data-theme="light"] .pf-bottomnav,
+  body:not(.dark) .instagram-bottom-nav,
+  body:not(.dark) .bottom-nav,
+  body:not(.dark) .pf-bottomnav {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08) !important;
+  }
+
   .instagram-bottom-nav a,
   .instagram-bottom-nav button,
   .bottom-nav a,
@@ -961,6 +1031,19 @@ html body .sidebar .account-menu button[data-logout] i {
   .pf-bottomnav a[aria-current="page"] {
     color: #f2cb5c !important;
     font-weight: 700 !important;
+  }
+
+  html[data-theme="light"] .instagram-bottom-nav a,
+  html[data-theme="light"] .pf-bottomnav a,
+  body:not(.dark) .instagram-bottom-nav a,
+  body:not(.dark) .pf-bottomnav a {
+    color: #64748b !important;
+  }
+  html[data-theme="light"] .instagram-bottom-nav a.active,
+  html[data-theme="light"] .pf-bottomnav a.active,
+  body:not(.dark) .instagram-bottom-nav a.active,
+  body:not(.dark) .pf-bottomnav a.active {
+    color: #d99a12 !important;
   }
 
   .instagram-bottom-nav a.active i,

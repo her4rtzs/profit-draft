@@ -41,7 +41,9 @@ body.dark {
 }
 
 html[data-theme="light"],
-html:not([data-theme="dark"]) body:not(.dark) {
+html[data-theme="light"] body,
+body.light,
+body:not(.dark) {
   --pf-page-bg: #f5f3ed;
   --pf-card-bg: #ffffff;
   --pf-card-sub: #f9f8f5;
