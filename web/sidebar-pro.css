@@ -674,12 +674,16 @@ html body .sidebar .account-menu button[data-logout] i {
     gap: 12px !important;
   }
 
-  /* All page columns across Staff, Trainer, and Member reserve 80px */
+  /* All page columns across Staff, Trainer, and Member reserve 80px when sidebar is resting */
   html body nav.sidebar#sidebar ~ .main-content,
   html body .dashboard > main.main-content,
   html body aside.sidebar#sidebar ~ .main,
+  html body aside.sidebar#sidebar ~ .content,
+  html body aside.sidebar#sidebar ~ .scrim ~ .main,
   html body .app > .main,
+  html body .app > .content,
   html body .main,
+  html body .main-content,
   html body.member-home .member-content,
   html body.member-home .member-top {
     display: block !important;
@@ -691,10 +695,38 @@ html body .sidebar .account-menu button[data-logout] i {
     max-width: calc(100% - var(--sb-rail)) !important;
     min-width: 0 !important;
     flex: none !important;
-    padding: 24px clamp(20px, 3vw, 40px) 48px !important;
+    padding: 24px clamp(24px, 3vw, 40px) 48px !important;
     overflow-x: clip !important;
     overflow-y: visible !important;
-    transition: margin-left 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), width 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+    transition: margin-left 0.22s cubic-bezier(0.2, 0.8, 0.2, 1), width 0.22s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+  }
+
+  /* When sidebar expands on hover / focus-within:
+     MAIN CONTENT AUTOMATICALLY ADJUSTS TO 260px (ZERO OVERLAP!) */
+  html body nav.sidebar#sidebar:hover ~ .main-content,
+  html body nav.sidebar#sidebar:focus-within ~ .main-content,
+  html body .dashboard:has(nav.sidebar#sidebar:hover) > main.main-content,
+  html body .dashboard:has(nav.sidebar#sidebar:focus-within) > main.main-content,
+  html body aside.sidebar#sidebar:hover ~ .main,
+  html body aside.sidebar#sidebar:focus-within ~ .main,
+  html body aside.sidebar#sidebar:hover ~ .content,
+  html body aside.sidebar#sidebar:focus-within ~ .content,
+  html body aside.sidebar#sidebar:hover ~ .scrim ~ .main,
+  html body aside.sidebar#sidebar:focus-within ~ .scrim ~ .main,
+  html body .app:has(aside.sidebar#sidebar:hover) > .main,
+  html body .app:has(aside.sidebar#sidebar:focus-within) > .main,
+  html body .app:has(aside.sidebar#sidebar:hover) > .content,
+  html body .app:has(aside.sidebar#sidebar:focus-within) > .content,
+  html body nav.sidebar#sidebar:hover ~ .member-content,
+  html body nav.sidebar#sidebar:focus-within ~ .member-content,
+  html body.sb-expanded .main-content,
+  html body.sb-expanded .main,
+  html body.sb-expanded .content,
+  html body.sb-expanded .member-content,
+  html body.sb-expanded .member-top {
+    margin-left: var(--sidebar-w) !important;
+    width: calc(100% - var(--sidebar-w)) !important;
+    max-width: calc(100% - var(--sidebar-w)) !important;
   }
 }
 

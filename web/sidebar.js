@@ -6,6 +6,20 @@
     set(k,v){try{localStorage.setItem(k,v)}catch{}}
   };
   const sidebar = $(".sidebar"), themeToggle=$("#themeToggle");
+  if (sidebar) {
+    sidebar.addEventListener("mouseenter", () => {
+      if (window.matchMedia("(min-width: 769px)").matches) document.body.classList.add("sb-expanded");
+    });
+    sidebar.addEventListener("mouseleave", () => {
+      document.body.classList.remove("sb-expanded");
+    });
+    sidebar.addEventListener("focusin", () => {
+      if (window.matchMedia("(min-width: 769px)").matches) document.body.classList.add("sb-expanded");
+    });
+    sidebar.addEventListener("focusout", e => {
+      if (!sidebar.contains(e.relatedTarget)) document.body.classList.remove("sb-expanded");
+    });
+  }
   const mobileToggle = $("#mobileNavToggle");
   let drawerShade = $("#sidebarShade");
   if (!drawerShade) { drawerShade = document.createElement("button"); drawerShade.type="button"; drawerShade.id="sidebarShade"; drawerShade.className="sidebar-shade"; drawerShade.setAttribute("aria-label","Close navigation"); document.body.appendChild(drawerShade); }

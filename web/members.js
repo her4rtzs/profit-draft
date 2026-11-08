@@ -582,6 +582,10 @@
   }
   function renderDetail() {
     const root = $("detailRoot");
+    if (!root) return;
+    if (!state.selectedId && DB.members && DB.members.length) {
+      state.selectedId = DB.members[0].id;
+    }
     const m = state.selectedId && DB.member(state.selectedId);
     if (!m) { state.selectedId = null; renderPicker(root); return; }
     const s = statusFor(m);
@@ -592,15 +596,30 @@
       : state.subtab === "checkins" ? checkinsHTML(checkins)
       : state.subtab === "edit" ? editHTML(m)
       : overviewHTML(m, payments, checkins, total);
+    const bg = avatarColor(m.name);
     root.innerHTML = `
+      <div class="detail-member-switcher">
+        <label for="detailMemberSelect"><i class="fa-solid fa-users"></i> Member Selection:</label>
+        <select id="detailMemberSelect" class="detail-select-input">
+          ${DB.members.map(item => `<option value="${esc(item.id)}" ${item.id === m.id ? 'selected' : ''}>${esc(item.name)} (${esc(item.id)}) — ${esc(planLabel(item.plan))}</option>`).join('')}
+        </select>
+        <button class="pp-btn" type="button" data-detail-action="search" style="margin-left:auto"><i class="fa-solid fa-magnifying-glass"></i> Search member</button>
+      </div>
       <div class="pp-detail-head pp-card">
-        <div class="pp-detail-id">${avatar(m, "lg")}
-          <div><h2>${esc(m.name)}</h2><p class="pp-muted">${esc(m.id)} · ${esc(m.email)}${m.phone ? " · " + esc(m.phone) : ""}</p>
-          <div class="pp-badges"><span class="pp-status ${s.key}">${s.label}</span><span class="pp-chip">${esc(planLabel(m.plan))}</span></div></div>
+        <div class="pp-detail-id">
+          <span class="member-avatar-pill" style="width:54px;height:54px;font-size:18px;background:${bg}">${esc(initialsOf(m.name))}</span>
+          <div>
+            <h2>${esc(m.name)}</h2>
+            <p class="pp-muted">${esc(m.id)} · ${esc(m.email)}${m.phone ? " · " + esc(m.phone) : ""}</p>
+            <div class="pp-badges">
+              <span class="badge-status badge-${s.key}"><span class="badge-dot"></span> ${s.label}</span>
+              <span class="pp-chip"><i class="fa-solid fa-ticket"></i> ${esc(planLabel(m.plan))}</span>
+            </div>
+          </div>
         </div>
         <div class="pp-actions">
           <button class="pp-btn pp-btn-primary" type="button" data-detail-action="renew"><i class="fa-solid fa-rotate"></i> Record renewal</button>
-          <button class="pp-btn" type="button" data-detail-action="back"><i class="fa-solid fa-arrow-left"></i> All members</button>
+          <button class="pp-btn" type="button" data-detail-action="edit"><i class="fa-solid fa-pen-to-square"></i> Edit profile</button>
         </div>
       </div>
       <nav class="pp-subtabs" role="tablist" aria-label="Member sections">
@@ -698,8 +717,11 @@
       b.setAttribute("aria-selected", String(on));
     });
     document.querySelectorAll("[data-pane]").forEach(p => p.classList.toggle("active", p.dataset.pane === name));
+    if (name === "detail" && !state.selectedId && DB.members && DB.members.length) {
+      state.selectedId = DB.members[0].id;
+    }
     renderAll();
-    if (name === "enroll") $("eName").focus({ preventScroll: true });
+    if (name === "enroll") $("eName")?.focus({ preventScroll: true });
     if (location.hash.replace(/^#/, "") !== name) history.replaceState(null, "", `#${name}`);
   }
 
@@ -713,21 +735,24 @@
   }
   window.addEventListener("hashchange", tabFromHash);
 
-  $("memberSearch").addEventListener("input", e => { state.query = e.target.value; state.page = 1; renderBrowse(); hydratePhotos(); });
-  document.querySelector("#memberFilters").addEventListener("click", e => {
-    const b = e.target.closest("[data-filter]");
-    if (!b) return;
-    state.filter = b.dataset.filter;
-    state.page = 1;
-    renderBrowse();
-  });
+  $("memberSearch")?.addEventListener("input", e => { state.query = e.target.value; state.page = 1; renderBrowse(); hydratePhotos(); });
+  const memberFilters = document.querySelector("#memberFilters");
+  if (memberFilters) {
+    memberFilters.addEventListener("click", e => {
+      const b = e.target.closest("[data-filter]");
+      if (!b) return;
+      state.filter = b.dataset.filter;
+      state.page = 1;
+      renderBrowse();
+    });
+  }
   const openFrom = e => {
     const el = e.target.closest("[data-open]");
     if (el) openDetail(el.dataset.open);
   };
-  $("memberGrid").addEventListener("click", openFrom);
-  $("memberGrid").addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.matches("[data-open]")) { e.preventDefault(); openDetail(e.target.dataset.open); } });
-  $("memberPager").addEventListener("click", e => {
+  $("memberGrid")?.addEventListener("click", openFrom);
+  $("memberGrid")?.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.matches("[data-open]")) { e.preventDefault(); openDetail(e.target.dataset.open); } });
+  $("memberPager")?.addEventListener("click", e => {
     const b = e.target.closest("[data-page]");
     if (!b || b.disabled) return;
     state.page = Number(b.dataset.page);
@@ -736,13 +761,13 @@
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
 
-  document.querySelector("#appFilters").addEventListener("click", e => {
+  document.querySelector("#appFilters")?.addEventListener("click", e => {
     const b = e.target.closest("[data-app]");
     if (!b) return;
     state.app = b.dataset.app;
     renderApps();
   });
-  $("appList").addEventListener("click", e => {
+  $("appList")?.addEventListener("click", e => {
     const b = e.target.closest("[data-app-action]");
     if (!b) return;
     const app = (DB.applications || []).find(a => a.id === b.dataset.id);
@@ -766,23 +791,34 @@
   });
 
   const detailRoot = $("detailRoot");
-  detailRoot.addEventListener("click", e => {
-    const open = e.target.closest("[data-open]");
-    if (open) return openDetail(open.dataset.open);
-    const sub = e.target.closest("[data-subtab]");
-    if (sub) { state.subtab = sub.dataset.subtab; return renderDetail(); }
-    const act = e.target.closest("[data-detail-action]");
-    if (!act) return;
-    const m = DB.member(state.selectedId);
-    if (act.dataset.detailAction === "back") { state.selectedId = null; renderDetail(); }
-    if (act.dataset.detailAction === "renew" && m) renewalDialog(m);
-  });
-  detailRoot.addEventListener("input", e => {
-    if (e.target.id === "pickerSearch") { state.pickerQuery = e.target.value; renderPicker(detailRoot); }
-  });
-  detailRoot.addEventListener("submit", e => {
-    if (e.target.id === "editForm") { e.preventDefault(); saveEdit(e.target); }
-  });
+  if (detailRoot) {
+    detailRoot.addEventListener("click", e => {
+      const open = e.target.closest("[data-open]");
+      if (open) return openDetail(open.dataset.open);
+      const sub = e.target.closest("[data-subtab]");
+      if (sub) { state.subtab = sub.dataset.subtab; return renderDetail(); }
+      const act = e.target.closest("[data-detail-action]");
+      if (!act) return;
+      const m = DB.member(state.selectedId);
+      if (act.dataset.detailAction === "back" || act.dataset.detailAction === "search") {
+        state.selectedId = null;
+        renderPicker(detailRoot);
+      }
+      if (act.dataset.detailAction === "renew" && m) renewalDialog(m);
+      if (act.dataset.detailAction === "edit") { state.subtab = "edit"; renderDetail(); }
+    });
+    detailRoot.addEventListener("change", e => {
+      if (e.target.id === "detailMemberSelect") {
+        openDetail(e.target.value, state.subtab);
+      }
+    });
+    detailRoot.addEventListener("input", e => {
+      if (e.target.id === "pickerSearch") { state.pickerQuery = e.target.value; renderPicker(detailRoot); }
+    });
+    detailRoot.addEventListener("submit", e => {
+      if (e.target.id === "editForm") { e.preventDefault(); saveEdit(e.target); }
+    });
+  }
 
   $("enrollForm").addEventListener("submit", async e => {
     e.preventDefault();

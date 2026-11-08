@@ -670,3 +670,439 @@
     justify-content: space-between;
   }
 }
+
+/* ==========================================================================
+   Header Reset for Members Page: Zero duplicate header, zero negative margin
+   ========================================================================== */
+body[data-page="members"] #topbar {
+  margin: 0 0 16px 0 !important;
+  padding: 12px 0 !important;
+  border-bottom: 0 !important;
+  background: transparent !important;
+  min-height: auto !important;
+}
+
+body[data-page="members"] #topbar .topbar-heading {
+  display: none !important;
+}
+
+body[data-page="members"] #topbar .topbar-right {
+  margin-left: auto !important;
+}
+
+/* ==========================================================================
+   Member Detail View Styling (ProFit Dark Theme)
+   ========================================================================== */
+.detail-member-switcher {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #111827;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 10px 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.detail-member-switcher label {
+  color: #f59e0b;
+  font-size: 13.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.detail-select-input {
+  flex: 1 1 280px;
+  max-width: 440px;
+  height: 40px;
+  background: #161f30;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  color: #ffffff;
+  padding: 0 12px;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.detail-select-input:focus {
+  border-color: #f59e0b;
+}
+
+.pp-detail-head {
+  background: #111827 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 16px !important;
+  padding: 22px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 20px !important;
+  margin-bottom: 22px !important;
+  flex-wrap: wrap !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.28) !important;
+}
+
+.pp-detail-id {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+}
+
+.pp-detail-id h2 {
+  margin: 0 !important;
+  font-size: 22px !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+  letter-spacing: -0.01em !important;
+}
+
+.pp-detail-id p.pp-muted {
+  margin: 4px 0 8px !important;
+  color: #8b99ad !important;
+  font-size: 13px !important;
+}
+
+.pp-badges {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+}
+
+.pp-chip {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 5px 12px !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: #d1d5db !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+}
+
+.pp-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  flex-wrap: wrap !important;
+}
+
+.pp-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  height: 40px !important;
+  padding: 0 16px !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: #1a2232 !important;
+  color: #e5e7eb !important;
+  font-family: inherit !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.pp-btn:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+.pp-btn-primary {
+  background: linear-gradient(110deg, #f2cb5c 0%, #f59e0b 100%) !important;
+  color: #1a1407 !important;
+  border-color: #f59e0b !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.28) !important;
+}
+
+.pp-btn-primary:hover {
+  background: linear-gradient(110deg, #f59e0b 0%, #d97706 100%) !important;
+  color: #ffffff !important;
+}
+
+/* Detail subtabs (Overview, Payments, Check-ins, Edit details) */
+.pp-subtabs {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  margin-bottom: 22px !important;
+  overflow-x: auto !important;
+}
+
+.pp-subtabs button {
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 3px solid transparent !important;
+  color: #8b99ad !important;
+  font-family: inherit !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  padding: 12px 18px !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+  transition: color 0.15s ease, border-color 0.15s ease !important;
+}
+
+.pp-subtabs button:hover {
+  color: #ffffff !important;
+}
+
+.pp-subtabs button.active,
+.pp-subtabs button[aria-selected="true"] {
+  color: #f59e0b !important;
+  border-bottom-color: #f59e0b !important;
+  font-weight: 700 !important;
+}
+
+/* Info grid in overview */
+.pp-info-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+  gap: 18px !important;
+}
+
+.pp-card {
+  background: #111827 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 16px !important;
+  padding: 20px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
+}
+
+.pp-card h3 {
+  margin: 0 0 14px !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+  padding-bottom: 10px !important;
+}
+
+.pp-card-head {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-bottom: 16px !important;
+  gap: 12px !important;
+}
+
+.pp-card-head h3 {
+  margin: 0 !important;
+  border-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.pp-dl {
+  display: grid !important;
+  grid-template-columns: 120px 1fr !important;
+  row-gap: 10px !important;
+  column-gap: 12px !important;
+  font-size: 13.5px !important;
+  margin: 0 !important;
+}
+
+.pp-dl dt {
+  color: #8b99ad !important;
+  font-weight: 500 !important;
+}
+
+.pp-dl dd {
+  margin: 0 !important;
+  color: #f3f4f6 !important;
+  font-weight: 600 !important;
+}
+
+/* Timeline & payments tables */
+.pp-table-wrap {
+  overflow-x: auto !important;
+}
+
+.pp-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  font-size: 13.5px !important;
+}
+
+.pp-table th {
+  padding: 12px 16px !important;
+  color: #8b99ad !important;
+  font-weight: 600 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  text-align: left !important;
+}
+
+.pp-table th.num,
+.pp-table td.num {
+  text-align: right !important;
+}
+
+.pp-table td {
+  padding: 12px 16px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+  color: #e5e7eb !important;
+}
+
+.pp-timeline {
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+
+.pp-timeline li {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 10px 14px !important;
+  border-radius: 10px !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  font-size: 13.5px !important;
+}
+
+.pp-timeline li strong {
+  color: #ffffff !important;
+}
+
+.pp-timeline li span {
+  color: #8b99ad !important;
+}
+
+/* Form inputs in edit mode */
+.pp-form-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 16px !important;
+}
+
+@media (max-width: 640px) {
+  .pp-form-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.pp-field {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+}
+
+.pp-field.pp-span-2 {
+  grid-column: 1 / -1 !important;
+}
+
+.pp-field label,
+.pp-field span {
+  color: #9ca3af !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+}
+
+.pp-field input,
+.pp-field select,
+.pp-field textarea {
+  height: 42px !important;
+  background: #161f30 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 10px !important;
+  padding: 0 14px !important;
+  color: #ffffff !important;
+  font-family: inherit !important;
+  font-size: 13.5px !important;
+  outline: none !important;
+  transition: border-color 0.15s ease !important;
+}
+
+.pp-field textarea {
+  height: auto !important;
+  padding: 10px 14px !important;
+}
+
+.pp-field input:focus,
+.pp-field select:focus,
+.pp-field textarea:focus {
+  border-color: #f59e0b !important;
+}
+
+.pp-actions-end {
+  justify-content: flex-end !important;
+  margin-top: 20px !important;
+}
+
+/* Member picker styling */
+.pp-picker {
+  background: #111827 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 16px !important;
+  padding: 24px !important;
+}
+
+.pp-picker-head h2 {
+  margin: 0 0 6px !important;
+  font-size: 20px !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+}
+
+.pp-search-wide {
+  margin: 16px 0 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  height: 46px !important;
+  padding: 0 16px !important;
+  background: #161f30 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 12px !important;
+  color: #9ca3af !important;
+}
+
+.pp-search-wide input {
+  flex: 1 !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: #ffffff !important;
+  outline: none !important;
+  font-family: inherit !important;
+  font-size: 14px !important;
+}
+
+.pp-picker-list {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+  gap: 12px !important;
+}
+
+.pp-picker-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 12px 14px !important;
+  border-radius: 12px !important;
+  background: #161f30 !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  color: #ffffff !important;
+  cursor: pointer !important;
+  text-align: left !important;
+  transition: all 0.15s ease !important;
+}
+
+.pp-picker-item:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: #f59e0b !important;
+  transform: translateY(-1px) !important;
+}

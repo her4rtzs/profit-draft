@@ -406,7 +406,20 @@
     const body = document.body;
     body.classList.remove('mini');
     try { localStorage.removeItem('pf-mini'); } catch (e) {}
-    $('#sidebar').innerHTML = sidebarHTML();
+    const sb = $('#sidebar');
+    sb.innerHTML = sidebarHTML();
+    sb.addEventListener('mouseenter', () => {
+      if (window.matchMedia('(min-width: 769px)').matches) document.body.classList.add('sb-expanded');
+    });
+    sb.addEventListener('mouseleave', () => {
+      document.body.classList.remove('sb-expanded');
+    });
+    sb.addEventListener('focusin', () => {
+      if (window.matchMedia('(min-width: 769px)').matches) document.body.classList.add('sb-expanded');
+    });
+    sb.addEventListener('focusout', e => {
+      if (!sb.contains(e.relatedTarget)) document.body.classList.remove('sb-expanded');
+    });
     $('#topbar').innerHTML = topbarHTML();
     $('#bottomNav').innerHTML = bottomHTML();
     const content = $('#content');
