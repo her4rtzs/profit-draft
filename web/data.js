@@ -19,6 +19,7 @@ const initials = name => name.split(/\s+/).filter(Boolean).map(w => w[0]).slice(
 const nowTime = () => new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
 
 const PLANS = {
+    daily:     { label: "Daily",     days: 1,   price: 80 },
     monthly:   { label: "Monthly",   days: 30,  price: 800 },
     quarterly: { label: "Quarterly", days: 90,  price: 2100 },
     annual:    { label: "Annual",    days: 365, price: 7500 }

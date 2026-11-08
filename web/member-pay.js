@@ -1,6 +1,6 @@
 /* Online payment: "Explore plans" opens a plan picker, then sends the member to PayMongo checkout. */
 (() => {
-  const PLANS = [["monthly", "Monthly", "₱800", "30 days"], ["quarterly", "Quarterly", "₱2,100", "90 days"], ["annual", "Annual", "₱7,500", "365 days"]];
+  const PLANS = [["daily", "Daily", "₱80", "1 day"], ["monthly", "Monthly", "₱800", "30 days"], ["quarterly", "Quarterly", "₱2,100", "90 days"], ["annual", "Annual", "₱7,500", "365 days"]];
   const css = document.createElement("style");
   css.textContent = `.pfpay{position:fixed;inset:0;z-index:9000;display:grid;place-items:center;background:#000a;padding:16px}
 .pfpay-box{background:var(--card,#fff);color:var(--text,#111);border-radius:20px;padding:24px;max-width:420px;width:100%;box-shadow:0 20px 60px #0006}

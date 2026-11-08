@@ -6,7 +6,7 @@
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script></head>
 <body class="portal-body auth-page dark"><header class="portal-nav"><a class="portal-brand" href="welcome.html"><span class="brand-mark"><i class="fa-solid fa-dumbbell"></i></span><span><strong>ProFit</strong><small>FITNESS MANAGEMENT</small></span></a><span class="secure-label"><i class="fa-solid fa-lock"></i> Secure checkout</span></header>
 <style>
-.jn-plans{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:6px 0 4px}
+.jn-plans{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:6px 0 4px}
 .jn-plans .plan{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:6px;min-height:92px;padding:14px;border:1px solid var(--border);border-radius:10px;cursor:pointer;background:var(--hover)}
 .jn-plans .plan input{position:absolute;opacity:0}
 .jn-plans .plan.on{border-color:var(--pf-lime);box-shadow:0 0 0 1px var(--pf-lime) inset}
@@ -16,14 +16,15 @@
 .jn-terms{display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-size:14px;color:var(--muted);cursor:pointer}.jn-terms input{width:18px;min-height:18px;height:18px;margin-top:2px;accent-color:#e8b93a;flex:none}.jn-terms a{color:#e8b93a;text-decoration:underline}.jn-err{color:#ff7b7b;font-size:14px;min-height:20px;margin:10px 0 0}
 .jn-note{border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:14px;margin-bottom:12px;background:var(--hover)}
 .jn-ok{text-align:center;padding:10px 0}.jn-ok i{font-size:48px;color:var(--pf-lime);margin-bottom:12px}.jn-ok p{color:var(--muted);margin:8px 0 18px}
-@media(max-width:560px){.jn-plans{grid-template-columns:1fr}.jn-row{grid-template-columns:1fr}.jn-plans .plan{flex-direction:row;align-items:center;min-height:0}}
+@media(max-width:560px){.jn-plans{grid-template-columns:1fr 1fr}.jn-row{grid-template-columns:1fr}.jn-plans .plan{flex-direction:row;align-items:center;min-height:0}}
 </style>
 <main class="auth-shell"><section class="auth-story"><div class="eyebrow"><span></span> JOIN THE GYM</div><h1>Pay once.<br><em>Your account is ready.</em></h1><p>Choose a plan and pay with GCash, Maya, card or QR. As soon as payment is confirmed, your member account is created automatically. No waiting for staff approval.</p><div class="auth-points"><span><i class="fa-solid fa-check"></i> Secure checkout by PayMongo</span><span><i class="fa-solid fa-check"></i> Account and membership start right after you pay</span><span><i class="fa-solid fa-check"></i> Sign in with the email and password you set here</span></div></section>
 <section class="auth-card" id="box"><div class="portal-heading-icon"><i class="fa-solid fa-user-plus"></i></div><p class="portal-kicker">NEW MEMBER</p><h2>Create your account</h2><p class="auth-sub">Pick a plan, add your details, then pay securely.</p>
 <form id="f" novalidate>
 <label class="auth-label">Plan</label>
 <div class="jn-plans" id="plans">
-<label class="plan on"><input type="radio" name="plan" value="monthly" checked><strong>Monthly</strong><small>30 days</small><b>₱800</b></label>
+<label class="plan on"><input type="radio" name="plan" value="daily" checked><strong>Daily</strong><small>1 day</small><b>₱80</b></label>
+<label class="plan"><input type="radio" name="plan" value="monthly"><strong>Monthly</strong><small>30 days</small><b>₱800</b></label>
 <label class="plan"><input type="radio" name="plan" value="quarterly"><span class="tag">POPULAR</span><strong>Quarterly</strong><small>90 days</small><b>₱2,100</b></label>
 <label class="plan"><input type="radio" name="plan" value="annual"><strong>Annual</strong><small>365 days</small><b>₱7,500</b></label>
 </div>

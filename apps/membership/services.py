@@ -60,7 +60,7 @@ def record_attendance(member, check_in_at=None, recorded_by=None):
 
 # --- Phase 1: staff member management and check-in --------------------------
 
-PLAN_DAYS = {"monthly": 30, "quarterly": 90, "annual": 365}
+PLAN_DAYS = {"daily": 1, "monthly": 30, "quarterly": 90, "annual": 365}
 
 
 def _split_name(name):

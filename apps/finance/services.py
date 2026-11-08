@@ -17,6 +17,7 @@ from apps.notifications.services import notify
 from .models import ManualPayment
 
 PLAN_PRICE_CENTAVOS = {
+    "daily": 8_000,
     "monthly": 80_000,
     "quarterly": 210_000,
     "annual": 750_000,
