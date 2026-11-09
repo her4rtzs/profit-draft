@@ -237,30 +237,42 @@
   };
 
   const STAFF_NAV = [
-    { label: 'WORKSPACE', items: [
-      { id: 'dashboard', label: 'Dashboard', icon: 'home', href: 'index.html' },
-      { id: 'announcements', label: 'Announcements', icon: 'megaphone', href: 'announcements.html', roles: ['Owner', 'Cashier'] }] },
-    { label: 'MEMBERSHIP', items: [
-      { id: 'members', label: 'Member List', icon: 'users', href: 'members.html' },
-      { id: 'attendance', label: 'Attendance', icon: 'calendar-check', href: 'attendance.html' },
-      { id: 'trainers', label: 'Trainers', icon: 'dumbbell', href: 'trainers.html', roles: ['Owner', 'Cashier'] }] },
-    { label: 'FINANCE', items: [
-      { id: 'payments', label: 'Payments & Billing', icon: 'wallet', href: 'payments.html', roles: ['Owner', 'Cashier'] },
-      { id: 'reports', label: 'Financial Reports', icon: 'chart', href: 'reports.html', roles: ['Owner'] }] }
+    {
+      label: 'WORKSPACE', items: [
+        { id: 'dashboard', label: 'Dashboard', icon: 'home', href: 'index.html' },
+        { id: 'announcements', label: 'Announcements', icon: 'megaphone', href: 'announcements.html', roles: ['Owner', 'Cashier'] }]
+    },
+    {
+      label: 'MEMBERSHIP', items: [
+        { id: 'members', label: 'Member List', icon: 'users', href: 'members.html' },
+        { id: 'attendance', label: 'Attendance', icon: 'calendar-check', href: 'attendance.html' },
+        { id: 'trainers', label: 'Trainers', icon: 'dumbbell', href: 'trainers.html', roles: ['Owner', 'Cashier'] }]
+    },
+    {
+      label: 'FINANCE', items: [
+        { id: 'payments', label: 'Payments & Billing', icon: 'wallet', href: 'payments.html', roles: ['Owner', 'Cashier'] },
+        { id: 'reports', label: 'Financial Reports', icon: 'chart', href: 'reports.html', roles: ['Owner'] }]
+    }
   ];
 
   const TRAINER_NAV = [
-    { label: 'WORKSPACE', items: [
-      { id: 'dashboard', label: 'Dashboard', icon: 'home', href: 'index.html' },
-      { id: 'announcements', label: 'Announcements', icon: 'megaphone', href: 'announcements.html' }] },
-    { label: 'TRAINING', items: [
-      { id: 'members', label: 'My Members', icon: 'users', href: 'members.html' },
-      { id: 'attendance', label: 'Attendance', icon: 'calendar-check', href: 'attendance.html' },
-      { id: 'schedule', label: 'My Schedule', icon: 'calendar', href: 'schedule.html' }] },
-    { label: 'ACCOUNT', items: [
-      { id: 'notifications', label: 'Notifications', icon: 'bell', href: 'notifications.html' },
-      { id: 'profile', label: 'My Profile', icon: 'user', href: 'profile.html' },
-      { id: 'settings', label: 'Settings', icon: 'settings', href: 'settings.html' }] }
+    {
+      label: 'WORKSPACE', items: [
+        { id: 'dashboard', label: 'Dashboard', icon: 'home', href: 'index.html' },
+        { id: 'announcements', label: 'Announcements', icon: 'megaphone', href: 'announcements.html' }]
+    },
+    {
+      label: 'TRAINING', items: [
+        { id: 'members', label: 'My Members', icon: 'users', href: 'members.html' },
+        { id: 'attendance', label: 'Attendance', icon: 'calendar-check', href: 'attendance.html' },
+        { id: 'schedule', label: 'My Schedule', icon: 'calendar', href: 'schedule.html' }]
+    },
+    {
+      label: 'ACCOUNT', items: [
+        { id: 'notifications', label: 'Notifications', icon: 'bell', href: 'notifications.html' },
+        { id: 'profile', label: 'My Profile', icon: 'user', href: 'profile.html' },
+        { id: 'settings', label: 'Settings', icon: 'settings', href: 'settings.html' }]
+    }
   ];
 
   const getNav = () => (isTrainerContext() ? TRAINER_NAV : STAFF_NAV);
@@ -348,7 +360,7 @@
     const n = PF.db.unread(), b = $('#bellBadge');
     if (b) { b.textContent = n; b.hidden = !n; }
     const set = (id, v) => { const el = $(`[data-badge="${id}"]`); if (el) { el.textContent = v; el.hidden = !v; } };
-    
+
     renderNotifPanel();
   }
   PF.refreshNav = () => { $$('.nav-link').forEach(a => a.classList.remove('active')); const cur = currentId(); const t = $$('.nav-link').find(a => a.getAttribute('href') === (getNav().flatMap(g => g.items).find(i => i.id === cur) || {}).href); if (t) t.classList.add('active'); };
@@ -405,7 +417,7 @@
   function build() {
     const body = document.body;
     body.classList.remove('mini');
-    try { localStorage.removeItem('pf-mini'); } catch (e) {}
+    try { localStorage.removeItem('pf-mini'); } catch (e) { }
     $('#sidebar').innerHTML = sidebarHTML();
     $('#topbar').innerHTML = topbarHTML();
     $('#bottomNav').innerHTML = bottomHTML();
@@ -425,9 +437,11 @@
     const bell = $('#bellBtn'), panel = $('#npanel');
     bell.onclick = e => { e.stopPropagation(); const on = panel.hidden; panel.hidden = !on; bell.setAttribute('aria-expanded', on); if (on) renderNotifPanel(); };
     document.addEventListener('click', e => { if (!panel.hidden && !panel.contains(e.target) && !bell.contains(e.target)) { panel.hidden = true; bell.setAttribute('aria-expanded', 'false'); } });
-    $('#accountBtn').onclick = e => { e.stopPropagation(); PF.menu($('#accountBtn'), [
-      { label: 'My profile', icon: 'user', href: 'profile.html' }, { label: 'Settings', icon: 'settings', href: 'settings.html' }, 'hr',
-      { label: 'Log out', icon: 'log-out', danger: true, onClick: async () => { if (await PF.confirm({ title: 'Log out?', message: 'You will need to sign in again to use the staff portal.', confirm: 'Log out' })) PF.logout(); } }]); };
+    $('#accountBtn').onclick = e => {
+      e.stopPropagation(); PF.menu($('#accountBtn'), [
+        { label: 'My profile', icon: 'user', href: 'profile.html' }, { label: 'Settings', icon: 'settings', href: 'settings.html' }, 'hr',
+        { label: 'Log out', icon: 'log-out', danger: true, onClick: async () => { if (await PF.confirm({ title: 'Log out?', message: 'You will need to sign in again to use the staff portal.', confirm: 'Log out' })) PF.logout(); } }]);
+    };
     globalSearch(); renderNotifPanel();
     document.addEventListener('pf:data', syncBadges);
     window.addEventListener('hashchange', PF.refreshNav);
