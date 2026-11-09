@@ -583,49 +583,181 @@
   function renderDetail() {
     const root = $("detailRoot");
     if (!root) return;
-    if (!state.selectedId && DB.members && DB.members.length) {
+
+    if (!DB.members || DB.members.length === 0) {
+      root.innerHTML = `
+        <div class="pp-card pp-empty-detail" style="text-align:center;padding:48px 24px;">
+          <i class="fa-solid fa-users-slash" style="font-size:44px;color:var(--muted);margin-bottom:14px;display:block;"></i>
+          <h2 style="font-size:22px;font-weight:800;margin-bottom:8px;">No members yet</h2>
+          <p class="pp-muted" style="margin-bottom:20px;font-size:14px;">Enroll a member to see their details here.</p>
+          <button class="pp-btn pp-btn-primary" type="button" id="detailGoEnroll"><i class="fa-solid fa-plus"></i> Enroll a member</button>
+        </div>`;
+      $("detailGoEnroll")?.addEventListener("click", () => setTab("enroll"));
+      return;
+    }
+
+    if (!state.selectedId || !DB.member(state.selectedId)) {
       state.selectedId = DB.members[0].id;
     }
-    const m = state.selectedId && DB.member(state.selectedId);
-    if (!m) { state.selectedId = null; renderPicker(root); return; }
+    const m = DB.member(state.selectedId);
+    if (!m) return;
+
     const s = statusFor(m);
-    const payments = DB.payments.filter(p => p.memberId === m.id).sort((a, b) => b.date - a.date);
-    const checkins = DB.checkins.filter(c => c.memberId === m.id).sort((a, b) => a.date - b.date);
-    const total = payments.reduce((n, p) => n + p.amount, 0);
-    const body = state.subtab === "payments" ? paymentsHTML(payments, total)
-      : state.subtab === "checkins" ? checkinsHTML(checkins)
-      : state.subtab === "edit" ? editHTML(m)
-      : overviewHTML(m, payments, checkins, total);
+    const d = left(m);
+    const daysLeftText = d < 0 ? "Expired" : (d === 0 ? "Expires today" : `${d} day${d === 1 ? "" : "s"} left`);
+    const payments = DB.payments.filter(p => p.memberId === m.id).sort((a, b) => new Date(b.date) - new Date(a.date));
+    const checkins = DB.checkins.filter(c => c.memberId === m.id).sort((a, b) => new Date(b.date) - new Date(a.date));
+    const totalPaid = payments.reduce((n, p) => n + p.amount, 0);
     const bg = avatarColor(m.name);
+
     root.innerHTML = `
-      <div class="detail-member-switcher">
-        <label for="detailMemberSelect"><i class="fa-solid fa-users"></i> Member Selection:</label>
-        <select id="detailMemberSelect" class="detail-select-input">
-          ${DB.members.map(item => `<option value="${esc(item.id)}" ${item.id === m.id ? 'selected' : ''}>${esc(item.name)} (${esc(item.id)}) — ${esc(planLabel(item.plan))}</option>`).join('')}
-        </select>
-        <button class="pp-btn" type="button" data-detail-action="search" style="margin-left:auto"><i class="fa-solid fa-magnifying-glass"></i> Search member</button>
-      </div>
-      <div class="pp-detail-head pp-card">
-        <div class="pp-detail-id">
-          <span class="member-avatar-pill" style="width:54px;height:54px;font-size:18px;background:${bg}">${esc(initialsOf(m.name))}</span>
-          <div>
-            <h2>${esc(m.name)}</h2>
-            <p class="pp-muted">${esc(m.id)} · ${esc(m.email)}${m.phone ? " · " + esc(m.phone) : ""}</p>
-            <div class="pp-badges">
-              <span class="badge-status badge-${s.key}"><span class="badge-dot"></span> ${s.label}</span>
-              <span class="pp-chip"><i class="fa-solid fa-ticket"></i> ${esc(planLabel(m.plan))}</span>
-            </div>
+      <div class="member-detail-container">
+        <!-- Top Toolbar -->
+        <div class="detail-top-toolbar">
+          <button class="pp-btn" type="button" id="btnBackToBrowse">
+            <i class="fa-solid fa-arrow-left"></i> Browse Members
+          </button>
+          <div class="detail-picker-group">
+            <label for="detailMemberSelect"><i class="fa-solid fa-users"></i> Member:</label>
+            <select id="detailMemberSelect" class="detail-select-input">
+              ${DB.members.map(item => `<option value="${esc(item.id)}" ${item.id === m.id ? 'selected' : ''}>${esc(item.name)} (${esc(item.id)}) — ${esc(planLabel(item.plan))}</option>`).join('')}
+            </select>
+          </div>
+          <div class="detail-actions-group">
+            <button class="pp-btn pp-btn-primary" type="button" data-detail-action="renew"><i class="fa-solid fa-rotate"></i> Renew</button>
+            <button class="pp-btn" type="button" data-detail-action="edit"><i class="fa-solid fa-pen-to-square"></i> Edit Profile</button>
           </div>
         </div>
-        <div class="pp-actions">
-          <button class="pp-btn pp-btn-primary" type="button" data-detail-action="renew"><i class="fa-solid fa-rotate"></i> Record renewal</button>
-          <button class="pp-btn" type="button" data-detail-action="edit"><i class="fa-solid fa-pen-to-square"></i> Edit profile</button>
+
+        <!-- 12-Column Grid Layout -->
+        <div class="grid-12 member-detail-grid">
+          <!-- Card 1: Header Banner (12 cols) -->
+          <div class="col-12 pp-card member-detail-header-card">
+            <div class="member-detail-avatar-wrap">
+              <span class="member-avatar-pill is-lg" style="background:${bg};">${esc(initialsOf(m.name))}</span>
+            </div>
+            <div class="member-detail-title-wrap">
+              <div class="member-detail-names">
+                <h2>${esc(m.name)}</h2>
+                <p class="pp-muted"><i class="fa-regular fa-id-badge"></i> Member ID: <strong>${esc(m.id)}</strong></p>
+              </div>
+              <div class="member-detail-badges">
+                <span class="badge-status badge-${s.key}"><span class="badge-dot"></span> ${s.label}</span>
+                <span class="pp-chip"><i class="fa-solid fa-ticket"></i> ${esc(planLabel(m.plan))}</span>
+                <span class="pp-chip is-expiry"><i class="fa-regular fa-clock"></i> ${esc(daysLeftText)}</span>
+              </div>
+            </div>
+            <div class="member-detail-quick-stats">
+              <div class="quick-stat-box">
+                <small>Total Paid</small>
+                <strong>${money(totalPaid)}</strong>
+              </div>
+              <div class="quick-stat-box">
+                <small>Check-ins</small>
+                <strong>${checkins.length}</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Membership Information (6 cols) -->
+          <div class="col-6 pp-card detail-card-stretch">
+            <div class="pp-card-head">
+              <h3><i class="fa-solid fa-id-card-clip"></i> Membership Details</h3>
+              <span class="badge-status badge-${s.key}"><span class="badge-dot"></span> ${s.label}</span>
+            </div>
+            <dl class="detail-dl">
+              <div><dt>Membership Plan</dt><dd>${esc(planLabel(m.plan))}</dd></div>
+              <div><dt>Status</dt><dd>${esc(s.label)} (${esc(daysLeftText)})</dd></div>
+              <div><dt>Started Date</dt><dd>${m.start ? esc(fmt(m.start)) : "—"}</dd></div>
+              <div><dt>Expiry Date</dt><dd>${esc(fmt(m.end))}</dd></div>
+              <div><dt>Days Left</dt><dd><strong>${esc(daysLeftText)}</strong></dd></div>
+              <div><dt>Account ID</dt><dd><code>${esc(m.id)}</code></dd></div>
+            </dl>
+          </div>
+
+          <!-- Card 3: Contact Details (6 cols) -->
+          <div class="col-6 pp-card detail-card-stretch">
+            <div class="pp-card-head">
+              <h3><i class="fa-regular fa-address-book"></i> Contact Information</h3>
+            </div>
+            <dl class="detail-dl">
+              <div><dt>Email Address</dt><dd class="pp-truncate">${esc(m.email)}</dd></div>
+              <div><dt>Mobile Number</dt><dd>${esc(m.phone || "Not provided")}</dd></div>
+              <div><dt>Home Address</dt><dd>${esc(m.address || "Not provided")}</dd></div>
+              <div><dt>Emergency Contact</dt><dd>${esc(m.emergencyName || "Not provided")}</dd></div>
+              <div><dt>Emergency Phone</dt><dd>${esc(m.emergencyPhone || "—")}</dd></div>
+            </dl>
+          </div>
+
+          <!-- Card 4: Recent Payments (6 cols) -->
+          <div class="col-6 pp-card detail-card-stretch">
+            <div class="pp-card-head">
+              <h3><i class="fa-solid fa-wallet"></i> Recent Payments</h3>
+              <span class="pp-muted">${payments.length} total</span>
+            </div>
+            ${payments.length ? `
+              <div class="pp-table-wrap">
+                <table class="pp-table">
+                  <thead>
+                    <tr><th>Reference</th><th>Date</th><th>Method</th><th style="text-align:right">Amount</th></tr>
+                  </thead>
+                  <tbody>
+                    ${payments.slice(0, 5).map(p => `
+                      <tr>
+                        <td><code>${esc(p.ref)}</code></td>
+                        <td>${esc(fmt(p.date))}</td>
+                        <td>${esc(p.method)}</td>
+                        <td style="text-align:right"><strong>${money(p.amount)}</strong></td>
+                      </tr>`).join('')}
+                  </tbody>
+                </table>
+              </div>
+            ` : `
+              <div class="detail-sub-empty">
+                <i class="fa-solid fa-receipt"></i>
+                <p>No payments recorded yet</p>
+                <button class="pp-btn pp-btn-sm" type="button" data-detail-action="renew"><i class="fa-solid fa-plus"></i> Record Payment</button>
+              </div>
+            `}
+          </div>
+
+          <!-- Card 5: Recent Check-ins (6 cols) -->
+          <div class="col-6 pp-card detail-card-stretch">
+            <div class="pp-card-head">
+              <h3><i class="fa-solid fa-calendar-check"></i> Recent Check-ins</h3>
+              <span class="pp-muted">${checkins.length} total</span>
+            </div>
+            ${checkins.length ? `
+              <div class="pp-table-wrap">
+                <table class="pp-table">
+                  <thead>
+                    <tr><th>Date</th><th>Time</th><th>Status</th></tr>
+                  </thead>
+                  <tbody>
+                    ${checkins.slice(0, 5).map(c => `
+                      <tr>
+                        <td>${esc(fmt(c.date))}</td>
+                        <td>${esc(c.time || "—")}</td>
+                        <td><span class="badge-status badge-active"><span class="badge-dot"></span> Completed</span></td>
+                      </tr>`).join('')}
+                  </tbody>
+                </table>
+              </div>
+            ` : `
+              <div class="detail-sub-empty">
+                <i class="fa-solid fa-calendar-xmark"></i>
+                <p>No check-in visits recorded yet</p>
+              </div>
+            `}
+          </div>
         </div>
       </div>
-      <nav class="pp-subtabs" role="tablist" aria-label="Member sections">
-        ${Object.keys(SUBTABS).map(k => `<button type="button" role="tab" aria-selected="${state.subtab === k}" class="${state.subtab === k ? "active" : ""}" data-subtab="${k}">${SUBTABS[k]}</button>`).join("")}
-      </nav>
-      <div class="pp-subtab-body">${body}</div>`;
+    `;
+
+    $("btnBackToBrowse")?.addEventListener("click", () => setTab("browse"));
+    $("detailMemberSelect")?.addEventListener("change", e => {
+      openDetail(e.target.value);
+    });
   }
   function renewalDialog(m) {
     const base = m.end >= today() ? m.end : today();
