@@ -1230,23 +1230,3 @@ Unify the Staff and Member portals to work just as cleanly and reliably as the T
 - In `web/member-home.html`: Wrapped sidebar and main sections inside `<div class="app member-app">` and `<div class="main member-main">`, bringing Member portal into identical structural parity with Trainer and Staff shells.
 ### Decision-log skill
 When multiple portal layouts share responsive navigation components, ensure both the DOM hierarchy (`.app > .sidebar + .main`) and the root display model (`display: flex; flex-direction: row;`) are identical across portals. Any rogue stylesheet rule setting a parent container to `display: block` destroys flex sibling positioning and forces in-flow content underneath sticky/fixed columns.
-
-
-## 2026-11-09 14:18 (Asia/Manila): Fix global shared layout shell, eliminate top space, unify light/dark sidebar & restore Member Detail
-### What I asked for
-1. Fix the shared layout shell across Dashboard, Members, Announcements, Trainers, Settings, and Member portal with identical header positioning and alignment.
-2. Ensure the sidebar stays anchored to the left (84px collapsed, 240px expanded on hover) and main content begins cleanly after it with zero overlap.
-3. Remove the empty space above the page header; standardize one topbar for all pages with title and breadcrumb on the left, and theme toggle, bell, and avatar on the right.
-4. Center content within 1280px max width with consistent horizontal padding; collapse to bottom navigation bar under 860px.
-5. Synchronize light and dark themes across all components, including making the sidebar follow the active theme (clean light sidebar in light mode, dark sidebar in dark mode).
-6. Implement 12-column grid system with equal-height cards; keep the 4 summary cards equal in width.
-7. Set centered tabs on Members page to Browse Members and New Enrollment; open Member Detail from row click/Enter with full 5-card layout and member switcher.
-### What the agent decided and why
-- In `web/layout-fixes.css`: Designed a master CSS Grid layout shell (`display: grid; grid-template-columns: var(--sidebar-w, 84px) minmax(0, 1fr)`) on `.dashboard, .app, .member-app`. Because the main content is anchored in column 2, content overlap is mathematically impossible and the content area cleanly resizes when the sidebar expands to 240px on hover.
-- Standardized the `#topbar` component across all pages (`position: sticky; top: 0; min-height: 72px; margin: 0 auto 20px auto; padding: 0; max-width: 1280px;`). Removed duplicate `.members-header-hero` from `web/members.html` and removed page-specific overrides in `layout-fixes.css`, eliminating the 300px blank void and aligning all headers directly at the top.
-- Replaced hardcoded dark background gradients in `web/sidebar-pro.css` with dynamic CSS theme tokens (`--sidebar-bg`, `--sidebar-border`, `--sidebar-text`). In light mode, the sidebar seamlessly switches to `#FFFFFF` with `#0F172A` typography and `#E2E8F0` border, perfectly synchronized with light cards and canvas.
-- Standardized responsive breakpoints: at `<= 860px`, the desktop sidebar is hidden, main content uses 100% width with `padding-bottom: 88px`, and the Instagram-style frosted bottom navigation bar sits fixed at the viewport bottom.
-- Updated `web/members.html` tab navigation to display centered `Browse Members` and `New Enrollment` pills. Member Detail (`#tabDetail`) is hidden from the main tab group and opens automatically when any row in the table or card view is clicked or pressed with Enter.
-- In `web/members.js`: Rewrote `renderDetail()` to render a top toolbar (Back to Browse Members, member switcher dropdown, Renew, Edit) and a full-width 12-column grid with 5 equal-height cards (Header Banner, Membership Details, Contact Information, Recent Payments, and Recent Check-ins), complete with an empty state ("No members yet. Enroll a member to see their details here.") when no members exist.
-### Decision-log skill
-When multiple pages suffer from uneven offsets, content overlap, and empty voids above sticky headers, replace fragile fixed-positioning hacks and negative margins with a single CSS Grid root shell (`grid-template-columns: var(--sidebar-w) minmax(0, 1fr)`). This guarantees that column 2 starts exactly where column 1 ends across all pages, eliminates vertical whitespace above headers, and provides reliable hover-expansion without content jumping.

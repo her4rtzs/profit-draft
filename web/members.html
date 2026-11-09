@@ -19,16 +19,29 @@
 <body class="pf-staff" data-page="members" data-title="Members" data-welcome="Memberships and enrollment">
 <div class="dashboard"><nav class="sidebar" id="sidebar"></nav><main class="main-content"><header class="topbar" id="topbar"></header>
 
-<!-- 1. Centered Navigation Tabs (Browse Members & New Enrollment) -->
+<!-- Hero Page Header -->
+<div class="members-header-hero">
+  <div class="members-header-icon">
+    <i class="fa-solid fa-users"></i>
+  </div>
+  <div class="members-header-copy">
+    <h1>Members</h1>
+    <p>Manage and view all your gym members.</p>
+  </div>
+</div>
+
+<!-- 1. Centered Navigation Tabs (Equal Width & Height) -->
 <div class="members-nav-wrap">
   <nav class="members-tabs pp-page-tabs" role="tablist" aria-label="Members sections">
     <button class="members-tab pp-page-tab active" type="button" role="tab" aria-selected="true" data-tab="browse">
       <i class="fa-solid fa-table-cells-large"></i> <span>Browse Members</span>
     </button>
+    <button class="members-tab pp-page-tab" type="button" role="tab" aria-selected="false" data-tab="detail">
+      <i class="fa-regular fa-id-card"></i> <span>Member Detail</span>
+    </button>
     <button class="members-tab pp-page-tab" type="button" role="tab" aria-selected="false" data-tab="enroll">
       <i class="fa-solid fa-plus"></i> <span>New Enrollment</span>
     </button>
-    <button class="pp-page-tab" type="button" role="tab" aria-selected="false" data-tab="detail" id="tabDetail" hidden style="display:none"></button>
     <button class="pp-page-tab" type="button" role="tab" aria-selected="false" data-tab="applications" hidden style="display:none"></button>
   </nav>
 </div>
