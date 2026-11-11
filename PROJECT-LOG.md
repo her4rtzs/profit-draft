@@ -1260,3 +1260,13 @@ Fix the dashboard layout in Dark Mode where the contents were "nakagilid" (pushe
 - Bumped stylesheet query version to `layout-fixes.css?v=7` across all HTML files to ensure updated rules load immediately.
 ### Decision-log skill
 When maintaining dual-theme portal dashboards, avoid hardcoded container pixel caps (like `max-width: 1280px`) on main content elements when the header spans 100% width on widescreen monitors; allow cards to stretch fluidly to `100%` of the padded main column so that dark and light modes render with identical widescreen proportions.
+
+
+## 2026-11-12 01:52 (Asia/Manila): Revert all workspace source code to version 1090e89
+### What I asked for
+Revert the entire codebase back to version/commit 1090e89 ("alisin search sa header").
+### What the agent decided and why
+- Checked out all 32 codebase files directly from git commit 1090e89 (`git checkout 1090e89 -- .`) restoring the exact frontend layouts, sidebar logic, styling, and templates from that point in history.
+- Retained `PROJECT-LOG.md` history to strictly adhere to the append-only rule without deleting earlier session logs.
+### Decision-log skill
+When requested to restore a specific historical commit hash, checkout files directly from that commit (`git checkout <hash> -- .`) while keeping `PROJECT-LOG.md` append-only so the project history and previous session learnings remain preserved.
