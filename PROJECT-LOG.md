@@ -1248,3 +1248,15 @@ When multiple portal layouts share responsive navigation components, ensure both
 - Linked `layout-fixes.css?v=6` into `web/member-home.html` and all 8 `web/trainer/*.html` pages to guarantee unified layout behavior across all three roles.
 ### Decision-log skill
 When designing responsive KPI summary grids, never place generic 12-column parent rules after mobile media queries where un-scoped child spans will collapse to single 1/12th column slivers; explicitly scope KPI containers to 4 columns on desktop, 2 columns on mobile, and 1 column on ultra-compact screens. For portal shells, always align sticky headers and main content to the exact same `max-width` and `margin: 0 auto` container constraints to prevent asymmetrical horizontal alignment gaps across themes.
+
+
+## 2026-11-12 01:15 (Asia/Manila): Fix Dark Mode content alignment and eliminate asymmetrical right-side void
+### What I asked for
+Fix the dashboard layout in Dark Mode where the contents were "nakagilid" (pushed to the left side with a large empty black void on the right); make it match Light Mode which stretches properly and evenly across the full width of the screen.
+### What the agent decided and why
+- Diagnosed that `--content-max-w: 1280px` in `layout-fixes.css` was capping `.main-content > *` (`.quick-actions`, `.stats`, `.content-grid`) to 1280px on desktop with `margin-left: 0`, leaving ~600px of empty space on the right side of wide displays in Dark Mode while the topbar stretched to 100%.
+- Removed the 1280px clamp: updated `--content-max-w` to `100%` and set `width: 100% !important; max-width: 100% !important; margin: 0 0 20px 0 !important;` on `.main-content > *`, `.quick-actions`, `.stats`, and `.content-grid` in `layout-fixes.css` and `sidebar-pro.css`. This ensures that in both Dark Mode and Light Mode, all dashboard cards expand fluidly to fill the full container width under the topbar with zero asymmetry or empty gaps on the right.
+- In `web/sidebar.js`: Synchronized `applyTheme` to toggle both `.dark` and `.light` classes, set `data-theme` on `<html>`, and persist both `theme` and `pf-theme` in `localStorage`.
+- Bumped stylesheet query version to `layout-fixes.css?v=7` across all HTML files to ensure updated rules load immediately.
+### Decision-log skill
+When maintaining dual-theme portal dashboards, avoid hardcoded container pixel caps (like `max-width: 1280px`) on main content elements when the header spans 100% width on widescreen monitors; allow cards to stretch fluidly to `100%` of the padded main column so that dark and light modes render with identical widescreen proportions.

@@ -33,6 +33,12 @@
 
   const applyTheme = dark => {
     document.body.classList.toggle("dark", !!dark);
+    document.body.classList.toggle("light", !dark);
+    document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+    try {
+      localStorage.setItem("theme", dark ? "dark" : "light");
+      localStorage.setItem("pf-theme", dark ? "dark" : "light");
+    } catch(e){}
     if (themeToggle) {
       themeToggle.innerHTML = dark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
       themeToggle.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
@@ -40,7 +46,7 @@
     }
   };
   applyTheme(store.get("theme")!=="light");
-  themeToggle?.addEventListener("click",()=>{const dark=!document.body.classList.contains("dark");applyTheme(dark);store.set("theme",dark?"dark":"light")});
+  themeToggle?.addEventListener("click",()=>{const dark=!document.body.classList.contains("dark");applyTheme(dark);});
   const searchInput=$(".search input");
   document.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"&&searchInput){e.preventDefault();searchInput.focus()}});
   const moreBtn=$("#moreBtn"), morePopover=$("#morePopover");

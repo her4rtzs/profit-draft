@@ -786,8 +786,8 @@ html body .sidebar .account-menu button[data-logout] i {
   }
   html body.member-home .member-top {
     width: 100% !important;
-    max-width: 1280px !important;
-    margin: 0 auto 20px auto !important;
+    max-width: 100% !important;
+    margin: 0 0 20px 0 !important;
     box-sizing: border-box !important;
     height: 72px !important;
     min-height: 72px !important;
@@ -802,8 +802,8 @@ html body .sidebar .account-menu button[data-logout] i {
   html body.member-home .member-content {
     flex: 1 1 auto !important;
     width: 100% !important;
-    max-width: 1280px !important;
-    margin: 0 auto !important;
+    max-width: 100% !important;
+    margin: 0 !important;
     box-sizing: border-box !important;
     padding: 0 0 60px 0 !important;
   }
