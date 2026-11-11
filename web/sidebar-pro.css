@@ -779,25 +779,33 @@ html body .sidebar .account-menu button[data-logout] i {
     width: auto !important;
     max-width: none !important;
     margin: 0 !important;
-    padding: 0 !important;
+    padding: 0 32px 48px !important;
     display: flex !important;
     flex-direction: column !important;
+    box-sizing: border-box !important;
   }
   html body.member-home .member-top {
     width: 100% !important;
-    max-width: none !important;
-    margin: 0 !important;
+    max-width: 1280px !important;
+    margin: 0 auto 20px auto !important;
     box-sizing: border-box !important;
-    min-height: 76px !important;
-    padding: 0 clamp(18px, 4vw, 42px) !important;
+    height: 72px !important;
+    min-height: 72px !important;
+    max-height: 72px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    background: transparent !important;
+    border-bottom: 1px solid var(--border) !important;
   }
   html body.member-home .member-content {
     flex: 1 1 auto !important;
     width: 100% !important;
-    max-width: 1200px !important;
+    max-width: 1280px !important;
     margin: 0 auto !important;
     box-sizing: border-box !important;
-    padding: 32px clamp(18px, 3vw, 36px) 60px !important;
+    padding: 0 0 60px 0 !important;
   }
 
   /* Shared Flexbox Main Content across Staff, Trainer, and Admin Portals */
@@ -901,16 +909,38 @@ html body .sidebar .account-menu button[data-logout] i {
   html body .main,
   html body .main-content,
   html body.member-home .member-content,
-  html body.member-home .member-top,
-  html body .member-content,
-  html body .member-top {
+  html body .member-content {
     margin-left: 0 !important;
     margin-right: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
     transform: none !important;
-    padding: 16px 14px calc(76px + env(safe-area-inset-bottom, 0px)) !important;
+    padding: 16px 16px calc(76px + env(safe-area-inset-bottom, 16px)) !important;
+  }
+
+  /* Mobile Topbars: fixed height, proper alignment, zero content overlap */
+  html body .topbar,
+  html body header.topbar,
+  html body #topbar,
+  html body.member-home .member-top,
+  html body .member-top {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 50 !important;
+    height: 64px !important;
+    min-height: 64px !important;
+    max-height: 64px !important;
+    padding: 0 16px !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    background: var(--card) !important;
+    border-bottom: 1px solid var(--border) !important;
   }
 
   /* Instagram-Style Bottom Navigation Bar */

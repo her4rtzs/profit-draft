@@ -1230,3 +1230,21 @@ Unify the Staff and Member portals to work just as cleanly and reliably as the T
 - In `web/member-home.html`: Wrapped sidebar and main sections inside `<div class="app member-app">` and `<div class="main member-main">`, bringing Member portal into identical structural parity with Trainer and Staff shells.
 ### Decision-log skill
 When multiple portal layouts share responsive navigation components, ensure both the DOM hierarchy (`.app > .sidebar + .main`) and the root display model (`display: flex; flex-direction: row;`) are identical across portals. Any rogue stylesheet rule setting a parent container to `display: block` destroys flex sibling positioning and forces in-flow content underneath sticky/fixed columns.
+
+
+## 2026-11-12 00:15 (Asia/Manila): Cross-portal UI layout repair, mobile responsive KPI grid & theme synchronization
+### What I asked for
+1. Guarantee 100% identical dimensions, max-widths, and left positioning between Light and Dark modes with zero layout shift on desktop (remove extra left gap in Dark Mode on Member Dashboard).
+2. Fix Member Dashboard spacing with a consistent 20px gap between widgets without touching card borders.
+3. Fix mobile KPI stats cards from being squished into 4 tiny slivers on mobile (e.g. iPhone 16 / 393px); make them wrap cleanly into 2 columns (and 1 column on <=360px).
+4. Prevent the sticky mobile topbar from covering the "Welcome back, Joyce!" hero card.
+5. Standardize theme toggle behavior across Staff, Trainer, and Member portals with synchronized state and icons.
+### What the agent decided and why
+- In `web/layout-fixes.css`: Diagnosed that `.grid-12, .members-stats-grid, .stats, .stat-grid { grid-template-columns: repeat(12, minmax(0, 1fr)) !important; }` had been placed after the mobile `@media (max-width: 860px)` block, inadvertently overriding mobile rules and forcing 4 stat cards into 1 column each of a 12-column grid. Refactored `.stats`, `.stat-grid`, and `.members-stats-grid` to use `repeat(4, minmax(0, 1fr))` on desktop, and explicit `repeat(2, minmax(0, 1fr))` on tablet and mobile (<= 768px), collapsing to `1fr` only on <= 360px.
+- In `web/sidebar-pro.css` and `web/layout-fixes.css`: Diagnosed the Member Dashboard desktop left gap bug where `.member-top` was set to `max-width: none` while `.member-content` was centered at `max-width: 1200px`, causing a 320px left misalignment. Unified `.member-top` and `.member-content` to `max-width: var(--content-max-w, 1280px) !important; margin: 0 auto !important;` inside `.member-main` (`padding: 0 32px 48px`), aligning the topbar and hero/cards to the exact same left coordinate across both Light and Dark themes.
+- Enforced a uniform 20px bottom margin across Member Dashboard containers (`.member-welcome`, `.pp-tabs`, `.ann-overview`, `.member-status-card`, `.member-metrics`, `.member-grid`, `.panel`) and 20px grid gaps, eliminating touching card borders and maintaining clean separation.
+- In `web/sidebar-pro.css`: Refactored mobile topbars (`.topbar`, `.member-top`) to a fixed 64px height with `padding: 0 16px; margin: 0; position: sticky; top: 0; z-index: 50;` and set `.member-content` mobile padding to `16px 16px calc(76px + env(safe-area-inset-bottom, 16px))`, eliminating the header overlap over "Welcome back, Joyce!".
+- In `web/assets/js/staff.js` and `web/member-home.html`: Synchronized theme toggling across `localStorage.setItem('theme')`, `localStorage.setItem('pf-theme')`, `html[data-theme]`, `body.dark`/`body.light`, and toggle button icon states (`fa-sun` for dark, `fa-moon` for light).
+- Linked `layout-fixes.css?v=6` into `web/member-home.html` and all 8 `web/trainer/*.html` pages to guarantee unified layout behavior across all three roles.
+### Decision-log skill
+When designing responsive KPI summary grids, never place generic 12-column parent rules after mobile media queries where un-scoped child spans will collapse to single 1/12th column slivers; explicitly scope KPI containers to 4 columns on desktop, 2 columns on mobile, and 1 column on ultra-compact screens. For portal shells, always align sticky headers and main content to the exact same `max-width` and `margin: 0 auto` container constraints to prevent asymmetrical horizontal alignment gaps across themes.

@@ -372,8 +372,30 @@
     }
   };
 
-  function themeIcon() { const b = $('#themeBtn'); if (b) b.innerHTML = PF.icon(document.documentElement.getAttribute('data-theme') === 'dark' ? 'sun' : 'moon'); }
-  PF.setTheme = t => { try { localStorage.setItem('pf-theme', t); } catch (e) { /* ignore */ } const eff = t === 'system' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : t; document.documentElement.setAttribute('data-theme', eff); themeIcon(); document.dispatchEvent(new CustomEvent('pf:theme')); };
+  function themeIcon() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    if (document.body) {
+      document.body.classList.toggle('dark', isDark);
+      document.body.classList.toggle('light', !isDark);
+    }
+    const b = $('#themeBtn');
+    if (b) b.innerHTML = PF.icon(isDark ? 'sun' : 'moon');
+  }
+  PF.setTheme = t => {
+    try {
+      localStorage.setItem('pf-theme', t);
+      localStorage.setItem('theme', t);
+    } catch (e) { /* ignore */ }
+    const eff = t === 'system' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : t;
+    document.documentElement.setAttribute('data-theme', eff);
+    document.documentElement.setAttribute('data-color-scheme', eff);
+    if (document.body) {
+      document.body.classList.toggle('dark', eff === 'dark');
+      document.body.classList.toggle('light', eff === 'light');
+    }
+    themeIcon();
+    document.dispatchEvent(new CustomEvent('pf:theme'));
+  };
   PF.setAccent = a => { try { localStorage.setItem('pf-accent', a); } catch (e) { /* ignore */ } if (a === 'gold') document.documentElement.removeAttribute('data-accent'); else document.documentElement.setAttribute('data-accent', a); };
 
   function globalSearch() {

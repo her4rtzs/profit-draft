@@ -282,16 +282,33 @@ body {
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1) !important;
   }
 
-  /* All grids collapse to 1 column on mobile */
+  /* Grids on mobile: responsive 2-column KPI stats & quick-actions, 1-col content */
   .grid-12,
-  .members-stats-grid,
-  .stats,
-  .stat-grid,
   .content-grid,
   .pp-info-grid,
   .member-detail-grid {
     grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  .members-stats-grid,
+  .stats,
+  .stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 12px !important;
+  }
+
+  .members-stats-grid > *,
+  .stats > .stat-card,
+  .stat-grid > * {
+    grid-column: auto !important;
+    min-height: 90px !important;
+    padding: 14px !important;
+  }
+
+  .quick-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
   }
 }
 
@@ -376,12 +393,9 @@ html body .topbar .search-wrap {
 }
 
 /* --------------------------------------------------------------------------
-   6. 12-COLUMN GRID SYSTEM & CARDS (EQUAL HEIGHT & GAP)
+   6. RESPONSIVE KPI CARDS & GRID SYSTEM
    -------------------------------------------------------------------------- */
-.grid-12,
-.members-stats-grid,
-.stats,
-.stat-grid {
+.grid-12 {
   display: grid !important;
   grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
   gap: 18px !important;
@@ -395,22 +409,85 @@ html body .topbar .search-wrap {
 .col-4 { grid-column: span 4 !important; }
 .col-3 { grid-column: span 3 !important; }
 
-/* 4 Summary Cards on Desktop: 3 columns each, equal height & width */
-@media (min-width: 1081px) {
-  .members-stats-grid > *,
-  .stats > .stat-card {
-    grid-column: span 3 !important;
-    min-height: 104px !important;
-    height: 100% !important;
-    box-sizing: border-box !important;
+/* 4 Summary / KPI Cards across Admin, Members, and Trainer Portals */
+.members-stats-grid,
+.stats,
+.stat-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 18px !important;
+  align-items: stretch !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  margin-bottom: 20px !important;
+}
+
+.members-stats-grid > *,
+.stats > .stat-card,
+.stat-grid > * {
+  grid-column: auto !important;
+  min-height: 104px !important;
+  height: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.quick-actions {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  margin-bottom: 20px !important;
+}
+
+/* Tablet (1080px down to 769px): 2 columns */
+@media (max-width: 1080px) and (min-width: 769px) {
+  .members-stats-grid,
+  .stats,
+  .stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 14px !important;
+  }
+  .quick-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+  }
+  .col-6, .col-4, .col-3 {
+    grid-column: span 6 !important;
   }
 }
 
-@media (max-width: 1080px) and (min-width: 861px) {
+/* Mobile (<= 768px): 2 columns, never squashed */
+@media (max-width: 768px) {
+  .members-stats-grid,
+  .stats,
+  .stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+  }
   .members-stats-grid > *,
   .stats > .stat-card,
-  .col-6 {
-    grid-column: span 6 !important;
+  .stat-grid > * {
+    grid-column: auto !important;
+    min-height: 90px !important;
+    padding: 14px !important;
+  }
+  .quick-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+  .quick-action {
+    padding: 12px 10px !important;
+  }
+}
+
+/* Very Small Mobile (<= 360px): 1 column */
+@media (max-width: 360px) {
+  .members-stats-grid,
+  .stats,
+  .stat-grid,
+  .quick-actions {
+    grid-template-columns: 1fr !important;
   }
 }
 
@@ -776,4 +853,78 @@ html.pf-pre body {
 }
 html.pf-pre * {
   transition: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   10. MEMBER DASHBOARD UNIFIED SPACING & IDENTICAL LIGHT/DARK LAYOUT
+   -------------------------------------------------------------------------- */
+body.member-home .member-content {
+  width: 100% !important;
+  max-width: var(--content-max-w, 1280px) !important;
+  margin: 0 auto !important;
+  box-sizing: border-box !important;
+  padding: 0 0 48px 0 !important;
+}
+
+body.member-home .member-welcome,
+body.member-home .member-hero {
+  margin-top: 0 !important;
+  margin-bottom: 20px !important;
+  border-radius: 20px !important;
+}
+
+body.member-home .pp-tabs {
+  margin-top: 0 !important;
+  margin-bottom: 20px !important;
+}
+
+body.member-home .ann-overview,
+body.member-home .panel.ann-overview {
+  margin-top: 0 !important;
+  margin-bottom: 20px !important;
+  border-radius: 16px !important;
+}
+
+body.member-home .member-status-card {
+  margin-top: 0 !important;
+  margin-bottom: 20px !important;
+  border-radius: 16px !important;
+}
+
+body.member-home .member-metrics {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 20px !important;
+  margin-top: 0 !important;
+  margin-bottom: 20px !important;
+}
+
+body.member-home .member-metric-card {
+  margin: 0 !important;
+  border-radius: 16px !important;
+  height: 100% !important;
+  box-sizing: border-box !important;
+}
+
+body.member-home .member-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 20px !important;
+  margin-top: 0 !important;
+  margin-bottom: 20px !important;
+}
+
+body.member-home .pp-tool-panel > section,
+body.member-home .panel.member-panel {
+  margin-top: 0 !important;
+  margin-bottom: 20px !important;
+  border-radius: 16px !important;
+}
+
+@media (max-width: 860px) {
+  body.member-home .member-metrics,
+  body.member-home .member-grid {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
 }

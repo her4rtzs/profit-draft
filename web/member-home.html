@@ -18,6 +18,7 @@
 <link rel="stylesheet" href="ui-fixes.css?v=1">
 <link rel="stylesheet" href="pf-modern.css?v=1">
 <link rel="stylesheet" href="sidebar-pro.css?v=11">
+<link rel="stylesheet" href="layout-fixes.css?v=6">
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script></head>
 <body class="member-home">
 <div class="app member-app">
@@ -597,13 +598,27 @@
   });
 
   const themeButton = $("memberTheme");
+  function syncTheme(mode) {
+    const isDark = mode === "dark";
+    document.body.classList.toggle("dark", isDark);
+    document.body.classList.toggle("light", !isDark);
+    document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
+    try {
+      localStorage.setItem("theme", isDark ? "dark" : "light");
+      localStorage.setItem("pf-theme", isDark ? "dark" : "light");
+    } catch (e) {}
+    if (themeButton) {
+      themeButton.innerHTML = isDark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+    }
+  }
+
   let savedTheme = "dark";
-  try { savedTheme = localStorage.getItem("theme") || "light"; } catch (e) {}
-  document.body.classList.toggle("dark", savedTheme === "dark");
+  try { savedTheme = localStorage.getItem("theme") || localStorage.getItem("pf-theme") || "dark"; } catch (e) {}
+  syncTheme(savedTheme);
+
   themeButton?.addEventListener("click", () => {
-    const dark = !document.body.classList.contains("dark");
-    document.body.classList.toggle("dark", dark);
-    try { localStorage.setItem("theme", dark ? "dark" : "light"); } catch (e) {}
+    const isCurrentlyDark = document.body.classList.contains("dark") || document.documentElement.getAttribute("data-theme") === "dark";
+    syncTheme(isCurrentlyDark ? "light" : "dark");
   });
   load();
 })();
