@@ -14,7 +14,6 @@ from apps.notifications.models import Notification
 from apps.notifications.services import notify_many
 from apps.trainers import services
 from apps.trainers.models import TrainerAssignment, TrainerProfile, TrainerRequest
-from django.db.models import Q
 from django.utils import timezone
 
 

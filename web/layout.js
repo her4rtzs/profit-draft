@@ -25,20 +25,20 @@
   if (nav) {
     nav.setAttribute('aria-label', 'Main navigation');
     nav.innerHTML = `
-      <div class="sidebar-brand-row brand">
+      <div class="sidebar-brand-row">
         <a class="imgbrand" href="index.html" aria-label="${GYM.name} dashboard">
           <span class="image"><img id="gymLogoImg" src="${GYM.logo || 'logo.jpg'}" alt="${GYM.name}" onerror="this.style.display='none'"></span>
-          <span class="headertxt brand-txt"><strong id="gymNameTxt">${GYM.name}</strong><small id="gymTagTxt">${GYM.tagline}</small></span>
+          <span class="headertxt"><strong id="gymNameTxt">${GYM.name}</strong><small id="gymTagTxt">${GYM.tagline}</small></span>
         </a>
       </div>
-      <div class="sidebar-scroll side-scroll">
-        ${groups.map(g => `<section class="nav-group"><p class="nav-group-label nav-label">${g.label}</p><ul class="menulist nav-list">${g.items.map(item => `<li><a href="${item.href}" data-tip="${item.label}" class="nav-link ${item.id===current?'active':''}" ${item.id===current?'aria-current="page"':''}><i class="fa-solid ${item.icon} icon" aria-hidden="true"></i><span class="text nav-text">${item.label}</span></a></li>`).join('')}</ul></section>`).join('')}
+      <div class="sidebar-scroll">
+        ${groups.map(g => `<section class="nav-group"><p class="nav-group-label">${g.label}</p><ul class="menulist">${g.items.map(item => `<li><a href="${item.href}" data-tip="${item.label}" class="${item.id===current?'active':''}" ${item.id===current?'aria-current="page"':''}><i class="fa-solid ${item.icon} icon" aria-hidden="true"></i><span class="text nav-text">${item.label}</span></a></li>`).join('')}</ul></section>`).join('')}
       </div>
-      <div class="sidebar-foot side-foot">
+      <div class="sidebar-foot">
         <div class="sidebar-account">
-          <div class="sidebar-user side-user">
+          <div class="sidebar-user">
             <span class="sidebar-avatar" data-user-initials id="railAvatar">AD</span>
-            <div class="sidebar-user-copy who"><strong data-user-name>Administrator</strong><small data-user-role>Gym administrator</small></div>
+            <div class="sidebar-user-copy"><strong data-user-name>Administrator</strong><small data-user-role>Gym administrator</small></div>
             <button type="button" class="account-menu-toggle" id="accountMenuToggle" aria-haspopup="menu" aria-expanded="false" aria-controls="accountMenu" aria-label="Account actions" title="Account"><i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i></button>
             <div class="account-menu" id="accountMenu" role="menu" aria-label="Account actions">
               <a href="profile.html" role="menuitem" class="${current==='profile'?'active':''}"><i class="fa-regular fa-user" aria-hidden="true"></i> My profile</a>
@@ -116,30 +116,6 @@
 
 
   }
-
-  // Mobile Instagram-style bottom navigation bar
-  let bnav = document.getElementById('mobileBottomNav');
-  if (!bnav) {
-    bnav = document.createElement('nav');
-    bnav.id = 'mobileBottomNav';
-    bnav.className = 'instagram-bottom-nav pf-bottomnav';
-    bnav.setAttribute('aria-label', 'Mobile navigation');
-    document.body.appendChild(bnav);
-  }
-  const curPage = current;
-  const staffTabs = [
-    { id: 'dashboard', label: 'Home', icon: 'fa-house', href: 'index.html' },
-    { id: 'members', label: 'Members', icon: 'fa-users', href: 'members.html' },
-    { id: 'attendance', label: 'Attendance', icon: 'fa-clipboard-check', href: 'attendance.html' },
-    { id: 'announcements', label: 'Notices', icon: 'fa-bullhorn', href: 'announcements.html' },
-    { id: 'profile', label: 'Profile', icon: 'fa-user', href: 'profile.html' }
-  ];
-  bnav.innerHTML = staffTabs.map(t => `
-    <a href="${t.href}" class="${t.id === curPage ? 'active' : ''}" ${t.id === curPage ? 'aria-current="page"' : ''}>
-      <i class="fa-solid ${t.icon}" aria-hidden="true"></i>
-      <span>${t.label}</span>
-    </a>
-  `).join('');
 
   // ---- Status strip removed per request ----
 

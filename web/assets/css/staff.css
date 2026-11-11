@@ -87,10 +87,16 @@ img{max-width:100%;display:block}
 .side-user .icon-btn{background:transparent;border:0;color:var(--nav-text);width:30px;height:30px}
 .side-user .icon-btn:hover{background:rgba(255,255,255,.1);box-shadow:none;transform:none}
 
-body.mini .sidebar{width:var(--sidebar)}
-body.mini .brand-txt,body.mini .nav-text,body.mini .nav-count,body.mini .nav-label,body.mini .side-user .who,body.mini .side-user .icon-btn{display:revert}
-body.mini .nav-link{justify-content:flex-start}
+body.mini .sidebar{width:var(--sidebar-mini)}
+body.mini .brand-txt,body.mini .nav-text,body.mini .nav-count,body.mini .nav-label,body.mini .side-user .who,body.mini .side-user .icon-btn{display:none}
+body.mini .brand{padding:20px 0 14px;justify-content:center;flex-wrap:wrap}
+body.mini .collapse-btn{margin:0;transform:rotate(180deg)}
+body.mini .nav-link{justify-content:center;padding:12px}
+body.mini .side-user{justify-content:center;padding:8px}
+body.mini .nav-list{margin-bottom:10px}
+
 .main{margin-left:var(--sidebar);min-width:0;transition:margin .22s ease;padding-bottom:24px}
+body.mini .main{margin-left:var(--sidebar-mini)}
 .scrim{position:fixed;inset:0;background:rgba(5,8,14,.55);z-index:55;opacity:0;pointer-events:none;transition:opacity .2s}
 .scrim.on{opacity:1;pointer-events:auto}
 

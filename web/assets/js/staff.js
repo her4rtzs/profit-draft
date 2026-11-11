@@ -293,9 +293,9 @@
     const homeHref = 'index.html';
     const tagline = isTrainer ? 'TRAINER WORKSPACE' : (gym.tagline || 'FUNCTIONAL FITNESS');
     const displayRole = isTrainer ? 'Personal Trainer' : (me.role || 'Staff');
-    return `<div class="sidebar-brand-row brand"><a class="imgbrand" href="${homeHref}" style="display:flex;align-items:center;gap:12px;min-width:0" aria-label="${esc(gym.name)} dashboard"><span class="image"><img class="brand-logo" src="${esc(gym.logo || PF.assetBase + 'img/logo.jpg')}" alt=""></span><span class="headertxt brand-txt"><strong>${esc(gym.name)}</strong><small>${esc(tagline)}</small></span></a></div>
-      <div class="sidebar-scroll side-scroll" aria-label="Main navigation">${navItems.map(g => { const items = g.items.filter(allowed); return items.length ? `<section class="nav-group"><p class="nav-group-label nav-label">${g.label}</p><ul class="menulist nav-list">${items.map(it => { const b = it.badge ? it.badge() : 0; return `<li><a class="nav-link ${it.id === cur ? 'active' : ''}" href="${it.href}" title="${esc(it.label)}" ${it.id === cur ? 'aria-current="page"' : ''}><span class="icon">${PF.icon(it.icon)}</span><span class="text nav-text">${esc(it.label)}</span>${b ? `<span class="nav-count" data-badge="${it.id}">${b}</span>` : ''}</a></li>`; }).join('')}</ul></section>` : ''; }).join('')}</div>
-      <div class="sidebar-foot side-foot"><div class="sidebar-account"><div class="sidebar-user side-user"><span class="sidebar-avatar">${PF.avatar(me.name, 'md', me.photo)}</span><div class="sidebar-user-copy who"><strong>${esc(me.name)}</strong><small>${esc(displayRole)}</small></div><button class="account-menu-toggle icon-btn" id="accountBtn" type="button" aria-haspopup="menu" aria-label="Account menu">${PF.icon('more-v')}</button></div></div></div>`;
+    return `<div class="brand"><a href="${homeHref}" style="display:flex;align-items:center;gap:12px;min-width:0" aria-label="${esc(gym.name)} dashboard"><img class="brand-logo" src="${esc(gym.logo || PF.assetBase + 'img/logo.jpg')}" alt=""><span class="brand-txt"><strong>${esc(gym.name)}</strong><small>${esc(tagline)}</small></span></a><button class="collapse-btn" id="collapseBtn" type="button" aria-label="Collapse sidebar" title="Collapse sidebar">${PF.icon('chevrons-left')}</button></div>
+      <nav class="side-scroll" aria-label="Main navigation">${navItems.map(g => { const items = g.items.filter(allowed); return items.length ? `<p class="nav-label">${g.label}</p><ul class="nav-list">${items.map(it => { const b = it.badge ? it.badge() : 0; return `<li><a class="nav-link ${it.id === cur ? 'active' : ''}" href="${it.href}" title="${esc(it.label)}" ${it.id === cur ? 'aria-current="page"' : ''}>${PF.icon(it.icon)}<span class="nav-text">${esc(it.label)}</span>${b ? `<span class="nav-count" data-badge="${it.id}">${b}</span>` : ''}</a></li>`; }).join('')}</ul>` : ''; }).join('')}</nav>
+      <div class="side-foot"><div class="side-user">${PF.avatar(me.name, 'md', me.photo)}<div class="who"><strong>${esc(me.name)}</strong><small>${esc(displayRole)}</small></div><button class="icon-btn" id="accountBtn" type="button" aria-haspopup="menu" aria-label="Account menu">${PF.icon('more-v')}</button></div></div>`;
   }
 
   function topbarHTML() {
@@ -314,16 +314,14 @@
       ['dashboard', 'Home', 'home', 'index.html'],
       ['members', 'Members', 'users', 'members.html'],
       ['attendance', 'Attendance', 'calendar-check', 'attendance.html'],
-      ['schedule', 'Schedule', 'calendar', 'schedule.html'],
-      ['profile', 'Profile', 'user', 'profile.html']
+      ['schedule', 'Schedule', 'calendar', 'schedule.html']
     ] : [
       ['dashboard', 'Home', 'home', 'index.html'],
       ['members', 'Members', 'users', 'members.html'],
       ['attendance', 'Attendance', 'calendar-check', 'attendance.html'],
-      ['announcements', 'Notices', 'megaphone', 'announcements.html'],
-      ['profile', 'Profile', 'user', 'profile.html']
-    ];
-    return items.map(i => `<a href="${i[3]}" class="${i[0] === cur ? 'active' : ''}" ${i[0] === cur ? 'aria-current="page"' : ''}>${PF.icon(i[2])}<span>${i[1]}</span></a>`).join('');
+      ['payments', 'Payments', 'wallet', 'payments.html', ['Owner', 'Cashier']]
+    ].filter(i => PF.can(i[4]));
+    return items.map(i => `<a href="${i[3]}" class="${i[0] === cur || (i[0] === 'payments' && ['subscriptions', 'transactions'].includes(cur)) ? 'active' : ''}">${PF.icon(i[2])}<span>${i[1]}</span></a>`).join('') + `<button type="button" id="moreBtn">${PF.icon('menu')}<span>More</span></button>`;
   }
 
   function pageHead() {
@@ -372,30 +370,8 @@
     }
   };
 
-  function themeIcon() {
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    if (document.body) {
-      document.body.classList.toggle('dark', isDark);
-      document.body.classList.toggle('light', !isDark);
-    }
-    const b = $('#themeBtn');
-    if (b) b.innerHTML = PF.icon(isDark ? 'sun' : 'moon');
-  }
-  PF.setTheme = t => {
-    try {
-      localStorage.setItem('pf-theme', t);
-      localStorage.setItem('theme', t);
-    } catch (e) { /* ignore */ }
-    const eff = t === 'system' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : t;
-    document.documentElement.setAttribute('data-theme', eff);
-    document.documentElement.setAttribute('data-color-scheme', eff);
-    if (document.body) {
-      document.body.classList.toggle('dark', eff === 'dark');
-      document.body.classList.toggle('light', eff === 'light');
-    }
-    themeIcon();
-    document.dispatchEvent(new CustomEvent('pf:theme'));
-  };
+  function themeIcon() { const b = $('#themeBtn'); if (b) b.innerHTML = PF.icon(document.documentElement.getAttribute('data-theme') === 'dark' ? 'sun' : 'moon'); }
+  PF.setTheme = t => { try { localStorage.setItem('pf-theme', t); } catch (e) { /* ignore */ } const eff = t === 'system' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : t; document.documentElement.setAttribute('data-theme', eff); themeIcon(); document.dispatchEvent(new CustomEvent('pf:theme')); };
   PF.setAccent = a => { try { localStorage.setItem('pf-accent', a); } catch (e) { /* ignore */ } if (a === 'gold') document.documentElement.removeAttribute('data-accent'); else document.documentElement.setAttribute('data-accent', a); };
 
   function globalSearch() {
@@ -426,22 +402,8 @@
 
   function build() {
     const body = document.body;
-    body.classList.remove('mini');
-    try { localStorage.removeItem('pf-mini'); } catch (e) {}
-    const sb = $('#sidebar');
-    sb.innerHTML = sidebarHTML();
-    sb.addEventListener('mouseenter', () => {
-      if (window.matchMedia('(min-width: 769px)').matches) document.body.classList.add('sb-expanded');
-    });
-    sb.addEventListener('mouseleave', () => {
-      document.body.classList.remove('sb-expanded');
-    });
-    sb.addEventListener('focusin', () => {
-      if (window.matchMedia('(min-width: 769px)').matches) document.body.classList.add('sb-expanded');
-    });
-    sb.addEventListener('focusout', e => {
-      if (!sb.contains(e.relatedTarget)) document.body.classList.remove('sb-expanded');
-    });
+    if (document.documentElement.classList.contains('pre-mini')) body.classList.add('mini');
+    $('#sidebar').innerHTML = sidebarHTML();
     $('#topbar').innerHTML = topbarHTML();
     $('#bottomNav').innerHTML = bottomHTML();
     const content = $('#content');

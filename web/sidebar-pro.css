@@ -1,33 +1,28 @@
-/* ProFit Sidebar & Navigation System
-   - Staff Portal (> 768px): Desktop Hover-Expand Icon Rail (Restores commit 46ab02d behavior).
-     Rests at an 80px compact icon rail; smoothly widens to 260px on hover/focus over content without layout shift.
-   - Trainer Portal (> 768px): Stable 260px fixed left sidebar with ZERO content overlap.
-     All text labels, headers, and icons permanently visible with gold active highlights.
-   - Mobile (<= 768px): Desktop sidebars hidden; clean edge-to-edge
-     Instagram-style frosted bottom navigation bar across Staff, Trainer, and Member portals. */
+/* ProFit Staff Dashboard - Hover-Expand Icon Rail & Mobile Drawer.
+   On desktop the sidebar is an icon rail that expands to the full 260px panel
+   while the pointer hovers it or the keyboard focus is inside it.
+   The mobile sidebar acts strictly as a sliding drawer on screens <= 768px. */
 
 :root {
   --sidebar-w: 260px;
   --pf-sb-w: 260px;
-  --sb-rail: 80px;              /* collapsed icon rail width for staff */
+  --sb-rail: 80px;              /* collapsed icon rail width */
   --sb-gold: #e8b93a;
   --sb-gold-2: #f2cb5c;
   --sb-ink: #1a1407;
 }
 
 /* ==========================================================================
-   1. DESKTOP BASE SIDEBAR (Fixed left column, dark theme gradient)
+   DESKTOP SIDEBAR (Permanent, stable, fixed on the left)
    ========================================================================== */
 
-html body nav.sidebar,
-html body aside.sidebar,
-html body .sidebar {
-  position: sticky !important;
-  top: 0 !important;
-  left: 0 !important;
+html body nav.sidebar {
+  position: fixed !important;
+  inset: 0 auto 0 0 !important;
   z-index: 100 !important;
-  flex: 0 0 auto !important;
   width: var(--sidebar-w) !important;
+  min-width: var(--sidebar-w) !important;
+  max-width: var(--sidebar-w) !important;
   height: 100vh !important;
   box-sizing: border-box !important;
   padding: 18px 14px 14px !important;
@@ -41,7 +36,7 @@ html body .sidebar {
   border-radius: 0 20px 20px 0 !important;
   box-shadow: 10px 0 35px rgba(0, 0, 0, 0.25) !important;
   transform: none !important;
-  transition: width 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+  transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
 }
 
 /* Prevent full-page opacity blank flash during early page paint */
@@ -54,30 +49,40 @@ html.pf-pre * {
 }
 
 /* ==========================================================================
-   2. MAIN DASHBOARD WRAPPER (Flexbox shared layout across all portals)
+   MAIN DASHBOARD WRAPPER
    ========================================================================== */
 
-html body .dashboard,
-html body .app {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: stretch !important;
+html body .dashboard {
+  display: block !important;
   width: 100% !important;
   min-width: 0 !important;
   min-height: 100vh !important;
   position: relative !important;
-  background: var(--pf-page-bg, var(--bg, #0a0e16)) !important;
+  background: var(--bg) !important;
+}
+
+html body nav.sidebar ~ .main-content,
+html body .dashboard > main.main-content {
+  display: block !important;
   box-sizing: border-box !important;
-  margin: 0 !important;
-  padding: 0 !important;
+  margin-left: var(--sidebar-w) !important;
+  margin-right: 0 !important;
+  margin-inline: 0 !important;
+  width: calc(100% - var(--sidebar-w)) !important;
+  max-width: calc(100% - var(--sidebar-w)) !important;
+  min-width: 0 !important;
+  flex: none !important;
+  padding: 24px clamp(20px, 3vw, 40px) 48px !important;
+  overflow-x: clip !important;
+  overflow-y: visible !important;
+  transition: margin-left 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), width 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
 }
 
 /* ==========================================================================
-   3. BRAND SECTION
+   BRAND SECTION
    ========================================================================== */
 
-html body .sidebar .sidebar-brand-row,
-html body .sidebar .brand {
+html body nav.sidebar .sidebar-brand-row {
   flex: 0 0 auto !important;
   display: flex !important;
   align-items: center !important;
@@ -88,8 +93,7 @@ html body .sidebar .brand {
   border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
-html body .sidebar .imgbrand,
-html body .sidebar .brand > a {
+html body nav.sidebar .imgbrand {
   display: flex !important;
   align-items: center !important;
   gap: 12px !important;
@@ -97,8 +101,7 @@ html body .sidebar .brand > a {
   text-decoration: none !important;
 }
 
-html body .sidebar .imgbrand .image,
-html body .sidebar .brand-logo {
+html body nav.sidebar .imgbrand .image {
   flex: 0 0 42px !important;
   width: 42px !important;
   height: 42px !important;
@@ -107,23 +110,20 @@ html body .sidebar .brand-logo {
   background: #000 !important;
 }
 
-html body .sidebar .imgbrand .image img,
-html body .sidebar .brand-logo {
+html body nav.sidebar .imgbrand .image img {
   width: 100% !important;
   height: 100% !important;
   object-fit: contain !important;
   display: block !important;
 }
 
-html body .sidebar .headertxt,
-html body .sidebar .brand-txt {
+html body nav.sidebar .headertxt {
   display: grid !important;
   gap: 3px !important;
   min-width: 0 !important;
 }
 
-html body .sidebar .headertxt strong,
-html body .sidebar .brand-txt strong {
+html body nav.sidebar .headertxt strong {
   color: #fff !important;
   font-size: 16px !important;
   font-weight: 800 !important;
@@ -132,8 +132,7 @@ html body .sidebar .brand-txt strong {
   letter-spacing: -0.01em !important;
 }
 
-html body .sidebar .headertxt small,
-html body .sidebar .brand-txt small {
+html body nav.sidebar .headertxt small {
   color: var(--sb-gold) !important;
   font-size: 10px !important;
   font-weight: 700 !important;
@@ -142,18 +141,11 @@ html body .sidebar .brand-txt small {
   white-space: nowrap !important;
 }
 
-/* Hide collapse button across all portals to prevent broken mini states */
-html body .sidebar .collapse-btn,
-html body .sidebar #collapseBtn {
-  display: none !important;
-}
-
 /* ==========================================================================
-   4. NAVIGATION GROUPS & MENU ITEMS
+   NAVIGATION GROUPS & MENU ITEMS
    ========================================================================== */
 
-html body .sidebar .sidebar-scroll,
-html body .sidebar .side-scroll {
+html body nav.sidebar .sidebar-scroll {
   flex: 1 1 auto !important;
   min-height: 0 !important;
   overflow-y: auto !important;
@@ -161,38 +153,33 @@ html body .sidebar .side-scroll {
   scrollbar-width: none !important;
   display: flex !important;
   flex-direction: column !important;
-  gap: 16px !important;
-  padding: 6px 0 12px !important;
-  margin: 0 !important;
+  gap: 10px !important;
+  padding: 4px 0 !important;
 }
 
-html body .sidebar .sidebar-scroll::-webkit-scrollbar,
-html body .sidebar .side-scroll::-webkit-scrollbar {
+html body nav.sidebar .sidebar-scroll::-webkit-scrollbar {
   display: none !important;
 }
 
-html body .sidebar .nav-group {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 6px !important;
+html body nav.sidebar .nav-group {
   margin: 0 !important;
-  padding: 0 !important;
+  padding: 8px 6px 6px !important;
+  border-radius: 16px !important;
+  background: rgba(255, 255, 255, 0.035) !important;
 }
 
-html body .sidebar .nav-group-label,
-html body .sidebar .nav-label {
-  padding: 0 10px !important;
-  margin: 0 0 2px !important;
-  color: #64748b !important;
-  font-size: 10px !important;
-  font-weight: 800 !important;
+html body nav.sidebar .nav-group-label {
+  margin: 2px 10px 8px !important;
+  padding: 0 !important;
+  color: #6b778c !important;
+  font-size: 10.5px !important;
+  font-weight: 700 !important;
   letter-spacing: 0.16em !important;
   text-transform: uppercase !important;
   line-height: 1.2 !important;
 }
 
-html body .sidebar .menulist,
-html body .sidebar .nav-list {
+html body nav.sidebar .menulist {
   list-style: none !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -201,16 +188,12 @@ html body .sidebar .nav-list {
   gap: 4px !important;
 }
 
-html body .sidebar .menulist li,
-html body .sidebar .nav-list li {
+html body nav.sidebar .menulist li {
   margin: 0 !important;
   padding: 0 !important;
-  list-style: none !important;
 }
 
-html body .sidebar .menulist a,
-html body .sidebar .nav-list a,
-html body .sidebar .nav-link {
+html body nav.sidebar .menulist a {
   position: relative !important;
   display: flex !important;
   align-items: center !important;
@@ -230,31 +213,19 @@ html body .sidebar .nav-link {
   transition: background-color 0.15s ease, color 0.15s ease !important;
 }
 
-html body .sidebar .menulist a .icon,
-html body .sidebar .menulist a .ico,
-html body .sidebar .menulist a i,
-html body .sidebar .nav-link .ico,
-html body .sidebar .nav-link .icon,
-html body .sidebar .nav-link i {
+html body nav.sidebar .menulist a .icon {
   flex: 0 0 20px !important;
   width: 20px !important;
-  height: 20px !important;
   text-align: center !important;
   font-size: 15px !important;
   color: #64748b !important;
-  display: inline-grid !important;
-  place-items: center !important;
+  display: inline-block !important;
   visibility: visible !important;
   opacity: 1 !important;
   transition: color 0.15s ease !important;
 }
 
-html body .sidebar .menulist a .text,
-html body .sidebar .menulist a .nav-text,
-html body .sidebar .nav-list a .text,
-html body .sidebar .nav-list a .nav-text,
-html body .sidebar .nav-link .text,
-html body .sidebar .nav-link .nav-text {
+html body nav.sidebar .menulist a .text {
   min-width: 0 !important;
   font-weight: 600 !important;
   white-space: nowrap !important;
@@ -263,63 +234,39 @@ html body .sidebar .nav-link .nav-text {
   color: inherit !important;
 }
 
-html body .sidebar .menulist a:hover,
-html body .sidebar .nav-list a:hover,
-html body .sidebar .nav-link:hover {
+html body nav.sidebar .menulist a:hover {
   background: rgba(255, 255, 255, 0.07) !important;
   color: #f1f5f9 !important;
 }
 
-html body .sidebar .menulist a:hover .icon,
-html body .sidebar .menulist a:hover .ico,
-html body .sidebar .menulist a:hover i,
-html body .sidebar .nav-link:hover .ico,
-html body .sidebar .nav-link:hover .icon {
+html body nav.sidebar .menulist a:hover .icon {
   color: #f1f5f9 !important;
 }
 
-html body .sidebar .menulist a:focus-visible,
-html body .sidebar .nav-link:focus-visible {
+html body nav.sidebar .menulist a:focus-visible {
   outline: 2px solid var(--sb-gold) !important;
   outline-offset: 2px !important;
 }
 
 /* Active Navigation Item (Solid Gold Gradient Pill) */
-html body .sidebar .menulist a.active,
-html body .sidebar .menulist a.active:hover,
-html body .sidebar .nav-list a.active,
-html body .sidebar .nav-list a.active:hover,
-html body .sidebar .nav-link.active,
-html body .sidebar .nav-link.active:hover,
-html body .sidebar [aria-current="page"] {
+html body nav.sidebar .menulist a.active,
+html body nav.sidebar .menulist a.active:hover {
   background: linear-gradient(110deg, var(--sb-gold-2) 0%, var(--sb-gold) 100%) !important;
   color: var(--sb-ink) !important;
   font-weight: 700 !important;
   box-shadow: 0 6px 18px rgba(232, 185, 58, 0.28) !important;
 }
 
-html body .sidebar .menulist a.active .icon,
-html body .sidebar .menulist a.active .ico,
-html body .sidebar .menulist a.active i,
-html body .sidebar .menulist a.active .text,
-html body .sidebar .nav-link.active .ico,
-html body .sidebar .nav-link.active .icon,
-html body .sidebar .nav-link.active .nav-text,
-html body .sidebar [aria-current="page"] .icon,
-html body .sidebar [aria-current="page"] .ico,
-html body .sidebar [aria-current="page"] i,
-html body .sidebar [aria-current="page"] .text,
-html body .sidebar [aria-current="page"] .nav-text {
+html body nav.sidebar .menulist a.active .icon,
+html body nav.sidebar .menulist a.active .text {
   color: var(--sb-ink) !important;
-  stroke: var(--sb-ink) !important;
 }
 
 /* ==========================================================================
-   5. FOOTER & USER ACCOUNT SECTION
+   FOOTER & STAFF ACCOUNT SECTION
    ========================================================================== */
 
-html body .sidebar .sidebar-foot,
-html body .sidebar .side-foot {
+html body nav.sidebar .sidebar-foot {
   flex: 0 0 auto !important;
   display: flex !important;
   flex-direction: column !important;
@@ -330,15 +277,14 @@ html body .sidebar .side-foot {
   position: relative !important;
 }
 
-html body .sidebar .sidebar-account {
+html body nav.sidebar .sidebar-account {
   margin: 0 !important;
   padding: 0 !important;
   border: 0 !important;
   position: relative !important;
 }
 
-html body .sidebar .sidebar-user,
-html body .sidebar .side-user {
+html body nav.sidebar .sidebar-user {
   position: relative !important;
   display: flex !important;
   align-items: center !important;
@@ -349,8 +295,7 @@ html body .sidebar .side-user {
   border: 1px solid rgba(255, 255, 255, 0.04) !important;
 }
 
-html body .sidebar .sidebar-avatar,
-html body .sidebar .side-user .avatar {
+html body nav.sidebar .sidebar-avatar {
   position: relative !important;
   flex: 0 0 36px !important;
   width: 36px !important;
@@ -365,8 +310,7 @@ html body .sidebar .side-user .avatar {
   font-size: 13px !important;
 }
 
-html body .sidebar .sidebar-avatar img,
-html body .sidebar .side-user .avatar img {
+html body nav.sidebar .sidebar-avatar img {
   position: absolute !important;
   inset: 0 !important;
   width: 100% !important;
@@ -374,16 +318,14 @@ html body .sidebar .side-user .avatar img {
   object-fit: cover !important;
 }
 
-html body .sidebar .sidebar-user-copy,
-html body .sidebar .side-user .who {
+html body nav.sidebar .sidebar-user-copy {
   flex: 1 1 auto !important;
   min-width: 0 !important;
   display: grid !important;
   gap: 2px !important;
 }
 
-html body .sidebar .sidebar-user-copy strong,
-html body .sidebar .side-user .who strong {
+html body nav.sidebar .sidebar-user-copy strong {
   color: #fff !important;
   font-size: 13px !important;
   line-height: 1.2 !important;
@@ -392,8 +334,7 @@ html body .sidebar .side-user .who strong {
   white-space: nowrap !important;
 }
 
-html body .sidebar .sidebar-user-copy small,
-html body .sidebar .side-user .who small {
+html body nav.sidebar .sidebar-user-copy small {
   color: #8b94a5 !important;
   font-size: 11px !important;
   line-height: 1.2 !important;
@@ -402,8 +343,7 @@ html body .sidebar .side-user .who small {
   white-space: nowrap !important;
 }
 
-html body .sidebar .account-menu-toggle,
-html body .sidebar #accountBtn {
+html body nav.sidebar .account-menu-toggle {
   flex: 0 0 30px !important;
   width: 30px !important;
   height: 30px !important;
@@ -417,14 +357,13 @@ html body .sidebar #accountBtn {
   transition: background-color 0.15s ease, color 0.15s ease !important;
 }
 
-html body .sidebar .account-menu-toggle:hover,
-html body .sidebar #accountBtn:hover {
+html body nav.sidebar .account-menu-toggle:hover {
   background: rgba(255, 255, 255, 0.1) !important;
   color: #fff !important;
 }
 
 /* Account Popup Menu (opens upward above the account card) */
-html body .sidebar .account-menu {
+html body nav.sidebar .account-menu {
   position: absolute !important;
   left: 0 !important;
   right: 0 !important;
@@ -440,14 +379,14 @@ html body .sidebar .account-menu {
   z-index: 250 !important;
 }
 
-html body .sidebar .account-menu.is-open {
+html body nav.sidebar .account-menu.is-open {
   display: flex !important;
   flex-direction: column !important;
   gap: 2px !important;
 }
 
-html body .sidebar .account-menu a,
-html body .sidebar .account-menu button {
+html body nav.sidebar .account-menu a,
+html body nav.sidebar .account-menu button {
   display: flex !important;
   align-items: center !important;
   gap: 10px !important;
@@ -464,157 +403,174 @@ html body .sidebar .account-menu button {
   transition: background-color 0.15s ease !important;
 }
 
-html body .sidebar .account-menu a i,
-html body .sidebar .account-menu button i {
+html body nav.sidebar .account-menu a i,
+html body nav.sidebar .account-menu button i {
   width: 16px !important;
   text-align: center !important;
   color: #98a2b6 !important;
 }
 
-html body .sidebar .account-menu a:hover,
-html body .sidebar .account-menu button:hover {
+html body nav.sidebar .account-menu a:hover,
+html body nav.sidebar .account-menu button:hover {
   background: rgba(255, 255, 255, 0.08) !important;
 }
 
-html body .sidebar .account-menu button[data-logout],
-html body .sidebar .account-menu button[data-logout] i {
+html body nav.sidebar .account-menu button[data-logout],
+html body nav.sidebar .account-menu button[data-logout] i {
   color: #ff7b7b !important;
 }
 
 /* ==========================================================================
-   6. ALL PORTALS: DESKTOP HOVER-EXPAND ICON RAIL (> 768px)
-   Applies to Staff, Trainer, and Member portals.
-   The sidebar rests as an 80px compact icon rail; smoothly widens to 260px
-   while the pointer hovers it or focus is inside it. The page column always
-   reserves 80px so the expanded panel floats smoothly over content with zero layout shift.
+   MOBILE RESPONSIVENESS (<= 768px Drawer Navigation)
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  html body nav.sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: min(300px, 86vw) !important;
+    min-width: 0 !important;
+    max-width: min(300px, 86vw) !important;
+    height: 100vh !important;
+    z-index: 1000 !important;
+    transform: translateX(-105%) !important;
+    border-radius: 0 20px 20px 0 !important;
+    box-shadow: 10px 0 40px rgba(0, 0, 0, 0.55) !important;
+    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+  }
+
+  html body nav.sidebar.mobile-open {
+    transform: translateX(0) !important;
+  }
+
+  /* In mobile drawer, always show full labels and hide desktop chevron */
+  html body nav.sidebar #sidebarToggle {
+    display: none !important;
+  }
+
+  html body nav.sidebar .headertxt {
+    display: grid !important;
+  }
+
+  html body nav.sidebar .nav-group-label {
+    display: block !important;
+  }
+
+  html body nav.sidebar .menulist a .text {
+    display: inline !important;
+  }
+
+  html body nav.sidebar .sidebar-user-copy {
+    display: grid !important;
+  }
+
+  html body nav.sidebar .account-menu-toggle {
+    display: grid !important;
+  }
+
+  html body nav.sidebar ~ .main-content,
+  html body .dashboard > main.main-content,
+  html body .main-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+    transform: none !important;
+    padding: 16px 14px 40px !important;
+  }
+
+  body.drawer-open .main-content {
+    transform: none !important;
+    pointer-events: none !important;
+  }
+
+  body.drawer-open {
+    overflow: hidden !important;
+  }
+
+  .mobile-nav-toggle {
+    display: grid !important;
+    place-items: center !important;
+  }
+
+  .sidebar-shade {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 999 !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+    backdrop-filter: blur(4px) !important;
+    -webkit-backdrop-filter: blur(4px) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transition: opacity 0.25s ease !important;
+    border: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .sidebar-shade.visible {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-nav-toggle {
+    display: none !important;
+  }
+  .sidebar-shade {
+    display: none !important;
+  }
+}
+
+/* ==========================================================================
+   HOVER-EXPAND ICON RAIL (desktop)
+   The sidebar rests as an icon rail and expands to the full panel while the
+   pointer hovers it or the keyboard focus is inside it. Only `width` animates
+   and the icons keep their x-position, so the page column never reflows: the
+   expanded panel slides over the content instead of pushing it.
+   Scoped to desktop, so the <=768px drawer keeps its full-width layout.
    ========================================================================== */
 
 @media (min-width: 769px) {
-  html body nav.sidebar#sidebar,
-  html body aside.sidebar#sidebar,
-  html body .sidebar#sidebar {
-    position: sticky !important;
-    top: 0 !important;
-    left: 0 !important;
-    z-index: 100 !important;
-    flex: 0 0 auto !important;
+  /* The rail and the page column are one width, and only `width` is animated,
+     so min/max must not clamp the transition. */
+  html body nav.sidebar#sidebar {
     min-width: 0 !important;
     max-width: none !important;
-    height: 100vh !important;
-    box-sizing: border-box !important;
-    padding: 18px 14px 14px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 0 !important;
-    overflow: visible !important;
-    background: linear-gradient(180deg, #141b27 0%, #0c1119 100%) !important;
-    border: 0 !important;
-    border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
-    border-radius: 0 20px 20px 0 !important;
-    box-shadow: 10px 0 35px rgba(0, 0, 0, 0.25) !important;
-    transform: none !important;
-    transition: width 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1),
+                width 0.22s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
   }
 
-  /* Resting rail (<= 80px): icons only, centred */
-  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within),
-  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within),
-  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) {
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) {
     width: var(--sb-rail) !important;
   }
 
-  /* Expanded rail (260px): cursor hover, focus-within, or body.sb-expanded */
-  html body nav.sidebar#sidebar:hover,
-  html body nav.sidebar#sidebar:focus-within,
-  html body aside.sidebar#sidebar:hover,
-  html body aside.sidebar#sidebar:focus-within,
-  html body .sidebar#sidebar:hover,
-  html body .sidebar#sidebar:focus-within,
-  html body.sb-expanded nav.sidebar#sidebar,
-  html body.sb-expanded aside.sidebar#sidebar,
-  html body.sb-expanded .sidebar#sidebar {
-    width: var(--sidebar-w) !important;
-  }
-
-  /* Resting rail: icons only, centred */
-  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-brand-row,
-  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .brand,
-  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user,
-  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .side-user,
-  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-brand-row,
-  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .brand,
-  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user,
-  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .side-user,
-  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-brand-row,
-  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .brand,
-  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user,
-  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .side-user {
+  /* Resting rail: icons only, centred. */
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-brand-row,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user {
     justify-content: center !important;
   }
 
-  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a,
-  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a,
-  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-link,
-  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a,
-  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a,
-  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-link,
-  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .menulist a,
-  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a,
-  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .nav-link {
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a {
     justify-content: center !important;
     gap: 0 !important;
     padding: 0 !important;
   }
 
-  /* Text elements hidden during resting rail */
-  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .headertxt,
-  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .brand-txt,
-  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-group-label,
-  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-label,
-  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user-copy,
-  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .side-user .who,
-  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .account-menu-toggle,
-  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) #accountBtn,
-  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .account-menu,
-  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .headertxt,
-  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .brand-txt,
-  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-group-label,
-  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-label,
-  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user-copy,
-  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .side-user .who,
-  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .account-menu-toggle,
-  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) #accountBtn,
-  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .account-menu,
-  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .headertxt,
-  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .brand-txt,
-  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .nav-group-label,
-  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .nav-label,
-  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user-copy,
-  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .side-user .who,
-  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .account-menu-toggle,
-  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) #accountBtn,
-  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .account-menu {
+  /* Text that only makes sense while the panel is open. The nav label is
+     clipped further down instead, so links keep their accessible names. */
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .headertxt,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-group-label,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .sidebar-user-copy,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .account-menu-toggle,
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .account-menu {
     display: none !important;
   }
 
-  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .text,
-  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .nav-text,
-  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a .text,
-  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a .nav-text,
-  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-link .text,
-  html body:not(.sb-expanded) nav.sidebar#sidebar:not(:hover):not(:focus-within) .nav-link .nav-text,
-  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .text,
-  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .nav-text,
-  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a .text,
-  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a .nav-text,
-  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-link .text,
-  html body:not(.sb-expanded) aside.sidebar#sidebar:not(:hover):not(:focus-within) .nav-link .nav-text,
-  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .text,
-  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .nav-text,
-  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a .text,
-  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .nav-list a .nav-text,
-  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .nav-link .text,
-  html body:not(.sb-expanded) .sidebar#sidebar:not(:hover):not(:focus-within) .nav-link .nav-text {
+  html body nav.sidebar#sidebar:not(:hover):not(:focus-within) .menulist a .text {
     position: absolute !important;
     width: 1px !important;
     height: 1px !important;
@@ -624,244 +580,28 @@ html body .sidebar .account-menu button[data-logout] i {
     clip-path: inset(50%) !important;
   }
 
-  /* Reveal: labels display smoothly once expanded via hover, focus-within, or body.sb-expanded */
+  /* Reveal: labels fade in only after the panel has widened, so they are never
+     painted across the page content mid-transition. */
   html body nav.sidebar#sidebar:hover .headertxt,
   html body nav.sidebar#sidebar:focus-within .headertxt,
-  html body nav.sidebar#sidebar:hover .brand-txt,
-  html body nav.sidebar#sidebar:focus-within .brand-txt,
   html body nav.sidebar#sidebar:hover .sidebar-user-copy,
   html body nav.sidebar#sidebar:focus-within .sidebar-user-copy,
-  html body nav.sidebar#sidebar:hover .side-user .who,
-  html body nav.sidebar#sidebar:focus-within .side-user .who,
-  html body nav.sidebar#sidebar:hover .account-menu-toggle,
-  html body nav.sidebar#sidebar:focus-within .account-menu-toggle,
   html body nav.sidebar#sidebar:hover .menulist a .text,
-  html body nav.sidebar#sidebar:focus-within .menulist a .text,
-  html body nav.sidebar#sidebar:hover .nav-link .nav-text,
-  html body nav.sidebar#sidebar:focus-within .nav-link .nav-text,
-  html body aside.sidebar#sidebar:hover .headertxt,
-  html body aside.sidebar#sidebar:focus-within .headertxt,
-  html body aside.sidebar#sidebar:hover .brand-txt,
-  html body aside.sidebar#sidebar:focus-within .brand-txt,
-  html body aside.sidebar#sidebar:hover .sidebar-user-copy,
-  html body aside.sidebar#sidebar:focus-within .sidebar-user-copy,
-  html body aside.sidebar#sidebar:hover .side-user .who,
-  html body aside.sidebar#sidebar:focus-within .side-user .who,
-  html body aside.sidebar#sidebar:hover .account-menu-toggle,
-  html body aside.sidebar#sidebar:focus-within .account-menu-toggle,
-  html body aside.sidebar#sidebar:hover .menulist a .text,
-  html body aside.sidebar#sidebar:focus-within .menulist a .text,
-  html body aside.sidebar#sidebar:hover .nav-link .nav-text,
-  html body aside.sidebar#sidebar:focus-within .nav-link .nav-text,
-  html body .sidebar#sidebar:hover .headertxt,
-  html body .sidebar#sidebar:focus-within .headertxt,
-  html body .sidebar#sidebar:hover .brand-txt,
-  html body .sidebar#sidebar:focus-within .brand-txt,
-  html body .sidebar#sidebar:hover .sidebar-user-copy,
-  html body .sidebar#sidebar:focus-within .sidebar-user-copy,
-  html body .sidebar#sidebar:hover .side-user .who,
-  html body .sidebar#sidebar:focus-within .side-user .who,
-  html body .sidebar#sidebar:hover .account-menu-toggle,
-  html body .sidebar#sidebar:focus-within .account-menu-toggle,
-  html body .sidebar#sidebar:hover .menulist a .text,
-  html body .sidebar#sidebar:focus-within .menulist a .text,
-  html body .sidebar#sidebar:hover .nav-link .nav-text,
-  html body .sidebar#sidebar:focus-within .nav-link .nav-text,
-  html body.sb-expanded .headertxt,
-  html body.sb-expanded .brand-txt,
-  html body.sb-expanded .sidebar-user-copy,
-  html body.sb-expanded .side-user .who,
-  html body.sb-expanded .account-menu-toggle,
-  html body.sb-expanded .menulist a .text,
-  html body.sb-expanded .nav-list a .text,
-  html body.sb-expanded .nav-link .text,
-  html body.sb-expanded .nav-link .nav-text {
-    display: block !important;
-    position: static !important;
-    width: auto !important;
-    height: auto !important;
-    margin: 0 !important;
-    clip-path: none !important;
-    overflow: visible !important;
+  html body nav.sidebar#sidebar:focus-within .menulist a .text {
     animation: sb-rail-reveal 0.16s ease 0.08s both !important;
   }
 
   html body nav.sidebar#sidebar:hover .nav-group-label,
-  html body nav.sidebar#sidebar:focus-within .nav-group-label,
-  html body nav.sidebar#sidebar:hover .nav-label,
-  html body nav.sidebar#sidebar:focus-within .nav-label,
-  html body aside.sidebar#sidebar:hover .nav-group-label,
-  html body aside.sidebar#sidebar:focus-within .nav-group-label,
-  html body aside.sidebar#sidebar:hover .nav-label,
-  html body aside.sidebar#sidebar:focus-within .nav-label,
-  html body .sidebar#sidebar:hover .nav-group-label,
-  html body .sidebar#sidebar:focus-within .nav-group-label,
-  html body .sidebar#sidebar:hover .nav-label,
-  html body .sidebar#sidebar:focus-within .nav-label,
-  html body.sb-expanded .nav-group-label,
-  html body.sb-expanded .nav-label {
-    display: block !important;
+  html body nav.sidebar#sidebar:focus-within .nav-group-label {
     animation: sb-rail-fade 0.16s ease 0.08s both !important;
   }
 
-  /* When expanded, restore flex-start alignment and full padding */
-  html body nav.sidebar#sidebar:hover .sidebar-brand-row,
-  html body nav.sidebar#sidebar:focus-within .sidebar-brand-row,
-  html body nav.sidebar#sidebar:hover .brand,
-  html body nav.sidebar#sidebar:focus-within .brand,
-  html body nav.sidebar#sidebar:hover .sidebar-user,
-  html body nav.sidebar#sidebar:focus-within .sidebar-user,
-  html body nav.sidebar#sidebar:hover .side-user,
-  html body nav.sidebar#sidebar:focus-within .side-user,
-  html body aside.sidebar#sidebar:hover .sidebar-brand-row,
-  html body aside.sidebar#sidebar:focus-within .sidebar-brand-row,
-  html body aside.sidebar#sidebar:hover .brand,
-  html body aside.sidebar#sidebar:focus-within .brand,
-  html body aside.sidebar#sidebar:hover .sidebar-user,
-  html body aside.sidebar#sidebar:focus-within .sidebar-user,
-  html body aside.sidebar#sidebar:hover .side-user,
-  html body aside.sidebar#sidebar:focus-within .side-user,
-  html body .sidebar#sidebar:hover .sidebar-brand-row,
-  html body .sidebar#sidebar:focus-within .sidebar-brand-row,
-  html body .sidebar#sidebar:hover .brand,
-  html body .sidebar#sidebar:focus-within .brand,
-  html body .sidebar#sidebar:hover .sidebar-user,
-  html body .sidebar#sidebar:focus-within .sidebar-user,
-  html body .sidebar#sidebar:hover .side-user,
-  html body .sidebar#sidebar:focus-within .side-user,
-  html body.sb-expanded .sidebar-brand-row,
-  html body.sb-expanded .brand,
-  html body.sb-expanded .sidebar-user,
-  html body.sb-expanded .side-user {
-    justify-content: flex-start !important;
-  }
-
-  html body nav.sidebar#sidebar:hover .menulist a,
-  html body nav.sidebar#sidebar:focus-within .menulist a,
-  html body nav.sidebar#sidebar:hover .nav-link,
-  html body nav.sidebar#sidebar:focus-within .nav-link,
-  html body aside.sidebar#sidebar:hover .menulist a,
-  html body aside.sidebar#sidebar:focus-within .menulist a,
-  html body aside.sidebar#sidebar:hover .nav-link,
-  html body aside.sidebar#sidebar:focus-within .nav-link,
-  html body .sidebar#sidebar:hover .menulist a,
-  html body .sidebar#sidebar:focus-within .menulist a,
-  html body .sidebar#sidebar:hover .nav-link,
-  html body .sidebar#sidebar:focus-within .nav-link,
-  html body.sb-expanded .menulist a,
-  html body.sb-expanded .nav-list a,
-  html body.sb-expanded .nav-link {
-    justify-content: flex-start !important;
-    padding: 0 12px !important;
-    gap: 12px !important;
-  }
-
-  /* On desktop (> 768px): Hide scrim backdrop so it never intercepts layout or clicks */
-  html body .scrim,
-  html body #scrim {
-    display: none !important;
-  }
-
-  /* Member Portal Flexbox Shell (matching Trainer & Staff) */
-  html body.member-home .member-app,
-  html body.member-home .app {
-    display: flex !important;
-    flex-direction: row !important;
-    min-height: 100vh !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-  html body.member-home .member-main,
-  html body.member-home .main {
-    flex: 1 1 0% !important;
-    min-width: 0 !important;
-    width: auto !important;
-    max-width: none !important;
-    margin: 0 !important;
-    padding: 0 32px 48px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    box-sizing: border-box !important;
-  }
-  html body.member-home .member-top {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 0 20px 0 !important;
-    box-sizing: border-box !important;
-    height: 72px !important;
-    min-height: 72px !important;
-    max-height: 72px !important;
-    padding: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    background: transparent !important;
-    border-bottom: 1px solid var(--border) !important;
-  }
-  html body.member-home .member-content {
-    flex: 1 1 auto !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    box-sizing: border-box !important;
-    padding: 0 0 60px 0 !important;
-  }
-
-  /* Shared Flexbox Main Content across Staff, Trainer, and Admin Portals */
-  html body nav.sidebar#sidebar ~ .main-content,
-  html body .dashboard > main.main-content,
-  html body .dashboard > .main-content,
-  html body aside.sidebar#sidebar ~ .main,
-  html body aside.sidebar#sidebar ~ .content,
-  html body aside.sidebar#sidebar ~ .scrim ~ .main,
-  html body .app > .main,
-  html body .app > .content,
-  html body .main,
-  html body .main-content {
-    flex: 1 1 0% !important;
-    min-width: 0 !important;
-    width: auto !important;
-    max-width: none !important;
-    margin: 0 !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    padding: 24px clamp(24px, 3vw, 42px) 48px !important;
-    box-sizing: border-box !important;
-    overflow-x: clip !important;
-    overflow-y: visible !important;
-    transition: none !important;
-  }
-
-  /* When sidebar expands on hover / focus-within / sb-expanded:
-     Flexbox automatically adjusts the main content with zero overlap! */
-  html body nav.sidebar#sidebar:hover ~ .main-content,
-  html body nav.sidebar#sidebar:focus-within ~ .main-content,
-  html body .dashboard:has(nav.sidebar#sidebar:hover) > main.main-content,
-  html body .dashboard:has(nav.sidebar#sidebar:focus-within) > main.main-content,
-  html body aside.sidebar#sidebar:hover ~ .main,
-  html body aside.sidebar#sidebar:focus-within ~ .main,
-  html body aside.sidebar#sidebar:hover ~ .scrim ~ .main,
-  html body aside.sidebar#sidebar:focus-within ~ .scrim ~ .main,
-  html body .app:has(aside.sidebar#sidebar:hover) > .main,
-  html body .app:has(aside.sidebar#sidebar:focus-within) > .main,
-  html body.sb-expanded .main-content,
-  html body.sb-expanded .main,
-  html body.sb-expanded .content {
-    margin-left: 0 !important;
-    flex: 1 1 0% !important;
-    width: auto !important;
-  }
-
-  /* Prevent negative margins on topbar from pulling underneath the sidebar */
-  html body .topbar,
-  html body header.topbar {
-    margin: 0 0 24px 0 !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
+  /* The page column always reserves the rail, so the expanded panel slides
+     over the content rather than pushing it. */
+  html body nav.sidebar#sidebar ~ .main-content {
+    margin-left: var(--sb-rail) !important;
+    width: calc(100% - var(--sb-rail)) !important;
+    max-width: calc(100% - var(--sb-rail)) !important;
   }
 }
 
@@ -875,230 +615,13 @@ html body .sidebar .account-menu button[data-logout] i {
   to { opacity: 1; }
 }
 
-@media (min-width: 769px) {
-  /* Hide bottom nav and mobile drawer controls on desktop */
-  .instagram-bottom-nav,
-  .bottom-nav,
-  .pf-bottomnav,
-  .mobile-nav-toggle,
-  .sidebar-shade {
-    display: none !important;
-  }
-}
-
-/* ==========================================================================
-   8. MOBILE (<= 768px): INSTAGRAM-STYLE FROSTED BOTTOM NAVIGATION BAR
-   Desktop sidebars are completely hidden. Clean 5-tab docked bottom nav across
-   Staff, Trainer, and Member portals.
-   ========================================================================== */
-
-@media (max-width: 768px) {
-  html body nav.sidebar,
-  html body aside.sidebar,
-  html body .sidebar {
-    display: none !important;
-    transform: none !important;
-    pointer-events: none !important;
-  }
-
-  /* Page columns use full screen width with safe bottom clearance */
-  html body nav.sidebar ~ .main-content,
-  html body .dashboard > main.main-content,
-  html body aside.sidebar ~ .main,
-  html body .app > .main,
-  html body .main,
-  html body .main-content,
-  html body.member-home .member-content,
-  html body .member-content {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    transform: none !important;
-    padding: 16px 16px calc(76px + env(safe-area-inset-bottom, 16px)) !important;
-  }
-
-  /* Mobile Topbars: fixed height, proper alignment, zero content overlap */
-  html body .topbar,
-  html body header.topbar,
-  html body #topbar,
-  html body.member-home .member-top,
-  html body .member-top {
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 50 !important;
-    height: 64px !important;
-    min-height: 64px !important;
-    max-height: 64px !important;
-    padding: 0 16px !important;
-    margin: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    background: var(--card) !important;
-    border-bottom: 1px solid var(--border) !important;
-  }
-
-  /* Instagram-Style Bottom Navigation Bar */
-  .instagram-bottom-nav,
-  .bottom-nav,
-  .pf-bottomnav {
-    position: fixed !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    width: 100% !important;
-    height: calc(58px + env(safe-area-inset-bottom, 0px)) !important;
-    padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px)) !important;
-    box-sizing: border-box !important;
-    background: rgba(12, 17, 25, 0.96) !important;
-    backdrop-filter: blur(20px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
-    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.45) !important;
-    display: flex !important;
-    justify-content: space-around !important;
-    align-items: center !important;
-    z-index: 9999 !important;
-  }
-
-  html[data-theme="light"] .instagram-bottom-nav,
-  html[data-theme="light"] .bottom-nav,
-  html[data-theme="light"] .pf-bottomnav,
-  body:not(.dark) .instagram-bottom-nav,
-  body:not(.dark) .bottom-nav,
-  body:not(.dark) .pf-bottomnav {
-    background: rgba(255, 255, 255, 0.95) !important;
-    border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08) !important;
-  }
-
-  .instagram-bottom-nav a,
-  .instagram-bottom-nav button,
-  .bottom-nav a,
-  .bottom-nav button,
-  .pf-bottomnav a,
-  .pf-bottomnav button {
-    flex: 1 1 0 !important;
-    min-width: 0 !important;
-    height: 100% !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 3px !important;
-    background: transparent !important;
-    border: 0 !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    text-decoration: none !important;
-    color: #8b99ad !important;
-    cursor: pointer !important;
-    -webkit-tap-highlight-color: transparent !important;
-    transition: transform 0.12s cubic-bezier(0.2, 0.8, 0.2, 1), color 0.15s ease !important;
-    position: relative !important;
-  }
-
-  /* Tap bounce feel (Instagram style) */
-  .instagram-bottom-nav a:active,
-  .instagram-bottom-nav button:active,
-  .bottom-nav a:active,
-  .bottom-nav button:active,
-  .pf-bottomnav a:active,
-  .pf-bottomnav button:active {
-    transform: scale(0.92) !important;
-  }
-
-  .instagram-bottom-nav a i,
-  .instagram-bottom-nav button i,
-  .bottom-nav a i,
-  .bottom-nav button i,
-  .bottom-nav .ico,
-  .bottom-nav svg,
-  .pf-bottomnav a i,
-  .pf-bottomnav button i {
-    font-size: 20px !important;
-    width: 22px !important;
-    height: 22px !important;
-    display: grid !important;
-    place-items: center !important;
-    color: inherit !important;
-    stroke: currentColor !important;
-    transition: color 0.15s ease, filter 0.15s ease !important;
-  }
-
-  .instagram-bottom-nav a span,
-  .instagram-bottom-nav button span,
-  .bottom-nav a span,
-  .bottom-nav button span,
-  .pf-bottomnav a span,
-  .pf-bottomnav button span {
-    font-size: 10px !important;
-    font-weight: 600 !important;
-    letter-spacing: 0.02em !important;
-    line-height: 1 !important;
-    color: inherit !important;
-    white-space: nowrap !important;
-    text-overflow: ellipsis !important;
-    overflow: hidden !important;
-    max-width: 100% !important;
-  }
-
-  /* Active Instagram tab */
-  .instagram-bottom-nav a.active,
-  .instagram-bottom-nav button.active,
-  .instagram-bottom-nav a[aria-current="page"],
-  .bottom-nav a.active,
-  .bottom-nav button.active,
-  .bottom-nav a[aria-current="page"],
-  .pf-bottomnav a.active,
-  .pf-bottomnav button.active,
-  .pf-bottomnav button[aria-current="page"],
-  .pf-bottomnav a[aria-current="page"] {
-    color: #f2cb5c !important;
-    font-weight: 700 !important;
-  }
-
-  html[data-theme="light"] .instagram-bottom-nav a,
-  html[data-theme="light"] .pf-bottomnav a,
-  body:not(.dark) .instagram-bottom-nav a,
-  body:not(.dark) .pf-bottomnav a {
-    color: #64748b !important;
-  }
-  html[data-theme="light"] .instagram-bottom-nav a.active,
-  html[data-theme="light"] .pf-bottomnav a.active,
-  body:not(.dark) .instagram-bottom-nav a.active,
-  body:not(.dark) .pf-bottomnav a.active {
-    color: #d99a12 !important;
-  }
-
-  .instagram-bottom-nav a.active i,
-  .instagram-bottom-nav button.active i,
-  .bottom-nav a.active i,
-  .bottom-nav a.active .ico,
-  .bottom-nav a.active svg,
-  .pf-bottomnav button[aria-current="page"] i {
-    color: #f2cb5c !important;
-    stroke: #f2cb5c !important;
-    filter: drop-shadow(0 0 8px rgba(242, 203, 92, 0.5)) !important;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   html body nav.sidebar#sidebar,
   html body nav.sidebar#sidebar .headertxt,
   html body nav.sidebar#sidebar .nav-group-label,
   html body nav.sidebar#sidebar .sidebar-user-copy,
-  html body nav.sidebar#sidebar .menulist a .text,
-  .instagram-bottom-nav a,
-  .bottom-nav a,
-  .pf-bottomnav button {
+  html body nav.sidebar#sidebar .menulist a .text {
     transition: none !important;
     animation: none !important;
-    transform: none !important;
   }
 }

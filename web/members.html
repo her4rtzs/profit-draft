@@ -14,156 +14,43 @@
 <link rel="stylesheet" href="ui-fixes.css?v=1">
 <link rel="stylesheet" href="pf-modern.css?v=1">
 <link rel="stylesheet" href="sidebar-pro.css?v=7">
-<link rel="stylesheet" href="layout-fixes.css?v=7">
+<link rel="stylesheet" href="layout-fixes.css?v=5">
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="staff-design.css"></head>
 <body class="pf-staff" data-page="members" data-title="Members" data-welcome="Memberships and enrollment">
 <div class="dashboard"><nav class="sidebar" id="sidebar"></nav><main class="main-content"><header class="topbar" id="topbar"></header>
 
-<!-- Hero Page Header -->
-<div class="members-header-hero">
-  <div class="members-header-icon">
-    <i class="fa-solid fa-users"></i>
-  </div>
-  <div class="members-header-copy">
-    <h1>Members</h1>
-    <p>Manage and view all your gym members.</p>
-  </div>
-</div>
+<nav class="pp-page-tabs" role="tablist" aria-label="Members sections">
+  <button class="pp-page-tab active" type="button" role="tab" aria-selected="true" data-tab="browse"><i class="fa-solid fa-users"></i> Browse members <span class="pp-count" id="countBrowse">0</span></button>
+  <button class="pp-page-tab" type="button" role="tab" aria-selected="false" data-tab="applications" hidden style="display:none"><i class="fa-solid fa-inbox"></i> Applications <span class="pp-count" id="countApps">0</span></button>
+  <button class="pp-page-tab" type="button" role="tab" aria-selected="false" data-tab="detail"><i class="fa-solid fa-id-card"></i> Member detail</button>
+  <button class="pp-page-tab" type="button" role="tab" aria-selected="false" data-tab="enroll"><i class="fa-solid fa-user-plus"></i> New enrollment</button>
+</nav>
 
-<!-- 1. Centered Navigation Tabs (Equal Width & Height) -->
-<div class="members-nav-wrap">
-  <nav class="members-tabs pp-page-tabs" role="tablist" aria-label="Members sections">
-    <button class="members-tab pp-page-tab active" type="button" role="tab" aria-selected="true" data-tab="browse">
-      <i class="fa-solid fa-table-cells-large"></i> <span>Browse Members</span>
-    </button>
-    <button class="members-tab pp-page-tab" type="button" role="tab" aria-selected="false" data-tab="detail">
-      <i class="fa-regular fa-id-card"></i> <span>Member Detail</span>
-    </button>
-    <button class="members-tab pp-page-tab" type="button" role="tab" aria-selected="false" data-tab="enroll">
-      <i class="fa-solid fa-plus"></i> <span>New Enrollment</span>
-    </button>
-    <button class="pp-page-tab" type="button" role="tab" aria-selected="false" data-tab="applications" hidden style="display:none"></button>
-  </nav>
-</div>
-
-<!-- Section 1: Browse Members -->
 <section class="pp-pane active" data-pane="browse">
-
-  <!-- 2. Membership Statistics (4 Summary Cards) -->
-  <div class="members-stats-grid">
-    <div class="members-stat-card is-total">
-      <div class="members-stat-icon is-blue">
-        <i class="fa-solid fa-users"></i>
-      </div>
-      <div class="members-stat-info">
-        <span class="members-stat-label">Total Members</span>
-        <strong class="members-stat-value" id="statTotal">0</strong>
-      </div>
+    <p class="pp-help"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Click a row to open the member's profile. Use the more actions button for renew, freeze or cancel.</p>
+  <div class="pp-toolbar">
+    <label class="pp-search"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input id="memberSearch" type="search" placeholder="Search by name, ID, email or phone" aria-label="Search members"></label>
+    <div class="pp-segment" id="memberFilters" role="group" aria-label="Filter by status">
+      <button type="button" class="active" data-filter="all">All</button>
+      <button type="button" data-filter="active">Active</button>
+      <button type="button" data-filter="expiring">Expiring soon</button>
+      <button type="button" data-filter="expired">Expired</button>
     </div>
-
-    <div class="members-stat-card is-active">
-      <div class="members-stat-icon is-green">
-        <i class="fa-solid fa-circle-check"></i>
-      </div>
-      <div class="members-stat-info">
-        <span class="members-stat-label">Active Members</span>
-        <strong class="members-stat-value" id="statActive">0</strong>
-      </div>
-    </div>
-
-    <div class="members-stat-card is-expiring">
-      <div class="members-stat-icon is-amber">
-        <i class="fa-solid fa-clock"></i>
-      </div>
-      <div class="members-stat-info">
-        <span class="members-stat-label">Expiring Soon</span>
-        <strong class="members-stat-value" id="statExpiring">0</strong>
-      </div>
-    </div>
-
-    <div class="members-stat-card is-expired">
-      <div class="members-stat-icon is-red">
-        <i class="fa-solid fa-circle-xmark"></i>
-      </div>
-      <div class="members-stat-info">
-        <span class="members-stat-label">Expired Members</span>
-        <strong class="members-stat-value" id="statExpired">0</strong>
-      </div>
+    <div class="pp-view-toggle" role="group" aria-label="How to show members">
+      <button type="button" data-view-mode="table" aria-pressed="true" class="active"><i class="fa-solid fa-table-list" aria-hidden="true"></i> Table</button>
+      <button type="button" data-view-mode="cards" aria-pressed="false"><i class="fa-solid fa-table-cells-large" aria-hidden="true"></i> Cards</button>
     </div>
   </div>
-
-  <!-- 3. Search and Toolbar (Single clean bar) -->
-  <div class="members-toolbar">
-    <div class="members-search-wrap">
-      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-      <input id="memberSearch" type="search" placeholder="Search members by name, ID, email, or phone..." aria-label="Search members">
-    </div>
-
-    <div class="members-toolbar-controls">
-      <!-- Filter Dropdown -->
-      <div class="members-dropdown-wrap" id="filterDropdownWrap">
-        <button type="button" class="members-btn-dropdown" id="filterDropdownBtn" aria-haspopup="true" aria-expanded="false">
-          <i class="fa-solid fa-filter"></i>
-          <span id="filterLabel">Filter</span>
-          <i class="fa-solid fa-chevron-down caret"></i>
-        </button>
-        <div class="members-dropdown-menu" id="filterDropdownMenu" hidden>
-          <button type="button" class="dropdown-item active" data-filter="all">All</button>
-          <button type="button" class="dropdown-item" data-filter="active">Active</button>
-          <button type="button" class="dropdown-item" data-filter="expiring">Expiring soon</button>
-          <button type="button" class="dropdown-item" data-filter="expired">Expired</button>
-        </div>
-      </div>
-
-      <!-- Sort By Dropdown -->
-      <div class="members-dropdown-wrap" id="sortDropdownWrap">
-        <button type="button" class="members-btn-dropdown" id="sortDropdownBtn" aria-haspopup="true" aria-expanded="false">
-          <i class="fa-solid fa-arrow-down-short-wide"></i>
-          <span id="sortLabel">Sort by</span>
-          <i class="fa-solid fa-chevron-down caret"></i>
-        </button>
-        <div class="members-dropdown-menu" id="sortDropdownMenu" hidden>
-          <button type="button" class="dropdown-item active" data-sort="name-asc">Name (A–Z)</button>
-          <button type="button" class="dropdown-item" data-sort="name-desc">Name (Z–A)</button>
-          <button type="button" class="dropdown-item" data-sort="expiry-soon">Expiry Date</button>
-          <button type="button" class="dropdown-item" data-sort="plan">Plan</button>
-        </div>
-      </div>
-
-      <!-- Single View Dropdown (Table / Cards) -->
-      <div class="members-dropdown-wrap" id="viewDropdownWrap">
-        <button type="button" class="members-btn-dropdown" id="viewDropdownBtn" aria-haspopup="true" aria-expanded="false">
-          <i class="fa-solid fa-table-cells-large" id="viewIcon"></i>
-          <span id="viewLabel">View</span>
-          <i class="fa-solid fa-chevron-down caret"></i>
-        </button>
-        <div class="members-dropdown-menu" id="viewDropdownMenu" hidden>
-          <button type="button" class="dropdown-item active" data-view="table">
-            <i class="fa-solid fa-table-list"></i> Table
-          </button>
-          <button type="button" class="dropdown-item" data-view="cards">
-            <i class="fa-solid fa-table-cells-large"></i> Cards
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 4. Members Display (Table & Cards) -->
-  <div class="members-table-wrap" id="memberTableWrap">
-    <table class="members-table"><tbody>
+  <p class="pp-muted pp-summary" id="memberSummary" aria-live="polite"></p>
+  <div class="pp-table-wrap pp-members-wrap" id="memberTableWrap">
+    <table aria-hidden="true"><tbody>
       <tr class="pf-skel"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr>
       <tr class="pf-skel"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr>
       <tr class="pf-skel"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr>
     </tbody></table>
   </div>
-  <div class="members-grid-wrap" id="memberGrid" hidden></div>
-
-  <!-- Pagination footer -->
-  <div class="members-footer-row">
-    <div class="members-summary" id="memberSummary" aria-live="polite">Showing 1–5 of 124 members</div>
-    <nav class="members-pagination" id="memberPager" aria-label="Members pagination"></nav>
-  </div>
+  <div class="pp-member-grid" id="memberGrid"></div>
+  <nav class="pp-pager" id="memberPager" aria-label="Pages"></nav>
 </section>
 
 <section class="pp-pane" data-pane="applications">
