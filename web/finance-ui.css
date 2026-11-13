@@ -45,12 +45,15 @@ body:not(.dark)[data-page="reports"] {
   --fn-shadow: 0 12px 28px -8px rgba(45, 35, 20, 0.09), 0 0 18px rgba(245, 158, 11, 0.06);
 }
 
-/* Override legacy portal shell spacing */
+/* Override legacy portal shell spacing — match Dashboard full content width */
 body[data-page="payments"] .main-content,
 body[data-page="reports"] .main-content {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  width: 100%;
+  max-width: none !important;
+  min-width: 0;
 }
 
 /* ---------- 1. SHARED PAGE HEADER CARD & TABS ---------- */
@@ -113,44 +116,52 @@ body[data-page="reports"] .main-content {
   align-items: stretch;
 }
 
+html body.pf-staff[data-page="payments"] .fn-tabs .tab,
+html body.pf-staff[data-page="reports"] .fn-tabs .tab,
 .fn-tabs .tab {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   gap: 10px;
-  height: 64px;
-  min-height: 64px;
-  padding: 0 14px;
-  border-radius: 14px;
-  border: 1px solid rgba(148, 163, 184, 0.18);
-  background: rgba(10, 16, 29, 0.56);
-  color: var(--fn-muted);
+  height: 64px !important;
+  min-height: 64px !important;
+  padding: 0 14px !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: rgba(15, 23, 42, 0.62) !important;
+  color: var(--fn-muted) !important;
   font: inherit;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 13px !important;
+  font-weight: 600 !important;
   white-space: nowrap;
   cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
   transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, color 0.18s ease;
 }
 
-body:not(.dark) .fn-tabs .tab {
-  background: rgba(255, 255, 255, 0.78);
-  border-color: rgba(148, 163, 184, 0.28);
+html body.pf-staff:not(.dark)[data-page="payments"] .fn-tabs .tab,
+html body.pf-staff:not(.dark)[data-page="reports"] .fn-tabs .tab {
+  background: rgba(255, 255, 255, 0.84) !important;
+  border-color: rgba(148, 163, 184, 0.32) !important;
 }
 
+html body.pf-staff[data-page="payments"] .fn-tabs .tab:hover,
+html body.pf-staff[data-page="reports"] .fn-tabs .tab:hover,
 .fn-tabs .tab:hover {
   transform: translateY(-2px);
-  color: var(--fn-text);
-  border-color: rgba(255, 170, 0, 0.42);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24), 0 0 16px rgba(255, 170, 0, 0.14);
+  color: var(--fn-text) !important;
+  border-color: rgba(255, 170, 0, 0.45) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24), 0 0 16px rgba(255, 170, 0, 0.14) !important;
 }
 
+html body.pf-staff[data-page="payments"] .fn-tabs .tab.active,
+html body.pf-staff[data-page="reports"] .fn-tabs .tab.active,
 .fn-tabs .tab.active {
-  color: var(--fn-text);
-  border-color: rgba(255, 176, 32, 0.65);
-  background: linear-gradient(155deg, rgba(245, 158, 11, 0.22), rgba(245, 158, 11, 0.06));
-  box-shadow: 0 8px 22px rgba(245, 158, 11, 0.18), inset 0 1px 0 rgba(255, 224, 130, 0.22);
+  color: var(--fn-text) !important;
+  border-color: rgba(255, 176, 32, 0.65) !important;
+  background: linear-gradient(155deg, rgba(245, 158, 11, 0.22), rgba(245, 158, 11, 0.06)) !important;
+  box-shadow: 0 8px 22px rgba(245, 158, 11, 0.18), inset 0 1px 0 rgba(255, 224, 130, 0.22) !important;
 }
 
 .fn-tabs .tab.active::after {
@@ -210,7 +221,7 @@ body:not(.dark) .fn-tab-icon {
 /* ---------- 2. GLASS CARDS & HEADERS ---------- */
 .fn-card {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   border-radius: 20px;
   padding: 22px 24px;
   border: 1px solid var(--fn-card-border, rgba(255, 170, 0, 0.32));
@@ -320,10 +331,11 @@ body:not(.dark) .fn-icon-box {
 
 .fn-kpi-card {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   border-radius: 20px;
   padding: 20px 22px;
-  height: 100%;
+  min-height: 150px;
+  height: auto;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -446,12 +458,13 @@ body:not(.dark) .fn-kpi-circle {
 
 .fn-kpi-watermark {
   position: absolute;
-  right: 16px;
-  bottom: 12px;
-  width: 68px;
-  height: 68px;
+  right: 56px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 64px;
+  height: 64px;
   color: var(--fn-kpi-color);
-  opacity: 0.085;
+  opacity: 0.08;
   pointer-events: none;
   z-index: 0;
 }
@@ -461,7 +474,7 @@ body:not(.dark) .fn-kpi-circle {
   display: grid;
   grid-template-columns: minmax(320px, 1.02fr) minmax(0, 1.18fr);
   gap: 20px;
-  align-items: stretch;
+  align-items: start;
 }
 
 .fn-daily-right {
@@ -469,10 +482,6 @@ body:not(.dark) .fn-kpi-circle {
   flex-direction: column;
   gap: 18px;
   min-width: 0;
-}
-
-.fn-daily-right .fn-card {
-  flex: 1;
 }
 
 .fn-split-2 {
@@ -607,11 +616,24 @@ body:not(.dark) .fn-search-pill svg {
   box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.22), 0 0 16px rgba(255, 170, 0, 0.18);
 }
 
-.fn-toolbar-select {
+html body.pf-staff[data-page="reports"] .fn-toolbar-select,
+html body.pf-staff[data-page="payments"] .fn-toolbar-select {
   height: 40px !important;
   min-height: 40px !important;
   width: auto !important;
   min-width: 165px;
+  padding: 0 14px !important;
+  border-radius: 11px !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background: var(--fn-input-bg) !important;
+  color: var(--fn-text) !important;
+  font: inherit;
+  font-size: 13px !important;
+}
+
+html body.pf-staff:not(.dark)[data-page="reports"] .fn-toolbar-select,
+html body.pf-staff:not(.dark)[data-page="payments"] .fn-toolbar-select {
+  border-color: rgba(148, 163, 184, 0.42) !important;
 }
 
 /* Filter chips */
@@ -862,40 +884,64 @@ body:not(.dark) .fn-plan-pill.plan-unassigned { background: #f1f5f9; color: #647
   width: 100%;
 }
 
+html body.pf-staff[data-page="payments"] .fn-table thead tr,
+html body.pf-staff[data-page="reports"] .fn-table thead tr,
 .fn-table thead tr {
   display: grid;
   grid-template-columns: var(--fn-cols);
   align-items: center;
-  gap: 12px;
-  padding: 0 16px 10px;
+  gap: 0;
+  height: 32px;
+  padding: 0;
   background: transparent !important;
   border: 0 !important;
 }
 
+html body.pf-staff[data-page="payments"] .fn-table thead th,
+html body.pf-staff[data-page="reports"] .fn-table thead th,
 .fn-table thead th {
-  padding: 0 !important;
+  display: flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 14px !important;
+  margin: 0 !important;
   border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
   background: transparent !important;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
   text-transform: uppercase;
-  color: var(--fn-muted);
+  color: var(--fn-muted) !important;
   text-align: left;
 }
 
-.fn-table thead th.fn-center,
-.fn-table tbody td.fn-center {
-  text-align: center;
-  justify-self: center;
+html body.pf-staff[data-page="payments"] .fn-table thead th > *,
+html body.pf-staff[data-page="reports"] .fn-table thead th > *,
+html body.pf-staff[data-page="payments"] .fn-table thead th::before,
+html body.pf-staff[data-page="reports"] .fn-table thead th::before,
+html body.pf-staff[data-page="payments"] .fn-table thead th::after,
+html body.pf-staff[data-page="reports"] .fn-table thead th::after {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
 }
 
-.fn-table thead th.num,
-.fn-table tbody td.num,
-.fn-table thead th.fn-right,
-.fn-table tbody td.fn-right {
+html body.pf-staff[data-page="payments"] .fn-table thead th.fn-center,
+html body.pf-staff[data-page="reports"] .fn-table thead th.fn-center {
+  justify-content: center;
+  text-align: center;
+}
+
+html body.pf-staff[data-page="payments"] .fn-table thead th.num,
+html body.pf-staff[data-page="reports"] .fn-table thead th.num,
+html body.pf-staff[data-page="payments"] .fn-table thead th.fn-right,
+html body.pf-staff[data-page="reports"] .fn-table thead th.fn-right {
+  justify-content: flex-end;
   text-align: right;
-  justify-self: end;
 }
 
 .fn-table tbody {
@@ -908,9 +954,10 @@ body:not(.dark) .fn-plan-pill.plan-unassigned { background: #f1f5f9; color: #647
   display: grid;
   grid-template-columns: var(--fn-cols);
   align-items: center;
-  gap: 12px;
+  gap: 0;
+  height: 56px;
   min-height: 56px;
-  padding: 8px 16px;
+  padding: 0;
   border-radius: 14px;
   background: var(--fn-row-bg);
   border: 1px solid var(--fn-row-border);
@@ -924,16 +971,31 @@ body:not(.dark) .fn-plan-pill.plan-unassigned { background: #f1f5f9; color: #647
 
 .fn-table tbody tr:has(.empty-state) {
   display: block;
+  height: auto;
   padding: 28px 16px;
 }
 
 .fn-table tbody td {
-  padding: 0 !important;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 14px !important;
+  margin: 0 !important;
   border: 0 !important;
   background: transparent !important;
   color: var(--fn-text);
   font-size: 13.5px;
+  line-height: 1.25;
   min-width: 0;
+}
+
+.fn-table tbody td.fn-center {
+  justify-content: center;
+}
+
+.fn-table tbody td.num,
+.fn-table tbody td.fn-right {
+  justify-content: flex-end;
 }
 
 .fn-table .member {

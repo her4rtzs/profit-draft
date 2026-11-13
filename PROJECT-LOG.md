@@ -1749,3 +1749,13 @@ Evenly distribute the Browse Members table columns across the full container wid
 - Replaced FontAwesome `<i>` icon markup in `web/payments.html`, `web/reports.html`, and Payments/Reports renderers in `web/pages.js` with inline SVGs so no empty square boxes (`□`) appear, added `aria-selected` and `hashchange` sync to `initTabs()`, and updated `#byMethod` in `web/pages.js` to aggregate all methods present in `DB.payments` (including `Online (PayMongo)`) alongside `Cash`, `GCash`, and `Bank transfer`.
 ### Decision-log skill
 Use one shared CSS file (`web/finance-ui.css`) with CSS grid `--fn-cols` on both `thead tr` and `tbody tr` for standalone-panel tables, inline SVGs for all UI icons, and dynamic `Set` aggregation over `DB.payments` methods so online PayMongo totals are never dropped from method breakdowns.
+
+## 2026-11-14 07:15 (Asia/Manila): Members header alignment and Payments/Reports shell & layout fix pass
+### What I asked for
+Fix the Browse Members table header (remove gray label rectangles, align columns, show ACTIONS label at >=96px) and fix Payments/Reports regressions (restore sidebar/topbar app shell, full content width, Daily payment layout & KPI watermark placement, table header seams, row vertical centering, tab card borders, and All methods select styling).
+### What the agent decided and why
+- Updated `web/members.js` to render visible `Actions` header text and `web/members-ui.css` to strip `th` backgrounds/padding/pseudo-elements, set the 5th column to `96px`, add `column-gap: 12px` with `padding: 0 !important` on cells, and add `padding-left: 0.08em` on centered headers.
+- Restored `<div class="dashboard"><nav class="sidebar" id="sidebar"></nav><main class="main-content"><header class="topbar" id="topbar"></header>` in `web/payments.html` and `web/reports.html` so `layout.js` injects the sidebar, theme toggle, notification bell, and avatar and fills the full width beside the sidebar.
+- Updated `web/finance-ui.css` to set `max-width: none !important` on `.main-content`, `align-items: start` on `.fn-daily-grid`, `min-height: 150px; height: auto; overflow: visible` on `.fn-kpi-card`, `right: 56px; top: 50%; transform: translateY(-50%)` on `.fn-kpi-watermark`, `32px` seamless `thead tr` + `56px` vertically centered `tbody tr` with `gap: 0`, high-specificity `.fn-tabs .tab` card borders, and `40px` bordered `.fn-toolbar-select`.
+### Decision-log skill
+Always keep the `<div class="dashboard"><nav id="sidebar"></nav><main class="main-content"><header id="topbar"></header>` wrapper intact on staff pages so `layout.js` mounts the app shell, and override `html body thead th` with equal/higher specificity when styling seamless CSS-grid table headers.

@@ -173,7 +173,7 @@
     $("memberGrid").hidden = table;
     if (table) {
       $("memberTableWrap").innerHTML = slice.length
-        ? `<table class="pp-table pp-members-table"><thead><tr><th scope="col">Member</th><th scope="col">Plan</th><th scope="col">Status</th><th scope="col">Ends</th><th scope="col"><span class="pp-sr">Actions</span></th></tr></thead><tbody>${slice.map(rowHTML).join("")}</tbody></table>`
+        ? `<table class="pp-table pp-members-table"><thead><tr><th scope="col">Member</th><th scope="col">Plan</th><th scope="col">Status</th><th scope="col">Ends</th><th scope="col">Actions</th></tr></thead><tbody>${slice.map(rowHTML).join("")}</tbody></table>`
         : empty;
     } else {
       $("memberGrid").innerHTML = slice.length ? slice.map(memberCard).join("") : empty;
