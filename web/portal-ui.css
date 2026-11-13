@@ -3921,19 +3921,20 @@ body[data-page="trainers"] .tr-dir-head {
 body[data-page="trainers"] .tr-status-tabs {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
   flex-wrap: wrap;
-  margin-bottom: 16px;
+  margin-bottom: 0;
 }
 body[data-page="trainers"] .tr-status-tab {
-  height: 38px;
-  padding: 0 16px;
+  height: 40px;
+  padding: 0 13px;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(10, 14, 23, 0.55);
   color: var(--muted, #94a3b8);
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 700;
+  white-space: nowrap;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -3953,29 +3954,114 @@ body[data-page="trainers"] .tr-status-tab.is-on {
 body[data-page="trainers"] .tr-dir-toolbar {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   flex-wrap: wrap;
   margin-bottom: 18px;
 }
 body[data-page="trainers"] .tr-dir-toolbar .tr-search-wrap {
-  flex: 1 1 240px;
-  min-width: 200px;
+  flex: 1 1 180px;
+  min-width: 160px;
 }
 body[data-page="trainers"] .tr-dir-toolbar .tr-search-wrap input {
   width: 100%;
   min-width: 0;
-  height: 42px;
+  height: 40px;
 }
-body[data-page="trainers"] .tr-dir-toolbar .tr-filter-select {
-  height: 42px;
-  min-width: 185px;
+body[data-page="trainers"] .tr-spec-dd {
+  position: relative;
+  flex-shrink: 0;
+}
+body[data-page="trainers"] .tr-spec-btn {
+  height: 40px;
+  min-width: 175px;
+  padding: 0 13px;
+  border-radius: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(10, 14, 23, 0.55);
+  color: var(--text, #fff);
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  cursor: pointer;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+body[data-page="trainers"] .tr-spec-btn:hover,
+body[data-page="trainers"] .tr-spec-btn[aria-expanded="true"] {
+  border-color: rgba(245, 158, 11, 0.6);
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.12);
+}
+body[data-page="trainers"] .tr-spec-btn i {
+  font-size: 11px;
+  color: var(--muted, #94a3b8);
+}
+body[data-page="trainers"] .tr-combo-menu {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 6px);
+  z-index: 60;
+  width: 100%;
+  min-width: 210px;
+  max-height: 250px;
+  overflow-y: auto;
+  padding: 6px;
+  border-radius: 12px;
+  background: #121A28;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+  display: grid;
+  gap: 2px;
+}
+body[data-page="trainers"] .tr-combo-menu[hidden] {
+  display: none;
+}
+body[data-page="trainers"] .tr-combo-item {
+  width: 100%;
+  padding: 9px 11px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #e2e8f0;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transition: background-color 0.14s ease, color 0.14s ease;
+}
+body[data-page="trainers"] .tr-combo-item:hover {
+  background: rgba(245, 158, 11, 0.14);
+  color: #FBBF24;
+}
+body[data-page="trainers"] .tr-combo-item.is-selected {
+  background: rgba(245, 158, 11, 0.2);
+  color: #F59E0B;
+}
+body[data-page="trainers"] .tr-combo-main {
+  font-size: 13px;
+  font-weight: 700;
+}
+body[data-page="trainers"] .tr-combo-sub {
+  font-size: 11.5px;
+  color: var(--muted, #94a3b8);
+  font-weight: 500;
+}
+body[data-page="trainers"] .tr-combo-empty {
+  padding: 12px;
+  font-size: 12.5px;
+  color: var(--muted, #94a3b8);
+  text-align: center;
 }
 body[data-page="trainers"] .tr-dir-toolbar .tr-view-toggle {
-  height: 42px;
+  height: 40px;
 }
 body[data-page="trainers"] .tr-dir-toolbar .tr-toolbar-add {
   margin-left: auto;
-  height: 42px;
+  height: 40px;
   flex-shrink: 0;
 }
 @media (max-width: 767px) {
@@ -4443,6 +4529,8 @@ body[data-page="trainers"] .tr-requests-panel {
   flex-direction: column;
 }
 body[data-page="trainers"] .tr-assign-panel {
+  overflow: visible;
+  z-index: 10;
   background-image: radial-gradient(280px 150px at 95% 15%, rgba(245, 158, 11, 0.1), transparent 70%), linear-gradient(180deg, rgba(22, 31, 48, 0.9) 0%, rgba(18, 26, 40, 0.97) 100%) !important;
 }
 body[data-page="trainers"] .tr-assign-wm {
@@ -4474,12 +4562,14 @@ body[data-page="trainers"] .tr-field {
   display: grid;
   gap: 7px;
 }
-body[data-page="trainers"] .tr-select-wrap {
+body[data-page="trainers"] .tr-select-wrap,
+body[data-page="trainers"] .tr-member-search-wrap {
   position: relative;
   display: flex;
   align-items: center;
 }
-body[data-page="trainers"] .tr-select-wrap > i {
+body[data-page="trainers"] .tr-select-wrap > i,
+body[data-page="trainers"] .tr-member-search-wrap > i {
   position: absolute;
   left: 13px;
   font-size: 13px;
@@ -4487,8 +4577,34 @@ body[data-page="trainers"] .tr-select-wrap > i {
   pointer-events: none;
   z-index: 2;
 }
-body[data-page="trainers"] .tr-select-wrap select {
+body[data-page="trainers"] .tr-select-wrap select,
+body[data-page="trainers"] .tr-member-search-wrap input[type="text"] {
   padding-left: 36px !important;
+}
+body[data-page="trainers"] .tr-member-search-wrap input[type="text"] {
+  padding-right: 34px !important;
+  height: 44px;
+}
+body[data-page="trainers"] .tr-member-clear {
+  position: absolute;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  border: 0;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--muted, #94a3b8);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-size: 11px;
+}
+body[data-page="trainers"] .tr-member-clear:hover {
+  background: rgba(245, 158, 11, 0.2);
+  color: #F59E0B;
+}
+body[data-page="trainers"] .tr-member-clear[hidden] {
+  display: none;
 }
 body[data-page="trainers"] .tr-field label {
   font-size: 12px;
@@ -4901,6 +5017,8 @@ body:not(.dark)[data-page="trainers"] .tr-status-tab.is-on {
 body:not(.dark)[data-page="trainers"] .tr-dir-count {
   color: #334155;
 }
+body:not(.dark)[data-page="trainers"] .tr-spec-btn,
+body:not(.dark)[data-page="trainers"] .tr-combo-menu,
 body:not(.dark)[data-page="trainers"] .tr-search-wrap input,
 body:not(.dark)[data-page="trainers"] .tr-filter-select,
 body:not(.dark)[data-page="trainers"] .tr-field select,
@@ -4911,6 +5029,27 @@ body:not(.dark)[data-page="trainers"] .tr-view-toggle {
   background: #FFFFFF;
   color: #0F172A;
   border-color: #CBD5E1;
+}
+body:not(.dark)[data-page="trainers"] .tr-spec-btn,
+body:not(.dark)[data-page="trainers"] .tr-combo-menu {
+  background: #FFFFFF;
+  color: #0F172A;
+  border-color: #CBD5E1;
+}
+body:not(.dark)[data-page="trainers"] .tr-combo-item {
+  color: #0F172A;
+}
+body:not(.dark)[data-page="trainers"] .tr-combo-item:hover {
+  background: rgba(245, 158, 11, 0.12);
+  color: #B45309;
+}
+body:not(.dark)[data-page="trainers"] .tr-combo-item.is-selected {
+  background: rgba(245, 158, 11, 0.18);
+  color: #B45309;
+}
+body:not(.dark)[data-page="trainers"] .tr-member-clear {
+  background: #F1F5F9;
+  color: #64748B;
 }
 body:not(.dark)[data-page="trainers"] .tr-current-info {
   background: #F8FAFC;

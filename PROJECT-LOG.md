@@ -1667,3 +1667,13 @@ Reorganize the existing Trainer Directory container into 4 rows (Header, 4 Statu
 - Set `min-width: 580px` with styled thin scrollbar on `.tr-req-table-wrap` and `white-space: nowrap` on Date, Status, and Action columns so Member Requests never wraps awkwardly or clips buttons.
 ### Decision-log skill
 Set `color-scheme: dark` and explicit `option` background/color on native `<select>` elements inside dark-themed portals so browser popup option lists do not fall back to light/blue defaults.
+
+## 2026-11-14 04:03 (Asia/Manila): Single-row directory toolbar, custom specialization dropdown, and searchable member picker
+### What I asked for
+Combine the Trainer Directory status filters and toolbar into a single row, replace the native Specialization select with a custom themed dropdown button, and replace the Assign Trainer member dropdown with a searchable member input.
+### What the agent decided and why
+- Placed `.tr-status-tabs` (`All Trainers`, `Active`, `On Leave`, `Inactive`), search input, custom `#trSpecWrap` dropdown button, Grid/List toggle, and `+ Add Trainer` inside a single `.tr-dir-toolbar` row in `web/trainers.html` and `web/portal-ui.css`.
+- Built `#trSpecBtn` / `#trSpecMenu` with dark/light themed `.tr-combo-menu` items (avoiding native OS blue `<option>` highlights) and merged standard gym specializations with database trainer specializations.
+- Replaced `<select id="asMember">` with `#asMemberSearch` + `#asMemberMenu` + `#asMemberClear` + hidden `#asMember` so staff can search members by name or email live and pick directly, with `overflow: visible` on `.tr-assign-panel` so the menu is never clipped.
+### Decision-log skill
+Use a lightweight custom `.tr-combo-menu` button/combobox instead of native `<select>` when custom dark/light hover highlights or live search filtering are needed.

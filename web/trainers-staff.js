@@ -26,6 +26,7 @@
   let requests = [];
   let viewMode = "grid";
   let statusFilter = "all";
+  let specFilter = "all";
 
   const ACCENTS = ["gold", "cyan", "violet", "emerald"];
   const opt = (value, label, extra = "") => `<option value="${esc(value)}" ${extra}>${esc(label)}</option>`;
@@ -65,15 +66,25 @@
     return { key: "active", label: "Active", cls: "is-active" };
   }
 
+  const BASE_SPECS = [
+    "Conditioning", "CrossFit", "Flexibility", "Functional",
+    "HIIT", "Mobility", "Strength", "Weight Loss", "Yoga",
+  ];
+
   function populateSpecializations() {
-    const sel = document.getElementById("trSpecFilter");
-    if (!sel) return;
-    const prev = sel.value || "all";
-    const specs = Array.from(new Set(
-      trainers.map(t => String(t.specialization || "").trim()).filter(Boolean)
-    )).sort((a, b) => a.localeCompare(b));
-    sel.innerHTML = opt("all", "All Specializations") + specs.map(s => opt(s, s)).join("");
-    sel.value = specs.includes(prev) ? prev : "all";
+    const menu = document.getElementById("trSpecMenu");
+    const labelEl = document.getElementById("trSpecLabel");
+    if (!menu) return;
+    const merged = Array.from(new Set([
+      ...BASE_SPECS,
+      ...trainers.map(t => String(t.specialization || "").trim()).filter(Boolean),
+    ])).sort((a, b) => a.localeCompare(b));
+    if (specFilter !== "all" && !merged.includes(specFilter)) specFilter = "all";
+    if (labelEl) labelEl.textContent = specFilter === "all" ? "All Specializations" : specFilter;
+    const items = [{ value: "all", label: "All Specializations" }, ...merged.map(s => ({ value: s, label: s }))];
+    menu.innerHTML = items.map(it =>
+      `<button type="button" class="tr-combo-item${it.value === specFilter ? " is-selected" : ""}" role="option" aria-selected="${it.value === specFilter}" data-spec-val="${esc(it.value)}">${esc(it.label)}</button>`
+    ).join("");
   }
 
   function trainerCard(t, idx) {
@@ -120,13 +131,12 @@
   function renderDirectory() {
     list.classList.toggle("is-list", viewMode === "list");
     const q = (document.getElementById("trSearch")?.value || "").trim().toLowerCase();
-    const specFilter = document.getElementById("trSpecFilter")?.value || "all";
 
     const filtered = trainers.filter(t => {
       const st = trainerStatus(t).key;
       if (statusFilter === "active" && st !== "active" && st !== "full") return false;
       else if (statusFilter !== "all" && statusFilter !== "active" && st !== statusFilter) return false;
-      if (specFilter !== "all" && String(t.specialization || "").trim() !== specFilter) return false;
+      if (specFilter !== "all" && !String(t.specialization || "").toLowerCase().includes(specFilter.toLowerCase())) return false;
       if (q) {
         const hay = `${t.name} ${t.specialization || ""} ${t.availability || ""}`.toLowerCase();
         if (!hay.includes(q)) return false;
@@ -182,22 +192,45 @@
     } catch { /* keep current options */ }
   }
 
+  function renderMemberMenu(query = "") {
+    const menu = document.getElementById("asMemberMenu");
+    if (!menu) return;
+    const q = String(query || "").trim().toLowerCase();
+    const selectedId = document.getElementById("asMember")?.value || "";
+    const matched = members.filter(m => {
+      if (!q) return true;
+      const hay = `${m.name || ""} ${m.email || ""} ${m.username || ""}`.toLowerCase();
+      return hay.includes(q);
+    }).slice(0, 30);
+
+    if (!members.length) {
+      menu.innerHTML = `<div class="tr-combo-empty">No members available</div>`;
+      return;
+    }
+    if (!matched.length) {
+      menu.innerHTML = `<div class="tr-combo-empty">No matching members</div>`;
+      return;
+    }
+    menu.innerHTML = matched.map(m => {
+      const active = String(m.id) === String(selectedId);
+      const sub = m.trainer ? `Assigned: ${m.trainer.name}` : (m.email || "No trainer yet");
+      return `<button type="button" class="tr-combo-item${active ? " is-selected" : ""}" role="option" aria-selected="${active}" data-member-id="${esc(m.id)}">
+        <span class="tr-combo-main">${esc(m.name || m.username || "Member")}</span>
+        <small class="tr-combo-sub">${esc(sub)}</small>
+      </button>`;
+    }).join("");
+  }
+
   async function loadMembers() {
-    const pick = document.getElementById("asMember");
+    const searchEl = document.getElementById("asMemberSearch");
     try {
       const data = await api.get("/staff/members/");
       members = Array.isArray(data) ? data : (data?.results || []);
-      if (!pick) return;
-      const keep = pick.value;
-      pick.innerHTML = members.length
-        ? opt("", "Choose member...") + members.map(m => opt(m.id, `${m.name || m.username || "Member"} (${m.email || "no email"})`)).join("")
-        : opt("", "No members yet");
-      if (keep) pick.value = keep;
+      renderMemberMenu(searchEl?.value || "");
       showCurrent();
     } catch {
-      if (pick && !pick.options.length) {
-        pick.innerHTML = opt("", "Could not load members");
-      }
+      const menu = document.getElementById("asMemberMenu");
+      if (menu) menu.innerHTML = `<div class="tr-combo-empty">Could not load members</div>`;
       showCurrent();
     }
   }
@@ -392,12 +425,19 @@
 
   document.addEventListener("keydown", e => {
     if (e.key === "Escape") {
+      const specMenu = document.getElementById("trSpecMenu");
+      if (specMenu && !specMenu.hidden) {
+        specMenu.hidden = true;
+        document.getElementById("trSpecBtn")?.setAttribute("aria-expanded", "false");
+      }
+      const memMenu = document.getElementById("asMemberMenu");
+      if (memMenu && !memMenu.hidden) memMenu.hidden = true;
       if (trModal && !trModal.hidden) closeModal(trModal);
       if (profModal && !profModal.hidden) closeModal(profModal);
     }
   });
 
-  // Status Tabs, Search, Specialization Filter & Grid/List Toggle
+  // Status Tabs, Search, Specialization Dropdown & Grid/List Toggle
   document.querySelectorAll("[data-status-tab]").forEach(btn => {
     btn.addEventListener("click", () => {
       statusFilter = btn.dataset.statusTab || "all";
@@ -410,7 +450,34 @@
     });
   });
   document.getElementById("trSearch")?.addEventListener("input", renderDirectory);
-  document.getElementById("trSpecFilter")?.addEventListener("change", renderDirectory);
+  const specBtn = document.getElementById("trSpecBtn");
+  const specMenu = document.getElementById("trSpecMenu");
+  specBtn?.addEventListener("click", e => {
+    e.stopPropagation();
+    if (!specMenu) return;
+    const willOpen = specMenu.hidden;
+    specMenu.hidden = !willOpen;
+    specBtn.setAttribute("aria-expanded", willOpen ? "true" : "false");
+  });
+  specMenu?.addEventListener("click", e => {
+    const item = e.target.closest("[data-spec-val]");
+    if (!item) return;
+    specFilter = item.dataset.specVal || "all";
+    populateSpecializations();
+    specMenu.hidden = true;
+    specBtn?.setAttribute("aria-expanded", "false");
+    renderDirectory();
+  });
+  document.addEventListener("click", e => {
+    if (specMenu && !specMenu.hidden && !e.target.closest("#trSpecWrap")) {
+      specMenu.hidden = true;
+      specBtn?.setAttribute("aria-expanded", "false");
+    }
+    const memMenu = document.getElementById("asMemberMenu");
+    if (memMenu && !memMenu.hidden && !e.target.closest("#asMemberWrap")) {
+      memMenu.hidden = true;
+    }
+  });
   document.getElementById("trViewGrid")?.addEventListener("click", () => {
     viewMode = "grid";
     document.getElementById("trViewGrid")?.classList.add("is-on");
@@ -485,8 +552,42 @@
     }
   });
 
-  // Assign / Change / Remove Trainer
-  document.getElementById("asMember")?.addEventListener("change", showCurrent);
+  // Assign / Change / Remove Trainer (searchable member picker)
+  const memSearchEl = document.getElementById("asMemberSearch");
+  const memHiddenEl = document.getElementById("asMember");
+  const memMenuEl = document.getElementById("asMemberMenu");
+  const memClearEl = document.getElementById("asMemberClear");
+
+  memSearchEl?.addEventListener("focus", () => {
+    renderMemberMenu(memHiddenEl?.value ? "" : memSearchEl.value);
+    if (memMenuEl) memMenuEl.hidden = false;
+  });
+  memSearchEl?.addEventListener("input", () => {
+    if (memHiddenEl) memHiddenEl.value = "";
+    if (memClearEl) memClearEl.hidden = !memSearchEl.value;
+    showCurrent();
+    renderMemberMenu(memSearchEl.value);
+    if (memMenuEl) memMenuEl.hidden = false;
+  });
+  memClearEl?.addEventListener("click", () => {
+    if (memHiddenEl) memHiddenEl.value = "";
+    if (memSearchEl) memSearchEl.value = "";
+    memClearEl.hidden = true;
+    showCurrent();
+    renderMemberMenu("");
+    memSearchEl?.focus();
+  });
+  memMenuEl?.addEventListener("click", e => {
+    const item = e.target.closest("[data-member-id]");
+    if (!item) return;
+    const m = members.find(x => String(x.id) === String(item.dataset.memberId));
+    if (!m) return;
+    if (memHiddenEl) memHiddenEl.value = String(m.id);
+    if (memSearchEl) memSearchEl.value = m.name || m.username || "Member";
+    if (memClearEl) memClearEl.hidden = false;
+    memMenuEl.hidden = true;
+    showCurrent();
+  });
   document.getElementById("asAssign")?.addEventListener("click", async () => {
     const memberId = document.getElementById("asMember")?.value;
     const trainerId = document.getElementById("asTrainer")?.value;
