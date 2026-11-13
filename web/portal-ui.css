@@ -3914,9 +3914,88 @@ body[data-page="trainers"] .tr-dir-head {
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
-  margin-bottom: 22px;
-  padding-bottom: 16px;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+body[data-page="trainers"] .tr-status-tabs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+body[data-page="trainers"] .tr-status-tab {
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(10, 14, 23, 0.55);
+  color: var(--muted, #94a3b8);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
+}
+body[data-page="trainers"] .tr-status-tab:hover {
+  border-color: rgba(245, 158, 11, 0.4);
+  color: var(--text, #fff);
+}
+body[data-page="trainers"] .tr-status-tab.is-on {
+  background: rgba(245, 158, 11, 0.16);
+  color: #F59E0B;
+  border-color: rgba(245, 158, 11, 0.48);
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.12);
+}
+body[data-page="trainers"] .tr-dir-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+body[data-page="trainers"] .tr-dir-toolbar .tr-search-wrap {
+  flex: 1 1 240px;
+  min-width: 200px;
+}
+body[data-page="trainers"] .tr-dir-toolbar .tr-search-wrap input {
+  width: 100%;
+  min-width: 0;
+  height: 42px;
+}
+body[data-page="trainers"] .tr-dir-toolbar .tr-filter-select {
+  height: 42px;
+  min-width: 185px;
+}
+body[data-page="trainers"] .tr-dir-toolbar .tr-view-toggle {
+  height: 42px;
+}
+body[data-page="trainers"] .tr-dir-toolbar .tr-toolbar-add {
+  margin-left: auto;
+  height: 42px;
+  flex-shrink: 0;
+}
+@media (max-width: 767px) {
+  body[data-page="trainers"] .tr-dir-toolbar .tr-toolbar-add {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+body[data-page="trainers"] .tr-dir-count {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--muted, #cbd5e1);
+  margin-bottom: 14px;
+  letter-spacing: 0.01em;
+}
+body[data-page="trainers"] .tr-status.is-leave {
+  background: rgba(6, 182, 212, 0.16);
+  color: #06B6D4;
+  border: 1px solid rgba(6, 182, 212, 0.32);
 }
 body[data-page="trainers"] .tr-dir-title,
 body[data-page="trainers"] .tr-sec-head,
@@ -4428,9 +4507,19 @@ body[data-page="trainers"] .tr-field textarea {
   padding: 10px 12px;
   transition: border-color 0.18s ease, box-shadow 0.18s ease;
 }
+body.dark[data-page="trainers"] select,
+body.dark[data-page="trainers"] select option {
+  color-scheme: dark;
+  background-color: #121A28;
+  color: #f8fafc;
+}
+body.dark[data-page="trainers"] select option:checked {
+  background: #F59E0B linear-gradient(0deg, #F59E0B 0%, #F59E0B 100%);
+  color: #141005;
+}
 body[data-page="trainers"] .tr-field select,
 body[data-page="trainers"] .tr-field input {
-  height: 42px;
+  height: 44px;
 }
 body[data-page="trainers"] .tr-current-info {
   display: flex;
@@ -4471,10 +4560,24 @@ body[data-page="trainers"] .tr-req-count {
 body[data-page="trainers"] .tr-req-table-wrap {
   width: 100%;
   overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(245, 158, 11, 0.45) rgba(255, 255, 255, 0.05);
+}
+body[data-page="trainers"] .tr-req-table-wrap::-webkit-scrollbar {
+  height: 6px;
+}
+body[data-page="trainers"] .tr-req-table-wrap::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 999px;
+}
+body[data-page="trainers"] .tr-req-table-wrap::-webkit-scrollbar-thumb {
+  background: rgba(245, 158, 11, 0.45);
+  border-radius: 999px;
 }
 body[data-page="trainers"] .tr-req-table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 580px;
 }
 body[data-page="trainers"] .tr-req-table th {
   text-align: left;
@@ -4530,10 +4633,10 @@ body[data-page="trainers"] .tr-req-select {
   max-width: 138px;
 }
 body[data-page="trainers"] .tr-req-date {
-  font-size: 11.5px;
+  font-size: 12px;
   color: var(--muted, #94a3b8);
-  white-space: normal;
-  line-height: 1.35;
+  white-space: nowrap;
+  min-width: 145px;
 }
 body[data-page="trainers"] .tr-req-badge {
   display: inline-flex;
@@ -4774,6 +4877,29 @@ body:not(.dark)[data-page="trainers"] .tr-prof-bio p {
 }
 body:not(.dark)[data-page="trainers"] .tr-progress-track {
   background: #E2E8F0;
+}
+body:not(.dark)[data-page="trainers"] select,
+body:not(.dark)[data-page="trainers"] select option {
+  color-scheme: light;
+  background-color: #FFFFFF;
+  color: #0F172A;
+}
+body:not(.dark)[data-page="trainers"] .tr-status-tab {
+  background: #F8FAFC;
+  border-color: #CBD5E1;
+  color: #475569;
+}
+body:not(.dark)[data-page="trainers"] .tr-status-tab:hover {
+  border-color: rgba(245, 158, 11, 0.55);
+  color: #0F172A;
+}
+body:not(.dark)[data-page="trainers"] .tr-status-tab.is-on {
+  background: rgba(245, 158, 11, 0.14);
+  color: #B45309;
+  border-color: rgba(245, 158, 11, 0.5);
+}
+body:not(.dark)[data-page="trainers"] .tr-dir-count {
+  color: #334155;
 }
 body:not(.dark)[data-page="trainers"] .tr-search-wrap input,
 body:not(.dark)[data-page="trainers"] .tr-filter-select,

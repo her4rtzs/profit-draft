@@ -1656,3 +1656,14 @@ Improve and redesign the Trainer Management page (`web/trainers.html`) with a 3-
 - Added capacity-level progress bar classes (`is-cap-low`, `is-cap-med`, `is-cap-high`, `is-cap-full`), a helpful empty-member prompt in Assign Trainer, and complete Light Mode (`body:not(.dark)[data-page="trainers"]`) overrides.
 ### Decision-log skill
 Never use `min-width` wider than a grid column on dashboard tables inside a 2-column split, and use explicit responsive `repeat(N, minmax(0, 1fr))` breakpoints instead of `auto-fill` when equal column proportions are required even with 1–2 items.
+
+## 2026-11-14 03:50 (Asia/Manila): Reorganize Trainer Directory 4-row structure & fix bottom panels
+### What I asked for
+Reorganize the existing Trainer Directory container into 4 rows (Header, 4 Status Filter buttons, Toolbar with Search/Specialization/View Toggle/Add Trainer, and Trainers count + 3-column cards) and fix Assign Trainer dropdown option theming and Member Requests table column widths.
+### What the agent decided and why
+- Moved `#openAddTrainer` into Row 3 of `.tr-dir-panel` (`.tr-dir-toolbar`) and replaced `<select id="trStatusFilter">` with 4 status filter buttons (`All Trainers`, `Active`, `On Leave`, `Inactive`) in Row 2 (`.tr-status-tabs`).
+- Added dynamic `#trSpecFilter` population and `#trCountLabel` (`Trainers (N)`) in `web/trainers-staff.js`.
+- Applied `color-scheme: dark` and explicit `#121A28` / `#F59E0B` option styling for Dark Mode selects (and light equivalents for Light Mode) so opened dropdown lists match the theme.
+- Set `min-width: 580px` with styled thin scrollbar on `.tr-req-table-wrap` and `white-space: nowrap` on Date, Status, and Action columns so Member Requests never wraps awkwardly or clips buttons.
+### Decision-log skill
+Set `color-scheme: dark` and explicit `option` background/color on native `<select>` elements inside dark-themed portals so browser popup option lists do not fall back to light/blue defaults.

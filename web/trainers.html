@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <link rel="stylesheet" href="styles.css">
 <script src="config.js"></script><script src="api.js"></script><script src="auth.js"></script>
-<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=23"><link rel="stylesheet" href="ui-final.css?v=1">
+<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=24"><link rel="stylesheet" href="ui-final.css?v=1">
 <script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script><link rel="stylesheet" href="hover-fx.css?v=2">
 <link rel="stylesheet" href="announcements.css?v=1">
 <link rel="stylesheet" href="ui-polish.css?v=1">
@@ -21,14 +21,11 @@
 <div class="dashboard"><nav class="sidebar" id="sidebar"></nav><main class="main-content" id="main" tabindex="-1">
   <header class="topbar" id="topbar"></header>
 
-  <!-- Trainers Page Header Action Bar -->
+  <!-- Trainers Page Header Breadcrumb -->
   <div class="tr-page-head">
     <div class="tr-breadcrumb">
       <span>Dashboard</span> <i class="fa-solid fa-chevron-right" aria-hidden="true"></i> <strong>Trainers</strong>
     </div>
-    <button type="button" class="tr-add-btn" id="openAddTrainer">
-      <i class="fa-solid fa-plus" aria-hidden="true"></i> Add Trainer
-    </button>
   </div>
 
   <p class="ann-msg" id="trMsg" role="status" aria-live="polite" style="margin-bottom:14px"></p>
@@ -71,6 +68,7 @@
 
   <!-- Trainer Directory -->
   <section class="panel tr-dir-panel">
+    <!-- ROW 1: Directory Header -->
     <div class="tr-dir-head">
       <div class="tr-dir-title">
         <span class="tr-sec-ico tr-ico-gold" aria-hidden="true"><i class="fa-solid fa-users"></i></span>
@@ -79,23 +77,36 @@
           <p>Search, filter and manage trainers</p>
         </div>
       </div>
-      <div class="tr-dir-controls">
-        <div class="tr-search-wrap">
-          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-          <input type="search" id="trSearch" placeholder="Search trainers..." aria-label="Search trainers">
-        </div>
-        <select id="trStatusFilter" class="tr-filter-select" aria-label="Filter by status">
-          <option value="all">All Status</option>
-          <option value="active">Active</option>
-          <option value="full">Full</option>
-          <option value="inactive">Inactive</option>
-        </select>
-        <div class="tr-view-toggle" role="group" aria-label="Directory layout">
-          <button type="button" class="tr-view-btn is-on" id="trViewGrid" title="Grid view" aria-pressed="true"><i class="fa-solid fa-grip"></i></button>
-          <button type="button" class="tr-view-btn" id="trViewList" title="List view" aria-pressed="false"><i class="fa-solid fa-list"></i></button>
-        </div>
-      </div>
     </div>
+
+    <!-- ROW 2: Status Filters -->
+    <div class="tr-status-tabs" role="group" aria-label="Filter trainers by status">
+      <button type="button" class="tr-status-tab is-on" data-status-tab="all" aria-pressed="true">All Trainers</button>
+      <button type="button" class="tr-status-tab" data-status-tab="active" aria-pressed="false">Active</button>
+      <button type="button" class="tr-status-tab" data-status-tab="on_leave" aria-pressed="false">On Leave</button>
+      <button type="button" class="tr-status-tab" data-status-tab="inactive" aria-pressed="false">Inactive</button>
+    </div>
+
+    <!-- ROW 3: Directory Toolbar -->
+    <div class="tr-dir-toolbar">
+      <div class="tr-search-wrap">
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        <input type="search" id="trSearch" placeholder="Search trainers..." aria-label="Search trainers">
+      </div>
+      <select id="trSpecFilter" class="tr-filter-select" aria-label="Filter by specialization">
+        <option value="all">All Specializations</option>
+      </select>
+      <div class="tr-view-toggle" role="group" aria-label="Directory layout">
+        <button type="button" class="tr-view-btn is-on" id="trViewGrid" title="Grid view" aria-pressed="true"><i class="fa-solid fa-grip"></i></button>
+        <button type="button" class="tr-view-btn" id="trViewList" title="List view" aria-pressed="false"><i class="fa-solid fa-list"></i></button>
+      </div>
+      <button type="button" class="tr-add-btn tr-toolbar-add" id="openAddTrainer">
+        <i class="fa-solid fa-plus" aria-hidden="true"></i> Add Trainer
+      </button>
+    </div>
+
+    <!-- ROW 4: Trainer Count & Cards -->
+    <div class="tr-dir-count" id="trCountLabel">Trainers (0)</div>
 
     <div class="tr-grid" id="trList">
       <div class="pf-skel-block tr-skel-card" aria-hidden="true"><span class="pf-sk"></span><span class="pf-sk"></span><span class="pf-sk"></span></div>
@@ -261,7 +272,7 @@
 <script src="portal-fx.js?v=2"></script>
 <script src="change-password.js?v=2" defer></script>
 <script src="notifications-live.js?v=1" defer></script>
-<script src="trainers-staff.js?v=5" defer></script>
+<script src="trainers-staff.js?v=6" defer></script>
 <script src="site-footer.js?v=2" defer></script>
 </body>
 </html>

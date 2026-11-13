@@ -25,7 +25,7 @@
   let members = [];
   let requests = [];
   let viewMode = "grid";
-  let openMenuId = null;
+  let statusFilter = "all";
 
   const ACCENTS = ["gold", "cyan", "violet", "emerald"];
   const opt = (value, label, extra = "") => `<option value="${esc(value)}" ${extra}>${esc(label)}</option>`;
@@ -59,9 +59,21 @@
   }
 
   function trainerStatus(t) {
+    if (t.on_leave || t.status === "on_leave") return { key: "on_leave", label: "On Leave", cls: "is-leave" };
     if (!t.is_active) return { key: "inactive", label: "Inactive", cls: "is-inactive" };
     if (t.is_full) return { key: "full", label: "Full", cls: "is-full" };
     return { key: "active", label: "Active", cls: "is-active" };
+  }
+
+  function populateSpecializations() {
+    const sel = document.getElementById("trSpecFilter");
+    if (!sel) return;
+    const prev = sel.value || "all";
+    const specs = Array.from(new Set(
+      trainers.map(t => String(t.specialization || "").trim()).filter(Boolean)
+    )).sort((a, b) => a.localeCompare(b));
+    sel.innerHTML = opt("all", "All Specializations") + specs.map(s => opt(s, s)).join("");
+    sel.value = specs.includes(prev) ? prev : "all";
   }
 
   function trainerCard(t, idx) {
@@ -108,11 +120,13 @@
   function renderDirectory() {
     list.classList.toggle("is-list", viewMode === "list");
     const q = (document.getElementById("trSearch")?.value || "").trim().toLowerCase();
-    const statusFilter = document.getElementById("trStatusFilter")?.value || "all";
+    const specFilter = document.getElementById("trSpecFilter")?.value || "all";
 
     const filtered = trainers.filter(t => {
       const st = trainerStatus(t).key;
-      if (statusFilter !== "all" && st !== statusFilter) return false;
+      if (statusFilter === "active" && st !== "active" && st !== "full") return false;
+      else if (statusFilter !== "all" && statusFilter !== "active" && st !== statusFilter) return false;
+      if (specFilter !== "all" && String(t.specialization || "").trim() !== specFilter) return false;
       if (q) {
         const hay = `${t.name} ${t.specialization || ""} ${t.availability || ""}`.toLowerCase();
         if (!hay.includes(q)) return false;
@@ -120,12 +134,15 @@
       return true;
     });
 
+    const countEl = document.getElementById("trCountLabel");
+    if (countEl) countEl.textContent = `Trainers (${filtered.length})`;
+
     if (!trainers.length) {
       list.innerHTML = `<div class="tr-empty"><i class="fa-solid fa-dumbbell" aria-hidden="true"></i><strong>No trainers yet</strong><p>Add a trainer profile from an existing trainer login to get started.</p></div>`;
       return;
     }
     if (!filtered.length) {
-      list.innerHTML = `<div class="tr-empty"><i class="fa-solid fa-filter-circle-xmark" aria-hidden="true"></i><strong>No matching trainers</strong><p>Try adjusting your search or status filter.</p></div>`;
+      list.innerHTML = `<div class="tr-empty"><i class="fa-solid fa-filter-circle-xmark" aria-hidden="true"></i><strong>No matching trainers</strong><p>Try adjusting your search or filter selection.</p></div>`;
       return;
     }
     list.innerHTML = filtered.map((t, i) => trainerCard(t, i)).join("");
@@ -135,6 +152,7 @@
     try {
       trainers = await api.get("/staff/trainers/");
       updateKPIs();
+      populateSpecializations();
       renderDirectory();
       const active = trainers.filter(t => t.is_active);
       const asTrainer = document.getElementById("asTrainer");
@@ -374,70 +392,54 @@
 
   document.addEventListener("keydown", e => {
     if (e.key === "Escape") {
-      if (openMenuId) { openMenuId = null; renderDirectory(); }
       if (trModal && !trModal.hidden) closeModal(trModal);
       if (profModal && !profModal.hidden) closeModal(profModal);
     }
   });
 
-  // Search, Filter & Grid/List Toggle
+  // Status Tabs, Search, Specialization Filter & Grid/List Toggle
+  document.querySelectorAll("[data-status-tab]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      statusFilter = btn.dataset.statusTab || "all";
+      document.querySelectorAll("[data-status-tab]").forEach(b => {
+        const on = b === btn;
+        b.classList.toggle("is-on", on);
+        b.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+      renderDirectory();
+    });
+  });
   document.getElementById("trSearch")?.addEventListener("input", renderDirectory);
-  document.getElementById("trStatusFilter")?.addEventListener("change", renderDirectory);
+  document.getElementById("trSpecFilter")?.addEventListener("change", renderDirectory);
   document.getElementById("trViewGrid")?.addEventListener("click", () => {
     viewMode = "grid";
     document.getElementById("trViewGrid")?.classList.add("is-on");
+    document.getElementById("trViewGrid")?.setAttribute("aria-pressed", "true");
     document.getElementById("trViewList")?.classList.remove("is-on");
+    document.getElementById("trViewList")?.setAttribute("aria-pressed", "false");
     renderDirectory();
   });
   document.getElementById("trViewList")?.addEventListener("click", () => {
     viewMode = "list";
     document.getElementById("trViewList")?.classList.add("is-on");
+    document.getElementById("trViewList")?.setAttribute("aria-pressed", "true");
     document.getElementById("trViewGrid")?.classList.remove("is-on");
+    document.getElementById("trViewGrid")?.setAttribute("aria-pressed", "false");
     renderDirectory();
   });
 
   // Directory card interactions
-  list.addEventListener("click", async e => {
-    const menuToggle = e.target.closest("[data-menu-toggle]");
-    if (menuToggle) {
-      e.stopPropagation();
-      const id = menuToggle.dataset.menuToggle;
-      openMenuId = openMenuId === id ? null : id;
-      renderDirectory();
-      return;
-    }
+  list.addEventListener("click", e => {
     const editBtn = e.target.closest("[data-edit]");
     if (editBtn) {
-      openMenuId = null;
       const t = trainers.find(x => String(x.id) === editBtn.dataset.edit);
       if (t) openEditModal(t);
       return;
     }
     const profBtn = e.target.closest("[data-profile]");
     if (profBtn) {
-      openMenuId = null;
       const t = trainers.find(x => String(x.id) === profBtn.dataset.profile);
       if (t) openProfileModal(t);
-      return;
-    }
-    const toggleBtn = e.target.closest("[data-toggle-active]");
-    if (toggleBtn) {
-      openMenuId = null;
-      const t = trainers.find(x => String(x.id) === toggleBtn.dataset.toggleActive);
-      if (!t) return;
-      try {
-        await api.patch(`/staff/trainers/${t.id}/`, { is_active: !t.is_active });
-        say(`${t.name} is now ${!t.is_active ? "active" : "inactive"}.`);
-        await refreshAll();
-      } catch (err) {
-        say(err.message || "Could not update trainer status.", true);
-      }
-    }
-  });
-  document.addEventListener("click", () => {
-    if (openMenuId !== null) {
-      openMenuId = null;
-      renderDirectory();
     }
   });
 
