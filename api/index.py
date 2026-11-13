@@ -11,7 +11,7 @@ from profit.wsgi import application as app  # noqa: F401  (Vercel imports `app`)
 
 
 def _ensure_pending_migrations():
-    """Apply pending accounts/trainers migrations once on Vercel cold start if columns are missing."""
+    """Ensure new columns on accounts_user and trainers_trainerprofile exist on Vercel cold start."""
     try:
         from django.core.management import call_command
         from django.db import connection
@@ -21,10 +21,24 @@ def _ensure_pending_migrations():
         with connection.cursor() as cursor:
             user_cols = {c.name for c in connection.introspection.get_table_description(cursor, "accounts_user")}
             trainer_cols = {c.name for c in connection.introspection.get_table_description(cursor, "trainers_trainerprofile")}
+
         if "must_change_password" not in user_cols:
-            call_command("migrate", "accounts", interactive=False, verbosity=0)
+            try:
+                call_command("migrate", "accounts", interactive=False, verbosity=0)
+            except Exception:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "ALTER TABLE accounts_user ADD COLUMN IF NOT EXISTS must_change_password boolean NOT NULL DEFAULT false;"
+                    )
+
         if "phone" not in trainer_cols:
-            call_command("migrate", "trainers", interactive=False, verbosity=0)
+            try:
+                call_command("migrate", "trainers", interactive=False, verbosity=0)
+            except Exception:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "ALTER TABLE trainers_trainerprofile ADD COLUMN IF NOT EXISTS phone varchar(40) NOT NULL DEFAULT '';"
+                    )
     except Exception:
         pass
 

@@ -117,11 +117,13 @@
     { sep: true },
     { act: "cancel", icon: "fa-ban", label: "Cancel membership", danger: true, disabled: !!m.cancelledAt }
   ];
+  let syncFailed = false;
   const rowHTML = m => {
     const s = statusFor(m);
+    const planKey = String(m.plan || "").toLowerCase();
     return `<tr data-row="${esc(m.id)}" tabindex="0">
       <td><div class="pp-cell-member">${avatar(m, "sm")}<div><strong>${esc(m.name)}</strong><small>${esc(m.id)} · ${esc(m.email)}</small></div></div></td>
-      <td>${esc(planLabel(m.plan))}</td>
+      <td><span class="pp-plan-pill ${planKey ? `plan-${esc(planKey)}` : ""}">${esc(planLabel(m.plan) || "Unassigned")}</span></td>
       <td><span class="pp-status ${s.key}">${s.label}</span></td>
       <td>${esc(fmt(m.end))}<small class="pp-muted pp-block">${esc(expiryText(m))}</small></td>
       <td class="pp-actions-cell"><button class="pp-icon-btn" type="button" data-row-menu="${esc(m.id)}" aria-haspopup="menu" aria-expanded="false" aria-label="More actions for ${esc(m.name)}" title="More actions"><i class="fa-solid fa-ellipsis" aria-hidden="true"></i></button></td>
@@ -140,7 +142,14 @@
     state.page = Math.min(state.page, pages);
     const start = (state.page - 1) * PER_PAGE;
     const slice = list.slice(start, start + PER_PAGE);
-    const empty = emptyBlock("fa-user-slash", "No members match", q || state.filter !== "all" || state.plan ? "Try another search or clear the filter to see everyone." : "Enroll your first member from the New enrollment tab.");
+    if ($("browseTotalBadge")) $("browseTotalBadge").textContent = syncFailed && !all.length ? "—" : all.length;
+    const errBlock = `<div class="pp-empty-state is-error">
+      <div class="pp-empty-ico"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i></div>
+      <h3>Could not load members</h3>
+      <p>Unable to retrieve member records right now. Please check your connection and try again.</p>
+      <button type="button" class="pp-btn pp-btn-primary" id="memberRetryBtn"><i class="fa-solid fa-rotate-right" aria-hidden="true"></i> Retry</button>
+    </div>`;
+    const empty = (syncFailed && !all.length) ? errBlock : emptyBlock("fa-users", "No members match", q || state.filter !== "all" || state.plan ? "Try another search or clear the filter to see everyone." : "Enroll your first member from the New enrollment tab.");
     $("countBrowse").textContent = all.length;
     const planLabel = state.plan ? ((PLANS[state.plan] && PLANS[state.plan].label) || state.plan) : "";
     const planSuffix = state.plan ? ` · Plan: <strong>${esc(planLabel)}</strong> <button type="button" data-clear-plan style="margin-left:6px;background:none;border:0;color:#F59E0B;cursor:pointer;font-size:inherit;text-decoration:underline;padding:0;">Clear</button>` : "";
@@ -756,8 +765,19 @@
   // A phone gets cards, a desktop gets the table, even if the window is resized after load.
   matchMedia("(max-width: 768px)").addEventListener("change", e => { state.view = e.matches ? "cards" : "table"; renderBrowse(); });
 
+  document.addEventListener("click", e => {
+    const retry = e.target.closest("#memberRetryBtn");
+    if (!retry || retry.disabled) return;
+    retry.disabled = true;
+    retry.innerHTML = `<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Retrying...`;
+    syncFailed = false;
+    Promise.resolve(DB.sync ? DB.sync() : null).finally(() => renderAll());
+  });
   const afterSync = window.pfAfterSync || (fn => fn());
-  document.addEventListener("profit:synced", () => afterSync(renderAll));
+  document.addEventListener("profit:synced", e => {
+    syncFailed = e?.detail?.ok === false;
+    afterSync(renderAll);
+  });
   buildEnroll();
   afterSync(renderAll);
   tabFromHash();
