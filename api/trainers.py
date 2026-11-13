@@ -8,7 +8,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.validators import validate_email
-from django.db import transaction
+from django.db import connection, transaction
 from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
@@ -68,13 +68,36 @@ def _invite_status_for(user):
     return "INVITE_PENDING"
 
 
+_PHONE_COL_CACHE = None
+
+
+def _has_phone_column():
+    global _PHONE_COL_CACHE
+    if _PHONE_COL_CACHE is True:
+        return True
+    try:
+        with connection.cursor() as cursor:
+            cols = {c.name for c in connection.introspection.get_table_description(cursor, TrainerProfile._meta.db_table)}
+        has_col = "phone" in cols
+        if has_col:
+            _PHONE_COL_CACHE = True
+        return has_col
+    except Exception:
+        return True
+
+
+def _trainer_qs():
+    qs = TrainerProfile.objects.select_related("user")
+    return qs if _has_phone_column() else qs.defer("phone")
+
+
 def _trainer_json(t):
     load = services.load(t)
     return {
         "id": t.pk,
         "name": _name(t.user),
         "email": t.user.email,
-        "phone": t.phone,
+        "phone": t.phone if _has_phone_column() else "",
         "specialization": t.specialization,
         "bio": t.bio,
         "availability": t.availability,
@@ -141,7 +164,7 @@ class StaffTrainerListView(APIView):
     permission_classes = [IsOwner]
 
     def get(self, request):
-        rows = TrainerProfile.objects.select_related("user")
+        rows = _trainer_qs()
         return Response([_trainer_json(t) for t in rows])
 
     def post(self, request):
@@ -245,12 +268,14 @@ class StaffTrainerDetailView(APIView):
     permission_classes = [IsOwner]
 
     def patch(self, request, pk):
-        profile = TrainerProfile.objects.select_related("user").filter(pk=pk).first()
+        profile = _trainer_qs().filter(pk=pk).first()
         if profile is None:
             return Response({"detail": "Trainer not found."}, status=404)
-        for key, value in _profile_fields(request.data, creating=False).items():
+        fields = _profile_fields(request.data, creating=False)
+        for key, value in fields.items():
             setattr(profile, key, value)
-        profile.save()
+        if fields:
+            profile.save(update_fields=list(fields.keys()))
         return Response(_trainer_json(profile))
 
 
@@ -282,7 +307,8 @@ class StaffTrainerResendInviteView(APIView):
 
 def _profile_fields(data, *, creating):
     fields = {}
-    for key in ("specialization", "bio", "availability", "phone"):
+    allowed_keys = ("specialization", "bio", "availability", "phone") if _has_phone_column() else ("specialization", "bio", "availability")
+    for key in allowed_keys:
         if key in data:
             max_len = 500 if key == "bio" else (40 if key == "phone" else 160)
             fields[key] = str(data.get(key) or "")[:max_len]

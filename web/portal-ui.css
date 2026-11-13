@@ -3896,11 +3896,12 @@ body[data-page="trainers"] .tr-toolbar-panel,
 body[data-page="trainers"] .tr-dir-panel,
 body[data-page="trainers"] .tr-assign-panel,
 body[data-page="trainers"] .tr-requests-panel {
-  background: linear-gradient(180deg, rgba(22, 31, 48, 0.88) 0%, rgba(18, 26, 40, 0.96) 100%) !important;
+  background: linear-gradient(180deg, rgba(22, 31, 48, 0.9) 0%, rgba(16, 23, 36, 0.96) 100%) !important;
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-top: 1px solid rgba(245, 158, 11, 0.28) !important;
   border-radius: 20px !important;
-  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 body[data-page="trainers"] .tr-toolbar-panel {
@@ -4851,22 +4852,30 @@ body[data-page="trainers"] .tr-modal {
   width: min(560px, 100%);
   max-height: 90vh;
   overflow-y: auto;
-  border-radius: 20px;
-  background: linear-gradient(180deg, #161F30 0%, #101724 100%);
+  overflow-x: hidden;
+  border-radius: 22px;
+  background: linear-gradient(180deg, #161F30 0%, #0F1623 100%);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  padding: 24px;
-  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.6);
+  border-top: 2px solid rgba(245, 158, 11, 0.45);
+  padding: 26px;
+  box-shadow: 0 28px 64px rgba(0, 0, 0, 0.65);
 }
 body[data-page="trainers"] .tr-modal-wide {
-  width: min(600px, 100%);
+  width: min(640px, 95vw);
+}
+body[data-page="trainers"] .tr-modal-wide:has(#trAccessSection:not([hidden])) {
+  width: min(920px, 95vw);
 }
 body[data-page="trainers"] .tr-modal-section {
+  min-width: 0;
   display: grid;
   gap: 12px;
-  padding: 16px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.025);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 18px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(12, 18, 30, 0.72) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-top: 2px solid rgba(245, 158, 11, 0.38);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 body[data-page="trainers"] .tr-modal-sec-title {
   font-family: 'Plus Jakarta Sans', sans-serif;
@@ -4878,11 +4887,11 @@ body[data-page="trainers"] .tr-modal-sec-title {
 }
 body[data-page="trainers"] .tr-modal-grid-2 {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 12px;
 }
 @media (max-width: 560px) {
-  body[data-page="trainers"] .tr-modal-grid-2 { grid-template-columns: 1fr; }
+  body[data-page="trainers"] .tr-modal-grid-2 { grid-template-columns: minmax(0, 1fr); }
 }
 body[data-page="trainers"] .tr-req { color: #F59E0B; }
 body[data-page="trainers"] .tr-access-options {
@@ -4950,9 +4959,11 @@ body[data-page="trainers"] .tr-temp-pw-row {
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
 }
 body[data-page="trainers"] .tr-temp-pw-row input {
-  flex: 1;
+  flex: 1 1 160px;
+  min-width: 0;
   height: 40px;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -5063,10 +5074,12 @@ body[data-page="trainers"] .tr-prof-title-row {
   flex-wrap: wrap;
 }
 body[data-page="trainers"] .tr-prof-card {
-  padding: 14px 16px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(12, 18, 30, 0.65) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-top: 2px solid rgba(245, 158, 11, 0.35);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.22);
   display: grid;
   gap: 10px;
 }
@@ -5117,9 +5130,21 @@ body[data-page="trainers"] .tr-modal-close:hover {
   background: rgba(255, 255, 255, 0.06);
   color: var(--text, #fff);
 }
-body[data-page="trainers"] .tr-modal-form { display: grid; gap: 14px; }
-body[data-page="trainers"] .tr-modal-row { display: grid; grid-template-columns: 1fr 140px; gap: 12px; }
-@media (max-width: 500px) { body[data-page="trainers"] .tr-modal-row { grid-template-columns: 1fr; } }
+body[data-page="trainers"] .tr-modal-form { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+body[data-page="trainers"] .tr-modal-wide:has(#trAccessSection:not([hidden])) .tr-modal-form {
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  align-items: start;
+}
+body[data-page="trainers"] .tr-modal-wide:has(#trAccessSection:not([hidden])) .tr-modal-form > :not(.tr-modal-section) {
+  grid-column: 1 / -1;
+}
+@media (max-width: 820px) {
+  body[data-page="trainers"] .tr-modal-wide:has(#trAccessSection:not([hidden])) .tr-modal-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+body[data-page="trainers"] .tr-modal-row { display: grid; grid-template-columns: minmax(0, 1fr) 150px; gap: 12px; }
+@media (max-width: 500px) { body[data-page="trainers"] .tr-modal-row { grid-template-columns: minmax(0, 1fr); } }
 body[data-page="trainers"] .tr-check-wrap {
   display: flex;
   align-items: center;
