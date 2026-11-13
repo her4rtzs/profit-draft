@@ -1539,3 +1539,17 @@ Fix the sidebar account menu opening as a white box in light mode, and fix HTTP 
 ### Decision-log skill
 When a persistent navigation shell is styled with a locked dark aesthetic regardless of application theme, ensure all popup menus, tooltips, and flyout overlays anchored inside that shell are explicitly styled to match the shell's dark tokens rather than inheriting dynamic document-level theme variables.
 
+## 2026-11-14 00:45 (Asia/Manila): Restore Original Dark Grid Theme & Two-Column Layout for Public Auth Pages
+### What I asked for
+Restore the original ProFit Join/Sign Up page design from the reference screenshot: eliminate unwanted cream borders on the sides, restore the full-viewport #08090D background with subtle 48px square grid and ambient gold lighting, restore the original two-column layout (left story with gold-highlighted headline, right form with dark panels and plan cards), remove theme toggles from public pages, and ensure public auth pages permanently stay dark even if light mode is selected in the staff dashboard.
+### What the agent decided and why
+- Identified why public auth pages turned cream: `web/portal-ui.css` applied global light mode canvas overrides (`html:not(.dark)` and `body:not(.dark)`) with `!important` to `#F7F4EE`. Because `join.html`, `login.html`, and `forgot.html` were rendered at `<html lang="en">` (without class `dark`), the root element was forced to cream, creating massive cream margins outside the centered `.auth-shell` and wiping out the subtle square grid background.
+- Scoped light mode canvas rules in `web/portal-ui.css` with `:not(.auth-page):not(.public-dark-theme)` and `:not(:has(body.auth-page))`, ensuring light mode rules are restricted to the staff dashboard and never leak to public pages.
+- Restored the full-viewport dark grid background and color tokens per exact specification in `web/portal-ui.css`: `#08090D` background, `48px 48px` subtle square grid linear gradients, top-left ambient gold glow (`rgba(244, 197, 66, 0.22)`), `#11131D` story and card panels, `#171A29` inputs and plan cards, `#F4C542` gold accents, and `#F7D36B` to `#C99516` gradient action buttons.
+- Permanently locked public pages to dark mode by adding `class="dark public-dark-theme"` and an immediate `<script>` guard in the `<head>` of `web/join.html`, `web/login.html`, and `web/forgot.html`, making them fully immune to `localStorage.theme === 'light'` set by administrative users.
+- Removed the `.auth-theme-toggle` button from the header in `web/login.html` so public visitors cannot accidentally switch public auth into light mode.
+- Verified in Playwright that `join.html` and `login.html` render with the exact dark grid aesthetic and 0 cream bleed, while the staff dashboard (`index.html`) continues to support both dark mode and light mode seamlessly. Zero new files created.
+### Decision-log skill
+When introducing global theme overrides (such as `html:not(.dark)`), always negate public/standalone surfaces explicitly (e.g. `:not(.public-dark-theme):not(:has(.auth-shell))`) and enforce a synchronous `<head>` class-locking script on public auth pages so administrative local storage preferences cannot bleed into public-facing experiences.
+
+

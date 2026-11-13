@@ -2102,17 +2102,17 @@ body:not(.dark) .stat-card.kpi-card .kpi-sub {
    ========================================================================== */
 
 /* 1. Base Canvas & Dashboard Layout */
-body:not(.dark),
-body:not(.dark).pf-staff {
+body:not(.dark):not(.auth-page):not(.public-dark-theme),
+body:not(.dark).pf-staff:not(.auth-page):not(.public-dark-theme) {
   background: #F7F4EE !important;
   color: #1E1B16 !important;
 }
-html:not(.dark) {
+html:not(.dark):not(:has(body.auth-page)):not(.public-dark-theme) {
   background: #F7F4EE !important;
   color-scheme: light !important;
 }
-body:not(.dark) .dashboard,
-body:not(.dark) .main-content {
+body:not(.dark):not(.auth-page):not(.public-dark-theme) .dashboard,
+body:not(.dark):not(.auth-page):not(.public-dark-theme) .main-content {
   background: #F7F4EE !important;
 }
 
@@ -3089,5 +3089,394 @@ body:not(.dark) .sidebar .account-menu button[data-logout]:hover {
   background: rgba(251, 83, 100, 0.14) !important;
   color: #ff6b7d !important;
 }
+
+/* ==========================================================================
+   PUBLIC AUTH & JOIN PAGES: PERMANENT DARK THEME & SUBTLE SQUARE GRID
+   ========================================================================== */
+
+/* Full-viewport dark grid background */
+html:has(body.auth-page),
+html.public-dark-theme,
+html:has(.auth-shell),
+body.auth-page,
+body.public-dark-theme {
+  background-color: #08090D !important;
+  background-image:
+    radial-gradient(900px 520px at 12% -8%, rgba(244, 197, 66, 0.22), transparent 65%),
+    radial-gradient(800px 520px at 100% 105%, rgba(168, 85, 247, 0.16), transparent 65%),
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px) !important;
+  background-size: auto, auto, 48px 48px, 48px 48px !important;
+  background-attachment: fixed !important;
+  background-position: 0 0 !important;
+  color-scheme: dark !important;
+  color: #F5F1E5 !important;
+  min-height: 100vh !important;
+  margin: 0 !important;
+}
+
+html body.auth-page,
+html body.public-dark-theme {
+  background: transparent !important;
+}
+
+/* Nav header in public pages */
+html body.auth-page .portal-nav,
+html body.public-dark-theme .portal-nav {
+  background: rgba(8, 9, 13, 0.85) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+html body.auth-page .portal-brand strong,
+html body.public-dark-theme .portal-brand strong {
+  color: #F5F1E5 !important;
+}
+html body.auth-page .portal-brand small,
+html body.public-dark-theme .portal-brand small {
+  color: #F4C542 !important;
+}
+html body.auth-page .secure-label,
+html body.public-dark-theme .secure-label {
+  color: #9A9AA5 !important;
+}
+
+/* Two-column layout container */
+html body.auth-page .auth-shell,
+html body.public-dark-theme .auth-shell {
+  max-width: 1120px !important;
+  min-height: calc(100vh - 120px) !important;
+  margin: 0 auto !important;
+  padding: 48px 24px !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.05fr) minmax(360px, 440px) !important;
+  align-items: center !important;
+  gap: clamp(36px, 6vw, 72px) !important;
+}
+
+/* Content cards: Dark panel #11131D */
+html body.auth-page .auth-story,
+html body.auth-page .auth-card,
+html body.public-dark-theme .auth-story,
+html body.public-dark-theme .auth-card {
+  background-color: #11131D !important;
+  background-image: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.07) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5) !important;
+}
+
+html body.auth-page .auth-story,
+html body.public-dark-theme .auth-story {
+  padding: 44px 40px !important;
+}
+
+html body.auth-page .auth-card,
+html body.public-dark-theme .auth-card {
+  padding: 34px 32px !important;
+}
+
+/* Left Section: Typography & Benefits */
+html body.auth-page .eyebrow,
+html body.public-dark-theme .eyebrow {
+  color: #F4C542 !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.14em !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  text-transform: uppercase !important;
+  margin-bottom: 8px !important;
+}
+html body.auth-page .eyebrow span,
+html body.public-dark-theme .eyebrow span {
+  display: inline-block !important;
+  width: 18px !important;
+  height: 2px !important;
+  background: #F4C542 !important;
+}
+
+html body.auth-page .auth-story h1,
+html body.public-dark-theme .auth-story h1 {
+  color: #F5F1E5 !important;
+  font-size: clamp(38px, 4.8vw, 62px) !important;
+  line-height: 1.05 !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.04em !important;
+  margin: 14px 0 18px !important;
+}
+
+html body.auth-page .auth-story h1 em,
+html body.public-dark-theme .auth-story h1 em {
+  font-style: normal !important;
+  background: linear-gradient(135deg, #F7D36B 0%, #C99516 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important;
+  display: inline-block !important;
+}
+
+html body.auth-page .auth-story p,
+html body.public-dark-theme .auth-story p {
+  color: #9A9AA5 !important;
+  font-size: 15px !important;
+  line-height: 1.7 !important;
+  max-width: 440px !important;
+}
+
+html body.auth-page .auth-points,
+html body.public-dark-theme .auth-points {
+  display: grid !important;
+  gap: 14px !important;
+  margin-top: 28px !important;
+}
+
+html body.auth-page .auth-points span,
+html body.public-dark-theme .auth-points span {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  color: #E2E8F0 !important;
+  font-size: 13.5px !important;
+  font-weight: 550 !important;
+}
+
+html body.auth-page .auth-points i,
+html body.public-dark-theme .auth-points i {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 24px !important;
+  height: 24px !important;
+  border-radius: 50% !important;
+  background: rgba(244, 197, 66, 0.12) !important;
+  border: 1px solid rgba(244, 197, 66, 0.28) !important;
+  color: #F4C542 !important;
+  font-size: 11px !important;
+  flex-shrink: 0 !important;
+}
+
+/* Right Section: Form Header & Fields */
+html body.auth-page .portal-heading-icon,
+html body.public-dark-theme .portal-heading-icon {
+  width: 42px !important;
+  height: 42px !important;
+  border-radius: 12px !important;
+  background: rgba(244, 197, 66, 0.12) !important;
+  border: 1px solid rgba(244, 197, 66, 0.25) !important;
+  color: #F4C542 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 16px !important;
+  margin-bottom: 12px !important;
+}
+
+html body.auth-page .portal-kicker,
+html body.public-dark-theme .portal-kicker {
+  color: #F4C542 !important;
+  font-size: 10.5px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  margin-bottom: 4px !important;
+}
+
+html body.auth-page .auth-card h2,
+html body.public-dark-theme .auth-card h2 {
+  color: #F5F1E5 !important;
+  font-size: 24px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.03em !important;
+  margin: 4px 0 6px !important;
+}
+
+html body.auth-page .auth-sub,
+html body.public-dark-theme .auth-sub {
+  color: #9A9AA5 !important;
+  font-size: 13px !important;
+  margin-bottom: 20px !important;
+}
+
+/* Plan Selection Cards */
+html body.auth-page .jn-plans .plan,
+html body.public-dark-theme .jn-plans .plan {
+  background: #171A29 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 12px !important;
+  padding: 12px 10px !important;
+  transition: border-color 0.18s, box-shadow 0.18s, background 0.18s !important;
+}
+
+html body.auth-page .jn-plans .plan:hover,
+html body.public-dark-theme .jn-plans .plan:hover {
+  border-color: rgba(244, 197, 66, 0.4) !important;
+}
+
+html body.auth-page .jn-plans .plan.on,
+html body.public-dark-theme .jn-plans .plan.on {
+  border-color: #F4C542 !important;
+  box-shadow: 0 0 0 1px #F4C542 inset, 0 0 14px rgba(244, 197, 66, 0.18) !important;
+  background: rgba(244, 197, 66, 0.06) !important;
+}
+
+html body.auth-page .jn-plans .plan strong,
+html body.public-dark-theme .jn-plans .plan strong {
+  color: #F5F1E5 !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+}
+
+html body.auth-page .jn-plans .plan small,
+html body.public-dark-theme .jn-plans .plan small {
+  color: #9A9AA5 !important;
+  font-size: 11px !important;
+}
+
+html body.auth-page .jn-plans .plan b,
+html body.public-dark-theme .jn-plans .plan b {
+  color: #F4C542 !important;
+  font-size: 17px !important;
+  font-weight: 800 !important;
+}
+
+html body.auth-page .jn-plans .tag,
+html body.public-dark-theme .jn-plans .tag {
+  background: #F4C542 !important;
+  color: #08090D !important;
+  font-size: 9px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.04em !important;
+  border-radius: 99px !important;
+  padding: 2px 7px !important;
+}
+
+/* Inputs & Labels */
+html body.auth-page .auth-label,
+html body.public-dark-theme .auth-label {
+  color: #F5F1E5 !important;
+  font-size: 12px !important;
+  font-weight: 650 !important;
+  margin: 14px 0 6px !important;
+}
+
+html body.auth-page .auth-input,
+html body.public-dark-theme .auth-input {
+  background: #171A29 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: #F5F1E5 !important;
+  border-radius: 10px !important;
+  padding: 11px 14px !important;
+  font-size: 13px !important;
+  transition: border-color 0.18s, box-shadow 0.18s !important;
+}
+
+html body.auth-page .auth-input:focus,
+html body.public-dark-theme .auth-input:focus {
+  border-color: #F4C542 !important;
+  box-shadow: 0 0 0 3px rgba(244, 197, 66, 0.15) !important;
+  outline: none !important;
+}
+
+html body.auth-page .auth-input::placeholder,
+html body.public-dark-theme .auth-input::placeholder {
+  color: #646675 !important;
+}
+
+html body.auth-page .password-wrap,
+html body.public-dark-theme .password-wrap {
+  background: #171A29 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 10px !important;
+}
+html body.auth-page .password-wrap .auth-input,
+html body.public-dark-theme .password-wrap .auth-input {
+  border: 0 !important;
+  background: transparent !important;
+}
+html body.auth-page .password-wrap button,
+html body.public-dark-theme .password-wrap button {
+  color: #9A9AA5 !important;
+}
+html body.auth-page .password-wrap:focus-within,
+html body.public-dark-theme .password-wrap:focus-within {
+  border-color: #F4C542 !important;
+  box-shadow: 0 0 0 3px rgba(244, 197, 66, 0.15) !important;
+}
+
+/* Terms checkbox */
+html body.auth-page .jn-terms,
+html body.public-dark-theme .jn-terms {
+  color: #9A9AA5 !important;
+  font-size: 13px !important;
+}
+html body.auth-page .jn-terms input,
+html body.public-dark-theme .jn-terms input,
+html body.auth-page .remember-option input,
+html body.public-dark-theme .remember-option input {
+  accent-color: #F4C542 !important;
+}
+html body.auth-page .jn-terms a,
+html body.public-dark-theme .jn-terms a {
+  color: #F4C542 !important;
+  text-decoration: underline !important;
+}
+html body.auth-page .auth-options span,
+html body.public-dark-theme .auth-options span {
+  color: #9A9AA5 !important;
+}
+
+/* Gold Gradient Button */
+html body.auth-page .portal-submit,
+html body.auth-page .auth-submit,
+html body.public-dark-theme .portal-submit,
+html body.public-dark-theme .auth-submit {
+  background: linear-gradient(135deg, #F7D36B 0%, #C99516 100%) !important;
+  color: #08090D !important;
+  font-weight: 750 !important;
+  font-size: 14px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  padding: 13px 20px !important;
+  box-shadow: 0 8px 24px rgba(244, 197, 66, 0.28) !important;
+  cursor: pointer !important;
+  transition: filter 0.18s, transform 0.18s, box-shadow 0.18s !important;
+}
+
+html body.auth-page .portal-submit:hover,
+html body.auth-page .auth-submit:hover,
+html body.public-dark-theme .portal-submit:hover,
+html body.public-dark-theme .auth-submit:hover {
+  filter: brightness(1.08) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 10px 28px rgba(244, 197, 66, 0.38) !important;
+}
+
+html body.auth-page .auth-forgot,
+html body.public-dark-theme .auth-forgot {
+  color: #F4C542 !important;
+}
+html body.auth-page .auth-enroll,
+html body.public-dark-theme .auth-enroll {
+  color: #9A9AA5 !important;
+}
+html body.auth-page .auth-enroll a,
+html body.public-dark-theme .auth-enroll a {
+  color: #F4C542 !important;
+}
+
+/* Mobile responsive */
+@media (max-width: 850px) {
+  html body.auth-page .auth-shell,
+  html body.public-dark-theme .auth-shell {
+    grid-template-columns: 1fr !important;
+    max-width: 540px !important;
+    gap: 32px !important;
+    padding: 32px 18px !important;
+  }
+}
+
 
 
