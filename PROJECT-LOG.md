@@ -1517,3 +1517,14 @@ Make the dashboard look like the 1st picture (dark gold theme), fix the broken l
 - Verified in Playwright that the dashboard renders 100% identical to Pic 1, with dark obsidian glass cards, radiant glowing borders, 12 golden revenue bars, and complete membership donut chart.
 ### Decision-log skill
 When multiple portal roles (e.g. member vs staff) share a single origin's `localStorage` key like `theme`, prevent cross-portal state poisoning by giving staff administrative views a self-healing default to dark mode while isolating member defaults.
+
+## 2026-11-13 23:43 (Asia/Manila): Harmonize Revenue Analytics and Recent Registrations Panels
+### What I asked for
+Apply the premium dark-gold glassmorphism design to the Revenue Analytics card and Recent Registrations table panel so they visually match the KPI cards and Membership Type panel ("sila lang kasi naiiba"), with no new files added.
+### What the agent decided and why
+- Enhanced `.revenue-panel` in `web/index.html` and `web/portal-ui.css`: wrapped title in `.rev-title-wrap` with a dedicated glowing icon badge (`.rev-title-ico` with `fa-chart-column`), applied dark obsidian glass gradient (`rgba(16, 22, 34, 0.96)`), top neon gold highlight line (`::before`), amber glow border (`rgba(245, 158, 11, 0.45)`), pill filter chips with active gradient, and glowing amber columns with rounded corners.
+- Overhauled `.registrations-panel` in `web/index.html` and `web/portal-ui.css`: added `.reg-title-wrap` with a matching glowing icon badge (`.reg-title-ico` with `fa-user-clock`), redesigned the "View all" link into a glowing amber pill button, restyled table rows as subtle rounded glass cards with hover lift, added monospace ID badges (`.member-id`), rounded square gradient avatar badges (`.mini-avatar`), and glowing status indicator pills with colored dots (`• ACTIVE`, `• EXPIRING`, `• EXPIRED`).
+- Updated `render(ok)` in `web/index.html` to populate Recent Registrations with loaded demo/stored members even during offline or initial sync states rather than showing an empty fallback error.
+- Verified complete dashboard cohesion via Playwright, confirming that all four sections (Quick Actions, KPI Cards, Analytics Panels, and Registrations Table) share unified visual language.
+### Decision-log skill
+When standardizing visual design across a complex dashboard, identify shared container tokens (top neon highlight line, radial corner bloom, icon badge container, and pill action buttons) and apply them consistently across all custom panels to eliminate disjointed "odd-one-out" components.

@@ -202,9 +202,12 @@
             <div class="panel revenue-panel is-loading">
 
                 <div class="panel-header">
-                    <div>
-                        <h2 id="revenueTitle">Monthly revenue</h2>
-                        <p id="revenueSub">Revenue overview for 2026</p>
+                    <div class="rev-title-wrap">
+                        <span class="rev-title-ico" aria-hidden="true"><i class="fa-solid fa-chart-column"></i></span>
+                        <div>
+                            <h2 id="revenueTitle">Monthly revenue</h2>
+                            <p id="revenueSub">Revenue overview for 2026</p>
+                        </div>
                     </div>
                     <div class="chip-row" id="revenuePeriods" role="group" aria-label="Revenue period">
                         <button type="button" class="chip" data-period="days" aria-pressed="false">Days</button>
@@ -329,9 +332,12 @@
         <section class="panel registrations-panel">
 
             <div class="panel-header">
-                <div>
-                    <h2>Recent registrations</h2>
-                    <p>Latest members who joined the gym</p>
+                <div class="reg-title-wrap">
+                    <span class="reg-title-ico" aria-hidden="true"><i class="fa-solid fa-user-clock"></i></span>
+                    <div>
+                        <h2>Recent registrations</h2>
+                        <p>Latest members who joined the gym</p>
+                    </div>
                 </div>
                 <a href="members.html" class="view-all">View all <i class="fa-solid fa-arrow-right"></i></a>
             </div>
@@ -440,11 +446,12 @@
   function render(ok) {
     closeMenus();
     if (table) table.setAttribute("aria-busy", "false");
-    if (!ok && !DB.synced) {
+    const pool = (typeof DB !== "undefined" && DB && DB.members && DB.members.length) ? DB.members : [];
+    if (!ok && !DB.synced && !pool.length) {
       body.innerHTML = `<tr><td colspan="5" class="pf-empty">Hindi ma-load ang listahan. I-refresh ang page.</td></tr>`;
       return;
     }
-    const newest = (DB.members || []).slice()
+    const newest = pool.slice()
       .sort((a, b) => ((b.joined && b.joined.getTime()) || 0) - ((a.joined && a.joined.getTime()) || 0)
         || String(b.id).localeCompare(String(a.id)))
       .slice(0, 5);

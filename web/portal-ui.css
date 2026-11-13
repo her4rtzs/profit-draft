@@ -2403,3 +2403,503 @@ body:not(.dark) .pf-empty,
 body:not(.dark) .mt-empty {
   color: #64748B !important;
 }
+
+
+/* ==========================================================================
+   PROFIT DASHBOARD — REVENUE ANALYTICS PANEL (Dark Gold Glassmorphism)
+   ========================================================================== */
+body.pf-staff[data-page="dashboard"] .revenue-panel,
+.revenue-panel {
+  display: flex !important;
+  flex-direction: column !important;
+  position: relative !important;
+  overflow: hidden !important;
+  border-radius: 20px !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  padding: 22px 24px 20px !important;
+  box-sizing: border-box !important;
+}
+
+/* Dark mode revenue panel */
+body.dark.pf-staff[data-page="dashboard"] .revenue-panel,
+body.dark .revenue-panel {
+  background: linear-gradient(145deg, rgba(16, 22, 34, 0.96) 0%, rgba(10, 14, 22, 0.98) 100%) !important;
+  border: 1px solid rgba(245, 158, 11, 0.45) !important;
+  box-shadow: 0 20px 48px -12px rgba(0, 0, 0, 0.75), 0 0 26px rgba(245, 158, 11, 0.14), inset 0 1px 1px rgba(255, 255, 255, 0.1) !important;
+}
+
+.revenue-panel::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 2px !important;
+  background: linear-gradient(90deg, #F59E0B 0%, rgba(251, 191, 36, 0.85) 35%, transparent 75%) !important;
+  pointer-events: none !important;
+  z-index: 2 !important;
+}
+
+.revenue-panel::after {
+  content: "" !important;
+  position: absolute !important;
+  bottom: -60px !important;
+  right: -60px !important;
+  width: 280px !important;
+  height: 200px !important;
+  border-radius: 50% !important;
+  background: radial-gradient(ellipse at bottom right, rgba(245, 158, 11, 0.18) 0%, rgba(245, 158, 11, 0.04) 55%, transparent 75%) !important;
+  pointer-events: none !important;
+  filter: blur(28px) !important;
+  z-index: 0 !important;
+}
+
+/* Light mode revenue panel */
+body:not(.dark).pf-staff[data-page="dashboard"] .revenue-panel,
+body:not(.dark) .revenue-panel {
+  background: linear-gradient(145deg, #FFFFFF 0%, #F8FAFC 100%) !important;
+  border: 1px solid rgba(245, 158, 11, 0.38) !important;
+  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.06), 0 0 20px rgba(245, 158, 11, 0.08) !important;
+}
+
+/* Revenue Header & Title Wrap */
+html body.pf-staff .revenue-panel .panel-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex-wrap: wrap !important;
+  gap: 14px !important;
+  margin-bottom: 20px !important;
+  z-index: 1 !important;
+  position: relative !important;
+}
+
+.rev-title-wrap {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 12px !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+}
+
+.rev-title-ico {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  flex: none;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(245, 158, 11, 0.08));
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #F59E0B;
+  font-size: 18px;
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.2);
+}
+
+.revenue-panel h2 {
+  margin: 0 !important;
+  font-size: 18px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+}
+body.dark .revenue-panel h2 { color: #F8FAFC !important; }
+body:not(.dark) .revenue-panel h2 { color: #0F172A !important; }
+
+.revenue-panel p {
+  margin: 2px 0 0 0 !important;
+  font-size: 12.5px !important;
+  font-weight: 500 !important;
+}
+body.dark .revenue-panel p { color: #94A3B8 !important; }
+body:not(.dark) .revenue-panel p { color: #64748B !important; }
+
+/* Filter Chips (Days, Week, Month, Year) */
+.revenue-panel .chip-row {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  padding: 4px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+body:not(.dark) .revenue-panel .chip-row {
+  background: #F1F5F9 !important;
+  border-color: #E2E8F0 !important;
+}
+
+.revenue-panel .chip {
+  padding: 6px 16px !important;
+  border-radius: 999px !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  color: #94A3B8 !important;
+  cursor: pointer !important;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}
+.revenue-panel .chip:hover {
+  color: #F8FAFC !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+body:not(.dark) .revenue-panel .chip:hover {
+  color: #0F172A !important;
+  background: #E2E8F0 !important;
+}
+.revenue-panel .chip.active {
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+  color: #0A0E17 !important;
+  border-color: #F59E0B !important;
+  font-weight: 750 !important;
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.35) !important;
+}
+
+/* Chart Canvas, Grid & Bars */
+.revenue-panel .chart-area {
+  position: relative;
+  z-index: 1;
+}
+.revenue-panel .grid-lines {
+  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px) !important;
+  background-size: 100% 40px !important;
+}
+body:not(.dark) .revenue-panel .grid-lines {
+  background-image: linear-gradient(to bottom, rgba(15, 23, 42, 0.06) 1px, transparent 1px) !important;
+}
+
+.revenue-panel .chart-y {
+  color: #94A3B8 !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  font-variant-numeric: tabular-nums !important;
+}
+body:not(.dark) .revenue-panel .chart-y {
+  color: #64748B !important;
+}
+
+.revenue-panel .bar-column .bar {
+  background: linear-gradient(180deg, #FBBF24 0%, #F59E0B 100%) !important;
+  border-radius: 6px 6px 0 0 !important;
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.3) !important;
+  transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.22s ease, filter 0.22s ease !important;
+}
+.revenue-panel .bar-column .bar:hover {
+  background: linear-gradient(180deg, #FCD34D 0%, #F59E0B 100%) !important;
+  box-shadow: 0 0 22px rgba(245, 158, 11, 0.6) !important;
+  filter: brightness(1.1) !important;
+}
+
+/* ==========================================================================
+   PROFIT DASHBOARD — RECENT REGISTRATIONS PANEL (Dark Gold Glassmorphism)
+   ========================================================================== */
+body.pf-staff[data-page="dashboard"] .registrations-panel,
+.registrations-panel {
+  display: flex !important;
+  flex-direction: column !important;
+  position: relative !important;
+  overflow: hidden !important;
+  border-radius: 20px !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  padding: 22px 24px 20px !important;
+  box-sizing: border-box !important;
+  margin-top: 24px !important;
+}
+
+/* Dark mode registrations panel */
+body.dark.pf-staff[data-page="dashboard"] .registrations-panel,
+body.dark .registrations-panel {
+  background: linear-gradient(145deg, rgba(16, 22, 34, 0.96) 0%, rgba(10, 14, 22, 0.98) 100%) !important;
+  border: 1px solid rgba(245, 158, 11, 0.45) !important;
+  box-shadow: 0 20px 48px -12px rgba(0, 0, 0, 0.75), 0 0 26px rgba(245, 158, 11, 0.14), inset 0 1px 1px rgba(255, 255, 255, 0.1) !important;
+}
+
+.registrations-panel::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 2px !important;
+  background: linear-gradient(90deg, #F59E0B 0%, rgba(251, 191, 36, 0.85) 40%, transparent 80%) !important;
+  pointer-events: none !important;
+  z-index: 2 !important;
+}
+
+.registrations-panel::after {
+  content: "" !important;
+  position: absolute !important;
+  bottom: -60px !important;
+  right: -60px !important;
+  width: 280px !important;
+  height: 200px !important;
+  border-radius: 50% !important;
+  background: radial-gradient(ellipse at bottom right, rgba(245, 158, 11, 0.18) 0%, rgba(245, 158, 11, 0.04) 55%, transparent 75%) !important;
+  pointer-events: none !important;
+  filter: blur(28px) !important;
+  z-index: 0 !important;
+}
+
+/* Light mode registrations panel */
+body:not(.dark).pf-staff[data-page="dashboard"] .registrations-panel,
+body:not(.dark) .registrations-panel {
+  background: linear-gradient(145deg, #FFFFFF 0%, #F8FAFC 100%) !important;
+  border: 1px solid rgba(245, 158, 11, 0.38) !important;
+  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.06), 0 0 20px rgba(245, 158, 11, 0.08) !important;
+}
+
+/* Header & Title Wrap */
+html body.pf-staff .registrations-panel .panel-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  margin-bottom: 20px !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.reg-title-wrap {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 12px !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+}
+
+.reg-title-ico {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  flex: none;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(245, 158, 11, 0.08));
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #F59E0B;
+  font-size: 18px;
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.2);
+}
+
+.registrations-panel h2 {
+  margin: 0 !important;
+  font-size: 18px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+}
+body.dark .registrations-panel h2 { color: #F8FAFC !important; }
+body:not(.dark) .registrations-panel h2 { color: #0F172A !important; }
+
+.registrations-panel p {
+  margin: 2px 0 0 0 !important;
+  font-size: 12.5px !important;
+  font-weight: 500 !important;
+}
+body.dark .registrations-panel p { color: #94A3B8 !important; }
+body:not(.dark) .registrations-panel p { color: #64748B !important; }
+
+/* View all pill */
+body.pf-staff[data-page="dashboard"] .registrations-panel .view-all,
+.registrations-panel .view-all {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 8px 18px !important;
+  border-radius: 999px !important;
+  background: rgba(245, 158, 11, 0.1) !important;
+  border: 1px solid rgba(245, 158, 11, 0.35) !important;
+  color: #F59E0B !important;
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+  transition: all 0.22s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}
+.registrations-panel .view-all:hover {
+  background: rgba(245, 158, 11, 0.2) !important;
+  border-color: rgba(245, 158, 11, 0.6) !important;
+  color: #FBBF24 !important;
+  transform: translateX(2px) !important;
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.3) !important;
+}
+
+/* Table Wrapper & Typography */
+.registrations-panel .table-wrapper {
+  position: relative;
+  z-index: 1;
+}
+.registrations-panel table {
+  width: 100% !important;
+  border-collapse: separate !important;
+  border-spacing: 0 6px !important;
+}
+
+.registrations-panel table thead th {
+  font-size: 11px !important;
+  font-weight: 750 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  padding: 12px 18px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: transparent !important;
+}
+body.dark .registrations-panel table thead th { color: #94A3B8 !important; }
+body:not(.dark) .registrations-panel table thead th { color: #64748B !important; border-bottom-color: #E2E8F0 !important; }
+
+.registrations-panel table tbody tr {
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.2s ease, box-shadow 0.2s ease !important;
+  border-radius: 12px !important;
+}
+body.dark .registrations-panel table tbody tr {
+  background: rgba(255, 255, 255, 0.02) !important;
+}
+body.dark .registrations-panel table tbody tr:hover {
+  background: rgba(245, 158, 11, 0.06) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3) !important;
+  transform: translateY(-1px) !important;
+}
+body:not(.dark) .registrations-panel table tbody tr {
+  background: #FFFFFF !important;
+}
+body:not(.dark) .registrations-panel table tbody tr:hover {
+  background: #F8FAFC !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05) !important;
+}
+
+.registrations-panel table tbody td {
+  padding: 14px 18px !important;
+  vertical-align: middle !important;
+}
+.registrations-panel table tbody tr td:first-child {
+  border-radius: 12px 0 0 12px !important;
+}
+.registrations-panel table tbody tr td:last-child {
+  border-radius: 0 12px 12px 0 !important;
+}
+
+/* Monospace ID badge */
+.registrations-panel .member-id {
+  display: inline-block !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  padding: 4px 10px !important;
+  border-radius: 8px !important;
+  letter-spacing: 0.03em !important;
+}
+body.dark .registrations-panel .member-id {
+  color: #CBD5E1 !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+body:not(.dark) .registrations-panel .member-id {
+  color: #334155 !important;
+  background: #F1F5F9 !important;
+  border: 1px solid #CBD5E1 !important;
+}
+
+/* Avatar Badge */
+.registrations-panel .mini-avatar {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 12px !important;
+  display: grid !important;
+  place-items: center !important;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.22) 0%, rgba(245, 158, 11, 0.06) 100%) !important;
+  border: 1px solid rgba(245, 158, 11, 0.35) !important;
+  color: #FBBF24 !important;
+  font-weight: 750 !important;
+  font-size: 13px !important;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.15) !important;
+  flex: none !important;
+}
+
+.registrations-panel .member {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+.registrations-panel .member strong {
+  display: block !important;
+  font-size: 14px !important;
+  font-weight: 750 !important;
+  line-height: 1.25 !important;
+}
+body.dark .registrations-panel .member strong { color: #F8FAFC !important; }
+body:not(.dark) .registrations-panel .member strong { color: #0F172A !important; }
+
+.registrations-panel .member small {
+  display: block !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  margin-top: 2px !important;
+}
+body.dark .registrations-panel .member small { color: #94A3B8 !important; }
+body:not(.dark) .registrations-panel .member small { color: #64748B !important; }
+
+/* Status Badges */
+.registrations-panel .badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 5px 12px !important;
+  border-radius: 999px !important;
+  font-size: 11.5px !important;
+  font-weight: 750 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+}
+.registrations-panel .badge::before {
+  content: "" !important;
+  width: 6px !important;
+  height: 6px !important;
+  border-radius: 50% !important;
+  display: inline-block !important;
+  background: currentColor !important;
+  box-shadow: 0 0 6px currentColor !important;
+}
+.registrations-panel .badge.active {
+  background: rgba(16, 185, 129, 0.14) !important;
+  border: 1px solid rgba(16, 185, 129, 0.4) !important;
+  color: #10B981 !important;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.18) !important;
+}
+.registrations-panel .badge.expiring,
+.registrations-panel .badge.warning {
+  background: rgba(245, 158, 11, 0.14) !important;
+  border: 1px solid rgba(245, 158, 11, 0.4) !important;
+  color: #F59E0B !important;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.18) !important;
+}
+.registrations-panel .badge.expired {
+  background: rgba(251, 83, 100, 0.14) !important;
+  border: 1px solid rgba(251, 83, 100, 0.4) !important;
+  color: #FB5364 !important;
+  box-shadow: 0 0 10px rgba(251, 83, 100, 0.18) !important;
+}
+
+/* Actions Menu Button */
+.registrations-panel .pf-menu-btn,
+.registrations-panel .action-btn {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  display: grid !important;
+  place-items: center !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: #94A3B8 !important;
+  transition: all 0.2s ease !important;
+  cursor: pointer !important;
+}
+.registrations-panel .pf-menu-btn:hover,
+.registrations-panel .action-btn:hover {
+  background: rgba(245, 158, 11, 0.14) !important;
+  border-color: rgba(245, 158, 11, 0.4) !important;
+  color: #F59E0B !important;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.25) !important;
+  transform: scale(1.08) !important;
+}
