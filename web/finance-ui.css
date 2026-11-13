@@ -591,18 +591,20 @@ body:not(.dark) .fn-search-pill svg {
   color: #d97706;
 }
 
+html body.pf-staff[data-page="payments"] .fn-search-pill input,
+html body.pf-staff[data-page="reports"] .fn-search-pill input,
 .fn-search-pill input {
   width: 100%;
-  height: 40px;
-  min-height: 40px;
-  padding: 0 16px 0 38px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 170, 0, 0.4);
-  background: var(--fn-input-bg);
-  color: var(--fn-text);
+  height: 40px !important;
+  min-height: 40px !important;
+  padding: 0 16px 0 38px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(255, 170, 0, 0.4) !important;
+  background: var(--fn-input-bg) !important;
+  color: var(--fn-text) !important;
   font: inherit;
-  font-size: 13px;
-  box-shadow: 0 0 14px rgba(255, 170, 0, 0.1);
+  font-size: 13px !important;
+  box-shadow: 0 0 14px rgba(255, 170, 0, 0.12) !important;
   transition: border-color 0.16s ease, box-shadow 0.16s ease;
 }
 
@@ -610,10 +612,12 @@ body:not(.dark) .fn-search-pill svg {
   color: var(--fn-muted);
 }
 
+html body.pf-staff[data-page="payments"] .fn-search-pill input:focus,
+html body.pf-staff[data-page="reports"] .fn-search-pill input:focus,
 .fn-search-pill input:focus {
   outline: none;
-  border-color: rgba(255, 176, 32, 0.85);
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.22), 0 0 16px rgba(255, 170, 0, 0.18);
+  border-color: rgba(255, 176, 32, 0.85) !important;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.22), 0 0 16px rgba(255, 170, 0, 0.2) !important;
 }
 
 html body.pf-staff[data-page="reports"] .fn-toolbar-select,
@@ -864,18 +868,18 @@ body:not(.dark) .fn-plan-pill.plan-unassigned { background: #f1f5f9; color: #647
 }
 
 .fn-table--sub {
-  --fn-cols: minmax(210px, 1.5fr) 115px minmax(150px, 1fr) 120px 92px;
-  --fn-min-w: 720px;
+  --fn-cols: minmax(210px, 1.4fr) 120px minmax(160px, 1fr) 124px 96px;
+  --fn-min-w: 710px;
 }
 
 .fn-table--hist {
-  --fn-cols: 108px minmax(190px, 1.3fr) 104px 124px 104px 96px 92px;
-  --fn-min-w: 840px;
+  --fn-cols: 112px minmax(200px, 1.35fr) 110px minmax(168px, 0.9fr) 120px 104px 100px;
+  --fn-min-w: 914px;
 }
 
 .fn-table--tx {
-  --fn-cols: 106px 112px minmax(170px, 1.3fr) 104px 136px 108px;
-  --fn-min-w: 740px;
+  --fn-cols: 120px 112px minmax(200px, 1.4fr) 110px minmax(168px, 0.9fr) 110px;
+  --fn-min-w: 820px;
 }
 
 .fn-table thead,
@@ -987,6 +991,13 @@ html body.pf-staff[data-page="reports"] .fn-table thead th.fn-right {
   font-size: 13.5px;
   line-height: 1.25;
   min-width: 0;
+  white-space: nowrap;
+}
+
+.fn-table--sub tbody td:nth-child(1),
+.fn-table--hist tbody td:nth-child(2),
+.fn-table--tx tbody td:nth-child(3) {
+  white-space: normal;
 }
 
 .fn-table tbody td.fn-center {

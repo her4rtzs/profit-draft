@@ -1759,3 +1759,12 @@ Fix the Browse Members table header (remove gray label rectangles, align columns
 - Updated `web/finance-ui.css` to set `max-width: none !important` on `.main-content`, `align-items: start` on `.fn-daily-grid`, `min-height: 150px; height: auto; overflow: visible` on `.fn-kpi-card`, `right: 56px; top: 50%; transform: translateY(-50%)` on `.fn-kpi-watermark`, `32px` seamless `thead tr` + `56px` vertically centered `tbody tr` with `gap: 0`, high-specificity `.fn-tabs .tab` card borders, and `40px` bordered `.fn-toolbar-select`.
 ### Decision-log skill
 Always keep the `<div class="dashboard"><nav id="sidebar"></nav><main class="main-content"><header id="topbar"></header>` wrapper intact on staff pages so `layout.js` mounts the app shell, and override `html body thead th` with equal/higher specificity when styling seamless CSS-grid table headers.
+
+## 2026-11-14 07:24 (Asia/Manila): Payments history & Transactions column wrapping and search pill polish
+### What I asked for
+Eliminate two-line wrapping on dates and payment methods (`Online (PayMongo)`, `Oct 30, 2026`) in Payment history and Transactions tables, keep Member names wrapping cleanly if long, and enforce the amber-bordered pill search style.
+### What the agent decided and why
+- Widened the Date (`120px`) and Method (`minmax(168px, 0.9fr)`) tracks in `.fn-table--hist` and `.fn-table--tx` in `web/finance-ui.css` and added `white-space: nowrap` on non-member table cells so dates, references, methods, and amounts stay on one horizontal line.
+- Raised specificity on `.fn-search-pill input` in `web/finance-ui.css` so the `rgba(255, 170, 0, 0.4)` border and soft amber glow render over legacy `styles.css` input resets, and bumped `finance-ui.css?v=3` in `web/payments.html` and `web/reports.html`.
+### Decision-log skill
+Set `white-space: nowrap` and `>=168px` width for `Online (PayMongo)` and `>=120px` for formatted dates (`Oct 30, 2026`) in grid-based finance tables so rows stay single-line and vertically aligned.
