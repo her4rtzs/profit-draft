@@ -90,6 +90,28 @@ body[data-page="reports"] .main-content {
   z-index: 2;
 }
 
+.fn-header-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.fn-header-wave {
+  position: absolute !important;
+  right: 0;
+  bottom: 0;
+  width: 440px;
+  height: 54px;
+  pointer-events: none;
+  z-index: 0 !important;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 35%);
+  mask-image: linear-gradient(90deg, transparent, #000 35%);
+  opacity: 0.85;
+}
+
+body:not(.dark) .fn-header-wave {
+  opacity: 0.45;
+}
+
 .fn-eyebrow {
   margin: 0 0 4px;
   font-size: 11px;

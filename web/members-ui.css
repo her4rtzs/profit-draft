@@ -686,6 +686,9 @@ body[data-page="members"] .pp-members-table thead tr {
 
 html body.pf-staff[data-page="members"] .pp-members-table thead th,
 body[data-page="members"] .pp-members-table thead th {
+  display: flex;
+  align-items: center;
+  height: 100%;
   padding: 0 !important;
   margin: 0 !important;
   font-size: 11px !important;

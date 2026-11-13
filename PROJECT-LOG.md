@@ -1768,3 +1768,12 @@ Eliminate two-line wrapping on dates and payment methods (`Online (PayMongo)`, `
 - Raised specificity on `.fn-search-pill input` in `web/finance-ui.css` so the `rgba(255, 170, 0, 0.4)` border and soft amber glow render over legacy `styles.css` input resets, and bumped `finance-ui.css?v=3` in `web/payments.html` and `web/reports.html`.
 ### Decision-log skill
 Set `white-space: nowrap` and `>=168px` width for `Online (PayMongo)` and `>=120px` for formatted dates (`Oct 30, 2026`) in grid-based finance tables so rows stay single-line and vertically aligned.
+
+## 2026-11-14 07:34 (Asia/Manila): Browse Members header baseline alignment & Finance header wave accent
+### What I asked for
+Align the Browse Members table header labels cleanly and bring the Browse Members header card's decorative gold wave aesthetic to the Payments and Reports header containers.
+### What the agent decided and why
+- Added `display: flex; align-items: center; height: 100%;` to all `.pp-members-table thead th` cells in `web/members-ui.css` (and bumped `members-ui.css?v=12` in `web/members.html`) so `MEMBER` and `ENDS` sit on the exact same vertical center as `PLAN`, `STATUS`, and `ACTIONS`.
+- Added the masked bottom-right decorative gold wave SVG (`.fn-header-wave`) to `.fn-header-card` in `web/payments.html`, `web/reports.html`, and `web/finance-ui.css` (`?v=4`) with `z-index: 0` below the tabs.
+### Decision-log skill
+Apply `display: flex; align-items: center; height: 100%;` uniformly to every grid `thead th` (not only centered ones) so left-aligned and centered headers share the exact same vertical baseline.
