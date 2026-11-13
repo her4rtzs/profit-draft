@@ -1,5 +1,6 @@
 """Announcement rules. Views call these; the rules live here, not in the views."""
 
+import datetime
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import transaction
@@ -71,7 +72,7 @@ def visible_to(user):
     base = Announcement.objects.filter(status=PUBLISHED).filter(
         Q(publish_on__isnull=True) | Q(publish_on__lte=today)
     )
-    if role == "MEMBER":
+    if role in ("MEMBER", "OWNER", "CASHIER"):
         return (
             base.filter(
                 Q(audience__in=[ALL, EVERYONE, MEMBERS, "EVERYONE", "MEMBERS"])
@@ -286,6 +287,24 @@ def delete_announcement(note):
     note.delete()
 
 
+def _safe_date(val):
+    """Safely convert datetime, date, or date string into a datetime.date object without timezone crashes."""
+    if not val:
+        return None
+    if isinstance(val, datetime.datetime):
+        if timezone.is_aware(val):
+            return timezone.localtime(val).date()
+        return val.date()
+    if isinstance(val, datetime.date):
+        return val
+    if isinstance(val, str):
+        try:
+            return datetime.date.fromisoformat(val[:10])
+        except (ValueError, TypeError):
+            return None
+    return None
+
+
 def get_staff_stats_and_counts():
     """Compute server-side announcement stats and filter pill counts."""
     today = timezone.localdate()
@@ -305,13 +324,7 @@ def get_staff_stats_and_counts():
     for pub_at, pub_on, created_at in all_qs.filter(status=PUBLISHED).values_list(
         "published_at", "publish_on", "created_at"
     ):
-        dt_date = None
-        if pub_at:
-            dt_date = timezone.localtime(pub_at).date()
-        elif pub_on:
-            dt_date = pub_on
-        elif created_at:
-            dt_date = timezone.localtime(created_at).date()
+        dt_date = _safe_date(pub_at) or _safe_date(pub_on) or _safe_date(created_at)
         if dt_date and dt_date.year == today.year and dt_date.month == today.month:
             published_this_month += 1
 

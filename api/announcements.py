@@ -29,13 +29,20 @@ def _effective_staff_user(request):
 
 
 class IsOwner(BasePermission):
+    """Allow only the gym owner (or administrator) to manage announcements."""
     def has_permission(self, request, view):
         user = _effective_staff_user(request)
         return bool(
             user
             and getattr(user, "is_authenticated", False)
-            and getattr(user, "role", "") == "OWNER"
+            and (
+                getattr(user, "role", "") == "OWNER"
+                or getattr(user, "is_superuser", False)
+            )
         )
+
+
+IsStaffOrOwner = IsOwner
 
 
 def _public_audience(raw):
@@ -224,32 +231,40 @@ class StaffAnnouncementListView(APIView):
     permission_classes = [IsOwner]
 
     def get(self, request):
-        rows = Announcement.objects.all().prefetch_related("recipients")
-        raw_status = (request.query_params.get("status") or "").strip().lower()
-        if raw_status in ("draft", "drafts"):
-            rows = rows.filter(status=Announcement.Status.DRAFT)
-        elif raw_status == "published":
-            rows = rows.filter(status=Announcement.Status.PUBLISHED)
-        elif raw_status == "archived":
-            rows = rows.filter(status=Announcement.Status.ARCHIVED)
+        try:
+            rows = Announcement.objects.all().prefetch_related("recipients")
+            raw_status = (request.query_params.get("status") or "").strip().lower()
+            if raw_status in ("draft", "drafts"):
+                rows = rows.filter(status=Announcement.Status.DRAFT)
+            elif raw_status == "published":
+                rows = rows.filter(status=Announcement.Status.PUBLISHED)
+            elif raw_status == "archived":
+                rows = rows.filter(status=Announcement.Status.ARCHIVED)
 
-        q = (request.query_params.get("q") or "").strip()
-        if q:
-            rows = rows.filter(
-                Q(title__icontains=q) | Q(message__icontains=q) | Q(audience__icontains=q)
+            q = (request.query_params.get("q") or "").strip()
+            if q:
+                rows = rows.filter(
+                    Q(title__icontains=q) | Q(message__icontains=q) | Q(audience__icontains=q)
+                )
+
+            rows = rows.order_by("-pinned", "-created_at", "-id")
+            items = StaffAnnouncementSerializer(rows, many=True).data
+            stats, counts = services.get_staff_stats_and_counts()
+            return Response(
+                {
+                    "items": items,
+                    "results": items,
+                    "stats": stats,
+                    "counts": counts,
+                }
             )
-
-        rows = rows.order_by("-pinned", "-created_at", "-id")
-        items = StaffAnnouncementSerializer(rows, many=True).data
-        stats, counts = services.get_staff_stats_and_counts()
-        return Response(
-            {
-                "items": items,
-                "results": items,
-                "stats": stats,
-                "counts": counts,
-            }
-        )
+        except Exception as exc:
+            import logging
+            logging.getLogger(__name__).exception("Failed to retrieve announcements: %s", exc)
+            return Response(
+                {"detail": "Could not retrieve announcements. Please retry."},
+                status=500,
+            )
 
     def post(self, request):
         v = _validate_announcement_payload(request.data, partial=False)

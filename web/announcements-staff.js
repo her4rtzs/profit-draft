@@ -379,6 +379,7 @@
       updateStatsAndCountsUI();
       renderList();
     } catch (err) {
+      if (summaryEl) summaryEl.textContent = "";
       listEl.innerHTML = `
         <div class="ann-empty-state">
           <div class="ann-empty-art" aria-hidden="true" style="color:#f87171;border-color:rgba(248,113,113,0.35);background:rgba(248,113,113,0.12)">

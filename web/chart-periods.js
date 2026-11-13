@@ -415,10 +415,13 @@ window.PFChart = (function () {
       }
       stepper.innerHTML =
         '<button type="button" class="stepper-btn prev" data-step="-1" aria-label="Previous period">\u2039</button>' +
+        '<div class="stepper-slot">' +
         '<span class="stepper-label" aria-live="polite"></span>' +
         '<input type="number" class="stepper-input" min="2000" max="' + currentYear + '" step="1" hidden aria-label="Enter year" placeholder="YYYY">' +
+        '</div>' +
         '<button type="button" class="stepper-btn next" data-step="1" aria-label="Next period">\u203a</button>';
 
+      var slot = stepper.querySelector(".stepper-slot");
       var lbl = stepper.querySelector(".stepper-label");
       var input = stepper.querySelector(".stepper-input");
       var isEditing = false;
@@ -427,6 +430,11 @@ window.PFChart = (function () {
         if (isEditing) return;
         if (period !== "month" && period !== "year") return;
         isEditing = true;
+        // Lock the exact current rendered width of the slot so arrow buttons and toolbar NEVER move
+        if (slot) {
+          var currentW = Math.max(54, slot.offsetWidth);
+          slot.style.width = currentW + "px";
+        }
         lbl.hidden = true;
         input.hidden = false;
         input.min = "2000";
@@ -440,6 +448,7 @@ window.PFChart = (function () {
       function cancelEditing() {
         if (!isEditing) return;
         isEditing = false;
+        if (slot) slot.style.width = "";
         input.hidden = true;
         lbl.hidden = false;
         stepper.classList.remove("is-editing");
