@@ -1644,3 +1644,15 @@ Organize repository files by purpose and remove unused and duplicate files.
 - Kept active `web/` root files and root `ROADMAP.md` / `AUDIT.md` in place so WhiteNoise root URLs, `sw.js` precaching, and `docs/` links remain intact.
 ### Decision-log skill
 Always verify asset references across `web/trainer/`, `web/sw.js`, `api/`, `apps/`, and `docs/` before deleting or moving static files, and keep shared `web/assets/` intact when only a prototype subfolder (`web/staff/`) is retired.
+
+## 2026-11-14 03:33 (Asia/Manila): Redesign Trainer Management page layout and theme support
+### What I asked for
+Improve and redesign the Trainer Management page (`web/trainers.html`) with a 3-column responsive CSS Grid for trainer cards, balanced Assign Trainer and Member Requests containers without horizontal overflow, color-coded capacity progress bars, List View alignment, and complete Dark/Light mode support.
+### What the agent decided and why
+- Scoped all Trainer Management page updates to `body[data-page="trainers"]` in `web/portal-ui.css` and `web/trainers-staff.js` so the sidebar and other portal pages remain completely untouched.
+- Replaced `repeat(auto-fill, minmax(250px, 1fr))` on `.tr-grid` with `repeat(3, minmax(0, 1fr))` on desktop (`>=1200px`), `repeat(2, minmax(0, 1fr))` on tablet (`768px-1199px`), and `1fr` on mobile (`<768px`), with `22px` gaps, `min-height: 280px` flex-column cards, and bottom-aligned actions.
+- Added horizontal List View styling (`.tr-grid.is-list`) using `display: contents` on `.tr-card-top` so avatars, metadata, capacity progress, badges, and buttons align cleanly in one row without changing card markup.
+- Removed `min-width: 560px` on `.tr-req-table` and tightened cell/button spacing so Member Requests fits cleanly in its container on desktop without horizontal scrollbars or clipped buttons.
+- Added capacity-level progress bar classes (`is-cap-low`, `is-cap-med`, `is-cap-high`, `is-cap-full`), a helpful empty-member prompt in Assign Trainer, and complete Light Mode (`body:not(.dark)[data-page="trainers"]`) overrides.
+### Decision-log skill
+Never use `min-width` wider than a grid column on dashboard tables inside a 2-column split, and use explicit responsive `repeat(N, minmax(0, 1fr))` breakpoints instead of `auto-fill` when equal column proportions are required even with 1–2 items.

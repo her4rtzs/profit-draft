@@ -67,6 +67,7 @@
   function trainerCard(t, idx) {
     const accent = ACCENTS[idx % ACCENTS.length];
     const pct = t.max_members ? Math.min(100, Math.round((t.load / t.max_members) * 100)) : 0;
+    const capCls = pct >= 90 ? "is-cap-full" : pct >= 70 ? "is-cap-high" : pct >= 40 ? "is-cap-med" : "is-cap-low";
     const st = trainerStatus(t);
     const menuOpen = openMenuId === String(t.id);
     const avatarHtml = t.avatar_url
@@ -103,7 +104,7 @@
 
       <div class="tr-progress-row" aria-label="${t.load} of ${t.max_members} members (${pct}%)">
         <div class="tr-progress-track">
-          <span class="tr-progress-fill" style="width:${pct}%"></span>
+          <span class="tr-progress-fill ${capCls}" style="width:${pct}%"></span>
         </div>
         <strong class="tr-progress-pct">${pct}%</strong>
       </div>
@@ -195,7 +196,8 @@
     const remBtn = document.getElementById("asRemove");
     if (!curEl) return;
     if (!m) {
-      curEl.innerHTML = "";
+      curEl.innerHTML = `<i class="fa-regular fa-circle-info" aria-hidden="true"></i> Select a member to check their current trainer`;
+      curEl.classList.remove("has-trainer");
       if (remBtn) remBtn.hidden = true;
       return;
     }
