@@ -189,6 +189,10 @@
         );
         return;
       }
+      if (user.must_change_password && isTrainer && file !== "settings.html") {
+        location.replace(isTrainerSection ? "settings.html?force_password_change=1" : "trainer/settings.html?force_password_change=1");
+        return;
+      }
       document.documentElement.classList.remove("auth-checking", "auth-pending");
       window.ProFitAuth = {
         user,

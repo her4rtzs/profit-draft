@@ -1,21 +1,32 @@
 """Trainer endpoints: the owner manages trainers and assignments; members pick or request one."""
 
-from django.core.exceptions import ValidationError as DjangoValidationError
+import secrets
+import string
+
+from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
+from django.core.validators import validate_email
+from django.db import transaction
+from django.db.models import Q
+from django.urls import reverse
+from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.accounts.emails import send_invite_email
+from apps.accounts.models import Role, StaffInvite
+from apps.accounts.services import create_staff_invite, normalize_email
 from apps.announcements.models import Announcement
 from apps.membership.models import Attendance, MemberProfile
 from apps.notifications.models import Notification
 from apps.notifications.services import notify_many
 from apps.trainers import services
 from apps.trainers.models import TrainerAssignment, TrainerProfile, TrainerRequest
-from django.db.models import Q
-from django.utils import timezone
 
 
 class IsOwner(BasePermission):
@@ -45,11 +56,25 @@ def _fail(exc):
     raise ValidationError({"detail": " ".join(exc.messages)})
 
 
+def _invite_status_for(user):
+    if user.is_active:
+        return "ACTIVE"
+    now = timezone.now()
+    latest = StaffInvite.objects.filter(email=normalize_email(user.email), role=Role.TRAINER).order_by("-created_at", "-id").first()
+    if latest and latest.is_usable(now):
+        return "INVITE_PENDING"
+    if latest and latest.is_expired(now):
+        return "INVITE_EXPIRED"
+    return "INVITE_PENDING"
+
+
 def _trainer_json(t):
     load = services.load(t)
     return {
         "id": t.pk,
         "name": _name(t.user),
+        "email": t.user.email,
+        "phone": t.phone,
         "specialization": t.specialization,
         "bio": t.bio,
         "availability": t.availability,
@@ -57,6 +82,7 @@ def _trainer_json(t):
         "load": load,
         "is_full": load >= t.max_members,
         "is_active": t.is_active,
+        "invite_status": _invite_status_for(t.user),
     }
 
 
@@ -75,8 +101,42 @@ def _request_json(r):
 
 # ----- owner -------------------------------------------------------------------------
 
+def _generate_temp_password():
+    alphabet = string.ascii_letters + string.digits + "!@#$%"
+    core = [
+        secrets.choice(string.ascii_uppercase),
+        secrets.choice(string.ascii_lowercase),
+        secrets.choice(string.digits),
+        secrets.choice("!@#$%"),
+    ] + [secrets.choice(alphabet) for _ in range(8)]
+    secrets.SystemRandom().shuffle(core)
+    return "".join(core)
+
+
+def _split_full_name(full_name):
+    parts = [p for p in str(full_name or "").strip().split() if p]
+    if not parts:
+        return "", ""
+    return parts[0][:150], " ".join(parts[1:])[:150]
+
+
+def _try_send_invite(request, invite, raw_token):
+    accept_url = request.build_absolute_uri(
+        reverse("accounts:accept_invite", kwargs={"invite_id": invite.pk, "token": raw_token})
+    )
+    backend = getattr(settings, "EMAIL_BACKEND", "")
+    is_non_delivery = any(b in backend for b in ("console.", "locmem.", "dummy."))
+    if is_non_delivery:
+        return accept_url, False, "Email delivery is not configured on this server. Copy and share the invitation link below."
+    try:
+        send_invite_email(invite, raw_token, accept_url)
+        return accept_url, True, "Invitation email sent to the trainer."
+    except Exception:
+        return accept_url, False, "Email delivery failed. Copy and share the invitation link below."
+
+
 class StaffTrainerListView(APIView):
-    """GET trainers with their workload. POST creates a profile for a user with role TRAINER."""
+    """GET trainers with their workload. POST creates a trainer profile (and account if requested)."""
 
     permission_classes = [IsOwner]
 
@@ -85,15 +145,89 @@ class StaffTrainerListView(APIView):
         return Response([_trainer_json(t) for t in rows])
 
     def post(self, request):
-        user_id = request.data.get("user_id")
         User = get_user_model()
-        user = User.objects.filter(pk=user_id, role="TRAINER").first()
-        if user is None:
-            return Response({"detail": "Pick a user whose role is Trainer."}, status=400)
-        if TrainerProfile.objects.filter(user=user).exists():
-            return Response({"detail": "This trainer already has a profile."}, status=400)
-        profile = TrainerProfile.objects.create(user=user, **_profile_fields(request.data, creating=True))
-        return Response(_trainer_json(profile), status=201)
+        user_id = request.data.get("user_id")
+        if user_id:
+            user = User.objects.filter(pk=user_id, role="TRAINER").first()
+            if user is None:
+                return Response({"detail": "Pick a user whose role is Trainer."}, status=400)
+            if TrainerProfile.objects.filter(user=user).exists():
+                return Response({"detail": "This trainer already has a profile."}, status=400)
+            profile = TrainerProfile.objects.create(user=user, **_profile_fields(request.data, creating=True))
+            return Response(_trainer_json(profile), status=201)
+
+        full_name = str(request.data.get("full_name") or "").strip()
+        raw_email = str(request.data.get("email") or "").strip()
+        access_mode = str(request.data.get("access_mode") or "invite").strip()
+        if not full_name:
+            return Response({"detail": "Full name is required."}, status=400)
+        if not raw_email:
+            return Response({"detail": "Email address is required."}, status=400)
+        try:
+            validate_email(raw_email)
+        except DjangoValidationError:
+            return Response({"detail": "Enter a valid email address."}, status=400)
+        if access_mode not in ("invite", "temp_password"):
+            return Response({"detail": "Invalid account access mode."}, status=400)
+
+        email = normalize_email(raw_email)
+        if User.objects.filter(Q(username__iexact=email) | Q(email__iexact=email)).exists():
+            return Response({"detail": "An account with this email address already exists."}, status=400)
+
+        fields = _profile_fields(request.data, creating=True)
+        first_name, last_name = _split_full_name(full_name)
+
+        if access_mode == "temp_password":
+            temp_password = str(request.data.get("temp_password") or "").strip() or _generate_temp_password()
+            with transaction.atomic():
+                user = User(
+                    username=email,
+                    email=email,
+                    first_name=first_name,
+                    last_name=last_name,
+                    role=Role.TRAINER,
+                    is_active=True,
+                    must_change_password=True,
+                )
+                try:
+                    validate_password(temp_password, user)
+                except DjangoValidationError as exc:
+                    return Response({"detail": " ".join(exc.messages)}, status=400)
+                user.set_password(temp_password)
+                user.save()
+                profile = TrainerProfile.objects.create(user=user, **fields)
+            payload = _trainer_json(profile)
+            payload.update({
+                "access_mode": "temp_password",
+                "temp_password": temp_password,
+                "must_change_password": True,
+            })
+            return Response(payload, status=201)
+
+        with transaction.atomic():
+            user = User(
+                username=email,
+                email=email,
+                first_name=first_name,
+                last_name=last_name,
+                role=Role.TRAINER,
+                is_active=False,
+            )
+            user.set_unusable_password()
+            user.save()
+            profile = TrainerProfile.objects.create(user=user, **fields)
+            invite, raw_token = create_staff_invite(owner=request.user, email=email, role=Role.TRAINER)
+
+        accept_url, email_sent, email_note = _try_send_invite(request, invite, raw_token)
+        payload = _trainer_json(profile)
+        payload.update({
+            "access_mode": "invite",
+            "invite_url": accept_url,
+            "invite_expires_hours": 72,
+            "email_sent": email_sent,
+            "email_status_note": email_note,
+        })
+        return Response(payload, status=201)
 
 
 class StaffTrainerCandidatesView(APIView):
@@ -120,11 +254,38 @@ class StaffTrainerDetailView(APIView):
         return Response(_trainer_json(profile))
 
 
+class StaffTrainerResendInviteView(APIView):
+    """Issue a fresh 72-hour invite link for a trainer whose account is still pending."""
+
+    permission_classes = [IsOwner]
+
+    def post(self, request, pk):
+        profile = TrainerProfile.objects.select_related("user").filter(pk=pk).first()
+        if profile is None:
+            return Response({"detail": "Trainer not found."}, status=404)
+        if profile.user.is_active:
+            return Response({"detail": "This trainer account is already active."}, status=400)
+        now = timezone.now()
+        email = normalize_email(profile.user.email)
+        StaffInvite.objects.filter(email=email, role=Role.TRAINER, used_at__isnull=True, expires_at__gt=now).update(expires_at=now)
+        invite, raw_token = create_staff_invite(owner=request.user, email=email, role=Role.TRAINER)
+        accept_url, email_sent, email_note = _try_send_invite(request, invite, raw_token)
+        return Response({
+            "detail": email_note,
+            "invite_url": accept_url,
+            "invite_expires_hours": 72,
+            "email_sent": email_sent,
+            "email_status_note": email_note,
+            "trainer": _trainer_json(profile),
+        })
+
+
 def _profile_fields(data, *, creating):
     fields = {}
-    for key in ("specialization", "bio", "availability"):
+    for key in ("specialization", "bio", "availability", "phone"):
         if key in data:
-            fields[key] = str(data.get(key) or "")[:500 if key == "bio" else 160]
+            max_len = 500 if key == "bio" else (40 if key == "phone" else 160)
+            fields[key] = str(data.get(key) or "")[:max_len]
     if "max_members" in data:
         try:
             cap = int(data.get("max_members"))

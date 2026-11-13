@@ -1677,3 +1677,14 @@ Combine the Trainer Directory status filters and toolbar into a single row, repl
 - Replaced `<select id="asMember">` with `#asMemberSearch` + `#asMemberMenu` + `#asMemberClear` + hidden `#asMember` so staff can search members by name or email live and pick directly, with `overflow: visible` on `.tr-assign-panel` so the menu is never clipped.
 ### Decision-log skill
 Use a lightweight custom `.tr-combo-menu` button/combobox instead of native `<select>` when custom dark/light hover highlights or live search filtering are needed.
+
+## 2026-11-14 04:27 (Asia/Manila): Redesign View Profile modal & implement unified Add Trainer + account onboarding workflow
+### What I asked for
+Redesign the View Profile modal with clean info/member containers and implement the full Add Trainer & Account Creation workflow (Email Invitation with 72h link + Temporary Password with first-login change requirement + Creation Success screen + Resend Invite).
+### What the agent decided and why
+- Added `must_change_password` to `apps/accounts.User` (`0004_user_must_change_password`) and `phone` to `apps/trainers.TrainerProfile` (`0002_trainerprofile_phone`).
+- Extended `apps/accounts/services.py` (`accept_invite`) so a pre-created inactive trainer user (`is_active=False` and unusable password) is activated on invite acceptance while still rejecting already-active accounts.
+- Updated `api/trainers.py` (`StaffTrainerListView.post` and `StaffTrainerResendInviteView`) to atomically provision trainer `User` + `TrainerProfile` + `StaffInvite` (or active account with `must_change_password=True`), validate duplicate emails, and report honest `email_sent` status based on `EMAIL_BACKEND`.
+- Updated `web/trainers.html`, `web/trainers-staff.js`, `web/portal-ui.css`, and `web/auth.js` with the redesigned View Profile containers, unified Add Trainer modal, Creation Success screen, Resend Invite action, and first-login password change redirect.
+### Decision-log skill
+Reuse existing `StaffInvite` and `accept_invite` primitives when adding unified staff onboarding instead of building a parallel invitation table, and check `EMAIL_BACKEND` before claiming an email was delivered.

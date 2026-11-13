@@ -58,7 +58,11 @@ def login_view(request):
         return JsonResponse({"detail": "Invalid credentials."}, status=401)
 
     login(request, user)
-    return JsonResponse({"detail": "Logged in.", "role": user.role})
+    return JsonResponse({
+        "detail": "Logged in.",
+        "role": user.role,
+        "must_change_password": bool(getattr(user, "must_change_password", False)),
+    })
 
 
 @require_GET
@@ -72,6 +76,7 @@ def session_view(request):
             "name": user.get_full_name() or user.username,
             "email": user.email,
             "role": WEB_ROLE.get(user.role, "MEMBER"),
+            "must_change_password": bool(getattr(user, "must_change_password", False)),
         }
     })
 
@@ -114,7 +119,8 @@ def change_password_view(request):
         return JsonResponse({"detail": " ".join(exc.messages)}, status=400)
 
     user.set_password(new)
-    user.save(update_fields=["password"])
+    user.must_change_password = False
+    user.save(update_fields=["password", "must_change_password"])
     update_session_auth_hash(request, user)
     return JsonResponse({"detail": "Password changed."})
 

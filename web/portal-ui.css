@@ -4083,6 +4083,11 @@ body[data-page="trainers"] .tr-status.is-leave {
   color: #06B6D4;
   border: 1px solid rgba(6, 182, 212, 0.32);
 }
+body[data-page="trainers"] .tr-status.is-pending {
+  background: rgba(245, 158, 11, 0.16);
+  color: #FBBF24;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+}
 body[data-page="trainers"] .tr-dir-title,
 body[data-page="trainers"] .tr-sec-head,
 body[data-page="trainers"] .tr-sec-title-group {
@@ -4828,14 +4833,252 @@ body[data-page="trainers"] .tr-modal-backdrop {
 }
 body[data-page="trainers"] .tr-modal-backdrop[hidden] { display: none; }
 body[data-page="trainers"] .tr-modal {
-  width: min(520px, 100%);
+  width: min(560px, 100%);
   max-height: 90vh;
   overflow-y: auto;
   border-radius: 20px;
-  background: #121A28;
+  background: linear-gradient(180deg, #161F30 0%, #101724 100%);
   border: 1px solid rgba(255, 255, 255, 0.12);
   padding: 24px;
-  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.6);
+}
+body[data-page="trainers"] .tr-modal-wide {
+  width: min(600px, 100%);
+}
+body[data-page="trainers"] .tr-modal-section {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+body[data-page="trainers"] .tr-modal-sec-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #F59E0B;
+}
+body[data-page="trainers"] .tr-modal-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 560px) {
+  body[data-page="trainers"] .tr-modal-grid-2 { grid-template-columns: 1fr; }
+}
+body[data-page="trainers"] .tr-req { color: #F59E0B; }
+body[data-page="trainers"] .tr-access-options {
+  display: grid;
+  gap: 10px;
+}
+body[data-page="trainers"] .tr-access-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(10, 14, 23, 0.55);
+  cursor: pointer;
+  transition: border-color 0.16s ease, background-color 0.16s ease, box-shadow 0.16s ease;
+}
+body[data-page="trainers"] .tr-access-card input[type="radio"] {
+  margin-top: 3px;
+  accent-color: #F59E0B;
+  flex-shrink: 0;
+}
+body[data-page="trainers"] .tr-access-card.is-selected {
+  border-color: rgba(245, 158, 11, 0.55);
+  background: rgba(245, 158, 11, 0.08);
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.12);
+}
+body[data-page="trainers"] .tr-access-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+body[data-page="trainers"] .tr-access-top strong {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text, #fff);
+}
+body[data-page="trainers"] .tr-rec-badge {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 800;
+  background: rgba(16, 185, 129, 0.16);
+  color: #10B981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+body[data-page="trainers"] .tr-access-body p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--muted, #94a3b8);
+  line-height: 1.45;
+}
+body[data-page="trainers"] .tr-temp-pw-box {
+  display: grid;
+  gap: 7px;
+  padding-top: 4px;
+}
+body[data-page="trainers"] .tr-temp-pw-box label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted, #94a3b8);
+}
+body[data-page="trainers"] .tr-temp-pw-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+body[data-page="trainers"] .tr-temp-pw-row input {
+  flex: 1;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(10, 14, 23, 0.65);
+  color: var(--text, #fff);
+  font-size: 13px;
+  padding: 0 12px;
+}
+body[data-page="trainers"] .tr-btn-sm {
+  height: 40px;
+  padding: 0 12px;
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+body[data-page="trainers"] .tr-btn-xs {
+  height: 28px;
+  padding: 0 10px;
+  font-size: 11.5px;
+  border-radius: 8px;
+}
+body[data-page="trainers"] .tr-inline-copy {
+  margin-left: 6px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  background: rgba(245, 158, 11, 0.16);
+  color: #F59E0B;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Success Screen */
+body[data-page="trainers"] .tr-success-view {
+  display: grid;
+  gap: 16px;
+  text-align: center;
+}
+body[data-page="trainers"] .tr-success-view[hidden] { display: none; }
+body[data-page="trainers"] .tr-success-ico {
+  width: 56px;
+  height: 56px;
+  margin: 4px auto 0;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.16);
+  border: 1px solid rgba(16, 185, 129, 0.38);
+  color: #10B981;
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+}
+body[data-page="trainers"] .tr-success-view h3 {
+  margin: 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+}
+body[data-page="trainers"] .tr-success-sub {
+  margin: -8px 0 0;
+  font-size: 13px;
+  color: var(--muted, #94a3b8);
+}
+body[data-page="trainers"] .tr-succ-card {
+  text-align: left;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: grid;
+  gap: 10px;
+}
+body[data-page="trainers"] .tr-succ-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+}
+body[data-page="trainers"] .tr-succ-row span:first-child {
+  color: var(--muted, #94a3b8);
+}
+body[data-page="trainers"] .tr-succ-link-box {
+  text-align: left;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(245, 158, 11, 0.06);
+  border: 1px solid rgba(245, 158, 11, 0.24);
+  display: grid;
+  gap: 8px;
+}
+body[data-page="trainers"] .tr-succ-link-box label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #F59E0B;
+}
+body[data-page="trainers"] .tr-succ-note {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted, #cbd5e1);
+  line-height: 1.45;
+}
+
+/* Redesigned View Profile Modal with Containers */
+body[data-page="trainers"] .tr-prof-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+body[data-page="trainers"] .tr-prof-card {
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: grid;
+  gap: 10px;
+}
+body[data-page="trainers"] .tr-prof-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+body[data-page="trainers"] .tr-prof-row:last-of-type {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+body[data-page="trainers"] .tr-prof-row span {
+  color: var(--muted, #94a3b8);
+}
+body[data-page="trainers"] .tr-prof-row strong {
+  color: var(--text, #fff);
+  text-align: right;
+}
+body[data-page="trainers"] .tr-prof-acc-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 body[data-page="trainers"] .tr-modal-head {
   display: flex;
@@ -4932,6 +5175,7 @@ body:not(.dark)[data-page="trainers"] .tr-sec-head {
 body:not(.dark)[data-page="trainers"] .tr-kpi,
 body:not(.dark)[data-page="trainers"] .tr-modal,
 body:not(.dark)[data-page="trainers"] .tr-dropdown {
+  background: #FFFFFF;
   background-color: #FFFFFF;
   border-color: #E2E8F0;
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
@@ -5086,6 +5330,34 @@ body:not(.dark)[data-page="trainers"] .tr-btn-secondary {
   background: #F1F5F9;
   color: #0F172A;
   border-color: #CBD5E1;
+}
+body:not(.dark)[data-page="trainers"] .tr-modal-section,
+body:not(.dark)[data-page="trainers"] .tr-prof-card,
+body:not(.dark)[data-page="trainers"] .tr-succ-card {
+  background: #F8FAFC;
+  border-color: #E2E8F0;
+}
+body:not(.dark)[data-page="trainers"] .tr-access-card {
+  background: #FFFFFF;
+  border-color: #CBD5E1;
+}
+body:not(.dark)[data-page="trainers"] .tr-access-card.is-selected {
+  background: rgba(245, 158, 11, 0.08);
+  border-color: rgba(245, 158, 11, 0.55);
+}
+body:not(.dark)[data-page="trainers"] .tr-access-top strong,
+body:not(.dark)[data-page="trainers"] .tr-prof-row strong,
+body:not(.dark)[data-page="trainers"] .tr-succ-row strong,
+body:not(.dark)[data-page="trainers"] .tr-success-view h3 {
+  color: #0F172A;
+}
+body:not(.dark)[data-page="trainers"] .tr-temp-pw-row input {
+  background: #FFFFFF;
+  color: #0F172A;
+  border-color: #CBD5E1;
+}
+body:not(.dark)[data-page="trainers"] .tr-prof-row {
+  border-bottom-color: #E2E8F0;
 }
 body:not(.dark)[data-page="trainers"] .tr-prof-stat,
 body:not(.dark)[data-page="trainers"] .tr-prof-mem-chip {

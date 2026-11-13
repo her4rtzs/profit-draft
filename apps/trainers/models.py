@@ -11,6 +11,7 @@ class TrainerProfile(models.Model):
         related_name="trainer_profile",
         limit_choices_to={"role": "TRAINER"},
     )
+    phone = models.CharField(max_length=40, blank=True, default="")
     specialization = models.CharField(max_length=120, blank=True, default="")
     bio = models.TextField(blank=True, default="")
     availability = models.CharField(max_length=160, blank=True, default="")

@@ -313,3 +313,126 @@ class TrainerTests(TestCase):
 
 
 
+
+
+class TrainerOnboardingTests(TestCase):
+    def setUp(self):
+        User = get_user_model()
+        self.owner = User.objects.create_user(
+            username="owner_onboard",
+            email="owner_onboard@example.com",
+            password="StrongPass123!",
+            role="OWNER",
+        )
+        self.client.force_login(self.owner)
+
+    def test_invite_mode_creates_pending_trainer_and_accept_activates(self):
+        res = self.client.post(
+            "/api/staff/trainers/",
+            data={
+                "full_name": "Marcus Tan",
+                "email": "marcus.tan@example.com",
+                "phone": "09175550191",
+                "specialization": "Strength, HIIT",
+                "availability": "Mon-Sat, 6AM-10PM",
+                "max_members": 15,
+                "access_mode": "invite",
+            },
+            content_type="application/json",
+        )
+        self.assertEqual(res.status_code, 201)
+        data = res.json()
+        self.assertEqual(data["invite_status"], "INVITE_PENDING")
+        self.assertEqual(data["phone"], "09175550191")
+        self.assertIn("/accounts/invite/accept/", data["invite_url"])
+        self.assertFalse(data["email_sent"])
+
+        # Resend invite issues a fresh link while still pending
+        resend = self.client.post(f"/api/staff/trainers/{data['id']}/resend-invite/", data={}, content_type="application/json")
+        self.assertEqual(resend.status_code, 200)
+        fresh_url = resend.json()["invite_url"]
+        self.assertIn("/accounts/invite/accept/", fresh_url)
+
+        # Accept the fresh invite link
+        from apps.accounts.services import accept_invite
+        parts = fresh_url.rstrip("/").split("/")
+        invite_id, token = int(parts[-2]), parts[-1]
+        user = accept_invite(raw_token=token, invite_id=invite_id, password="CoachNewPass123!")
+        self.assertTrue(user.is_active)
+        self.assertEqual(user.role, "TRAINER")
+
+        # Resend is now rejected since account is active
+        resend_after = self.client.post(f"/api/staff/trainers/{data['id']}/resend-invite/", data={}, content_type="application/json")
+        self.assertEqual(resend_after.status_code, 400)
+
+        # Trainer can log in
+        self.client.logout()
+        login_res = self.client.post(
+            "/api/auth/login/",
+            data={"identity": "marcus.tan@example.com", "password": "CoachNewPass123!"},
+            content_type="application/json",
+        )
+        self.assertEqual(login_res.status_code, 200)
+        self.assertEqual(login_res.json()["role"], "TRAINER")
+        self.assertFalse(login_res.json()["must_change_password"])
+
+    def test_temp_password_mode_requires_change_and_clears_on_change(self):
+        res = self.client.post(
+            "/api/staff/trainers/",
+            data={
+                "full_name": "Sophia Reyes",
+                "email": "sophia.reyes@example.com",
+                "specialization": "Weight Loss, Functional",
+                "max_members": 12,
+                "access_mode": "temp_password",
+            },
+            content_type="application/json",
+        )
+        self.assertEqual(res.status_code, 201)
+        data = res.json()
+        self.assertEqual(data["access_mode"], "temp_password")
+        self.assertTrue(data["must_change_password"])
+        temp_pw = data["temp_password"]
+        self.assertTrue(len(temp_pw) >= 8)
+
+        self.client.logout()
+        login_res = self.client.post(
+            "/api/auth/login/",
+            data={"identity": "sophia.reyes@example.com", "password": temp_pw},
+            content_type="application/json",
+        )
+        self.assertEqual(login_res.status_code, 200)
+        self.assertTrue(login_res.json()["must_change_password"])
+
+        # Change password clears must_change_password
+        chg_res = self.client.post(
+            "/api/auth/change-password/",
+            data={"current_password": temp_pw, "new_password": "SophiaBetterPass123!"},
+            content_type="application/json",
+        )
+        self.assertEqual(chg_res.status_code, 200)
+        sess_res = self.client.get("/api/auth/session/")
+        self.assertEqual(sess_res.status_code, 200)
+        self.assertFalse(sess_res.json()["user"]["must_change_password"])
+
+    def test_duplicate_email_and_invalid_payload_rejected(self):
+        res1 = self.client.post(
+            "/api/staff/trainers/",
+            data={"full_name": "Coach One", "email": "dup@example.com", "max_members": 10, "access_mode": "invite"},
+            content_type="application/json",
+        )
+        self.assertEqual(res1.status_code, 201)
+
+        res_dup = self.client.post(
+            "/api/staff/trainers/",
+            data={"full_name": "Coach Two", "email": "DUP@example.com", "max_members": 10, "access_mode": "invite"},
+            content_type="application/json",
+        )
+        self.assertEqual(res_dup.status_code, 400)
+
+        res_bad = self.client.post(
+            "/api/staff/trainers/",
+            data={"full_name": "", "email": "not-an-email", "max_members": 10, "access_mode": "invite"},
+            content_type="application/json",
+        )
+        self.assertEqual(res_bad.status_code, 400)

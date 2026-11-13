@@ -60,6 +60,8 @@
   }
 
   function trainerStatus(t) {
+    if (t.invite_status === "INVITE_PENDING") return { key: "pending", label: "Invite Pending", cls: "is-pending" };
+    if (t.invite_status === "INVITE_EXPIRED") return { key: "inactive", label: "Invite Expired", cls: "is-inactive" };
     if (t.on_leave || t.status === "on_leave") return { key: "on_leave", label: "On Leave", cls: "is-leave" };
     if (!t.is_active) return { key: "inactive", label: "Inactive", cls: "is-inactive" };
     if (t.is_full) return { key: "full", label: "Full", cls: "is-full" };
@@ -360,33 +362,119 @@
     document.body.style.overflow = "";
   }
 
+  function randomTempPassword() {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@#$";
+    let out = "Pf!";
+    for (let i = 0; i < 9; i++) out += chars[Math.floor(Math.random() * chars.length)];
+    return out;
+  }
+
+  async function copyText(text, btn) {
+    if (!text) return;
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+    }
+    if (btn) {
+      const orig = btn.innerHTML;
+      btn.innerHTML = `<i class="fa-solid fa-check" aria-hidden="true"></i> Copied`;
+      setTimeout(() => { btn.innerHTML = orig; }, 1800);
+    }
+  }
+
+  function syncAccessModeUI() {
+    const mode = document.querySelector('input[name="trAccessMode"]:checked')?.value || "invite";
+    document.querySelectorAll(".tr-access-card").forEach(card => {
+      const r = card.querySelector('input[type="radio"]');
+      card.classList.toggle("is-selected", !!r?.checked);
+    });
+    const pwWrap = document.getElementById("trTempPwWrap");
+    if (pwWrap) pwWrap.hidden = mode !== "temp_password";
+    const pwInput = document.getElementById("trTempPw");
+    if (mode === "temp_password" && pwInput && !pwInput.value) {
+      pwInput.value = randomTempPassword();
+    }
+  }
+
   function openAddModal() {
     trForm.reset();
     sayModal("");
     document.getElementById("trId").value = "";
-    document.getElementById("trUserWrap").hidden = false;
+    document.getElementById("trModalHead").hidden = false;
+    trForm.hidden = false;
+    document.getElementById("trSuccessView").hidden = true;
+    document.getElementById("trCreateFields").hidden = false;
+    document.getElementById("trAccessSection").hidden = false;
     document.getElementById("trActiveWrap").hidden = true;
     document.getElementById("trModalTitle").textContent = "Add Trainer";
-    document.getElementById("trModalSub").textContent = "Create a trainer profile from an existing trainer account.";
+    document.getElementById("trModalSub").textContent = "Create a trainer profile and configure their account access.";
     document.getElementById("trSave").textContent = "Add Trainer";
-    loadCandidates();
+    const inviteRadio = document.querySelector('input[name="trAccessMode"][value="invite"]');
+    if (inviteRadio) inviteRadio.checked = true;
+    document.getElementById("trTempPw").value = "";
+    syncAccessModeUI();
     openModal(trModal);
   }
 
   function openEditModal(t) {
     sayModal("");
     document.getElementById("trId").value = t.id;
+    document.getElementById("trModalHead").hidden = false;
+    trForm.hidden = false;
+    document.getElementById("trSuccessView").hidden = true;
+    document.getElementById("trCreateFields").hidden = true;
+    document.getElementById("trAccessSection").hidden = true;
+    document.getElementById("trPhone").value = t.phone || "";
     document.getElementById("trSpec").value = t.specialization || "";
     document.getElementById("trAvail").value = t.availability || "";
     document.getElementById("trCap").value = t.max_members;
     document.getElementById("trBio").value = t.bio || "";
     document.getElementById("trActive").checked = !!t.is_active;
-    document.getElementById("trUserWrap").hidden = true;
     document.getElementById("trActiveWrap").hidden = false;
     document.getElementById("trModalTitle").textContent = `Edit ${t.name}`;
-    document.getElementById("trModalSub").textContent = "Update specialization, schedule, capacity, or active status.";
+    document.getElementById("trModalSub").textContent = "Update contact, specialization, schedule, capacity, or active status.";
     document.getElementById("trSave").textContent = "Save Changes";
     openModal(trModal);
+  }
+
+  function showSuccessScreen(res) {
+    document.getElementById("trModalHead").hidden = true;
+    trForm.hidden = true;
+    const sv = document.getElementById("trSuccessView");
+    sv.hidden = false;
+    document.getElementById("trSuccName").textContent = res.name || "—";
+    document.getElementById("trSuccSpec").textContent = res.specialization || "General Fitness & Training";
+    document.getElementById("trSuccCap").textContent = `${res.load ?? 0} / ${res.max_members ?? 20} members`;
+
+    const stEl = document.getElementById("trSuccStatus");
+    const invBox = document.getElementById("trSuccInviteBox");
+    const tmpBox = document.getElementById("trSuccTempBox");
+    if (res.access_mode === "temp_password") {
+      stEl.textContent = "Active · Temp Password";
+      stEl.className = "tr-status is-active";
+      invBox.hidden = true;
+      tmpBox.hidden = false;
+      document.getElementById("trSuccCreds").value = `Email: ${res.email} | Password: ${res.temp_password}`;
+      document.getElementById("trSuccSub").textContent = "Trainer profile and active login account have been created.";
+    } else {
+      stEl.textContent = "Invite Pending";
+      stEl.className = "tr-status is-pending";
+      tmpBox.hidden = true;
+      invBox.hidden = false;
+      document.getElementById("trSuccLink").value = res.invite_url || "";
+      document.getElementById("trSuccEmailNote").textContent = res.email_status_note || "";
+      document.getElementById("trSuccSub").textContent = res.email_sent
+        ? "Trainer profile created and invitation email sent."
+        : "Trainer profile created. Share the invitation link below.";
+    }
   }
 
   function openProfileModal(t) {
@@ -395,9 +483,30 @@
     document.getElementById("trProfAvatar").textContent = initials(t.name);
     document.getElementById("trProfName").textContent = t.name;
     document.getElementById("trProfSpec").textContent = t.specialization || "General Fitness & Training";
-    document.getElementById("trProfStatus").textContent = st.label;
-    document.getElementById("trProfLoad").textContent = `${t.load} / ${t.max_members}`;
+    const pill = document.getElementById("trProfStatusPill");
+    if (pill) {
+      pill.textContent = st.label;
+      pill.className = `tr-status ${st.cls}`;
+    }
+    document.getElementById("trProfEmail").textContent = t.email || "—";
+    document.getElementById("trProfPhone").textContent = t.phone || "—";
+    document.getElementById("trProfLoad").textContent = `${t.load} / ${t.max_members} members`;
     document.getElementById("trProfAvail").textContent = t.availability || "Not set";
+
+    const accStatusEl = document.getElementById("trProfAccStatus");
+    const resendBtn = document.getElementById("trProfResendBtn");
+    const invMsgEl = document.getElementById("trProfInviteMsg");
+    if (invMsgEl) { invMsgEl.textContent = ""; invMsgEl.classList.remove("err"); }
+    const isPending = t.invite_status === "INVITE_PENDING" || t.invite_status === "INVITE_EXPIRED";
+    if (accStatusEl) {
+      accStatusEl.textContent = t.invite_status === "INVITE_EXPIRED"
+        ? "Invite Expired"
+        : t.invite_status === "INVITE_PENDING"
+          ? "Invite Pending"
+          : "Active";
+    }
+    if (resendBtn) resendBtn.hidden = !isPending;
+
     document.getElementById("trProfBio").textContent = t.bio || "No bio provided yet.";
 
     const assigned = members.filter(m => m.trainer && String(m.trainer.id) === String(t.id));
@@ -412,7 +521,42 @@
   document.getElementById("openAddTrainer")?.addEventListener("click", openAddModal);
   document.getElementById("closeTrModal")?.addEventListener("click", () => closeModal(trModal));
   document.getElementById("trReset")?.addEventListener("click", () => closeModal(trModal));
+  document.getElementById("trAddAnother")?.addEventListener("click", openAddModal);
+  document.getElementById("trSuccessDone")?.addEventListener("click", async () => {
+    closeModal(trModal);
+    await refreshAll();
+  });
+  document.querySelectorAll('input[name="trAccessMode"]').forEach(r => r.addEventListener("change", syncAccessModeUI));
+  document.getElementById("trGenPwBtn")?.addEventListener("click", () => {
+    document.getElementById("trTempPw").value = randomTempPassword();
+  });
+  document.getElementById("trCopyTempBtn")?.addEventListener("click", e => copyText(document.getElementById("trTempPw")?.value, e.currentTarget));
+  document.getElementById("trCopyLinkBtn")?.addEventListener("click", e => copyText(document.getElementById("trSuccLink")?.value, e.currentTarget));
+  document.getElementById("trCopyCredsBtn")?.addEventListener("click", e => copyText(document.getElementById("trSuccCreds")?.value, e.currentTarget));
   trModal?.addEventListener("click", e => { if (e.target === trModal) closeModal(trModal); });
+
+  document.getElementById("trProfResendBtn")?.addEventListener("click", async e => {
+    if (!activeProfileId) return;
+    const btn = e.currentTarget;
+    const msgEl = document.getElementById("trProfInviteMsg");
+    btn.disabled = true;
+    try {
+      const res = await api.post(`/staff/trainers/${activeProfileId}/resend-invite/`, {});
+      if (msgEl) {
+        msgEl.classList.remove("err");
+        msgEl.innerHTML = `${esc(res.email_status_note || "New invite link ready.")} <button type="button" class="tr-inline-copy" id="trProfCopyFresh">Copy Link</button>`;
+        document.getElementById("trProfCopyFresh")?.addEventListener("click", ev => copyText(res.invite_url, ev.currentTarget));
+      }
+      await refreshAll();
+    } catch (err) {
+      if (msgEl) {
+        msgEl.classList.add("err");
+        msgEl.textContent = err.message || "Could not resend invitation.";
+      }
+    } finally {
+      btn.disabled = false;
+    }
+  });
 
   document.getElementById("closeProfModal")?.addEventListener("click", () => closeModal(profModal));
   document.getElementById("closeProfBtn")?.addEventListener("click", () => closeModal(profModal));
@@ -517,6 +661,7 @@
     const id = document.getElementById("trId").value;
     const saveBtn = document.getElementById("trSave");
     const body = {
+      phone: document.getElementById("trPhone").value.trim(),
       specialization: document.getElementById("trSpec").value.trim(),
       availability: document.getElementById("trAvail").value.trim(),
       max_members: Number(document.getElementById("trCap").value),
@@ -525,25 +670,32 @@
     if (!body.max_members || body.max_members < 1) {
       return sayModal("Maximum members must be at least 1.", true);
     }
-    if (!id && !document.getElementById("trUser").value) {
-      return sayModal("Please select a trainer login account.", true);
+    if (!id) {
+      body.full_name = document.getElementById("trFullName").value.trim();
+      body.email = document.getElementById("trEmail").value.trim();
+      body.access_mode = document.querySelector('input[name="trAccessMode"]:checked')?.value || "invite";
+      if (!body.full_name) return sayModal("Full name is required.", true);
+      if (!body.email || !body.email.includes("@")) return sayModal("Enter a valid email address.", true);
+      if (body.access_mode === "temp_password") {
+        body.temp_password = document.getElementById("trTempPw").value.trim();
+        if (body.temp_password.length < 8) return sayModal("Temporary password must be at least 8 characters.", true);
+      }
     }
     const origText = saveBtn.textContent;
     saveBtn.disabled = true;
-    saveBtn.textContent = "Saving...";
+    saveBtn.textContent = id ? "Saving..." : "Creating...";
     try {
       if (id) {
         body.is_active = document.getElementById("trActive").checked;
         await api.patch(`/staff/trainers/${id}/`, body);
         say("Trainer profile updated.");
+        closeModal(trModal);
+        await refreshAll();
       } else {
-        body.user_id = Number(document.getElementById("trUser").value);
-        await api.post("/staff/trainers/", body);
-        say("Trainer added successfully.");
+        const res = await api.post("/staff/trainers/", body);
+        showSuccessScreen(res);
+        await refreshAll();
       }
-      closeModal(trModal);
-      await refreshAll();
-      loadCandidates();
     } catch (err) {
       sayModal(err.message || "Failed to save trainer.", true);
     } finally {

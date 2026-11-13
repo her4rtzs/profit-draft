@@ -27,6 +27,7 @@ class User(AbstractUser):
         choices=Role.choices,
         default=Role.MEMBER,
     )
+    must_change_password = models.BooleanField(default=False)
 
 
 class OTPPurpose(models.TextChoices):

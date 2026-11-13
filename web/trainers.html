@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <link rel="stylesheet" href="styles.css">
 <script src="config.js"></script><script src="api.js"></script><script src="auth.js"></script>
-<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=25"><link rel="stylesheet" href="ui-final.css?v=1">
+<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=26"><link rel="stylesheet" href="ui-final.css?v=1">
 <script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script><link rel="stylesheet" href="hover-fx.css?v=2">
 <link rel="stylesheet" href="announcements.css?v=1">
 <link rel="stylesheet" href="ui-polish.css?v=1">
@@ -189,61 +189,154 @@
 
 <!-- Add / Edit Trainer Modal -->
 <div class="tr-modal-backdrop" id="trModal" hidden aria-hidden="true">
-  <div class="tr-modal" role="dialog" aria-modal="true" aria-labelledby="trModalTitle">
-    <div class="tr-modal-head">
+  <div class="tr-modal tr-modal-wide" role="dialog" aria-modal="true" aria-labelledby="trModalTitle">
+    <div class="tr-modal-head" id="trModalHead">
       <div>
         <h3 id="trModalTitle">Add Trainer</h3>
-        <p id="trModalSub">Configure trainer profile, schedule, and member capacity.</p>
+        <p id="trModalSub">Create a trainer profile and configure their account access.</p>
       </div>
       <button type="button" class="tr-modal-close" id="closeTrModal" aria-label="Close modal">
         <i class="fa-solid fa-xmark" aria-hidden="true"></i>
       </button>
     </div>
+
     <form class="tr-modal-form" id="trForm" novalidate>
       <input type="hidden" id="trId">
-      <div class="tr-field" id="trUserWrap">
-        <label for="trUser">Trainer Login Account</label>
-        <select id="trUser"></select>
-      </div>
-      <div class="tr-modal-row">
-        <div class="tr-field">
-          <label for="trSpec">Specialization</label>
-          <input id="trSpec" maxlength="120" placeholder="e.g. Strength &amp; Conditioning" required>
+
+      <div class="tr-modal-section">
+        <div class="tr-modal-sec-title">Trainer Information</div>
+        <div id="trCreateFields" class="tr-modal-grid-2">
+          <div class="tr-field">
+            <label for="trFullName">Full Name <span class="tr-req">*</span></label>
+            <input id="trFullName" maxlength="150" placeholder="e.g. Marcus Tan" required>
+          </div>
+          <div class="tr-field">
+            <label for="trEmail">Email Address <span class="tr-req">*</span></label>
+            <input id="trEmail" type="email" maxlength="254" placeholder="trainer@profitgym.ph" required>
+          </div>
+        </div>
+        <div class="tr-modal-grid-2">
+          <div class="tr-field">
+            <label for="trPhone">Phone Number</label>
+            <input id="trPhone" type="tel" maxlength="40" placeholder="09XX XXX XXXX">
+          </div>
+          <div class="tr-field">
+            <label for="trSpec">Specializations</label>
+            <input id="trSpec" maxlength="120" placeholder="e.g. Strength, HIIT, Conditioning" required>
+          </div>
+        </div>
+        <div class="tr-modal-row">
+          <div class="tr-field">
+            <label for="trAvail">Availability Schedule</label>
+            <input id="trAvail" maxlength="160" placeholder="e.g. Mon-Sat, 6AM-10PM">
+          </div>
+          <div class="tr-field">
+            <label for="trCap">Member Capacity</label>
+            <input id="trCap" type="number" min="1" max="200" value="20" required>
+          </div>
         </div>
         <div class="tr-field">
-          <label for="trCap">Maximum Members</label>
-          <input id="trCap" type="number" min="1" max="200" value="20" required>
+          <label for="trBio">Bio / Notes</label>
+          <textarea id="trBio" rows="2" maxlength="500" placeholder="Short coach bio or coaching focus..."></textarea>
         </div>
       </div>
-      <div class="tr-field">
-        <label for="trAvail">Availability Schedule</label>
-        <input id="trAvail" maxlength="160" placeholder="e.g. Mon-Sat, 6AM-10PM">
+
+      <div class="tr-modal-section" id="trAccessSection">
+        <div class="tr-modal-sec-title">Account Access for Trainer</div>
+        <div class="tr-access-options" role="radiogroup" aria-label="Account access setup">
+          <label class="tr-access-card is-selected">
+            <input type="radio" name="trAccessMode" value="invite" checked>
+            <div class="tr-access-body">
+              <div class="tr-access-top">
+                <strong>Send Email Invitation</strong>
+                <span class="tr-rec-badge">Recommended</span>
+              </div>
+              <p>Generates a secure 72-hour link so the trainer can create their own password. Status stays Pending until accepted.</p>
+            </div>
+          </label>
+          <label class="tr-access-card">
+            <input type="radio" name="trAccessMode" value="temp_password">
+            <div class="tr-access-body">
+              <div class="tr-access-top">
+                <strong>Generate Temporary Password</strong>
+              </div>
+              <p>Creates the account immediately with a one-time password. Trainer must change it on first login.</p>
+            </div>
+          </label>
+        </div>
+
+        <div class="tr-temp-pw-box" id="trTempPwWrap" hidden>
+          <label for="trTempPw">Temporary Password</label>
+          <div class="tr-temp-pw-row">
+            <input id="trTempPw" type="text" autocomplete="off" placeholder="Auto-generated or enter custom (8+ chars)">
+            <button type="button" class="tr-btn-secondary tr-btn-sm" id="trGenPwBtn"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Generate</button>
+            <button type="button" class="tr-btn-secondary tr-btn-sm" id="trCopyTempBtn"><i class="fa-regular fa-copy" aria-hidden="true"></i> Copy</button>
+          </div>
+        </div>
       </div>
-      <div class="tr-field">
-        <label for="trBio">Bio / Notes</label>
-        <textarea id="trBio" rows="3" maxlength="500" placeholder="Short coach bio or coaching focus..."></textarea>
-      </div>
+
       <label class="tr-check-wrap" id="trActiveWrap" hidden>
         <input type="checkbox" id="trActive" checked>
         <span>Accepting new members (Active)</span>
       </label>
+
       <p class="ann-msg" id="trModalMsg" role="alert"></p>
       <div class="tr-modal-actions">
         <button class="tr-btn-secondary" type="button" id="trReset">Cancel</button>
         <button class="tr-btn-gold" type="submit" id="trSave">Add Trainer</button>
       </div>
     </form>
+
+    <!-- Trainer Creation Success Screen -->
+    <div class="tr-success-view" id="trSuccessView" hidden>
+      <div class="tr-success-ico"><i class="fa-solid fa-circle-check" aria-hidden="true"></i></div>
+      <h3>Trainer Added Successfully</h3>
+      <p class="tr-success-sub" id="trSuccSub">The trainer profile and account access have been created.</p>
+
+      <div class="tr-succ-card">
+        <div class="tr-succ-row"><span>Trainer Name</span><strong id="trSuccName">—</strong></div>
+        <div class="tr-succ-row"><span>Specializations</span><strong id="trSuccSpec">—</strong></div>
+        <div class="tr-succ-row"><span>Member Capacity</span><strong id="trSuccCap">—</strong></div>
+        <div class="tr-succ-row"><span>Account Status</span><span class="tr-status is-pending" id="trSuccStatus">Invite Pending</span></div>
+      </div>
+
+      <div class="tr-succ-link-box" id="trSuccInviteBox" hidden>
+        <label for="trSuccLink">Invitation Link</label>
+        <div class="tr-temp-pw-row">
+          <input id="trSuccLink" type="text" readonly>
+          <button type="button" class="tr-btn-gold tr-btn-sm" id="trCopyLinkBtn"><i class="fa-regular fa-copy" aria-hidden="true"></i> Copy Link</button>
+        </div>
+        <p class="tr-succ-note"><i class="fa-regular fa-clock" aria-hidden="true"></i> This invitation link expires after 72 hours. <span id="trSuccEmailNote"></span></p>
+      </div>
+
+      <div class="tr-succ-link-box" id="trSuccTempBox" hidden>
+        <label for="trSuccCreds">Temporary Login Credentials (shown once)</label>
+        <div class="tr-temp-pw-row">
+          <input id="trSuccCreds" type="text" readonly>
+          <button type="button" class="tr-btn-gold tr-btn-sm" id="trCopyCredsBtn"><i class="fa-regular fa-copy" aria-hidden="true"></i> Copy Credentials</button>
+        </div>
+        <p class="tr-succ-note"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> The trainer will be required to change this password upon their first login.</p>
+      </div>
+
+      <div class="tr-modal-actions">
+        <button class="tr-btn-secondary" type="button" id="trAddAnother"><i class="fa-solid fa-plus" aria-hidden="true"></i> Add Another</button>
+        <button class="tr-btn-gold" type="button" id="trSuccessDone">Done</button>
+      </div>
+    </div>
   </div>
 </div>
 
 <!-- View Trainer Profile Modal -->
 <div class="tr-modal-backdrop" id="trProfileModal" hidden aria-hidden="true">
-  <div class="tr-modal" role="dialog" aria-modal="true" aria-labelledby="trProfName">
+  <div class="tr-modal tr-modal-wide" role="dialog" aria-modal="true" aria-labelledby="trProfName">
     <div class="tr-modal-head">
       <div class="tr-prof-head-wrap">
         <div class="tr-prof-avatar" id="trProfAvatar">TR</div>
         <div>
-          <h3 id="trProfName">Trainer Profile</h3>
+          <div class="tr-prof-title-row">
+            <h3 id="trProfName">Trainer Profile</h3>
+            <span class="tr-status is-active" id="trProfStatusPill">Active</span>
+          </div>
           <p id="trProfSpec">Specialization</p>
         </div>
       </div>
@@ -251,21 +344,36 @@
         <i class="fa-solid fa-xmark" aria-hidden="true"></i>
       </button>
     </div>
+
     <div class="tr-prof-body">
-      <div class="tr-prof-stats">
-        <div class="tr-prof-stat"><span>Status</span><strong id="trProfStatus">Active</strong></div>
-        <div class="tr-prof-stat"><span>Assigned</span><strong id="trProfLoad">0 / 20</strong></div>
-        <div class="tr-prof-stat"><span>Schedule</span><strong id="trProfAvail">—</strong></div>
+      <div class="tr-prof-card">
+        <div class="tr-prof-row"><span>Email</span><strong id="trProfEmail">—</strong></div>
+        <div class="tr-prof-row"><span>Phone</span><strong id="trProfPhone">—</strong></div>
+        <div class="tr-prof-row"><span>Capacity</span><strong id="trProfLoad">0 / 20 members</strong></div>
+        <div class="tr-prof-row"><span>Schedule</span><strong id="trProfAvail">—</strong></div>
+        <div class="tr-prof-row">
+          <span>Account Access</span>
+          <div class="tr-prof-acc-actions">
+            <strong id="trProfAccStatus">Active</strong>
+            <button type="button" class="tr-btn-edit tr-btn-xs" id="trProfResendBtn" hidden>
+              <i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Resend Invite
+            </button>
+          </div>
+        </div>
+        <p class="ann-msg" id="trProfInviteMsg" role="status" style="margin:6px 0 0"></p>
       </div>
-      <div class="tr-prof-bio">
+
+      <div class="tr-prof-card tr-prof-bio">
         <h4>About Coach</h4>
         <p id="trProfBio">No bio added yet.</p>
       </div>
-      <div class="tr-prof-members">
+
+      <div class="tr-prof-card tr-prof-members">
         <h4>Assigned Members (<span id="trProfMemCount">0</span>)</h4>
         <div id="trProfMemList" class="tr-prof-mem-list"></div>
       </div>
     </div>
+
     <div class="tr-modal-actions">
       <button class="tr-btn-secondary" type="button" id="closeProfBtn">Close</button>
       <button class="tr-btn-gold" type="button" id="profEditBtn"><i class="fa-solid fa-pen" aria-hidden="true"></i> Edit Trainer</button>
@@ -277,7 +385,7 @@
 <script src="portal-fx.js?v=2"></script>
 <script src="change-password.js?v=2" defer></script>
 <script src="notifications-live.js?v=1" defer></script>
-<script src="trainers-staff.js?v=7" defer></script>
+<script src="trainers-staff.js?v=8" defer></script>
 <script src="site-footer.js?v=2" defer></script>
 </body>
 </html>

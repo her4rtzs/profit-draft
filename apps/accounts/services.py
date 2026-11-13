@@ -298,19 +298,26 @@ def accept_invite(*, raw_token, invite_id, password):
         raise InvalidInviteError("This invite link is invalid or expired.")
 
     username = invite.email  # already normalized at issue time
-    if User.objects.filter(username=username).exists():
-        # Invites provision NEW accounts only.
+    existing = User.objects.filter(username=username).first()
+    if existing is not None and (existing.is_active or existing.has_usable_password() or existing.role != invite.role):
+        # Invites provision NEW accounts (or activate a pending pre-created staff invite account).
         raise InvalidInviteError("This invite link is invalid or expired.")
 
     with transaction.atomic():
-        user = User(
-            username=username,
-            email=username,
-            role=invite.role,
-            is_active=True,
-        )
+        if existing is not None:
+            user = existing
+            user.email = username
+            user.is_active = True
+        else:
+            user = User(
+                username=username,
+                email=username,
+                role=invite.role,
+                is_active=True,
+            )
         validate_password(password, user)
         user.set_password(password)
+        user.must_change_password = False
         user.save()
         invite.used_at = now
         invite.accepted_user = user
