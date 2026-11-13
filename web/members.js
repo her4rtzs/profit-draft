@@ -123,7 +123,7 @@
     const planKey = String(m.plan || "").toLowerCase();
     return `<tr data-row="${esc(m.id)}" tabindex="0">
       <td><div class="pp-cell-member">${avatar(m, "sm")}<div><strong>${esc(m.name)}</strong><small>${esc(m.id)} · ${esc(m.email)}</small></div></div></td>
-      <td><span class="pp-plan-pill ${planKey ? `plan-${esc(planKey)}` : ""}">${esc(planLabel(m.plan) || "Unassigned")}</span></td>
+      <td><span class="pp-plan-pill plan-${esc(planKey || "unassigned")}">${esc(planLabel(m.plan) || "Unassigned")}</span></td>
       <td><span class="pp-status ${s.key}">${s.label}</span></td>
       <td>${esc(fmt(m.end))}<small class="pp-muted pp-block">${esc(expiryText(m))}</small></td>
       <td class="pp-actions-cell"><button class="pp-icon-btn" type="button" data-row-menu="${esc(m.id)}" aria-haspopup="menu" aria-expanded="false" aria-label="More actions for ${esc(m.name)}" title="More actions"><i class="fa-solid fa-ellipsis" aria-hidden="true"></i></button></td>
@@ -194,7 +194,7 @@
         const lbl = $("memberSortLabel");
         const ico = $("memberSortIco");
         if (lbl) lbl.textContent = b.dataset.label || b.textContent.trim();
-        if (ico) ico.className = `fa-solid ${b.dataset.ico || "fa-arrow-up-a-z"} pp-st-ico is-all`;
+        if (ico) ico.className = `fa-solid ${b.dataset.ico || "fa-arrow-up-a-z"} pp-st-ico is-cyan`;
       }
     });
     document.querySelectorAll("[data-view-mode]").forEach(b => {

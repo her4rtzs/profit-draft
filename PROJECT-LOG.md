@@ -1688,3 +1688,13 @@ Redesign the View Profile modal with clean info/member containers and implement 
 - Updated `web/trainers.html`, `web/trainers-staff.js`, `web/portal-ui.css`, and `web/auth.js` with the redesigned View Profile containers, unified Add Trainer modal, Creation Success screen, Resend Invite action, and first-login password change redirect.
 ### Decision-log skill
 Reuse existing `StaffInvite` and `accept_invite` primitives when adding unified staff onboarding instead of building a parallel invitation table, and check `EMAIL_BACKEND` before claiming an email was delivered.
+
+## 2026-11-14 06:01 (Asia/Manila): Browse Members glassmorphism redesign
+### What I asked for
+Redesign the Browse Members page (`web/members.html`, `web/members.js`, `web/members-ui.css`) to match the dark glassmorphism + amber/gold reference design with a 2-column header, 3 equal-width tab cards, decorative gold wave, single-row toolbar, fixed-height table rows, and Light Mode / responsive support without changing logic or routes.
+### What the agent decided and why
+- Styled `.pp-members-topbar` with a 2-column layout, 2px glowing amber top border line, 3 equal-width 76px tab cards with colored icon boxes (`is-amber`, `is-cyan`, `is-emerald`), top-right `#countBrowse` badge, and a decorative gold wave SVG at bottom-right.
+- Reordered `.pp-members-toolbar` to Search -> All members (amber icon box) -> Sort (cyan icon box, preserved `is-cyan` on `#memberSortIco` in `web/members.js`) -> Table/Cards toggle, all aligned at 42px height.
+- Updated `rowHTML` in `web/members.js` to emit `plan-<type>` (`plan-unassigned` fallback) on `.pp-plan-pill` and styled fixed 62px table rows with centered `82px` Plan / `116px` Status columns, dot-free `108px` status chips, `30px` action button, and a 3px glowing amber left bar on row hover, plus Light Mode overrides and responsive breakpoints.
+### Decision-log skill
+Keep all icon-box color modifiers (`is-amber`, `is-cyan`, `is-emerald`) synchronized between static HTML and dynamic JS class updates so state re-renders do not accidentally overwrite themed icon accents.
