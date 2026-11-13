@@ -1728,3 +1728,14 @@ Fix Light Mode on the Members page (table header, dates/sub-labels, tabs, pill p
 - Updated `web/attendance.html` to reuse `.revenue-panel`, `.rev-title-wrap`, and `.rev-title-ico` for Daily attendance, converted Check in a member into a single horizontal row, and added `web/attendance-ui.css` for the shared amber KPI container shine, 44px check-in row, 400ms bar transition, and seamless CSS Grid check-ins table.
 ### Decision-log skill
 Reuse `.revenue-panel` and its chart header/axis/bar rules across pages (`index.html` and `attendance.html`) rather than duplicating chart CSS, and scope `kind === "visits"` scale defaults in `chart-periods.js` so attendance charts never fall back to revenue's `0–1000` scale.
+
+## 2026-11-14 06:43 (Asia/Manila): Members live header animation, table spacing, Find-a-member pagination, and clean plan cards
+### What I asked for
+Add subtle live motion to the Members header, give Browse Members table rows and columns more breathing room, add Previous/Next pagination to Find a member, and replace the double-bordered plan card hover/selection with a clean professional style.
+### What the agent decided and why
+- Added `@keyframes ppWaveFlow`, `ppLivePulse`, and `ppTopShimmer` (gated by `prefers-reduced-motion`) to `.pp-members-topbar` in `web/members-ui.css`.
+- Widened `--cols` (`minmax(0, 1.35fr) 132px 152px minmax(150px, 0.9fr) 64px`) and raised row height to `70px` with `20px` horizontal padding in `web/members-ui.css`.
+- Added `state.pickerPage` (`PICKER_PER_PAGE = 8`), `#pickerPager` markup, and `[data-picker-page]` / `#pickerSearch` page-reset handling to `renderPicker()` in `web/members.js`.
+- Stripped inherited `::before`/`::after` and inner `.pp-plan-body` box styles on `.pp-plan-card` so hover and `.selected` render a single crisp border without AI-looking double outlines.
+### Decision-log skill
+When shared hover/polish stylesheets add pseudo-elements or inner container borders to form cards, explicitly reset `::before`/`::after` and inner wrapper borders/shadows before applying the page's hover and selected states.

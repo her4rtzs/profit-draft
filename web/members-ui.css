@@ -158,6 +158,41 @@ body[data-page="members"] .pp-top-wave {
   mask-image: linear-gradient(90deg, transparent, #000 35%);
 }
 
+@keyframes ppWaveFlow {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -32; }
+}
+
+@keyframes ppLivePulse {
+  0%, 100% { box-shadow: 0 0 14px rgba(255, 176, 32, 0.18); }
+  50% { box-shadow: 0 0 24px rgba(255, 176, 32, 0.36); }
+}
+
+@keyframes ppTopShimmer {
+  0%, 100% { opacity: 0.75; }
+  50% { opacity: 1; filter: brightness(1.18); }
+}
+
+body[data-page="members"] .pp-members-topbar::before {
+  animation: ppTopShimmer 3.6s ease-in-out infinite;
+}
+
+body[data-page="members"] .pp-members-topbar .pp-browse-ico {
+  animation: ppLivePulse 3.6s ease-in-out infinite;
+}
+
+body[data-page="members"] .pp-top-wave path[stroke-dasharray] {
+  animation: ppWaveFlow 3.2s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-page="members"] .pp-members-topbar::before,
+  body[data-page="members"] .pp-members-topbar .pp-browse-ico,
+  body[data-page="members"] .pp-top-wave path[stroke-dasharray] {
+    animation: none !important;
+  }
+}
+
 body[data-page="members"] .pp-browse-title {
   position: relative;
   z-index: 1;
@@ -619,7 +654,7 @@ body[data-page="members"] .pp-members-wrap {
 }
 
 body[data-page="members"] .pp-members-table {
-  --cols: minmax(0, 1.6fr) 112px 132px minmax(0, 1.1fr) 56px;
+  --cols: minmax(0, 1.35fr) 132px 152px minmax(150px, 0.9fr) 64px;
   display: block;
   width: 100%;
   border-collapse: collapse;
@@ -639,7 +674,7 @@ body[data-page="members"] .pp-members-table tbody tr {
   align-items: center;
   column-gap: 0;
   width: 100%;
-  padding: 0 16px;
+  padding: 0 20px;
   box-sizing: border-box;
 }
 
@@ -671,7 +706,7 @@ body[data-page="members"] .pp-members-table thead th:nth-child(5) {
 
 body[data-page="members"] .pp-members-table tbody tr {
   position: relative;
-  height: 64px;
+  height: 70px;
   box-sizing: border-box;
   border-radius: 0;
   background: transparent !important;
@@ -985,13 +1020,16 @@ body[data-page="members"] .pp-field select:focus { border-color: var(--bm-amber)
 body[data-page="members"] #eAmount { color: var(--bm-amber); font-weight: 800; }
 body[data-page="members"] .pp-fieldset { border: 0; padding: 0; margin: 16px 0; }
 body[data-page="members"] .pp-plan-cards { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 12px; }
-body[data-page="members"] .pp-plan-card { grid-column: span 3; position: relative; display: flex; flex-direction: column; padding: 14px 16px; border-radius: 14px; background: rgba(7, 11, 20, 0.72); border: 1px solid var(--bm-border-soft); cursor: pointer; transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease; }
+body[data-page="members"] .pp-plan-card { grid-column: span 3; position: relative; display: flex; flex-direction: column; padding: 16px 18px !important; border-radius: 14px !important; background: rgba(13, 20, 36, 0.78) !important; border: 1px solid rgba(255, 255, 255, 0.08) !important; box-shadow: none !important; cursor: pointer; transition: transform 160ms ease-out, border-color 160ms ease-out, box-shadow 160ms ease-out, background 160ms ease-out; }
+body[data-page="members"] .pp-plan-card::before,
+body[data-page="members"] .pp-plan-card::after { display: none !important; content: none !important; }
+body[data-page="members"] .pp-plan-card:not(.selected):hover { transform: translateY(-2px); background: rgba(18, 28, 49, 0.92) !important; border-color: rgba(255, 176, 32, 0.38) !important; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28) !important; }
 body[data-page="members"] .pp-plan-card input { position: absolute; opacity: 0; pointer-events: none; }
-body[data-page="members"] .pp-plan-body { display: grid; gap: 4px; }
+body[data-page="members"] .pp-plan-body { display: grid; gap: 4px; background: transparent !important; border: 0 !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
 body[data-page="members"] .pp-plan-body strong { font-size: 0.84rem; font-weight: 700; color: var(--bm-text); }
 body[data-page="members"] .pp-plan-price { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--bm-text); }
 body[data-page="members"] .pp-plan-body small { font-size: 0.75rem; color: var(--bm-muted); }
-body[data-page="members"] .pp-plan-card.selected { background: linear-gradient(160deg, rgba(255, 176, 32, 0.22), rgba(224, 160, 32, 0.08)); border-color: rgba(255, 176, 32, 0.65); box-shadow: 0 0 22px rgba(255, 176, 32, 0.2); }
+body[data-page="members"] .pp-plan-card.selected { background: linear-gradient(160deg, rgba(255, 176, 32, 0.16), rgba(16, 24, 42, 0.94)) !important; border: 1.5px solid rgba(255, 176, 32, 0.72) !important; box-shadow: 0 6px 18px rgba(255, 176, 32, 0.12) !important; }
 body[data-page="members"] .pp-plan-card.selected .pp-plan-body strong { color: var(--bm-amber); }
 body[data-page="members"] .pp-switch-row { display: flex; align-items: center; gap: 14px; padding: 12px 16px; margin: 18px 0; border-radius: 14px; background: rgba(7, 11, 20, 0.78); border: 1px solid rgba(255, 170, 0, 0.35); color: var(--bm-text); font-size: 0.88rem; font-weight: 700; cursor: pointer; }
 body[data-page="members"] .pp-switch-row input { position: absolute; opacity: 0; width: 1px; height: 1px; }

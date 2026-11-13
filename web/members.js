@@ -5,7 +5,7 @@
   const { esc, money, initialsOf, fmt, today, toast, modal, dayDiff, media, parseISO, iso, todayISO, fmtDateTime } = PF;
   const PER_PAGE = 12;
   const PLAN_KEYS = ["daily", "monthly", "quarterly", "annual"].filter(k => Boolean(PLANS[k]));
-  const state = { view: matchMedia("(max-width: 768px)").matches ? "cards" : "table", tab: "browse", filter: "all", sort: "name_asc", plan: "", query: "", page: 1, app: "pending", selectedId: null, subtab: "overview", pickerQuery: "" };
+  const state = { view: matchMedia("(max-width: 768px)").matches ? "cards" : "table", tab: "browse", filter: "all", sort: "name_asc", plan: "", query: "", page: 1, app: "pending", selectedId: null, subtab: "overview", pickerQuery: "", pickerPage: 1 };
 
   // ---------- Rules ----------
   const left = m => dayDiff(new Date(), m.end);
@@ -425,9 +425,19 @@
   function renderPicker(root) {
     const q = state.pickerQuery.trim().toLowerCase();
     const matches = [...DB.members]
-      .filter(m => !q || [m.name, m.id, m.email].some(v => String(v).toLowerCase().includes(q)))
-      .sort((a, b) => a.name.localeCompare(b.name))
-      .slice(0, 8);
+      .filter(m => !q || [m.name, m.id, m.email].some(v => String(v || "").toLowerCase().includes(q)))
+      .sort((a, b) => a.name.localeCompare(b.name));
+    const PICKER_PER_PAGE = 8;
+    const pages = Math.max(1, Math.ceil(matches.length / PICKER_PER_PAGE));
+    state.pickerPage = Math.min(Math.max(1, state.pickerPage), pages);
+    const start = (state.pickerPage - 1) * PICKER_PER_PAGE;
+    const slice = matches.slice(start, start + PICKER_PER_PAGE);
+    const pagerHTML = pages <= 1 ? "" :
+      `<nav class="pp-pager" id="pickerPager" aria-label="Find member pages">
+        <button class="pp-btn" type="button" data-picker-page="${state.pickerPage - 1}" ${state.pickerPage <= 1 ? "disabled" : ""}><i class="fa-solid fa-chevron-left"></i> Previous</button>
+        <span class="pp-muted">Page ${state.pickerPage} of ${pages}</span>
+        <button class="pp-btn" type="button" data-picker-page="${state.pickerPage + 1}" ${state.pickerPage >= pages ? "disabled" : ""}>Next <i class="fa-solid fa-chevron-right"></i></button>
+      </nav>`;
     root.innerHTML = `<div class="pp-picker">
         <div class="pp-picker-head">
           <span class="pp-browse-ico is-cyan" aria-hidden="true"><i class="fa-solid fa-magnifying-glass"></i></span>
@@ -435,12 +445,13 @@
         </div>
         <label class="pp-search pp-search-wide"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input id="pickerSearch" type="search" placeholder="Start typing a name, ID, or email" value="${esc(state.pickerQuery)}" aria-label="Find a member"></label>
         <p class="pp-picker-hint">Search by name, ID, or email</p>
-        <div class="pp-picker-list">${matches.length ? matches.map(m => `
+        <div class="pp-picker-list">${slice.length ? slice.map(m => `
           <button class="pp-picker-item" type="button" data-open="${esc(m.id)}">${avatar(m, "sm")}
             <span class="pp-picker-text"><strong>${esc(m.name)}</strong><small>${esc(m.id)} · ${esc(planLabel(m.plan) || "Unassigned")}</small></span>
             <span class="pp-status ${statusFor(m).key}">${statusFor(m).label}</span>
             <i class="fa-solid fa-chevron-right pp-picker-chev" aria-hidden="true"></i></button>`).join("")
           : emptyBlock("fa-user-slash", "No matching members", "Try another name or ID.")}</div>
+        ${pagerHTML}
       </div>`;
     if (state.pickerQuery) {
       const input = $("pickerSearch");
@@ -817,6 +828,13 @@
 
   const detailRoot = $("detailRoot");
   detailRoot.addEventListener("click", e => {
+    const pg = e.target.closest("[data-picker-page]");
+    if (pg && !pg.disabled) {
+      state.pickerPage = Number(pg.dataset.pickerPage);
+      renderPicker(detailRoot);
+      hydratePhotos();
+      return;
+    }
     const open = e.target.closest("[data-open]");
     if (open) return openDetail(open.dataset.open);
     const sub = e.target.closest("[data-subtab]");
@@ -828,7 +846,7 @@
     if (act.dataset.detailAction === "renew" && m) renewalDialog(m);
   });
   detailRoot.addEventListener("input", e => {
-    if (e.target.id === "pickerSearch") { state.pickerQuery = e.target.value; renderPicker(detailRoot); }
+    if (e.target.id === "pickerSearch") { state.pickerQuery = e.target.value; state.pickerPage = 1; renderPicker(detailRoot); hydratePhotos(); }
   });
   detailRoot.addEventListener("submit", e => {
     if (e.target.id === "editForm") { e.preventDefault(); saveEdit(e.target); }
