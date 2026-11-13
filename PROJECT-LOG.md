@@ -1411,6 +1411,18 @@ Fix the Revenue Analytics chart: eliminate fake baseline bars on zero-revenue pe
 When rendering bar charts with empty/zero states, explicitly force `.is-zero` bars to zero height, transparent background, and zero opacity with `!important` to override legacy stylesheet defaults, and pair client-side in-memory caching with backend aggregation to achieve instantaneous 0ms filter transitions.
 
 
+## 2026-11-13 19:30 (Asia/Manila): Fix sidebar z-index so hover-expanded sidebar renders in front of topbar
+### What I asked for
+Fix the sidebar so that when expanded on hover, it renders in front of the Dashboard topbar instead of being blocked by it.
+### What the agent decided and why
+- Root cause: `nav.sidebar` had `z-index: 100 !important` while `.topbar` had been raised to `z-index: 200 !important`, causing `.topbar` ("WELCOME BACK / Dashboard") to render in front of the hover-expanded sidebar (`80px` -> `260px`).
+- Established a strict 3-tier stacking order across `web/sidebar-pro.css`, `web/layout-fixes.css`, `web/staff-design.css`, `web/assets/css/staff.css`, and `web/staff/assets/css/staff.css`:
+  1. Dashboard content cards (`.quick-actions`, `.stats`, `.panel`): `z-index: auto` (`0`/`1`)
+  2. `.topbar`: `position: relative !important; z-index: 50 !important` (strictly above content cards so `#notificationPanel` renders in front of cards, and strictly below the sidebar)
+  3. `nav.sidebar` / `.sidebar`: `z-index: 500 !important` on desktop (`1000 !important` on mobile drawer), ensuring the expanded sidebar always renders in front of `.topbar` and all page content.
+### Decision-log skill
+When a layout uses an overlay hover-expand sidebar alongside a header with dropdown popovers, enforce a strict three-tier `z-index` hierarchy: `content (auto/1) < topbar (50) < sidebar (500) < mobile drawer (1000)`, so header popovers clear content cards while the expanded sidebar clears the header.
+
 ## 2026-11-13 20:00 (Asia/Manila): Implement Editable Year Input, Five-Year Range Stepper, and Chart Performance Optimizations
 ### What I asked for
 Make the year selector in the Revenue Analytics chart directly editable by clicking and typing a year, support keyboard shortcuts (Enter to commit, Escape to cancel), validate the entered year and prevent invalid values/letters, fix the five-year range navigation so it advances/recedes consistently 1 year at a time without skipping (e.g. 2022–2026 to 2021–2025), and eliminate switching lag.
@@ -1424,3 +1436,19 @@ Make the year selector in the Revenue Analytics chart directly editable by click
 - Verified backend and frontend integrations: ran `python manage.py test apps.finance.tests.test_payments_api` (all 8 tests passed OK).
 ### Decision-log skill
 When designing date/period steppers that display ranges (e.g. 5-year sliding windows), increment/decrement the sliding anchor by 1 unit at a time to prevent jarring range jumps, and embed an inline keyboard-accessible input inside the stepper badge with Enter/Escape handlers for seamless manual selection.
+
+## 2026-11-13 20:07 (Asia/Manila): Pull latest master branch (`6cd7eed..38356a8`) while preserving local sidebar z-index fixes
+### What I asked for
+Compare local changes to `master` and pull the latest `master` branch from `origin`.
+### What the agent decided and why
+- Fetched `origin/master` (`38356a8`), reset the unstaged `PROJECT-LOG.md` tail to `HEAD` (`6cd7eed`) so `git merge origin/master` could fast-forward cleanly without overwriting the remote log entry, and then re-appended the session entries after the merge while keeping the 5 local CSS `z-index` files intact.
+### Decision-log skill
+When `origin/master` has a new append-only `PROJECT-LOG.md` entry that conflicts with an uncommitted local log entry, reset `PROJECT-LOG.md` to `HEAD`, fast-forward merge `origin/master`, and re-append the local session entries at the end so all entries remain in chronological order.
+
+## 2026-11-13 20:08 (Asia/Manila): Push sidebar z-index fixes to master
+### What I asked for
+Push the sidebar `z-index` fixes (`web/sidebar-pro.css`, `web/layout-fixes.css`, `web/staff-design.css`, `web/assets/css/staff.css`, `web/staff/assets/css/staff.css`, and `PROJECT-LOG.md`) to `master`.
+### What the agent decided and why
+- Staged the 6 modified files by explicit path, committed them on top of `origin/master` (`38356a8`), and pushed to `origin/master`.
+### Decision-log skill
+Always pull and fast-forward onto the latest remote commit before staging by explicit path, committing, and pushing to `origin/master`.

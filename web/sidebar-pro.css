@@ -19,7 +19,7 @@
 html body nav.sidebar {
   position: fixed !important;
   inset: 0 auto 0 0 !important;
-  z-index: 100 !important;
+  z-index: 500 !important;
   width: var(--sidebar-w) !important;
   min-width: var(--sidebar-w) !important;
   max-width: var(--sidebar-w) !important;

@@ -55,7 +55,7 @@ img{max-width:100%;display:block}
 
 /* ---------- App shell ---------- */
 .app{min-height:100vh}
-.sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar);z-index:60;display:flex;flex-direction:column;
+.sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar);z-index:500;display:flex;flex-direction:column;
   background:var(--nav);color:var(--nav-text);transition:width .22s ease,transform .25s ease}
 .sidebar::after{display:none;content:"";position:absolute;inset:auto 0 96px 0;height:170px;pointer-events:none;opacity:.5;
   background:radial-gradient(120% 90% at 20% 100%,rgba(227,174,43,.22),transparent 60%)}
@@ -101,7 +101,7 @@ body.mini .main{margin-left:var(--sidebar-mini)}
 .scrim.on{opacity:1;pointer-events:auto}
 
 /* ---------- Top bar ---------- */
-.topbar{display:flex;align-items:center;gap:14px;padding:16px 28px 0;position:relative;z-index:200}
+.topbar{display:flex;align-items:center;gap:14px;padding:16px 28px 0;position:relative;z-index:50}
 html[data-theme="dark"] #themeBtn{color:var(--gold-2,#f4cc64)}
 .topbar .t-left{display:flex;align-items:center;gap:10px}
 .t-menu{display:none}
