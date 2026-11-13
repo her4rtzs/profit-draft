@@ -380,17 +380,15 @@
       renderList();
     } catch (err) {
       if (summaryEl) summaryEl.textContent = "";
+      const isForbidden = err.status === 403 || String(err.message || "").toLowerCase().includes("permission") || String(err.message || "").toLowerCase().includes("forbidden");
       listEl.innerHTML = `
         <div class="ann-empty-state">
-          <div class="ann-empty-art" aria-hidden="true" style="color:#f87171;border-color:rgba(248,113,113,0.35);background:rgba(248,113,113,0.12)">
-            <i class="fa-solid fa-triangle-exclamation"></i>
+          <div class="ann-empty-art" aria-hidden="true" style="color:${isForbidden ? '#f59e0b' : '#f87171'};border-color:${isForbidden ? 'rgba(245,158,11,0.35)' : 'rgba(248,113,113,0.35)'};background:${isForbidden ? 'rgba(245,158,11,0.12)' : 'rgba(248,113,113,0.12)'}">
+            <i class="fa-solid fa-${isForbidden ? 'lock' : 'triangle-exclamation'}"></i>
           </div>
-          <h3>Could not load announcements</h3>
-          <p>${esc(err.message || "Please check your connection and try again.")}</p>
-          <button type="button" class="ann-btn primary" data-retry-load>
-            <i class="fa-solid fa-rotate-right" aria-hidden="true"></i>
-            <span>Retry</span>
-          </button>
+          <h3>${isForbidden ? 'Owner Access Required' : 'Could not load announcements'}</h3>
+          <p>${esc(isForbidden ? "Announcements are managed exclusively by gym owners. Please sign in with an owner account." : (err.message || "Please check your connection and try again."))}</p>
+          ${isForbidden ? '<a href="index.html" class="ann-btn primary"><i class="fa-solid fa-house" aria-hidden="true"></i><span>Back to dashboard</span></a>' : '<button type="button" class="ann-btn primary" data-retry-load><i class="fa-solid fa-rotate-right" aria-hidden="true"></i><span>Retry</span></button>'}
         </div>
       `;
     }

@@ -239,7 +239,7 @@
   const STAFF_NAV = [
     { label: 'WORKSPACE', items: [
       { id: 'dashboard', label: 'Dashboard', icon: 'home', href: 'index.html' },
-      { id: 'announcements', label: 'Announcements', icon: 'megaphone', href: 'announcements.html', roles: ['Owner', 'Cashier'] }] },
+      { id: 'announcements', label: 'Announcements', icon: 'megaphone', href: 'announcements.html', roles: ['Owner'] }] },
     { label: 'MEMBERSHIP', items: [
       { id: 'members', label: 'Member List', icon: 'users', href: 'members.html' },
       { id: 'attendance', label: 'Attendance', icon: 'calendar-check', href: 'attendance.html' },

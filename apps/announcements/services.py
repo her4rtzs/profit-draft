@@ -124,15 +124,28 @@ def create_draft(
     aud = normalize_audience(audience)
     user_ids = _resolve_user_ids(member_ids) if aud == SELECTED else []
     with transaction.atomic():
-        note = Announcement.objects.create(
-            title=title[:MAX_TITLE_LENGTH],
-            message=(message or "")[:MAX_BODY_LENGTH],
-            audience=aud,
-            event_date=event_date,
-            publish_on=publish_on,
-            pinned=pinned,
-            created_by=created_by if getattr(created_by, "is_authenticated", False) else None,
-        )
+        try:
+            note = Announcement.objects.create(
+                title=title[:MAX_TITLE_LENGTH],
+                message=(message or "")[:MAX_BODY_LENGTH],
+                audience=aud,
+                event_date=event_date,
+                publish_on=publish_on,
+                pinned=pinned,
+                created_by=created_by if getattr(created_by, "is_authenticated", False) else None,
+            )
+        except Exception as exc:
+            if "event_date" in str(exc).lower():
+                note = Announcement.objects.create(
+                    title=title[:MAX_TITLE_LENGTH],
+                    message=(message or "")[:MAX_BODY_LENGTH],
+                    audience=aud,
+                    publish_on=publish_on,
+                    pinned=pinned,
+                    created_by=created_by if getattr(created_by, "is_authenticated", False) else None,
+                )
+            else:
+                raise
         if user_ids:
             note.recipients.set(user_ids)
     return note
@@ -220,7 +233,14 @@ def update(
         if target_status == DRAFT and note.status != DRAFT:
             note.status = DRAFT
             note.archived_at = None
-        note.save()
+        try:
+            note.save()
+        except Exception as exc:
+            if "event_date" in str(exc).lower():
+                fields = [f.name for f in note._meta.concrete_fields if f.name != "event_date" and not f.primary_key]
+                note.save(update_fields=fields)
+            else:
+                raise
 
         if target_status == PUBLISHED and note.status != PUBLISHED:
             if note.status == ARCHIVED:

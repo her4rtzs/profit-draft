@@ -164,12 +164,13 @@ PF.ready(() => {
     }
 
     if (state.error) {
+      const isForbidden = state.status === 403 || String(state.error).toLowerCase().includes('permission') || String(state.error).toLowerCase().includes('owner');
       $('#aList').innerHTML = `
         <div class="card"><div class="empty">
-          ${PF.icon('alert-circle')}
-          <h3>Could not load announcements</h3>
-          <p style="max-width:420px">${esc(state.error)}</p>
-          <button class="btn btn-gold" type="button" id="aRetryBtn">${PF.icon('refresh')}Retry</button>
+          ${PF.icon(isForbidden ? 'lock' : 'alert-circle')}
+          <h3>${isForbidden ? 'Owner Access Required' : 'Could not load announcements'}</h3>
+          <p style="max-width:420px">${esc(isForbidden ? 'Announcements are managed exclusively by gym owners. Please sign in with an owner account.' : state.error)}</p>
+          ${isForbidden ? '<a class="btn btn-gold" href="index.html">Back to dashboard</a>' : `<button class="btn btn-gold" type="button" id="aRetryBtn">${PF.icon('refresh')}Retry</button>`}
         </div></div>
       `;
       const retryBtn = $('#aRetryBtn');

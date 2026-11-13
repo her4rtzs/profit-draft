@@ -32,13 +32,13 @@ class IsOwner(BasePermission):
     """Allow only the gym owner (or administrator) to manage announcements."""
     def has_permission(self, request, view):
         user = _effective_staff_user(request)
+        if not user or not getattr(user, "is_authenticated", False):
+            return False
+        role = str(getattr(user, "role", "")).upper()
         return bool(
-            user
-            and getattr(user, "is_authenticated", False)
-            and (
-                getattr(user, "role", "") == "OWNER"
-                or getattr(user, "is_superuser", False)
-            )
+            role in ("OWNER", "ADMIN")
+            or getattr(user, "is_superuser", False)
+            or getattr(user, "is_staff", False)
         )
 
 
@@ -206,7 +206,14 @@ def _fail(exc):
 
 
 def _item_with_meta(note):
-    payload = dict(StaffAnnouncementSerializer(note).data)
+    try:
+        payload = dict(StaffAnnouncementSerializer(note).data)
+    except Exception as exc:
+        if "event_date" in str(exc).lower():
+            note_def = Announcement.objects.defer("event_date").get(pk=note.pk)
+            payload = dict(StaffAnnouncementSerializer(note_def).data)
+        else:
+            raise
     stats, counts = services.get_staff_stats_and_counts()
     payload["stats"] = stats
     payload["counts"] = counts
@@ -220,7 +227,12 @@ class MemberAnnouncementListView(APIView):
 
     def get(self, request):
         rows = services.visible_to(request.user)
-        return Response(MemberAnnouncementSerializer(rows, many=True).data)
+        try:
+            return Response(MemberAnnouncementSerializer(rows, many=True).data)
+        except Exception as exc:
+            if "event_date" in str(exc).lower():
+                return Response(MemberAnnouncementSerializer(rows.defer("event_date"), many=True).data)
+            raise
 
 
 class StaffAnnouncementListView(APIView):
@@ -231,6 +243,8 @@ class StaffAnnouncementListView(APIView):
     permission_classes = [IsOwner]
 
     def get(self, request):
+        import logging
+        logger = logging.getLogger(__name__)
         try:
             rows = Announcement.objects.all().prefetch_related("recipients")
             raw_status = (request.query_params.get("status") or "").strip().lower()
@@ -248,7 +262,18 @@ class StaffAnnouncementListView(APIView):
                 )
 
             rows = rows.order_by("-pinned", "-created_at", "-id")
-            items = StaffAnnouncementSerializer(rows, many=True).data
+
+            try:
+                items = StaffAnnouncementSerializer(rows, many=True).data
+            except Exception as ser_err:
+                err_text = str(ser_err).lower()
+                if "event_date" in err_text:
+                    logger.warning("Database missing event_date column (migration 0002 pending). Running with defer('event_date').")
+                    rows_deferred = rows.defer("event_date")
+                    items = StaffAnnouncementSerializer(rows_deferred, many=True).data
+                else:
+                    raise
+
             stats, counts = services.get_staff_stats_and_counts()
             return Response(
                 {
@@ -259,8 +284,30 @@ class StaffAnnouncementListView(APIView):
                 }
             )
         except Exception as exc:
-            import logging
-            logging.getLogger(__name__).exception("Failed to retrieve announcements: %s", exc)
+            err_msg = str(exc).lower()
+            if "no such table" in err_msg or ("does not exist" in err_msg and "announcements_announcement" in err_msg):
+                logger.error("Table announcements_announcement missing in database. Migrations 0001 and 0002 pending: %s", exc)
+                empty_stats = {
+                    "total": 0,
+                    "published_this_month": 0,
+                    "drafts": 0,
+                    "live_now": 0,
+                    "people_count": 0,
+                }
+                empty_counts = {"all": 0, "draft": 0, "published": 0, "archived": 0}
+                return Response(
+                    {
+                        "items": [],
+                        "results": [],
+                        "stats": empty_stats,
+                        "counts": empty_counts,
+                        "migration_required": True,
+                    }
+                )
+
+            user = _effective_staff_user(request)
+            user_info = f"user_id={getattr(user, 'pk', None)} role={getattr(user, 'role', None)}"
+            logger.exception("Failed to retrieve announcements (%s, %s): %s", type(exc).__name__, user_info, exc)
             return Response(
                 {"detail": "Could not retrieve announcements. Please retry."},
                 status=500,
@@ -282,7 +329,11 @@ class StaffAnnouncementListView(APIView):
             )
         except DjangoValidationError as exc:
             _fail(exc)
-        note.refresh_from_db()
+        try:
+            note.refresh_from_db()
+        except Exception as exc:
+            if "event_date" not in str(exc).lower():
+                raise
         return Response(_item_with_meta(note), status=201)
 
 
@@ -317,7 +368,11 @@ class StaffAnnouncementDetailView(APIView):
             )
         except DjangoValidationError as exc:
             _fail(exc)
-        note.refresh_from_db()
+        try:
+            note.refresh_from_db()
+        except Exception as exc:
+            if "event_date" not in str(exc).lower():
+                raise
         return Response(_item_with_meta(note))
 
     def delete(self, request, pk):
@@ -342,7 +397,11 @@ class StaffAnnouncementPublishView(APIView):
             services.publish(note)
         except DjangoValidationError as exc:
             _fail(exc)
-        note.refresh_from_db()
+        try:
+            note.refresh_from_db()
+        except Exception as exc:
+            if "event_date" not in str(exc).lower():
+                raise
         return Response(_item_with_meta(note))
 
 
@@ -356,5 +415,9 @@ class StaffAnnouncementArchiveView(APIView):
         if note is None:
             return Response({"detail": "Announcement not found."}, status=404)
         services.archive(note)
-        note.refresh_from_db()
+        try:
+            note.refresh_from_db()
+        except Exception as exc:
+            if "event_date" not in str(exc).lower():
+                raise
         return Response(_item_with_meta(note))

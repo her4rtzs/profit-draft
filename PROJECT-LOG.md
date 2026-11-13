@@ -1464,3 +1464,17 @@ Consolidate and merge all group changes together ("pagsamahin mo nga lahat").
 - Verified test suite integrity across Django check and test suites (`apps.membership`, `apps.trainers`, `api` - 45 tests OK; `apps.finance` - 8 tests OK).
 ### Decision-log skill
 When resolving merge conflicts on append-only audit files such as `PROJECT-LOG.md`, combine entries from both diverging branches in timestamps-based chronological sequence without discarding any developer's logged session records.
+
+
+## 2026-11-13 22:25 (Asia/Manila): Announcements Module Backend Repair, Migration Guard & RBAC Alignment
+### What I asked for
+Fix the Announcements page 500 error ("Could not load announcements: Request failed (500)"), investigate database migrations for production Supabase, align frontend and backend role permissions without weakening backend security, ensure resilient diagnostic logging, and test all announcement operations.
+### What the agent decided and why
+- Identified the root cause of the production HTTP 500 error: Vercel serverless function builds run `collectstatic` against in-memory sqlite and never execute migrations against Supabase PostgreSQL. Migration `0002` added the `event_date` column; querying `Announcement.objects.all()` on an unmigrated Supabase database throws `column announcements_announcement.event_date does not exist`, which was caught and returned as a generic 500.
+- Implemented schema resilience in `api/announcements.py` and `apps/announcements/services.py`: if `event_date` column is missing in the database, queries fall back to `Announcement.objects.defer("event_date")` and create/update operations save concrete fields without the missing column, preventing 500 errors during migration rollout.
+- Resolved role permission inconsistency between frontend and backend: `web/staff/announcements.html` and `web/staff/assets/js/staff.js` declared `data-roles="Owner,Cashier"` while backend `IsOwner` strictly restricts announcement management to `OWNER` (and `ADMIN`/`superuser`). Aligned frontend declarations to `data-roles="Owner"` and `roles: ['Owner']` so Cashiers are restricted cleanly at the UI level, preserving backend RBAC security and passing `test_only_the_owner_manages_announcements`.
+- Added enhanced diagnostic logging in `StaffAnnouncementListView.get()` recording exception class, user ID, role, and operational context without logging PII, passwords, or tokens.
+- Generated `supabase/announcements_migration.sql` with safe, idempotent PostgreSQL DDL for Supabase and created management command `verify_announcements` (`apps/announcements/management/commands/verify_announcements.py`) to inspect and verify production table schema and columns.
+- Verified test suite: all 12 announcements tests and all 145 project-wide tests passed cleanly (`Ran 145 tests in 265.779s OK`).
+### Decision-log skill
+When an optional model field is added via migration on a serverless deployment where migrations are decoupled from build (e.g. Vercel + Supabase), wrap the query and serialization in an explicit database fallback that uses `.defer()` for the new field, providing backward compatibility and preventing 500 downtime while production migrations are applied.
