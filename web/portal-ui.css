@@ -619,3 +619,381 @@ html body .member-loading { display: block; height: 14px; width: 55%; margin: 12
 .pf-skel-block .pf-sk:nth-child(2) { width: 92%; }
 .pf-skel-block .pf-sk:nth-child(3) { width: 60%; }
 @media (prefers-reduced-motion: reduce) { .pf-sk, .pf-skel td span { animation: none; } }
+
+/* =========================================================
+   Staff Dashboard: Entrance, Hover-Lift, Skeletons & Membership Type Donut
+   ========================================================= */
+@keyframes pfDashIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pfBarRise {
+  from { transform: scaleY(0.08); opacity: 0.35; }
+  to { transform: scaleY(1); opacity: 1; }
+}
+
+body.pf-staff[data-page="dashboard"] .quick-action,
+body.pf-staff[data-page="dashboard"] .stat-card,
+body.pf-staff[data-page="dashboard"] .content-grid > .panel,
+body.pf-staff[data-page="dashboard"] .registrations-panel {
+  animation: pfDashIn 0.42s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+body.pf-staff[data-page="dashboard"] .quick-action:nth-child(1),
+body.pf-staff[data-page="dashboard"] .stat-card:nth-child(1) { animation-delay: 0.03s; }
+body.pf-staff[data-page="dashboard"] .quick-action:nth-child(2),
+body.pf-staff[data-page="dashboard"] .stat-card:nth-child(2) { animation-delay: 0.08s; }
+body.pf-staff[data-page="dashboard"] .quick-action:nth-child(3),
+body.pf-staff[data-page="dashboard"] .stat-card:nth-child(3) { animation-delay: 0.13s; }
+body.pf-staff[data-page="dashboard"] .quick-action:nth-child(4),
+body.pf-staff[data-page="dashboard"] .stat-card:nth-child(4) { animation-delay: 0.18s; }
+body.pf-staff[data-page="dashboard"] .content-grid > .panel:nth-child(1) { animation-delay: 0.16s; }
+body.pf-staff[data-page="dashboard"] .content-grid > .panel:nth-child(2) { animation-delay: 0.22s; }
+body.pf-staff[data-page="dashboard"] .registrations-panel { animation-delay: 0.26s; }
+
+body.pf-staff[data-page="dashboard"] .stat-card,
+body.pf-staff[data-page="dashboard"] .quick-action,
+body.pf-staff[data-page="dashboard"] .panel {
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.22s ease,
+              border-color 0.22s ease;
+}
+body.pf-staff[data-page="dashboard"] .stat-card:hover,
+body.pf-staff[data-page="dashboard"] .quick-action:hover {
+  transform: translateY(-3px);
+}
+body.pf-staff[data-page="dashboard"] .chip,
+body.pf-staff[data-page="dashboard"] .icon-btn,
+body.pf-staff[data-page="dashboard"] .view-all,
+body.pf-staff[data-page="dashboard"] .year-stepper button {
+  transition: transform 0.15s ease, background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+body.pf-staff[data-page="dashboard"] .chip:active,
+body.pf-staff[data-page="dashboard"] .icon-btn:active,
+body.pf-staff[data-page="dashboard"] .quick-action:active,
+body.pf-staff[data-page="dashboard"] .year-stepper button:active {
+  transform: scale(0.97);
+}
+
+/* Revenue / Attendance bar rise animation */
+.bar-column .bar {
+  transform-origin: bottom center;
+  animation: pfBarRise 0.45s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation-delay: calc(var(--bi, 0) * 22ms);
+  transition: height 0.32s cubic-bezier(0.22, 1, 0.36, 1), filter 0.18s ease, transform 0.18s ease;
+}
+.bar-column .bar:hover {
+  filter: brightness(1.12);
+}
+
+/* Stat Card Skeleton Loading */
+.stat-skel {
+  display: none;
+  gap: 8px;
+  margin-top: 6px;
+}
+.stat-skel .sk-val { width: 58%; height: 28px; border-radius: 8px; }
+.stat-skel .sk-sub { width: 78%; height: 12px; border-radius: 6px; }
+.stats.is-loading .stat-skel { display: grid; }
+.stats.is-loading .stat-content h2,
+.stats.is-loading .stat-content small { display: none; }
+
+/* Revenue Chart Skeleton Loading */
+.rev-skel {
+  display: none;
+  width: 100%;
+  height: 230px;
+  align-items: flex-end;
+  gap: 12px;
+  padding: 16px 8px 18px;
+  box-sizing: border-box;
+}
+.rev-skel span {
+  flex: 1;
+  border-radius: 8px 8px 4px 4px;
+}
+.rev-skel span:nth-child(odd) { height: 48%; }
+.rev-skel span:nth-child(even) { height: 74%; }
+.rev-skel span:nth-child(3n) { height: 62%; }
+.rev-skel span:nth-child(5n) { height: 88%; }
+.revenue-panel.is-loading .rev-skel { display: flex; }
+.revenue-panel.is-loading .chart-y,
+.revenue-panel.is-loading .chart { display: none; }
+
+/* Membership Type Panel */
+.membership-type-panel {
+  display: flex;
+  flex-direction: column;
+}
+body.dark .membership-type-panel {
+  background: #121A28;
+}
+.mt-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.mt-title-ico {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  flex: none;
+  background: color-mix(in srgb, #F59E0B 16%, transparent);
+  color: #F59E0B;
+  font-size: 16px;
+}
+.mt-skeleton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 16px 4px;
+  min-height: 224px;
+}
+.mt-skeleton[hidden] { display: none; }
+.mt-skel-donut {
+  width: 176px;
+  height: 176px;
+  border-radius: 50%;
+  flex: none;
+  mask: radial-gradient(circle, transparent 52px, #000 53px);
+  -webkit-mask: radial-gradient(circle, transparent 52px, #000 53px);
+}
+.mt-skel-legend {
+  flex: 1;
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+.mt-skel-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.mt-skel-row span:first-child { width: 55%; height: 14px; }
+.mt-skel-row span:last-child { width: 26%; height: 14px; }
+
+.mt-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 12px 4px 8px;
+  flex: 1;
+}
+.mt-body[hidden] { display: none; }
+
+.mt-donut-wrap {
+  position: relative;
+  width: 204px;
+  height: 204px;
+  flex: none;
+  margin: 0 auto;
+}
+.mt-donut-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  display: block;
+}
+.mt-donut-track {
+  fill: none;
+  stroke: color-mix(in srgb, currentColor 8%, transparent);
+  stroke-width: 36;
+}
+.mt-seg {
+  fill: none;
+  stroke-width: 36;
+  cursor: pointer;
+  outline: none;
+  transition: stroke-width 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.2s ease,
+              stroke-dasharray 0.68s cubic-bezier(0.22, 1, 0.36, 1),
+              stroke-dashoffset 0.68s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.mt-seg.is-hovered,
+.mt-seg:hover,
+.mt-seg:focus-visible {
+  stroke-width: 42;
+}
+.mt-donut-wrap.has-hover .mt-seg:not(.is-hovered) {
+  opacity: 0.4;
+}
+.mt-seg-label {
+  fill: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+  transition: opacity 0.2s ease;
+}
+.mt-donut-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  text-align: center;
+}
+.mt-donut-center strong {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+.mt-donut-center span {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+.mt-tooltip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 6px);
+  transform: translateX(-50%);
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: #0A0E17;
+  color: #F9FAFB;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.42);
+  font-size: 12px;
+  line-height: 1.35;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 25;
+  text-align: center;
+}
+body:not(.dark) .mt-tooltip {
+  background: #14181F;
+  color: #FFFFFF;
+}
+.mt-tooltip strong {
+  display: block;
+  font-weight: 700;
+  color: #FBBF24;
+}
+.mt-tooltip small {
+  display: block;
+  font-size: 11px;
+  color: #CBD5E1;
+  margin-top: 2px;
+}
+
+.mt-legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+}
+.mt-legend-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+.mt-legend-item:hover,
+.mt-legend-item.is-hovered,
+.mt-legend-item:focus-visible {
+  background: color-mix(in srgb, #F59E0B 10%, transparent);
+  border-color: color-mix(in srgb, #F59E0B 30%, transparent);
+  transform: translateX(2px);
+  outline: none;
+}
+.mt-legend-left {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+.mt-legend-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  flex: none;
+}
+.mt-legend-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mt-legend-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+.mt-legend-count {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.mt-legend-pct {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text);
+  min-width: 44px;
+  text-align: right;
+}
+
+.mt-empty {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 40px 16px;
+  color: var(--muted);
+  min-height: 200px;
+}
+.mt-empty[hidden] { display: none; }
+.mt-empty i { font-size: 28px; color: #F59E0B; opacity: 0.8; }
+
+@media (max-width: 1220px) and (min-width: 901px) {
+  .mt-body, .mt-skeleton {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 18px;
+  }
+  .mt-skel-donut { margin: 0 auto; }
+}
+@media (max-width: 560px) {
+  .mt-body, .mt-skeleton {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 18px;
+  }
+  .mt-skel-donut { margin: 0 auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.pf-staff[data-page="dashboard"] .quick-action,
+  body.pf-staff[data-page="dashboard"] .stat-card,
+  body.pf-staff[data-page="dashboard"] .content-grid > .panel,
+  body.pf-staff[data-page="dashboard"] .registrations-panel,
+  .bar-column .bar,
+  .mt-seg {
+    animation: none !important;
+    transition: none !important;
+  }
+}

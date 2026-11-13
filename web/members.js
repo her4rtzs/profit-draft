@@ -5,7 +5,7 @@
   const { esc, money, initialsOf, fmt, today, toast, modal, dayDiff, media, parseISO, iso, todayISO, fmtDateTime } = PF;
   const PER_PAGE = 12;
   const PLAN_KEYS = Object.keys(PLANS);
-  const state = { view: matchMedia("(max-width: 768px)").matches ? "cards" : "table", tab: "browse", filter: "all", query: "", page: 1, app: "pending", selectedId: null, subtab: "overview", pickerQuery: "" };
+  const state = { view: matchMedia("(max-width: 768px)").matches ? "cards" : "table", tab: "browse", filter: "all", plan: "", query: "", page: 1, app: "pending", selectedId: null, subtab: "overview", pickerQuery: "" };
 
   // ---------- Rules ----------
   const left = m => dayDiff(new Date(), m.end);
@@ -133,15 +133,20 @@
     const list = all.filter(m => {
       const k = statusFor(m).key;
       const byStatus = state.filter === "all" || k === state.filter || (state.filter === "expired" && k === "cancelled");
-      return byStatus && (!q || [m.name, m.id, m.email, m.phone].some(v => String(v || "").toLowerCase().includes(q)));
+      const byPlan = !state.plan || String(m.plan || "monthly").toLowerCase() === state.plan;
+      return byStatus && byPlan && (!q || [m.name, m.id, m.email, m.phone].some(v => String(v || "").toLowerCase().includes(q)));
     });
     const pages = Math.max(1, Math.ceil(list.length / PER_PAGE));
     state.page = Math.min(state.page, pages);
     const start = (state.page - 1) * PER_PAGE;
     const slice = list.slice(start, start + PER_PAGE);
-    const empty = emptyBlock("fa-user-slash", "No members match", q || state.filter !== "all" ? "Try another search or clear the filter to see everyone." : "Enroll your first member from the New enrollment tab.");
+    const empty = emptyBlock("fa-user-slash", "No members match", q || state.filter !== "all" || state.plan ? "Try another search or clear the filter to see everyone." : "Enroll your first member from the New enrollment tab.");
     $("countBrowse").textContent = all.length;
-    $("memberSummary").textContent = list.length ? `Showing ${start + 1}–${start + slice.length} of ${list.length} member${list.length === 1 ? "" : "s"}` : "";
+    const planLabel = state.plan ? ((PLANS[state.plan] && PLANS[state.plan].label) || state.plan) : "";
+    const planSuffix = state.plan ? ` · Plan: <strong>${esc(planLabel)}</strong> <button type="button" data-clear-plan style="margin-left:6px;background:none;border:0;color:#F59E0B;cursor:pointer;font-size:inherit;text-decoration:underline;padding:0;">Clear</button>` : "";
+    $("memberSummary").innerHTML = list.length
+      ? `Showing ${start + 1}–${start + slice.length} of ${list.length} member${list.length === 1 ? "" : "s"}${planSuffix}`
+      : (state.plan ? `0 members${planSuffix}` : "");
     const table = state.view === "table";
     $("memberTableWrap").hidden = !table;
     $("memberGrid").hidden = table;
@@ -687,9 +692,22 @@
   $("enrollForm").addEventListener("change", e => { if (e.target.name === "ePlan") updateEnrollAmount(); });
   $("enrollForm").addEventListener("reset", () => setTimeout(fillEnrollDefaults, 0));
 
-  // Top bar search opens this page with ?q=...
-  const q = new URLSearchParams(location.search).get("q");
+  // Top bar search opens this page with ?q=... and dashboard donut opens with ?plan=...
+  const urlParams = new URLSearchParams(location.search);
+  const q = urlParams.get("q");
   if (q) { state.query = q; $("memberSearch").value = q; }
+  const planParam = urlParams.get("plan");
+  if (planParam) { state.plan = String(planParam).trim().toLowerCase(); }
+  $("memberSummary").addEventListener("click", e => {
+    if (!e.target.closest("[data-clear-plan]")) return;
+    state.plan = "";
+    state.page = 1;
+    const next = new URL(location.href);
+    next.searchParams.delete("plan");
+    history.replaceState(null, "", next.pathname + next.search + next.hash);
+    renderBrowse();
+    hydratePhotos();
+  });
 
   $("memberTableWrap").addEventListener("click", e => {
     const btn = e.target.closest("[data-row-menu]");

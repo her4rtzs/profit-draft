@@ -1270,3 +1270,14 @@ Revert the entire codebase back to version/commit 1090e89 ("alisin search sa hea
 - Retained `PROJECT-LOG.md` history to strictly adhere to the append-only rule without deleting earlier session logs.
 ### Decision-log skill
 When requested to restore a specific historical commit hash, checkout files directly from that commit (`git checkout <hash> -- .`) while keeping `PROJECT-LOG.md` append-only so the project history and previous session learnings remain preserved.
+
+## 2026-11-13 16:36 (Asia/Manila): Staff Dashboard Membership Type, Smooth Animations & Skeleton Loading
+### What I asked for
+Replace the Staff Dashboard "Membership overview" card with a "Membership type" distribution donut chart based on real member plans, add smooth entrance/hover/chart animations, and implement skeleton loading states while keeping Light/Dark mode and responsive consistency.
+### What the agent decided and why
+- Replaced `.summary-panel` ("Membership overview") in `web/index.html` with `#membershipTypePanel` ("Membership type") using an interactive SVG donut chart (`#mtDonutSegments` / `#mtDonutLabels`) and synchronized right-hand legend (`#mtLegend`) grouped by actual `DB.members` `m.plan` values (`daily`, `monthly`, `quarterly`, `annual`, plus any custom plans) with `#F59E0B` gold-themed/slate palette.
+- Added hover/focus tooltips (`#mtTooltip`) and click/keyboard navigation from donut segments or legend rows to `members.html?plan=<key>`, paired with `?plan=` query parameter filtering and a clear button in `web/members.js`.
+- Added `.is-loading` shimmer skeleton placeholders (`.stat-skel`, `.rev-skel`, `#mtSkeleton`) reusing `.pf-sk` / `pfShimmer` and clearing on `profit:synced` (including error handling when `e.detail.ok === false` and empty-state handling when `members.length === 0`) without artificial delays.
+- Added staggered entrance (`pfDashIn`), card hover-lift, button press scale, and staggered chart bar-rise (`pfBarRise` with `--bi` index in `web/chart-periods.js`) in `web/portal-ui.css`, respecting `prefers-reduced-motion`.
+### Decision-log skill
+Always handle both populated, empty, and sync-error (`profit:synced` `ok: false`) outcomes when clearing skeleton loaders so slow or failed network syncs never leave permanent placeholders on screen.

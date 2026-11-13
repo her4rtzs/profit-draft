@@ -141,7 +141,7 @@ window.PFChart = (function () {
       return '<div class="bar-column">' +
         '<div class="bar-track">' +
         '<div class="bar ' + cls + '" tabindex="0" role="img" aria-label="' +
-        b.title + ": " + tip + '" title="' + b.title + " \u00b7 " + tip + '" style="height:' + pct + '%;">' +
+        b.title + ": " + tip + '" title="' + b.title + " \u00b7 " + tip + '" style="height:' + pct + '%;--bi:' + i + ';">' +
         "<span>" + tip + "</span></div>" +
         "</div><label>" + b.label + "</label></div>";
     }).join("");
@@ -208,7 +208,12 @@ window.PFChart = (function () {
       picker.hidden = !(period === "month" || period === "year");
     }
 
-    function draw() {
+    function draw(ev) {
+      var panel = opts.bars ? opts.bars.closest(".panel") : null;
+      var synced = window.DB && window.DB.synced;
+      var syncDone = ev && ev.type === "profit:synced";
+      if (panel) panel.classList.toggle("is-loading", !synced && !syncDone);
+
       var s = series(kind, period, undefined, year);
       fillPicker();
       renderAxis(opts.axis, s, kind);

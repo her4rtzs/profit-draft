@@ -18,7 +18,7 @@
     <script src="config.js"></script>
     <script src="api.js"></script>
     <script src="auth.js"></script>
-<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=9"><link rel="stylesheet" href="ui-final.css?v=1"><script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script><style id="pf-dash-fx">
+<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=10"><link rel="stylesheet" href="ui-final.css?v=1"><script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script><style id="pf-dash-fx">
 
 .pf-row-in{animation:pfRowIn .42s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0) * 55ms)}
 @keyframes pfRowIn{from{opacity:0}to{opacity:1}}
@@ -63,7 +63,7 @@
         </section>
 
         <!-- STATS -->
-        <section class="stats">
+        <section class="stats is-loading" id="dashStats">
 
             <div class="stat-card">
                 <div class="stat-top">
@@ -74,6 +74,7 @@
                     <p>Total members</p>
                     <h2>—</h2>
                     <small>Compared to last month</small>
+                    <div class="stat-skel" aria-hidden="true"><span class="pf-sk sk-val"></span><span class="pf-sk sk-sub"></span></div>
                 </div>
             </div>
 
@@ -86,6 +87,7 @@
                     <p>Expired members</p>
                     <h2>—</h2>
                     <small>Memberships expired</small>
+                    <div class="stat-skel" aria-hidden="true"><span class="pf-sk sk-val"></span><span class="pf-sk sk-sub"></span></div>
                 </div>
             </div>
 
@@ -98,6 +100,7 @@
                     <p>Expiring soon</p>
                     <h2>—</h2>
                     <small>Within the next 7 days</small>
+                    <div class="stat-skel" aria-hidden="true"><span class="pf-sk sk-val"></span><span class="pf-sk sk-sub"></span></div>
                 </div>
             </div>
 
@@ -108,8 +111,9 @@
                 </div>
                 <div class="stat-content">
                     <p>Total revenue</p>
-                    <h2>₱10,000</h2>
+                    <h2>—</h2>
                     <small>Revenue this month</small>
+                    <div class="stat-skel" aria-hidden="true"><span class="pf-sk sk-val"></span><span class="pf-sk sk-sub"></span></div>
                 </div>
             </div>
 
@@ -119,7 +123,7 @@
         <!-- CHART + DONUT -->
         <section class="content-grid">
 
-            <div class="panel revenue-panel">
+            <div class="panel revenue-panel is-loading">
 
                 <div class="panel-header">
                     <div>
@@ -135,6 +139,12 @@
                 </div>
 
                 <div class="chart-area">
+                    <div class="rev-skel" aria-hidden="true">
+                        <span class="pf-sk"></span><span class="pf-sk"></span><span class="pf-sk"></span>
+                        <span class="pf-sk"></span><span class="pf-sk"></span><span class="pf-sk"></span>
+                        <span class="pf-sk"></span><span class="pf-sk"></span><span class="pf-sk"></span>
+                        <span class="pf-sk"></span><span class="pf-sk"></span><span class="pf-sk"></span>
+                    </div>
 
                     <div class="chart-y" id="revenueAxis">
                         <span>₱12k</span>
@@ -155,12 +165,15 @@
             </div>
 
 
-            <div class="panel summary-panel">
+            <div class="panel membership-type-panel" id="membershipTypePanel">
 
                 <div class="panel-header">
-                    <div>
-                        <h2>Membership overview</h2>
-                        <p>Current membership status</p>
+                    <div class="mt-title-wrap">
+                        <span class="mt-title-ico" aria-hidden="true"><i class="fa-solid fa-chart-pie"></i></span>
+                        <div>
+                            <h2>Membership type</h2>
+                            <p>Distribution by plan</p>
+                        </div>
                     </div>
                     <div class="menu-wrap">
                         <button class="icon-btn" type="button" data-menu aria-haspopup="true" aria-expanded="false" aria-label="More options">
@@ -174,33 +187,36 @@
                     </div>
                 </div>
 
-                <!-- change --active / --expired to update the donut (expiring is the remainder) -->
-                <div class="membership-circle">
-                    <div class="circle" style="--active:0; --expired:0;">
-                        <strong>—</strong>
-                        <span>Members</span>
+                <div class="mt-skeleton" id="mtSkeleton" aria-hidden="true">
+                    <div class="mt-skel-donut pf-sk"></div>
+                    <div class="mt-skel-legend">
+                        <div class="mt-skel-row"><span class="pf-sk"></span><span class="pf-sk"></span></div>
+                        <div class="mt-skel-row"><span class="pf-sk"></span><span class="pf-sk"></span></div>
+                        <div class="mt-skel-row"><span class="pf-sk"></span><span class="pf-sk"></span></div>
+                        <div class="mt-skel-row"><span class="pf-sk"></span><span class="pf-sk"></span></div>
                     </div>
                 </div>
 
-                <div class="membership-stats">
-                    <div>
-                        <span class="dot active-dot"></span>
-                        <p>Active</p>
-                        <strong>—</strong>
-                        <div class="mini-progress"><span style="width:0%"></span></div>
+                <div class="mt-body" id="mtBody" hidden>
+                    <div class="mt-donut-wrap" id="mtDonutWrap">
+                        <svg class="mt-donut-svg" viewBox="0 0 220 220" role="img" aria-label="Membership type distribution chart">
+                            <circle class="mt-donut-track" cx="110" cy="110" r="78"></circle>
+                            <g id="mtDonutSegments" transform="rotate(-90 110 110)"></g>
+                            <g id="mtDonutLabels"></g>
+                        </svg>
+                        <div class="mt-donut-center">
+                            <strong id="mtTotalCount">—</strong>
+                            <span>Total Members</span>
+                        </div>
+                        <div class="mt-tooltip" id="mtTooltip" hidden role="status"></div>
                     </div>
-                    <div>
-                        <span class="dot expired-dot"></span>
-                        <p>Expired</p>
-                        <strong>—</strong>
-                        <div class="mini-progress"><span class="danger" style="width:0%"></span></div>
-                    </div>
-                    <div>
-                        <span class="dot expiring-dot"></span>
-                        <p>Expiring</p>
-                        <strong>—</strong>
-                        <div class="mini-progress"><span class="warning" style="width:0%"></span></div>
-                    </div>
+
+                    <ul class="mt-legend" id="mtLegend" aria-label="Membership plans"></ul>
+                </div>
+
+                <div class="mt-empty" id="mtEmpty" hidden>
+                    <i class="fa-solid fa-chart-pie" aria-hidden="true"></i>
+                    <p id="mtEmptyMsg">No members enrolled yet.</p>
                 </div>
 
             </div>
@@ -244,7 +260,7 @@
 <script src="data.js"></script>
 <script src="layout.js?v=18"></script>
 <script src="sidebar.js?v=17"></script>
-<script src="chart-periods.js?v=914"></script>
+<script src="chart-periods.js?v=915"></script>
 <script src="portal-fx.js?v=2"></script>
 <script src="change-password.js?v=2" defer></script>
 <script>
@@ -353,13 +369,191 @@
   const cardFor = label => [...document.querySelectorAll(".stat-card .stat-content")]
     .find(c => c.querySelector("p")?.textContent.trim() === label);
 
-  function paint() {
-    if (!DB.synced) return;
+  const SVG_NS = "http://www.w3.org/2000/svg";
+  const RADIUS = 78;
+  const CIRC = 2 * Math.PI * RADIUS;
+  const CANONICAL_ORDER = ["daily", "monthly", "quarterly", "annual"];
+  const darkPalette = ["#F59E0B", "#EA580C", "#64748B", "#334155", "#FBBF24", "#D97706"];
+  const lightPalette = ["#F59E0B", "#EA580C", "#64748B", "#94A3B8", "#D97706", "#B45309"];
+
+  function formatPlanName(key) {
+    if (window.PLANS && PLANS[key] && PLANS[key].label) return PLANS[key].label;
+    return String(key || "Other").replace(/[-_]+/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+  }
+
+  function renderMembershipType(members, syncError) {
+    const skel = document.getElementById("mtSkeleton");
+    const body = document.getElementById("mtBody");
+    const empty = document.getElementById("mtEmpty");
+    const emptyMsg = document.getElementById("mtEmptyMsg");
+    const segGroup = document.getElementById("mtDonutSegments");
+    const labelGroup = document.getElementById("mtDonutLabels");
+    const totalEl = document.getElementById("mtTotalCount");
+    const legendEl = document.getElementById("mtLegend");
+    const wrap = document.getElementById("mtDonutWrap");
+    const tooltip = document.getElementById("mtTooltip");
+    if (!skel || !body || !empty) return;
+
+    skel.hidden = true;
+    if (syncError) {
+      body.hidden = true;
+      empty.hidden = false;
+      if (emptyMsg) emptyMsg.textContent = "Could not load membership data. Please refresh.";
+      return;
+    }
+
+    const total = members.length;
+    if (!total) {
+      body.hidden = true;
+      empty.hidden = false;
+      if (emptyMsg) emptyMsg.textContent = "No members enrolled yet.";
+      return;
+    }
+
+    empty.hidden = true;
+    body.hidden = false;
+    if (totalEl) totalEl.textContent = total;
+
+    const counts = new Map();
+    members.forEach(m => {
+      const k = String(m.plan || "monthly").trim().toLowerCase() || "monthly";
+      counts.set(k, (counts.get(k) || 0) + 1);
+    });
+
+    const keys = [...counts.keys()].sort((a, b) => {
+      const ia = CANONICAL_ORDER.indexOf(a);
+      const ib = CANONICAL_ORDER.indexOf(b);
+      if (ia !== -1 && ib !== -1) return ia - ib;
+      if (ia !== -1) return -1;
+      if (ib !== -1) return 1;
+      return counts.get(b) - counts.get(a);
+    });
+
+    const palette = document.body.classList.contains("dark") ? darkPalette : lightPalette;
+    const entries = keys.map((key, idx) => {
+      const count = counts.get(key);
+      const frac = count / total;
+      return {
+        key,
+        label: formatPlanName(key),
+        count,
+        frac,
+        pctText: (frac * 100).toFixed(1) + "%",
+        color: palette[idx % palette.length]
+      };
+    });
+
+    segGroup.innerHTML = "";
+    labelGroup.innerHTML = "";
+    legendEl.innerHTML = "";
+
+    const reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let offset = 0;
+    const segEls = [];
+    const legEls = [];
+
+    const setHover = activeIdx => {
+      const has = activeIdx !== null;
+      wrap.classList.toggle("has-hover", has);
+      segEls.forEach((s, i) => s.classList.toggle("is-hovered", i === activeIdx));
+      legEls.forEach((l, i) => l.classList.toggle("is-hovered", i === activeIdx));
+      if (!has) {
+        tooltip.hidden = true;
+        return;
+      }
+      const item = entries[activeIdx];
+      tooltip.innerHTML = `<strong>${PF.esc(item.label)}</strong><small>${item.count} member${item.count === 1 ? "" : "s"} (${item.pctText}) · Click to view</small>`;
+      tooltip.hidden = false;
+    };
+
+    const goToPlan = key => {
+      location.href = `members.html?plan=${encodeURIComponent(key)}`;
+    };
+
+    entries.forEach((item, idx) => {
+      const arcLen = item.frac * CIRC;
+      const segOffset = -offset;
+
+      const circle = document.createElementNS(SVG_NS, "circle");
+      circle.setAttribute("class", "mt-seg");
+      circle.setAttribute("cx", "110");
+      circle.setAttribute("cy", "110");
+      circle.setAttribute("r", String(RADIUS));
+      circle.setAttribute("stroke", item.color);
+      circle.setAttribute("stroke-dashoffset", String(segOffset));
+      circle.setAttribute("stroke-dasharray", reducedMotion ? `${arcLen} ${CIRC}` : `0 ${CIRC}`);
+      circle.setAttribute("tabindex", "0");
+      circle.setAttribute("role", "button");
+      circle.setAttribute("aria-label", `${item.label}: ${item.count} members (${item.pctText}). View members.`);
+      segGroup.appendChild(circle);
+      segEls.push(circle);
+
+      if (!reducedMotion) {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            circle.setAttribute("stroke-dasharray", `${arcLen} ${CIRC}`);
+          });
+        });
+      }
+
+      if (item.frac >= 0.07) {
+        const midFrac = (offset + arcLen / 2) / CIRC;
+        const angle = -Math.PI / 2 + midFrac * Math.PI * 2;
+        const lx = 110 + Math.cos(angle) * RADIUS;
+        const ly = 110 + Math.sin(angle) * RADIUS;
+        const txt = document.createElementNS(SVG_NS, "text");
+        txt.setAttribute("class", "mt-seg-label");
+        txt.setAttribute("x", lx.toFixed(1));
+        txt.setAttribute("y", ly.toFixed(1));
+        txt.textContent = item.pctText;
+        labelGroup.appendChild(txt);
+      }
+
+      const li = document.createElement("li");
+      li.className = "mt-legend-item";
+      li.setAttribute("tabindex", "0");
+      li.setAttribute("role", "button");
+      li.setAttribute("aria-label", `${item.label}: ${item.count} members (${item.pctText}). View members.`);
+      li.innerHTML =
+        `<span class="mt-legend-left"><span class="mt-legend-dot" style="background:${item.color}"></span><span class="mt-legend-name">${PF.esc(item.label)}</span></span>` +
+        `<span class="mt-legend-right"><span class="mt-legend-count">${item.count}</span><span class="mt-legend-pct">${item.pctText}</span></span>`;
+      legendEl.appendChild(li);
+      legEls.push(li);
+
+      [circle, li].forEach(el => {
+        el.addEventListener("mouseenter", () => setHover(idx));
+        el.addEventListener("mouseleave", () => setHover(null));
+        el.addEventListener("focus", () => setHover(idx));
+        el.addEventListener("blur", () => setHover(null));
+        el.addEventListener("click", () => goToPlan(item.key));
+        el.addEventListener("keydown", e => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            goToPlan(item.key);
+          }
+        });
+      });
+
+      offset += arcLen;
+    });
+  }
+
+  function paint(ev) {
+    const syncFailed = ev && ev.type === "profit:synced" && ev.detail && ev.detail.ok === false;
+    if (!DB.synced && !syncFailed) return;
+
+    const statsEl = document.getElementById("dashStats");
+    if (statsEl) statsEl.classList.remove("is-loading");
+
+    if (syncFailed) {
+      renderMembershipType([], true);
+      return;
+    }
+
     const members = DB.members || [];
     const total = members.length;
     let expired = 0, expiring = 0;
     members.forEach(m => { const d = daysLeft(m); if (d < 0) expired++; else if (d <= 7) expiring++; });
-    const active = total - expired - expiring;
 
     const put = (label, value) => { const h = cardFor(label)?.querySelector("h2"); if (h) h.textContent = value; };
     put("Total members", total);
@@ -375,20 +569,9 @@
     // The trend chips were fixed numbers, not real comparisons, so they are hidden.
     document.querySelectorAll(".stat-top .trend").forEach(t => { t.style.display = "none"; });
 
-    const pct = n => (total ? Math.round((n / total) * 100) : 0);
-    const circle = document.querySelector(".membership-circle .circle");
-    if (circle) {
-      circle.style.setProperty("--active", pct(active));
-      circle.style.setProperty("--expired", pct(expired));
-      circle.querySelector("strong").textContent = total;
-    }
-    document.querySelectorAll(".membership-stats > div").forEach((row, i) => {
-      const n = [active, expired, expiring][i];
-      if (n === undefined) return;
-      row.querySelector("strong").textContent = n;
-      row.querySelector(".mini-progress span").style.width = pct(n) + "%";
-    });
+    renderMembershipType(members, false);
   }
+
   document.addEventListener("profit:synced", paint);
   paint();
 })();
