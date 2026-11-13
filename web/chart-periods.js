@@ -59,9 +59,14 @@ window.PFChart = (function () {
   }
 
   /* Calculate clean, human-readable Y-axis interval steps */
-  function calculateNiceScale(peak) {
+  function calculateNiceScale(peak, kind) {
     if (!peak || peak <= 0) {
+      if (kind === "visits") return { max: 10, steps: [10, 8, 6, 4, 2, 0] };
       return { max: 1000, steps: [1000, 800, 600, 400, 200, 0] };
+    }
+    if (kind === "visits") {
+      if (peak <= 5) return { max: 5, steps: [5, 4, 3, 2, 1, 0] };
+      if (peak <= 10) return { max: 10, steps: [10, 8, 6, 4, 2, 0] };
     }
     var mag = Math.pow(10, Math.floor(Math.log10(peak)));
     var norm = peak / mag;
@@ -109,6 +114,7 @@ window.PFChart = (function () {
           key: iso(d),
           from: d,
           to: addDays(d, 1),
+          isToday: d.getTime() === today.getTime(),
           label: i === 0 || d.getDate() === 1 ? MONTHS[d.getMonth()] + " " + d.getDate() : String(d.getDate()),
           title: DAYS_FULL[d.getDay()] + ", " + MONTHS[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear()
         });
@@ -329,6 +335,7 @@ window.PFChart = (function () {
         bar.classList.toggle("has-data", !isZero);
         bar.classList.toggle("is-zero", isZero);
         bar.classList.toggle("is-top", isTop);
+        bar.classList.toggle("is-today", !!b.isToday);
       }
 
       // Re-attach hover/focus events cleanly
@@ -595,7 +602,7 @@ window.PFChart = (function () {
       loadSeries(kind, period, year, offset, function (s) {
         if (panel) panel.classList.remove("is-loading");
 
-        var niceScale = calculateNiceScale(s.peak);
+        var niceScale = calculateNiceScale(s.peak, kind);
         updateStepperUI(s.stepper_label);
         renderAxis(opts.axis, niceScale, kind);
         renderBars(opts.bars, s, kind, tooltipEl, niceScale.max);
@@ -604,7 +611,7 @@ window.PFChart = (function () {
           title.textContent = COPY[kind][period];
         }
         if (sub) {
-          sub.textContent = s.range_label + (s.empty ? " \u00b7 no records yet" : "");
+          sub.textContent = kind === "visits" ? s.range_label : (s.range_label + (s.empty ? " \u00b7 no records yet" : ""));
         }
         if (opts.onPeriod) {
           opts.onPeriod(period, s, year);

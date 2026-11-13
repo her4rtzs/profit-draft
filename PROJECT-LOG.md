@@ -1718,3 +1718,13 @@ Update the Members page header per active tab (click, URL hash, initial load, ba
 - Unified `.pp-members-topbar` and `.pp-pane` at `max-width: 1400px`, expanded Find a member (2-col >= 1100px + search hint) and New enrollment (12-col grid) to full width, and moved all table backgrounds/dividers onto `thead tr` / `tbody tr` using `--cols` with `column-gap: 0`, explicit `th`/`td` background/border resets, `92px` plan chips, and `118px` status chips.
 ### Decision-log skill
 When shared portal stylesheets paint cell-level backgrounds or borders inside a CSS Grid table, reset `background`, `border`, and `box-shadow` on `th`/`td` and move row bands/dividers to `tr` with zero `column-gap` to prevent vertical seams.
+
+## 2026-11-14 06:32 (Asia/Manila): Members Light Mode fixes and Attendance page redesign
+### What I asked for
+Fix Light Mode on the Members page (table header, dates/sub-labels, tabs, pill pagination buttons) and restyle the Attendance page (Daily attendance reusing Monthly Revenue card design with 0-10 default scale and clean subtitle, amber container shine on KPIs, one-row Check in a member, and seamless Today's check-ins table).
+### What the agent decided and why
+- Fixed `body:not(.dark)[data-page="members"]` overrides in `web/members-ui.css` so `.pp-members-table thead tr` uses `#f8fafc` (`!important`), `.pp-ends-date`/`.pp-ends-sub` read `--bm-text`/`--bm-muted`, and `.pp-pager .pp-btn` renders clean pill buttons.
+- Updated `web/chart-periods.js` so `kind === "visits"` defaults empty Y-axis scales to `0–10` (and `0–5` / `0–10` for small counts), omits `" · no records yet"` from `#attendanceSub`, and marks today's bucket with `.is-today`.
+- Updated `web/attendance.html` to reuse `.revenue-panel`, `.rev-title-wrap`, and `.rev-title-ico` for Daily attendance, converted Check in a member into a single horizontal row, and added `web/attendance-ui.css` for the shared amber KPI container shine, 44px check-in row, 400ms bar transition, and seamless CSS Grid check-ins table.
+### Decision-log skill
+Reuse `.revenue-panel` and its chart header/axis/bar rules across pages (`index.html` and `attendance.html`) rather than duplicating chart CSS, and scope `kind === "visits"` scale defaults in `chart-periods.js` so attendance charts never fall back to revenue's `0–1000` scale.

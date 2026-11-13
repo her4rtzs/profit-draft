@@ -12,7 +12,7 @@
     <script src="config.js"></script>
     <script src="api.js"></script>
     <script src="auth.js"></script>
-<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=9"><link rel="stylesheet" href="ui-final.css?v=1"><script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script><link rel="stylesheet" href="hover-fx.css?v=2">
+<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=9"><link rel="stylesheet" href="ui-final.css?v=1"><link rel="stylesheet" href="attendance-ui.css?v=1"><script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script><link rel="stylesheet" href="hover-fx.css?v=2">
 <link rel="stylesheet" href="ui-polish.css?v=1">
 <link rel="stylesheet" href="ui-fixes.css?v=1">
 <link rel="stylesheet" href="pf-modern.css?v=1">
@@ -45,58 +45,74 @@
             </div>
         </section>
 
-        <section class="two-col split">
-            <div class="panel">
-                <div class="panel-header">
+        <section class="panel checkin-panel">
+            <div class="checkin-row">
+                <div class="rev-title-wrap checkin-copy">
+                    <span class="rev-title-ico" aria-hidden="true"><i class="fa-solid fa-user-check"></i></span>
                     <div>
                         <h2>Check in a member</h2>
                         <p>Type a name or member ID, then press Enter.</p>
                     </div>
                 </div>
-                <div class="form">
-                    <div class="field">
-                        <label for="ciInput">Member</label>
-                        <input class="input" id="ciInput" type="text" list="ciList" placeholder="e.g. M202601 or Namjoon" autocomplete="off">
-                        <datalist id="ciList"></datalist>
-                    </div>
-                    <button class="btn btn-primary" id="ciBtn" type="button"><i class="fa-solid fa-check"></i> Check in</button>
+                <div class="checkin-input-wrap">
+                    <label class="ci-sr" for="ciInput">Member</label>
+                    <i class="fa-solid fa-magnifying-glass checkin-search-ico" aria-hidden="true"></i>
+                    <input class="input" id="ciInput" type="text" list="ciList" placeholder="e.g. M202601 or Namjoon" autocomplete="off">
+                    <datalist id="ciList"></datalist>
                 </div>
+                <button class="btn btn-primary checkin-submit" id="ciBtn" type="button"><i class="fa-solid fa-check"></i> Check in</button>
             </div>
+        </section>
 
-            <div class="panel">
-                <div class="panel-header">
+        <section class="panel revenue-panel attendance-chart-panel">
+            <div class="panel-header">
+                <div class="rev-title-wrap">
+                    <span class="rev-title-ico" aria-hidden="true"><i class="fa-solid fa-chart-column"></i></span>
                     <div>
                         <h2 id="attendanceTitle">Daily attendance</h2>
                         <p id="attendanceSub">Last 14 days</p>
                     </div>
-                    <div class="chip-row" id="attendancePeriods" role="group" aria-label="Attendance period">
-                        <button type="button" class="chip active" data-period="days" aria-pressed="true">Days</button>
-                        <button type="button" class="chip" data-period="week" aria-pressed="false">Week</button>
-                        <button type="button" class="chip" data-period="month" aria-pressed="false">Month</button>
-                        <button type="button" class="chip" data-period="year" aria-pressed="false">Year</button>
-                    </div>
                 </div>
-                <div class="chart-area">
-                    <div class="chart-y" id="attendanceAxis">
-                        <span>60</span><span>50</span><span>40</span><span>30</span><span>20</span><span>10</span><span>0</span>
-                    </div>
-                    <div class="chart">
-                        <div class="grid-lines"></div>
-                        <div class="bar-container" id="weekBars"></div>
-                    </div>
+                <div class="chip-row" id="attendancePeriods" role="group" aria-label="Attendance period">
+                    <button type="button" class="chip active" data-period="days" aria-pressed="true">Days</button>
+                    <button type="button" class="chip" data-period="week" aria-pressed="false">Week</button>
+                    <button type="button" class="chip" data-period="month" aria-pressed="false">Month</button>
+                    <button type="button" class="chip" data-period="year" aria-pressed="false">Year</button>
                 </div>
             </div>
+            <div class="chart-area">
+                <div class="chart-y" id="attendanceAxis">
+                    <span>10</span><span>8</span><span>6</span><span>4</span><span>2</span><span>0</span>
+                </div>
+                <div class="chart">
+                    <div class="grid-lines"></div>
+                    <div class="bar-container" id="weekBars"></div>
+                </div>
+            </div>
+            <svg class="att-wave" viewBox="0 0 420 56" fill="none" aria-hidden="true" preserveAspectRatio="none">
+                <path d="M0 54 C95 52, 165 44, 240 42 C315 40, 365 30, 420 6 L420 56 L0 56 Z" fill="url(#attWaveFill)"/>
+                <path d="M0 53 C95 51, 165 43, 240 41 C315 39, 365 29, 420 6" stroke="#ffb020" stroke-width="1.6" stroke-opacity="0.6"/>
+                <defs>
+                    <linearGradient id="attWaveFill" x1="0" y1="0" x2="420" y2="56" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#ffb020" stop-opacity="0.02"/>
+                        <stop offset="100%" stop-color="#ffb020" stop-opacity="0.14"/>
+                    </linearGradient>
+                </defs>
+            </svg>
         </section>
 
-        <section class="panel">
+        <section class="panel checkins-table-panel">
             <div class="panel-header">
-                <div>
-                    <h2>Today's check-ins</h2>
-                    <p>Newest first</p>
+                <div class="rev-title-wrap">
+                    <span class="rev-title-ico" aria-hidden="true"><i class="fa-solid fa-clipboard-check"></i></span>
+                    <div>
+                        <h2>Today's check-ins</h2>
+                        <p>Newest first</p>
+                    </div>
                 </div>
             </div>
-            <div class="table-wrapper">
-                <table>
+            <div class="table-wrapper ci-table-wrap">
+                <table class="ci-table">
                     <thead>
                         <tr><th>Time</th><th>Member</th><th>Expires</th><th>Status</th></tr>
                     </thead>
@@ -117,7 +133,7 @@
 <script src="sidebar.js?v=17"></script>
 <script src="data.js"></script>
 <script src="pages.js"></script>
-<script src="chart-periods.js?v=917"></script>
+<script src="chart-periods.js?v=918"></script>
 <script src="portal-fx.js?v=2"></script>
 <script src="change-password.js?v=2" defer></script>
 <script src="notifications-live.js?v=1" defer></script>

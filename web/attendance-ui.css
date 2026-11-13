@@ -1,0 +1,330 @@
+/* Attendance page: KPI amber shine, Monthly Revenue chart parity, one-row Check-in, seamless table */
+body[data-page="attendance"] .stats.three {
+  margin-bottom: 18px;
+}
+
+/* 2) KPI CARDS: Only the container shine */
+body[data-page="attendance"] .stats.three .stat-card,
+body[data-page="attendance"] .checkin-panel,
+body[data-page="attendance"] .checkins-table-panel {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px !important;
+  background: radial-gradient(circle at 0% 0%, rgba(255, 170, 0, 0.12), transparent 52%),
+              linear-gradient(160deg, #141f36, #0e1627, #0b1120) !important;
+  border: 1px solid rgba(255, 170, 0, 0.24) !important;
+  box-shadow: 0 0 24px rgba(255, 170, 0, 0.08) !important;
+}
+
+body[data-page="attendance"] .stats.three .stat-card::before,
+body[data-page="attendance"] .checkin-panel::before,
+body[data-page="attendance"] .checkins-table-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 8%;
+  right: 8%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ffb020, transparent);
+  box-shadow: 0 0 12px rgba(255, 176, 32, 0.55);
+  pointer-events: none;
+  z-index: 2;
+}
+
+body[data-page="attendance"] .stats.three .stat-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* 3) CHECK IN A MEMBER (one row, 44px controls) */
+body[data-page="attendance"] .checkin-panel {
+  padding: 20px 24px !important;
+  margin-bottom: 18px;
+}
+
+body[data-page="attendance"] .checkin-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+body[data-page="attendance"] .checkin-copy {
+  flex: 0 1 auto !important;
+}
+
+body[data-page="attendance"] .checkin-copy h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+body[data-page="attendance"] .checkin-copy p {
+  margin: 2px 0 0;
+  font-size: 0.82rem;
+  color: #94a3b8;
+}
+
+body[data-page="attendance"] .checkin-input-wrap {
+  position: relative;
+  flex: 1 1 260px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+body[data-page="attendance"] .ci-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+body[data-page="attendance"] .checkin-search-ico {
+  position: absolute;
+  left: 14px;
+  color: #ffb020;
+  font-size: 13px;
+  pointer-events: none;
+}
+
+body[data-page="attendance"] .checkin-input-wrap .input {
+  width: 100%;
+  height: 44px !important;
+  padding: 0 14px 0 38px !important;
+  border-radius: 12px !important;
+  background: rgba(7, 11, 20, 0.85) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #f8fafc !important;
+  font: 500 0.88rem/1 inherit;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+body[data-page="attendance"] .checkin-input-wrap .input:focus {
+  border-color: #ffb020 !important;
+  box-shadow: 0 0 0 3px rgba(255, 176, 32, 0.25) !important;
+  outline: none;
+}
+
+body[data-page="attendance"] .checkin-submit {
+  height: 44px !important;
+  padding: 0 22px !important;
+  border-radius: 12px !important;
+  background: linear-gradient(160deg, #f8e08c, #e8c45a 50%, #c99a2e) !important;
+  color: #1b1406 !important;
+  border: 1px solid rgba(255, 224, 140, 0.65) !important;
+  font-weight: 800 !important;
+  box-shadow: 0 8px 22px rgba(255, 176, 32, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/* 1) DAILY ATTENDANCE CHART PANEL (Monthly Revenue parity) */
+body[data-page="attendance"] .attendance-chart-panel {
+  margin-bottom: 18px;
+}
+
+body[data-page="attendance"] .attendance-chart-panel .panel-header {
+  padding-bottom: 16px !important;
+  margin-bottom: 18px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+  flex-wrap: nowrap !important;
+}
+
+body[data-page="attendance"] .attendance-chart-panel .rev-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+body[data-page="attendance"] .attendance-chart-panel .chip-row,
+body[data-page="attendance"] .attendance-chart-panel .chart-stepper {
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+}
+
+body[data-page="attendance"] .attendance-chart-panel .bar-column .bar {
+  width: 48%;
+  min-width: 12px;
+  max-width: 34px;
+  margin: 0 auto;
+  transition: height 400ms ease-out, transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease !important;
+}
+
+body[data-page="attendance"] .attendance-chart-panel .bar-column .bar.is-today {
+  background: linear-gradient(180deg, #fde68a 0%, #fbbf24 55%, #f59e0b 100%) !important;
+  box-shadow: 0 0 22px rgba(251, 191, 36, 0.6) !important;
+  filter: brightness(1.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-page="attendance"] .attendance-chart-panel .bar-column .bar {
+    transition: none !important;
+  }
+}
+
+body[data-page="attendance"] .att-wave {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 420px;
+  height: 52px;
+  pointer-events: none;
+  z-index: 0;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 35%);
+  mask-image: linear-gradient(90deg, transparent, #000 35%);
+}
+
+/* 3) TODAY'S CHECK-INS TABLE (same seamless pattern as Browse members) */
+body[data-page="attendance"] .checkins-table-panel {
+  padding: 22px 24px !important;
+}
+
+body[data-page="attendance"] .checkins-table-panel .panel-header {
+  margin-bottom: 16px;
+}
+
+body[data-page="attendance"] .checkins-table-panel h2 {
+  margin: 0;
+  font-size: 1.08rem;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+body[data-page="attendance"] .checkins-table-panel p {
+  margin: 2px 0 0;
+  font-size: 0.82rem;
+  color: #94a3b8;
+}
+
+body[data-page="attendance"] .ci-table-wrap {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(8, 13, 24, 0.55);
+}
+
+body[data-page="attendance"] .ci-table {
+  --ci-cols: 110px minmax(0, 1.6fr) 150px 132px;
+  display: block;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+body[data-page="attendance"] .ci-table thead,
+body[data-page="attendance"] .ci-table tbody {
+  display: block;
+  width: 100%;
+}
+
+body[data-page="attendance"] .ci-table thead tr,
+body[data-page="attendance"] .ci-table tbody tr {
+  display: grid;
+  grid-template-columns: var(--ci-cols);
+  align-items: center;
+  column-gap: 0;
+  width: 100%;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+body[data-page="attendance"] .ci-table thead tr {
+  height: 42px;
+  background: linear-gradient(180deg, #1b2742, #141e35) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+body[data-page="attendance"] .ci-table thead th {
+  padding: 0 8px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8fa0bb;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  text-align: left;
+}
+
+body[data-page="attendance"] .ci-table thead th:nth-child(4) {
+  text-align: center;
+}
+
+body[data-page="attendance"] .ci-table tbody tr {
+  height: 58px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: transparent !important;
+}
+
+body[data-page="attendance"] .ci-table tbody tr:last-child {
+  border-bottom: 0;
+}
+
+body[data-page="attendance"] .ci-table tbody td {
+  padding: 0 8px;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  min-width: 0;
+}
+
+body[data-page="attendance"] .ci-table tbody td:nth-child(4) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+body[data-page="attendance"] .ci-table tbody tr:has(.empty-cell),
+body[data-page="attendance"] .ci-table tbody tr:has(td[colspan]) {
+  display: flex;
+  justify-content: center;
+  height: auto;
+  padding: 34px 16px;
+}
+
+body[data-page="attendance"] .ci-table .status,
+body[data-page="attendance"] .ci-table .pp-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 118px;
+  height: 26px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Light Mode */
+body:not(.dark)[data-page="attendance"] .stats.three .stat-card,
+body:not(.dark)[data-page="attendance"] .checkin-panel,
+body:not(.dark)[data-page="attendance"] .checkins-table-panel {
+  background: linear-gradient(150deg, #fffdf9 0%, #faf6ee 100%) !important;
+  border: 1px solid rgba(217, 206, 192, 0.85) !important;
+  box-shadow: 0 10px 28px -4px rgba(45, 35, 20, 0.06) !important;
+}
+body:not(.dark)[data-page="attendance"] .checkin-copy h2,
+body:not(.dark)[data-page="attendance"] .checkins-table-panel h2 { color: #0f172a; }
+body:not(.dark)[data-page="attendance"] .checkin-copy p,
+body:not(.dark)[data-page="attendance"] .checkins-table-panel p { color: #64748b; }
+body:not(.dark)[data-page="attendance"] .checkin-input-wrap .input { background: #ffffff !important; border-color: #cbd5e1 !important; color: #0f172a !important; }
+body:not(.dark)[data-page="attendance"] .attendance-chart-panel .panel-header { border-bottom-color: #e2e8f0 !important; }
+body:not(.dark)[data-page="attendance"] .ci-table-wrap { background: #ffffff; border-color: #e2e8f0; }
+body:not(.dark)[data-page="attendance"] .ci-table thead tr { background: #f8fafc !important; border-bottom-color: #e2e8f0; }
+body:not(.dark)[data-page="attendance"] .ci-table thead th { color: #64748b; }
+body:not(.dark)[data-page="attendance"] .ci-table tbody tr { border-bottom-color: #e2e8f0; }
+
+@media (max-width: 900px) {
+  body[data-page="attendance"] .attendance-chart-panel .panel-header { flex-wrap: wrap !important; }
+  body[data-page="attendance"] .checkin-submit { width: 100%; }
+}
