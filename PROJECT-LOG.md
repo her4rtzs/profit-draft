@@ -1698,3 +1698,13 @@ Redesign the Browse Members page (`web/members.html`, `web/members.js`, `web/mem
 - Updated `rowHTML` in `web/members.js` to emit `plan-<type>` (`plan-unassigned` fallback) on `.pp-plan-pill` and styled fixed 62px table rows with centered `82px` Plan / `116px` Status columns, dot-free `108px` status chips, `30px` action button, and a 3px glowing amber left bar on row hover, plus Light Mode overrides and responsive breakpoints.
 ### Decision-log skill
 Keep all icon-box color modifiers (`is-amber`, `is-cyan`, `is-emerald`) synchronized between static HTML and dynamic JS class updates so state re-renders do not accidentally overwrite themed icon accents.
+
+## 2026-11-14 06:09 (Asia/Manila): Members page alignment, Ends column, and Find/Detail/Enroll redesign
+### What I asked for
+Fix remaining Browse Members UI issues (header padding, wave horizontal fade mask, 6% faded top glow lines, gold Table toggle, amber search glow, fixed grid table columns, centered 84px/118px chips, non-repeating Ends column with expired red text) and redesign Find a member, Member detail, and New enrollment (including removing the Other plan and using 1 day of access for Daily).
+### What the agent decided and why
+- Applied CSS grid (`minmax(0, 1.6fr) 96px 132px minmax(0, 1.1fr) 40px`, `column-gap: 14px`) to `thead tr` and `tbody tr` in `web/members-ui.css` so Plan/Status headers align over centered `84px` / `118px` chips and rows stay fixed at `62px`.
+- Added `endsSub(m)` in `web/members.js` to render only the remaining time (`1 day left`, `X days left`, `Expires today`, or red `Expired X days ago`) below the end date without repeating `Expires <date>`.
+- Excluded `"other"` from `PLAN_KEYS` in `web/members.js`, updated Daily's copy to `1 day of access`, and styled Find a member (`.pp-picker`), Member detail (`.pp-detail-head`, 4 color-keyed KPIs, `.pp-det-panel` overview rows), and New enrollment (`.pp-enroll`, 4-column plan selector, gold switch toggle) using shared CSS variables and card rules.
+### Decision-log skill
+When table column headers and centered chips drift under `table-layout: fixed`, apply matching CSS Grid tracks to `thead tr` and `tbody tr` so headers, chips, and fixed-height rows stay locked across viewports.

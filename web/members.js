@@ -4,7 +4,7 @@
   const $ = id => document.getElementById(id);
   const { esc, money, initialsOf, fmt, today, toast, modal, dayDiff, media, parseISO, iso, todayISO, fmtDateTime } = PF;
   const PER_PAGE = 12;
-  const PLAN_KEYS = Object.keys(PLANS);
+  const PLAN_KEYS = ["daily", "monthly", "quarterly", "annual"].filter(k => Boolean(PLANS[k]));
   const state = { view: matchMedia("(max-width: 768px)").matches ? "cards" : "table", tab: "browse", filter: "all", sort: "name_asc", plan: "", query: "", page: 1, app: "pending", selectedId: null, subtab: "overview", pickerQuery: "" };
 
   // ---------- Rules ----------
@@ -21,9 +21,15 @@
   const planLabel = k => PLANS[k]?.label || k;
   const expiryText = m => {
     const d = left(m);
-    if (d < 0) return `Expired on ${fmt(m.end)}`;
+    if (d < 0) { const ago = Math.abs(d); return `Expired ${ago} day${ago === 1 ? "" : "s"} ago`; }
     if (d === 0) return "Expires today";
     return `Expires ${fmt(m.end)} · ${d} day${d === 1 ? "" : "s"} left`;
+  };
+  const endsSub = m => {
+    const d = left(m);
+    if (d < 0) { const ago = Math.abs(d); return { text: `Expired ${ago} day${ago === 1 ? "" : "s"} ago`, cls: "is-expired" }; }
+    if (d === 0) return { text: "Expires today", cls: "is-expiring" };
+    return { text: `${d} day${d === 1 ? "" : "s"} left`, cls: d <= 7 ? "is-expiring" : "" };
   };
   const validEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
   const validPhone = v => !v || /^[0-9+()\-\s]{7,20}$/.test(v);
@@ -121,11 +127,12 @@
   const rowHTML = m => {
     const s = statusFor(m);
     const planKey = String(m.plan || "").toLowerCase();
+    const rem = endsSub(m);
     return `<tr data-row="${esc(m.id)}" tabindex="0">
       <td><div class="pp-cell-member">${avatar(m, "sm")}<div><strong>${esc(m.name)}</strong><small>${esc(m.id)} · ${esc(m.email)}</small></div></div></td>
       <td><span class="pp-plan-pill plan-${esc(planKey || "unassigned")}">${esc(planLabel(m.plan) || "Unassigned")}</span></td>
       <td><span class="pp-status ${s.key}">${s.label}</span></td>
-      <td>${esc(fmt(m.end))}<small class="pp-muted pp-block">${esc(expiryText(m))}</small></td>
+      <td><div class="pp-ends-cell"><strong class="pp-ends-date">${esc(fmt(m.end))}</strong><small class="pp-ends-sub ${rem.cls}">${esc(rem.text)}</small></div></td>
       <td class="pp-actions-cell"><button class="pp-icon-btn" type="button" data-row-menu="${esc(m.id)}" aria-haspopup="menu" aria-expanded="false" aria-label="More actions for ${esc(m.name)}" title="More actions"><i class="fa-solid fa-ellipsis" aria-hidden="true"></i></button></td>
     </tr>`;
   };
@@ -422,12 +429,16 @@
       .sort((a, b) => a.name.localeCompare(b.name))
       .slice(0, 8);
     root.innerHTML = `<div class="pp-picker">
-        <div class="pp-picker-head"><h2>Find a member</h2><p class="pp-muted">Choose someone to see their profile, payments and check-ins.</p></div>
-        <label class="pp-search pp-search-wide"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input id="pickerSearch" type="search" placeholder="Start typing a name, ID or email" value="${esc(state.pickerQuery)}" aria-label="Find a member"></label>
+        <div class="pp-picker-head">
+          <span class="pp-browse-ico" aria-hidden="true"><i class="fa-solid fa-magnifying-glass"></i></span>
+          <div><h2>Find a member</h2><p class="pp-muted">Choose someone to see their profile, payments, and check-ins.</p></div>
+        </div>
+        <label class="pp-search pp-search-wide"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input id="pickerSearch" type="search" placeholder="Start typing a name, ID, or email" value="${esc(state.pickerQuery)}" aria-label="Find a member"></label>
         <div class="pp-picker-list">${matches.length ? matches.map(m => `
           <button class="pp-picker-item" type="button" data-open="${esc(m.id)}">${avatar(m, "sm")}
-            <span class="pp-picker-text"><strong>${esc(m.name)}</strong><small>${esc(m.id)} · ${esc(planLabel(m.plan))}</small></span>
-            <span class="pp-status ${statusFor(m).key}">${statusFor(m).label}</span></button>`).join("")
+            <span class="pp-picker-text"><strong>${esc(m.name)}</strong><small>${esc(m.id)} · ${esc(planLabel(m.plan) || "Unassigned")}</small></span>
+            <span class="pp-status ${statusFor(m).key}">${statusFor(m).label}</span>
+            <i class="fa-solid fa-chevron-right pp-picker-chev" aria-hidden="true"></i></button>`).join("")
           : emptyBlock("fa-user-slash", "No matching members", "Try another name or ID.")}</div>
       </div>`;
     if (state.pickerQuery) {
@@ -439,24 +450,25 @@
   const SUBTABS = { overview: "Overview", payments: "Payments", checkins: "Check-ins", edit: "Edit details" };
   function overviewHTML(m, payments, checkins, total) {
     const last = checkins[checkins.length - 1];
+    const rem = endsSub(m);
     return `<div class="pp-info-grid">
-      <section class="pp-card pp-det-card"><h3><span class="pp-det-ico is-gold"><i class="fa-solid fa-id-badge" aria-hidden="true"></i></span>Membership</h3><dl class="pp-dl">
-        <dt>Plan</dt><dd>${esc(planLabel(m.plan))}</dd>
+      <section class="pp-card pp-det-card is-gold"><h3><span class="pp-det-ico is-gold"><i class="fa-solid fa-id-badge" aria-hidden="true"></i></span>Membership</h3><div class="pp-det-panel"><dl class="pp-dl">
+        <dt>Plan</dt><dd>${esc(planLabel(m.plan) || "Unassigned")}</dd>
         <dt>Started</dt><dd>${m.start ? esc(fmt(m.start)) : "—"}</dd>
         <dt>Ends</dt><dd>${esc(fmt(m.end))}</dd>
-        <dt>Status</dt><dd>${esc(expiryText(m))}</dd></dl></section>
-      <section class="pp-card pp-det-card"><h3><span class="pp-det-ico is-cyan"><i class="fa-solid fa-address-book" aria-hidden="true"></i></span>Contact</h3><dl class="pp-dl">
+        <dt>Status</dt><dd class="${rem.cls}">${esc(rem.text)}</dd></dl></div></section>
+      <section class="pp-card pp-det-card is-cyan"><h3><span class="pp-det-ico is-cyan"><i class="fa-solid fa-address-book" aria-hidden="true"></i></span>Contact</h3><div class="pp-det-panel"><dl class="pp-dl">
         <dt>Email</dt><dd class="pp-truncate">${esc(m.email)}</dd>
         <dt>Mobile</dt><dd>${esc(m.phone || "Not added")}</dd>
-        <dt>Address</dt><dd>${esc(m.address || "Not added")}</dd></dl></section>
-      <section class="pp-card pp-det-card"><h3><span class="pp-det-ico is-emerald"><i class="fa-solid fa-kit-medical" aria-hidden="true"></i></span>Emergency contact</h3>${m.emergencyName || m.emergencyPhone
+        <dt>Address</dt><dd class="${m.address ? "" : "is-muted"}">${esc(m.address || "Not added")}</dd></dl></div></section>
+      <section class="pp-card pp-det-card is-emerald"><h3><span class="pp-det-ico is-emerald"><i class="fa-solid fa-kit-medical" aria-hidden="true"></i></span>Emergency contact</h3><div class="pp-det-panel">${m.emergencyName || m.emergencyPhone
         ? `<dl class="pp-dl"><dt>Name</dt><dd>${esc(m.emergencyName || "—")}</dd><dt>Phone</dt><dd>${esc(m.emergencyPhone || "—")}</dd></dl>`
-        : `<p class="pp-muted">Not added yet. The member can add this from their portal.</p>`}</section>
-      <section class="pp-card pp-det-card"><h3><span class="pp-det-ico is-violet"><i class="fa-solid fa-chart-simple" aria-hidden="true"></i></span>Activity Summary</h3><dl class="pp-dl">
+        : `<p class="pp-muted">Not added yet. The member can add this from their portal.</p>`}</div></section>
+      <section class="pp-card pp-det-card is-violet"><h3><span class="pp-det-ico is-violet"><i class="fa-solid fa-chart-simple" aria-hidden="true"></i></span>Activity summary</h3><div class="pp-det-panel"><dl class="pp-dl">
         <dt>Total paid</dt><dd>${money(total)}</dd>
         <dt>Payments</dt><dd>${payments.length}</dd>
         <dt>Check-ins</dt><dd>${checkins.length}</dd>
-        <dt>Last check-in</dt><dd>${last ? esc(fmt(last.date)) : "None yet"}</dd></dl></section>
+        <dt>Last check-in</dt><dd>${last ? esc(fmt(last.date)) : "None yet"}</dd></dl></div></section>
     </div>`;
   }
   function paymentsHTML(payments, total) {
@@ -509,7 +521,7 @@
           <div><h2>${esc(m.name)}</h2><p class="pp-muted">${esc(m.id)} · ${esc(m.email)}${m.phone ? " · " + esc(m.phone) : ""}</p>
           <div class="pp-badges"><span class="pp-status ${s.key}">${s.label}</span><span class="pp-chip">${esc(planLabel(m.plan))}</span></div></div>
         </div>
-        <div class="pp-actions">
+        <div class="pp-actions pp-detail-actions">
           <button class="pp-btn pp-btn-primary" type="button" data-detail-action="renew"><i class="fa-solid fa-rotate"></i> Record renewal</button>
           <button class="pp-btn" type="button" data-detail-action="back"><i class="fa-solid fa-arrow-left"></i> All members</button>
         </div>
@@ -607,7 +619,7 @@
   function buildEnroll() {
     $("ePlans").innerHTML = PLAN_KEYS.map(k => `
       <label class="pp-plan-card"><input type="radio" name="ePlan" value="${k}">
-        <span class="pp-plan-body"><strong>${esc(PLANS[k].label)}</strong><span class="pp-plan-price">${money(PLANS[k].price)}</span><small>${PLANS[k].days} days of access</small></span></label>`).join("");
+        <span class="pp-plan-body"><strong>${esc(PLANS[k].label)}</strong><span class="pp-plan-price">${money(PLANS[k].price)}</span><small>${PLANS[k].days} day${PLANS[k].days === 1 ? "" : "s"} of access</small></span></label>`).join("");
     $("eMethod").innerHTML = METHODS.map(x => `<option>${esc(x)}</option>`).join("");
     fillEnrollDefaults();
   }
