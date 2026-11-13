@@ -1577,3 +1577,18 @@ Fix the sidebar hover turning black in light mode ("naging bl;ack yyung hover?")
 ### Decision-log skill
 When styling paired side-by-side cards inside a CSS Grid layout, use `align-items: stretch` combined with `display: flex; flex-direction: column; justify-content: center;` on the shorter content card to ensure both cards remain perfectly flush and equal in height ("pantay") without letterboxing or floating off-center. For persistent dark shells, eliminate all `color: #111` or theme-dependent hover selectors from legacy stylesheets to prevent dark text on dark backgrounds.
 
+## 2026-11-14 02:25 (Asia/Manila): Implement Global Page Loading Animation & Home Return Transition
+### What I asked for
+Implement a smooth, premium loading animation for the ProFit system in two situations:
+1. When initially opening the system (branded startup screen with centered logo fade-in, gold animated loading indicator, and "Preparing your fitness dashboard..." status message, without artificial delays).
+2. When returning to the Home/Dashboard from other sections (Members, Attendance, Payments, Reports, Announcements): show a subtle transition with an elegant fade-in, display skeletons while data is fetching, but display cached data immediately without unnecessary skeletons if data is already available.
+### What the agent decided and why
+- Upgraded `web/splash.js`: rather than creating a separate loading framework, leveraged `splash.js` which is already included in `<head>` on all pages. It executes synchronously before DOM parsing, preventing FOUC. When an initial session or browser reload is detected, it mounts `#pf-global-loader` with ProFit dark navy backdrop (`#08090D` with signature 48px square grid and gold ambient glow), centered ProFit logo in an amber-bordered squircle, gold orbital spinner, and "Preparing your fitness dashboard...".
+- Prevented public page delays: bypassed the startup loader on public authentication pages (`login.html`, `join.html`, `forgot.html`) so visitors signing in are never delayed.
+- Intelligent dismissal: dynamically dismisses the initial loader as soon as `profit:synced` or `window.pfSyncSettled` resolves, with a minimum 380ms animation grace period and a 2200ms safety timeout to prevent hangs.
+- Implemented Home return transitions: in `web/layout.js`, clicking any link leading to `index.html` marks `sessionStorage.pf-nav-returning-home`. When returning Home, `web/index.html` activates `.pf-home-transition` (`pfHomeContentIn` upward fade) and renders an ultra-sleek `#pf-nav-line` gold beam across the top of the viewport.
+- Smart skeleton vs cached data handling: if `DB.members` is already cached in memory or localStorage (as is true when returning from other sections), `paint()` and `render(true)` execute immediately, removing `.is-loading` without jarring skeleton flashes. If cold-loading without cache, skeletons shimmer gracefully in Dark or Light mode and transition into real content once server data arrives.
+- Verified with Playwright: confirmed startup screen appearance, smooth auto-dismissal, instant cached data display without skeleton delays on Home return, and seamless Light/Dark mode compatibility. Zero new files created.
+### Decision-log skill
+For web applications with both initial cold-boot and warm intra-app navigation, decouple the startup screen from the intra-app page transitions: use a synchronous `<head>` splash for cold-boot/reload initialization, while using a lightweight CSS progress beam and immediate cached data painting for warm return navigation to eliminate artificial skeleton flicker.
+

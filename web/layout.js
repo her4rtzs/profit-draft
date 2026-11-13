@@ -134,6 +134,16 @@
     if (s) s.textContent = g.name;
   });
 
+  // When navigating from another page back to Home / Dashboard, mark the intent for a smooth transition
+  if (current !== 'dashboard') {
+    document.addEventListener('click', e => {
+      const a = e.target.closest('a[href*="index.html"]');
+      if (a) {
+        try { sessionStorage.setItem('pf-nav-returning-home', '1'); } catch (_) {}
+      }
+    }, { capture: true });
+  }
+
   // ---- Phone card lists --------------------------------------------------
   // Under 768px the CSS turns every table row into a card, so each cell has to
   // say which column it came from. Copy the header text onto the cells, and

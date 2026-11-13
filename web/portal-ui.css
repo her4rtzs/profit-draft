@@ -3574,5 +3574,79 @@ html body.public-dark-theme .auth-enroll a {
   }
 }
 
+/* ==========================================================================
+   GLOBAL PAGE LOADING ANIMATION & HOME RETURN TRANSITION
+   ========================================================================== */
+
+/* 1. Home Return Progress Beam */
+#pf-nav-line {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2.5px;
+  background: linear-gradient(90deg, transparent 0%, #F4C542 30%, #FDE047 50%, #F4C542 70%, transparent 100%);
+  box-shadow: 0 0 12px rgba(244, 197, 66, 0.55);
+  z-index: 999999;
+  pointer-events: none;
+  animation: pfNavLineBeam 0.52s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes pfNavLineBeam {
+  0% { transform: scaleX(0); opacity: 1; transform-origin: left; }
+  75% { transform: scaleX(1); opacity: 1; transform-origin: left; }
+  100% { transform: scaleX(1); opacity: 0; }
+}
+
+/* 2. Home Return Content Fade-in & Subtle Upward Glide */
+.pf-home-transition .main-content {
+  animation: pfHomeContentIn 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes pfHomeContentIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 3. Skeleton Shimmer & Smooth Content Transitions (Theme Adaptive) */
+.pf-sk,
+.stat-skel span,
+.rev-skel span,
+.mt-skel-donut,
+.mt-skel-card,
+.pf-skel td span {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.04) 0%, rgba(244, 197, 66, 0.14) 50%, rgba(255, 255, 255, 0.04) 100%) !important;
+  background-size: 200% 100% !important;
+  animation: pfShimmer 1.4s ease-in-out infinite !important;
+}
+
+body:not(.dark) .pf-sk,
+body:not(.dark) .stat-skel span,
+body:not(.dark) .rev-skel span,
+body:not(.dark) .mt-skel-donut,
+body:not(.dark) .mt-skel-card,
+body:not(.dark) .pf-skel td span {
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.04) 0%, rgba(244, 197, 66, 0.18) 50%, rgba(0, 0, 0, 0.04) 100%) !important;
+  background-size: 200% 100% !important;
+  animation: pfShimmer 1.4s ease-in-out infinite !important;
+}
+
+.stat-card.kpi-card h2,
+.stat-card.kpi-card .kpi-bottom {
+  transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1), transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #pf-nav-line { animation: none !important; display: none !important; }
+  .pf-home-transition .main-content { animation: none !important; }
+}
+
+
 
 

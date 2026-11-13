@@ -39,7 +39,22 @@
 <link rel="stylesheet" href="layout-fixes.css?v=5">
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="staff-design.css"><link rel="stylesheet" href="portal-ui.css?v=20"></head>
 
-<body class="pf-staff" data-page="dashboard" data-title="Dashboard" data-welcome="Welcome back "><script>(function(){try{var t=localStorage.getItem('theme');if(t==='light'&&!localStorage.getItem('pf-staff-explicit-light')){t='dark';try{localStorage.setItem('theme','dark');}catch(_){}}var d=t!=='light';if(d){document.body.classList.add('dark');}else{document.body.classList.remove('dark');}}catch(e){}})();</script>
+<body class="pf-staff" data-page="dashboard" data-title="Dashboard" data-welcome="Welcome back "><script>(function(){try{var t=localStorage.getItem('theme');if(t==='light'&&!localStorage.getItem('pf-staff-explicit-light')){t='dark';try{localStorage.setItem('theme','dark');}catch(_){}}var d=t!=='light';if(d){document.body.classList.add('dark');}else{document.body.classList.remove('dark');}}catch(e){}})();</script><script>
+(function(){
+  try {
+    var returning = sessionStorage.getItem('pf-nav-returning-home') || (document.referrer && /(members|attendance|payments|reports|announcements|trainers|settings|profile)\.html/.test(document.referrer));
+    if (returning) {
+      sessionStorage.removeItem('pf-nav-returning-home');
+      document.body.classList.add('pf-home-transition');
+      var line = document.createElement('div');
+      line.id = 'pf-nav-line';
+      line.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(line);
+      setTimeout(function(){ if (line.parentNode) line.parentNode.removeChild(line); }, 600);
+    }
+  } catch(e) {}
+})();
+</script>
 
 <div class="dashboard">
 
@@ -463,11 +478,14 @@
     if (body.dataset.sig !== html) { body.innerHTML = html; body.dataset.sig = html; }
   }
 
+  const hasCached = (typeof DB !== "undefined" && DB && DB.members && DB.members.length > 0);
+  if (hasCached) {
+    render(true);
+  } else {
+    if (DB.synced) render(true);
+    else window.pfAfterSync(() => render(DB.synced));
+  }
   document.addEventListener("profit:synced", e => render(e.detail?.ok !== false));
-  // The sync can settle before this script runs (a fast 401/404), in which case
-  // the listener above never fires and the placeholder rows would stay forever.
-  if (DB.synced) render(true);
-  else window.pfAfterSync(() => render(DB.synced));
 })();
 </script>
 <script>
@@ -755,10 +773,14 @@
     renderMembershipType(members, false);
   }
 
+  const hasCachedStats = (typeof DB !== "undefined" && DB && DB.members && DB.members.length > 0);
+  if (hasCachedStats) {
+    paint();
+  } else {
+    if (window.pfAfterSync) window.pfAfterSync(paint);
+  }
   document.addEventListener("profit:synced", paint);
   window.addEventListener("storage", paint);
-  if (window.pfAfterSync) window.pfAfterSync(paint);
-  paint();
 })();
 </script>
 <script src="notifications-live.js?v=1" defer></script>
