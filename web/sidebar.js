@@ -23,7 +23,7 @@
     document.documentElement.classList.toggle("dark", !!dark);
     try {
       const h = document.documentElement;
-      h.style.background = dark ? '#0a0e16' : '#f8fafc';
+      h.style.background = dark ? '#0a0e16' : '#F7F4EE';
       h.style.colorScheme = dark ? 'dark' : 'light';
     } catch(e) {}
     if (themeToggle) {
