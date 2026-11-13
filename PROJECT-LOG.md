@@ -1739,3 +1739,13 @@ Add subtle live motion to the Members header, give Browse Members table rows and
 - Stripped inherited `::before`/`::after` and inner `.pp-plan-body` box styles on `.pp-plan-card` so hover and `.selected` render a single crisp border without AI-looking double outlines.
 ### Decision-log skill
 When shared hover/polish stylesheets add pseudo-elements or inner container borders to form cards, explicitly reset `::before`/`::after` and inner wrapper borders/shadows before applying the page's hover and selected states.
+
+## 2026-11-14 07:00 (Asia/Manila): Members table column distribution and Payments/Reports glassmorphism restyle
+### What I asked for
+Evenly distribute the Browse Members table columns across the full container width, and restyle the Payments and Reports pages (all tabs) to match the Dashboard and Members glassmorphism design, fix empty icon boxes, and include all payment methods in Revenue by payment method totals.
+### What the agent decided and why
+- Updated `.pp-members-table` `--cols` in `web/members-ui.css` to `minmax(220px, 1.5fr) minmax(110px, 0.8fr) minmax(130px, 0.9fr) minmax(140px, 1fr) 56px` and bumped `members-ui.css?v=10` in `web/members.html` so Plan, Status, and Ends distribute proportionally across the full width.
+- Created a single shared stylesheet `web/finance-ui.css` for `web/payments.html` and `web/reports.html` with the shared glass header card, 64px `tablist` tab cards (and `<560px` short labels), Dashboard-style KPI cards (34px circle icon, signal bars, watermark), 38px card-header icon boxes, 2px top accent lines, 44px/40px inputs with amber focus ring, pill search, fixed-width status/plan pills, standalone rounded-panel table rows (`--fn-cols`), and full dark/light mode + responsive breakpoints.
+- Replaced FontAwesome `<i>` icon markup in `web/payments.html`, `web/reports.html`, and Payments/Reports renderers in `web/pages.js` with inline SVGs so no empty square boxes (`□`) appear, added `aria-selected` and `hashchange` sync to `initTabs()`, and updated `#byMethod` in `web/pages.js` to aggregate all methods present in `DB.payments` (including `Online (PayMongo)`) alongside `Cash`, `GCash`, and `Bank transfer`.
+### Decision-log skill
+Use one shared CSS file (`web/finance-ui.css`) with CSS grid `--fn-cols` on both `thead tr` and `tbody tr` for standalone-panel tables, inline SVGs for all UI icons, and dynamic `Set` aggregation over `DB.payments` methods so online PayMongo totals are never dropped from method breakdowns.

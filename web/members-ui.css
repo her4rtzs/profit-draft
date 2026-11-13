@@ -654,7 +654,7 @@ body[data-page="members"] .pp-members-wrap {
 }
 
 body[data-page="members"] .pp-members-table {
-  --cols: minmax(0, 1.35fr) 132px 152px minmax(150px, 0.9fr) 64px;
+  --cols: minmax(220px, 1.5fr) minmax(110px, 0.8fr) minmax(130px, 0.9fr) minmax(140px, 1fr) 56px;
   display: block;
   width: 100%;
   border-collapse: collapse;

@@ -29,7 +29,11 @@
     }
 
     function showTab(name) {
-        $$(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === name));
+        $$(".tab").forEach(t => {
+            const active = t.dataset.tab === name;
+            t.classList.toggle("active", active);
+            t.setAttribute("aria-selected", String(active));
+        });
         $$(".pane").forEach(p => p.classList.toggle("active", p.dataset.pane === name));
     }
 
@@ -38,8 +42,12 @@
             showTab(t.dataset.tab);
             history.replaceState(null, "", "#" + t.dataset.tab);
         }));
-        const h = location.hash.slice(1);
-        if (h && $(`.tab[data-tab="${h}"]`)) showTab(h);
+        const syncHash = () => {
+            const h = location.hash.slice(1);
+            if (h && $(`.tab[data-tab="${h}"]`)) showTab(h);
+        };
+        window.addEventListener("hashchange", syncHash);
+        syncHash();
     }
 
     function initChips(container, onChange) {
@@ -82,7 +90,23 @@
         return p;
     }
 
-    const empty = (icon, text) => `<div class="empty-state"><i class="fa-solid ${icon}"></i><p>${text}</p></div>`;
+    const SVG_ICONS = {
+        receipt: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:20px;height:20px;"><path d="M4 2v20l3-2 3 2 3-2 3 2 4-2V2l-4 2-3-2-3 2-3-2z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="14" y2="13"/></svg>`,
+        hourglass: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:20px;height:20px;"><path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/></svg>`,
+        pen: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>`,
+        trash: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>`,
+        lock: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`
+    };
+    const svgIcon = name => SVG_ICONS[name] || SVG_ICONS.receipt;
+    const planPill = k => {
+        const key = String(k || "").toLowerCase();
+        const cls = ["daily", "monthly", "quarterly", "annual"].includes(key) ? key : "unassigned";
+        return `<span class="fn-plan-pill plan-${cls}">${esc(planLabel(k))}</span>`;
+    };
+    const empty = (icon, text) => {
+        const svgKey = icon === "fa-hourglass-half" ? "hourglass" : "receipt";
+        return `<div class="empty-state"><span class="fn-empty-icon">${svgIcon(svgKey)}</span><p>${text}</p></div>`;
+    };
 
     // =====================================================
     // MEMBERS
@@ -361,8 +385,8 @@
                         <td>${memberCell(m)}</td>
                         <td>${fmtShort(m.end)}</td>
                         <td><div class="timeleft"><div class="progress ${tone}"><i style="width:${pct}%"></i></div><small>${label}</small></div></td>
-                        <td>${badge(m)}</td>
-                        <td><a class="btn btn-soft btn-sm" href="payments.html?member=${m.id}#daily">Renew</a></td>
+                        <td class="fn-center">${badge(m)}</td>
+                        <td class="fn-right"><a class="fn-btn-dark fn-btn-sm" href="payments.html?member=${m.id}#daily">Renew</a></td>
                     </tr>`;
                 }).join("") : `<tr><td colspan="5">${empty("fa-hourglass-half", q ? `No member matches “${esc(q)}”.` : "No members in this group.")}</td></tr>`;
             }
@@ -405,8 +429,8 @@
             if (histRows) {
                 histRows.innerHTML = list.length ? list.map(p => {
                     const m = DB.member(p.memberId);
-                    const edit = p.desk ? `<div class="pay-actions"><button type="button" class="pay-edit-btn" data-edit="${esc(p.id)}" aria-label="Edit payment ${esc(p.ref)}"><i class="fa-solid fa-pen"></i></button><button type="button" class="pay-edit-btn pay-del-btn" data-del="${esc(p.id)}" aria-label="Delete payment ${esc(p.ref)}"><i class="fa-solid fa-trash"></i></button></div>` : `<small class="muted">Online</small>`;
-                    return `<tr><td>${esc(p.ref)}</td><td>${m ? memberCell(m) : esc(p.memberId)}</td><td>${esc(planLabel(p.plan))}</td><td>${esc(p.method)}</td><td>${fmtShort(p.date)}</td><td>${peso(p.amount)}</td><td>${edit}</td></tr>`;
+                    const edit = p.desk ? `<div class="pay-actions"><button type="button" class="pay-edit-btn" data-edit="${esc(p.id)}" aria-label="Edit payment ${esc(p.ref)}">${svgIcon("pen")}</button><button type="button" class="pay-edit-btn pay-del-btn" data-del="${esc(p.id)}" aria-label="Delete payment ${esc(p.ref)}">${svgIcon("trash")}</button></div>` : `<span class="fn-locked-pill">${svgIcon("lock")}Locked</span>`;
+                    return `<tr><td><span class="fn-ref">${esc(p.ref)}</span></td><td>${m ? memberCell(m) : esc(p.memberId)}</td><td class="fn-center">${planPill(p.plan)}</td><td>${esc(p.method)}</td><td>${fmtShort(p.date)}</td><td class="num"><span class="fn-amt">${peso(p.amount)}</span></td><td class="fn-right">${edit}</td></tr>`;
                 }).join("") : `<tr><td colspan="7">${empty("fa-receipt", q ? `No payment matches “${esc(q)}”.` : "No payments recorded yet.")}</td></tr>`;
             }
         };
@@ -516,11 +540,11 @@
             $("#txRows").innerHTML = list.length ? list.map(p => `
                 <tr>
                     <td>${fmtShort(p.date)}</td>
-                    <td><span class="member-id">${p.ref}</span></td>
+                    <td><span class="fn-ref">${esc(p.ref)}</span></td>
                     <td><strong class="plain">${esc(nameOf(p.memberId))}</strong></td>
-                    <td>${esc(planLabel(p.plan))}</td>
-                    <td>${p.method}</td>
-                    <td class="num"><strong class="plain">${peso(p.amount)}</strong></td>
+                    <td class="fn-center">${planPill(p.plan)}</td>
+                    <td>${esc(p.method)}</td>
+                    <td class="num"><span class="fn-amt">${peso(p.amount)}</span></td>
                 </tr>`).join("")
                 : `<tr><td colspan="6">${empty("fa-receipt", "No transactions match your search.")}</td></tr>`;
             $("#txTotal").textContent = peso(list.reduce((s, p) => s + p.amount, 0));
@@ -543,7 +567,8 @@
             $("#sumAvg").textContent = peso(all.length ? Math.round(total / all.length) : 0);
             bars($("#byPlan"), Object.entries(window.PLANS || {}).map(([k, p]) =>
                 [p.label, all.filter(x => x.plan === k).reduce((s, x) => s + x.amount, 0)]), total);
-            bars($("#byMethod"), METHODS.map(m =>
+            const methodKeys = [...new Set([...METHODS, ...all.map(x => x.method).filter(Boolean)])];
+            bars($("#byMethod"), methodKeys.map(m =>
                 [m, all.filter(x => x.method === m).reduce((s, x) => s + x.amount, 0)]), total);
         };
 
