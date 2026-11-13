@@ -129,4 +129,46 @@ class Command(BaseCommand):
                         check_in_at=timezone.datetime(d.year, d.month, d.day, 9, 0, tzinfo=tz),
                     )
 
+        owner_user = created_users["owner"]
+        from apps.finance.models import ManualPayment
+        member_plans = {
+            "joyce": "monthly",
+            "angelo": "monthly",
+            "member": "monthly",
+            "namjoon": "monthly",
+            "seokjin": "monthly",
+            "hoseok": "monthly",
+            "maria": "monthly",
+            "carlo": "monthly",
+            "yoongi": "quarterly",
+            "jose": "quarterly",
+            "liza": "quarterly",
+            "gian": "quarterly",
+            "karen": "annual",
+            "james": "annual",
+            "daniel": "other",
+            "sophia": "other",
+        }
+        plan_prices = {
+            "monthly": 80000,
+            "quarterly": 210000,
+            "annual": 750000,
+            "other": 50000,
+        }
+        for uname, plan_name in member_plans.items():
+            u = created_users.get(uname)
+            if not u:
+                continue
+            mp = MemberProfile.objects.get(user=u)
+            ManualPayment.objects.get_or_create(
+                member=mp,
+                plan=plan_name,
+                defaults={
+                    "method": "GCASH" if uname in ["joyce", "namjoon", "yoongi", "liza", "james", "sophia"] else "CASH",
+                    "amount_centavos": plan_prices.get(plan_name, 80000),
+                    "paid_on": timezone.localdate(),
+                    "recorded_by": owner_user,
+                },
+            )
+
         self.stdout.write(f"Demo accounts ready: owner, coach, member, joyce, angelo. Password: {DEMO_PASSWORD}")

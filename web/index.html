@@ -18,7 +18,7 @@
     <script src="config.js"></script>
     <script src="api.js"></script>
     <script src="auth.js"></script>
-<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=12"><link rel="stylesheet" href="ui-final.css?v=1"><script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script><style id="pf-dash-fx">
+<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=13"><link rel="stylesheet" href="ui-final.css?v=1"><script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script><style id="pf-dash-fx">
 
 .pf-row-in{animation:pfRowIn .42s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0) * 55ms)}
 @keyframes pfRowIn{from{opacity:0}to{opacity:1}}
@@ -190,22 +190,22 @@
                 <div class="mt-skeleton" id="mtSkeleton" aria-hidden="true">
                     <div class="mt-skel-donut pf-sk"></div>
                     <div class="mt-skel-legend">
-                        <div class="mt-skel-row"><span class="pf-sk"></span><span class="pf-sk"></span></div>
-                        <div class="mt-skel-row"><span class="pf-sk"></span><span class="pf-sk"></span></div>
-                        <div class="mt-skel-row"><span class="pf-sk"></span><span class="pf-sk"></span></div>
-                        <div class="mt-skel-row"><span class="pf-sk"></span><span class="pf-sk"></span></div>
+                        <div class="mt-skel-card pf-sk"></div>
+                        <div class="mt-skel-card pf-sk"></div>
+                        <div class="mt-skel-card pf-sk"></div>
+                        <div class="mt-skel-card pf-sk"></div>
                     </div>
                 </div>
 
                 <div class="mt-body" id="mtBody" hidden>
                     <div class="mt-donut-wrap" id="mtDonutWrap">
-                        <svg class="mt-donut-svg" viewBox="0 0 220 220" role="img" aria-label="Membership type distribution chart">
-                            <circle class="mt-donut-track" cx="110" cy="110" r="78"></circle>
-                            <g id="mtDonutSegments" transform="rotate(-90 110 110)"></g>
+                        <svg class="mt-donut-svg" viewBox="0 0 240 240" role="img" aria-label="Membership type distribution chart">
+                            <circle class="mt-donut-track" cx="120" cy="120" r="82"></circle>
+                            <g id="mtDonutSegments" transform="rotate(-90 120 120)"></g>
                             <g id="mtDonutLabels"></g>
                         </svg>
                         <div class="mt-donut-center">
-                            <strong id="mtTotalCount">16</strong>
+                            <strong id="mtTotalCount">—</strong>
                             <span id="mtTotalLabel">Total Members</span>
                             <i class="fa-solid fa-users mt-center-ico" aria-hidden="true"></i>
                         </div>
@@ -370,20 +370,25 @@
 </script>
 <script>
 (() => {
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
   const startOfToday = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
   const daysLeft = m => (m.end ? Math.round((m.end - startOfToday()) / 86400000) : -1);
   const cardFor = label => [...document.querySelectorAll(".stat-card .stat-content")]
     .find(c => c.querySelector("p")?.textContent.trim() === label);
 
   const SVG_NS = "http://www.w3.org/2000/svg";
-  const RADIUS = 78;
+  const RADIUS = 82;
   const CIRC = 2 * Math.PI * RADIUS;
-  const CANONICAL_ORDER = ["monthly", "quarterly", "annual", "other"];
+  const CANONICAL_ORDER = ["monthly", "quarterly", "annual", "other", "daily", "unassigned"];
   const PLAN_COLORS = {
-    monthly: "#FF8A00",
-    quarterly: "#FBBF24",
-    annual: "#5B6B82",
-    other: "#A855F7"
+    monthly: "#F59E0B",   // Amber Orange
+    quarterly: "#FBBF24", // Warm Golden Yellow
+    annual: "#64748B",    // Slate Gray
+    other: "#A855F7",     // Purple / Violet
+    daily: "#38BDF8",     // Sky Blue
+    unassigned: "#475569" // Muted Slate
   };
 
   function normalizePlan(p) {
@@ -391,14 +396,23 @@
     if (s === "monthly") return "monthly";
     if (s === "quarterly") return "quarterly";
     if (s === "annual" || s === "annually") return "annual";
-    return "other";
+    if (s === "daily") return "daily";
+    if (s === "other") return "other";
+    if (!s || s === "none" || s === "null" || s === "undefined") return "unassigned";
+    return s;
   }
 
   function formatPlanName(key) {
-    if (key === "monthly") return "Monthly";
-    if (key === "quarterly") return "Quarterly";
-    if (key === "annual") return "Annual";
-    return "Other";
+    const k = String(key || "").toLowerCase();
+    if (k === "monthly") return "Monthly";
+    if (k === "quarterly") return "Quarterly";
+    if (k === "annual") return "Annual";
+    if (k === "daily") return "Daily";
+    if (k === "other") return "Other";
+    if (k === "unassigned") return "Unassigned";
+    if (k === "pending") return "Pending";
+    if (window.PLANS && PLANS[k] && PLANS[k].label) return PLANS[k].label;
+    return k.replace(/[-_]+/g, " ").replace(/\b\w/g, c => c.toUpperCase());
   }
 
   function formatPct(frac) {
@@ -448,20 +462,23 @@
       counts.set(k, (counts.get(k) || 0) + 1);
     });
 
-    const entries = CANONICAL_ORDER
-      .filter(k => (counts.get(k) || 0) > 0)
-      .map(key => {
-        const count = counts.get(key) || 0;
-        const frac = count / total;
-        return {
-          key,
-          label: formatPlanName(key),
-          count,
-          frac,
-          pctText: formatPct(frac),
-          color: PLAN_COLORS[key] || "#F59E0B"
-        };
-      });
+    const activeKeys = [
+      ...CANONICAL_ORDER.filter(k => (counts.get(k) || 0) > 0),
+      ...[...counts.keys()].filter(k => !CANONICAL_ORDER.includes(k) && (counts.get(k) || 0) > 0)
+    ];
+
+    const entries = activeKeys.map(key => {
+      const count = counts.get(key) || 0;
+      const frac = count / total;
+      return {
+        key,
+        label: formatPlanName(key),
+        count,
+        frac,
+        pctText: formatPct(frac),
+        color: PLAN_COLORS[key] || "#94A3B8"
+      };
+    });
 
     segGroup.innerHTML = "";
     labelGroup.innerHTML = "";
@@ -485,7 +502,7 @@
       const item = entries[activeIdx];
       if (totalEl) totalEl.textContent = item.count;
       if (totalLabelEl) totalLabelEl.textContent = item.label;
-      tooltip.innerHTML = `<strong>${PF.esc(item.label)}</strong><small>${item.count} member${item.count === 1 ? "" : "s"} (${item.pctText}) · Click to view</small>`;
+      tooltip.innerHTML = `<strong>${esc(item.label)}</strong><small>${item.count} member${item.count === 1 ? "" : "s"} (${item.pctText}) · Click to view</small>`;
       tooltip.hidden = false;
     };
 
@@ -499,8 +516,8 @@
 
       const circle = document.createElementNS(SVG_NS, "circle");
       circle.setAttribute("class", "mt-seg");
-      circle.setAttribute("cx", "110");
-      circle.setAttribute("cy", "110");
+      circle.setAttribute("cx", "120");
+      circle.setAttribute("cy", "120");
       circle.setAttribute("r", String(RADIUS));
       circle.setAttribute("stroke", item.color);
       circle.setAttribute("stroke-dashoffset", String(segOffset));
@@ -511,11 +528,11 @@
       segGroup.appendChild(circle);
       segEls.push(circle);
 
-      if (item.frac >= 0.08) {
+      if (item.frac >= 0.07) {
         const midFrac = (offset + arcLen / 2) / CIRC;
         const angle = -Math.PI / 2 + midFrac * Math.PI * 2;
-        const lx = 110 + Math.cos(angle) * RADIUS;
-        const ly = 110 + Math.sin(angle) * RADIUS;
+        const lx = 120 + Math.cos(angle) * RADIUS;
+        const ly = 120 + Math.sin(angle) * RADIUS;
         const txt = document.createElementNS(SVG_NS, "text");
         txt.setAttribute("class", "mt-seg-label");
         txt.setAttribute("x", lx.toFixed(1));
@@ -533,7 +550,7 @@
         `<div class="mt-card-left">` +
           `<span class="mt-card-dot" style="background:${item.color};"></span>` +
           `<div class="mt-card-info">` +
-            `<strong class="mt-card-name">${PF.esc(item.label)}</strong>` +
+            `<strong class="mt-card-name">${esc(item.label)}</strong>` +
             `<span class="mt-card-count">${item.count} member${item.count === 1 ? "" : "s"}</span>` +
           `</div>` +
         `</div>` +
@@ -561,20 +578,15 @@
     });
   }
 
-  function paint(ev) {
-    const syncFailed = ev && ev.type === "profit:synced" && ev.detail && ev.detail.ok === false;
-    if (!DB.synced && !syncFailed) return;
+  function paint() {
+    const members = (typeof DB !== "undefined" && DB && DB.members && DB.members.length)
+      ? DB.members
+      : (window.DB && window.DB.members && window.DB.members.length ? window.DB.members : []);
+    const total = members.length;
 
     const statsEl = document.getElementById("dashStats");
-    if (statsEl) statsEl.classList.remove("is-loading");
+    if (statsEl && (total > 0 || (typeof DB !== "undefined" && DB && DB.synced))) statsEl.classList.remove("is-loading");
 
-    if (syncFailed) {
-      renderMembershipType([], true);
-      return;
-    }
-
-    const members = DB.members || [];
-    const total = members.length;
     let expired = 0, expiring = 0;
     members.forEach(m => { const d = daysLeft(m); if (d < 0) expired++; else if (d <= 7) expiring++; });
 
@@ -597,6 +609,7 @@
 
   document.addEventListener("profit:synced", paint);
   window.addEventListener("storage", paint);
+  if (window.pfAfterSync) window.pfAfterSync(paint);
   paint();
 })();
 </script>

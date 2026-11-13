@@ -19,12 +19,15 @@ const initials = name => name.split(/\s+/).filter(Boolean).map(w => w[0]).slice(
 const nowTime = () => new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
 
 const PLANS = {
-    daily:     { label: "Daily",     days: 1,   price: 80 },
-    monthly:   { label: "Monthly",   days: 30,  price: 800 },
-    quarterly: { label: "Quarterly", days: 90,  price: 2100 },
-    annual:    { label: "Annual",    days: 365, price: 7500 },
-    other:     { label: "Other",     days: 30,  price: 500 }
+    daily: { label: "Daily", days: 1, price: 80 },
+    monthly: { label: "Monthly", days: 30, price: 800 },
+    quarterly: { label: "Quarterly", days: 90, price: 2100 },
+    annual: { label: "Annual", days: 365, price: 7500 },
+    other: { label: "Other", days: 30, price: 500 }
 };
+if (typeof window !== "undefined") {
+    window.PLANS = PLANS;
+}
 
 const METHODS = ["Cash", "GCash", "Bank transfer"];
 
@@ -70,25 +73,25 @@ const DB = {
         };
 
         this.members = [
-            mk("M202601", "Kim Namjoon",   "0917 100 0001", "monthly",   18),
-            mk("M202602", "Kim Seokjin",   "0917 100 0002", "monthly",  -12),
-            mk("M202603", "Jung Hoseok",   "0917 100 0004", "monthly",    4),
-            mk("M202604", "Maria Santos",  "0917 100 0005", "monthly",   12),
-            mk("M202605", "Ana Cruz",      "0917 100 0007", "monthly",   -3),
-            mk("M202606", "Paolo Garcia",  "0917 100 0008", "monthly",    6),
-            mk("M202607", "Carlo Ramos",   "0917 100 0010", "monthly",   25),
-            mk("M202608", "Alex Thompson", "0917 100 0011", "monthly",   15),
+            mk("M202601", "Kim Namjoon", "0917 100 0001", "monthly", 18),
+            mk("M202602", "Kim Seokjin", "0917 100 0002", "monthly", -12),
+            mk("M202603", "Jung Hoseok", "0917 100 0004", "monthly", 4),
+            mk("M202604", "Maria Santos", "0917 100 0005", "monthly", 12),
+            mk("M202605", "Ana Cruz", "0917 100 0007", "monthly", -3),
+            mk("M202606", "Paolo Garcia", "0917 100 0008", "monthly", 6),
+            mk("M202607", "Carlo Ramos", "0917 100 0010", "monthly", 25),
+            mk("M202608", "Alex Thompson", "0917 100 0011", "monthly", 15),
 
-            mk("M202609", "Min Yoongi",    "0917 100 0003", "quarterly", 64),
-            mk("M202610", "Jose Reyes",    "0917 100 0006", "quarterly", 40),
-            mk("M202611", "Liza Mendoza",  "0917 100 0009", "quarterly", 75),
-            mk("M202612", "Gian Dela Torre","0917 100 0012", "quarterly", 50),
+            mk("M202609", "Min Yoongi", "0917 100 0003", "quarterly", 64),
+            mk("M202610", "Jose Reyes", "0917 100 0006", "quarterly", 40),
+            mk("M202611", "Liza Mendoza", "0917 100 0009", "quarterly", 75),
+            mk("M202612", "Gian Dela Torre", "0917 100 0012", "quarterly", 50),
 
-            mk("M202613", "Karen Reyes",   "0917 100 0013", "annual",    180),
-            mk("M202614", "James Mendoza", "0917 100 0014", "annual",    240),
+            mk("M202613", "Karen Reyes", "0917 100 0013", "annual", 180),
+            mk("M202614", "James Mendoza", "0917 100 0014", "annual", 240),
 
-            mk("M202615", "Daniel Lopez",  "0917 100 0015", "other",      1),
-            mk("M202616", "Sophia Martinez","0917 100 0016", "other",      1)
+            mk("M202615", "Daniel Lopez", "0917 100 0015", "other", 1),
+            mk("M202616", "Sophia Martinez", "0917 100 0016", "other", 1)
         ];
 
         // [days ago (negative), member id, plan, method] — hand-written recent rows.
@@ -140,7 +143,7 @@ const DB = {
         }));
 
         const times = [["M202601", "06:05 AM"], ["M202604", "06:40 AM"], ["M202605", "07:15 AM"],
-                       ["M202603", "08:30 AM"], ["M202606", "09:10 AM"]];
+        ["M202603", "08:30 AM"], ["M202606", "09:10 AM"]];
 
         // ---- Check-in history ------------------------------------------
         // The whole dataset used to be five records all stamped today, so every
@@ -257,6 +260,10 @@ const DB = {
     member(id) { return this.members.find(m => m.id === id); }
 };
 
+if (typeof window !== "undefined") {
+    window.DB = DB;
+}
+
 DB.load();
 
 // ---------- Server sync (Part 1) ----------
@@ -288,7 +295,7 @@ DB.sync = async function (reload = false) {
     pays.forEach(p => { if (!(p.member_id in planOf)) planOf[p.member_id] = p.plan; });
 
     this.members = rows.map(r => {
-        const plan = (r.plan || planOf[r.id] || (r.membership_status === "PENDING" ? "pending" : "monthly")).toLowerCase();
+        const plan = (r.plan || planOf[r.id] || (r.membership_status === "PENDING" ? "pending" : "")).toLowerCase();
         const end = r.expiry_date ? fromISO(r.expiry_date) : TODAY;
         return {
             id: idFor(r.id), serverId: r.id, name: r.name, email: r.email || "",

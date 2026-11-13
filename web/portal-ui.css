@@ -720,22 +720,31 @@ body.pf-staff[data-page="dashboard"] .year-stepper button:active {
 .revenue-panel.is-loading .chart { display: none; }
 
 /* Membership Type Panel */
-@media (min-width: 1100px) {
+@media (min-width: 1080px) {
   html body.pf-staff[data-page="dashboard"] .content-grid {
-    grid-template-columns: minmax(0, 1.35fr) minmax(380px, 1fr) !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.25fr) minmax(420px, 1fr) !important;
+    gap: 20px !important;
+    align-items: stretch !important;
   }
 }
-@media (max-width: 1099px) {
+@media (max-width: 1079px) {
   html body.pf-staff[data-page="dashboard"] .content-grid {
+    display: grid !important;
     grid-template-columns: 1fr !important;
+    gap: 20px !important;
   }
 }
 .membership-type-panel {
   display: flex;
   flex-direction: column;
+  position: relative;
+  overflow: hidden;
 }
 body.dark .membership-type-panel {
   background: #121A28;
+  border: 1px solid rgba(245, 158, 11, 0.22);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(245, 158, 11, 0.06);
 }
 html body.pf-staff .membership-type-panel .panel-header {
   display: flex !important;
@@ -753,57 +762,54 @@ html body.pf-staff .membership-type-panel .panel-header > .mt-title-wrap {
   min-width: 0 !important;
 }
 .mt-title-ico {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
   display: grid;
   place-items: center;
   flex: none;
-  background: color-mix(in srgb, #F59E0B 16%, transparent);
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(245, 158, 11, 0.08));
+  border: 1px solid rgba(245, 158, 11, 0.35);
   color: #F59E0B;
-  font-size: 16px;
+  font-size: 18px;
 }
 .mt-skeleton {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
-  padding: 12px 4px 6px;
-  min-height: 196px;
+  gap: 24px;
+  padding: 12px 6px;
+  min-height: 220px;
 }
 .mt-skeleton[hidden] { display: none; }
 .mt-skel-donut {
-  width: 168px;
-  height: 168px;
+  width: 210px;
+  height: 210px;
   border-radius: 50%;
-  flex: none;
-  mask: radial-gradient(circle, transparent 50px, #000 51px);
-  -webkit-mask: radial-gradient(circle, transparent 50px, #000 51px);
+  flex: 0 0 210px;
+  mask: radial-gradient(circle, transparent 65px, #000 66px);
+  -webkit-mask: radial-gradient(circle, transparent 65px, #000 66px);
 }
 .mt-skel-legend {
-  flex: 1;
+  flex: 1 1 auto;
   display: grid;
-  gap: 12px;
+  gap: 10px;
   min-width: 0;
 }
-.mt-skel-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+.mt-skel-card {
+  height: 50px;
+  border-radius: 14px;
 }
-.mt-skel-row span:first-child { width: 55%; height: 14px; }
-.mt-skel-row span:last-child { width: 26%; height: 14px; }
 
 .mt-body {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
-  padding: 8px 4px 4px;
-  flex: 1;
-  min-height: 196px;
+  gap: 24px;
+  padding: 12px 6px 6px;
+  flex: 1 1 auto;
+  min-height: 220px;
 }
 .mt-body[hidden] { display: none; }
 
@@ -814,9 +820,9 @@ html body.pf-staff .membership-type-panel .panel-header > .mt-title-wrap {
 
 .mt-donut-wrap {
   position: relative;
-  width: 172px;
-  height: 172px;
-  flex: 0 0 172px;
+  width: 210px;
+  height: 210px;
+  flex: 0 0 210px;
   margin: 0;
 }
 .mt-donut-svg {
@@ -931,7 +937,7 @@ body:not(.dark) .mt-tooltip {
   list-style: none;
   margin: 0;
   padding: 0;
-  flex: 1;
+  flex: 1 1 auto;
   min-width: 0;
   display: grid;
   gap: 10px;
@@ -941,16 +947,21 @@ body:not(.dark) .mt-tooltip {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 10px 14px;
+  padding: 10px 16px;
   border-radius: 14px;
   cursor: pointer;
   background: rgba(255, 255, 255, 0.035);
   border: 1px solid rgba(255, 255, 255, 0.07);
-  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+              background-color 0.2s ease,
+              border-color 0.2s ease,
+              box-shadow 0.2s ease;
 }
 body:not(.dark) .mt-legend-card {
   background: #F8FAFC;
   border-color: #E2E8F0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 .mt-legend-card:hover,
 .mt-legend-card.is-hovered,
@@ -959,11 +970,12 @@ body:not(.dark) .mt-legend-card {
   border-color: color-mix(in srgb, #F59E0B 40%, transparent);
   transform: translateX(3px);
   outline: none;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
 }
 .mt-card-left {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   min-width: 0;
 }
 .mt-card-dot {
@@ -971,6 +983,7 @@ body:not(.dark) .mt-legend-card {
   height: 14px;
   border-radius: 50%;
   flex: none;
+  box-shadow: 0 0 8px currentColor;
 }
 .mt-card-info {
   display: flex;
@@ -982,12 +995,16 @@ body:not(.dark) .mt-legend-card {
   font-size: 14.5px;
   font-weight: 700;
   color: var(--text);
-  line-height: 1.2;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .mt-card-count {
   font-size: 12px;
   font-weight: 500;
   color: var(--muted);
+  line-height: 1.2;
 }
 .mt-card-right {
   flex: none;
@@ -1002,6 +1019,8 @@ body:not(.dark) .mt-legend-card {
   font-weight: 700;
   color: var(--text);
   font-variant-numeric: tabular-nums;
+  min-width: 48px;
+  text-align: center;
 }
 body:not(.dark) .mt-card-pct {
   background: #FFFFFF;

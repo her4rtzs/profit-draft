@@ -1384,3 +1384,15 @@ Add membership types data and style the Membership Type card so it accurately di
 - Fixed missing `Q` import in `api/trainers.py` so trainer unit tests pass.
 ### Decision-log skill
 When a UI card displays distribution breakdowns across categories, ensure both the static front-end seed data and the backend demo database contain balanced multi-category records so the visualization renders complete data across all tiers in both demo and backend modes.
+
+## 2026-11-13 18:55 (Asia/Manila): Fix Membership Type Data Binding, Window Global Export, and Target Color Palette
+### What I asked for
+Fix the Membership Type card in the Staff Dashboard that was showing empty or missing legend data; ensure the actual membership plans and member counts (Monthly: 8 members 50%, Quarterly: 4 members 25%, Annual: 2 members 12.5%, Other: 2 members 12.5%) render properly with full legend cards matching the target reference design.
+### What the agent decided and why
+- Root cause: In `web/data.js`, `const DB` and `const PLANS` were declared as top-level `const`, which in browser scripts do not automatically attach to `window`. Multiple scripts (including `index.html`'s `paint()` which evaluated `window.DB && DB.members`) fell back to empty `[]` when `window.DB` was undefined. Explicitly exported `window.DB = DB;` and `window.PLANS = PLANS;` in `web/data.js`, and updated `paint()` in `web/index.html` to check `(typeof DB !== "undefined" && DB && DB.members)` first.
+- Aligned segment and legend palette to exact values in the user's reference image (`media_1794563913954_3ed793af.jpg`): Monthly (Amber `#F59E0B`), Quarterly (Warm Gold `#FBBF24`), Annual (Slate `#64748B`), and Other (Purple `#A855F7`), with canonical order `["monthly", "quarterly", "annual", "other", "daily", "unassigned"]`.
+- Added seed creation of `ManualPayment` records directly in `apps/accounts/management/commands/seed_demo_accounts.py` so that both backend database endpoints and front-end static demo seeds maintain the exact 8 / 4 / 2 / 2 breakdown across 16 members without any member defaulting to unassigned or empty.
+- Added warm gold ambient border and glowing box-shadow to `.membership-type-panel` in `web/portal-ui.css` (`v=13`) matching the dark card glow in the target design.
+- Ran full Django test suite (`python manage.py test api apps.membership apps.trainers`): all 45 tests passed.
+### Decision-log skill
+In vanilla browser JavaScript environments without module bundlers, top-level `const` variables do not populate properties on `window`. When other scripts or guards check `window.GLOBAL_NAME`, always explicitly assign `window.GLOBAL_NAME = GLOBAL_NAME;` at definition time.
