@@ -22,6 +22,8 @@
   };
 
   let trainers = [];
+  let trainersState = "loading"; // "loading" | "ready" | "error"
+  let trainersPromise = null;
   let members = [];
   let membersLoading = true;
   let membersError = false;
@@ -42,7 +44,22 @@
       " · " + d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
   }
 
+  const SKEL_HTML = `<div class="pf-skel-block tr-skel-card" aria-hidden="true"><span class="pf-sk"></span><span class="pf-sk"></span><span class="pf-sk"></span></div>`.repeat(3);
+
   function updateKPIs() {
+    const elTotal = document.getElementById("kpiTotalTrainers");
+    const elAvail = document.getElementById("kpiAvailableTrainers");
+    const elAssign = document.getElementById("kpiOnAssignment");
+    const elUsage = document.getElementById("kpiCapacityUsage");
+
+    if (trainersState !== "ready") {
+      if (elTotal) elTotal.textContent = "—";
+      if (elAvail) elAvail.textContent = "—";
+      if (elAssign) elAssign.textContent = "—";
+      if (elUsage) elUsage.textContent = "—";
+      return;
+    }
+
     const total = trainers.length;
     const available = trainers.filter(t => t.is_active && !t.is_full).length;
     const onAssign = trainers.filter(t => Number(t.load || 0) > 0).length;
@@ -50,11 +67,6 @@
     const totalLoad = activeTrainers.reduce((s, t) => s + Number(t.load || 0), 0);
     const totalCap = activeTrainers.reduce((s, t) => s + Number(t.max_members || 0), 0);
     const usagePct = totalCap > 0 ? Math.min(100, Math.round((totalLoad / totalCap) * 100)) : 0;
-
-    const elTotal = document.getElementById("kpiTotalTrainers");
-    const elAvail = document.getElementById("kpiAvailableTrainers");
-    const elAssign = document.getElementById("kpiOnAssignment");
-    const elUsage = document.getElementById("kpiCapacityUsage");
 
     if (elTotal) elTotal.textContent = String(total);
     if (elAvail) elAvail.textContent = String(available);
@@ -135,6 +147,18 @@
 
   function renderDirectory() {
     list.classList.toggle("is-list", viewMode === "list");
+    const countEl = document.getElementById("trCountLabel");
+
+    if (trainersState === "loading") {
+      if (countEl) countEl.textContent = "Trainers (—)";
+      list.innerHTML = SKEL_HTML;
+      return;
+    }
+    if (trainersState === "error") {
+      if (countEl) countEl.textContent = "Trainers (—)";
+      return;
+    }
+
     const q = (document.getElementById("trSearch")?.value || "").trim().toLowerCase();
 
     const filtered = trainers.filter(t => {
@@ -149,11 +173,10 @@
       return true;
     });
 
-    const countEl = document.getElementById("trCountLabel");
     if (countEl) countEl.textContent = `Trainers (${filtered.length})`;
 
     if (!trainers.length) {
-      list.innerHTML = `<div class="tr-empty"><i class="fa-solid fa-dumbbell" aria-hidden="true"></i><strong>No trainers yet</strong><p>Add a trainer profile from an existing trainer login to get started.</p></div>`;
+      list.innerHTML = `<div class="tr-empty"><i class="fa-solid fa-dumbbell" aria-hidden="true"></i><strong>No trainers yet</strong><p>Add a trainer profile to get started.</p></div>`;
       return;
     }
     if (!filtered.length) {
@@ -164,25 +187,44 @@
   }
 
   async function loadTrainers() {
-    try {
-      trainers = await api.get("/staff/trainers/");
-      updateKPIs();
-      populateSpecializations();
-      renderDirectory();
-      const active = trainers.filter(t => t.is_active);
-      const asTrainer = document.getElementById("asTrainer");
-      if (asTrainer) {
-        const keep = asTrainer.value;
-        asTrainer.innerHTML = active.length
-          ? opt("", "Choose trainer...") + active.map(t => opt(t.id, `${t.name}${t.is_full ? " (full)" : ` (${t.load}/${t.max_members})`}`, t.is_full ? "disabled" : "")).join("")
-          : opt("", "No active trainers available");
-        if (keep) asTrainer.value = keep;
+    if (trainersPromise) return trainersPromise;
+    trainersState = "loading";
+    updateKPIs();
+    renderDirectory();
+
+    trainersPromise = (async () => {
+      try {
+        trainers = await api.get("/staff/trainers/");
+        trainersState = "ready";
+        updateKPIs();
+        populateSpecializations();
+        renderDirectory();
+        const active = trainers.filter(t => t.is_active);
+        const asTrainer = document.getElementById("asTrainer");
+        if (asTrainer) {
+          const keep = asTrainer.value;
+          asTrainer.innerHTML = active.length
+            ? opt("", "Choose trainer...") + active.map(t => opt(t.id, `${t.name}${t.is_full ? " (full)" : ` (${t.load}/${t.max_members})`}`, t.is_full ? "disabled" : "")).join("")
+            : opt("", "No active trainers available");
+          if (keep) asTrainer.value = keep;
+        }
+      } catch (err) {
+        trainersState = "error";
+        updateKPIs();
+        const countEl = document.getElementById("trCountLabel");
+        if (countEl) countEl.textContent = "Trainers (—)";
+        list.innerHTML = `<div class="tr-empty"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><strong>Could not load trainers</strong><p>${esc(err.message || "Please try again.")}</p><button type="button" class="tr-btn-gold" id="trRetryBtn" style="margin-top:8px">Retry</button></div>`;
+        document.getElementById("trRetryBtn")?.addEventListener("click", ev => {
+          const btn = ev.currentTarget;
+          btn.disabled = true;
+          btn.textContent = "Retrying...";
+          refreshAll();
+        });
+      } finally {
+        trainersPromise = null;
       }
-    } catch (err) {
-      list.innerHTML = `<div class="tr-empty"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><strong>Could not load trainers</strong><p>${esc(err.message || "Please try again.")}</p><button type="button" class="tr-btn-gold" id="trRetryBtn" style="margin-top:8px">Retry</button></div>`;
-      document.getElementById("trRetryBtn")?.addEventListener("click", refreshAll);
-      say(err.message || "Failed to load trainers.", true);
-    }
+    })();
+    return trainersPromise;
   }
 
   async function loadCandidates() {

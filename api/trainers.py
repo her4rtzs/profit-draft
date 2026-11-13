@@ -83,7 +83,7 @@ def _has_phone_column():
             _PHONE_COL_CACHE = True
         return has_col
     except Exception:
-        return True
+        return False
 
 
 def _trainer_qs():

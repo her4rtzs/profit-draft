@@ -132,7 +132,7 @@
     const all = [...DB.members].sort((a, b) => a.name.localeCompare(b.name));
     const list = all.filter(m => {
       const k = statusFor(m).key;
-      const byStatus = state.filter === "all" || k === state.filter || (state.filter === "expired" && k === "cancelled");
+      const byStatus = state.filter === "all" || k === state.filter || (state.filter === "expired" && k === "cancelled") || (state.filter === "inactive" && (k === "frozen" || k === "cancelled"));
       const byPlan = !state.plan || String(m.plan || "monthly").toLowerCase() === state.plan;
       return byStatus && byPlan && (!q || [m.name, m.id, m.email, m.phone].some(v => String(v || "").toLowerCase().includes(q)));
     });
@@ -161,10 +161,16 @@
       `<button class="pp-btn" type="button" data-page="${state.page - 1}" ${state.page <= 1 ? "disabled" : ""}><i class="fa-solid fa-chevron-left"></i> Previous</button>
        <span class="pp-muted">Page ${state.page} of ${pages}</span>
        <button class="pp-btn" type="button" data-page="${state.page + 1}" ${state.page >= pages ? "disabled" : ""}>Next <i class="fa-solid fa-chevron-right"></i></button>`;
-    document.querySelectorAll("#memberFilters [data-filter]").forEach(b => {
+    document.querySelectorAll("#memberStatusMenu .pp-status-opt").forEach(b => {
       const on = b.dataset.filter === state.filter;
-      b.classList.toggle("active", on);
-      b.setAttribute("aria-pressed", String(on));
+      b.classList.toggle("is-selected", on);
+      b.setAttribute("aria-selected", String(on));
+      if (on) {
+        const lbl = $("memberStatusLabel");
+        const ico = $("memberStatusIco");
+        if (lbl) lbl.textContent = b.dataset.label || b.textContent.trim();
+        if (ico) ico.className = `fa-solid ${b.dataset.ico || "fa-users"} pp-st-ico ${b.dataset.cls || "is-all"}`;
+      }
     });
     document.querySelectorAll("[data-view-mode]").forEach(b => {
       const on = b.dataset.viewMode === state.view;
@@ -307,6 +313,7 @@
     </article>`;
   };
   function renderApps() {
+    if (!$("appList")) return;
     const apps = DB.applications || [];
     const count = k => apps.filter(a => a.status === k).length;
     $("appPendingCount").textContent = count("pending");
@@ -592,12 +599,33 @@
   window.addEventListener("hashchange", tabFromHash);
 
   $("memberSearch").addEventListener("input", e => { state.query = e.target.value; state.page = 1; renderBrowse(); hydratePhotos(); });
-  document.querySelector("#memberFilters").addEventListener("click", e => {
+  const statusBtn = $("memberStatusBtn");
+  const statusMenu = $("memberStatusMenu");
+  const closeStatusMenu = () => {
+    if (statusMenu) statusMenu.hidden = true;
+    statusBtn?.setAttribute("aria-expanded", "false");
+  };
+  statusBtn?.addEventListener("click", e => {
+    e.stopPropagation();
+    if (!statusMenu) return;
+    const next = statusMenu.hidden;
+    statusMenu.hidden = !next;
+    statusBtn.setAttribute("aria-expanded", String(next));
+  });
+  statusMenu?.addEventListener("click", e => {
     const b = e.target.closest("[data-filter]");
     if (!b) return;
     state.filter = b.dataset.filter;
     state.page = 1;
+    closeStatusMenu();
     renderBrowse();
+    hydratePhotos();
+  });
+  document.addEventListener("click", e => {
+    if (statusMenu && !statusMenu.hidden && !e.target.closest("#memberStatusWrap")) closeStatusMenu();
+  });
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && statusMenu && !statusMenu.hidden) closeStatusMenu();
   });
   const openFrom = e => {
     const el = e.target.closest("[data-open]");
@@ -614,13 +642,13 @@
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
 
-  document.querySelector("#appFilters").addEventListener("click", e => {
+  document.querySelector("#appFilters")?.addEventListener("click", e => {
     const b = e.target.closest("[data-app]");
     if (!b) return;
     state.app = b.dataset.app;
     renderApps();
   });
-  $("appList").addEventListener("click", e => {
+  $("appList")?.addEventListener("click", e => {
     const b = e.target.closest("[data-app-action]");
     if (!b) return;
     const app = (DB.applications || []).find(a => a.id === b.dataset.id);
