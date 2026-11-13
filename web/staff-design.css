@@ -446,11 +446,12 @@ html[data-accent="indigo"] .pf-staff.dark {--gold-ink:#b9b0fa}
 .pf-staff .chip-row .chip {height:30px;padding:0 13px;border:1px solid var(--border);border-radius:999px;font-size:11.5px;font-weight:600;white-space:nowrap}
 
 /* ProFit fix: the staff header scrolls away with the page instead of sticking.
-   Use position:relative + z-index:200 (not position:static) so the header still
+   Use position:relative + z-index:50 (not position:static) so the header still
    scrolls with the document while keeping its stacking context above the quick
-   actions and KPI cards when the notifications panel opens. */
-html body.pf-staff .topbar {position:relative!important;z-index:200!important}
-html body.pf-staff .notification-wrap {position:relative!important;z-index:210!important}
+   actions and KPI cards when the notifications panel opens, and strictly below
+   the hover-expand sidebar (z-index:500). */
+html body.pf-staff .topbar {position:relative!important;z-index:50!important}
+html body.pf-staff .notification-wrap {position:relative!important;z-index:60!important}
 html body.pf-staff .notification-panel,
 html body.pf-staff .npanel {z-index:1050!important}
 html body.pf-staff.dark .theme-toggle {color:var(--gold,#f4cc64)!important}

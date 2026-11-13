@@ -47,7 +47,7 @@ html body nav.sidebar {
   min-width: 260px !important;
   max-width: 260px !important;
   height: 100vh !important;
-  z-index: 100 !important;
+  z-index: 500 !important;
 }
 
 html body .main-content {
@@ -79,7 +79,7 @@ html body .main-content > * {
 html body .topbar {
   position: sticky !important;
   top: 0 !important;
-  z-index: 200 !important;
+  z-index: 50 !important;
   margin: 0 0 20px 0 !important;
   padding: 14px 0 16px 0 !important;
   min-height: auto !important;
