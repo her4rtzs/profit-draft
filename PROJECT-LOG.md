@@ -1777,3 +1777,11 @@ Align the Browse Members table header labels cleanly and bring the Browse Member
 - Added the masked bottom-right decorative gold wave SVG (`.fn-header-wave`) to `.fn-header-card` in `web/payments.html`, `web/reports.html`, and `web/finance-ui.css` (`?v=4`) with `z-index: 0` below the tabs.
 ### Decision-log skill
 Apply `display: flex; align-items: center; height: 100%;` uniformly to every grid `thead th` (not only centered ones) so left-aligned and centered headers share the exact same vertical baseline.
+
+## 2026-11-14 07:38 (Asia/Manila): Fix overlapping header and pane containers on Payments & Reports
+### What I asked for
+Fix the overlapping containers between the header card and the content cards below it on Payments and Transactions/Reports.
+### What the agent decided and why
+- Set `display: block !important` on `.main-content` for Payments and Reports (deferring width/collapse behavior to `layout-fixes.css`) and added `margin-bottom: 22px !important` to `.fn-header-card` in `web/finance-ui.css` (`?v=5`), because `layout-fixes.css` zeroes `.pane` margins and was overriding flex `gap`.
+### Decision-log skill
+Give `.fn-header-card` an explicit `margin-bottom: 22px !important` instead of relying on `.main-content` flex `gap`, since `layout-fixes.css` enforces `margin: 0 !important` on `.pane`.

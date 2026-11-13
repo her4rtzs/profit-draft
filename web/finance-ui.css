@@ -45,15 +45,10 @@ body:not(.dark)[data-page="reports"] {
   --fn-shadow: 0 12px 28px -8px rgba(45, 35, 20, 0.09), 0 0 18px rgba(245, 158, 11, 0.06);
 }
 
-/* Override legacy portal shell spacing — match Dashboard full content width */
-body[data-page="payments"] .main-content,
-body[data-page="reports"] .main-content {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  width: 100%;
-  max-width: none !important;
-  min-width: 0;
+/* Override legacy portal shell spacing — rely on layout-fixes.css for sidebar width/collapse */
+html body.pf-staff[data-page="payments"] .main-content,
+html body.pf-staff[data-page="reports"] .main-content {
+  display: block !important;
 }
 
 /* ---------- 1. SHARED PAGE HEADER CARD & TABS ---------- */
@@ -62,6 +57,7 @@ body[data-page="reports"] .main-content {
   overflow: hidden;
   border-radius: 20px;
   padding: 18px 24px;
+  margin-bottom: 22px !important;
   border: 1px solid var(--fn-border);
   background:
     radial-gradient(ellipse 36% 70% at 10% 10%, rgba(255, 176, 32, 0.14), transparent 72%),
