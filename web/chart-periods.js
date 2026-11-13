@@ -402,7 +402,7 @@ window.PFChart = (function () {
       }
     }
 
-    // Build unified period navigator stepper
+    // Build unified period navigator stepper with inline editable year
     function buildStepper() {
       if (!chips) return;
       stepper = chips.querySelector(".chart-stepper") || chips.querySelector(".year-stepper");
@@ -416,7 +416,76 @@ window.PFChart = (function () {
       stepper.innerHTML =
         '<button type="button" class="stepper-btn prev" data-step="-1" aria-label="Previous period">\u2039</button>' +
         '<span class="stepper-label" aria-live="polite"></span>' +
+        '<input type="number" class="stepper-input" min="2000" max="' + currentYear + '" step="1" hidden aria-label="Enter year" placeholder="YYYY">' +
         '<button type="button" class="stepper-btn next" data-step="1" aria-label="Next period">\u203a</button>';
+
+      var lbl = stepper.querySelector(".stepper-label");
+      var input = stepper.querySelector(".stepper-input");
+      var isEditing = false;
+
+      function startEditing() {
+        if (isEditing) return;
+        if (period !== "month" && period !== "year") return;
+        isEditing = true;
+        lbl.hidden = true;
+        input.hidden = false;
+        input.min = "2000";
+        input.max = String(currentYear);
+        input.value = String(year);
+        stepper.classList.add("is-editing");
+        input.focus();
+        input.select();
+      }
+
+      function cancelEditing() {
+        if (!isEditing) return;
+        isEditing = false;
+        input.hidden = true;
+        lbl.hidden = false;
+        stepper.classList.remove("is-editing");
+      }
+
+      function commitEditing() {
+        if (!isEditing) return;
+        var raw = input.value.trim();
+        var parsed = parseInt(raw, 10);
+        cancelEditing();
+        if (!isNaN(parsed) && parsed >= 2000 && parsed <= currentYear) {
+          if (parsed !== year) {
+            year = parsed;
+            draw();
+          }
+        }
+      }
+
+      lbl.addEventListener("click", function () {
+        startEditing();
+      });
+
+      lbl.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          startEditing();
+        }
+      });
+
+      input.addEventListener("input", function () {
+        this.value = this.value.replace(/[^\d]/g, "");
+      });
+
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          commitEditing();
+        } else if (e.key === "Escape") {
+          e.preventDefault();
+          cancelEditing();
+        }
+      });
+
+      input.addEventListener("blur", function () {
+        commitEditing();
+      });
 
       stepper.addEventListener("click", function (e) {
         var btn = e.target.closest("[data-step]");
@@ -429,8 +498,30 @@ window.PFChart = (function () {
     function updateStepperUI(stepperLabel) {
       if (!stepper) return;
       var lbl = stepper.querySelector(".stepper-label");
+      var prevBtn = stepper.querySelector(".stepper-btn.prev");
       var nextBtn = stepper.querySelector(".stepper-btn.next");
-      if (lbl) lbl.textContent = stepperLabel || "";
+      var input = stepper.querySelector(".stepper-input");
+
+      if (lbl) {
+        lbl.textContent = stepperLabel || "";
+        if (period === "month" || period === "year") {
+          lbl.classList.add("is-editable");
+          lbl.setAttribute("tabindex", "0");
+          lbl.setAttribute("role", "button");
+          lbl.setAttribute("title", "Click to edit year");
+          lbl.setAttribute("aria-label", "Current year: " + year + ". Click to edit.");
+        } else {
+          lbl.classList.remove("is-editable");
+          lbl.removeAttribute("tabindex");
+          lbl.removeAttribute("role");
+          lbl.removeAttribute("title");
+          lbl.removeAttribute("aria-label");
+        }
+      }
+
+      if (input) {
+        input.max = String(currentYear);
+      }
 
       // Determine whether forward navigation into future is allowed
       var canGoForward = true;
@@ -443,17 +534,26 @@ window.PFChart = (function () {
         nextBtn.disabled = !canGoForward;
         nextBtn.classList.toggle("is-disabled", !canGoForward);
       }
+
+      // Determine whether backward navigation past year 2000 is allowed
+      var canGoBackward = true;
+      if ((period === "month" || period === "year") && year <= 2000) canGoBackward = false;
+
+      if (prevBtn) {
+        prevBtn.disabled = !canGoBackward;
+        prevBtn.classList.toggle("is-disabled", !canGoBackward);
+      }
     }
 
     function navigate(step) {
       if (period === "month") {
         var nextYr = year + step;
-        if (nextYr > currentYear) return;
+        if (nextYr > currentYear || nextYr < 2000) return;
         year = nextYr;
       } else if (period === "year") {
-        var next5Yr = year + (step * 5);
-        if (next5Yr > currentYear) next5Yr = currentYear;
-        year = next5Yr;
+        var nextYr = year + step;
+        if (nextYr > currentYear || nextYr < 2000) return;
+        year = nextYr;
       } else {
         var nextOffset = offset + step;
         if (nextOffset > 0) return;

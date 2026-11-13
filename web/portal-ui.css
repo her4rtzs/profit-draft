@@ -834,6 +834,58 @@ body:not(.dark) .year-stepper {
   white-space: nowrap !important;
   font-variant-numeric: tabular-nums !important;
 }
+.chart-stepper .stepper-label.is-editable {
+  cursor: pointer !important;
+  border-radius: 6px !important;
+  padding: 2px 6px !important;
+  transition: all 0.15s ease !important;
+  user-select: none !important;
+}
+.chart-stepper .stepper-label.is-editable:hover,
+.chart-stepper .stepper-label.is-editable:focus-visible {
+  background: rgba(245, 158, 11, 0.14) !important;
+  color: #F59E0B !important;
+  outline: none !important;
+  box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.3) !important;
+}
+body:not(.dark) .chart-stepper .stepper-label.is-editable:hover,
+body:not(.dark) .chart-stepper .stepper-label.is-editable:focus-visible {
+  background: rgba(217, 119, 6, 0.12) !important;
+  color: #B45309 !important;
+  box-shadow: 0 0 0 1px rgba(217, 119, 6, 0.3) !important;
+}
+.chart-stepper .stepper-input {
+  width: 58px !important;
+  height: 24px !important;
+  padding: 0 4px !important;
+  margin: 0 2px !important;
+  border: 1px solid #F59E0B !important;
+  background: #0A0E17 !important;
+  color: #F8FAFC !important;
+  border-radius: 6px !important;
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.35) !important;
+  font-variant-numeric: tabular-nums !important;
+  -moz-appearance: textfield !important;
+}
+.chart-stepper .stepper-input::-webkit-inner-spin-button,
+.chart-stepper .stepper-input::-webkit-outer-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
+}
+body:not(.dark) .chart-stepper .stepper-input {
+  background: #FFFFFF !important;
+  color: #0F172A !important;
+  border-color: #D97706 !important;
+  box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.25) !important;
+}
+.chart-stepper.is-editing {
+  border-color: rgba(245, 158, 11, 0.4) !important;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.15) !important;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .bar-column .bar,

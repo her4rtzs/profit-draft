@@ -1409,3 +1409,18 @@ Fix the Revenue Analytics chart: eliminate fake baseline bars on zero-revenue pe
 - Added clean, human-readable Y-axis interval scaling (`calculateNiceScale`), floating interactive tooltips showing exact PHP currency values (`pesoFull`), refined gold gradient bars with peak highlighting (`.is-top`), and an empty-state overlay for zero-transaction periods.
 ### Decision-log skill
 When rendering bar charts with empty/zero states, explicitly force `.is-zero` bars to zero height, transparent background, and zero opacity with `!important` to override legacy stylesheet defaults, and pair client-side in-memory caching with backend aggregation to achieve instantaneous 0ms filter transitions.
+
+
+## 2026-11-13 20:00 (Asia/Manila): Implement Editable Year Input, Five-Year Range Stepper, and Chart Performance Optimizations
+### What I asked for
+Make the year selector in the Revenue Analytics chart directly editable by clicking and typing a year, support keyboard shortcuts (Enter to commit, Escape to cancel), validate the entered year and prevent invalid values/letters, fix the five-year range navigation so it advances/recedes consistently 1 year at a time without skipping (e.g. 2022–2026 to 2021–2025), and eliminate switching lag.
+### What the agent decided and why
+- Updated `buildStepper()` in `web/chart-periods.js` (`v=917`) to include an inline numeric input `<input type="number" class="stepper-input" min="2000" max="currentYear">` alongside the stepper label. Clicking the label (or pressing Enter/Space) toggles editing mode, auto-populates with the current year, focuses, and selects all text.
+- Added keyboard listeners: `Enter` validates that the year is numeric and within bounds `[2000, currentYear]`, updates `year`, closes editing, and triggers `draw()`; `Escape` cancels editing and restores previous text without triggering network requests or redraws; `blur` commits if valid or cancels if invalid. Added an input filter stripping non-digit characters to reject letters, negative signs, and decimals.
+- Changed the Year view navigation step increment from `step * 5` (which skipped 5-year blocks at once) to `step * 1` (`year += step`). Stepping backward from 2026 now moves to 2025, producing the exact 5-year range `2021–2025` (`[year - 4 ... year]`) and synchronizing with backend query bounds in `apps/finance/services.py`.
+- Added disabled forward/backward guards (`nextBtn.disabled = true` when `year >= currentYear`; `prevBtn.disabled = true` when `year <= 2000`).
+- Styled `.chart-stepper .stepper-label.is-editable` with subtle hover gold highlights and focus rings, and styled `.chart-stepper .stepper-input` in `web/portal-ui.css` (`v=15`) with ProFit dark theme borders, gold focus glow (`box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.35)`), and centered tabular numbers.
+- Preserved client-side in-memory caching (`chartCache`) so typing or stepping to previously viewed years renders instantaneously (0ms) without re-querying or rebuilding DOM elements.
+- Verified backend and frontend integrations: ran `python manage.py test apps.finance.tests.test_payments_api` (all 8 tests passed OK).
+### Decision-log skill
+When designing date/period steppers that display ranges (e.g. 5-year sliding windows), increment/decrement the sliding anchor by 1 unit at a time to prevent jarring range jumps, and embed an inline keyboard-accessible input inside the stepper badge with Enter/Escape handlers for seamless manual selection.
