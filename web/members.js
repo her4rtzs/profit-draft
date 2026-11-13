@@ -5,7 +5,7 @@
   const { esc, money, initialsOf, fmt, today, toast, modal, dayDiff, media, parseISO, iso, todayISO, fmtDateTime } = PF;
   const PER_PAGE = 12;
   const PLAN_KEYS = Object.keys(PLANS);
-  const state = { view: matchMedia("(max-width: 768px)").matches ? "cards" : "table", tab: "browse", filter: "all", plan: "", query: "", page: 1, app: "pending", selectedId: null, subtab: "overview", pickerQuery: "" };
+  const state = { view: matchMedia("(max-width: 768px)").matches ? "cards" : "table", tab: "browse", filter: "all", sort: "name_asc", plan: "", query: "", page: 1, app: "pending", selectedId: null, subtab: "overview", pickerQuery: "" };
 
   // ---------- Rules ----------
   const left = m => dayDiff(new Date(), m.end);
@@ -131,7 +131,12 @@
   };
   function renderBrowse() {
     const q = state.query.trim().toLowerCase();
-    const all = [...DB.members].sort((a, b) => a.name.localeCompare(b.name));
+    const all = [...DB.members].sort((a, b) => {
+      if (state.sort === "name_desc") return b.name.localeCompare(a.name);
+      if (state.sort === "newest") return (b.joined ? b.joined.getTime() : (b.serverId || 0)) - (a.joined ? a.joined.getTime() : (a.serverId || 0));
+      if (state.sort === "expiring") return (a.end ? a.end.getTime() : 0) - (b.end ? b.end.getTime() : 0);
+      return a.name.localeCompare(b.name);
+    });
     const list = all.filter(m => {
       const k = statusFor(m).key;
       const byStatus = state.filter === "all" || k === state.filter || (state.filter === "expired" && k === "cancelled") || (state.filter === "inactive" && (k === "frozen" || k === "cancelled"));
@@ -179,6 +184,17 @@
         const ico = $("memberStatusIco");
         if (lbl) lbl.textContent = b.dataset.label || b.textContent.trim();
         if (ico) ico.className = `fa-solid ${b.dataset.ico || "fa-users"} pp-st-ico ${b.dataset.cls || "is-all"}`;
+      }
+    });
+    document.querySelectorAll("#memberSortMenu .pp-status-opt").forEach(b => {
+      const on = b.dataset.sort === state.sort;
+      b.classList.toggle("is-selected", on);
+      b.setAttribute("aria-selected", String(on));
+      if (on) {
+        const lbl = $("memberSortLabel");
+        const ico = $("memberSortIco");
+        if (lbl) lbl.textContent = b.dataset.label || b.textContent.trim();
+        if (ico) ico.className = `fa-solid ${b.dataset.ico || "fa-arrow-up-a-z"} pp-st-ico is-all`;
       }
     });
     document.querySelectorAll("[data-view-mode]").forEach(b => {
@@ -629,16 +645,31 @@
   $("memberSearch").addEventListener("input", e => { state.query = e.target.value; state.page = 1; renderBrowse(); hydratePhotos(); });
   const statusBtn = $("memberStatusBtn");
   const statusMenu = $("memberStatusMenu");
+  const sortBtn = $("memberSortBtn");
+  const sortMenu = $("memberSortMenu");
   const closeStatusMenu = () => {
     if (statusMenu) statusMenu.hidden = true;
     statusBtn?.setAttribute("aria-expanded", "false");
   };
+  const closeSortMenu = () => {
+    if (sortMenu) sortMenu.hidden = true;
+    sortBtn?.setAttribute("aria-expanded", "false");
+  };
   statusBtn?.addEventListener("click", e => {
     e.stopPropagation();
+    closeSortMenu();
     if (!statusMenu) return;
     const next = statusMenu.hidden;
     statusMenu.hidden = !next;
     statusBtn.setAttribute("aria-expanded", String(next));
+  });
+  sortBtn?.addEventListener("click", e => {
+    e.stopPropagation();
+    closeStatusMenu();
+    if (!sortMenu) return;
+    const next = sortMenu.hidden;
+    sortMenu.hidden = !next;
+    sortBtn.setAttribute("aria-expanded", String(next));
   });
   statusMenu?.addEventListener("click", e => {
     const b = e.target.closest("[data-filter]");
@@ -649,11 +680,21 @@
     renderBrowse();
     hydratePhotos();
   });
+  sortMenu?.addEventListener("click", e => {
+    const b = e.target.closest("[data-sort]");
+    if (!b) return;
+    state.sort = b.dataset.sort;
+    state.page = 1;
+    closeSortMenu();
+    renderBrowse();
+    hydratePhotos();
+  });
   document.addEventListener("click", e => {
     if (statusMenu && !statusMenu.hidden && !e.target.closest("#memberStatusWrap")) closeStatusMenu();
+    if (sortMenu && !sortMenu.hidden && !e.target.closest("#memberSortWrap")) closeSortMenu();
   });
   document.addEventListener("keydown", e => {
-    if (e.key === "Escape" && statusMenu && !statusMenu.hidden) closeStatusMenu();
+    if (e.key === "Escape") { closeStatusMenu(); closeSortMenu(); }
   });
   const openFrom = e => {
     const el = e.target.closest("[data-open]");
