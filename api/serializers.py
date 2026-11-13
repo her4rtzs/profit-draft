@@ -30,7 +30,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
 # --- Phase 1: staff member management and check-in --------------------------
 
-PLAN_CHOICES = ["monthly", "quarterly", "annual"]
+PLAN_CHOICES = ["daily", "monthly", "quarterly", "annual"]
 
 
 class StaffMemberSerializer(serializers.ModelSerializer):
@@ -39,6 +39,7 @@ class StaffMemberSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     email = serializers.EmailField(source="user.email", read_only=True)
     trainer = serializers.SerializerMethodField()
+    plan = serializers.SerializerMethodField()
 
     class Meta:
         model = MemberProfile
@@ -49,14 +50,37 @@ class StaffMemberSerializer(serializers.ModelSerializer):
             "phone",
             "address",
             "membership_status",
+            "plan",
             "date_joined",
             "expiry_date",
             "trainer",
         ]
-        read_only_fields = ["membership_status", "date_joined", "expiry_date", "trainer"]
+        read_only_fields = ["membership_status", "plan", "date_joined", "expiry_date", "trainer"]
 
     def get_name(self, obj):
         return obj.user.get_full_name() or obj.user.username
+
+    def get_plan(self, obj):
+        """Return the member's latest plan from manual payments or subscriptions."""
+        latest_manual = (
+            obj.manual_payments.exclude(plan="")
+            .order_by("-created_at", "-id")
+            .values("plan", "created_at")
+            .first()
+        )
+        latest_sub = (
+            obj.subscriptions.exclude(plan="")
+            .order_by("-created_at", "-id")
+            .values("plan", "created_at")
+            .first()
+        )
+        if latest_manual and latest_sub:
+            return latest_manual["plan"] if latest_manual["created_at"] >= latest_sub["created_at"] else latest_sub["plan"]
+        if latest_manual:
+            return latest_manual["plan"]
+        if latest_sub:
+            return latest_sub["plan"]
+        return ""
 
     def get_trainer(self, obj):
         from apps.trainers.services import current_assignment

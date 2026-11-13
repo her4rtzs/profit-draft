@@ -277,7 +277,7 @@ DB.sync = async function (reload = false) {
     pays.forEach(p => { if (!(p.member_id in planOf)) planOf[p.member_id] = p.plan; });
 
     this.members = rows.map(r => {
-        const plan = planOf[r.id] || "monthly";
+        const plan = (r.plan || planOf[r.id] || (r.membership_status === "PENDING" ? "pending" : "monthly")).toLowerCase();
         const end = r.expiry_date ? fromISO(r.expiry_date) : TODAY;
         return {
             id: idFor(r.id), serverId: r.id, name: r.name, email: r.email || "",

@@ -18,7 +18,7 @@
     <script src="config.js"></script>
     <script src="api.js"></script>
     <script src="auth.js"></script>
-<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=10"><link rel="stylesheet" href="ui-final.css?v=1"><script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script><style id="pf-dash-fx">
+<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=11"><link rel="stylesheet" href="ui-final.css?v=1"><script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script><style id="pf-dash-fx">
 
 .pf-row-in{animation:pfRowIn .42s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0) * 55ms)}
 @keyframes pfRowIn{from{opacity:0}to{opacity:1}}
@@ -206,7 +206,7 @@
                         </svg>
                         <div class="mt-donut-center">
                             <strong id="mtTotalCount">—</strong>
-                            <span>Total Members</span>
+                            <span id="mtTotalLabel">Total Members</span>
                         </div>
                         <div class="mt-tooltip" id="mtTooltip" hidden role="status"></div>
                     </div>
@@ -372,13 +372,20 @@
   const SVG_NS = "http://www.w3.org/2000/svg";
   const RADIUS = 78;
   const CIRC = 2 * Math.PI * RADIUS;
-  const CANONICAL_ORDER = ["daily", "monthly", "quarterly", "annual"];
-  const darkPalette = ["#F59E0B", "#EA580C", "#64748B", "#334155", "#FBBF24", "#D97706"];
-  const lightPalette = ["#F59E0B", "#EA580C", "#64748B", "#94A3B8", "#D97706", "#B45309"];
+  const CANONICAL_ORDER = ["daily", "monthly", "quarterly", "annual", "pending"];
+  const darkPalette = ["#F59E0B", "#EA580C", "#FBBF24", "#64748B", "#94A3B8", "#D97706"];
+  const lightPalette = ["#F59E0B", "#EA580C", "#D97706", "#64748B", "#475569", "#B45309"];
 
   function formatPlanName(key) {
+    if (key === "pending" || key === "none" || key === "unassigned") return "Pending";
     if (window.PLANS && PLANS[key] && PLANS[key].label) return PLANS[key].label;
     return String(key || "Other").replace(/[-_]+/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+  }
+
+  function formatPct(frac) {
+    const num = frac * 100;
+    const rounded = Math.round(num * 10) / 10;
+    return (Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1)) + "%";
   }
 
   function renderMembershipType(members, syncError) {
@@ -389,6 +396,7 @@
     const segGroup = document.getElementById("mtDonutSegments");
     const labelGroup = document.getElementById("mtDonutLabels");
     const totalEl = document.getElementById("mtTotalCount");
+    const totalLabelEl = document.getElementById("mtTotalLabel");
     const legendEl = document.getElementById("mtLegend");
     const wrap = document.getElementById("mtDonutWrap");
     const tooltip = document.getElementById("mtTooltip");
@@ -413,6 +421,7 @@
     empty.hidden = true;
     body.hidden = false;
     if (totalEl) totalEl.textContent = total;
+    if (totalLabelEl) totalLabelEl.textContent = "Total Members";
 
     const counts = new Map();
     members.forEach(m => {
@@ -438,7 +447,7 @@
         label: formatPlanName(key),
         count,
         frac,
-        pctText: (frac * 100).toFixed(1) + "%",
+        pctText: formatPct(frac),
         color: palette[idx % palette.length]
       };
     });
@@ -447,7 +456,6 @@
     labelGroup.innerHTML = "";
     legendEl.innerHTML = "";
 
-    const reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let offset = 0;
     const segEls = [];
     const legEls = [];
@@ -459,9 +467,13 @@
       legEls.forEach((l, i) => l.classList.toggle("is-hovered", i === activeIdx));
       if (!has) {
         tooltip.hidden = true;
+        if (totalEl) totalEl.textContent = total;
+        if (totalLabelEl) totalLabelEl.textContent = "Total Members";
         return;
       }
       const item = entries[activeIdx];
+      if (totalEl) totalEl.textContent = item.count;
+      if (totalLabelEl) totalLabelEl.textContent = item.label;
       tooltip.innerHTML = `<strong>${PF.esc(item.label)}</strong><small>${item.count} member${item.count === 1 ? "" : "s"} (${item.pctText}) · Click to view</small>`;
       tooltip.hidden = false;
     };
@@ -481,20 +493,12 @@
       circle.setAttribute("r", String(RADIUS));
       circle.setAttribute("stroke", item.color);
       circle.setAttribute("stroke-dashoffset", String(segOffset));
-      circle.setAttribute("stroke-dasharray", reducedMotion ? `${arcLen} ${CIRC}` : `0 ${CIRC}`);
+      circle.setAttribute("stroke-dasharray", `${arcLen} ${CIRC}`);
       circle.setAttribute("tabindex", "0");
       circle.setAttribute("role", "button");
       circle.setAttribute("aria-label", `${item.label}: ${item.count} members (${item.pctText}). View members.`);
       segGroup.appendChild(circle);
       segEls.push(circle);
-
-      if (!reducedMotion) {
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            circle.setAttribute("stroke-dasharray", `${arcLen} ${CIRC}`);
-          });
-        });
-      }
 
       if (item.frac >= 0.07) {
         const midFrac = (offset + arcLen / 2) / CIRC;
@@ -516,7 +520,7 @@
       li.setAttribute("aria-label", `${item.label}: ${item.count} members (${item.pctText}). View members.`);
       li.innerHTML =
         `<span class="mt-legend-left"><span class="mt-legend-dot" style="background:${item.color}"></span><span class="mt-legend-name">${PF.esc(item.label)}</span></span>` +
-        `<span class="mt-legend-right"><span class="mt-legend-count">${item.count}</span><span class="mt-legend-pct">${item.pctText}</span></span>`;
+        `<span class="mt-legend-right"><span class="mt-legend-count">${item.count} member${item.count === 1 ? "" : "s"}</span><span class="mt-legend-pct">${item.pctText}</span></span>`;
       legendEl.appendChild(li);
       legEls.push(li);
 
@@ -573,6 +577,7 @@
   }
 
   document.addEventListener("profit:synced", paint);
+  window.addEventListener("storage", paint);
   paint();
 })();
 </script>

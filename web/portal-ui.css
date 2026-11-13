@@ -720,6 +720,16 @@ body.pf-staff[data-page="dashboard"] .year-stepper button:active {
 .revenue-panel.is-loading .chart { display: none; }
 
 /* Membership Type Panel */
+@media (min-width: 1100px) {
+  html body.pf-staff[data-page="dashboard"] .content-grid {
+    grid-template-columns: minmax(0, 1.35fr) minmax(380px, 1fr) !important;
+  }
+}
+@media (max-width: 1099px) {
+  html body.pf-staff[data-page="dashboard"] .content-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
 .membership-type-panel {
   display: flex;
   flex-direction: column;
@@ -727,15 +737,24 @@ body.pf-staff[data-page="dashboard"] .year-stepper button:active {
 body.dark .membership-type-panel {
   background: #121A28;
 }
-.mt-title-wrap {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
+html body.pf-staff .membership-type-panel .panel-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex-wrap: nowrap !important;
+  gap: 12px !important;
+}
+html body.pf-staff .membership-type-panel .panel-header > .mt-title-wrap {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 12px !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
 }
 .mt-title-ico {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: 10px;
   display: grid;
   place-items: center;
@@ -748,23 +767,23 @@ body.dark .membership-type-panel {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
-  padding: 16px 4px;
-  min-height: 224px;
+  gap: 20px;
+  padding: 12px 4px 6px;
+  min-height: 196px;
 }
 .mt-skeleton[hidden] { display: none; }
 .mt-skel-donut {
-  width: 176px;
-  height: 176px;
+  width: 168px;
+  height: 168px;
   border-radius: 50%;
   flex: none;
-  mask: radial-gradient(circle, transparent 52px, #000 53px);
-  -webkit-mask: radial-gradient(circle, transparent 52px, #000 53px);
+  mask: radial-gradient(circle, transparent 50px, #000 51px);
+  -webkit-mask: radial-gradient(circle, transparent 50px, #000 51px);
 }
 .mt-skel-legend {
   flex: 1;
   display: grid;
-  gap: 14px;
+  gap: 12px;
   min-width: 0;
 }
 .mt-skel-row {
@@ -778,26 +797,34 @@ body.dark .membership-type-panel {
 
 .mt-body {
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
-  padding: 12px 4px 8px;
+  gap: 20px;
+  padding: 8px 4px 4px;
   flex: 1;
+  min-height: 196px;
 }
 .mt-body[hidden] { display: none; }
 
+@keyframes mtDonutEnter {
+  from { opacity: 0; transform: scale(0.92) rotate(-14deg); }
+  to { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
 .mt-donut-wrap {
   position: relative;
-  width: 204px;
-  height: 204px;
-  flex: none;
-  margin: 0 auto;
+  width: 172px;
+  height: 172px;
+  flex: 0 0 172px;
+  margin: 0;
 }
 .mt-donut-svg {
   width: 100%;
   height: 100%;
   overflow: visible;
   display: block;
+  animation: mtDonutEnter 0.52s cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
 .mt-donut-track {
   fill: none;
@@ -843,17 +870,21 @@ body.dark .membership-type-panel {
   text-align: center;
 }
 .mt-donut-center strong {
-  font-size: 32px;
+  font-size: 30px;
   font-weight: 800;
   line-height: 1.05;
   letter-spacing: -0.03em;
   color: var(--text);
 }
 .mt-donut-center span {
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--muted);
   margin-top: 3px;
+  max-width: 104px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .mt-tooltip {
@@ -970,21 +1001,13 @@ body:not(.dark) .mt-tooltip {
 .mt-empty[hidden] { display: none; }
 .mt-empty i { font-size: 28px; color: #F59E0B; opacity: 0.8; }
 
-@media (max-width: 1220px) and (min-width: 901px) {
-  .mt-body, .mt-skeleton {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 18px;
-  }
-  .mt-skel-donut { margin: 0 auto; }
-}
 @media (max-width: 560px) {
   .mt-body, .mt-skeleton {
     flex-direction: column;
     align-items: stretch;
     gap: 18px;
   }
-  .mt-skel-donut { margin: 0 auto; }
+  .mt-donut-wrap, .mt-skel-donut { margin: 0 auto; }
 }
 @media (prefers-reduced-motion: reduce) {
   body.pf-staff[data-page="dashboard"] .quick-action,
@@ -992,6 +1015,7 @@ body:not(.dark) .mt-tooltip {
   body.pf-staff[data-page="dashboard"] .content-grid > .panel,
   body.pf-staff[data-page="dashboard"] .registrations-panel,
   .bar-column .bar,
+  .mt-donut-svg,
   .mt-seg {
     animation: none !important;
     transition: none !important;
