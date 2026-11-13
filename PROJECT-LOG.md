@@ -1271,6 +1271,87 @@ Revert the entire codebase back to version/commit 1090e89 ("alisin search sa hea
 ### Decision-log skill
 When requested to restore a specific historical commit hash, checkout files directly from that commit (`git checkout <hash> -- .`) while keeping `PROJECT-LOG.md` append-only so the project history and previous session learnings remain preserved.
 
+## 2026-11-13 11:41 (Asia/Manila): Pull repository master branch
+### What I asked for
+Pull the repository `master` branch from `origin`.
+### What the agent decided and why
+- Attempted `git pull` inside the sandbox first per execution rules, then ran `git pull origin master` outside the sandbox because `.git/FETCH_HEAD` and ref lock creation require write access to `.git/` and network access to GitHub.
+- Specified `origin master` explicitly because the local `master` branch had no upstream tracking configuration set, resulting in a clean fast-forward update (`8f3235a..825aaea`, 118 files changed).
+### Decision-log skill
+When a local branch has no upstream tracking configured, run `git pull origin <branch>` explicitly after confirming the working tree is clean and the remote target is a fast-forward descendant.
+
+
+## 2026-11-13 11:50 (Asia/Manila): Replace Programs section sticky scroll-pin with horizontal chevron carousel
+### What I asked for
+In the Programs section of the landing page (`web/welcome.html`), change the scrolling animation from the sticky vertical scroll-pin to match the horizontal carousel with left/right circular chevron buttons shown in the reference screenshot.
+### What the agent decided and why
+- Removed the `300vh` vertical scroll-hijacking pin (`#programs { height: 300vh }` and `.prog-pin { position: sticky }`) from `web/welcome.html` so vertical page scrolling flows normally without trapping the viewport.
+- Wrapped `.grid3.anim-programs` in `.prog-slider` and added translucent frosted circular left (`<`) and right (`>`) navigation buttons (`.prog-arrow.prev` and `.prog-arrow.next`) overlaid at the left and right edges of the cards area, matching the visual placement and styling of the second screenshot.
+- Implemented smooth quartic ease-out (`requestAnimationFrame`) horizontal scrolling across card stops (left-aligned first card, centered middle card matching the reference screenshot, and right-aligned last card), along with native touch/trackpad scrolling and desktop mouse drag-to-scroll.
+### Decision-log skill
+Prefer self-contained horizontal carousels with explicit prev/next controls, smooth eased scroll stops, and native touch/drag support over multi-viewport (`300vh`) vertical scroll-hijacking pins that interrupt natural vertical page navigation.
+
+
+## 2026-11-13 12:15 (Asia/Manila): Sign-in card heading row and forgot-password placement
+### What I asked for
+Make the sign-in card match the reference: put "Sign in" next to the padlock icon, and move "Forgot password?" below the "Sign in securely" button.
+### What the agent decided and why
+- Wrapped the padlock icon and the heading in one flex row (`.auth-title-row`) and shortened the heading to "Sign in", matching the reference. Dropped the "SECURE SIGN IN" kicker because the reference has none and the header already says "Secure account access".
+- Moved the forgot link out of the Remember-me row to a centered, underlined gold link under the submit button. Remember me now sits alone, aligned left.
+- Put the overrides in a small `<style>` block after the existing stylesheet stack in `web/login.html`, so no shared stylesheet used by other pages changes.
+- Checked that no script references the removed kicker or the old heading text. Not verified in a browser this session.
+### Decision-log skill
+When moving one element inside a page that loads many stacked stylesheets, add page-scoped rules after the stack instead of editing shared files, and grep scripts for the old markup before removing it.
+
+
+## 2026-11-13 12:30 (Asia/Manila): Push landing-page carousel and sign-in card changes to master
+### What I asked for
+Push this session's changes (Programs carousel on the landing page, sign-in card layout) to `master`.
+### What the agent decided and why
+- Staged only the three files changed this session (`web/welcome.html`, `web/login.html`, `PROJECT-LOG.md`) by explicit path, after confirming no other files were modified.
+- Pushed directly to `origin/master` because the user explicitly asked for it.
+### Decision-log skill
+Before pushing, confirm the working tree contains only this session's files and stage them by path, so unrelated edits never ride along.
+
+
+## 2026-11-13 12:35 (Asia/Manila): Change sign-in submit button label to "Sign in"
+### What I asked for
+In the sign-in page (`web/login.html`), change the submit button text from "Sign in securely" to "Sign in".
+### What the agent decided and why
+- Updated both the initial `<button type="submit"><span>Sign in</span>...</button>` markup on line 18 and the `finally` block reset text (`submit.querySelector('span').textContent='Sign in'`) on line 67 of `web/login.html` so failed login retries also restore the "Sign in" label.
+### Decision-log skill
+When changing a submit button's label, also update any JavaScript state-reset handlers (such as `finally` blocks after form submission) that restore the button's text.
+
+
+## 2026-11-13 12:37 (Asia/Manila): Push "Sign in" button label update to master
+### What I asked for
+Push the sign-in button text update (`web/login.html` and `PROJECT-LOG.md`) to `master`.
+### What the agent decided and why
+- Staged only `web/login.html` and `PROJECT-LOG.md` by explicit path after verifying `git status` and pushed the commit to `origin/master`.
+### Decision-log skill
+Stage modified files explicitly by path and verify `git status` before committing and pushing to `origin/master`.
+
+
+## 2026-11-13 13:10 (Asia/Manila): Fix Admin Notifications dropdown z-index stacking and replace Light Mode icon
+### What I asked for
+Fix the Notifications dropdown in the Admin portal so it renders in front of the dashboard cards instead of behind them, and change the Light Mode toggle icon so it does not look like the Settings gear icon.
+### What the agent decided and why
+- Root cause of Notifications rendering behind cards: `web/staff-design.css` set `html body.pf-staff .topbar { position: static !important }`, which disabled `z-index` on `.topbar` while `backdrop-filter: blur(14px)` from `web/layout-fixes.css` created a stacking context at level 0, causing later DOM siblings (`.quick-actions`, `.stats`, `.panel`) to paint over `.topbar` and its `#notificationPanel`.
+- Changed `html body.pf-staff .topbar` from `position: static !important` to `position: relative !important; z-index: 200 !important` (and raised `.notification-wrap` to `z-index: 210` and `.notification-panel` / `.npanel` to `z-index: 1050` across `web/staff-design.css`, `web/layout-fixes.css`, `web/assets/css/staff.css`, and `web/staff/assets/css/staff.css`) so the header still scrolls naturally with the document while its stacking context sits strictly in front of all dashboard cards.
+- Replaced the Font Awesome `fa-solid fa-sun` icon (whose ring gap and 8 stubby triangular teeth closely resembled a settings gear/cog) with a custom starburst Sun SVG featuring a solid filled center disc (`r="3.8" fill="currentColor"`) and detached alternating long/medium rays colored warm gold in dark mode across `web/sidebar.js`, `web/member-tabs.js`, `web/trainer-portal.js`, `web/assets/js/staff-icons.js`, and `web/staff/assets/js/staff-icons.js`.
+### Decision-log skill
+Never set `position: static` on a header that has `backdrop-filter` or contains dropdown popovers: `backdrop-filter` creates a stacking context, and `position: static` forces that stacking context to `z-index: auto` (0), trapping child popovers behind later sibling containers. Use `position: relative` with an explicit `z-index` when a header should scroll with the document while keeping its popovers on top.
+
+
+## 2026-11-13 13:46 (Asia/Manila): Stop preview server and push notifications z-index and Light Mode icon fixes to master
+### What I asked for
+Stop the preview server and push the Admin Notifications stacking fix and Light Mode icon changes to `master`.
+### What the agent decided and why
+- Stopped the background static HTTP preview server (`task-213`).
+- Verified modified files with `git status`, staged only the files touched in this session by explicit path (`web/staff-design.css`, `web/layout-fixes.css`, `web/assets/css/staff.css`, `web/staff/assets/css/staff.css`, `web/sidebar.js`, `web/member-tabs.js`, `web/trainer-portal.js`, `web/assets/js/staff-icons.js`, `web/staff/assets/js/staff-icons.js`, `PROJECT-LOG.md`), committed, and pushed to `origin/master`.
+### Decision-log skill
+Stop local preview servers before finalizing a session and stage modified files by explicit path before committing and pushing to `origin/master`.
+
 ## 2026-11-13 16:36 (Asia/Manila): Staff Dashboard Membership Type, Smooth Animations & Skeleton Loading
 ### What I asked for
 Replace the Staff Dashboard "Membership overview" card with a "Membership type" distribution donut chart based on real member plans, add smooth entrance/hover/chart animations, and implement skeleton loading states while keeping Light/Dark mode and responsive consistency.

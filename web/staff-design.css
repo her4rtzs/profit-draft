@@ -446,10 +446,14 @@ html[data-accent="indigo"] .pf-staff.dark {--gold-ink:#b9b0fa}
 .pf-staff .chip-row .chip {height:30px;padding:0 13px;border:1px solid var(--border);border-radius:999px;font-size:11.5px;font-weight:600;white-space:nowrap}
 
 /* ProFit fix: the staff header scrolls away with the page instead of sticking.
-   `!important` + the .pf-staff class beats the `html body .topbar` sticky rule in
-   layout-fixes.css, and the scroll-condense state sidebar.js toggles past 8px is
-   reset so the static header does not shrink/shadow while it leaves the viewport. */
-html body.pf-staff .topbar {position:static!important}
+   Use position:relative + z-index:200 (not position:static) so the header still
+   scrolls with the document while keeping its stacking context above the quick
+   actions and KPI cards when the notifications panel opens. */
+html body.pf-staff .topbar {position:relative!important;z-index:200!important}
+html body.pf-staff .notification-wrap {position:relative!important;z-index:210!important}
+html body.pf-staff .notification-panel,
+html body.pf-staff .npanel {z-index:1050!important}
+html body.pf-staff.dark .theme-toggle {color:var(--gold,#f4cc64)!important}
 .pf-staff .topbar.is-scrolled {padding:10px 0 12px!important;background:none!important;backdrop-filter:none!important;border-bottom-color:transparent!important;box-shadow:none!important}
 @media (min-width:769px) {.pf-staff .topbar.is-scrolled {padding:14px 0 16px!important}}
 

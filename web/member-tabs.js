@@ -82,10 +82,11 @@
     select(names.includes(hash) ? hash : names[0], false);
     selectTab = select;
   }
+  const SUN_SVG = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.8" fill="currentColor" stroke="none"/><path d="M12 1.2v4M12 18.8v4M1.2 12h4M18.8 12h4M5.21 5.21l1.98 1.98M16.81 16.81l1.98 1.98M5.21 18.79l1.98-1.98M16.81 7.19l1.98-1.98"/></svg>';
   function syncThemeIcon() {
     const btn = $("memberTheme");
     if (!btn) return;
-    const paint = () => { btn.innerHTML = `<i class="fa-solid ${document.body.classList.contains("dark") ? "fa-sun" : "fa-moon"}"></i>`; };
+    const paint = () => { btn.innerHTML = document.body.classList.contains("dark") ? SUN_SVG : '<i class="fa-solid fa-moon"></i>'; };
     paint();
     window.__pfPaintThemeIcon = paint;
     btn.addEventListener("click", () => setTimeout(paint, 0));
@@ -920,7 +921,7 @@
     btn.className = "theme-toggle";
     const paint = () => {
       const d = document.body.classList.contains("dark");
-      btn.innerHTML = `<i class="fa-solid ${d ? "fa-sun" : "fa-moon"}" aria-hidden="true"></i>`;
+      btn.innerHTML = d ? SUN_SVG : '<i class="fa-solid fa-moon" aria-hidden="true"></i>';
       btn.setAttribute("aria-label", d ? "Switch to light mode" : "Switch to dark mode");
     };
     btn.addEventListener("click", () => {
@@ -1226,7 +1227,7 @@
         <div class="pp-card-head"><div><h3>Appearance</h3><p class="pp-muted">Pick how ProFit looks on this device.</p></div></div>
         <div class="pp-segment" role="radiogroup" aria-label="Theme">
           <button type="button" role="radio" class="${dark ? "active" : ""}" data-theme-pick="dark" aria-checked="${dark}"><i class="fa-solid fa-moon"></i> Dark</button>
-          <button type="button" role="radio" class="${dark ? "" : "active"}" data-theme-pick="light" aria-checked="${!dark}"><i class="fa-solid fa-sun"></i> Light</button>
+          <button type="button" role="radio" class="${dark ? "" : "active"}" data-theme-pick="light" aria-checked="${!dark}">${SUN_SVG} Light</button>
         </div>
         <div class="pp-field" style="margin-top:18px">
           <span class="pp-label" id="lblMemberAccent">Accent colour</span>
