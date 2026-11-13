@@ -211,7 +211,7 @@ html body .quick-actions {
   align-items: stretch !important;
 }
 
-html body .quick-action {
+html body .quick-action:not([class*="qa-"]) {
   display: flex !important;
   align-items: center !important;
   gap: 12px !important;
@@ -226,23 +226,23 @@ html body .quick-action {
   transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.22s ease, box-shadow 0.22s ease !important;
 }
 
-html body .quick-action:hover {
+html body .quick-action:not([class*="qa-"]):hover {
   transform: translateY(-4px) !important;
   border-color: var(--sb-gold, #e8b93a) !important;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12), 0 0 0 1px color-mix(in srgb, var(--sb-gold, #e8b93a) 25%, transparent) !important;
 }
 
-html body .quick-action:hover .quick-action-icon {
+html body .quick-action:not([class*="qa-"]):hover .quick-action-icon {
   transform: scale(1.08) !important;
   background: color-mix(in srgb, var(--sb-gold, #e8b93a) 28%, transparent) !important;
 }
 
-html body .quick-action:hover .action-arrow {
+html body .quick-action:not([class*="qa-"]):hover .action-arrow {
   color: var(--sb-gold, #e8b93a) !important;
   transform: translate(2px, -2px) !important;
 }
 
-html body .quick-action-icon {
+html body .quick-action:not([class*="qa-"]) .quick-action-icon {
   flex: 0 0 42px !important;
   width: 42px !important;
   height: 42px !important;
@@ -255,16 +255,20 @@ html body .quick-action-icon {
   transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease !important;
 }
 
-html body .quick-action > span:nth-child(2) {
+html body .quick-action .qa-details,
+html body .quick-action > span:nth-child(2),
+html body .quick-action > span:nth-child(3) {
   display: flex !important;
   flex-direction: column !important;
   justify-content: center !important;
   flex: 1 1 auto !important;
   min-width: 0 !important;
+  text-align: left !important;
 }
 
 html body .quick-action strong {
-  font-size: 13px !important;
+  display: block !important;
+  font-size: 13.5px !important;
   font-weight: 750 !important;
   line-height: 1.3 !important;
   color: var(--text) !important;
@@ -274,15 +278,17 @@ html body .quick-action strong {
 }
 
 html body .quick-action small {
+  display: block !important;
   font-size: 11px !important;
   color: var(--muted) !important;
   line-height: 1.35 !important;
+  margin-top: 2px !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   white-space: nowrap !important;
 }
 
-html body .quick-action .action-arrow {
+html body .quick-action:not([class*="qa-"]) .action-arrow {
   flex: 0 0 auto !important;
   margin-left: auto !important;
   color: var(--muted) !important;
@@ -312,7 +318,7 @@ html body .stats.three {
   align-items: stretch !important;
 }
 
-html body .stat-card {
+html body .stat-card:not(.kpi-card) {
   padding: 20px !important;
   margin: 0 !important;
   display: flex !important;
@@ -323,7 +329,7 @@ html body .stat-card {
   transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.22s ease, box-shadow 0.22s ease !important;
 }
 
-html body .stat-card:hover {
+html body .stat-card:not(.kpi-card):hover {
   transform: translateY(-3px) !important;
   border-color: color-mix(in srgb, var(--sb-gold, #e8b93a) 50%, var(--border)) !important;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08), 0 0 0 1px color-mix(in srgb, var(--sb-gold, #e8b93a) 15%, transparent) !important;

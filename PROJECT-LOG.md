@@ -1504,3 +1504,16 @@ Redesign the four Quick Action Cards (Enroll a Member, Record Attendance, Record
 - Validated with Playwright visual captures (`scratch_membership_panel_dark.png` and `scratch_membership_panel_light.png`) confirming 1:1 visual match with reference mockups in both Dark and Light modes. All 126 backend tests passed (`Ran 126 tests in 150.432s OK`).
 ### Decision-log skill
 When polishing circular SVG data visualizations to match precision mockups, calculate stroke thickness relative to text bounding box dimensions (ensuring at least 8px radial padding inside the arc) and combine radial glow filters with decorative vector ribbons at the panel container level to create depth without affecting SVG coordinate calculations.
+
+## 2026-11-13 23:28 (Asia/Manila): Restore Dark Theme Default & Fix Card Cascades to Match Reference (Pic 1)
+### What I asked for
+Make the dashboard look like the 1st picture (dark gold theme), fix the broken light mode in the 2nd and 3rd pictures where text collapsed, cards turned black, and backgrounds turned white, and do not add any new files.
+### What the agent decided and why
+- Identified the root cause of the broken UI in pictures 2 & 3: `web/member-home.html` defaulted `savedTheme` to `"light"` and saved `'light'` into shared `localStorage`, forcing the staff dashboard to load in an unstyled light mode where cards appeared as dark silhouettes with unreadable dark text.
+- Added self-healing recovery in `web/index.html` and `web/sidebar.js`: on the staff dashboard, stale or accidental `'light'` from external pages is automatically reset to `'dark'`, restoring the signature ProFit dark gold theme on load without breaking explicit user toggle actions.
+- Fixed the Quick Action cards text collapse ("Enroll a memberAdd to the gym roster"): `layout-fixes.css` was targeting `> span:nth-child(2)` (which hit the icon container instead of the details block), leaving titles and descriptions displayed inline with `white-space: nowrap`. Scoped `.qa-details` to `display: flex !important; flex-direction: column !important;` and set `strong` and `small` to block display.
+- Scoped `layout-fixes.css` rules for `.quick-action` and `.stat-card` so they do not override the custom themed accent borders (`.qa-gold`, `.qa-cyan`, `.qa-emerald`, `.qa-violet`, and `.kpi-card`).
+- Moved `portal-ui.css?v=20` to the end of `<head>` in `web/index.html` to guarantee cascade dominance over generic utility stylesheets.
+- Verified in Playwright that the dashboard renders 100% identical to Pic 1, with dark obsidian glass cards, radiant glowing borders, 12 golden revenue bars, and complete membership donut chart.
+### Decision-log skill
+When multiple portal roles (e.g. member vs staff) share a single origin's `localStorage` key like `theme`, prevent cross-portal state poisoning by giving staff administrative views a self-healing default to dark mode while isolating member defaults.

@@ -592,7 +592,7 @@
 
   const themeButton = $("memberTheme");
   let savedTheme = "dark";
-  try { savedTheme = localStorage.getItem("theme") || "light"; } catch (e) {}
+  try { savedTheme = localStorage.getItem("theme") || "dark"; } catch (e) {}
   document.body.classList.toggle("dark", savedTheme === "dark");
   themeButton?.addEventListener("click", () => {
     const dark = !document.body.classList.contains("dark");

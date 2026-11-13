@@ -33,8 +33,22 @@
     }
     window.dispatchEvent(new CustomEvent('profit:theme-changed', { detail: { dark: !!dark } }));
   };
-  applyTheme(store.get("theme")!=="light");
-  themeToggle?.addEventListener("click",()=>{const dark=!document.body.classList.contains("dark");applyTheme(dark);store.set("theme",dark?"dark":"light")});
+  const isExplicitLight = store.get("pf-staff-explicit-light") === "1" && store.get("theme") === "light";
+  const shouldBeDark = !isExplicitLight;
+  if (shouldBeDark && store.get("theme") === "light") {
+    store.set("theme", "dark");
+  }
+  applyTheme(shouldBeDark);
+  themeToggle?.addEventListener("click",()=>{
+    const dark=!document.body.classList.contains("dark");
+    applyTheme(dark);
+    store.set("theme",dark?"dark":"light");
+    if (!dark) {
+      store.set("pf-staff-explicit-light", "1");
+    } else {
+      try { localStorage.removeItem("pf-staff-explicit-light"); } catch(e) {}
+    }
+  });
   const searchInput=$(".search input");
   document.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"&&searchInput){e.preventDefault();searchInput.focus()}});
   const moreBtn=$("#moreBtn"), morePopover=$("#morePopover");
