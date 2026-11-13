@@ -408,17 +408,20 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
   const table = body.closest("table");
   const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const initials = n => (String(n || "?").trim().split(/\s+/).map(w => w[0] || "").join("").slice(0, 2).toUpperCase()) || "?";
+  const toDate = v => v instanceof Date ? (isNaN(v.getTime()) ? null : v) : (typeof fromISO === "function" ? fromISO(v) : null);
   const startOfToday = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
   const statusFor = m => {
-    if (!m.end) return ["expired", "Pending"];
-    const days = Math.round((m.end - startOfToday()) / 86400000);
+    const end = toDate(m.end);
+    if (!end) return ["expired", "Pending"];
+    const days = Math.round((end - startOfToday()) / 86400000);
     if (days < 0) return ["expired", "Expired"];
     if (days <= 7) return ["expiring", "Expiring"];
     return ["active", "Active"];
   };
   const rowHTML = (m, i) => {
     const [cls, label] = statusFor(m);
-    const joined = m.joined ? fmtShort(m.joined) : "—";
+    const jd = toDate(m.joined);
+    const joined = jd ? (typeof fmtShort === "function" ? fmtShort(jd) : jd.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })) : "—";
     return `<tr class="pf-row-in" style="--i:${i}">
       <td><span class="member-id">${esc(m.id)}</span></td>
       <td><div class="member"><div class="mini-avatar">${esc(initials(m.name))}</div><div><strong>${esc(m.name)}</strong><small>Member</small></div></div></td>
@@ -445,6 +448,13 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
     openMenu = null;
   }
   body.addEventListener("click", e => {
+    const retry = e.target.closest(".pf-retry-btn");
+    if (retry) {
+      retry.disabled = true;
+      retry.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Retrying...';
+      if (typeof DB !== "undefined" && DB.sync) DB.sync(false);
+      return;
+    }
     const btn = e.target.closest(".pf-menu-btn");
     if (!btn) return;
     const wrap = btn.parentElement, menu = wrap.querySelector(".pf-menu");
@@ -475,31 +485,42 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
   window.addEventListener("resize", closeMenus);
 
   function render(ok) {
-    closeMenus();
-    if (table) table.setAttribute("aria-busy", "false");
-    const pool = (typeof DB !== "undefined" && DB && DB.members && DB.members.length) ? DB.members : [];
-    if (!ok && !DB.synced && !pool.length) {
-      body.innerHTML = `<tr><td colspan="5" class="pf-empty">Hindi ma-load ang listahan. I-refresh ang page.</td></tr>`;
-      return;
+    try {
+      closeMenus();
+      if (table) table.setAttribute("aria-busy", "false");
+      const pool = (typeof DB !== "undefined" && DB && Array.isArray(DB.members)) ? DB.members : [];
+      if (!ok && (!DB || !DB.synced) && !pool.length) {
+        body.innerHTML = `<tr><td colspan="5" class="pf-empty">Unable to load recent registrations. <button type="button" class="pf-retry-btn" style="margin-left:10px;padding:6px 14px;border-radius:8px;border:1px solid rgba(245,158,11,.45);background:rgba(245,158,11,.14);color:#F59E0B;font-weight:700;cursor:pointer">Retry</button></td></tr>`;
+        delete body.dataset.sig;
+        return;
+      }
+      const newest = pool.slice()
+        .sort((a, b) => {
+          const tb = toDate(b.joined)?.getTime() || 0;
+          const ta = toDate(a.joined)?.getTime() || 0;
+          return (tb - ta) || String(b.id).localeCompare(String(a.id));
+        })
+        .slice(0, 5);
+      if (!newest.length) {
+        body.innerHTML = `<tr><td colspan="5" class="pf-empty">No members registered yet. <a href="members.html" style="color:#F59E0B;font-weight:700;margin-left:6px">Go to Members →</a></td></tr>`;
+        delete body.dataset.sig;
+        return;
+      }
+      const html = newest.map(rowHTML).join("");
+      if (body.dataset.sig !== html) { body.innerHTML = html; body.dataset.sig = html; }
+    } catch (err) {
+      body.innerHTML = `<tr><td colspan="5" class="pf-empty">Could not render registrations. <button type="button" class="pf-retry-btn" style="margin-left:10px;padding:6px 14px;border-radius:8px;border:1px solid rgba(245,158,11,.45);background:rgba(245,158,11,.14);color:#F59E0B;font-weight:700;cursor:pointer">Retry</button></td></tr>`;
+      delete body.dataset.sig;
     }
-    const newest = pool.slice()
-      .sort((a, b) => ((b.joined && b.joined.getTime()) || 0) - ((a.joined && a.joined.getTime()) || 0)
-        || String(b.id).localeCompare(String(a.id)))
-      .slice(0, 5);
-    if (!newest.length) {
-      body.innerHTML = `<tr><td colspan="5" class="pf-empty">Wala pang member. Magdagdag sa Members page.</td></tr>`;
-      return;
-    }
-    const html = newest.map(rowHTML).join("");
-    if (body.dataset.sig !== html) { body.innerHTML = html; body.dataset.sig = html; }
   }
 
   const hasCached = (typeof DB !== "undefined" && DB && DB.members && DB.members.length > 0);
   if (hasCached) {
     render(true);
   } else {
-    if (DB.synced) render(true);
-    else window.pfAfterSync(() => render(DB.synced));
+    if (typeof DB !== "undefined" && DB.synced) render(true);
+    else if (typeof window.pfAfterSync === "function") window.pfAfterSync(() => render(typeof DB !== "undefined" && DB.synced));
+    else render(false);
   }
   document.addEventListener("profit:synced", e => render(e.detail?.ok !== false));
 })();

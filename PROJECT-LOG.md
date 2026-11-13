@@ -1616,3 +1616,20 @@ Identify the root causes and fix the following loading screen and authentication
 
 ### Decision-log skill
 Never rely on client-side asynchronous `DOMContentLoaded` callbacks alone to protect sensitive or authenticated single-page views when serving static assets. Pair server-level routing defaults (disabling static index overrides like `WHITENOISE_INDEX_FILE`) with a synchronous `<head>` script and critical inline `display: none !important` guards (`html.auth-pending`) so that unauthenticated visitors are redirected before the first frame is painted.
+
+## 2026-11-14 03:11 (Asia/Manila): Fix Dashboard Stuck Skeletons, Notification Delays, Excessive Spacing & Redesign Trainers Tab
+
+### What I asked for
+1. Fix slow loading and stuck skeletons on the Dashboard (specifically Recent Registrations staying on skeleton rows), prevent duplicate API calls, and fix excessive empty space below Recent Registrations.
+2. Fix clicking the notification bell triggering a loading animation; make notification opening instant with caching and independent background updates.
+3. Redesign ONLY the Trainers page content area (`web/trainers.html`) to match the ProFit Trainers Management reference: breadcrumb + gold `+ Add Trainer` button, 4 colored KPI cards (Gold, Cyan, Emerald, Violet), Trainer Directory with search/filter/grid-list toggle/profile cards/View Profile & Edit modals/3-dot menus, Assign Trainer section, and Member Requests table with Approve/Decline actions — while keeping the sidebar and global header completely untouched.
+
+### What the agent decided and why
+- **Root-caused stuck Recent Registrations skeletons:** `DB.save()` in `web/data.js` serialized `m.joined` as an ISO string, while `DB.load()` did not revive `m.joined` back into a `Date` object. Calling `b.joined.getTime()` and `fmtShort(m.joined)` in `web/index.html` threw a `TypeError` before replacing `#recentRows`, leaving the 4 `<tr class="pf-skel">` rows permanently visible. Fixed `fromISO`/`toISO` safely in `web/data.js`, revived `joined` on load, added a defensive `toDate()` helper and `try/catch` in `web/index.html`, and added a Retry button and empty state so skeletons always resolve.
+- **Prevented hung fetches & duplicate syncs:** Added `AbortController` timeouts (10–12s) in `web/api.js` and `web/data.js`, deduplicated concurrent `DB.sync()` calls, and reduced `pfAfterSync` gate timing (`120ms` min / `2200ms` max safety).
+- **Fixed notification bell loading bar:** Added `{ silent: true }` support to `ProFitAPI.request` in `web/api.js`. Updated `web/notifications-live.js` to pass `{ silent: true }` (never triggering `#pfProgress`), cache notifications in `sessionStorage`, paint immediately upon click, and deduplicate background refreshes.
+- **Removed excessive Dashboard empty space:** Added compact spacing rules for `body[data-page="dashboard"] .registrations-panel` in `web/portal-ui.css` so the card height fits its actual rows without dead vertical space.
+- **Redesigned Trainers tab content only:** Rebuilt `web/trainers.html`, `web/trainers-staff.js`, and scoped `body[data-page="trainers"]` styles in `web/portal-ui.css` (without modifying the sidebar or global header). Added real-time KPI calculation from `/api/staff/trainers/`, search/status filter/grid-list toggle, Add/Edit Trainer and View Profile modals, 3-dot card menus, Assign/Remove Trainer controls, and the Member Requests table wired to `/api/staff/trainer-requests/<id>/decide/` with full Dark and Light mode support.
+
+### Decision-log skill
+When caching domain objects with `Date` fields in `localStorage`, always revive every date property symmetrically on `load()` and guard consumers with a defensive `toDate()` helper; an uncaught `TypeError` inside a table renderer silently leaves initial skeleton placeholders stuck on screen.

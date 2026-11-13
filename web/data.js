@@ -9,10 +9,10 @@ const emailFor = name => name.toLowerCase().replace(/[^a-z]+/g, ".").replace(/^\
 const startOfDay = d => new Date(d.getFullYear(), d.getMonth(), d.getDate());
 const TODAY = startOfDay(new Date());
 const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return startOfDay(x); };
-const toISO = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-const fromISO = s => { const [y, m, d] = String(s).slice(0, 10).split("-").map(Number); return new Date(y, m - 1, d); };
-const fmtDate = d => d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
-const fmtShort = d => d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+const toISO = d => { if (!(d instanceof Date) || isNaN(d.getTime())) return ""; return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
+const fromISO = s => { if (!s) return null; if (s instanceof Date) return isNaN(s.getTime()) ? null : s; const p = String(s).slice(0, 10).split("-").map(Number); if (p.length !== 3 || p.some(isNaN)) return null; return new Date(p[0], p[1] - 1, p[2]); };
+const fmtDate = d => { const dt = fromISO(d); return dt ? dt.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }) : "—"; };
+const fmtShort = d => { const dt = fromISO(d); return dt ? dt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "—"; };
 const daysBetween = (a, b) => Math.round((startOfDay(b) - startOfDay(a)) / DAY_MS);
 const peso = n => "₱" + Number(n).toLocaleString("en-US");
 const initials = name => name.split(/\s+/).filter(Boolean).map(w => w[0]).slice(0, 2).join("").toUpperCase();
@@ -226,9 +226,9 @@ const DB = {
                 // older stored copy kept its thin data set forever and the seed
                 // below never ran. Compare it before adopting the stored rows.
                 if (Number(s.rev) === this.REV) {
-                    this.members = s.members.map(m => ({ ...m, email: m.email || emailFor(m.name), start: fromISO(m.start), end: fromISO(m.end) }));
-                    this.payments = s.payments.map(p => ({ ...p, date: fromISO(p.date) }));
-                    this.checkins = s.checkins.map(c => ({ ...c, date: fromISO(c.date) }));
+                    this.members = s.members.map(m => ({ ...m, email: m.email || emailFor(m.name), start: fromISO(m.start) || TODAY, end: fromISO(m.end) || TODAY, joined: fromISO(m.joined) }));
+                    this.payments = s.payments.map(p => ({ ...p, date: fromISO(p.date) || TODAY }));
+                    this.checkins = s.checkins.map(c => ({ ...c, date: fromISO(c.date) || TODAY }));
                     this.applications = s.applications || [];
                     return;
                 }
@@ -242,7 +242,7 @@ const DB = {
         try {
             localStorage.setItem(this.KEY, JSON.stringify({
                 rev: this.REV,
-                members: this.members.map(m => ({ ...m, start: toISO(m.start), end: toISO(m.end) })),
+                members: this.members.map(m => ({ ...m, start: toISO(m.start), end: toISO(m.end), joined: toISO(m.joined) })),
                 payments: this.payments.map(p => ({ ...p, date: toISO(p.date) })),
                 checkins: this.checkins.map(c => ({ ...c, date: toISO(c.date) })),
                 applications: this.applications
@@ -274,58 +274,75 @@ DB.load();
 const METHOD_CODE = { "Cash": "CASH", "GCash": "GCASH", "Bank transfer": "BANK" };
 // sync(true) reloads the page once when the server data changed (page load).
 // sync(false) just refreshes DB in place; used right after a write so the screen can redraw.
+let _inFlightSync = null;
 DB.sync = async function (reload = false) {
-    const METHOD_LABEL = { CASH: "Cash", GCASH: "GCash", BANK: "Bank transfer", ONLINE: "Online (PayMongo)" };
-    const idFor = pk => "M" + (202600 + pk);
-    const SIG_KEY = "profit-server-sig";
-    let responses;
-    try {
-        responses = await Promise.all([
-            fetch("/api/staff/members/", { credentials: "same-origin" }),
-            fetch("/api/staff/payments/", { credentials: "same-origin" }),
-            fetch("/api/staff/attendance/", { credentials: "same-origin" })
-        ]);
-    } catch { window.pfSyncSettled = true; document.dispatchEvent(new CustomEvent("profit:synced", { detail: { ok: false } })); return false; }
-    if (responses.some(r => !r.ok)) { window.pfSyncSettled = true; document.dispatchEvent(new CustomEvent("profit:synced", { detail: { ok: false } })); return false; }
+    if (_inFlightSync) return _inFlightSync;
+    _inFlightSync = (async () => {
+        const METHOD_LABEL = { CASH: "Cash", GCASH: "GCash", BANK: "Bank transfer", ONLINE: "Online (PayMongo)" };
+        const idFor = pk => "M" + (202600 + pk);
+        const SIG_KEY = "profit-server-sig";
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 10000);
+        let responses;
+        try {
+            responses = await Promise.all([
+                fetch("/api/staff/members/", { credentials: "same-origin", signal: controller.signal }),
+                fetch("/api/staff/payments/", { credentials: "same-origin", signal: controller.signal }),
+                fetch("/api/staff/attendance/", { credentials: "same-origin", signal: controller.signal })
+            ]);
+        } catch {
+            clearTimeout(timer);
+            window.pfSyncSettled = true;
+            document.dispatchEvent(new CustomEvent("profit:synced", { detail: { ok: false } }));
+            return false;
+        }
+        clearTimeout(timer);
+        if (responses.some(r => !r.ok)) {
+            window.pfSyncSettled = true;
+            document.dispatchEvent(new CustomEvent("profit:synced", { detail: { ok: false } }));
+            return false;
+        }
 
-    const [rows, pays, atts] = await Promise.all(responses.map(r => r.json()));
+        const [rows, pays, atts] = await Promise.all(responses.map(r => r.json()));
 
-    // The API lists payments newest first, so the first row seen is each member's current plan.
-    const planOf = {};
-    pays.forEach(p => { if (!(p.member_id in planOf)) planOf[p.member_id] = p.plan; });
+        // The API lists payments newest first, so the first row seen is each member's current plan.
+        const planOf = {};
+        pays.forEach(p => { if (!(p.member_id in planOf)) planOf[p.member_id] = p.plan; });
 
-    this.members = rows.map(r => {
-        const plan = (r.plan || planOf[r.id] || (r.membership_status === "PENDING" ? "pending" : "")).toLowerCase();
-        const end = r.expiry_date ? fromISO(r.expiry_date) : TODAY;
-        return {
-            id: idFor(r.id), serverId: r.id, name: r.name, email: r.email || "",
-            phone: r.phone || "", address: r.address || "",
-            emergencyName: "", emergencyPhone: "", photoId: null,
-            plan, start: addDays(end, -(PLANS[plan]?.days || 30)), end, checkins: 0,
-            joined: r.date_joined ? fromISO(r.date_joined) : null
-        };
-    });
-    this.payments = pays.map(p => ({
-        ref: p.ref, id: p.id, desk: typeof p.id === "number", methodCode: p.method,
-        date: fromISO(p.paid_on), memberId: idFor(p.member_id),
-        plan: p.plan, method: METHOD_LABEL[p.method] || p.method, amount: p.amount_centavos / 100
-    }));
-    this.checkins = atts.map(a => ({
-        date: fromISO(a.check_in_date), memberId: idFor(a.member_id),
-        time: new Date(a.check_in_at).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })
-    }));
+        this.members = rows.map(r => {
+            const plan = (r.plan || planOf[r.id] || (r.membership_status === "PENDING" ? "pending" : "")).toLowerCase();
+            const end = (r.expiry_date ? fromISO(r.expiry_date) : null) || TODAY;
+            return {
+                id: idFor(r.id), serverId: r.id, name: r.name, email: r.email || "",
+                phone: r.phone || "", address: r.address || "",
+                emergencyName: "", emergencyPhone: "", photoId: null,
+                plan, start: addDays(end, -(PLANS[plan]?.days || 30)), end, checkins: 0,
+                joined: r.date_joined ? fromISO(r.date_joined) : null
+            };
+        });
+        this.payments = pays.map(p => ({
+            ref: p.ref, id: p.id, desk: typeof p.id === "number", methodCode: p.method,
+            date: fromISO(p.paid_on) || TODAY, memberId: idFor(p.member_id),
+            plan: p.plan, method: METHOD_LABEL[p.method] || p.method, amount: p.amount_centavos / 100
+        }));
+        this.checkins = atts.map(a => ({
+            date: fromISO(a.check_in_date) || TODAY, memberId: idFor(a.member_id),
+            time: new Date(a.check_in_at).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })
+        }));
 
-    const sig = JSON.stringify([this.members, this.payments, this.checkins]);
-    const changed = localStorage.getItem(SIG_KEY) !== sig;
-    this.save();
-    this.synced = true;
-    if (changed) {
-        try { localStorage.setItem(SIG_KEY, sig); } catch { /* storage blocked */ }
-        if (reload) { location.reload(); return true; }
-    }
-    window.pfSyncSettled = true;
-    document.dispatchEvent(new CustomEvent("profit:synced", { detail: { ok: true, changed } }));
-    return true;
+        const sig = JSON.stringify([this.members, this.payments, this.checkins]);
+        const changed = localStorage.getItem(SIG_KEY) !== sig;
+        this.save();
+        this.synced = true;
+        if (changed) {
+            try { localStorage.setItem(SIG_KEY, sig); } catch { /* storage blocked */ }
+            if (reload) { location.reload(); return true; }
+        }
+        window.pfSyncSettled = true;
+        document.dispatchEvent(new CustomEvent("profit:synced", { detail: { ok: true, changed } }));
+        return true;
+    })();
+    try { return await _inFlightSync; } finally { _inFlightSync = null; }
 };
 {
     const rawSync = DB.sync;
@@ -340,7 +357,7 @@ DB.sync(false);
 // longer than the first server sync, then runs the page's first render. Without
 // it the local demo rows paint first and get replaced, which reads as a flicker.
 window.pfAfterSync = (() => {
-    const MIN = 400;                     // shortest time the placeholder stays up
+    const MIN = 120;                     // shortest time the placeholder stays up
     const started = performance.now();
     const queue = [];
     let settled = false, done = false;
@@ -354,7 +371,7 @@ window.pfAfterSync = (() => {
     if (window.pfSyncSettled) settle();
     else {
         document.addEventListener("profit:synced", settle, { once: true });
-        setTimeout(settle, 4000);
+        setTimeout(settle, 2200);
     }
     return fn => (done ? fn() : queue.push(fn));
 })();

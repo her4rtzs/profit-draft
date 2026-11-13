@@ -48,8 +48,22 @@
     #notificationList .notification-empty i{font-size:22px;color:#e8b93a}`;
   document.head.appendChild(style);
 
+  const CACHE_KEY = "pf-notif-cache-v1";
   let items = [];
   let unread = 0;
+  let lastFetchTs = 0;
+  let inFlightLoad = null;
+  let hasLoadedOnce = false;
+
+  try {
+    const cached = JSON.parse(sessionStorage.getItem(CACHE_KEY) || "null");
+    if (cached && Array.isArray(cached.items)) {
+      items = cached.items;
+      unread = Number(cached.unread || 0);
+      lastFetchTs = Number(cached.ts || 0);
+      hasLoadedOnce = true;
+    }
+  } catch {}
 
   function paint() {
     if (badge) {
@@ -57,9 +71,17 @@
       badge.hidden = unread === 0;
     }
     if (toggle) toggle.setAttribute("aria-label", unread ? `Notifications, ${unread} unread` : "Notifications, you're all caught up");
-    if (summary) summary.textContent = unread ? `${unread} unread` : "You're all caught up";
+    if (summary) {
+      summary.innerHTML = inFlightLoad && !hasLoadedOnce
+        ? '<i class="fa-solid fa-circle-notch fa-spin" aria-hidden="true" style="margin-right:5px;color:#e8b93a"></i>Checking updates...'
+        : (unread ? `${unread} unread` : "You're all caught up");
+    }
     if (markAll) markAll.disabled = unread === 0;
     if (!list) return;
+    if (inFlightLoad && !hasLoadedOnce && !items.length) {
+      list.innerHTML = `<div class="notification-empty"><i class="fa-solid fa-circle-notch fa-spin" aria-hidden="true"></i><strong>Loading notifications...</strong></div>`;
+      return;
+    }
     list.innerHTML = items.length
       ? items.map(n => `<button type="button" class="notification-item ${n.read ? "is-read" : "is-unread"}" data-id="${esc(n.id)}" role="menuitem">
           <span class="notif-icon"><i class="fa-solid ${ICON[n.kind] || "fa-bell"}" aria-hidden="true"></i></span>
@@ -68,20 +90,39 @@
       : `<div class="notification-empty"><i class="fa-regular fa-bell-slash" aria-hidden="true"></i><strong>No notifications</strong><p>New announcements, trainer changes and membership updates show up here.</p></div>`;
   }
 
-  async function load() {
-    try {
-      const res = await window.ProFitAPI.get("/notifications/?limit=30");
-      items = res.items || [];
-      unread = res.unread || 0;
+  async function load(force = false) {
+    if (inFlightLoad) return inFlightLoad;
+    if (!force && hasLoadedOnce && (Date.now() - lastFetchTs) < 15000) {
       paint();
-    } catch { /* keep the last list on a failed request */ }
+      return;
+    }
+    inFlightLoad = (async () => {
+      if (!hasLoadedOnce && panel && !panel.hidden) paint();
+      try {
+        const res = await window.ProFitAPI.get("/notifications/?limit=30", { silent: true });
+        items = res.items || [];
+        unread = res.unread || 0;
+        lastFetchTs = Date.now();
+        hasLoadedOnce = true;
+        try { sessionStorage.setItem(CACHE_KEY, JSON.stringify({ items, unread, ts: lastFetchTs })); } catch {}
+      } catch {
+        hasLoadedOnce = true;
+      } finally {
+        inFlightLoad = null;
+        paint();
+      }
+    })();
+    return inFlightLoad;
   }
 
   function setOpen(open) {
     if (!panel || !toggle) return;
     panel.hidden = !open;
     toggle.setAttribute("aria-expanded", String(open));
-    if (open) load();
+    if (open) {
+      paint();
+      load(false);
+    }
   }
 
   toggle?.addEventListener("click", e => { e.stopPropagation(); setOpen(panel.hidden); });
@@ -96,9 +137,10 @@
     if (!item) return;
     try {
       if (!item.read) {
-        const res = await window.ProFitAPI.post(`/notifications/${item.id}/read/`, {});
+        const res = await window.ProFitAPI.post(`/notifications/${item.id}/read/`, {}, { silent: true });
         item.read = true;
         unread = res.unread ?? Math.max(0, unread - 1);
+        try { sessionStorage.setItem(CACHE_KEY, JSON.stringify({ items, unread, ts: lastFetchTs })); } catch {}
         paint();
       }
     } catch { /* still follow the link */ }
@@ -108,14 +150,16 @@
   markAll?.addEventListener("click", async e => {
     e.stopPropagation();
     try {
-      await window.ProFitAPI.post("/notifications/read-all/", {});
+      await window.ProFitAPI.post("/notifications/read-all/", {}, { silent: true });
       items = items.map(n => ({ ...n, read: true }));
       unread = 0;
+      try { sessionStorage.setItem(CACHE_KEY, JSON.stringify({ items, unread, ts: lastFetchTs })); } catch {}
       paint();
     } catch { /* keep the list as it was */ }
   });
 
-  document.addEventListener("profit:synced", load);
-  setInterval(() => { if (!document.hidden) load(); }, 60000);
-  load();
+  if (hasLoadedOnce) paint();
+  document.addEventListener("profit:synced", () => load(true));
+  setInterval(() => { if (!document.hidden) load(true); }, 60000);
+  load(false);
 })();

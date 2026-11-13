@@ -31,8 +31,9 @@
   }
 
   async function request(path, options = {}) {
-    busy(1);
-    try { return await rawRequest(path, options); } finally { busy(-1); }
+    const silent = !!options.silent;
+    if (!silent) busy(1);
+    try { return await rawRequest(path, options); } finally { if (!silent) busy(-1); }
   }
 
   async function rawRequest(path, options = {}) {
@@ -44,7 +45,22 @@
       const token = await ensureCsrf();
       if (token) headers.set("X-CSRFToken", token);
     }
-    const response = await fetch(apiUrl(path), { ...options, method, headers, credentials: "include", cache: "no-store" });
+    const controller = new AbortController();
+    const timeoutMs = options.timeoutMs || 12000;
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    let response;
+    try {
+      response = await fetch(apiUrl(path), { ...options, method, headers, credentials: "include", cache: "no-store", signal: options.signal || controller.signal });
+    } catch (err) {
+      clearTimeout(timer);
+      if (err && err.name === "AbortError") {
+        const timeoutErr = new Error("Request timed out. Please try again.");
+        timeoutErr.status = 408;
+        throw timeoutErr;
+      }
+      throw err;
+    }
+    clearTimeout(timer);
     const payload = await response.json().catch(() => ({}));
     if (!response.ok) {
       let msg = payload.detail || payload.message;
@@ -75,10 +91,10 @@
 
   window.ProFitAPI = {
     request, busy,
-    get: path => request(path),
-    post: (path, data) => request(path, { method: "POST", body: JSON.stringify(data || {}) }),
-    patch: (path, data) => request(path, { method: "PATCH", body: JSON.stringify(data || {}) }),
-    del: path => request(path, { method: "DELETE" }),
-    delete: path => request(path, { method: "DELETE" })
+    get: (path, options) => request(path, options),
+    post: (path, data, options) => request(path, { ...options, method: "POST", body: JSON.stringify(data || {}) }),
+    patch: (path, data, options) => request(path, { ...options, method: "PATCH", body: JSON.stringify(data || {}) }),
+    del: (path, options) => request(path, { ...options, method: "DELETE" }),
+    delete: (path, options) => request(path, { ...options, method: "DELETE" })
   };
 })();
