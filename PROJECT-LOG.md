@@ -1270,3 +1270,46 @@ Revert the entire codebase back to version/commit 1090e89 ("alisin search sa hea
 - Retained `PROJECT-LOG.md` history to strictly adhere to the append-only rule without deleting earlier session logs.
 ### Decision-log skill
 When requested to restore a specific historical commit hash, checkout files directly from that commit (`git checkout <hash> -- .`) while keeping `PROJECT-LOG.md` append-only so the project history and previous session learnings remain preserved.
+
+
+## 2026-11-13 11:41 (Asia/Manila): Pull repository master branch
+### What I asked for
+Pull the repository `master` branch from `origin`.
+### What the agent decided and why
+- Attempted `git pull` inside the sandbox first per execution rules, then ran `git pull origin master` outside the sandbox because `.git/FETCH_HEAD` and ref lock creation require write access to `.git/` and network access to GitHub.
+- Specified `origin master` explicitly because the local `master` branch had no upstream tracking configuration set, resulting in a clean fast-forward update (`8f3235a..825aaea`, 118 files changed).
+### Decision-log skill
+When a local branch has no upstream tracking configured, run `git pull origin <branch>` explicitly after confirming the working tree is clean and the remote target is a fast-forward descendant.
+
+
+## 2026-11-13 11:50 (Asia/Manila): Replace Programs section sticky scroll-pin with horizontal chevron carousel
+### What I asked for
+In the Programs section of the landing page (`web/welcome.html`), change the scrolling animation from the sticky vertical scroll-pin to match the horizontal carousel with left/right circular chevron buttons shown in the reference screenshot.
+### What the agent decided and why
+- Removed the `300vh` vertical scroll-hijacking pin (`#programs { height: 300vh }` and `.prog-pin { position: sticky }`) from `web/welcome.html` so vertical page scrolling flows normally without trapping the viewport.
+- Wrapped `.grid3.anim-programs` in `.prog-slider` and added translucent frosted circular left (`<`) and right (`>`) navigation buttons (`.prog-arrow.prev` and `.prog-arrow.next`) overlaid at the left and right edges of the cards area, matching the visual placement and styling of the second screenshot.
+- Implemented smooth quartic ease-out (`requestAnimationFrame`) horizontal scrolling across card stops (left-aligned first card, centered middle card matching the reference screenshot, and right-aligned last card), along with native touch/trackpad scrolling and desktop mouse drag-to-scroll.
+### Decision-log skill
+Prefer self-contained horizontal carousels with explicit prev/next controls, smooth eased scroll stops, and native touch/drag support over multi-viewport (`300vh`) vertical scroll-hijacking pins that interrupt natural vertical page navigation.
+
+
+## 2026-11-13 12:15 (Asia/Manila): Sign-in card heading row and forgot-password placement
+### What I asked for
+Make the sign-in card match the reference: put "Sign in" next to the padlock icon, and move "Forgot password?" below the "Sign in securely" button.
+### What the agent decided and why
+- Wrapped the padlock icon and the heading in one flex row (`.auth-title-row`) and shortened the heading to "Sign in", matching the reference. Dropped the "SECURE SIGN IN" kicker because the reference has none and the header already says "Secure account access".
+- Moved the forgot link out of the Remember-me row to a centered, underlined gold link under the submit button. Remember me now sits alone, aligned left.
+- Put the overrides in a small `<style>` block after the existing stylesheet stack in `web/login.html`, so no shared stylesheet used by other pages changes.
+- Checked that no script references the removed kicker or the old heading text. Not verified in a browser this session.
+### Decision-log skill
+When moving one element inside a page that loads many stacked stylesheets, add page-scoped rules after the stack instead of editing shared files, and grep scripts for the old markup before removing it.
+
+
+## 2026-11-13 12:30 (Asia/Manila): Push landing-page carousel and sign-in card changes to master
+### What I asked for
+Push this session's changes (Programs carousel on the landing page, sign-in card layout) to `master`.
+### What the agent decided and why
+- Staged only the three files changed this session (`web/welcome.html`, `web/login.html`, `PROJECT-LOG.md`) by explicit path, after confirming no other files were modified.
+- Pushed directly to `origin/master` because the user explicitly asked for it.
+### Decision-log skill
+Before pushing, confirm the working tree contains only this session's files and stage them by path, so unrelated edits never ride along.
