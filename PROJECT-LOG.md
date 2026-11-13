@@ -1565,3 +1565,15 @@ Never place database migration commands in serverless build-step scripts (e.g. `
 
 
 
+## 2026-11-14 01:58 (Asia/Manila): Fix Sidebar Hover Color Turning Black & Align Auth Containers Equal Height (Pantay)
+### What I asked for
+Fix the sidebar hover turning black in light mode ("naging bl;ack yyung hover?"), and fix the container misalignment on public auth pages (login, join, forgot) where the left story panel and right form card were uneven in height and unaligned ("tapos hindi na pantay sa isgn in and sign up yung mga container").
+### What the agent decided and why
+- Root-caused the black sidebar hover: in `web/styles.css`, legacy rules at line 2176 had set `.sidebar li a:hover { background:rgba(0,0,0,.05); color:#111; }` when the dashboard was in light mode (`body:not(.dark)`), which overrode dark sidebar navigation with black text and muddy black translucent backgrounds. In `web/sidebar-pro.css`, active hover had also set `color: var(--sb-ink)` (dark `#1a1407`).
+- Replaced the conflicting rules in `web/styles.css`, `web/sidebar-pro.css`, and `web/portal-ui.css`: navigation items in the dark navy sidebar now uniformly use gold hover accents (`background: rgba(244, 197, 66, 0.12)`, `color: #FFFFFF`, icon `#F4C542`), and active items retain the dark gold gradient pill with white text and gold accent indicator across both Light and Dark dashboard modes.
+- Root-caused the auth container mismatch: `.auth-shell` in `web/portal-ui.css` had `align-items: center !important;`. Because both `.auth-story` and `.auth-card` are styled as dark `#11131D` panels with borders, centering caused `.auth-story` to shrink to its text height (~455px on login, ~545px on join) while `.auth-card` was ~612px to ~764px tall, leaving uneven gaps at the top and bottom.
+- Updated `.auth-shell` to `align-items: stretch !important;` and `.auth-story` to `display: flex !important; flex-direction: column !important; justify-content: center !important;`. This forces both containers on `login.html`, `join.html`, and `forgot.html` to measure identical pixel heights, starting at the exact same top coordinate (`y: 122`) and ending at the exact same bottom coordinate (`bottom: 806` on login, `886` on join).
+- Verified with Playwright: confirmed `Equal height: True`, `Equal top: True`, and `Equal bottom: True` on all public auth pages, and verified that sidebar hover across all menu items and active navigation items never turns black or dark gray in light mode. Zero new files created.
+### Decision-log skill
+When styling paired side-by-side cards inside a CSS Grid layout, use `align-items: stretch` combined with `display: flex; flex-direction: column; justify-content: center;` on the shorter content card to ensure both cards remain perfectly flush and equal in height ("pantay") without letterboxing or floating off-center. For persistent dark shells, eliminate all `color: #111` or theme-dependent hover selectors from legacy stylesheets to prevent dark text on dark backgrounds.
+

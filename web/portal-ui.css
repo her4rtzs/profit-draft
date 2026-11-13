@@ -2178,69 +2178,101 @@ body.dark .sidebar a .icon {
 }
 
 /* Hover State: Subtle gold-tinted background, ProFit gold icon, warm white text */
+html body nav.sidebar .menulist a:not(.active):hover,
+html body .sidebar a:not(.active):hover,
+html body .sidebar li a:not(.active):hover,
 body nav.sidebar .menulist a:not(.active):hover,
 body .sidebar a:not(.active):hover,
 body:not(.dark) nav.sidebar .menulist a:not(.active):hover,
 body:not(.dark) .sidebar a:not(.active):hover,
+body:not(.dark) .sidebar li a:not(.active):hover,
 body.dark nav.sidebar .menulist a:not(.active):hover,
-body.dark .sidebar a:not(.active):hover {
+body.dark .sidebar a:not(.active):hover,
+body.dark .sidebar li a:not(.active):hover {
   background: rgba(244, 197, 66, 0.12) !important;
   border: 1px solid rgba(244, 197, 66, 0.25) !important;
   color: #FFFFFF !important;
   transform: translateX(4px) !important;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22), 0 0 12px rgba(244, 197, 66, 0.15) !important;
 }
+html body nav.sidebar .menulist a:not(.active):hover .icon,
+html body .sidebar a:not(.active):hover .icon,
+html body .sidebar li a:not(.active):hover .icon,
 body nav.sidebar .menulist a:not(.active):hover .icon,
 body .sidebar a:not(.active):hover .icon,
 body:not(.dark) nav.sidebar .menulist a:not(.active):hover .icon,
 body:not(.dark) .sidebar a:not(.active):hover .icon,
+body:not(.dark) .sidebar li a:not(.active):hover .icon,
 body.dark nav.sidebar .menulist a:not(.active):hover .icon,
-body.dark .sidebar a:not(.active):hover .icon {
+body.dark .sidebar a:not(.active):hover .icon,
+body.dark .sidebar li a:not(.active):hover .icon {
   color: #F4C542 !important;
   transform: scale(1.1) !important;
 }
 
 /* Active State: Consistent subtle dark gold gradient with gold accent indicator */
+html body nav.sidebar .menulist a.active,
+html body .sidebar a.active,
+html body .sidebar li a.active,
 body nav.sidebar .menulist a.active,
 body .sidebar a.active,
 body:not(.dark) nav.sidebar .menulist a.active,
 body:not(.dark) .sidebar a.active,
+body:not(.dark) .sidebar li a.active,
 body.dark nav.sidebar .menulist a.active,
-body.dark .sidebar a.active {
+body.dark .sidebar a.active,
+body.dark .sidebar li a.active {
   background: linear-gradient(110deg, rgba(244, 197, 66, 0.22) 0%, rgba(244, 197, 66, 0.08) 100%) !important;
   border: 1px solid rgba(244, 197, 66, 0.45) !important;
   color: #FFFFFF !important;
   font-weight: 700 !important;
   box-shadow: inset 3px 0 0 #F4C542, 0 4px 16px rgba(0, 0, 0, 0.3) !important;
 }
+html body nav.sidebar .menulist a.active .icon,
+html body nav.sidebar .menulist a.active .text,
+html body .sidebar a.active .icon,
+html body .sidebar li a.active .icon,
 body nav.sidebar .menulist a.active .icon,
 body .sidebar a.active .icon,
 body:not(.dark) nav.sidebar .menulist a.active .icon,
 body:not(.dark) .sidebar a.active .icon,
+body:not(.dark) .sidebar li a.active .icon,
 body.dark nav.sidebar .menulist a.active .icon,
-body.dark .sidebar a.active .icon {
+body.dark .sidebar a.active .icon,
+body.dark .sidebar li a.active .icon {
   color: #F4C542 !important;
 }
 
 /* Active State Hover: Enhanced gold glow and slight translation */
+html body nav.sidebar .menulist a.active:hover,
+html body .sidebar a.active:hover,
+html body .sidebar li a.active:hover,
 body nav.sidebar .menulist a.active:hover,
 body .sidebar a.active:hover,
 body:not(.dark) nav.sidebar .menulist a.active:hover,
 body:not(.dark) .sidebar a.active:hover,
+body:not(.dark) .sidebar li a.active:hover,
 body.dark nav.sidebar .menulist a.active:hover,
-body.dark .sidebar a.active:hover {
+body.dark .sidebar a.active:hover,
+body.dark .sidebar li a.active:hover {
   background: linear-gradient(110deg, rgba(244, 197, 66, 0.28) 0%, rgba(244, 197, 66, 0.12) 100%) !important;
   border-color: rgba(244, 197, 66, 0.6) !important;
   color: #FFFFFF !important;
   transform: translateX(4px) !important;
   box-shadow: inset 3px 0 0 #F4C542, 0 6px 20px rgba(244, 197, 66, 0.22) !important;
 }
+html body nav.sidebar .menulist a.active:hover .icon,
+html body nav.sidebar .menulist a.active:hover .text,
+html body .sidebar a.active:hover .icon,
+html body .sidebar li a.active:hover .icon,
 body nav.sidebar .menulist a.active:hover .icon,
 body .sidebar a.active:hover .icon,
 body:not(.dark) nav.sidebar .menulist a.active:hover .icon,
 body:not(.dark) .sidebar a.active:hover .icon,
+body:not(.dark) .sidebar li a.active:hover .icon,
 body.dark nav.sidebar .menulist a.active:hover .icon,
-body.dark .sidebar a.active:hover .icon {
+body.dark .sidebar a.active:hover .icon,
+body.dark .sidebar li a.active:hover .icon {
   color: #F7D36B !important;
   transform: scale(1.1) !important;
 }
@@ -3202,7 +3234,7 @@ html body.public-dark-theme .secure-label {
   color: #9A9AA5 !important;
 }
 
-/* Two-column layout container */
+/* Two-column layout container - perfectly aligned and equal height (pantay) */
 html body.auth-page .auth-shell,
 html body.public-dark-theme .auth-shell {
   max-width: 1120px !important;
@@ -3211,7 +3243,7 @@ html body.public-dark-theme .auth-shell {
   padding: 48px 24px !important;
   display: grid !important;
   grid-template-columns: minmax(0, 1.05fr) minmax(360px, 440px) !important;
-  align-items: center !important;
+  align-items: stretch !important;
   gap: clamp(36px, 6vw, 72px) !important;
 }
 
@@ -3230,6 +3262,9 @@ html body.public-dark-theme .auth-card {
 html body.auth-page .auth-story,
 html body.public-dark-theme .auth-story {
   padding: 44px 40px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
 }
 
 html body.auth-page .auth-card,

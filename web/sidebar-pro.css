@@ -248,18 +248,19 @@ html body nav.sidebar .menulist a:focus-visible {
   outline-offset: 2px !important;
 }
 
-/* Active Navigation Item (Solid Gold Gradient Pill) */
+/* Active Navigation Item (ProFit Dark Gold Accent) */
 html body nav.sidebar .menulist a.active,
 html body nav.sidebar .menulist a.active:hover {
-  background: linear-gradient(110deg, var(--sb-gold-2) 0%, var(--sb-gold) 100%) !important;
-  color: var(--sb-ink) !important;
+  background: linear-gradient(110deg, rgba(244, 197, 66, 0.22) 0%, rgba(244, 197, 66, 0.08) 100%) !important;
+  border: 1px solid rgba(244, 197, 66, 0.45) !important;
+  color: #FFFFFF !important;
   font-weight: 700 !important;
-  box-shadow: 0 6px 18px rgba(232, 185, 58, 0.28) !important;
+  box-shadow: inset 3px 0 0 #F4C542, 0 4px 16px rgba(0, 0, 0, 0.3) !important;
 }
 
 html body nav.sidebar .menulist a.active .icon,
 html body nav.sidebar .menulist a.active .text {
-  color: var(--sb-ink) !important;
+  color: #F4C542 !important;
 }
 
 /* ==========================================================================

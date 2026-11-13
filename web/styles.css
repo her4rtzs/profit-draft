@@ -2167,16 +2167,14 @@ body.dark input::placeholder,body.dark textarea::placeholder{color:#758399}
 }
 
 /* Consistency pass: one sidebar look for light and dark mode; no fade-in on every tab switch. */
-.sidebar { background:#fbfaf6 !important; border-right:1px solid #e4e0d3 !important; box-shadow:none !important; }
-body.dark .sidebar { background:#0c111c !important; border-right-color:#1d293b !important; box-shadow:none !important; }
-.sidebar .headertxt strong { color:#1d1c17; }
-body.dark .sidebar .headertxt strong { color:#fffdf6; }
-.sidebar li a { color:#3d3c35; background:transparent; box-shadow:none; }
-body.dark .sidebar li a { color:#b9b8ae; }
-.sidebar li a:hover { background:rgba(0,0,0,.05); color:#111; }
-body.dark .sidebar li a:hover { background:rgba(255,255,255,.08); color:#fff; }
-.sidebar li a.active, body.dark .sidebar li a.active { background:var(--gold,#d4a646); color:#19231e; box-shadow:none; }
-.sidebar li a.active .icon, body.dark .sidebar li a.active .icon { color:#19231e; }
+.sidebar, body.dark .sidebar, body:not(.dark) .sidebar { background:#0c111c !important; border-right:1px solid #1d293b !important; box-shadow:none !important; }
+.sidebar .headertxt strong, body.dark .sidebar .headertxt strong, body:not(.dark) .sidebar .headertxt strong { color:#fffdf6 !important; }
+.sidebar li a, body.dark .sidebar li a, body:not(.dark) .sidebar li a { color:#b9b8ae !important; background:transparent; box-shadow:none; }
+.sidebar li a:hover, body.dark .sidebar li a:hover, body:not(.dark) .sidebar li a:hover { background:rgba(244, 197, 66, 0.12) !important; border: 1px solid rgba(244, 197, 66, 0.25) !important; color:#fff !important; }
+.sidebar li a:hover .icon, body.dark .sidebar li a:hover .icon, body:not(.dark) .sidebar li a:hover .icon { color:#f4c542 !important; }
+.sidebar li a.active, body.dark .sidebar li a.active, body:not(.dark) .sidebar li a.active { background:linear-gradient(110deg, rgba(244, 197, 66, 0.22) 0%, rgba(244, 197, 66, 0.08) 100%) !important; border:1px solid rgba(244, 197, 66, 0.45) !important; color:#fff !important; box-shadow:inset 3px 0 0 #f4c542, 0 4px 16px rgba(0,0,0,0.3) !important; }
+.sidebar li a.active .icon, body.dark .sidebar li a.active .icon, body:not(.dark) .sidebar li a.active .icon { color:#f4c542 !important; }
+.sidebar li a.active:hover, body.dark .sidebar li a.active:hover, body:not(.dark) .sidebar li a.active:hover { background:linear-gradient(110deg, rgba(244, 197, 66, 0.28) 0%, rgba(244, 197, 66, 0.12) 100%) !important; border-color:rgba(244, 197, 66, 0.6) !important; color:#fff !important; }
 html body .main-content > * { animation:none !important; }
 
 /* Page reveal: keep shell immediately visible without blur/fade flicker on route changes. */
