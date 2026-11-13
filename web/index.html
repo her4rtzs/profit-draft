@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script>(function(){try{var d=localStorage.getItem('theme')!=='light';var h=document.documentElement;h.style.background=d?'#0a0e16':'#f0f2f5';h.style.colorScheme=d?'dark':'light';}catch(e){}})();</script><script src="splash.js?v=2"></script>
+<head><script>(function(){try{var d=localStorage.getItem('theme')!=='light';var h=document.documentElement;h.style.background=d?'#0a0e16':'#f8fafc';h.style.colorScheme=d?'dark':'light';if(d){h.classList.add('dark');}else{h.classList.remove('dark');}}catch(e){}})();</script><script src="splash.js?v=2"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ProFit | Dashboard</title>
@@ -39,7 +39,7 @@
 <link rel="stylesheet" href="layout-fixes.css?v=5">
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="staff-design.css"></head>
 
-<body class="pf-staff" data-page="dashboard" data-title="Dashboard" data-welcome="Welcome back ">
+<body class="pf-staff" data-page="dashboard" data-title="Dashboard" data-welcome="Welcome back "><script>(function(){try{var d=localStorage.getItem('theme')!=='light';if(d){document.body.classList.add('dark');}else{document.body.classList.remove('dark');}}catch(e){}})();</script>
 
 <div class="dashboard">
 
@@ -56,10 +56,30 @@
 
         <!-- QUICK ACTIONS -->
         <section class="quick-actions" aria-label="Quick actions">
-          <a class="quick-action" href="members.html#enrollment"><span class="quick-action-icon"><i class="fa-solid fa-user-plus"></i></span><span><strong>Enroll a member</strong><small>Add a new gym member</small></span><i class="fa-solid fa-arrow-up-right-from-square action-arrow"></i></a>
-          <a class="quick-action" href="attendance.html"><span class="quick-action-icon"><i class="fa-solid fa-calendar-check"></i></span><span><strong>Record attendance</strong><small>Manage today's check-ins</small></span><i class="fa-solid fa-arrow-up-right-from-square action-arrow"></i></a>
-          <a class="quick-action" href="payments.html"><span class="quick-action-icon"><i class="fa-solid fa-credit-card"></i></span><span><strong>Record a payment</strong><small>Update member billing</small></span><i class="fa-solid fa-arrow-up-right-from-square action-arrow"></i></a>
-          <a class="quick-action" href="reports.html"><span class="quick-action-icon"><i class="fa-solid fa-chart-line"></i></span><span><strong>View reports</strong><small>Review gym performance</small></span><i class="fa-solid fa-arrow-up-right-from-square action-arrow"></i></a>
+          <a class="quick-action qa-gold" href="members.html#enrollment">
+            <span class="qa-glow" aria-hidden="true"></span>
+            <span class="quick-action-icon" aria-hidden="true"><i class="fa-solid fa-user-plus"></i></span>
+            <span class="qa-details"><strong>Enroll a member</strong><small>Add to the gym roster</small></span>
+            <i class="fa-solid fa-arrow-up-right-from-square action-arrow" aria-hidden="true"></i>
+          </a>
+          <a class="quick-action qa-cyan" href="attendance.html">
+            <span class="qa-glow" aria-hidden="true"></span>
+            <span class="quick-action-icon" aria-hidden="true"><i class="fa-solid fa-calendar-check"></i></span>
+            <span class="qa-details"><strong>Record attendance</strong><small>Manage today's check-ins</small></span>
+            <i class="fa-solid fa-arrow-up-right-from-square action-arrow" aria-hidden="true"></i>
+          </a>
+          <a class="quick-action qa-emerald" href="payments.html">
+            <span class="qa-glow" aria-hidden="true"></span>
+            <span class="quick-action-icon" aria-hidden="true"><i class="fa-solid fa-credit-card"></i></span>
+            <span class="qa-details"><strong>Record a payment</strong><small>Update member billing</small></span>
+            <i class="fa-solid fa-arrow-up-right-from-square action-arrow" aria-hidden="true"></i>
+          </a>
+          <a class="quick-action qa-violet" href="reports.html">
+            <span class="qa-glow" aria-hidden="true"></span>
+            <span class="quick-action-icon" aria-hidden="true"><i class="fa-solid fa-chart-line"></i></span>
+            <span class="qa-details"><strong>View reports</strong><small>Review gym performance</small></span>
+            <i class="fa-solid fa-arrow-up-right-from-square action-arrow" aria-hidden="true"></i>
+          </a>
         </section>
 
         <!-- STATS / KPI CARDS -->
@@ -256,7 +276,7 @@
                 <div class="mt-body" id="mtBody" hidden>
                     <div class="mt-donut-wrap" id="mtDonutWrap">
                         <svg class="mt-donut-svg" viewBox="0 0 240 240" role="img" aria-label="Membership type distribution chart">
-                            <circle class="mt-donut-track" cx="120" cy="120" r="82"></circle>
+                            <circle class="mt-donut-track" cx="120" cy="120" r="80"></circle>
                             <g id="mtDonutSegments" transform="rotate(-90 120 120)"></g>
                             <g id="mtDonutLabels"></g>
                         </svg>
@@ -280,6 +300,25 @@
                     <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
                     <span>Total membership distribution across different plans.</span>
                 </div>
+
+                <svg class="mt-decor-wave" viewBox="0 0 400 120" preserveAspectRatio="none" aria-hidden="true">
+                    <defs>
+                        <linearGradient id="mtWaveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#F59E0B" stop-opacity="0"></stop>
+                            <stop offset="40%" stop-color="#F59E0B" stop-opacity="0.25"></stop>
+                            <stop offset="80%" stop-color="#FBBF24" stop-opacity="0.65"></stop>
+                            <stop offset="100%" stop-color="#F59E0B" stop-opacity="0.9"></stop>
+                        </linearGradient>
+                        <linearGradient id="mtWaveGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#F59E0B" stop-opacity="0"></stop>
+                            <stop offset="60%" stop-color="#F59E0B" stop-opacity="0.12"></stop>
+                            <stop offset="100%" stop-color="#FBBF24" stop-opacity="0.38"></stop>
+                        </linearGradient>
+                    </defs>
+                    <path d="M0,120 C120,115 180,85 260,95 C320,102 360,60 400,45 L400,120 Z" fill="url(#mtWaveGrad2)" opacity="0.45"></path>
+                    <path d="M0,120 C140,118 210,92 280,105 C330,115 370,80 400,55" stroke="url(#mtWaveGrad)" stroke-width="2.5" fill="none"></path>
+                    <path d="M100,120 C200,120 270,100 340,112 C370,118 390,95 400,80" stroke="url(#mtWaveGrad)" stroke-width="1.5" stroke-dasharray="4 2" fill="none" opacity="0.6"></path>
+                </svg>
 
             </div>
 
@@ -435,14 +474,14 @@
     .find(c => c.querySelector("p")?.textContent.trim() === label);
 
   const SVG_NS = "http://www.w3.org/2000/svg";
-  const RADIUS = 82;
+  const RADIUS = 80;
   const CIRC = 2 * Math.PI * RADIUS;
   const CANONICAL_ORDER = ["monthly", "quarterly", "annual", "other", "daily", "unassigned"];
   const PLAN_COLORS = {
-    monthly: "#F59E0B",   // Amber Orange
-    quarterly: "#FBBF24", // Warm Golden Yellow
-    annual: "#64748B",    // Slate Gray
-    other: "#A855F7",     // Purple / Violet
+    monthly: "#FF9800",   // Vivid Orange
+    quarterly: "#FFC107", // Golden Amber Yellow
+    annual: "#5B6B7C",    // Slate Steel Gray
+    other: "#9D4EDD",     // Violet / Purple
     daily: "#38BDF8",     // Sky Blue
     unassigned: "#475569" // Muted Slate
   };

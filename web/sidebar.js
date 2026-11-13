@@ -20,11 +20,18 @@
   const SUN_SVG = '<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.8" fill="currentColor" stroke="none"/><path d="M12 1.2v4M12 18.8v4M1.2 12h4M18.8 12h4M5.21 5.21l1.98 1.98M16.81 16.81l1.98 1.98M5.21 18.79l1.98-1.98M16.81 7.19l1.98-1.98"/></svg>';
   const applyTheme = dark => {
     document.body.classList.toggle("dark", !!dark);
+    document.documentElement.classList.toggle("dark", !!dark);
+    try {
+      const h = document.documentElement;
+      h.style.background = dark ? '#0a0e16' : '#f8fafc';
+      h.style.colorScheme = dark ? 'dark' : 'light';
+    } catch(e) {}
     if (themeToggle) {
       themeToggle.innerHTML = dark ? SUN_SVG : '<i class="fa-solid fa-moon"></i>';
       themeToggle.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
       themeToggle.title = dark ? "Light mode" : "Dark mode";
     }
+    window.dispatchEvent(new CustomEvent('profit:theme-changed', { detail: { dark: !!dark } }));
   };
   applyTheme(store.get("theme")!=="light");
   themeToggle?.addEventListener("click",()=>{const dark=!document.body.classList.contains("dark");applyTheme(dark);store.set("theme",dark?"dark":"light")});
