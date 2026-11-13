@@ -430,10 +430,11 @@
       .slice(0, 8);
     root.innerHTML = `<div class="pp-picker">
         <div class="pp-picker-head">
-          <span class="pp-browse-ico" aria-hidden="true"><i class="fa-solid fa-magnifying-glass"></i></span>
+          <span class="pp-browse-ico is-cyan" aria-hidden="true"><i class="fa-solid fa-magnifying-glass"></i></span>
           <div><h2>Find a member</h2><p class="pp-muted">Choose someone to see their profile, payments, and check-ins.</p></div>
         </div>
         <label class="pp-search pp-search-wide"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input id="pickerSearch" type="search" placeholder="Start typing a name, ID, or email" value="${esc(state.pickerQuery)}" aria-label="Find a member"></label>
+        <p class="pp-picker-hint">Search by name, ID, or email</p>
         <div class="pp-picker-list">${matches.length ? matches.map(m => `
           <button class="pp-picker-item" type="button" data-open="${esc(m.id)}">${avatar(m, "sm")}
             <span class="pp-picker-text"><strong>${esc(m.name)}</strong><small>${esc(m.id)} · ${esc(planLabel(m.plan) || "Unassigned")}</small></span>
@@ -625,13 +626,70 @@
   }
 
   // ---------- Rendering and tabs ----------
+  const HEADER_CONFIG = {
+    browse: {
+      icon: "fa-users",
+      accent: "is-amber",
+      title: "Browse Members",
+      subtitle: () => "View and manage all registered gym members.",
+      showBadge: true
+    },
+    detail: {
+      icon: "fa-id-badge",
+      accent: "is-cyan",
+      title: "Member Detail",
+      subtitle: () => {
+        const m = state.selectedId && DB.member(state.selectedId);
+        return m
+          ? `Profile, payments, and check-ins for ${m.name}.`
+          : "Find a member to view their profile, payments, and check-ins.";
+      },
+      showBadge: false
+    },
+    enroll: {
+      icon: "fa-user-plus",
+      accent: "is-emerald",
+      title: "New Enrollment",
+      subtitle: () => "Register a new member and record their first payment.",
+      showBadge: false
+    }
+  };
+  let headerFadeTimer = 0;
+  function updateHeader(animate = false) {
+    const cfg = HEADER_CONFIG[state.tab] || HEADER_CONFIG.browse;
+    const ico = $("membersHeaderIco");
+    const titleEl = $("membersHeaderTitle");
+    const subEl = $("membersHeaderSub");
+    const copyEl = $("membersHeaderCopy");
+    if (ico) {
+      ico.className = `pp-browse-ico ${cfg.accent}`;
+      ico.innerHTML = `<i class="fa-solid ${cfg.icon}"></i>`;
+    }
+    if (titleEl) {
+      const total = syncFailed && !DB.members.length ? "—" : DB.members.length;
+      titleEl.innerHTML = cfg.showBadge
+        ? `${esc(cfg.title)} <span class="pp-browse-badge" id="browseTotalBadge">${esc(total)}</span>`
+        : esc(cfg.title);
+    }
+    if (subEl) subEl.textContent = cfg.subtitle();
+    document.title = `ProFit | Members · ${cfg.title}`;
+    if (animate && copyEl) {
+      clearTimeout(headerFadeTimer);
+      copyEl.classList.remove("is-fading");
+      void copyEl.offsetWidth;
+      copyEl.classList.add("is-fading");
+      headerFadeTimer = setTimeout(() => copyEl.classList.remove("is-fading"), 160);
+    }
+  }
   function renderAll() {
     renderBrowse();
     renderApps();
     renderDetail();
+    updateHeader(false);
     hydratePhotos();
   }
-  function setTab(name) {
+  function setTab(name, { pushHash = true } = {}) {
+    const changed = state.tab !== name;
     state.tab = name;
     document.querySelectorAll(".pp-page-tab").forEach(b => {
       const on = b.dataset.tab === name;
@@ -640,19 +698,24 @@
     });
     document.querySelectorAll("[data-pane]").forEach(p => p.classList.toggle("active", p.dataset.pane === name));
     renderAll();
+    if (changed) updateHeader(true);
     if (name === "enroll") $("eName").focus({ preventScroll: true });
-    if (location.hash.replace(/^#/, "") !== name) history.replaceState(null, "", `#${name}`);
+    if (pushHash && location.hash.replace(/^#/, "") !== name) {
+      history.pushState(null, "", `#${name}`);
+    }
   }
 
   // ---------- Events ----------
   document.querySelectorAll(".pp-page-tab").forEach(b => b.addEventListener("click", () => setTab(b.dataset.tab)));
 
-  // Deep links from the header's quick actions: members.html#enroll, #applications …
+  // Deep links from the header's quick actions: members.html#enroll, #detail, #browse …
   function tabFromHash() {
-    const name = location.hash.replace(/^#/, "");
-    if (name && document.querySelector(`.pp-page-tab[data-tab="${name}"]`)) setTab(name);
+    const raw = location.hash.replace(/^#/, "");
+    const name = raw && document.querySelector(`.pp-page-tab[data-tab="${raw}"]`) ? raw : "browse";
+    setTab(name, { pushHash: false });
   }
   window.addEventListener("hashchange", tabFromHash);
+  window.addEventListener("popstate", tabFromHash);
 
   $("memberSearch").addEventListener("input", e => { state.query = e.target.value; state.page = 1; renderBrowse(); hydratePhotos(); });
   const statusBtn = $("memberStatusBtn");

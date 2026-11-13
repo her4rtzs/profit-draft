@@ -1708,3 +1708,13 @@ Fix remaining Browse Members UI issues (header padding, wave horizontal fade mas
 - Excluded `"other"` from `PLAN_KEYS` in `web/members.js`, updated Daily's copy to `1 day of access`, and styled Find a member (`.pp-picker`), Member detail (`.pp-detail-head`, 4 color-keyed KPIs, `.pp-det-panel` overview rows), and New enrollment (`.pp-enroll`, 4-column plan selector, gold switch toggle) using shared CSS variables and card rules.
 ### Decision-log skill
 When table column headers and centered chips drift under `table-layout: fixed`, apply matching CSS Grid tracks to `thead tr` and `tbody tr` so headers, chips, and fixed-height rows stay locked across viewports.
+
+## 2026-11-14 06:18 (Asia/Manila): Members dynamic header, tab states, full-width panels, and seamless table
+### What I asked for
+Update the Members page header per active tab (click, URL hash, initial load, back/forward), differentiate tab default/hover/active states, stretch all tab panels to the same 1400px container width, and eliminate table header/row cell seams.
+### What the agent decided and why
+- Added `HEADER_CONFIG` and `updateHeader()` in `web/members.js` driving icon, accent class, title, conditional count badge, subtitle (including selected member name), `document.title`, and 150ms fade on tab change, wired to `hashchange` and `popstate`.
+- Separated `.pp-page-tab` default (`#111827`), non-active `:hover` (2px lift, faint amber tint, no underline/glow), `.active` (amber gradient, glow, 2px bottom gold bar, no hover lift), `:focus-visible` (2px amber ring with 2px offset), `:active` scale, and `prefers-reduced-motion` in `web/members-ui.css`.
+- Unified `.pp-members-topbar` and `.pp-pane` at `max-width: 1400px`, expanded Find a member (2-col >= 1100px + search hint) and New enrollment (12-col grid) to full width, and moved all table backgrounds/dividers onto `thead tr` / `tbody tr` using `--cols` with `column-gap: 0`, explicit `th`/`td` background/border resets, `92px` plan chips, and `118px` status chips.
+### Decision-log skill
+When shared portal stylesheets paint cell-level backgrounds or borders inside a CSS Grid table, reset `background`, `border`, and `box-shadow` on `th`/`td` and move row bands/dividers to `tr` with zero `column-gap` to prevent vertical seams.
