@@ -1452,3 +1452,15 @@ Push the sidebar `z-index` fixes (`web/sidebar-pro.css`, `web/layout-fixes.css`,
 - Staged the 6 modified files by explicit path, committed them on top of `origin/master` (`38356a8`), and pushed to `origin/master`.
 ### Decision-log skill
 Always pull and fast-forward onto the latest remote commit before staging by explicit path, committing, and pushing to `origin/master`.
+
+
+## 2026-11-13 20:25 (Asia/Manila): Merge Diverged Origin/Master and Consolidate Group Changes
+### What I asked for
+Consolidate and merge all group changes together ("pagsamahin mo nga lahat").
+### What the agent decided and why
+- Found an active divergence between local `master` (holding the revenue chart editable year selector, 5-year range navigation, and performance improvements) and remote `origin/master` (commit `5a73caa` fixing sidebar z-index hierarchy).
+- Resolved merge conflict in `PROJECT-LOG.md` by retaining all entries from both sides in strict chronological order per append-only logging rules.
+- Concluded the merge with commit `248f632` and pushed to `origin/master`, bringing local and remote repositories into full synchronization.
+- Verified test suite integrity across Django check and test suites (`apps.membership`, `apps.trainers`, `api` - 45 tests OK; `apps.finance` - 8 tests OK).
+### Decision-log skill
+When resolving merge conflicts on append-only audit files such as `PROJECT-LOG.md`, combine entries from both diverging branches in timestamps-based chronological sequence without discarding any developer's logged session records.
