@@ -1,6 +1,22 @@
 <!doctype html>
 <html lang="en">
-<head><script src="splash.js?v=2"></script>
+<head><script>
+(function(){
+  try{
+    var isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.protocol === 'file:' || location.search.indexOf('demo=1') > -1;
+    var hasSession = !!(sessionStorage.getItem('profit-verified-session') || sessionStorage.getItem('profit-demo-session') || localStorage.getItem('profit-demo-session'));
+    var explicitLogout = sessionStorage.getItem('profit-logged-out') === '1';
+    if (!isLocal && (!hasSession || explicitLogout)) {
+      document.documentElement.classList.add('auth-pending');
+      location.replace('welcome.html');
+    }
+  }catch(e){}
+})();
+</script>
+<style>
+html.auth-pending, html.auth-pending body { display: none !important; visibility: hidden !important; }
+</style>
+<script src="splash.js?v=3"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>My membership · ProFit</title>

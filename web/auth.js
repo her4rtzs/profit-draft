@@ -29,6 +29,7 @@
       localStorage.removeItem("profit-demo-session");
       sessionStorage.removeItem("profit-demo-session");
       sessionStorage.removeItem("profit-verified-session");
+      sessionStorage.removeItem("pf-auth-just-logged-in");
       sessionStorage.setItem("profit-logged-out", "1");
     } catch (e) {}
     if (window.ProFitAPI) {
@@ -38,7 +39,8 @@
         /* ignore offline/demo errors so client logout always succeeds */
       }
     }
-    location.replace(loginTarget);
+    const welcomeTarget = isTrainerSection || isStaffSection ? "../welcome.html" : "welcome.html";
+    location.replace(welcomeTarget);
   }
 
   let logoutBound = false;
@@ -138,6 +140,10 @@
 
   const isStaffRole = r => ["ADMIN", "OWNER", "CASHIER"].includes(String(r || "").toUpperCase());
 
+  if (!storedUser && !loginPage) {
+    document.documentElement.classList.add("auth-pending");
+  }
+
   if (storedUser && !loginPage) {
     window.ProFitAuth = {
       user: storedUser,
@@ -183,7 +189,7 @@
         );
         return;
       }
-      document.documentElement.classList.remove("auth-checking");
+      document.documentElement.classList.remove("auth-checking", "auth-pending");
       window.ProFitAuth = {
         user,
         role,
@@ -194,7 +200,7 @@
       });
     } catch (error) {
       if (storedUser) {
-        document.documentElement.classList.remove("auth-checking");
+        document.documentElement.classList.remove("auth-checking", "auth-pending");
         window.ProFitAuth = {
           user: storedUser,
           role: storedUser.role,
@@ -205,7 +211,7 @@
         });
         return;
       }
-      if (loginPage) document.documentElement.classList.remove("auth-checking");
+      if (loginPage) document.documentElement.classList.remove("auth-checking", "auth-pending");
       else location.replace(file === "index.html" && !isTrainerSection && !isStaffSection ? "welcome.html" : `${loginTarget}?reason=session`);
       window.dispatchEvent(new CustomEvent("profit-auth-error", { detail: error }));
     }

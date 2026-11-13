@@ -1592,3 +1592,27 @@ Implement a smooth, premium loading animation for the ProFit system in two situa
 ### Decision-log skill
 For web applications with both initial cold-boot and warm intra-app navigation, decouple the startup screen from the intra-app page transitions: use a synchronous `<head>` splash for cold-boot/reload initialization, while using a lightweight CSS progress beam and immediate cached data painting for warm return navigation to eliminate artificial skeleton flicker.
 
+
+## 2026-11-14 02:56 (Asia/Manila): Fix ProFit Loading Screen Bug & Premature Dashboard Exposure
+
+### What I asked for
+Identify the root causes and fix the following loading screen and authentication bugs:
+1. When visiting the deployed Vercel URL, the Dashboard briefly flashes for 1–2 seconds before login even if the user is unauthenticated.
+2. The loading animation appears inside an unwanted white rectangular container.
+3. Branded full-screen loading screen appears repeatedly during internal Admin/Staff/Member portal navigation.
+4. Enforce strict loading behaviors:
+   - Landing Page (`welcome.html` / root `/`): Show branded loading animation on every open and return.
+   - Post-Login: Show branded loading animation only ONCE while initializing and opening account.
+   - Portal Navigation: Do NOT show full-screen branded loading screen between internal pages; preserve lightweight skeletons.
+   - Logout: Clear session, return to Landing Page, trigger Landing Page loader, and never expose Dashboard content.
+   - Visual Styling: Matte `#0A0E17` dark background, centered Functional Fitness Gym logo with subtle glowing gold ambient aura, glowing gold accent `#F59E0B`, animated circular spinner, text "Preparing your fitness experience...", and NO white box/modal/container.
+
+### What the agent decided and why
+- Root Cause 1 (Root URL Dashboard Flash): In `profit/settings.py`, `WHITENOISE_INDEX_FILE = True` caused WhiteNoise to intercept root `/` requests and directly serve `web/index.html` (the staff dashboard) instead of delegating `/` to Django's `views.home` view. Changed `WHITENOISE_INDEX_FILE = False` so `/` routes to `profit/views.py:home`, which serves `web/welcome.html`.
+- Root Cause 2 (Dashboard Flash on Direct /index.html Visits): `web/auth.js` previously waited until `DOMContentLoaded` and an asynchronous network fetch to `/api/auth/session` to redirect unauthenticated visitors. During that 1–2s network delay, `web/index.html` was fully painted and visible because `web/spotify.css` had explicitly forced `html.auth-checking body { visibility: visible; }`. Added an immediate synchronous auth guard in `<head>` of protected pages and in `web/auth.js`: if unauthenticated on remote, `html.auth-pending` is applied before DOM construction with `display: none !important; visibility: hidden !important;`, and `location.replace('welcome.html')` runs immediately. Unauthenticated visitors never see the dashboard.
+- Root Cause 3 (White Rectangular Container): In `web/pf-modern.css`, selector `[class$="-card"]` matched `.pf-loader-card` in `splash.js` and forced `background: var(--card)` (`#ffffff` in light mode/default). Replaced `.pf-loader-card` with `.pf-loader-stage`, forced all inner stages to `background: transparent !important; border: none !important; box-shadow: none !important;`, scoped the background strictly to matte `#0A0E17`, and styled the centered logo squircle (`#111522`) with `#F59E0B` ambient glow, circular gold spinner, and message "Preparing your fitness experience...".
+- Root Cause 4 (Loading Screen Placement & Frequency): In `web/splash.js`, separated Landing Page handling from portal pages. On `welcome.html` or `/`, the loader runs on every visit and dismisses when DOM/assets are ready. On portal pages, `splash.js` runs ONLY if `sessionStorage.getItem('pf-auth-just-logged-in') === '1'` (set upon successful login in `login.html`), immediately consumes and clears the flag, and displays the loader once while initializing the account. During regular internal navigation between portal pages, `splash.js` exits immediately, preserving fast transitions and lightweight skeletons.
+- Updated Logout: In `web/auth.js`, `performLogout()` clears all auth tokens and demo sessions, sets `profit-logged-out`, and uses `location.replace("welcome.html")` (or `../welcome.html`), ensuring the user lands on `welcome.html` where the branded loading screen activates cleanly.
+
+### Decision-log skill
+Never rely on client-side asynchronous `DOMContentLoaded` callbacks alone to protect sensitive or authenticated single-page views when serving static assets. Pair server-level routing defaults (disabling static index overrides like `WHITENOISE_INDEX_FILE`) with a synchronous `<head>` script and critical inline `display: none !important` guards (`html.auth-pending`) so that unauthenticated visitors are redirected before the first frame is painted.

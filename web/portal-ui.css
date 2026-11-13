@@ -3647,6 +3647,20 @@ body:not(.dark) .pf-skel td span {
   .pf-home-transition .main-content { animation: none !important; }
 }
 
+/* ---- Auth pending guard: guarantees zero dashboard flash before authentication ---- */
+html.auth-pending,
+html.auth-pending body,
+html.auth-pending .dashboard,
+html.auth-pending .app-shell,
+html.auth-pending main,
+html.auth-pending .sidebar {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+
 
 
 

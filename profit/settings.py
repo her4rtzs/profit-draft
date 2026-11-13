@@ -232,7 +232,7 @@ else:
 # The web app (plain HTML/CSS/JS) is served from web/ at the site root, so pages,
 # manifest and service worker share one origin: no CORS, cookies just work.
 WHITENOISE_ROOT = BASE_DIR / "web"
-WHITENOISE_INDEX_FILE = True
+WHITENOISE_INDEX_FILE = False
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
