@@ -30,6 +30,19 @@ class Command(BaseCommand):
             ("member", "member@example.com", "MEMBER", "Demo Member"),
             ("joyce", "joyce.alvarez@example.com", "MEMBER", "Joyce Alvarez"),
             ("angelo", "angelo.metillo@example.com", "MEMBER", "Angelo Metillo"),
+            ("namjoon", "namjoon@example.com", "MEMBER", "Kim Namjoon"),
+            ("seokjin", "seokjin@example.com", "MEMBER", "Kim Seokjin"),
+            ("hoseok", "hoseok@example.com", "MEMBER", "Jung Hoseok"),
+            ("maria", "maria.santos@example.com", "MEMBER", "Maria Santos"),
+            ("carlo", "carlo.ramos@example.com", "MEMBER", "Carlo Ramos"),
+            ("yoongi", "yoongi@example.com", "MEMBER", "Min Yoongi"),
+            ("jose", "jose.reyes@example.com", "MEMBER", "Jose Reyes"),
+            ("liza", "liza.mendoza@example.com", "MEMBER", "Liza Mendoza"),
+            ("gian", "gian.delatorre@example.com", "MEMBER", "Gian Dela Torre"),
+            ("karen", "karen.reyes@example.com", "MEMBER", "Karen Reyes"),
+            ("james", "james.mendoza@example.com", "MEMBER", "James Mendoza"),
+            ("daniel", "daniel.lopez@example.com", "MEMBER", "Daniel Lopez"),
+            ("sophia", "sophia.martinez@example.com", "MEMBER", "Sophia Martinez"),
         ]
         created_users = {}
         for username, email, role, name in accounts:

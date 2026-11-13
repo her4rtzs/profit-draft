@@ -22,7 +22,8 @@ const PLANS = {
     daily:     { label: "Daily",     days: 1,   price: 80 },
     monthly:   { label: "Monthly",   days: 30,  price: 800 },
     quarterly: { label: "Quarterly", days: 90,  price: 2100 },
-    annual:    { label: "Annual",    days: 365, price: 7500 }
+    annual:    { label: "Annual",    days: 365, price: 7500 },
+    other:     { label: "Other",     days: 30,  price: 500 }
 };
 
 const METHODS = ["Cash", "GCash", "Bank transfer"];
@@ -57,7 +58,7 @@ const DB = {
     KEY: "profit-db-v1",
     // Bump when the seed shape changes so an older stored copy re-seeds once
     // instead of silently keeping the thin data set.
-    REV: 3,
+    REV: 6,
 
     seed() {
         // Lifetime visit count is derived from the generated history below, not
@@ -71,24 +72,34 @@ const DB = {
         this.members = [
             mk("M202601", "Kim Namjoon",   "0917 100 0001", "monthly",   18),
             mk("M202602", "Kim Seokjin",   "0917 100 0002", "monthly",  -12),
-            mk("M202603", "Min Yoongi",    "0917 100 0003", "quarterly", 64),
-            mk("M202604", "Jung Hoseok",   "0917 100 0004", "monthly",    4),
-            mk("M202605", "Maria Santos",  "0917 100 0005", "monthly",   12),
-            mk("M202606", "Jose Reyes",    "0917 100 0006", "quarterly", 40),
-            mk("M202607", "Ana Cruz",      "0917 100 0007", "monthly",   -3),
-            mk("M202608", "Paolo Garcia",  "0917 100 0008", "monthly",    6),
-            mk("M202609", "Liza Mendoza",  "0917 100 0009", "quarterly", 75),
-            mk("M202610", "Carlo Ramos",   "0917 100 0010", "monthly",   25)
+            mk("M202603", "Jung Hoseok",   "0917 100 0004", "monthly",    4),
+            mk("M202604", "Maria Santos",  "0917 100 0005", "monthly",   12),
+            mk("M202605", "Ana Cruz",      "0917 100 0007", "monthly",   -3),
+            mk("M202606", "Paolo Garcia",  "0917 100 0008", "monthly",    6),
+            mk("M202607", "Carlo Ramos",   "0917 100 0010", "monthly",   25),
+            mk("M202608", "Alex Thompson", "0917 100 0011", "monthly",   15),
+
+            mk("M202609", "Min Yoongi",    "0917 100 0003", "quarterly", 64),
+            mk("M202610", "Jose Reyes",    "0917 100 0006", "quarterly", 40),
+            mk("M202611", "Liza Mendoza",  "0917 100 0009", "quarterly", 75),
+            mk("M202612", "Gian Dela Torre","0917 100 0012", "quarterly", 50),
+
+            mk("M202613", "Karen Reyes",   "0917 100 0013", "annual",    180),
+            mk("M202614", "James Mendoza", "0917 100 0014", "annual",    240),
+
+            mk("M202615", "Daniel Lopez",  "0917 100 0015", "other",      1),
+            mk("M202616", "Sophia Martinez","0917 100 0016", "other",      1)
         ];
 
         // [days ago (negative), member id, plan, method] — hand-written recent rows.
         const pays = [
-            [0, "M202601", "monthly", "GCash"], [0, "M202604", "monthly", "Cash"], [0, "M202605", "monthly", "Cash"],
-            [-1, "M202603", "quarterly", "GCash"], [-1, "M202608", "monthly", "Cash"],
-            [-2, "M202606", "quarterly", "Bank transfer"], [-3, "M202610", "monthly", "GCash"],
-            [-5, "M202602", "monthly", "Cash"], [-6, "M202607", "monthly", "Cash"],
-            [-8, "M202609", "quarterly", "GCash"], [-10, "M202605", "monthly", "Cash"],
-            [-13, "M202601", "monthly", "GCash"], [-16, "M202604", "monthly", "Cash"],
+            [0, "M202601", "monthly", "GCash"], [0, "M202603", "monthly", "Cash"], [0, "M202604", "monthly", "Cash"],
+            [-1, "M202609", "quarterly", "GCash"], [-1, "M202606", "monthly", "Cash"],
+            [-2, "M202610", "quarterly", "Bank transfer"], [-3, "M202607", "monthly", "GCash"],
+            [-5, "M202602", "monthly", "Cash"], [-6, "M202605", "monthly", "Cash"],
+            [-8, "M202611", "quarterly", "GCash"], [-10, "M202604", "monthly", "Cash"],
+            [-12, "M202613", "annual", "Bank transfer"], [-14, "M202614", "annual", "GCash"],
+            [-15, "M202615", "other", "Cash"], [-18, "M202616", "other", "GCash"],
             [-21, "M202608", "monthly", "Bank transfer"]
         ];
 

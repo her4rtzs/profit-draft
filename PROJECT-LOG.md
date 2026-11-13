@@ -1372,3 +1372,15 @@ Fix the Staff Dashboard Membership Type card where the header icon stacked above
 - Root cause 3 (Segment rendering & hover): Replaced the double-`requestAnimationFrame` `stroke-dasharray` transition with direct `stroke-dasharray` assignment plus a CSS `@keyframes mtDonutEnter` entrance animation so all segments always render at exact proportions, used high-contrast gold/copper/slate colors, and updated hover interactions to show both the tooltip and the hovered plan count/name in the donut center.
 ### Decision-log skill
 When adding custom header or card layouts to pages that load multiple legacy stylesheets (`spotify.css`, `layout-fixes.css`, `staff-design.css`), check selector specificity against `.panel-header > div:first-child` and `.content-grid` overrides and verify API serializers expose all fields the UI groups by instead of relying on partial payment-list inference.
+
+## 2026-11-13 18:07 (Asia/Manila): Seed Membership Types Distribution and Style Card to Reference Design
+### What I asked for
+Add membership types data and style the Membership Type card so it accurately displays the 16 members with the exact 50% Monthly, 25% Quarterly, 12.5% Annual, and 12.5% Other distribution matching the reference screenshot.
+### What the agent decided and why
+- Updated `web/data.js` seed data and bumped `DB.REV` to 6 with 16 members: 8 Monthly (50.0%), 4 Quarterly (25.0%), 2 Annual (12.5%), and 2 Other (12.5%), along with matching historical payments and `other` plan support in `PLANS`.
+- Seeded the Django database with the exact same 16 members, user profiles, and manual payments so API `/api/staff/members/` returns matching `r.plan` values even when synced with the backend.
+- Styled `.mt-legend-card` in `web/portal-ui.css` (`v=12`) with rounded cards, large glowing status dots, bold titles, member count subtitles, and right-aligned percentage pills matching the user's reference design (`media_1794563913954_3ed793af.jpg`).
+- Added the user icon `<i class="fa-solid fa-users mt-center-ico"></i>` inside the center of the donut chart and added the bottom footer info note (`<i class="fa-solid fa-circle-info"></i> Total membership distribution across different plans.`).
+- Fixed missing `Q` import in `api/trainers.py` so trainer unit tests pass.
+### Decision-log skill
+When a UI card displays distribution breakdowns across categories, ensure both the static front-end seed data and the backend demo database contain balanced multi-category records so the visualization renders complete data across all tiers in both demo and backend modes.

@@ -30,7 +30,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
 # --- Phase 1: staff member management and check-in --------------------------
 
-PLAN_CHOICES = ["daily", "monthly", "quarterly", "annual"]
+PLAN_CHOICES = ["daily", "monthly", "quarterly", "annual", "other"]
 
 
 class StaffMemberSerializer(serializers.ModelSerializer):
