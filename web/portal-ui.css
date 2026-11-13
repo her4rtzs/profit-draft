@@ -3821,10 +3821,26 @@ body[data-page="trainers"] .tr-kpi-cyan::before { background: linear-gradient(90
 body[data-page="trainers"] .tr-kpi-emerald::before { background: linear-gradient(90deg, #10B981, #34D399); box-shadow: 0 0 12px rgba(16, 185, 129, 0.5); }
 body[data-page="trainers"] .tr-kpi-violet::before { background: linear-gradient(90deg, #8B5CF6, #A78BFA); box-shadow: 0 0 12px rgba(139, 92, 246, 0.5); }
 
-body[data-page="trainers"] .tr-kpi-gold { background-image: radial-gradient(260px 140px at 0% 0%, rgba(245, 158, 11, 0.16), transparent 72%); }
-body[data-page="trainers"] .tr-kpi-cyan { background-image: radial-gradient(260px 140px at 0% 0%, rgba(6, 182, 212, 0.16), transparent 72%); }
-body[data-page="trainers"] .tr-kpi-emerald { background-image: radial-gradient(260px 140px at 0% 0%, rgba(16, 185, 129, 0.16), transparent 72%); }
-body[data-page="trainers"] .tr-kpi-violet { background-image: radial-gradient(260px 140px at 0% 0%, rgba(139, 92, 246, 0.16), transparent 72%); }
+body[data-page="trainers"] .tr-kpi-gold {
+  border-color: rgba(245, 158, 11, 0.34);
+  background-image: radial-gradient(280px 150px at 10% 0%, rgba(245, 158, 11, 0.22), transparent 72%);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(245, 158, 11, 0.22);
+}
+body[data-page="trainers"] .tr-kpi-cyan {
+  border-color: rgba(6, 182, 212, 0.34);
+  background-image: radial-gradient(280px 150px at 10% 0%, rgba(6, 182, 212, 0.22), transparent 72%);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(6, 182, 212, 0.22);
+}
+body[data-page="trainers"] .tr-kpi-emerald {
+  border-color: rgba(16, 185, 129, 0.34);
+  background-image: radial-gradient(280px 150px at 10% 0%, rgba(16, 185, 129, 0.22), transparent 72%);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(16, 185, 129, 0.22);
+}
+body[data-page="trainers"] .tr-kpi-violet {
+  border-color: rgba(139, 92, 246, 0.34);
+  background-image: radial-gradient(280px 150px at 10% 0%, rgba(139, 92, 246, 0.22), transparent 72%);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(139, 92, 246, 0.22);
+}
 
 body[data-page="trainers"] .tr-kpi-gold:hover { border-color: rgba(245, 158, 11, 0.35); }
 body[data-page="trainers"] .tr-kpi-cyan:hover { border-color: rgba(6, 182, 212, 0.35); }
@@ -4056,10 +4072,30 @@ body[data-page="trainers"] .tr-card:hover {
   border-color: rgba(255, 255, 255, 0.16);
   box-shadow: 0 16px 34px rgba(0, 0, 0, 0.32);
 }
-body[data-page="trainers"] .tr-accent-gold { border-top: 2.5px solid #F59E0B; }
-body[data-page="trainers"] .tr-accent-cyan { border-top: 2.5px solid #06B6D4; }
-body[data-page="trainers"] .tr-accent-violet { border-top: 2.5px solid #8B5CF6; }
-body[data-page="trainers"] .tr-accent-emerald { border-top: 2.5px solid #10B981; }
+body[data-page="trainers"] .tr-accent-gold {
+  border: 1px solid rgba(245, 158, 11, 0.36);
+  border-top: 2.5px solid #F59E0B;
+  background: radial-gradient(280px 180px at 78% 12%, rgba(245, 158, 11, 0.13), transparent 70%), linear-gradient(180deg, rgba(22, 31, 48, 0.92) 0%, rgba(15, 22, 35, 0.98) 100%);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25), 0 0 18px rgba(245, 158, 11, 0.08);
+}
+body[data-page="trainers"] .tr-accent-cyan {
+  border: 1px solid rgba(6, 182, 212, 0.36);
+  border-top: 2.5px solid #06B6D4;
+  background: radial-gradient(280px 180px at 78% 12%, rgba(6, 182, 212, 0.13), transparent 70%), linear-gradient(180deg, rgba(22, 31, 48, 0.92) 0%, rgba(15, 22, 35, 0.98) 100%);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25), 0 0 18px rgba(6, 182, 212, 0.08);
+}
+body[data-page="trainers"] .tr-accent-violet {
+  border: 1px solid rgba(139, 92, 246, 0.36);
+  border-top: 2.5px solid #8B5CF6;
+  background: radial-gradient(280px 180px at 78% 12%, rgba(139, 92, 246, 0.13), transparent 70%), linear-gradient(180deg, rgba(22, 31, 48, 0.92) 0%, rgba(15, 22, 35, 0.98) 100%);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25), 0 0 18px rgba(139, 92, 246, 0.08);
+}
+body[data-page="trainers"] .tr-accent-emerald {
+  border: 1px solid rgba(16, 185, 129, 0.36);
+  border-top: 2.5px solid #10B981;
+  background: radial-gradient(280px 180px at 78% 12%, rgba(16, 185, 129, 0.13), transparent 70%), linear-gradient(180deg, rgba(22, 31, 48, 0.92) 0%, rgba(15, 22, 35, 0.98) 100%);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25), 0 0 18px rgba(16, 185, 129, 0.08);
+}
 
 /* List View Card Layout */
 body[data-page="trainers"] .tr-grid.is-list .tr-card {
@@ -4307,24 +4343,45 @@ body[data-page="trainers"] .tr-btn-edit:hover {
 /* Bottom Grid: Assign Trainer + Member Requests */
 body[data-page="trainers"] .tr-bottom-grid {
   display: grid;
-  grid-template-columns: minmax(310px, 0.85fr) minmax(0, 1.45fr);
-  gap: 20px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
   align-items: stretch;
 }
 @media (max-width: 1080px) {
   body[data-page="trainers"] .tr-bottom-grid { grid-template-columns: 1fr; }
 }
+html body[data-page="trainers"] .tr-bottom-grid > .panel {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  height: 100%;
+}
 body[data-page="trainers"] .tr-assign-panel,
 body[data-page="trainers"] .tr-requests-panel {
+  position: relative;
+  overflow: hidden;
   padding: 24px !important;
   display: flex;
   flex-direction: column;
+}
+body[data-page="trainers"] .tr-assign-panel {
+  background-image: radial-gradient(280px 150px at 95% 15%, rgba(245, 158, 11, 0.1), transparent 70%), linear-gradient(180deg, rgba(22, 31, 48, 0.9) 0%, rgba(18, 26, 40, 0.97) 100%) !important;
+}
+body[data-page="trainers"] .tr-assign-wm {
+  position: absolute;
+  right: 22px;
+  top: 24px;
+  font-size: 64px;
+  color: rgba(255, 255, 255, 0.045);
+  pointer-events: none;
+  transform: rotate(-12deg);
 }
 body[data-page="trainers"] .tr-assign-form {
   display: flex;
   flex-direction: column;
   gap: 16px;
   flex: 1;
+  position: relative;
+  z-index: 1;
 }
 body[data-page="trainers"] .tr-assign-row {
   display: grid;
@@ -4337,6 +4394,22 @@ body[data-page="trainers"] .tr-assign-row {
 body[data-page="trainers"] .tr-field {
   display: grid;
   gap: 7px;
+}
+body[data-page="trainers"] .tr-select-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+body[data-page="trainers"] .tr-select-wrap > i {
+  position: absolute;
+  left: 13px;
+  font-size: 13px;
+  color: #F59E0B;
+  pointer-events: none;
+  z-index: 2;
+}
+body[data-page="trainers"] .tr-select-wrap select {
+  padding-left: 36px !important;
 }
 body[data-page="trainers"] .tr-field label {
   font-size: 12px;
@@ -4629,6 +4702,7 @@ body:not(.dark)[data-page="trainers"] .tr-dir-panel,
 body:not(.dark)[data-page="trainers"] .tr-assign-panel,
 body:not(.dark)[data-page="trainers"] .tr-requests-panel {
   background: #FFFFFF !important;
+  background-image: none !important;
   border-color: #E2E8F0 !important;
   box-shadow: 0 8px 26px rgba(15, 23, 42, 0.06);
 }
@@ -4646,11 +4720,22 @@ body:not(.dark)[data-page="trainers"] .tr-dropdown {
 body:not(.dark)[data-page="trainers"] .tr-kpi:hover {
   box-shadow: 0 14px 30px rgba(15, 23, 42, 0.1);
 }
-body:not(.dark)[data-page="trainers"] .tr-card {
+body:not(.dark)[data-page="trainers"] .tr-assign-wm {
+  color: rgba(15, 23, 42, 0.05);
+}
+body:not(.dark)[data-page="trainers"] .tr-card,
+body:not(.dark)[data-page="trainers"] .tr-card.tr-accent-gold,
+body:not(.dark)[data-page="trainers"] .tr-card.tr-accent-cyan,
+body:not(.dark)[data-page="trainers"] .tr-card.tr-accent-violet,
+body:not(.dark)[data-page="trainers"] .tr-card.tr-accent-emerald {
   background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
   border-color: #E2E8F0;
   box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
 }
+body:not(.dark)[data-page="trainers"] .tr-card.tr-accent-gold { border-top: 2.5px solid #F59E0B; }
+body:not(.dark)[data-page="trainers"] .tr-card.tr-accent-cyan { border-top: 2.5px solid #06B6D4; }
+body:not(.dark)[data-page="trainers"] .tr-card.tr-accent-violet { border-top: 2.5px solid #8B5CF6; }
+body:not(.dark)[data-page="trainers"] .tr-card.tr-accent-emerald { border-top: 2.5px solid #10B981; }
 body:not(.dark)[data-page="trainers"] .tr-card:hover {
   border-color: #CBD5E1;
   box-shadow: 0 12px 26px rgba(15, 23, 42, 0.09);

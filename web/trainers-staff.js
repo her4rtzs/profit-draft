@@ -69,7 +69,6 @@
     const pct = t.max_members ? Math.min(100, Math.round((t.load / t.max_members) * 100)) : 0;
     const capCls = pct >= 90 ? "is-cap-full" : pct >= 70 ? "is-cap-high" : pct >= 40 ? "is-cap-med" : "is-cap-low";
     const st = trainerStatus(t);
-    const menuOpen = openMenuId === String(t.id);
     const avatarHtml = t.avatar_url
       ? `<img src="${esc(t.avatar_url)}" alt="${esc(t.name)}">`
       : `<span>${esc(initials(t.name))}</span>`;
@@ -79,16 +78,6 @@
         <div class="tr-avatar">${avatarHtml}</div>
         <div class="tr-card-badges">
           <span class="tr-status ${st.cls}">${st.label}</span>
-          <div class="tr-menu-wrap">
-            <button type="button" class="tr-dots-btn" data-menu-toggle="${t.id}" aria-haspopup="menu" aria-expanded="${menuOpen}" aria-label="Actions for ${esc(t.name)}">
-              <i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i>
-            </button>
-            <div class="tr-dropdown" role="menu" ${menuOpen ? "" : "hidden"}>
-              <button type="button" role="menuitem" data-profile="${t.id}"><i class="fa-regular fa-eye" aria-hidden="true"></i> View Profile</button>
-              <button type="button" role="menuitem" data-edit="${t.id}"><i class="fa-solid fa-pen" aria-hidden="true"></i> Edit Trainer</button>
-              <button type="button" role="menuitem" data-toggle-active="${t.id}"><i class="fa-solid ${t.is_active ? "fa-pause" : "fa-play"}" aria-hidden="true"></i> ${t.is_active ? "Set Inactive" : "Set Active"}</button>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -152,7 +141,7 @@
       if (asTrainer) {
         const keep = asTrainer.value;
         asTrainer.innerHTML = active.length
-          ? active.map(t => opt(t.id, `${t.name}${t.is_full ? " (full)" : ` (${t.load}/${t.max_members})`}`, t.is_full ? "disabled" : "")).join("")
+          ? opt("", "Choose trainer...") + active.map(t => opt(t.id, `${t.name}${t.is_full ? " (full)" : ` (${t.load}/${t.max_members})`}`, t.is_full ? "disabled" : "")).join("")
           : opt("", "No active trainers available");
         if (keep) asTrainer.value = keep;
       }
@@ -176,17 +165,23 @@
   }
 
   async function loadMembers() {
+    const pick = document.getElementById("asMember");
     try {
-      members = await api.get("/staff/members/");
-      const pick = document.getElementById("asMember");
+      const data = await api.get("/staff/members/");
+      members = Array.isArray(data) ? data : (data?.results || []);
       if (!pick) return;
       const keep = pick.value;
       pick.innerHTML = members.length
-        ? members.map(m => opt(m.id, `${m.name} (${m.email || "no email"})`)).join("")
+        ? opt("", "Choose member...") + members.map(m => opt(m.id, `${m.name || m.username || "Member"} (${m.email || "no email"})`)).join("")
         : opt("", "No members yet");
       if (keep) pick.value = keep;
       showCurrent();
-    } catch { /* keep current */ }
+    } catch {
+      if (pick && !pick.options.length) {
+        pick.innerHTML = opt("", "Could not load members");
+      }
+      showCurrent();
+    }
   }
 
   function showCurrent() {
@@ -196,11 +191,13 @@
     const remBtn = document.getElementById("asRemove");
     if (!curEl) return;
     if (!m) {
-      curEl.innerHTML = `<i class="fa-regular fa-circle-info" aria-hidden="true"></i> Select a member to check their current trainer`;
+      curEl.hidden = true;
+      curEl.innerHTML = "";
       curEl.classList.remove("has-trainer");
       if (remBtn) remBtn.hidden = true;
       return;
     }
+    curEl.hidden = false;
     if (m.trainer) {
       curEl.innerHTML = `<i class="fa-solid fa-user-check" aria-hidden="true"></i> Currently assigned to <strong>${esc(m.trainer.name)}</strong>`;
       curEl.classList.add("has-trainer");
