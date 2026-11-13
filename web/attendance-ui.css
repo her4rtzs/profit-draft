@@ -328,3 +328,4 @@ body:not(.dark)[data-page="attendance"] .ci-table tbody tr { border-bottom-color
   body[data-page="attendance"] .attendance-chart-panel .panel-header { flex-wrap: wrap !important; }
   body[data-page="attendance"] .checkin-submit { width: 100%; }
 }
+
