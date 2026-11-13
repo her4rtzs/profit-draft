@@ -1478,3 +1478,18 @@ Fix the Announcements page 500 error ("Could not load announcements: Request fai
 - Verified test suite: all 12 announcements tests and all 145 project-wide tests passed cleanly (`Ran 145 tests in 265.779s OK`).
 ### Decision-log skill
 When an optional model field is added via migration on a serverless deployment where migrations are decoupled from build (e.g. Vercel + Supabase), wrap the query and serialization in an explicit database fallback that uses `.defer()` for the new field, providing backward compatibility and preventing 500 downtime while production migrations are applied.
+
+
+## 2026-11-13 22:45 (Asia/Manila): Dashboard Redesign — Premium KPI Cards and Membership Type Panel
+### What I asked for
+Redesign and fix the Staff Dashboard KPI cards and Membership Type panel according to reference design images:
+- Membership Type Card: Redesign layout with larger balanced donut chart on left, centered count + users icon, segment percentage labels (50.0%, 25.0%, 12.5%, 12.5%), smooth hover interactions, right-side glassmorphic legend cards (Monthly, Quarterly, Annual, Other) with counts and percentage pills, and info footer note.
+- KPI Cards: Redesign into 4 premium cards with distinct color themes (Gold/Amber for Total Members, Coral Red for Expired Members, Cyan/Teal for Expiring Soon, Violet/Purple for Total Revenue), top neon highlight lines, subtle glow blooms, translucent background watermark icons, 5-bar animated equalizer sparklines, dynamic integer count-up animation, and trend badges matching the mockups.
+### What the agent decided and why
+- Updated `web/index.html` to integrate the complete `.kpi-card` markup across all four metrics with semantic `.stat-top`, `.stat-icon`, `.kpi-title`, `.stat-content`, tabular metric `h2`, `.kpi-bottom`, `.kpi-sub`, and 5-bar `.kpi-sparkline` equalizer elements. Maintained `<p class="sr-only">` and `.revenue-card` selectors so `cardFor(label)` lookups and `chart-periods.js` revenue bindings continue to function with zero regressions.
+- Created `animateValue(el, target, duration)` in `web/index.html` to smoothly count up integer metrics using cubic easing upon data paint/sync.
+- Enhanced `renderMembershipType` and `formatPct` to consistently output one decimal place (e.g. `50.0%`, `25.0%`, `12.5%`) matching the target visual design, and rendered SVG text segment percentages directly along the arc center.
+- Enhanced `web/portal-ui.css` for both `.kpi-card` and `.membership-type-panel` with glassmorphic backdrop filters, golden neon borders, top highlight edges (`::before`), soft ambient radial auras (`::after`), and responsive breakdowns.
+- Verified test suite: all 138 backend tests passed cleanly (`Ran 138 tests in 179.368s OK`).
+### Decision-log skill
+When redesigning analytics cards and KPI metrics, preserve existing DOM contract selectors (such as `.revenue-card .stat-content h2` or accessibility labels) using `.sr-only` so external modules and period switchers update dynamically without requiring refactoring across multiple decoupled scripts.
