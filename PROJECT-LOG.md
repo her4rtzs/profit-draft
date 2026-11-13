@@ -1633,3 +1633,14 @@ Never rely on client-side asynchronous `DOMContentLoaded` callbacks alone to pro
 
 ### Decision-log skill
 When caching domain objects with `Date` fields in `localStorage`, always revive every date property symmetrically on `load()` and guard consumers with a defensive `toDate()` helper; an uncaught `TypeError` inside a table renderer silently leaves initial skeleton placeholders stuck on screen.
+
+## 2026-11-14 03:28 (Asia/Manila): Clean up unused and duplicate files
+### What I asked for
+Organize repository files by purpose and remove unused and duplicate files.
+### What the agent decided and why
+- Removed 15 tracked root debug/screenshot artifacts (`dom_dump.html`, `dom_pts.html`, `dom_title.html`, `scratch_membership_panel_*.png`, `screenshot_*.png`) and the empty untracked `scratch/` directory.
+- Removed unused `web/sidebar-fx.css` and `web/trainer-portal.js` after confirming zero code/service-worker references.
+- Removed the unused static prototype directory `web/staff/` (which duplicated `web/assets/`) and `web/assets/js/pages/` (referenced only by `web/staff/*.html`), while keeping `web/assets/css/staff.css`, `web/assets/img/logo.jpg`, and `web/assets/js/staff-*.js` because `web/trainer/*.html` actively uses them.
+- Kept active `web/` root files and root `ROADMAP.md` / `AUDIT.md` in place so WhiteNoise root URLs, `sw.js` precaching, and `docs/` links remain intact.
+### Decision-log skill
+Always verify asset references across `web/trainer/`, `web/sw.js`, `api/`, `apps/`, and `docs/` before deleting or moving static files, and keep shared `web/assets/` intact when only a prototype subfolder (`web/staff/`) is retired.
