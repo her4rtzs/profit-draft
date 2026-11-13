@@ -1313,3 +1313,21 @@ Push this session's changes (Programs carousel on the landing page, sign-in card
 - Pushed directly to `origin/master` because the user explicitly asked for it.
 ### Decision-log skill
 Before pushing, confirm the working tree contains only this session's files and stage them by path, so unrelated edits never ride along.
+
+
+## 2026-11-13 12:35 (Asia/Manila): Change sign-in submit button label to "Sign in"
+### What I asked for
+In the sign-in page (`web/login.html`), change the submit button text from "Sign in securely" to "Sign in".
+### What the agent decided and why
+- Updated both the initial `<button type="submit"><span>Sign in</span>...</button>` markup on line 18 and the `finally` block reset text (`submit.querySelector('span').textContent='Sign in'`) on line 67 of `web/login.html` so failed login retries also restore the "Sign in" label.
+### Decision-log skill
+When changing a submit button's label, also update any JavaScript state-reset handlers (such as `finally` blocks after form submission) that restore the button's text.
+
+
+## 2026-11-13 12:37 (Asia/Manila): Push "Sign in" button label update to master
+### What I asked for
+Push the sign-in button text update (`web/login.html` and `PROJECT-LOG.md`) to `master`.
+### What the agent decided and why
+- Staged only `web/login.html` and `PROJECT-LOG.md` by explicit path after verifying `git status` and pushed the commit to `origin/master`.
+### Decision-log skill
+Stage modified files explicitly by path and verify `git status` before committing and pushing to `origin/master`.
