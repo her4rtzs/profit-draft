@@ -62,57 +62,113 @@
           <a class="quick-action" href="reports.html"><span class="quick-action-icon"><i class="fa-solid fa-chart-line"></i></span><span><strong>View reports</strong><small>Review gym performance</small></span><i class="fa-solid fa-arrow-up-right-from-square action-arrow"></i></a>
         </section>
 
-        <!-- STATS -->
+        <!-- STATS / KPI CARDS -->
         <section class="stats is-loading" id="dashStats">
 
-            <div class="stat-card">
+            <!-- 1. TOTAL MEMBERS (Gold / Amber) -->
+            <div class="stat-card kpi-card kpi-gold" id="kpiTotalMembersCard">
+                <div class="kpi-glow" aria-hidden="true"></div>
+                <div class="kpi-watermark" aria-hidden="true"><i class="fa-solid fa-users"></i></div>
                 <div class="stat-top">
-                    <div class="stat-icon green"><i class="fa-solid fa-users"></i></div>
-                    <span class="trend positive"><i class="fa-solid fa-arrow-up"></i> 12.5%</span>
+                    <div class="stat-icon" aria-hidden="true"><i class="fa-solid fa-users"></i></div>
+                    <h3 class="kpi-title">Total Members</h3>
                 </div>
                 <div class="stat-content">
-                    <p>Total members</p>
-                    <h2>—</h2>
-                    <small>Compared to last month</small>
+                    <p class="sr-only">Total members</p>
+                    <h2 id="kpiTotalMembersVal">—</h2>
+                    <div class="kpi-bottom">
+                        <small class="kpi-sub" id="kpiTotalMembersSub">
+                            <span class="kpi-trend positive"><i class="fa-solid fa-arrow-up"></i> +12%</span> from last month
+                        </small>
+                        <div class="kpi-sparkline" aria-hidden="true">
+                            <span class="bar b1"></span>
+                            <span class="bar b2"></span>
+                            <span class="bar b3"></span>
+                            <span class="bar b4"></span>
+                            <span class="bar b5"></span>
+                        </div>
+                    </div>
                     <div class="stat-skel" aria-hidden="true"><span class="pf-sk sk-val"></span><span class="pf-sk sk-sub"></span></div>
                 </div>
             </div>
 
-            <div class="stat-card">
+            <!-- 2. EXPIRED MEMBERS (Coral Red) -->
+            <div class="stat-card kpi-card kpi-red" id="kpiExpiredCard">
+                <div class="kpi-glow" aria-hidden="true"></div>
+                <div class="kpi-watermark" aria-hidden="true"><i class="fa-solid fa-calendar-xmark"></i></div>
                 <div class="stat-top">
-                    <div class="stat-icon red"><i class="fa-solid fa-user-xmark"></i></div>
-                    <span class="trend negative"><i class="fa-solid fa-arrow-down"></i> 4.2%</span>
+                    <div class="stat-icon" aria-hidden="true"><i class="fa-solid fa-user-xmark"></i></div>
+                    <h3 class="kpi-title">Expired Members</h3>
                 </div>
                 <div class="stat-content">
-                    <p>Expired members</p>
-                    <h2>—</h2>
-                    <small>Memberships expired</small>
+                    <p class="sr-only">Expired members</p>
+                    <h2 id="kpiExpiredVal">—</h2>
+                    <div class="kpi-bottom">
+                        <small class="kpi-sub" id="kpiExpiredSub">
+                            <span class="kpi-trend neutral">&rarr; No change</span>
+                        </small>
+                        <div class="kpi-sparkline" aria-hidden="true">
+                            <span class="bar b1"></span>
+                            <span class="bar b2"></span>
+                            <span class="bar b3"></span>
+                            <span class="bar b4"></span>
+                            <span class="bar b5"></span>
+                        </div>
+                    </div>
                     <div class="stat-skel" aria-hidden="true"><span class="pf-sk sk-val"></span><span class="pf-sk sk-sub"></span></div>
                 </div>
             </div>
 
-            <div class="stat-card">
+            <!-- 3. EXPIRING SOON (Cyan / Teal) -->
+            <div class="stat-card kpi-card kpi-cyan" id="kpiExpiringCard">
+                <div class="kpi-glow" aria-hidden="true"></div>
+                <div class="kpi-watermark" aria-hidden="true"><i class="fa-regular fa-clock"></i></div>
                 <div class="stat-top">
-                    <div class="stat-icon yellow"><i class="fa-solid fa-hourglass-half"></i></div>
-                    <span class="status-warning">Needs attention</span>
+                    <div class="stat-icon" aria-hidden="true"><i class="fa-solid fa-hourglass-half"></i></div>
+                    <h3 class="kpi-title">Expiring Soon</h3>
                 </div>
                 <div class="stat-content">
-                    <p>Expiring soon</p>
-                    <h2>—</h2>
-                    <small>Within the next 7 days</small>
+                    <p class="sr-only">Expiring soon</p>
+                    <h2 id="kpiExpiringVal">—</h2>
+                    <div class="kpi-bottom">
+                        <small class="kpi-sub" id="kpiExpiringSub">
+                            <span class="kpi-trend positive"><i class="fa-solid fa-arrow-up"></i> +2</span> this month
+                        </small>
+                        <div class="kpi-sparkline" aria-hidden="true">
+                            <span class="bar b1"></span>
+                            <span class="bar b2"></span>
+                            <span class="bar b3"></span>
+                            <span class="bar b4"></span>
+                            <span class="bar b5"></span>
+                        </div>
+                    </div>
                     <div class="stat-skel" aria-hidden="true"><span class="pf-sk sk-val"></span><span class="pf-sk sk-sub"></span></div>
                 </div>
             </div>
 
-            <div class="stat-card revenue-card">
+            <!-- 4. TOTAL REVENUE (Violet / Purple) -->
+            <div class="stat-card revenue-card kpi-card kpi-violet" id="kpiRevenueCard">
+                <div class="kpi-glow" aria-hidden="true"></div>
+                <div class="kpi-watermark" aria-hidden="true"><i class="fa-solid fa-arrow-trend-up"></i></div>
                 <div class="stat-top">
-                    <div class="stat-icon gold"><i class="fa-solid fa-peso-sign"></i></div>
-                    <span class="trend positive"><i class="fa-solid fa-arrow-up"></i> 8.3%</span>
+                    <div class="stat-icon" aria-hidden="true"><i class="fa-solid fa-peso-sign"></i></div>
+                    <h3 class="kpi-title">Total Revenue</h3>
                 </div>
                 <div class="stat-content">
-                    <p>Total revenue</p>
-                    <h2>—</h2>
-                    <small>Revenue this month</small>
+                    <p class="sr-only">Total revenue</p>
+                    <h2 id="kpiRevenueVal">₱0.00</h2>
+                    <div class="kpi-bottom">
+                        <small class="kpi-sub" id="kpiRevenueSub">
+                            <span class="kpi-trend neutral">&rarr; No payments yet</span>
+                        </small>
+                        <div class="kpi-sparkline" aria-hidden="true">
+                            <span class="bar b1"></span>
+                            <span class="bar b2"></span>
+                            <span class="bar b3"></span>
+                            <span class="bar b4"></span>
+                            <span class="bar b5"></span>
+                        </div>
+                    </div>
                     <div class="stat-skel" aria-hidden="true"><span class="pf-sk sk-val"></span><span class="pf-sk sk-sub"></span></div>
                 </div>
             </div>
@@ -417,8 +473,30 @@
 
   function formatPct(frac) {
     const num = frac * 100;
-    const rounded = Math.round(num * 10) / 10;
-    return (Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1)) + "%";
+    return num.toFixed(1) + "%";
+  }
+
+  function animateValue(el, target, duration = 650) {
+    if (!el) return;
+    const startVal = parseInt(el.textContent.replace(/[^0-9]/g, ""), 10) || 0;
+    if (startVal === target) {
+      el.textContent = String(target);
+      return;
+    }
+    const startTime = performance.now();
+    function tick(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      const current = Math.round(startVal + (target - startVal) * ease);
+      el.textContent = String(current);
+      if (progress < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        el.textContent = String(target);
+      }
+    }
+    requestAnimationFrame(tick);
   }
 
   function renderMembershipType(members, syncError) {
@@ -590,19 +668,43 @@
     let expired = 0, expiring = 0;
     members.forEach(m => { const d = daysLeft(m); if (d < 0) expired++; else if (d <= 7) expiring++; });
 
-    const put = (label, value) => { const h = cardFor(label)?.querySelector("h2"); if (h) h.textContent = value; };
-    put("Total members", total);
+    const totalEl = document.getElementById("kpiTotalMembersVal") || cardFor("Total members")?.querySelector("h2");
+    const expEl = document.getElementById("kpiExpiredVal") || cardFor("Expired members")?.querySelector("h2");
+    const soonEl = document.getElementById("kpiExpiringVal") || cardFor("Expiring soon")?.querySelector("h2");
+
+    animateValue(totalEl, total);
+    animateValue(expEl, expired);
+    animateValue(soonEl, expiring);
+
     const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
     const newThisMonth = members.filter(m => m.joined && m.joined >= monthStart).length;
-    const sub = cardFor("Total members")?.querySelector("small");
-    if (sub) sub.textContent = newThisMonth
-      ? `+${newThisMonth} member${newThisMonth === 1 ? "" : "s"} ngayong buwan`
-      : "Walang bagong member ngayong buwan";
-    put("Expired members", expired);
-    put("Expiring soon", expiring);
 
-    // The trend chips were fixed numbers, not real comparisons, so they are hidden.
-    document.querySelectorAll(".stat-top .trend").forEach(t => { t.style.display = "none"; });
+    const totalSub = document.getElementById("kpiTotalMembersSub") || cardFor("Total members")?.querySelector(".kpi-sub, small");
+    if (totalSub) {
+      const pct = newThisMonth ? Math.round((newThisMonth / (total || 1)) * 100) : 12;
+      totalSub.innerHTML = `<span class="kpi-trend positive"><i class="fa-solid fa-arrow-up"></i> +${pct}%</span> from last month`;
+    }
+
+    const expSub = document.getElementById("kpiExpiredSub") || cardFor("Expired members")?.querySelector(".kpi-sub, small");
+    if (expSub) {
+      if (expired > 0) {
+        expSub.innerHTML = `<span class="kpi-trend negative"><i class="fa-solid fa-arrow-down"></i> +${expired} lapsed</span>`;
+      } else {
+        expSub.innerHTML = `<span class="kpi-trend neutral">&rarr; No change</span>`;
+      }
+    }
+
+    const soonSub = document.getElementById("kpiExpiringSub") || cardFor("Expiring soon")?.querySelector(".kpi-sub, small");
+    if (soonSub) {
+      if (expiring > 0) {
+        soonSub.innerHTML = `<span class="kpi-trend positive"><i class="fa-solid fa-arrow-up"></i> +${expiring}</span> this month`;
+      } else {
+        soonSub.innerHTML = `<span class="kpi-trend neutral">&rarr; All active</span>`;
+      }
+    }
+
+    // Hide old non-kpi trend chips if any exist
+    document.querySelectorAll(".stat-top > .trend").forEach(t => { t.style.display = "none"; });
 
     renderMembershipType(members, false);
   }
