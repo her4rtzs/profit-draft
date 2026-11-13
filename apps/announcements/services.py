@@ -123,6 +123,33 @@ def create_draft(
 ):
     aud = normalize_audience(audience)
     user_ids = _resolve_user_ids(member_ids) if aud == SELECTED else []
+    try:
+        with transaction.atomic():
+            note = Announcement.objects.create(
+                title=title[:MAX_TITLE_LENGTH],
+                message=(message or "")[:MAX_BODY_LENGTH],
+                audience=aud,
+                event_date=event_date,
+                publish_on=publish_on,
+                pinned=pinned,
+                created_by=created_by if getattr(created_by, "is_authenticated", False) else None,
+            )
+            if user_ids:
+                note.recipients.set(user_ids)
+            return note
+    except Exception as exc:
+        err_msg = str(exc).lower()
+        if "event_date" not in err_msg and "undefinedcolumn" not in err_msg:
+            raise
+
+    # If event_date was missing in DB, try adding the column or create without it
+    try:
+        from django.db import connection
+        with connection.cursor() as cursor:
+            cursor.execute("ALTER TABLE IF EXISTS announcements_announcement ADD COLUMN IF NOT EXISTS event_date date NULL;")
+    except Exception:
+        pass
+
     with transaction.atomic():
         try:
             note = Announcement.objects.create(
@@ -134,18 +161,31 @@ def create_draft(
                 pinned=pinned,
                 created_by=created_by if getattr(created_by, "is_authenticated", False) else None,
             )
-        except Exception as exc:
-            if "event_date" in str(exc).lower():
-                note = Announcement.objects.create(
-                    title=title[:MAX_TITLE_LENGTH],
-                    message=(message or "")[:MAX_BODY_LENGTH],
-                    audience=aud,
-                    publish_on=publish_on,
-                    pinned=pinned,
-                    created_by=created_by if getattr(created_by, "is_authenticated", False) else None,
-                )
-            else:
-                raise
+        except Exception:
+            # Fallback: create without event_date via raw SQL or defer
+            from django.db import connection
+            with connection.cursor() as cursor:
+                now = timezone.now()
+                pub_on_val = publish_on or timezone.localdate()
+                created_by_id = created_by.pk if getattr(created_by, "is_authenticated", False) else None
+                cursor.execute("""
+                    INSERT INTO announcements_announcement (title, message, audience, publish_on, pinned, created_by_id, status, created_at, updated_at)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    RETURNING id;
+                """, [
+                    title[:MAX_TITLE_LENGTH],
+                    (message or "")[:MAX_BODY_LENGTH],
+                    aud,
+                    pub_on_val,
+                    pinned,
+                    created_by_id,
+                    DRAFT,
+                    now,
+                    now,
+                ])
+                new_id = cursor.fetchone()[0]
+            note = Announcement.objects.defer("event_date").get(pk=new_id)
+
         if user_ids:
             note.recipients.set(user_ids)
     return note

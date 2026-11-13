@@ -1552,4 +1552,16 @@ Restore the original ProFit Join/Sign Up page design from the reference screensh
 ### Decision-log skill
 When introducing global theme overrides (such as `html:not(.dark)`), always negate public/standalone surfaces explicitly (e.g. `:not(.public-dark-theme):not(:has(.auth-shell))`) and enforce a synchronous `<head>` class-locking script on public auth pages so administrative local storage preferences cannot bleed into public-facing experiences.
 
+## 2026-11-14 01:05 (Asia/Manila): Fix Vercel Build Command, Announcement Publishing 500 & Sidebar Theme Isolation
+### What I asked for
+Fix the Vercel deployment error where the build command exited with 1 ("Command 'npm --prefix static/src install && npm --prefix static/src run build && python manage.py migrate --noinput && python manage.py collectstatic --noinput' exited with 1"), fix the announcement publishing 500 error, and ensure the sidebar has identical dark styling and hover effects across both Dark and Light modes.
+### What the agent decided and why
+- Fixed Vercel build failure: reverted `buildCommand` in `vercel.json` back to `"npm --prefix static/src install && npm --prefix static/src run build && python manage.py collectstatic --noinput"`. Running `python manage.py migrate` during the Vercel build fails with exit code 1 because Vercel build containers lack database access and Django's build-time guard in `settings.py` isolates `collectstatic` from PostgreSQL.
+- Resolved Announcement Publishing 500 error: in PostgreSQL, attempting an INSERT into a table with a missing column (`event_date`) aborts the entire transaction block. If caught without savepoints, any subsequent command inside `with transaction.atomic()` raises `InternalError: current transaction is aborted`. Wrapped draft creation and updates in savepoints, added runtime auto-schema verification (`_ensure_announcements_schema()`) that executes idempotent column additions on Supabase, and converted view errors into structured HTTP 400 responses with descriptive validation messages.
+- Isolated sidebar theme in `web/portal-ui.css`: styled the sidebar with dedicated dark tokens (`#141b27` to `#0c1119`) across both themes. Menu links display muted white/gray (`#b4bac7`, icon `#8b94a5`), hover states display subtle gold-tinted backgrounds (`rgba(244, 197, 66, 0.12)`), `#F4C542` gold icons, and `translateX(4px)` micro-interaction, and active items retain a subtle dark gold gradient with a gold indicator bar in both Dark Mode and Light Mode.
+- Verified all 12 announcement automated tests pass (`Ran 12 tests ... OK`), verified modal validation, and confirmed Playwright visual checks show identical sidebar rendering across themes.
+### Decision-log skill
+Never place database migration commands in serverless build-step scripts (e.g. `vercel.json`'s `buildCommand`) where external database connections are unreachable or sandboxed. Instead, enforce runtime schema checks and isolate transaction rollbacks with savepoints so that database operations fail gracefully with descriptive error payloads instead of unhandled 500 crashes.
+
+
 

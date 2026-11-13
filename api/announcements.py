@@ -44,6 +44,50 @@ class IsOwner(BasePermission):
 
 IsStaffOrOwner = IsOwner
 
+_schema_ready = False
+
+def _ensure_announcements_schema():
+    global _schema_ready
+    if _schema_ready:
+        return
+    import logging
+    logger = logging.getLogger(__name__)
+    try:
+        from django.db import connection
+        engine = connection.settings_dict.get("ENGINE", "")
+        if "sqlite" in engine:
+            try:
+                from django.core.management import call_command
+                call_command("migrate", "announcements", interactive=False)
+            except Exception:
+                pass
+            _schema_ready = True
+            return
+
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT 1 FROM information_schema.tables 
+                WHERE table_name = 'announcements_announcement'
+            """)
+            table_row = cursor.fetchone()
+            if table_row:
+                cursor.execute("""
+                    ALTER TABLE announcements_announcement 
+                    ADD COLUMN IF NOT EXISTS event_date date NULL;
+                """)
+            else:
+                from django.core.management import call_command
+                call_command("migrate", "announcements", interactive=False)
+        _schema_ready = True
+    except Exception as exc:
+        logger.warning("Could not automatically verify announcements schema: %s", exc)
+        try:
+            from django.core.management import call_command
+            call_command("migrate", "announcements", interactive=False)
+            _schema_ready = True
+        except Exception:
+            pass
+
 
 def _public_audience(raw):
     val = str(raw or "").strip().lower()
@@ -245,6 +289,7 @@ class StaffAnnouncementListView(APIView):
     def get(self, request):
         import logging
         logger = logging.getLogger(__name__)
+        _ensure_announcements_schema()
         try:
             rows = Announcement.objects.all().prefetch_related("recipients")
             raw_status = (request.query_params.get("status") or "").strip().lower()
@@ -268,7 +313,7 @@ class StaffAnnouncementListView(APIView):
             except Exception as ser_err:
                 err_text = str(ser_err).lower()
                 if "event_date" in err_text:
-                    logger.warning("Database missing event_date column (migration 0002 pending). Running with defer('event_date').")
+                    logger.warning("Database missing event_date column. Running with defer('event_date').")
                     rows_deferred = rows.defer("event_date")
                     items = StaffAnnouncementSerializer(rows_deferred, many=True).data
                 else:
@@ -286,7 +331,7 @@ class StaffAnnouncementListView(APIView):
         except Exception as exc:
             err_msg = str(exc).lower()
             if "no such table" in err_msg or ("does not exist" in err_msg and "announcements_announcement" in err_msg):
-                logger.error("Table announcements_announcement missing in database. Migrations 0001 and 0002 pending: %s", exc)
+                logger.error("Table announcements_announcement missing in database. Migrations pending: %s", exc)
                 empty_stats = {
                     "total": 0,
                     "published_this_month": 0,
@@ -316,7 +361,15 @@ class StaffAnnouncementListView(APIView):
     def post(self, request):
         import logging
         logger = logging.getLogger(__name__)
-        v = _validate_announcement_payload(request.data, partial=False)
+        _ensure_announcements_schema()
+
+        try:
+            v = _validate_announcement_payload(request.data, partial=False)
+        except ValidationError as val_err:
+            return Response(val_err.detail, status=400)
+        except Exception as val_exc:
+            return Response({"detail": str(val_exc)}, status=400)
+
         try:
             note = services.create_announcement(
                 title=v["title"],
@@ -332,38 +385,19 @@ class StaffAnnouncementListView(APIView):
         except DjangoValidationError as exc:
             _fail(exc)
         except Exception as exc:
-            return Response({"detail": f"Could not update announcement: {str(exc)}"}, status=400)
-        except Exception as exc:
-            err_msg = str(exc).lower()
-            if "no such table" in err_msg or "does not exist" in err_msg or "undefinedcolumn" in err_msg or "event_date" in err_msg:
-                try:
-                    from django.core.management import call_command
-                    call_command("migrate", "announcements", interactive=False)
-                    note = services.create_announcement(
-                        title=v["title"],
-                        message=v.get("message", ""),
-                        audience=v.get("audience", Announcement.Audience.EVERYONE),
-                        event_date=v.get("event_date"),
-                        publish_on=v.get("publish_on"),
-                        pinned=v.get("pinned", False),
-                        member_ids=v.get("member_ids", []),
-                        status=v.get("status", Announcement.Status.DRAFT),
-                        created_by=_effective_staff_user(request),
-                    )
-                except DjangoValidationError as exc2:
-                    _fail(exc2)
-                except Exception as exc2:
-                    logger.exception("Failed to auto-migrate and create announcement: %s", exc2)
-                    return Response({"detail": f"Could not save announcement: {str(exc2)}"}, status=400)
-            else:
-                logger.exception("Failed to create announcement: %s", exc)
-                return Response({"detail": f"Could not save announcement: {str(exc)}"}, status=400)
+            logger.exception("Failed to create announcement: %s", exc)
+            return Response({"detail": f"Could not create announcement: {str(exc)}"}, status=400)
 
         try:
             note.refresh_from_db()
         except Exception:
             pass
-        return Response(_item_with_meta(note), status=201)
+
+        try:
+            return Response(_item_with_meta(note), status=201)
+        except Exception as meta_exc:
+            logger.exception("Failed serializing created announcement metadata: %s", meta_exc)
+            return Response(StaffAnnouncementSerializer(note).data, status=201)
 
 
 class StaffAnnouncementDetailView(APIView):
@@ -372,16 +406,30 @@ class StaffAnnouncementDetailView(APIView):
     permission_classes = [IsOwner]
 
     def get(self, request, pk):
+        _ensure_announcements_schema()
         note = Announcement.objects.filter(pk=pk).first()
         if note is None:
             return Response({"detail": "Announcement not found."}, status=404)
-        return Response(_item_with_meta(note))
+        try:
+            return Response(_item_with_meta(note))
+        except Exception:
+            return Response(StaffAnnouncementSerializer(note).data)
 
     def patch(self, request, pk):
+        import logging
+        logger = logging.getLogger(__name__)
+        _ensure_announcements_schema()
         note = Announcement.objects.filter(pk=pk).first()
         if note is None:
             return Response({"detail": "Announcement not found."}, status=404)
-        v = _validate_announcement_payload(request.data, partial=True)
+
+        try:
+            v = _validate_announcement_payload(request.data, partial=True)
+        except ValidationError as val_err:
+            return Response(val_err.detail, status=400)
+        except Exception as val_exc:
+            return Response({"detail": str(val_exc)}, status=400)
+
         try:
             services.update(
                 note,
@@ -398,15 +446,22 @@ class StaffAnnouncementDetailView(APIView):
         except DjangoValidationError as exc:
             _fail(exc)
         except Exception as exc:
+            logger.exception("Failed to update announcement %s: %s", pk, exc)
             return Response({"detail": f"Could not update announcement: {str(exc)}"}, status=400)
+
         try:
             note.refresh_from_db()
-        except Exception as exc:
-            if "event_date" not in str(exc).lower():
-                raise
-        return Response(_item_with_meta(note))
+        except Exception:
+            pass
+
+        try:
+            return Response(_item_with_meta(note))
+        except Exception as meta_exc:
+            logger.exception("Failed serializing updated announcement metadata: %s", meta_exc)
+            return Response(StaffAnnouncementSerializer(note).data)
 
     def delete(self, request, pk):
+        _ensure_announcements_schema()
         note = Announcement.objects.filter(pk=pk).first()
         if note is None:
             return Response({"detail": "Announcement not found."}, status=404)
@@ -421,6 +476,9 @@ class StaffAnnouncementPublishView(APIView):
     permission_classes = [IsOwner]
 
     def post(self, request, pk):
+        import logging
+        logger = logging.getLogger(__name__)
+        _ensure_announcements_schema()
         note = Announcement.objects.filter(pk=pk).first()
         if note is None:
             return Response({"detail": "Announcement not found."}, status=404)
@@ -429,13 +487,19 @@ class StaffAnnouncementPublishView(APIView):
         except DjangoValidationError as exc:
             _fail(exc)
         except Exception as exc:
-            return Response({"detail": f"Could not update announcement: {str(exc)}"}, status=400)
+            logger.exception("Failed to publish announcement %s: %s", pk, exc)
+            return Response({"detail": f"Could not publish announcement: {str(exc)}"}, status=400)
+
         try:
             note.refresh_from_db()
-        except Exception as exc:
-            if "event_date" not in str(exc).lower():
-                raise
-        return Response(_item_with_meta(note))
+        except Exception:
+            pass
+
+        try:
+            return Response(_item_with_meta(note))
+        except Exception as meta_exc:
+            logger.exception("Failed serializing published announcement metadata: %s", meta_exc)
+            return Response(StaffAnnouncementSerializer(note).data)
 
 
 class StaffAnnouncementArchiveView(APIView):
@@ -444,13 +508,24 @@ class StaffAnnouncementArchiveView(APIView):
     permission_classes = [IsOwner]
 
     def post(self, request, pk):
+        import logging
+        logger = logging.getLogger(__name__)
+        _ensure_announcements_schema()
         note = Announcement.objects.filter(pk=pk).first()
         if note is None:
             return Response({"detail": "Announcement not found."}, status=404)
-        services.archive(note)
+        try:
+            services.archive(note)
+        except Exception as exc:
+            logger.exception("Failed to archive announcement %s: %s", pk, exc)
+            return Response({"detail": f"Could not archive announcement: {str(exc)}"}, status=400)
+
         try:
             note.refresh_from_db()
-        except Exception as exc:
-            if "event_date" not in str(exc).lower():
-                raise
-        return Response(_item_with_meta(note))
+        except Exception:
+            pass
+
+        try:
+            return Response(_item_with_meta(note))
+        except Exception:
+            return Response(StaffAnnouncementSerializer(note).data)

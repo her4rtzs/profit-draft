@@ -2116,16 +2116,19 @@ body:not(.dark):not(.auth-page):not(.public-dark-theme) .main-content {
   background: #F7F4EE !important;
 }
 
-/* 2. Sidebar: Retain Dark Theme in both Dark and Light Modes */
+/* 2. Sidebar: Permanent Dark Theme & Unified Styling in both Dark and Light Modes */
+html body nav.sidebar,
+html body .sidebar,
 nav.sidebar,
 .sidebar,
 body:not(.dark) nav.sidebar,
 body:not(.dark) .sidebar,
 body.dark nav.sidebar,
 body.dark .sidebar {
-  background: linear-gradient(180deg, #171d28 0%, #10151e 100%) !important;
-  border-right: 1px solid rgba(255, 255, 255, 0.06) !important;
-  box-shadow: 12px 0 40px rgba(0, 0, 0, 0.28) !important;
+  background: linear-gradient(180deg, #141b27 0%, #0c1119 100%) !important;
+  border: 0 !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 10px 0 35px rgba(0, 0, 0, 0.28) !important;
 }
 body nav.sidebar .headertxt strong,
 body .sidebar-brand-row strong,
@@ -2137,7 +2140,7 @@ body nav.sidebar .headertxt small,
 body .sidebar-brand-row small,
 body:not(.dark) nav.sidebar .headertxt small,
 body:not(.dark) .sidebar-brand-row small {
-  color: var(--gold) !important;
+  color: #F4C542 !important;
 }
 body nav.sidebar .nav-group-label,
 body .sidebar .nav-group-label,
@@ -2145,45 +2148,103 @@ body:not(.dark) nav.sidebar .nav-group-label,
 body:not(.dark) .sidebar .nav-group-label {
   color: #7d8697 !important;
 }
+
+/* Default Menu Items */
 body nav.sidebar .menulist a,
 body .sidebar a,
 body:not(.dark) nav.sidebar .menulist a,
-body:not(.dark) .sidebar a {
+body:not(.dark) .sidebar a,
+body.dark nav.sidebar .menulist a,
+body.dark .sidebar a {
+  background: transparent !important;
   color: #b4bac7 !important;
+  border: 1px solid transparent !important;
+  border-radius: 12px !important;
+  transition: background-color 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+              color 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+              transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+              border-color 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+              box-shadow 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
 }
 body nav.sidebar .menulist a .icon,
 body .sidebar a .icon,
 body:not(.dark) nav.sidebar .menulist a .icon,
-body:not(.dark) .sidebar a .icon {
+body:not(.dark) .sidebar a .icon,
+body.dark nav.sidebar .menulist a .icon,
+body.dark .sidebar a .icon {
   color: #8b94a5 !important;
+  transition: color 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+              transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
 }
-body nav.sidebar .menulist a:hover,
-body .sidebar a:hover,
-body:not(.dark) nav.sidebar .menulist a:hover,
-body:not(.dark) .sidebar a:hover {
-  background: rgba(255, 255, 255, 0.07) !important;
+
+/* Hover State: Subtle gold-tinted background, ProFit gold icon, warm white text */
+body nav.sidebar .menulist a:not(.active):hover,
+body .sidebar a:not(.active):hover,
+body:not(.dark) nav.sidebar .menulist a:not(.active):hover,
+body:not(.dark) .sidebar a:not(.active):hover,
+body.dark nav.sidebar .menulist a:not(.active):hover,
+body.dark .sidebar a:not(.active):hover {
+  background: rgba(244, 197, 66, 0.12) !important;
+  border: 1px solid rgba(244, 197, 66, 0.25) !important;
   color: #FFFFFF !important;
+  transform: translateX(4px) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22), 0 0 12px rgba(244, 197, 66, 0.15) !important;
 }
-body nav.sidebar .menulist a:hover .icon,
-body .sidebar a:hover .icon,
-body:not(.dark) nav.sidebar .menulist a:hover .icon,
-body:not(.dark) .sidebar a:hover .icon {
-  color: var(--gold) !important;
+body nav.sidebar .menulist a:not(.active):hover .icon,
+body .sidebar a:not(.active):hover .icon,
+body:not(.dark) nav.sidebar .menulist a:not(.active):hover .icon,
+body:not(.dark) .sidebar a:not(.active):hover .icon,
+body.dark nav.sidebar .menulist a:not(.active):hover .icon,
+body.dark .sidebar a:not(.active):hover .icon {
+  color: #F4C542 !important;
+  transform: scale(1.1) !important;
 }
+
+/* Active State: Consistent subtle dark gold gradient with gold accent indicator */
 body nav.sidebar .menulist a.active,
 body .sidebar a.active,
 body:not(.dark) nav.sidebar .menulist a.active,
-body:not(.dark) .sidebar a.active {
-  background: linear-gradient(110deg, color-mix(in srgb, var(--gold) 24%, transparent), color-mix(in srgb, var(--gold) 6%, transparent)) !important;
+body:not(.dark) .sidebar a.active,
+body.dark nav.sidebar .menulist a.active,
+body.dark .sidebar a.active {
+  background: linear-gradient(110deg, rgba(244, 197, 66, 0.22) 0%, rgba(244, 197, 66, 0.08) 100%) !important;
+  border: 1px solid rgba(244, 197, 66, 0.45) !important;
   color: #FFFFFF !important;
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--gold) 32%, transparent) !important;
+  font-weight: 700 !important;
+  box-shadow: inset 3px 0 0 #F4C542, 0 4px 16px rgba(0, 0, 0, 0.3) !important;
 }
 body nav.sidebar .menulist a.active .icon,
 body .sidebar a.active .icon,
 body:not(.dark) nav.sidebar .menulist a.active .icon,
-body:not(.dark) .sidebar a.active .icon {
-  color: var(--gold) !important;
+body:not(.dark) .sidebar a.active .icon,
+body.dark nav.sidebar .menulist a.active .icon,
+body.dark .sidebar a.active .icon {
+  color: #F4C542 !important;
 }
+
+/* Active State Hover: Enhanced gold glow and slight translation */
+body nav.sidebar .menulist a.active:hover,
+body .sidebar a.active:hover,
+body:not(.dark) nav.sidebar .menulist a.active:hover,
+body:not(.dark) .sidebar a.active:hover,
+body.dark nav.sidebar .menulist a.active:hover,
+body.dark .sidebar a.active:hover {
+  background: linear-gradient(110deg, rgba(244, 197, 66, 0.28) 0%, rgba(244, 197, 66, 0.12) 100%) !important;
+  border-color: rgba(244, 197, 66, 0.6) !important;
+  color: #FFFFFF !important;
+  transform: translateX(4px) !important;
+  box-shadow: inset 3px 0 0 #F4C542, 0 6px 20px rgba(244, 197, 66, 0.22) !important;
+}
+body nav.sidebar .menulist a.active:hover .icon,
+body .sidebar a.active:hover .icon,
+body:not(.dark) nav.sidebar .menulist a.active:hover .icon,
+body:not(.dark) .sidebar a.active:hover .icon,
+body.dark nav.sidebar .menulist a.active:hover .icon,
+body.dark .sidebar a.active:hover .icon {
+  color: #F7D36B !important;
+  transform: scale(1.1) !important;
+}
+
 body nav.sidebar .rail-user-card,
 body nav.sidebar .sidebar-profile,
 body .sidebar-user,
