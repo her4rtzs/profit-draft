@@ -20,7 +20,7 @@ from apps.accounts.adapters import CanManageEnrollment, CanViewAttendance, CanVi
 from apps.membership.models import Attendance, MemberProfile
 from apps.billing.models import Payment
 from apps.finance.models import ManualPayment
-from apps.finance.services import monthly_summary, record_desk_payment
+from apps.finance.services import monthly_summary, record_desk_payment, revenue_analytics
 from apps.membership.services import (
     check_in_member,
     create_member,
@@ -278,4 +278,19 @@ class StaffSummaryView(APIView):
         if not 1 <= month <= 12:
             return Response({"detail": "month must be 1 to 12."}, status=status.HTTP_400_BAD_REQUEST)
         return Response(monthly_summary(year, month))
+
+
+class StaffRevenueAnalyticsView(APIView):
+    """GET /api/staff/reports/revenue/?period=&year=&date=&offset= — Revenue analytics."""
+
+    permission_classes = [CanViewFinancials]
+
+    def get(self, request):
+        period = request.query_params.get("period", "month")
+        year = request.query_params.get("year")
+        date_str = request.query_params.get("date")
+        offset = request.query_params.get("offset", 0)
+        data = revenue_analytics(period=period, year=year, anchor_date=date_str, offset=offset)
+        return Response(data)
+
 

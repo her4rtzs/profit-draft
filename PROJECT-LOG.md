@@ -1396,3 +1396,16 @@ Fix the Membership Type card in the Staff Dashboard that was showing empty or mi
 - Ran full Django test suite (`python manage.py test api apps.membership apps.trainers`): all 45 tests passed.
 ### Decision-log skill
 In vanilla browser JavaScript environments without module bundlers, top-level `const` variables do not populate properties on `window`. When other scripts or guards check `window.GLOBAL_NAME`, always explicitly assign `window.GLOBAL_NAME = GLOBAL_NAME;` at definition time.
+
+## 2026-11-13 19:30 (Asia/Manila): Fix and Optimize Revenue Analytics Chart Visualization, Performance & Navigation
+### What I asked for
+Fix the Revenue Analytics chart: eliminate fake baseline bars on zero-revenue periods (such as 2022-2025 in year view), optimize slow filter switching across Days/Week/Month/Year with in-memory caching and server-side aggregation, implement responsive period navigation, and polish bar animations and tooltips.
+### What the agent decided and why
+- Root cause of fake baseline bars: `web/spotify.css` and `web/styles.css` assigned `background: color-mix(...) !important` and `min-height: 4px` to `.bar` and `.bar.empty`, creating faint grey blocks even when values were 0. Overrode this in `web/portal-ui.css` (`v=14`) with `.bar.is-zero` (`height: 0 !important; background: transparent !important; opacity: 0 !important; pointer-events: none !important`), ensuring zero-revenue periods display strictly zero height without fake placeholders.
+- Built a dedicated database aggregation endpoint `GET /api/staff/reports/revenue/?period=&year=&offset=` in `api/staff.py` and `apps/finance/services.py` that aggregates `ManualPayment` and paid `Payment` records in single database queries, paired with clean offline fallback from `DB.payments`.
+- Added an in-memory client-side cache (`chartCache = new Map()`) and `AbortController` in `web/chart-periods.js` (`v=916`). Filter switching now updates UI state and active chip highlights immediately (0ms), reuses cached bucket data instantly, and aborts outdated in-flight requests.
+- Avoided chart DOM recreation by reusing `.bar-column` elements in-place and animating bar heights via CSS transitions (`transition: height 0.35s cubic-bezier(0.22, 1, 0.36, 1)`), eliminating screen flashing.
+- Replaced the year-only stepper with a unified period stepper that supports previous/next navigation across all four filters (Days: 14-day windows; Week: Mon-Sun weeks; Month: 12-month calendar years; Year: 5-year ranges) with automatic forward-navigation guards preventing future empty periods.
+- Added clean, human-readable Y-axis interval scaling (`calculateNiceScale`), floating interactive tooltips showing exact PHP currency values (`pesoFull`), refined gold gradient bars with peak highlighting (`.is-top`), and an empty-state overlay for zero-transaction periods.
+### Decision-log skill
+When rendering bar charts with empty/zero states, explicitly force `.is-zero` bars to zero height, transparent background, and zero opacity with `!important` to override legacy stylesheet defaults, and pair client-side in-memory caching with backend aggregation to achieve instantaneous 0ms filter transitions.

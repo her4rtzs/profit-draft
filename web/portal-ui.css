@@ -674,15 +674,173 @@ body.pf-staff[data-page="dashboard"] .year-stepper button:active {
   transform: scale(0.97);
 }
 
-/* Revenue / Attendance bar rise animation */
+/* Revenue / Attendance bar styles and transitions */
 .bar-column .bar {
   transform-origin: bottom center;
-  animation: pfBarRise 0.45s cubic-bezier(0.22, 1, 0.36, 1) backwards;
-  animation-delay: calc(var(--bi, 0) * 22ms);
-  transition: height 0.32s cubic-bezier(0.22, 1, 0.36, 1), filter 0.18s ease, transform 0.18s ease;
+  transition: height 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+              filter 0.18s ease,
+              transform 0.18s ease,
+              box-shadow 0.18s ease;
 }
-.bar-column .bar:hover {
-  filter: brightness(1.12);
+html body.pf-staff .bar.is-zero,
+html body.pf-staff .bar.empty,
+.bar.is-zero,
+.bar.empty {
+  height: 0 !important;
+  min-height: 0 !important;
+  opacity: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  pointer-events: none !important;
+}
+html body.pf-staff .bar.has-data,
+.bar.has-data {
+  background: linear-gradient(180deg, #F59E0B 0%, #D97706 100%) !important;
+  border-radius: 6px 6px 2px 2px !important;
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.28) !important;
+  opacity: 1 !important;
+  cursor: pointer !important;
+}
+html body.pf-staff .bar.is-top,
+.bar.is-top {
+  background: linear-gradient(180deg, #FBBF24 0%, #F59E0B 100%) !important;
+  box-shadow: 0 0 22px rgba(251, 191, 36, 0.45) !important;
+}
+html body.pf-staff .bar.has-data:hover,
+.bar.has-data:hover {
+  filter: brightness(1.15) !important;
+  transform: translateY(-3px) !important;
+  box-shadow: 0 0 24px rgba(245, 158, 11, 0.48) !important;
+}
+.bar-container.has-hover .bar.has-data:not(:hover) {
+  opacity: 0.65;
+  filter: brightness(0.9);
+}
+
+/* Floating interactive chart tooltip */
+.chart-tooltip {
+  position: absolute;
+  top: 14px;
+  transform: translateX(-50%);
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: #0A0E17;
+  color: #F8FAFC;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+  font-size: 12px;
+  line-height: 1.35;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 30;
+  text-align: center;
+  transition: left 0.15s ease-out;
+}
+body:not(.dark) .chart-tooltip {
+  background: #14181F;
+  color: #FFFFFF;
+}
+.chart-tooltip strong {
+  display: block;
+  font-size: 11px;
+  color: #94A3B8;
+  font-weight: 600;
+}
+.chart-tooltip .tip-val {
+  display: block;
+  font-size: 14px;
+  font-weight: 800;
+  color: #FBBF24;
+  margin-top: 2px;
+}
+
+/* Empty state overlay for periods with zero transactions */
+.chart-empty-state {
+  position: absolute;
+  inset: 0 0 28px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  pointer-events: none;
+  z-index: 10;
+  background: rgba(18, 26, 40, 0.4);
+  border-radius: 12px;
+  backdrop-filter: blur(2px);
+}
+.chart-empty-state i {
+  font-size: 26px;
+  color: #F59E0B;
+  opacity: 0.7;
+}
+.chart-empty-state[hidden] {
+  display: none !important;
+}
+
+/* Period Stepper (unified Days, Week, Month, Year navigation) */
+.chart-stepper,
+.year-stepper {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 3px !important;
+  padding: 3px 6px !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  margin-left: 6px !important;
+}
+body:not(.dark) .chart-stepper,
+body:not(.dark) .year-stepper {
+  background: #F1F5F9 !important;
+  border-color: #CBD5E1 !important;
+}
+.chart-stepper .stepper-btn,
+.year-stepper button {
+  width: 26px !important;
+  height: 26px !important;
+  border-radius: 50% !important;
+  border: none !important;
+  background: transparent !important;
+  color: var(--text) !important;
+  font-size: 16px !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+  display: grid !important;
+  place-items: center !important;
+  transition: background-color 0.15s ease, opacity 0.15s ease, transform 0.15s ease !important;
+}
+.chart-stepper .stepper-btn:hover:not(:disabled),
+.year-stepper button:hover:not(:disabled) {
+  background: rgba(245, 158, 11, 0.16) !important;
+  color: #F59E0B !important;
+}
+.chart-stepper .stepper-btn:disabled,
+.chart-stepper .stepper-btn.is-disabled,
+.year-stepper button:disabled {
+  opacity: 0.22 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+.chart-stepper .stepper-label {
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+  color: var(--text) !important;
+  padding: 0 6px !important;
+  white-space: nowrap !important;
+  font-variant-numeric: tabular-nums !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar-column .bar,
+  .chart-tooltip {
+    animation: none !important;
+    transition: none !important;
+  }
 }
 
 /* Stat Card Skeleton Loading */

@@ -40,6 +40,7 @@ from .staff import (
     StaffMemberViewSet,
     StaffPaymentDetailView,
     StaffPaymentView,
+    StaffRevenueAnalyticsView,
     StaffSummaryView,
 )
 from .views import MemberProfileViewSet, MyAttendanceViewSet
@@ -70,6 +71,7 @@ urlpatterns = [
     path("staff/payments/", StaffPaymentView.as_view(), name="staff-payments"),
     path("staff/payments/<int:pk>/", StaffPaymentDetailView.as_view(), name="staff-payment-detail"),
     path("staff/reports/summary/", StaffSummaryView.as_view(), name="staff-summary"),
+    path("staff/reports/revenue/", StaffRevenueAnalyticsView.as_view(), name="staff-revenue-analytics"),
     path("notifications/", NotificationListView.as_view(), name="notifications"),
     path("notifications/read-all/", NotificationReadAllView.as_view(), name="notifications-read-all"),
     path("notifications/<int:pk>/read/", NotificationReadView.as_view(), name="notification-read"),

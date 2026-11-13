@@ -100,3 +100,190 @@ def monthly_summary(year, month):
         "by_method": by_method,
         "by_plan": by_plan,
     }
+
+
+def revenue_analytics(*, period="month", year=None, anchor_date=None, offset=0):
+    """Aggregate settled payments into buckets for dashboard chart visualization.
+
+    Returns structured buckets with exact revenue in PHP, peak, total,
+    and range labels.
+    """
+    from datetime import date, timedelta
+    from django.db.models import F
+    from apps.billing.models import Payment as OnlinePayment
+
+    today = timezone.localdate()
+    if year is None:
+        year = today.year
+    else:
+        try:
+            year = int(year)
+        except (ValueError, TypeError):
+            year = today.year
+
+    try:
+        offset = int(offset or 0)
+    except (ValueError, TypeError):
+        offset = 0
+
+    if anchor_date is None:
+        anchor_date = today
+    elif isinstance(anchor_date, str):
+        try:
+            anchor_date = date.fromisoformat(anchor_date[:10])
+        except (ValueError, TypeError):
+            anchor_date = today
+
+    period = (period or "month").lower()
+    if period not in ("days", "week", "month", "year"):
+        period = "month"
+
+    buckets = []
+
+    if period == "month":
+        desk = ManualPayment.objects.filter(paid_on__year=year)
+        online = OnlinePayment.objects.filter(
+            status=OnlinePayment.Status.PAID,
+            created_at__year=year,
+        )
+        desk_by_m = {
+            r["m"]: r["total"]
+            for r in desk.values(m=F("paid_on__month")).annotate(total=Sum("amount_centavos"))
+        }
+        online_by_m = {
+            r["m"]: r["total"]
+            for r in online.values(m=F("created_at__month")).annotate(total=Sum("amount_centavos"))
+        }
+
+        month_labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+        month_titles = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ]
+        for m in range(1, 13):
+            centavos = desk_by_m.get(m, 0) + online_by_m.get(m, 0)
+            val = centavos / 100.0
+            buckets.append({
+                "key": f"{year}-{m:02d}",
+                "label": month_labels[m - 1],
+                "title": f"{month_titles[m - 1]} {year}",
+                "value": val,
+                "formatted": f"₱{val:,.2f}" if val > 0 else "₱0",
+            })
+        range_label = f"Jan to Dec {year}"
+
+    elif period == "year":
+        start_year = year - 4
+        end_year = year
+        desk = ManualPayment.objects.filter(
+            paid_on__year__gte=start_year,
+            paid_on__year__lte=end_year,
+        )
+        online = OnlinePayment.objects.filter(
+            status=OnlinePayment.Status.PAID,
+            created_at__year__gte=start_year,
+            created_at__year__lte=end_year,
+        )
+        desk_by_y = {
+            r["y"]: r["total"]
+            for r in desk.values(y=F("paid_on__year")).annotate(total=Sum("amount_centavos"))
+        }
+        online_by_y = {
+            r["y"]: r["total"]
+            for r in online.values(y=F("created_at__year")).annotate(total=Sum("amount_centavos"))
+        }
+
+        for y in range(start_year, end_year + 1):
+            centavos = desk_by_y.get(y, 0) + online_by_y.get(y, 0)
+            val = centavos / 100.0
+            buckets.append({
+                "key": str(y),
+                "label": str(y),
+                "title": f"Year {y}",
+                "value": val,
+                "formatted": f"₱{val:,.2f}" if val > 0 else "₱0",
+            })
+        range_label = f"{start_year} to {end_year}"
+
+    elif period == "week":
+        target_date = anchor_date + timedelta(weeks=offset)
+        monday = target_date - timedelta(days=target_date.weekday())
+        sunday = monday + timedelta(days=6)
+
+        desk = ManualPayment.objects.filter(paid_on__gte=monday, paid_on__lte=sunday)
+        online = OnlinePayment.objects.filter(
+            status=OnlinePayment.Status.PAID,
+            created_at__date__gte=monday,
+            created_at__date__lte=sunday,
+        )
+        desk_by_d = {
+            r["d"]: r["total"]
+            for r in desk.values(d=F("paid_on")).annotate(total=Sum("amount_centavos"))
+        }
+        online_by_d = {
+            r["d"]: r["total"]
+            for r in online.values(d=F("created_at__date")).annotate(total=Sum("amount_centavos"))
+        }
+
+        day_names = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+        for i in range(7):
+            cur = monday + timedelta(days=i)
+            centavos = desk_by_d.get(cur, 0) + online_by_d.get(cur, 0)
+            val = centavos / 100.0
+            buckets.append({
+                "key": cur.isoformat(),
+                "label": day_names[i],
+                "title": cur.strftime("%A, %b %d, %Y"),
+                "value": val,
+                "formatted": f"₱{val:,.2f}" if val > 0 else "₱0",
+            })
+        range_label = f"Week of {monday.strftime('%b %d')} - {sunday.strftime('%b %d, %Y')}"
+
+    elif period == "days":
+        end_d = anchor_date + timedelta(days=offset * 14)
+        start_d = end_d - timedelta(days=13)
+
+        desk = ManualPayment.objects.filter(paid_on__gte=start_d, paid_on__lte=end_d)
+        online = OnlinePayment.objects.filter(
+            status=OnlinePayment.Status.PAID,
+            created_at__date__gte=start_d,
+            created_at__date__lte=end_d,
+        )
+        desk_by_d = {
+            r["d"]: r["total"]
+            for r in desk.values(d=F("paid_on")).annotate(total=Sum("amount_centavos"))
+        }
+        online_by_d = {
+            r["d"]: r["total"]
+            for r in online.values(d=F("created_at__date")).annotate(total=Sum("amount_centavos"))
+        }
+
+        for i in range(14):
+            cur = start_d + timedelta(days=i)
+            centavos = desk_by_d.get(cur, 0) + online_by_d.get(cur, 0)
+            val = centavos / 100.0
+            buckets.append({
+                "key": cur.isoformat(),
+                "label": cur.strftime("%b %d") if (i == 0 or cur.day == 1) else str(cur.day),
+                "title": cur.strftime("%A, %b %d, %Y"),
+                "value": val,
+                "formatted": f"₱{val:,.2f}" if val > 0 else "₱0",
+            })
+        range_label = f"{start_d.strftime('%b %d')} - {end_d.strftime('%b %d, %Y')}"
+
+    values = [b["value"] for b in buckets]
+    total = sum(values)
+    peak = max(values) if values else 0
+
+    return {
+        "period": period,
+        "year": year,
+        "offset": offset,
+        "range_label": range_label,
+        "currency": "PHP",
+        "buckets": buckets,
+        "total": total,
+        "total_formatted": f"₱{total:,.2f}",
+        "peak": peak,
+        "empty": total == 0,
+    }

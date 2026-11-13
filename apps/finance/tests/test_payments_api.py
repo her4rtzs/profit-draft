@@ -104,3 +104,31 @@ class DeskPaymentTests(TestCase):
     def test_summary_rejects_bad_month(self):
         self.as_(self.owner)
         self.assertEqual(self.api.get(SUMMARY, {"month": 13}).status_code, 400)
+
+    def test_revenue_analytics_endpoint(self):
+        self.as_(self.owner)
+        self.assertEqual(self.pay("monthly", "CASH").status_code, 201)
+        self.assertEqual(self.pay("annual", "BANK").status_code, 201)
+        today = timezone.localdate()
+
+        # Month
+        res = self.api.get("/api/staff/reports/revenue/", {"period": "month", "year": today.year})
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        self.assertEqual(data["period"], "month")
+        self.assertEqual(len(data["buckets"]), 12)
+        self.assertEqual(data["total"], 8300.0)  # (80000 + 750000) / 100
+        self.assertFalse(data["empty"])
+
+        # Year
+        res_y = self.api.get("/api/staff/reports/revenue/", {"period": "year", "year": today.year})
+        self.assertEqual(res_y.status_code, 200)
+        data_y = res_y.json()
+        self.assertEqual(data_y["period"], "year")
+        self.assertEqual(len(data_y["buckets"]), 5)
+        self.assertEqual(data_y["total"], 8300.0)
+
+        # Cashier is 403
+        self.as_(self.cashier)
+        self.assertEqual(self.api.get("/api/staff/reports/revenue/").status_code, 403)
+

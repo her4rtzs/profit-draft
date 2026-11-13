@@ -1,83 +1,138 @@
 /* ProFit chart periods.
-   One period model shared by the dashboard's revenue panel and the attendance
-   panel, so "Days / Week / Month / Year" means the same window on both charts
-   and both re-render from the same profit-db-v1 store. Loaded after layout.js
-   and sidebar.js on the pages that draw a chart. */
+   Unified, high-performance Revenue Analytics & Attendance Chart component.
+   Supports Days, Week, Month, and Year with instant cached switching,
+   database aggregation, smooth bar transitions, exact zero-height handling,
+   and accessible interactive tooltips. */
 window.PFChart = (function () {
   "use strict";
 
   var STORE = "profit-db-v1";
   var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  var DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  var MONTH_NAMES = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+  var DAYS_SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  var DAYS_FULL = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
   var pad = function (n) { return (n < 10 ? "0" : "") + n; };
   var iso = function (d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); };
   var startOfDay = function (d) { return new Date(d.getFullYear(), d.getMonth(), d.getDate()); };
   var addDays = function (d, n) { var x = new Date(d.getTime()); x.setDate(x.getDate() + n); return x; };
+
   var peso = function (n) {
     var v = Number(n || 0);
-    return "\u20b1" + (v >= 1000 ? (Math.round(v / 100) / 10).toFixed(v >= 100000 ? 0 : 1).replace(/\.0$/, "") + "k" : v.toLocaleString("en-US"));
+    if (v === 0) return "\u20b10";
+    if (v >= 1000) {
+      var k = Math.round(v / 100) / 10;
+      return "\u20b1" + (k % 1 === 0 ? k.toFixed(0) : k.toFixed(1)) + "k";
+    }
+    return "\u20b1" + Math.round(v).toLocaleString("en-US");
   };
-  var pesoFull = function (n) { return "\u20b1" + Number(n || 0).toLocaleString("en-US"); };
 
-  // Dates survive JSON round-tripping as strings, so normalise before comparing.
+  var pesoFull = function (n) {
+    var v = Number(n || 0);
+    return "\u20b1" + v.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+
+  // Convert raw values (string or Date) into clean Date objects
   function toDate(v) {
-    if (v instanceof Date) return isNaN(v) ? null : v;
-    var s = String(v || "");
+    if (v instanceof Date) return isNaN(v.getTime()) ? null : v;
+    var s = String(v || "").trim();
     var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s);
     if (m) return new Date(+m[1], +m[2] - 1, +m[3]);
     var d = new Date(s);
-    return isNaN(d) ? null : d;
+    return isNaN(d.getTime()) ? null : d;
   }
 
   function readDB() {
+    if (typeof window !== "undefined" && window.DB && Array.isArray(window.DB.payments)) {
+      return window.DB;
+    }
     try {
-      var db = JSON.parse(localStorage.getItem(STORE) || "null");
+      var raw = localStorage.getItem(STORE);
+      var db = raw ? JSON.parse(raw) : null;
       return db && typeof db === "object" ? db : {};
-    } catch (e) { return {}; }
+    } catch (e) {
+      return {};
+    }
   }
 
-  /* Years the picker offers: from the earliest record (or four years back) to this year. */
-  function yearChoices() {
-    var db = readDB();
-    var now = new Date().getFullYear();
-    var first = now - 4;
-    (db.payments || []).concat(db.checkins || []).forEach(function (r) {
-      var d = toDate(r && r.date);
-      if (d && d.getFullYear() < first) first = d.getFullYear();
-    });
-    var out = [];
-    for (var y = now; y >= first; y--) out.push(y);
-    return out;
+  /* Calculate clean, human-readable Y-axis interval steps */
+  function calculateNiceScale(peak) {
+    if (!peak || peak <= 0) {
+      return { max: 1000, steps: [1000, 800, 600, 400, 200, 0] };
+    }
+    var mag = Math.pow(10, Math.floor(Math.log10(peak)));
+    var norm = peak / mag;
+    var niceNorm;
+    if (norm <= 1.2) niceNorm = 1.2;
+    else if (norm <= 1.5) niceNorm = 1.5;
+    else if (norm <= 2.0) niceNorm = 2.0;
+    else if (norm <= 2.5) niceNorm = 2.5;
+    else if (norm <= 3.0) niceNorm = 3.0;
+    else if (norm <= 4.0) niceNorm = 4.0;
+    else if (norm <= 5.0) niceNorm = 5.0;
+    else if (norm <= 6.0) niceNorm = 6.0;
+    else if (norm <= 8.0) niceNorm = 8.0;
+    else niceNorm = 10.0;
+
+    var niceMax = niceNorm * mag;
+    var stepCount = 5;
+    if (niceNorm === 1.2 || niceNorm === 6.0) stepCount = 6;
+    else if (niceNorm === 4.0 || niceNorm === 8.0) stepCount = 4;
+
+    var stepSize = niceMax / stepCount;
+    var steps = [];
+    for (var i = stepCount; i >= 0; i--) {
+      steps.push(Math.round(i * stepSize));
+    }
+    return { max: niceMax, steps: steps };
   }
 
-  /* Every period returns a fixed ladder of buckets, oldest first. The ladder is
-     built from the calendar, never from the data, so a quiet month still shows
-     up as its own column instead of collapsing the chart. */
-  function bucketsFor(period, now, year) {
+  /* Build calendar buckets for Days, Week, Month, and Year */
+  function bucketsFor(period, now, year, offset) {
     var today = startOfDay(now instanceof Date ? now : new Date());
     year = year || today.getFullYear();
+    offset = Number(offset || 0);
     var out = [];
+    var rangeLabel = "";
+    var stepperLabel = "";
     var i, d, s;
+
     if (period === "days") {
-      for (i = 13; i >= 0; i--) {
-        d = addDays(today, -i);
+      var endD = addDays(today, offset * 14);
+      var startD = addDays(endD, -13);
+      for (i = 0; i < 14; i++) {
+        d = addDays(startD, i);
         out.push({
-          key: iso(d), from: d, to: addDays(d, 1),
-          label: String(d.getDate()),
-          title: DAYS[d.getDay()] + ", " + MONTHS[d.getMonth()] + " " + d.getDate()
+          key: iso(d),
+          from: d,
+          to: addDays(d, 1),
+          label: i === 0 || d.getDate() === 1 ? MONTHS[d.getMonth()] + " " + d.getDate() : String(d.getDate()),
+          title: DAYS_FULL[d.getDay()] + ", " + MONTHS[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear()
         });
       }
+      rangeLabel = MONTHS[startD.getMonth()] + " " + startD.getDate() + " \u2013 " + MONTHS[endD.getMonth()] + " " + endD.getDate() + ", " + endD.getFullYear();
+      stepperLabel = MONTHS[startD.getMonth()] + " " + startD.getDate() + " \u2013 " + endD.getDate();
     } else if (period === "week") {
-      var monday = addDays(today, -((today.getDay() + 6) % 7));
-      for (i = 7; i >= 0; i--) {
-        s = addDays(monday, -7 * i);
+      var targetWeek = addDays(today, offset * 7);
+      var dayOfWeek = targetWeek.getDay();
+      var mondayOffset = (dayOfWeek + 6) % 7;
+      var monday = addDays(targetWeek, -mondayOffset);
+      var sunday = addDays(monday, 6);
+      for (i = 0; i < 7; i++) {
+        d = addDays(monday, i);
         out.push({
-          key: iso(s), from: s, to: addDays(s, 7),
-          label: (s.getMonth() + 1) + "/" + s.getDate(),
-          title: "Week of " + MONTHS[s.getMonth()] + " " + s.getDate() + ", " + s.getFullYear()
+          key: iso(d),
+          from: d,
+          to: addDays(d, 1),
+          label: DAYS_SHORT[d.getDay()],
+          title: DAYS_FULL[d.getDay()] + ", " + MONTHS[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear()
         });
       }
+      rangeLabel = "Week of " + MONTHS[monday.getMonth()] + " " + monday.getDate() + " \u2013 " + MONTHS[sunday.getMonth()] + " " + sunday.getDate() + ", " + sunday.getFullYear();
+      stepperLabel = "Week of " + MONTHS[monday.getMonth()] + " " + monday.getDate();
     } else if (period === "month") {
       for (i = 0; i < 12; i++) {
         d = new Date(year, i, 1);
@@ -86,30 +141,37 @@ window.PFChart = (function () {
           from: d,
           to: new Date(d.getFullYear(), d.getMonth() + 1, 1),
           label: MONTHS[d.getMonth()],
-          title: MONTHS[d.getMonth()] + " " + d.getFullYear()
+          title: MONTH_NAMES[d.getMonth()] + " " + d.getFullYear()
         });
       }
+      rangeLabel = "Jan to Dec " + year;
+      stepperLabel = String(year);
     } else {
-      for (i = 4; i >= 0; i--) {
-        d = new Date(year - i, 0, 1);
+      // 5-year block ending at `year`
+      var startYear = year - 4;
+      for (i = startYear; i <= year; i++) {
+        d = new Date(i, 0, 1);
         out.push({
-          key: String(d.getFullYear()),
+          key: String(i),
           from: d,
-          to: new Date(d.getFullYear() + 1, 0, 1),
-          label: String(d.getFullYear()),
-          title: String(d.getFullYear())
+          to: new Date(i + 1, 0, 1),
+          label: String(i),
+          title: "Year " + i
         });
       }
+      rangeLabel = startYear + " to " + year;
+      stepperLabel = startYear + " \u2013 " + year;
     }
-    return out;
+
+    return { buckets: out, rangeLabel: rangeLabel, stepperLabel: stepperLabel };
   }
 
-  /* Bucket `rows` into the ladder for `period`.
-     kind: "revenue" sums payments, "visits" counts check-ins. */
-  function series(kind, period, now, year) {
+  /* Client-side aggregation from in-memory DB (offline or fallback) */
+  function seriesFromLocal(kind, period, year, offset) {
     var db = readDB();
     var rows = kind === "revenue" ? (db.payments || []) : (db.checkins || []);
-    var buckets = bucketsFor(period, now, year);
+    var bRes = bucketsFor(period, undefined, year, offset);
+    var buckets = bRes.buckets;
     var values = buckets.map(function () { return 0; });
 
     rows.forEach(function (r) {
@@ -123,39 +185,189 @@ window.PFChart = (function () {
       }
     });
 
-    var total = values.reduce(function (n, v) { return n + v; }, 0);
+    var total = values.reduce(function (acc, v) { return acc + v; }, 0);
     var peak = Math.max.apply(null, values.concat([0]));
-    return { buckets: buckets, values: values, total: total, peak: peak, empty: total === 0 };
+
+    return {
+      period: period,
+      year: year,
+      offset: offset,
+      range_label: bRes.rangeLabel,
+      stepper_label: bRes.stepperLabel,
+      buckets: buckets,
+      values: values,
+      total: total,
+      peak: peak,
+      empty: total === 0
+    };
   }
 
-  /* Draw the ladder. Every bucket is emitted even at zero so the axis never
-     shrinks when the gym has a quiet stretch. */
-  function renderBars(host, s, kind) {
-    if (!host) return;
-    var scale = s.peak > 0 ? s.peak : 1;
-    host.innerHTML = s.buckets.map(function (b, i) {
-      var v = s.values[i];
-      var pct = v > 0 ? Math.max(5, Math.round((v / scale) * 100)) : 3;
-      var tip = kind === "revenue" ? pesoFull(v) : v + (v === 1 ? " check-in" : " check-ins");
-      var cls = v > 0 ? "has-data" : "empty";
-      return '<div class="bar-column">' +
-        '<div class="bar-track">' +
-        '<div class="bar ' + cls + '" tabindex="0" role="img" aria-label="' +
-        b.title + ": " + tip + '" title="' + b.title + " \u00b7 " + tip + '" style="height:' + pct + '%;--bi:' + i + ';">' +
-        "<span>" + tip + "</span></div>" +
-        "</div><label>" + b.label + "</label></div>";
-    }).join("");
-  }
+  /* In-memory cache for ultra-fast filter switching */
+  var chartCache = new Map();
+  var activeAbortController = null;
 
-  /* The y-axis follows the same ladder instead of being five hard-coded spans. */
-  function renderAxis(host, s, kind) {
-    if (!host) return;
-    var steps = 6;
-    var out = [];
-    for (var i = steps; i >= 0; i--) {
-      var v = (s.peak * i) / steps;
-      out.push("<span>" + (kind === "revenue" ? peso(v) : String(Math.round(v))) + "</span>");
+  /* Fetch aggregated revenue analytics from the server with fallback */
+  function loadSeries(kind, period, year, offset, callback) {
+    var cacheKey = kind + ":" + period + ":" + year + ":" + offset;
+    if (chartCache.has(cacheKey)) {
+      callback(chartCache.get(cacheKey), false);
+      return;
     }
+
+    // Only revenue on pages with backend connectivity calls the API
+    if (kind !== "revenue" || typeof fetch === "undefined" || location.protocol === "file:") {
+      var localData = seriesFromLocal(kind, period, year, offset);
+      chartCache.set(cacheKey, localData);
+      callback(localData, false);
+      return;
+    }
+
+    if (activeAbortController) {
+      try { activeAbortController.abort(); } catch (e) {}
+    }
+    activeAbortController = new AbortController();
+    var signal = activeAbortController.signal;
+
+    var url = "/api/staff/reports/revenue/?period=" + encodeURIComponent(period) +
+      "&year=" + encodeURIComponent(year) +
+      "&offset=" + encodeURIComponent(offset);
+
+    fetch(url, { signal: signal, credentials: "same-origin" })
+      .then(function (res) {
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res.json();
+      })
+      .then(function (data) {
+        var bRes = bucketsFor(period, undefined, year, offset);
+        var values = (data.buckets || []).map(function (b) { return Number(b.value || 0); });
+        var total = typeof data.total === "number" ? data.total : values.reduce(function (a, b) { return a + b; }, 0);
+        var peak = typeof data.peak === "number" ? data.peak : Math.max.apply(null, values.concat([0]));
+        var fullData = {
+          period: period,
+          year: year,
+          offset: offset,
+          range_label: data.range_label || bRes.rangeLabel,
+          stepper_label: bRes.stepperLabel,
+          buckets: (data.buckets && data.buckets.length === bRes.buckets.length)
+            ? data.buckets.map(function (b, idx) {
+                return Object.assign({}, bRes.buckets[idx], b);
+              })
+            : bRes.buckets,
+          values: values,
+          total: total,
+          peak: peak,
+          empty: total === 0
+        };
+        chartCache.set(cacheKey, fullData);
+        callback(fullData, true);
+      })
+      .catch(function (err) {
+        if (err && err.name === "AbortError") return;
+        var fallback = seriesFromLocal(kind, period, year, offset);
+        chartCache.set(cacheKey, fallback);
+        callback(fallback, false);
+      });
+  }
+
+  /* Render or update the bars in-place without jarring DOM recreation */
+  function renderBars(host, s, kind, tooltipEl, niceMax) {
+    if (!host) return;
+    var scaleMax = niceMax || (s.peak > 0 ? s.peak : 1);
+    var targetCount = s.buckets.length;
+    var existingCols = host.querySelectorAll(".bar-column");
+
+    // Adjust column count to match buckets
+    if (existingCols.length !== targetCount) {
+      var html = s.buckets.map(function (b, i) {
+        return '<div class="bar-column">' +
+          '<div class="bar-track">' +
+          '<div class="bar is-zero" tabindex="0" role="img" style="height:0%;--bi:' + i + ';"></div>' +
+          '</div>' +
+          '<label>' + b.label + '</label>' +
+          '</div>';
+      }).join("");
+      host.innerHTML = html;
+      existingCols = host.querySelectorAll(".bar-column");
+    }
+
+    // Interactive tooltip hover helpers
+    var showTooltip = function (colEl, bucket, val) {
+      if (!tooltipEl) return;
+      var tipFormatted = kind === "revenue" ? pesoFull(val) : val + (val === 1 ? " check-in" : " check-ins");
+      tooltipEl.innerHTML = '<strong>' + bucket.title + '</strong><span class="tip-val">' + tipFormatted + '</span>';
+      tooltipEl.hidden = false;
+
+      var colRect = colEl.getBoundingClientRect();
+      var hostRect = host.getBoundingClientRect();
+      var leftOffset = (colRect.left - hostRect.left) + (colRect.width / 2);
+      tooltipEl.style.left = leftOffset + "px";
+    };
+
+    var hideTooltip = function () {
+      if (tooltipEl) tooltipEl.hidden = true;
+    };
+
+    s.buckets.forEach(function (b, i) {
+      var col = existingCols[i];
+      if (!col) return;
+      var bar = col.querySelector(".bar");
+      var lbl = col.querySelector("label");
+      var v = s.values[i] || 0;
+      var isZero = (v === 0);
+      var isTop = (v > 0 && v === s.peak);
+      var pct = isZero ? 0 : Math.max(3, Math.round((v / scaleMax) * 100));
+      var tipFormatted = kind === "revenue" ? pesoFull(v) : v + (v === 1 ? " check-in" : " check-ins");
+
+      if (lbl && lbl.textContent !== b.label) lbl.textContent = b.label;
+
+      if (bar) {
+        bar.style.height = pct + "%";
+        bar.style.setProperty("--bi", String(i));
+        bar.setAttribute("aria-label", b.title + ": " + tipFormatted);
+        bar.setAttribute("title", b.title + " \u00b7 " + tipFormatted);
+
+        bar.classList.toggle("has-data", !isZero);
+        bar.classList.toggle("is-zero", isZero);
+        bar.classList.toggle("is-top", isTop);
+      }
+
+      // Re-attach hover/focus events cleanly
+      col.onmouseenter = function () {
+        host.classList.add("has-hover");
+        showTooltip(col, b, v);
+      };
+      col.onmouseleave = function () {
+        host.classList.remove("has-hover");
+        hideTooltip();
+      };
+      col.onfocus = function () { showTooltip(col, b, v); };
+      col.onblur = function () { hideTooltip(); };
+    });
+
+    // Toggle chart empty overlay
+    var chartWrap = host.closest(".chart");
+    if (chartWrap) {
+      var emptyEl = chartWrap.querySelector(".chart-empty-state");
+      if (!emptyEl && s.empty) {
+        emptyEl = document.createElement("div");
+        emptyEl.className = "chart-empty-state";
+        emptyEl.innerHTML = '<i class="fa-solid fa-chart-simple" aria-hidden="true"></i><span>No records found for this period</span>';
+        chartWrap.appendChild(emptyEl);
+      }
+      if (emptyEl) {
+        emptyEl.hidden = !s.empty;
+      }
+    }
+  }
+
+  /* Render Y-axis labels with clean, professional scale intervals */
+  function renderAxis(host, niceScale, kind) {
+    if (!host) return;
+    var steps = niceScale.steps;
+    var out = steps.map(function (v) {
+      var formatted = (kind === "revenue") ? peso(v) : String(v);
+      return "<span>" + formatted + "</span>";
+    });
     host.innerHTML = out.join("");
   }
 
@@ -163,63 +375,97 @@ window.PFChart = (function () {
     revenue: { days: "Daily revenue", week: "Weekly revenue", month: "Monthly revenue", year: "Yearly revenue" },
     visits: { days: "Daily attendance", week: "Weekly attendance", month: "Monthly attendance", year: "Yearly attendance" }
   };
-  var SUB = {
-    days: "Last 14 days",
-    week: "Last 8 weeks",
-    month: "Jan to Dec",
-    year: "5 years"
-  };
-  var subFor = function (period, year) {
-    return period === "month" ? "Jan to Dec " + year : period === "year" ? "5 years up to " + year : SUB[period];
-  };
   var KEY = { days: "Days", week: "Week", month: "Month", year: "Year" };
 
-  /* Mount a chart: chips + title + axis + bars, kept in sync by `onPeriod`.
-     Returns the redraw function so callers can refresh after a data change. */
+  /* Mount a chart: chips + stepper + axis + bars + in-memory cache */
   function mount(opts) {
-    var kind = opts.kind;
+    var kind = opts.kind || "revenue";
     var period = opts.default || (kind === "revenue" ? "month" : "days");
     var chips = opts.chips;
     var title = opts.title;
     var sub = opts.sub;
-    var year = new Date().getFullYear();
-    var picker = null;
+    var currentYear = new Date().getFullYear();
+    var year = currentYear;
+    var offset = 0;
+    var stepper = null;
+    var tooltipEl = null;
 
-    // A year picker lives beside the period chips. It only matters for the
-    // Month (Jan to Dec of that year) and Year (five years ending then) views.
-    function buildPicker() {
+    // Ensure floating tooltip exists in chart container
+    var chartArea = opts.bars ? opts.bars.closest(".chart") : null;
+    if (chartArea) {
+      tooltipEl = chartArea.querySelector(".chart-tooltip");
+      if (!tooltipEl) {
+        tooltipEl = document.createElement("div");
+        tooltipEl.className = "chart-tooltip";
+        tooltipEl.hidden = true;
+        chartArea.appendChild(tooltipEl);
+      }
+    }
+
+    // Build unified period navigator stepper
+    function buildStepper() {
       if (!chips) return;
-      /* Year stepper: arrows move one year, and the number can be typed or picked
-         from the browser's own list, so any year works (not just years with data). */
-      picker = document.createElement("span");
-      picker.className = "year-stepper";
-      picker.innerHTML = '<button type="button" data-yr="-1" aria-label="Previous year">\u2039</button>' +
-        '<input type="number" inputmode="numeric" min="2000" max="2100" aria-label="Year">' +
-        '<button type="button" data-yr="1" aria-label="Next year">\u203a</button>';
-      chips.appendChild(picker);
-      var yin = picker.querySelector("input");
-      var setYear = function (v) { v = Math.min(2100, Math.max(2000, Math.round(Number(v)))); if (v && v !== year) { year = v; draw(); } else yin.value = year; };
-      picker.addEventListener("click", function (e) { var b = e.target.closest("[data-yr]"); if (b) setYear(year + Number(b.dataset.yr)); });
-      yin.addEventListener("change", function () { setYear(yin.value); });
-    }
-    function fillPicker() {
-      if (!picker) return;
-      picker.querySelector("input").value = year;
-      picker.hidden = !(period === "month" || period === "year");
+      stepper = chips.querySelector(".chart-stepper") || chips.querySelector(".year-stepper");
+      if (!stepper) {
+        stepper = document.createElement("div");
+        stepper.className = "chart-stepper year-stepper";
+        stepper.setAttribute("role", "group");
+        stepper.setAttribute("aria-label", "Period navigation");
+        chips.appendChild(stepper);
+      }
+      stepper.innerHTML =
+        '<button type="button" class="stepper-btn prev" data-step="-1" aria-label="Previous period">\u2039</button>' +
+        '<span class="stepper-label" aria-live="polite"></span>' +
+        '<button type="button" class="stepper-btn next" data-step="1" aria-label="Next period">\u203a</button>';
+
+      stepper.addEventListener("click", function (e) {
+        var btn = e.target.closest("[data-step]");
+        if (!btn || btn.disabled) return;
+        var step = Number(btn.dataset.step || 0);
+        navigate(step);
+      });
     }
 
-    function draw(ev) {
+    function updateStepperUI(stepperLabel) {
+      if (!stepper) return;
+      var lbl = stepper.querySelector(".stepper-label");
+      var nextBtn = stepper.querySelector(".stepper-btn.next");
+      if (lbl) lbl.textContent = stepperLabel || "";
+
+      // Determine whether forward navigation into future is allowed
+      var canGoForward = true;
+      if (period === "month" && year >= currentYear) canGoForward = false;
+      else if (period === "year" && year >= currentYear) canGoForward = false;
+      else if (period === "week" && offset >= 0) canGoForward = false;
+      else if (period === "days" && offset >= 0) canGoForward = false;
+
+      if (nextBtn) {
+        nextBtn.disabled = !canGoForward;
+        nextBtn.classList.toggle("is-disabled", !canGoForward);
+      }
+    }
+
+    function navigate(step) {
+      if (period === "month") {
+        var nextYr = year + step;
+        if (nextYr > currentYear) return;
+        year = nextYr;
+      } else if (period === "year") {
+        var next5Yr = year + (step * 5);
+        if (next5Yr > currentYear) next5Yr = currentYear;
+        year = next5Yr;
+      } else {
+        var nextOffset = offset + step;
+        if (nextOffset > 0) return;
+        offset = nextOffset;
+      }
+      draw();
+    }
+
+    function draw() {
       var panel = opts.bars ? opts.bars.closest(".panel") : null;
-      var synced = window.DB && window.DB.synced;
-      var syncDone = ev && ev.type === "profit:synced";
-      if (panel) panel.classList.toggle("is-loading", !synced && !syncDone);
 
-      var s = series(kind, period, undefined, year);
-      fillPicker();
-      renderAxis(opts.axis, s, kind);
-      renderBars(opts.bars, s, kind);
-      if (title) title.textContent = COPY[kind][period];
-      if (sub) sub.textContent = subFor(period, year) + (s.empty ? " \u00b7 no records yet" : "");
+      // Update chip active states immediately
       if (chips) {
         chips.querySelectorAll("[data-period]").forEach(function (b) {
           var on = b.dataset.period === period;
@@ -227,29 +473,63 @@ window.PFChart = (function () {
           b.setAttribute("aria-pressed", String(on));
         });
       }
-      if (opts.onPeriod) opts.onPeriod(period, s, year);
+
+      // Check if data is already cached
+      var cacheKey = kind + ":" + period + ":" + year + ":" + offset;
+      var isCached = chartCache.has(cacheKey);
+
+      // Show skeleton only on cold initial load if completely unpopulated
+      if (!isCached && (!opts.bars || !opts.bars.children.length)) {
+        if (panel) panel.classList.add("is-loading");
+      }
+
+      loadSeries(kind, period, year, offset, function (s) {
+        if (panel) panel.classList.remove("is-loading");
+
+        var niceScale = calculateNiceScale(s.peak);
+        updateStepperUI(s.stepper_label);
+        renderAxis(opts.axis, niceScale, kind);
+        renderBars(opts.bars, s, kind, tooltipEl, niceScale.max);
+
+        if (title && COPY[kind] && COPY[kind][period]) {
+          title.textContent = COPY[kind][period];
+        }
+        if (sub) {
+          sub.textContent = s.range_label + (s.empty ? " \u00b7 no records yet" : "");
+        }
+        if (opts.onPeriod) {
+          opts.onPeriod(period, s, year);
+        }
+      });
     }
 
     if (chips) {
       chips.addEventListener("click", function (e) {
         var b = e.target.closest("[data-period]");
         if (!b) return;
-        period = b.dataset.period;
+        var newPeriod = b.dataset.period;
+        if (newPeriod === period) return;
+        period = newPeriod;
+        offset = 0; // reset relative offset when changing period
         draw();
       });
     }
 
-    buildPicker();
+    buildStepper();
     draw();
-    // Another page (or a payment recorded on this one) can change the store.
-    window.addEventListener("storage", draw);
-    document.addEventListener("profit:synced", draw);
+
+    window.addEventListener("storage", function () {
+      chartCache.clear();
+      draw();
+    });
+    document.addEventListener("profit:synced", function () {
+      chartCache.clear();
+      draw();
+    });
+
     return draw;
   }
 
-  /* The revenue panel on the dashboard and the attendance panel are the only
-     two charts, so rather than duplicating an init block in both pages, mount
-     whichever one this document contains. */
   function boot() {
     var revBars = document.getElementById("revenueBars");
     if (revBars) {
@@ -266,10 +546,8 @@ window.PFChart = (function () {
         title: revTitle,
         sub: revSub,
         onPeriod: function (period, s, yr) {
-          // The headline number answers "how much in the window I am looking at",
-          // not "how much this month" while the chart shows a year.
           if (statValue) statValue.textContent = pesoFull(s.total);
-          if (statNote) statNote.textContent = subFor(period, yr) + (s.empty ? " · no payments yet" : "");
+          if (statNote) statNote.textContent = s.range_label + (s.empty ? " \u00b7 no payments yet" : "");
         }
       });
     }
@@ -285,7 +563,6 @@ window.PFChart = (function () {
         title: document.getElementById("attendanceTitle"),
         sub: document.getElementById("attendanceSub"),
         onPeriod: function (period, s) {
-          // The three summary numbers describe whatever window is on screen.
           var best = -1, bestIdx = -1;
           s.values.forEach(function (v, i) { if (v > best) { best = v; bestIdx = i; } });
           var set = function (id, v) { var el = document.getElementById(id); if (el) el.textContent = v; };
@@ -304,12 +581,13 @@ window.PFChart = (function () {
     periods: ["days", "week", "month", "year"],
     labels: KEY,
     bucketsFor: bucketsFor,
-    series: series,
-    yearChoices: yearChoices,
+    seriesFromLocal: seriesFromLocal,
+    calculateNiceScale: calculateNiceScale,
     renderBars: renderBars,
     renderAxis: renderAxis,
     mount: mount,
     peso: peso,
-    pesoFull: pesoFull
+    pesoFull: pesoFull,
+    clearCache: function () { chartCache.clear(); }
   };
 })();
