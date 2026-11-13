@@ -3005,3 +3005,89 @@ body:not(.dark) .registrations-panel .member small { color: #64748B !important; 
   }
 }
 
+/* ==========================================================================
+   SIDEBAR ACCOUNT MENU POPUP: ALWAYS DARK & PREMIUM ACROSS ALL THEMES
+   ========================================================================== */
+html body .sidebar .account-menu,
+html body nav.sidebar .account-menu,
+html body #accountMenu,
+body:not(.dark) .sidebar .account-menu,
+body:not(.dark) nav.sidebar .account-menu,
+body:not(.dark) #accountMenu {
+  background: #141b27 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(245, 158, 11, 0.2) !important;
+  border-radius: 16px !important;
+  padding: 8px !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  z-index: 300 !important;
+}
+
+html body .sidebar .account-menu a,
+html body .sidebar .account-menu button,
+html body nav.sidebar .account-menu a,
+html body nav.sidebar .account-menu button,
+body:not(.dark) .sidebar .account-menu a,
+body:not(.dark) .sidebar .account-menu button,
+body:not(.dark) #accountMenu a,
+body:not(.dark) #accountMenu button {
+  color: #e2e8f0 !important;
+  font-weight: 600 !important;
+  font-size: 13.5px !important;
+  border-radius: 11px !important;
+  padding: 10px 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  background: transparent !important;
+  transition: all 0.18s ease !important;
+  border: 0 !important;
+  width: 100% !important;
+  text-align: left !important;
+  text-decoration: none !important;
+}
+
+html body .sidebar .account-menu a i,
+html body .sidebar .account-menu button i,
+body:not(.dark) .sidebar .account-menu a i,
+body:not(.dark) .sidebar .account-menu button i {
+  color: #94a3b8 !important;
+  font-size: 15px !important;
+  width: 18px !important;
+  text-align: center !important;
+  transition: color 0.18s ease !important;
+}
+
+html body .sidebar .account-menu a:hover,
+html body .sidebar .account-menu button:hover,
+body:not(.dark) .sidebar .account-menu a:hover,
+body:not(.dark) .sidebar .account-menu button:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+}
+
+html body .sidebar .account-menu a:hover i,
+html body .sidebar .account-menu button:hover i,
+body:not(.dark) .sidebar .account-menu a:hover i,
+body:not(.dark) .sidebar .account-menu button:hover i {
+  color: #f59e0b !important;
+}
+
+html body .sidebar .account-menu button[data-logout],
+body:not(.dark) .sidebar .account-menu button[data-logout] {
+  color: #fb5364 !important;
+}
+
+html body .sidebar .account-menu button[data-logout] i,
+body:not(.dark) .sidebar .account-menu button[data-logout] i {
+  color: #fb5364 !important;
+}
+
+html body .sidebar .account-menu button[data-logout]:hover,
+body:not(.dark) .sidebar .account-menu button[data-logout]:hover {
+  background: rgba(251, 83, 100, 0.14) !important;
+  color: #ff6b7d !important;
+}
+
+
