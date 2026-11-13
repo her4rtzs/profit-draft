@@ -23,6 +23,9 @@
 
   let trainers = [];
   let members = [];
+  let membersLoading = true;
+  let membersError = false;
+  let membersPromise = null;
   let requests = [];
   let viewMode = "grid";
   let statusFilter = "all";
@@ -197,6 +200,14 @@
   function renderMemberMenu(query = "") {
     const menu = document.getElementById("asMemberMenu");
     if (!menu) return;
+    if (membersLoading && !members.length) {
+      menu.innerHTML = `<div class="tr-combo-empty">Loading members...</div>`;
+      return;
+    }
+    if (membersError && !members.length) {
+      menu.innerHTML = `<div class="tr-combo-empty">Could not load members. Click to retry.</div>`;
+      return;
+    }
     const q = String(query || "").trim().toLowerCase();
     const selectedId = document.getElementById("asMember")?.value || "";
     const matched = members.filter(m => {
@@ -224,17 +235,26 @@
   }
 
   async function loadMembers() {
+    if (membersPromise) return membersPromise;
     const searchEl = document.getElementById("asMemberSearch");
-    try {
-      const data = await api.get("/staff/members/");
-      members = Array.isArray(data) ? data : (data?.results || []);
-      renderMemberMenu(searchEl?.value || "");
-      showCurrent();
-    } catch {
-      const menu = document.getElementById("asMemberMenu");
-      if (menu) menu.innerHTML = `<div class="tr-combo-empty">Could not load members</div>`;
-      showCurrent();
-    }
+    membersLoading = true;
+    membersError = false;
+    if (document.activeElement === searchEl) renderMemberMenu(searchEl?.value || "");
+    membersPromise = (async () => {
+      try {
+        const data = await api.get("/staff/members/", { timeoutMs: 25000 });
+        members = Array.isArray(data) ? data : (data?.results || []);
+        membersError = false;
+      } catch {
+        membersError = true;
+      } finally {
+        membersLoading = false;
+        membersPromise = null;
+        renderMemberMenu(searchEl?.value || "");
+        showCurrent();
+      }
+    })();
+    return membersPromise;
   }
 
   function showCurrent() {
@@ -711,6 +731,7 @@
   const memClearEl = document.getElementById("asMemberClear");
 
   memSearchEl?.addEventListener("focus", () => {
+    if (membersError || (!members.length && !membersLoading)) loadMembers();
     renderMemberMenu(memHiddenEl?.value ? "" : memSearchEl.value);
     if (memMenuEl) memMenuEl.hidden = false;
   });

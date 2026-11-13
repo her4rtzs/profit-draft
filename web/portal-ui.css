@@ -3892,6 +3892,7 @@ body[data-page="trainers"] .tr-kpi-wm {
 }
 
 /* Shared Glassmorphic Panel Surface */
+body[data-page="trainers"] .tr-toolbar-panel,
 body[data-page="trainers"] .tr-dir-panel,
 body[data-page="trainers"] .tr-assign-panel,
 body[data-page="trainers"] .tr-requests-panel {
@@ -3900,6 +3901,12 @@ body[data-page="trainers"] .tr-requests-panel {
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
   border-radius: 20px !important;
   box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
+}
+
+body[data-page="trainers"] .tr-toolbar-panel {
+  width: 100%;
+  padding: 14px 18px !important;
+  margin-bottom: 18px;
 }
 
 /* Directory Panel */
@@ -3956,7 +3963,7 @@ body[data-page="trainers"] .tr-dir-toolbar {
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
-  margin-bottom: 18px;
+  margin-bottom: 0;
 }
 body[data-page="trainers"] .tr-dir-toolbar .tr-search-wrap {
   flex: 1 1 180px;
@@ -4070,13 +4077,21 @@ body[data-page="trainers"] .tr-dir-toolbar .tr-toolbar-add {
     margin-left: 0;
   }
 }
+body[data-page="trainers"] .tr-dir-summary {
+  margin-bottom: 18px;
+}
 body[data-page="trainers"] .tr-dir-count {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 13.5px;
+  font-size: 16px;
   font-weight: 800;
-  color: var(--muted, #cbd5e1);
-  margin-bottom: 14px;
-  letter-spacing: 0.01em;
+  color: var(--text, #f8fafc);
+  margin-bottom: 4px;
+  letter-spacing: -0.01em;
+}
+body[data-page="trainers"] .tr-dir-sub {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--muted, #94a3b8);
 }
 body[data-page="trainers"] .tr-status.is-leave {
   background: rgba(6, 182, 212, 0.16);
@@ -5160,6 +5175,7 @@ body[data-page="trainers"] .tr-prof-mem-chip small { display: block; font-size: 
 body[data-page="trainers"] .tr-prof-empty { margin: 0; font-size: 12.5px; color: var(--muted, #94a3b8); }
 
 /* Light Mode Overrides for Trainers Page */
+body:not(.dark)[data-page="trainers"] .tr-toolbar-panel,
 body:not(.dark)[data-page="trainers"] .tr-dir-panel,
 body:not(.dark)[data-page="trainers"] .tr-assign-panel,
 body:not(.dark)[data-page="trainers"] .tr-requests-panel {

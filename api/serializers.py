@@ -62,18 +62,26 @@ class StaffMemberSerializer(serializers.ModelSerializer):
 
     def get_plan(self, obj):
         """Return the member's latest plan from manual payments or subscriptions."""
-        latest_manual = (
-            obj.manual_payments.exclude(plan="")
-            .order_by("-created_at", "-id")
-            .values("plan", "created_at")
-            .first()
-        )
-        latest_sub = (
-            obj.subscriptions.exclude(plan="")
-            .order_by("-created_at", "-id")
-            .values("plan", "created_at")
-            .first()
-        )
+        if hasattr(obj, "_prefetched_manual_payments"):
+            mp = obj._prefetched_manual_payments[0] if obj._prefetched_manual_payments else None
+            latest_manual = {"plan": mp.plan, "created_at": mp.created_at} if mp else None
+        else:
+            latest_manual = (
+                obj.manual_payments.exclude(plan="")
+                .order_by("-created_at", "-id")
+                .values("plan", "created_at")
+                .first()
+            )
+        if hasattr(obj, "_prefetched_subscriptions"):
+            sub = obj._prefetched_subscriptions[0] if obj._prefetched_subscriptions else None
+            latest_sub = {"plan": sub.plan, "created_at": sub.created_at} if sub else None
+        else:
+            latest_sub = (
+                obj.subscriptions.exclude(plan="")
+                .order_by("-created_at", "-id")
+                .values("plan", "created_at")
+                .first()
+            )
         if latest_manual and latest_sub:
             return latest_manual["plan"] if latest_manual["created_at"] >= latest_sub["created_at"] else latest_sub["plan"]
         if latest_manual:
@@ -83,8 +91,11 @@ class StaffMemberSerializer(serializers.ModelSerializer):
         return ""
 
     def get_trainer(self, obj):
-        from apps.trainers.services import current_assignment
-        current = current_assignment(obj)
+        if hasattr(obj, "_active_assignments"):
+            current = obj._active_assignments[0] if obj._active_assignments else None
+        else:
+            from apps.trainers.services import current_assignment
+            current = current_assignment(obj)
         if current is None:
             return None
         return {"id": current.trainer_id, "name": current.trainer.user.get_full_name() or current.trainer.user.username}

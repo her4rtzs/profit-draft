@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <link rel="stylesheet" href="styles.css">
 <script src="config.js"></script><script src="api.js"></script><script src="auth.js"></script>
-<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=26"><link rel="stylesheet" href="ui-final.css?v=1">
+<link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=27"><link rel="stylesheet" href="ui-final.css?v=1">
 <script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script><link rel="stylesheet" href="hover-fx.css?v=2">
 <link rel="stylesheet" href="announcements.css?v=1">
 <link rel="stylesheet" href="ui-polish.css?v=1">
@@ -59,20 +59,8 @@
     </article>
   </section>
 
-  <!-- Trainer Directory -->
-  <section class="panel tr-dir-panel">
-    <!-- ROW 1: Directory Header -->
-    <div class="tr-dir-head">
-      <div class="tr-dir-title">
-        <span class="tr-sec-ico tr-ico-gold" aria-hidden="true"><i class="fa-solid fa-users"></i></span>
-        <div>
-          <h2>Trainer Directory</h2>
-          <p>Search, filter and manage trainers</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ROW 2: Unified Filters & Toolbar -->
+  <!-- Toolbar Bar -->
+  <section class="panel tr-toolbar-panel" aria-label="Trainer filters and actions">
     <div class="tr-dir-toolbar">
       <div class="tr-status-tabs" role="group" aria-label="Filter trainers by status">
         <button type="button" class="tr-status-tab is-on" data-status-tab="all" aria-pressed="true">All Trainers</button>
@@ -99,9 +87,14 @@
         <i class="fa-solid fa-plus" aria-hidden="true"></i> Add Trainer
       </button>
     </div>
+  </section>
 
-    <!-- ROW 4: Trainer Count & Cards -->
-    <div class="tr-dir-count" id="trCountLabel">Trainers (0)</div>
+  <!-- Trainer Directory -->
+  <section class="panel tr-dir-panel">
+    <div class="tr-dir-summary">
+      <div class="tr-dir-count" id="trCountLabel">Trainers (0)</div>
+      <p class="tr-dir-sub">Browse and manage all trainers in your gym.</p>
+    </div>
 
     <div class="tr-grid" id="trList">
       <div class="pf-skel-block tr-skel-card" aria-hidden="true"><span class="pf-sk"></span><span class="pf-sk"></span><span class="pf-sk"></span></div>
@@ -378,7 +371,7 @@
 <script src="portal-fx.js?v=2"></script>
 <script src="change-password.js?v=2" defer></script>
 <script src="notifications-live.js?v=1" defer></script>
-<script src="trainers-staff.js?v=8" defer></script>
+<script src="trainers-staff.js?v=9" defer></script>
 <script src="site-footer.js?v=2" defer></script>
 </body>
 </html>

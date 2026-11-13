@@ -9,7 +9,7 @@ from datetime import date
 
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Prefetch, Q
 from django.utils import timezone
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -18,8 +18,9 @@ from rest_framework.views import APIView
 
 from apps.accounts.adapters import CanManageEnrollment, CanViewAttendance, CanViewFinancials
 from apps.membership.models import Attendance, MemberProfile
-from apps.billing.models import Payment
+from apps.billing.models import Payment, Subscription
 from apps.finance.models import ManualPayment
+from apps.trainers.models import TrainerAssignment
 from apps.finance.services import monthly_summary, record_desk_payment, revenue_analytics
 from apps.membership.services import (
     check_in_member,
@@ -67,7 +68,27 @@ class StaffMemberViewSet(viewsets.ModelViewSet):
         return StaffMemberSerializer
 
     def get_queryset(self):
-        queryset = MemberProfile.objects.select_related("user").order_by("user__username")
+        queryset = (
+            MemberProfile.objects.select_related("user")
+            .prefetch_related(
+                Prefetch(
+                    "trainer_assignments",
+                    queryset=TrainerAssignment.objects.filter(ended_at__isnull=True).select_related("trainer__user"),
+                    to_attr="_active_assignments",
+                ),
+                Prefetch(
+                    "manual_payments",
+                    queryset=ManualPayment.objects.exclude(plan="").order_by("-created_at", "-id"),
+                    to_attr="_prefetched_manual_payments",
+                ),
+                Prefetch(
+                    "subscriptions",
+                    queryset=Subscription.objects.exclude(plan="").order_by("-created_at", "-id"),
+                    to_attr="_prefetched_subscriptions",
+                ),
+            )
+            .order_by("user__username")
+        )
         query = (self.request.query_params.get("q") or "").strip()
         if query:
             queryset = queryset.filter(
