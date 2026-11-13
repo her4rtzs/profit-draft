@@ -424,19 +424,19 @@
   function overviewHTML(m, payments, checkins, total) {
     const last = checkins[checkins.length - 1];
     return `<div class="pp-info-grid">
-      <section class="pp-card"><h3>Membership</h3><dl class="pp-dl">
+      <section class="pp-card pp-det-card"><h3><span class="pp-det-ico is-gold"><i class="fa-solid fa-id-badge" aria-hidden="true"></i></span>Membership</h3><dl class="pp-dl">
         <dt>Plan</dt><dd>${esc(planLabel(m.plan))}</dd>
         <dt>Started</dt><dd>${m.start ? esc(fmt(m.start)) : "—"}</dd>
         <dt>Ends</dt><dd>${esc(fmt(m.end))}</dd>
         <dt>Status</dt><dd>${esc(expiryText(m))}</dd></dl></section>
-      <section class="pp-card"><h3>Contact</h3><dl class="pp-dl">
+      <section class="pp-card pp-det-card"><h3><span class="pp-det-ico is-cyan"><i class="fa-solid fa-address-book" aria-hidden="true"></i></span>Contact</h3><dl class="pp-dl">
         <dt>Email</dt><dd class="pp-truncate">${esc(m.email)}</dd>
         <dt>Mobile</dt><dd>${esc(m.phone || "Not added")}</dd>
         <dt>Address</dt><dd>${esc(m.address || "Not added")}</dd></dl></section>
-      <section class="pp-card"><h3>Emergency contact</h3>${m.emergencyName || m.emergencyPhone
+      <section class="pp-card pp-det-card"><h3><span class="pp-det-ico is-emerald"><i class="fa-solid fa-kit-medical" aria-hidden="true"></i></span>Emergency contact</h3>${m.emergencyName || m.emergencyPhone
         ? `<dl class="pp-dl"><dt>Name</dt><dd>${esc(m.emergencyName || "—")}</dd><dt>Phone</dt><dd>${esc(m.emergencyPhone || "—")}</dd></dl>`
         : `<p class="pp-muted">Not added yet. The member can add this from their portal.</p>`}</section>
-      <section class="pp-card"><h3>Summary</h3><dl class="pp-dl">
+      <section class="pp-card pp-det-card"><h3><span class="pp-det-ico is-violet"><i class="fa-solid fa-chart-simple" aria-hidden="true"></i></span>Activity Summary</h3><dl class="pp-dl">
         <dt>Total paid</dt><dd>${money(total)}</dd>
         <dt>Payments</dt><dd>${payments.length}</dd>
         <dt>Check-ins</dt><dd>${checkins.length}</dd>
@@ -482,6 +482,7 @@
     const payments = DB.payments.filter(p => p.memberId === m.id).sort((a, b) => b.date - a.date);
     const checkins = DB.checkins.filter(c => c.memberId === m.id).sort((a, b) => a.date - b.date);
     const total = payments.reduce((n, p) => n + p.amount, 0);
+    const last = checkins[checkins.length - 1];
     const body = state.subtab === "payments" ? paymentsHTML(payments, total)
       : state.subtab === "checkins" ? checkinsHTML(checkins)
       : state.subtab === "edit" ? editHTML(m)
@@ -496,6 +497,24 @@
           <button class="pp-btn pp-btn-primary" type="button" data-detail-action="renew"><i class="fa-solid fa-rotate"></i> Record renewal</button>
           <button class="pp-btn" type="button" data-detail-action="back"><i class="fa-solid fa-arrow-left"></i> All members</button>
         </div>
+      </div>
+      <div class="pp-detail-kpis">
+        <article class="pp-det-kpi is-gold">
+          <span class="pp-det-kpi-ico"><i class="fa-solid fa-peso-sign" aria-hidden="true"></i></span>
+          <div><strong>${money(total)}</strong><span>Total Paid</span></div>
+        </article>
+        <article class="pp-det-kpi is-emerald">
+          <span class="pp-det-kpi-ico"><i class="fa-solid fa-receipt" aria-hidden="true"></i></span>
+          <div><strong>${payments.length}</strong><span>Payments</span></div>
+        </article>
+        <article class="pp-det-kpi is-cyan">
+          <span class="pp-det-kpi-ico"><i class="fa-solid fa-calendar-check" aria-hidden="true"></i></span>
+          <div><strong>${checkins.length}</strong><span>Check-ins</span></div>
+        </article>
+        <article class="pp-det-kpi is-violet">
+          <span class="pp-det-kpi-ico"><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i></span>
+          <div><strong>${last ? esc(fmt(last.date)) : "None yet"}</strong><span>Last Check-in</span></div>
+        </article>
       </div>
       <nav class="pp-subtabs" role="tablist" aria-label="Member sections">
         ${Object.keys(SUBTABS).map(k => `<button type="button" role="tab" aria-selected="${state.subtab === k}" class="${state.subtab === k ? "active" : ""}" data-subtab="${k}">${SUBTABS[k]}</button>`).join("")}
