@@ -1794,3 +1794,12 @@ Reduce excessive gold borders/glow in favor of a cleaner dark navy surface, make
 - Made `.fn-tabs .tab` compact (`48px` height) with subtle borders/active highlight, unified `.fn-search-pill input`, `.fn-toolbar-select`, `.fn-filter-chips .chip`, and `.fn-btn-dark` to `38px` height, widened `.fn-table--sub` (`minmax(220px, 1.55fr) 128px minmax(180px, 1.15fr) 136px 104px`), gave `.progress.warning`/`.progress.expired` distinct amber/red track and minimum bar visibility, and standardized `.fn-btn-sm` (`min-width: 82px`) hover states.
 ### Decision-log skill
 Reserve gold borders and glow for primary actions and active states; use neutral slate borders (`rgba(148, 163, 184, 0.14)`) on dark navy cards so visual hierarchy stays clean.
+
+## 2026-11-14 16:35 (Asia/Manila): Solid status badges and content-proportional table column distribution
+### What I asked for
+Switch status badges to solid colors with white text (no gradients/glows) and distribute finance table columns proportionally to their content with clean horizontal dividers and tabular numerals.
+### What the agent decided and why
+- Updated `.badge` in `web/finance-ui.css` (`?v=7`) to compact `border-radius: 7px` solid badges with `#ffffff` text and zero border/glow across both Dark and Light modes: Active/Paid (`#16a34a`), Expiring Soon (`#d97706`), Expired/Overdue (`#dc2626`), Pending (`#2563eb`), Cancelled/Declined (`#64748b`), and Processing (`#7c3aed`).
+- Updated `.fn-table--sub`, `.fn-table--hist`, and `.fn-table--tx` `--fn-cols` to content-proportional `minmax(..., ...fr)` tracks so long columns (Member, Method) get room without cramping or leaving empty gaps, switched rows to subtle horizontal dividers (`border-bottom: 1px solid var(--fn-divider)`), and added `font-variant-numeric: tabular-nums` to table cells.
+### Decision-log skill
+Size CSS Grid table columns with content-weighted `minmax(min, fr)` tracks and subtle row dividers instead of equal-width columns or heavy per-row borders.
