@@ -1480,41 +1480,17 @@ body.pf-staff[data-page="dashboard"] .quick-action,
   z-index: 1;
 }
 
-/* Quick Action Themes */
+/* Quick Action Themes — Unified PROFit Warm Gold Brand Identity */
 .quick-action.qa-gold,
-.quick-actions .quick-action:nth-child(1) {
-  --qa-accent: #F59E0B;
-  --qa-glow: rgba(245, 158, 11, 0.28);
-  --qa-border: rgba(245, 158, 11, 0.26);
-  --qa-bg-tint: rgba(245, 158, 11, 0.12);
-  --qa-border-light: rgba(245, 158, 11, 0.35);
-}
-
 .quick-action.qa-cyan,
-.quick-actions .quick-action:nth-child(2) {
-  --qa-accent: #06B6D4;
-  --qa-glow: rgba(6, 182, 212, 0.28);
-  --qa-border: rgba(6, 182, 212, 0.26);
-  --qa-bg-tint: rgba(6, 182, 212, 0.12);
-  --qa-border-light: rgba(6, 182, 212, 0.35);
-}
-
 .quick-action.qa-emerald,
-.quick-actions .quick-action:nth-child(3) {
-  --qa-accent: #10B981;
-  --qa-glow: rgba(16, 185, 129, 0.28);
-  --qa-border: rgba(16, 185, 129, 0.26);
-  --qa-bg-tint: rgba(16, 185, 129, 0.12);
-  --qa-border-light: rgba(16, 185, 129, 0.35);
-}
-
 .quick-action.qa-violet,
-.quick-actions .quick-action:nth-child(4) {
-  --qa-accent: #A855F7;
-  --qa-glow: rgba(168, 85, 247, 0.28);
-  --qa-border: rgba(168, 85, 247, 0.26);
-  --qa-bg-tint: rgba(168, 85, 247, 0.12);
-  --qa-border-light: rgba(168, 85, 247, 0.35);
+.quick-actions .quick-action {
+  --qa-accent: #e8b93a;
+  --qa-glow: transparent;
+  --qa-border: rgba(232, 185, 58, 0.24);
+  --qa-bg-tint: rgba(232, 185, 58, 0.12);
+  --qa-border-light: rgba(184, 137, 28, 0.35);
 }
 
 /* Quick Action — Dark Mode */
@@ -1864,52 +1840,52 @@ body.pf-staff[data-page="dashboard"] .stat-card.kpi-card:hover,
    THEME 1: GOLD / AMBER (Total Members)
    -------------------------------------------------------------------------- */
 .kpi-card.kpi-gold {
-  --kpi-accent: #F59E0B;
-  --kpi-accent-light: #FBBF24;
-  --kpi-glow: rgba(245, 158, 11, 0.28);
-  --kpi-glow-light: rgba(245, 158, 11, 0.12);
-  --kpi-border: rgba(245, 158, 11, 0.38);
-  --kpi-border-light: rgba(245, 158, 11, 0.35);
-  --kpi-bg-tint: rgba(245, 158, 11, 0.16);
+  --kpi-accent: #e8b93a;
+  --kpi-accent-light: #f2cb5c;
+  --kpi-glow: rgba(232, 185, 58, 0.16);
+  --kpi-glow-light: rgba(232, 185, 58, 0.10);
+  --kpi-border: rgba(232, 185, 58, 0.32);
+  --kpi-border-light: rgba(184, 137, 28, 0.35);
+  --kpi-bg-tint: rgba(232, 185, 58, 0.14);
 }
 
 /* --------------------------------------------------------------------------
-   THEME 2: CORAL RED (Expired Members)
+   THEME 2: RED (Expired Members)
    -------------------------------------------------------------------------- */
 .kpi-card.kpi-red {
-  --kpi-accent: #FB5364;
-  --kpi-accent-light: #FDA4AF;
-  --kpi-glow: rgba(251, 83, 100, 0.28);
-  --kpi-glow-light: rgba(251, 83, 100, 0.12);
-  --kpi-border: rgba(251, 83, 100, 0.38);
-  --kpi-border-light: rgba(251, 83, 100, 0.35);
-  --kpi-bg-tint: rgba(251, 83, 100, 0.16);
+  --kpi-accent: #DC2626;
+  --kpi-accent-light: #F87171;
+  --kpi-glow: rgba(220, 38, 38, 0.16);
+  --kpi-glow-light: rgba(220, 38, 38, 0.10);
+  --kpi-border: rgba(220, 38, 38, 0.34);
+  --kpi-border-light: rgba(220, 38, 38, 0.32);
+  --kpi-bg-tint: rgba(220, 38, 38, 0.14);
 }
 
 /* --------------------------------------------------------------------------
-   THEME 3: CYAN / TEAL (Expiring Soon)
+   THEME 3: RED (Expiring Soon — Semantic Status Color)
    -------------------------------------------------------------------------- */
 .kpi-card.kpi-cyan {
-  --kpi-accent: #06B6D4;
-  --kpi-accent-light: #67E8F9;
-  --kpi-glow: rgba(6, 182, 212, 0.28);
-  --kpi-glow-light: rgba(6, 182, 212, 0.12);
-  --kpi-border: rgba(6, 182, 212, 0.38);
-  --kpi-border-light: rgba(6, 182, 212, 0.35);
-  --kpi-bg-tint: rgba(6, 182, 212, 0.16);
+  --kpi-accent: #DC2626;
+  --kpi-accent-light: #F87171;
+  --kpi-glow: rgba(220, 38, 38, 0.16);
+  --kpi-glow-light: rgba(220, 38, 38, 0.10);
+  --kpi-border: rgba(220, 38, 38, 0.34);
+  --kpi-border-light: rgba(220, 38, 38, 0.32);
+  --kpi-bg-tint: rgba(220, 38, 38, 0.14);
 }
 
 /* --------------------------------------------------------------------------
-   THEME 4: VIOLET / PURPLE (Total Revenue)
+   THEME 4: WARM GOLD (Total Revenue — Primary Brand Accent)
    -------------------------------------------------------------------------- */
 .kpi-card.kpi-violet {
-  --kpi-accent: #A855F7;
-  --kpi-accent-light: #D8B4FE;
-  --kpi-glow: rgba(168, 85, 247, 0.28);
-  --kpi-glow-light: rgba(168, 85, 247, 0.12);
-  --kpi-border: rgba(168, 85, 247, 0.38);
-  --kpi-border-light: rgba(168, 85, 247, 0.35);
-  --kpi-bg-tint: rgba(168, 85, 247, 0.16);
+  --kpi-accent: #e8b93a;
+  --kpi-accent-light: #f2cb5c;
+  --kpi-glow: rgba(232, 185, 58, 0.16);
+  --kpi-glow-light: rgba(232, 185, 58, 0.10);
+  --kpi-border: rgba(232, 185, 58, 0.32);
+  --kpi-border-light: rgba(184, 137, 28, 0.35);
+  --kpi-bg-tint: rgba(232, 185, 58, 0.14);
 }
 
 /* Card Top Bar (Icon + Title) */

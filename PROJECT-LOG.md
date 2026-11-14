@@ -1879,3 +1879,12 @@ Audit and consolidate competing hover rules across `web/pf-modern.css`, `web/hov
 - Updated `web/pf-modern.css` (`tbody tr:hover` -> `var(--gold-soft)`), `web/sidebar-pro.css` (`.menulist a:hover`, `.account-menu-toggle:hover`, `.account-menu a:hover` -> `rgba(232, 185, 58, 0.10)` with `#f2cb5c` accent while preserving dark navy sidebar and red logout hover), and `web/assets/css/staff.css` (`.nav-link`, `.icon-btn`, `.btn`, `.tbl tbody tr.click`, `.qa`, `.mcard` -> `--gold-soft` / `--gold`).
 ### Decision-log skill
 Centralize hover tokens and `:not(:disabled):not(.active)` selectors in `web/hover-fx.css` rather than stacking `!important` overrides across page stylesheets, keeping hover distinct from active/selected states.
+
+## 2026-11-14 17:56 (Asia/Manila): Restore Dashboard golden yellow identity & refine Member Details UI
+### What I asked for
+Restore the warm golden yellow PROfit brand identity on the Dashboard (replacing random cyan/purple/green Quick Action & Revenue accents and aligning Expiring Soon with semantic red), and remove AI-generated glowing streaks, neon icon boxes, and nested glass panels from Member Details.
+### What the agent decided and why
+- **Dashboard (`web/portal-ui.css`, `web/index.html`)**: Unified `.quick-action.qa-gold/.qa-cyan/.qa-emerald/.qa-violet` to `--qa-accent: #e8b93a` with restrained borders and no neon `--qa-glow`; updated `.kpi-card.kpi-gold` and `.kpi-card.kpi-violet` (Total Revenue) to `#e8b93a`, and `.kpi-card.kpi-cyan` (Expiring Soon) and `.kpi-card.kpi-red` (Expired) to semantic red `#DC2626`.
+- **Member Details (`web/members-ui.css`, `web/members.html`)**: Removed the 2px glowing top-line `::before` streaks and `.is-cyan/.is-emerald/.is-violet` neon icon halos across `.pp-card`, `.pp-det-kpi`, and `.pp-det-ico`, unified KPI & section icons to restrained `#e8b93a` gold, flattened `.pp-det-panel` to eliminate nested card-in-card clutter, simplified `.pp-detail-head` (24px name, clean gold avatar without neon shadow), refined `.pp-subtabs` with solid gold active and subtle gold hover, and restrained `.pp-btn-primary` shadow.
+### Decision-log skill
+Use solid dark-navy/charcoal surfaces with single-accent `#e8b93a` gold highlights and flat 1px dividers rather than stacked top-line light streaks and multi-color neon icon halos.
