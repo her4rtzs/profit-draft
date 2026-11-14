@@ -818,44 +818,53 @@ body[data-page="members"] .pp-block {
   text-overflow: ellipsis;
 }
 
-/* Fixed-width Plan Chips */
+/* Fixed-width Solid Plan Chips */
 body[data-page="members"] .pp-plan-pill {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 92px;
-  height: 26px;
+  height: 24px;
   padding: 0 10px;
   box-sizing: border-box;
-  border-radius: 999px;
-  font-size: 12px;
+  border-radius: 7px;
+  border: 0 !important;
+  box-shadow: none !important;
+  font-size: 11px;
   font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
   white-space: nowrap;
-  background: rgba(148, 163, 184, 0.14);
-  border: 1px solid rgba(148, 163, 184, 0.34);
-  color: #cbd5e1;
+  background: #64748b;
+  color: #ffffff !important;
 }
-body[data-page="members"] .pp-plan-pill.plan-monthly { background: rgba(249, 115, 22, 0.14); border-color: rgba(249, 115, 22, 0.45); color: #fb923c; }
-body[data-page="members"] .pp-plan-pill.plan-quarterly { background: rgba(234, 179, 8, 0.14); border-color: rgba(234, 179, 8, 0.45); color: #facc15; }
-body[data-page="members"] .pp-plan-pill.plan-annual { background: rgba(148, 163, 184, 0.16); border-color: rgba(148, 163, 184, 0.42); color: #e2e8f0; }
-body[data-page="members"] .pp-plan-pill.plan-daily { background: rgba(59, 130, 246, 0.16); border-color: rgba(59, 130, 246, 0.45); color: #60a5fa; }
+body[data-page="members"] .pp-plan-pill.plan-monthly { background: #ea580c; }
+body[data-page="members"] .pp-plan-pill.plan-quarterly { background: #ca8a04; }
+body[data-page="members"] .pp-plan-pill.plan-annual { background: #475569; }
+body[data-page="members"] .pp-plan-pill.plan-daily { background: #2563eb; }
 
-/* Fixed-width Status Chips (NO dot) */
+/* Fixed-width Solid Status Chips (NO dot, NO gradients/glow) */
 body[data-page="members"] .pp-status {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-width: 100px;
   width: 108px;
-  height: 26px;
+  height: 24px;
   padding: 0 10px;
   box-sizing: border-box;
-  border-radius: 999px;
-  font-size: 12px;
+  border-radius: 7px;
+  border: 0 !important;
+  box-shadow: none !important;
+  font-size: 11px;
   font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
   white-space: nowrap;
+  color: #ffffff !important;
 }
 body[data-page="members"] .pp-members-table .pp-status {
-  width: 118px;
+  width: 112px;
 }
 body[data-page="members"] .pp-ends-cell {
   min-width: 0;
@@ -901,11 +910,17 @@ body[data-page="members"] .pp-pager .pp-btn:disabled {
   transform: none;
 }
 body[data-page="members"] .pp-status::before { display: none !important; content: none !important; }
-body[data-page="members"] .pp-status.active { background: rgba(16, 185, 129, 0.14); border: 1px solid rgba(16, 185, 129, 0.48); color: #34d399; box-shadow: 0 0 12px rgba(16, 185, 129, 0.18); }
-body[data-page="members"] .pp-status.expiring { background: rgba(255, 176, 32, 0.14); border: 1px solid rgba(255, 176, 32, 0.48); color: #fbbf24; box-shadow: 0 0 12px rgba(255, 176, 32, 0.18); }
+body[data-page="members"] .pp-status.active,
+body[data-page="members"] .pp-status.paid { background: #16a34a; }
+body[data-page="members"] .pp-status.expiring,
+body[data-page="members"] .pp-status.warning { background: #d97706; }
 body[data-page="members"] .pp-status.expired,
-body[data-page="members"] .pp-status.cancelled { background: rgba(239, 68, 68, 0.14); border: 1px solid rgba(239, 68, 68, 0.45); color: #f87171; }
-body[data-page="members"] .pp-status.frozen { background: rgba(148, 163, 184, 0.14); border: 1px solid rgba(148, 163, 184, 0.4); color: #cbd5e1; }
+body[data-page="members"] .pp-status.overdue { background: #dc2626; }
+body[data-page="members"] .pp-status.pending { background: #2563eb; }
+body[data-page="members"] .pp-status.cancelled,
+body[data-page="members"] .pp-status.declined,
+body[data-page="members"] .pp-status.frozen { background: #64748b; }
+body[data-page="members"] .pp-status.processing { background: #7c3aed; }
 
 /* 30px Actions Button */
 body[data-page="members"] .pp-icon-btn {
@@ -1094,7 +1109,6 @@ body:not(.dark)[data-page="members"] .pp-status-opt:hover { background: #f1f5f9;
 body:not(.dark)[data-page="members"] .pp-search { background: #ffffff; border-color: rgba(245, 158, 11, 0.45); box-shadow: none; }
 body:not(.dark)[data-page="members"] .pp-view-toggle { background: #f1f5f9 !important; border-color: #cbd5e1 !important; }
 body:not(.dark)[data-page="members"] .pp-icon-btn { background: #f8fafc; border-color: #cbd5e1; color: #475569; }
-body:not(.dark)[data-page="members"] .pp-plan-pill { background: #f1f5f9; border-color: #cbd5e1; color: #334155; }
 body:not(.dark)[data-page="members"] .pp-btn { background: #ffffff; border-color: #cbd5e1; color: #0f172a; }
 body:not(.dark)[data-page="members"] .pp-pager .pp-btn:not(:disabled) { border-color: #cbd5e1; }
 body:not(.dark)[data-page="members"] .pp-pager .pp-btn:not(:disabled):hover { border-color: rgba(245, 158, 11, 0.65); }

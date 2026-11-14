@@ -1803,3 +1803,11 @@ Switch status badges to solid colors with white text (no gradients/glows) and di
 - Updated `.fn-table--sub`, `.fn-table--hist`, and `.fn-table--tx` `--fn-cols` to content-proportional `minmax(..., ...fr)` tracks so long columns (Member, Method) get room without cramping or leaving empty gaps, switched rows to subtle horizontal dividers (`border-bottom: 1px solid var(--fn-divider)`), and added `font-variant-numeric: tabular-nums` to table cells.
 ### Decision-log skill
 Size CSS Grid table columns with content-weighted `minmax(min, fr)` tracks and subtle row dividers instead of equal-width columns or heavy per-row borders.
+
+## 2026-11-14 16:40 (Asia/Manila): Solid plan and status badges on Members list
+### What I asked for
+Apply the solid badge style (solid background, white text, no gradients/glow) to the Member list Plan and Status columns.
+### What the agent decided and why
+- Updated `.pp-plan-pill` and `.pp-status` in `web/members-ui.css` (`?v=13`) to compact `24px` height, `7px` rounded corners, zero border/glow, and `#ffffff` text across both Dark and Light modes: Active/Paid (`#16a34a`), Expiring Soon (`#d97706`), Expired/Overdue (`#dc2626`), Pending (`#2563eb`), Cancelled/Declined/Frozen (`#64748b`), Processing (`#7c3aed`), and solid plan colors (`#ea580c`, `#ca8a04`, `#475569`, `#2563eb`, `#64748b`).
+### Decision-log skill
+Keep status and plan badge color tokens consistent across Members, Payments, and Reports using solid fills with `#ffffff` text and no theme-specific pale overrides.
