@@ -5527,14 +5527,3 @@ html body.pf-staff:not(.dark)[data-page="attendance"] .ci-table thead th {
 html body.pf-staff:not(.dark)[data-page="attendance"] .ci-table tbody tr {
   border-bottom-color: rgba(15, 23, 42, 0.08);
 }
-
-/* Unified Member Portal Header (.member-top) */
-html body header.member-top {
-  min-height: 68px !important;
-  background: rgba(13, 20, 36, 0.92) !important;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.14) !important;
-}
-html body:not(.dark) header.member-top {
-  background: rgba(255, 253, 249, 0.94) !important;
-  border-bottom-color: rgba(203, 190, 170, 0.58) !important;
-}

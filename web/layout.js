@@ -54,9 +54,6 @@
   const top = document.getElementById('topbar');
   if (top) {
     const title = body.dataset.title || 'Dashboard', welcome = body.dataset.welcome || 'Welcome back';
-    const manilaDate = new Intl.DateTimeFormat('en-US', {
-      timeZone: 'Asia/Manila', weekday: 'short', month: 'short', day: 'numeric'
-    }).format(new Date());
     top.innerHTML = `
       <div class="topbar-heading">
         <div class="topbar-nav">
@@ -68,15 +65,8 @@
           <p class="welcome">${welcome}</p>
           <h1>${title}</h1>
         </div>
-        <div class="topbar-search" id="topbarSearchWrap">
-          <i class="fa-solid fa-magnifying-glass topbar-search-ico" aria-hidden="true"></i>
-          <input type="search" id="topbarGlobalSearch" placeholder="Quick jump or find member…" aria-label="Quick search pages or members" autocomplete="off">
-          <kbd class="topbar-search-kbd" aria-hidden="true">/</kbd>
-          <div class="topbar-search-menu" id="topbarSearchMenu" role="listbox" hidden></div>
-        </div>
       </div>
       <div class="topbar-right">
-        <span class="topbar-date" title="Asia/Manila"><i class="fa-regular fa-calendar" aria-hidden="true"></i><span>${manilaDate}</span></span>
         <div class="topbar-actions">
           <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode" title="Toggle theme"><i class="fa-solid fa-moon"></i></button>
           <div class="notification-wrap"><button class="notification" id="notificationToggle" type="button" aria-label="Notifications" aria-haspopup="true" aria-expanded="false"><i class="fa-regular fa-bell"></i><span class="notification-badge" id="notificationBadge" hidden>0</span></button>
@@ -85,40 +75,6 @@
           <a class="topbar-avatar" id="topbarAvatar" href="profile.html" title="My profile" aria-label="My profile"><span data-user-initials>AD</span></a>
         </div>
       </div>`;
-
-    // Global quick-jump & member search inside the unified header
-    const searchInput = document.getElementById('topbarGlobalSearch');
-    const searchMenu = document.getElementById('topbarSearchMenu');
-    const searchWrap = document.getElementById('topbarSearchWrap');
-    if (searchInput && searchMenu && searchWrap) {
-      const quickItems = groups.flatMap(g => g.items.map(i => ({ label: i.label, href: i.href, group: g.label })));
-      const renderMenu = q => {
-        const term = (q || '').trim().toLowerCase();
-        if (!term) { searchMenu.hidden = true; return; }
-        const hits = quickItems.filter(x => x.label.toLowerCase().includes(term)).slice(0, 5);
-        const rows = hits.map(h => `<a class="topbar-search-item" href="${h.href}" role="option"><span>${h.label}</span><small>${h.group}</small></a>`);
-        rows.push(`<a class="topbar-search-item is-member" href="members.html?q=${encodeURIComponent(q.trim())}" role="option"><span>Find member “${q.trim().replace(/[<>&"]/g, '')}”</span><small>Members</small></a>`);
-        searchMenu.innerHTML = rows.join('');
-        searchMenu.hidden = false;
-      };
-      searchInput.addEventListener('input', () => renderMenu(searchInput.value));
-      searchInput.addEventListener('focus', () => { if (searchInput.value.trim()) renderMenu(searchInput.value); });
-      searchInput.addEventListener('keydown', e => {
-        if (e.key === 'Escape') { searchMenu.hidden = true; searchInput.blur(); }
-        if (e.key === 'Enter' && searchInput.value.trim()) {
-          e.preventDefault();
-          const first = searchMenu.querySelector('.topbar-search-item');
-          if (first) location.href = first.getAttribute('href');
-        }
-      });
-      document.addEventListener('click', e => { if (!searchWrap.contains(e.target)) searchMenu.hidden = true; });
-      document.addEventListener('keydown', e => {
-        if (e.key === '/' && !/INPUT|TEXTAREA|SELECT/.test((document.activeElement || {}).tagName || '')) {
-          e.preventDefault();
-          searchInput.focus();
-        }
-      });
-    }
 
     // Staff profile: photo or initials, shared with the rail below.
     const paintAccount = () => {

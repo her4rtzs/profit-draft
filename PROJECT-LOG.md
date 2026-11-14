@@ -1821,3 +1821,11 @@ Apply solid status badges and content-proportional table columns to Attendance, 
 - Standardized `header.member-top` in `web/portal-ui.css` so the Member portal shares the same `68px` matte dark/light header surface and border treatment.
 ### Decision-log skill
 Keep global navigation/search/date/profile controls in the shared `web/layout.js` `#topbar` component and `web/layout-fixes.css` so all portals inherit identical header geometry, contrast, and responsive behavior without per-page header duplication.
+
+## 2026-11-14 16:53 (Asia/Manila): Restore previous global header
+### What I asked for
+Revert the global header redesign back to the previous header across all pages while keeping the Attendance solid badges and table layout.
+### What the agent decided and why
+- Restored `web/layout.js`, `web/layout-fixes.css`, and the HTML header script/stylesheet versions from commit `29a6b13`, and removed the `.member-top` override in `web/portal-ui.css`, leaving the Attendance `.ci-table` solid badges and column layout intact.
+### Decision-log skill
+Keep global layout reverts scoped to `layout.js`, `layout-fixes.css`, and script/style query versions so unrelated feature/page improvements in `portal-ui.css` remain untouched.
