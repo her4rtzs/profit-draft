@@ -1897,3 +1897,13 @@ Restore the previous Dashboard Quick Action and KPI card colors (`balik mo mnga 
 - Bumped `portal-ui.css?v=22` in `web/index.html`.
 ### Decision-log skill
 Keep Dashboard Quick Action and KPI card accent overrides isolated to `web/portal-ui.css` so they can be reverted independently of Member Details or global hover tokens.
+
+## 2026-11-14 22:48 (Asia/Manila): Dashboard flat SaaS visual refinement
+### What I asked for
+Combine the clean, flat, restrained SaaS visual design of the first reference screenshot with the existing PROfit Dashboard layout and functionality, removing excessive neon glows, colored shadows, radial light blooms, and decorative watermarks/waves.
+### What the agent decided and why
+- Flattened `.quick-action`, `.stat-card.kpi-card`, `.revenue-panel`, `.membership-type-panel`, and `.registrations-panel` in `web/portal-ui.css` to solid dark (`#111827`) and light (`#FFFFFF`) surfaces with subtle `1px` borders instead of glassmorphic gradients and glowing outer shadows.
+- Replaced KPI top gradient streaks with a crisp `2px` solid `--kpi-accent` top bar and hid `.qa-glow`, `.kpi-glow`, `.kpi-watermark`, `.mt-decor-wave`, and `.mt-donut-wrap::before` radial blooms.
+- Removed neon `box-shadow` and `drop-shadow` glows from revenue bars, active period chips, donut SVG, and `.registrations-panel .badge`, aligning `EXPIRING` to the semantic red `--pf-st-warning-*` tokens.
+### Decision-log skill
+Restrained flat SaaS styling is achieved by overriding card surfaces, hiding decorative glow/watermark pseudo-elements, and preserving semantic accent lines and badge tokens without altering layout structure or JS behavior.
