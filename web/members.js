@@ -486,7 +486,11 @@
   function paymentsHTML(payments, total) {
     return `<section class="pp-card"><div class="pp-card-head"><h3>Payment history</h3><span class="pp-muted">Total paid ${money(total)}</span></div>
       ${payments.length ? `<div class="pp-table-wrap"><table class="pp-table"><thead><tr><th>Reference</th><th>Date</th><th>Plan</th><th>Method</th><th class="num">Amount</th></tr></thead><tbody>
-        ${payments.map(p => `<tr><td>${esc(p.ref)}</td><td>${esc(fmt(p.date))}</td><td>${esc(planLabel(p.plan))}</td><td>${esc(p.method)}</td><td class="num">${money(p.amount)}</td></tr>`).join("")}
+        ${payments.map(p => {
+          const pk = String(p.plan || "").toLowerCase();
+          const pCls = ["daily", "monthly", "quarterly", "annual"].includes(pk) ? pk : "unassigned";
+          return `<tr><td>${esc(p.ref)}</td><td>${esc(fmt(p.date))}</td><td><span class="pp-plan-pill plan-${pCls}">${esc(planLabel(p.plan) || "Unassigned")}</span></td><td>${esc(p.method)}</td><td class="num">${money(p.amount)}</td></tr>`;
+        }).join("")}
         </tbody></table></div>` : emptyBlock("fa-receipt", "No payments yet", "Record a renewal to add the first payment.")}</section>`;
   }
   function checkinsHTML(checkins) {
@@ -531,7 +535,7 @@
       <div class="pp-detail-head pp-card">
         <div class="pp-detail-id">${avatar(m, "lg")}
           <div><h2>${esc(m.name)}</h2><p class="pp-muted">${esc(m.id)} · ${esc(m.email)}${m.phone ? " · " + esc(m.phone) : ""}</p>
-          <div class="pp-badges"><span class="pp-status ${s.key}">${s.label}</span><span class="pp-chip">${esc(planLabel(m.plan))}</span></div></div>
+          <div class="pp-badges"><span class="pp-status ${s.key}">${s.label}</span><span class="pp-plan-pill plan-${["daily", "monthly", "quarterly", "annual"].includes(String(m.plan || "").toLowerCase()) ? esc(String(m.plan).toLowerCase()) : "unassigned"}">${esc(planLabel(m.plan) || "Unassigned")}</span></div></div>
         </div>
         <div class="pp-actions pp-detail-actions">
           <button class="pp-btn pp-btn-primary" type="button" data-detail-action="renew"><i class="fa-solid fa-rotate"></i> Record renewal</button>

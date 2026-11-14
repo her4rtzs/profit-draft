@@ -703,7 +703,7 @@ body[data-page="members"] .pp-members-table thead th {
   font-weight: 500 !important;
   letter-spacing: 0.08em !important;
   text-transform: uppercase;
-  color: #8fa0bb !important;
+  color: var(--pf-tbl-head) !important;
   background: transparent !important;
   border: 0 !important;
   border-radius: 0 !important;
@@ -738,7 +738,7 @@ body[data-page="members"] .pp-members-table tbody tr {
   box-sizing: border-box;
   border-radius: 0;
   background: transparent !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid var(--pf-tbl-divider);
   cursor: pointer;
   transition: background 160ms ease;
 }
@@ -751,7 +751,7 @@ body[data-page="members"] .pp-members-table tbody tr::before {
   bottom: 12px;
   width: 3px;
   border-radius: 0 3px 3px 0;
-  background: var(--bm-amber);
+  background: var(--pf-gold);
   opacity: 0;
   transition: opacity 160ms ease;
   pointer-events: none;
@@ -779,10 +779,15 @@ body[data-page="members"] .pp-members-table tbody td:nth-child(5) {
 }
 
 body[data-page="members"] .pp-members-table tbody tr:hover {
-  background: linear-gradient(90deg, rgba(255, 170, 0, 0.10), rgba(255, 170, 0, 0.02) 60%, transparent) !important;
+  background: var(--pf-tbl-hover) !important;
 }
 
-body[data-page="members"] .pp-members-table tbody tr:hover::before {
+body[data-page="members"] .pp-members-table tbody tr.is-selected {
+  background: var(--pf-tbl-selected) !important;
+}
+
+body[data-page="members"] .pp-members-table tbody tr:hover::before,
+body[data-page="members"] .pp-members-table tbody tr.is-selected::before {
   opacity: 1;
 }
 
@@ -826,32 +831,48 @@ body[data-page="members"] .pp-block {
   text-overflow: ellipsis;
 }
 
-/* Fixed-width Solid Plan Chips */
+/* Fixed-width Plan Chips (Independent of Membership Status) */
 body[data-page="members"] .pp-plan-pill {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 92px;
+  width: 96px;
   height: 24px;
   padding: 0 10px;
   box-sizing: border-box;
   border-radius: 7px;
-  border: 0 !important;
   box-shadow: none !important;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.03em;
   text-transform: uppercase;
   white-space: nowrap;
-  background: #64748b;
-  color: #ffffff !important;
+  background: var(--pf-plan-unassigned-bg);
+  color: var(--pf-plan-unassigned-fg) !important;
+  border: 1px solid var(--pf-plan-unassigned-bd) !important;
 }
-body[data-page="members"] .pp-plan-pill.plan-monthly { background: #ea580c; }
-body[data-page="members"] .pp-plan-pill.plan-quarterly { background: #ca8a04; }
-body[data-page="members"] .pp-plan-pill.plan-annual { background: #475569; }
-body[data-page="members"] .pp-plan-pill.plan-daily { background: #2563eb; }
+body[data-page="members"] .pp-plan-pill.plan-monthly {
+  background: var(--pf-plan-monthly-bg);
+  color: var(--pf-plan-monthly-fg) !important;
+  border-color: var(--pf-plan-monthly-bd) !important;
+}
+body[data-page="members"] .pp-plan-pill.plan-quarterly {
+  background: var(--pf-plan-quarterly-bg);
+  color: var(--pf-plan-quarterly-fg) !important;
+  border-color: var(--pf-plan-quarterly-bd) !important;
+}
+body[data-page="members"] .pp-plan-pill.plan-annual {
+  background: var(--pf-plan-annual-bg);
+  color: var(--pf-plan-annual-fg) !important;
+  border-color: var(--pf-plan-annual-bd) !important;
+}
+body[data-page="members"] .pp-plan-pill.plan-daily {
+  background: var(--pf-plan-daily-bg);
+  color: var(--pf-plan-daily-fg) !important;
+  border-color: var(--pf-plan-daily-bd) !important;
+}
 
-/* Fixed-width Solid Status Chips (NO dot, NO gradients/glow) */
+/* Fixed-width Standardized Status Chips */
 body[data-page="members"] .pp-status {
   display: inline-flex;
   align-items: center;
@@ -862,14 +883,15 @@ body[data-page="members"] .pp-status {
   padding: 0 10px;
   box-sizing: border-box;
   border-radius: 7px;
-  border: 0 !important;
+  border: 1px solid var(--pf-st-inactive-bd) !important;
   box-shadow: none !important;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.03em;
   text-transform: uppercase;
   white-space: nowrap;
-  color: #ffffff !important;
+  background: var(--pf-st-inactive-bg);
+  color: var(--pf-st-inactive-fg) !important;
 }
 body[data-page="members"] .pp-members-table .pp-status {
   width: 112px;
@@ -882,23 +904,23 @@ body[data-page="members"] .pp-ends-date {
   font-size: 13px;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
-  color: var(--bm-text);
+  color: var(--pf-tbl-date);
   line-height: 1.25;
   white-space: nowrap;
 }
 body[data-page="members"] .pp-ends-sub {
   display: block;
   font-size: 11px;
-  color: var(--bm-muted);
+  color: var(--pf-tbl-muted);
   margin-top: 2px;
   line-height: 1.2;
   white-space: nowrap;
   overflow: visible;
 }
 body[data-page="members"] .pp-ends-sub.is-expired,
-body[data-page="members"] #detailRoot .pp-dl dd.is-expired { color: #f87171; }
+body[data-page="members"] #detailRoot .pp-dl dd.is-expired { color: #F87171; }
 body[data-page="members"] .pp-ends-sub.is-expiring,
-body[data-page="members"] #detailRoot .pp-dl dd.is-expiring { color: #ffb83d; }
+body[data-page="members"] #detailRoot .pp-dl dd.is-expiring { color: #FBBF24; }
 
 body[data-page="members"] .pp-pager {
   display: flex;
@@ -919,36 +941,63 @@ body[data-page="members"] .pp-pager .pp-btn:disabled {
 }
 body[data-page="members"] .pp-status::before { display: none !important; content: none !important; }
 body[data-page="members"] .pp-status.active,
-body[data-page="members"] .pp-status.paid { background: #16a34a; }
+body[data-page="members"] .pp-status.paid {
+  background: var(--pf-st-active-bg);
+  color: var(--pf-st-active-fg) !important;
+  border-color: var(--pf-st-active-bd) !important;
+}
 body[data-page="members"] .pp-status.expiring,
-body[data-page="members"] .pp-status.warning { background: #d97706; }
+body[data-page="members"] .pp-status.warning {
+  background: var(--pf-st-expiring-bg);
+  color: var(--pf-st-expiring-fg) !important;
+  border-color: var(--pf-st-expiring-bd) !important;
+}
 body[data-page="members"] .pp-status.expired,
-body[data-page="members"] .pp-status.overdue { background: #dc2626; }
-body[data-page="members"] .pp-status.pending { background: #2563eb; }
+body[data-page="members"] .pp-status.overdue {
+  background: var(--pf-st-expired-bg);
+  color: var(--pf-st-expired-fg) !important;
+  border-color: var(--pf-st-expired-bd) !important;
+}
+body[data-page="members"] .pp-status.pending {
+  background: var(--pf-st-pending-bg);
+  color: var(--pf-st-pending-fg) !important;
+  border-color: var(--pf-st-pending-bd) !important;
+}
+body[data-page="members"] .pp-status.inactive,
+body[data-page="members"] .pp-status.unassigned,
 body[data-page="members"] .pp-status.cancelled,
 body[data-page="members"] .pp-status.declined,
-body[data-page="members"] .pp-status.frozen { background: #64748b; }
-body[data-page="members"] .pp-status.processing { background: #7c3aed; }
+body[data-page="members"] .pp-status.frozen {
+  background: var(--pf-st-inactive-bg);
+  color: var(--pf-st-inactive-fg) !important;
+  border-color: var(--pf-st-inactive-bd) !important;
+}
+body[data-page="members"] .pp-status.processing {
+  background: var(--pf-st-processing-bg);
+  color: var(--pf-st-processing-fg) !important;
+  border-color: var(--pf-st-processing-bd) !important;
+}
 
 /* 30px Actions Button */
 body[data-page="members"] .pp-icon-btn {
   width: 30px;
   height: 30px;
   border-radius: 9px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(7, 11, 20, 0.78);
-  color: var(--bm-muted);
+  border: 1px solid var(--pf-tbl-divider);
+  background: rgba(15, 23, 42, 0.72);
+  color: var(--pf-tbl-muted);
   display: inline-grid;
   place-items: center;
   cursor: pointer;
-  transition: border-color 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
+  transition: border-color 0.16s ease, color 0.16s ease, background 0.16s ease;
 }
 
 body[data-page="members"] .pp-members-table tbody tr:hover .pp-icon-btn,
 body[data-page="members"] .pp-icon-btn:hover {
-  border-color: rgba(255, 176, 32, 0.6);
-  color: var(--bm-amber);
-  box-shadow: 0 0 10px rgba(255, 176, 32, 0.18);
+  border-color: var(--pf-gold);
+  background: rgba(242, 189, 50, 0.10);
+  color: var(--pf-gold);
+  box-shadow: none;
 }
 
 /* Cards view & Empty/Error states */
@@ -1101,10 +1150,11 @@ body:not(.dark)[data-page="members"] .pp-page-tab.active,
 body:not(.dark)[data-page="members"] .pp-page-tab[aria-selected="true"] { background: linear-gradient(180deg, rgba(255, 176, 32, 0.2), rgba(255, 176, 32, 0.06)) !important; color: #0f172a !important; border-color: rgba(245, 158, 11, 0.65) !important; box-shadow: 0 4px 16px rgba(245, 158, 11, 0.14) !important; }
 body:not(.dark)[data-page="members"] .pp-page-tab .pp-tab-ico { background: #f1f5f9; border-color: #cbd5e1; }
 body:not(.dark)[data-page="members"] .pp-members-wrap { background: #ffffff; border-color: #e2e8f0; }
-body:not(.dark)[data-page="members"] .pp-members-table thead tr { background: #f8fafc !important; border-bottom: 1px solid #e2e8f0 !important; }
-body:not(.dark)[data-page="members"] .pp-members-table thead th { background: transparent !important; color: #64748b !important; }
-body:not(.dark)[data-page="members"] .pp-members-table tbody tr { border-bottom-color: #e2e8f0; }
-body:not(.dark)[data-page="members"] .pp-members-table tbody tr:hover { background: linear-gradient(90deg, rgba(245, 158, 11, 0.12), rgba(245, 158, 11, 0.02) 60%, transparent) !important; }
+body:not(.dark)[data-page="members"] .pp-members-table thead tr { background: #f8fafc !important; border-bottom: 1px solid var(--pf-tbl-divider) !important; }
+body:not(.dark)[data-page="members"] .pp-members-table thead th { background: transparent !important; color: var(--pf-tbl-head) !important; }
+body:not(.dark)[data-page="members"] .pp-members-table tbody tr { border-bottom-color: var(--pf-tbl-divider); }
+body:not(.dark)[data-page="members"] .pp-members-table tbody tr:hover { background: var(--pf-tbl-hover) !important; }
+body:not(.dark)[data-page="members"] .pp-members-table tbody tr.is-selected { background: var(--pf-tbl-selected) !important; }
 body:not(.dark)[data-page="members"] .pp-ends-sub.is-expiring,
 body:not(.dark)[data-page="members"] #detailRoot .pp-dl dd.is-expiring { color: #d97706; }
 body:not(.dark)[data-page="members"] .pp-ends-sub.is-expired,

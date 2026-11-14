@@ -798,7 +798,7 @@ body:not(.dark) .fn-btn-dark:hover {
   border-radius: 9px;
 }
 
-/* ---------- 6. CHIPS: SOLID STATUS BADGES & PLAN PILLS ---------- */
+/* ---------- 6. CHIPS: STANDARDIZED STATUS BADGES & PLAN PILLS ---------- */
 html body[data-page="payments"] .badge,
 html body[data-page="reports"] .badge,
 body[data-page="payments"] .badge,
@@ -810,7 +810,7 @@ body[data-page="reports"] .badge {
   height: 24px;
   padding: 0 10px;
   border-radius: 7px;
-  border: 0 !important;
+  border: 1px solid var(--pf-st-inactive-bd) !important;
   box-shadow: none !important;
   font-size: 11px;
   font-weight: 700;
@@ -818,7 +818,8 @@ body[data-page="reports"] .badge {
   text-transform: uppercase;
   white-space: nowrap;
   justify-self: center;
-  color: #ffffff !important;
+  background: var(--pf-st-inactive-bg) !important;
+  color: var(--pf-st-inactive-fg) !important;
 }
 
 body[data-page="payments"] .badge::before,
@@ -831,92 +832,104 @@ html body[data-page="payments"] .badge.active,
 html body[data-page="reports"] .badge.active,
 html body[data-page="payments"] .badge.paid,
 html body[data-page="reports"] .badge.paid {
-  background: #16a34a !important;
+  background: var(--pf-st-active-bg) !important;
+  color: var(--pf-st-active-fg) !important;
+  border-color: var(--pf-st-active-bd) !important;
 }
 
 html body[data-page="payments"] .badge.warning,
 html body[data-page="reports"] .badge.warning,
 html body[data-page="payments"] .badge.expiring,
 html body[data-page="reports"] .badge.expiring {
-  background: #d97706 !important;
+  background: var(--pf-st-expiring-bg) !important;
+  color: var(--pf-st-expiring-fg) !important;
+  border-color: var(--pf-st-expiring-bd) !important;
 }
 
 html body[data-page="payments"] .badge.expired,
 html body[data-page="reports"] .badge.expired,
 html body[data-page="payments"] .badge.overdue,
 html body[data-page="reports"] .badge.overdue {
-  background: #dc2626 !important;
+  background: var(--pf-st-expired-bg) !important;
+  color: var(--pf-st-expired-fg) !important;
+  border-color: var(--pf-st-expired-bd) !important;
 }
 
 html body[data-page="payments"] .badge.pending,
 html body[data-page="reports"] .badge.pending {
-  background: #2563eb !important;
+  background: var(--pf-st-pending-bg) !important;
+  color: var(--pf-st-pending-fg) !important;
+  border-color: var(--pf-st-pending-bd) !important;
 }
 
+html body[data-page="payments"] .badge.inactive,
+html body[data-page="reports"] .badge.inactive,
+html body[data-page="payments"] .badge.unassigned,
+html body[data-page="reports"] .badge.unassigned,
 html body[data-page="payments"] .badge.cancelled,
 html body[data-page="reports"] .badge.cancelled,
 html body[data-page="payments"] .badge.declined,
 html body[data-page="reports"] .badge.declined {
-  background: #64748b !important;
+  background: var(--pf-st-inactive-bg) !important;
+  color: var(--pf-st-inactive-fg) !important;
+  border-color: var(--pf-st-inactive-bd) !important;
 }
 
 html body[data-page="payments"] .badge.processing,
 html body[data-page="reports"] .badge.processing {
-  background: #7c3aed !important;
+  background: var(--pf-st-processing-bg) !important;
+  color: var(--pf-st-processing-fg) !important;
+  border-color: var(--pf-st-processing-bd) !important;
 }
 
 .fn-plan-pill {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 76px;
+  min-width: 82px;
   height: 24px;
   padding: 0 10px;
-  border-radius: 999px;
+  border-radius: 7px;
   font-size: 11px;
   font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
   white-space: nowrap;
   justify-self: center;
-  border: 1px solid rgba(148, 163, 184, 0.25);
-  background: rgba(148, 163, 184, 0.14);
-  color: #cbd5e1;
+  border: 1px solid var(--pf-plan-unassigned-bd);
+  background: var(--pf-plan-unassigned-bg);
+  color: var(--pf-plan-unassigned-fg);
 }
 
 .fn-plan-pill.plan-monthly {
-  background: rgba(249, 115, 22, 0.15);
-  color: #fb923c;
-  border-color: rgba(249, 115, 22, 0.36);
+  background: var(--pf-plan-monthly-bg);
+  color: var(--pf-plan-monthly-fg);
+  border-color: var(--pf-plan-monthly-bd);
 }
 
 .fn-plan-pill.plan-quarterly {
-  background: rgba(234, 179, 8, 0.15);
-  color: #facc15;
-  border-color: rgba(234, 179, 8, 0.36);
+  background: var(--pf-plan-quarterly-bg);
+  color: var(--pf-plan-quarterly-fg);
+  border-color: var(--pf-plan-quarterly-bd);
 }
 
 .fn-plan-pill.plan-annual {
-  background: rgba(148, 163, 184, 0.16);
-  color: #e2e8f0;
-  border-color: rgba(148, 163, 184, 0.35);
+  background: var(--pf-plan-annual-bg);
+  color: var(--pf-plan-annual-fg);
+  border-color: var(--pf-plan-annual-bd);
 }
 
 .fn-plan-pill.plan-daily {
-  background: rgba(56, 189, 248, 0.15);
-  color: #38bdf8;
-  border-color: rgba(56, 189, 248, 0.36);
+  background: var(--pf-plan-daily-bg);
+  color: var(--pf-plan-daily-fg);
+  border-color: var(--pf-plan-daily-bd);
 }
 
 .fn-plan-pill.plan-unassigned {
-  background: rgba(100, 116, 139, 0.16);
-  color: #94a3b8;
-  border-color: rgba(100, 116, 139, 0.32);
+  background: var(--pf-plan-unassigned-bg);
+  color: var(--pf-plan-unassigned-fg);
+  border-color: var(--pf-plan-unassigned-bd);
 }
-
-body:not(.dark) .fn-plan-pill.plan-monthly { background: #ffedd5; color: #c2410c; border-color: #fdba74; }
-body:not(.dark) .fn-plan-pill.plan-quarterly { background: #fef9c3; color: #a16207; border-color: #fde047; }
-body:not(.dark) .fn-plan-pill.plan-annual { background: #f1f5f9; color: #334155; border-color: #cbd5e1; }
-body:not(.dark) .fn-plan-pill.plan-daily { background: #e0f2fe; color: #0369a1; border-color: #7dd3fc; }
-body:not(.dark) .fn-plan-pill.plan-unassigned { background: #f1f5f9; color: #64748b; border-color: #cbd5e1; }
 
 /* ---------- 7. STANDALONE PANEL TABLES (RECENT REGISTRATIONS PATTERN) ---------- */
 .fn-table-scroll {
@@ -982,7 +995,7 @@ html body.pf-staff[data-page="reports"] .fn-table thead th,
   font-weight: 700 !important;
   letter-spacing: 0.08em !important;
   text-transform: uppercase;
-  color: var(--fn-muted) !important;
+  color: var(--pf-tbl-head) !important;
   text-align: left;
 }
 
@@ -1030,7 +1043,7 @@ html body.pf-staff[data-page="reports"] .fn-table thead th.fn-right {
   border-radius: 0;
   background: transparent;
   border: 0;
-  border-bottom: 1px solid var(--fn-divider);
+  border-bottom: 1px solid var(--pf-tbl-divider);
   transition: background 0.15s ease;
 }
 
@@ -1039,7 +1052,11 @@ html body.pf-staff[data-page="reports"] .fn-table thead th.fn-right {
 }
 
 .fn-table tbody tr:hover {
-  background: var(--fn-row-hover-bg);
+  background: var(--pf-tbl-hover);
+}
+
+.fn-table tbody tr.is-selected {
+  background: var(--pf-tbl-selected);
 }
 
 .fn-table tbody tr:has(.empty-state) {

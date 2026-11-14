@@ -5,6 +5,100 @@
   --pp-r: 14px;
   --pp-r-sm: 10px;
   --pp-ring: 0 0 0 3px rgba(232, 185, 58, .28);
+
+  /* Centralized Table & Badge Color System (Dark Mode default) */
+  --pf-gold: #F2BD32;
+  --pf-tbl-head: #94A3B8;
+  --pf-tbl-text: #F8FAFC;
+  --pf-tbl-muted: #94A3B8;
+  --pf-tbl-date: #E2E8F0;
+  --pf-tbl-disabled: #64748B;
+  --pf-tbl-divider: #263244;
+  --pf-tbl-hover: rgba(242, 189, 50, 0.07);
+  --pf-tbl-selected: rgba(242, 189, 50, 0.10);
+
+  /* Status Badges */
+  --pf-st-active-bg: #14532D;
+  --pf-st-active-fg: #4ADE80;
+  --pf-st-active-bd: rgba(74, 222, 128, 0.25);
+  --pf-st-expiring-bg: #78350F;
+  --pf-st-expiring-fg: #FBBF24;
+  --pf-st-expiring-bd: rgba(251, 191, 36, 0.25);
+  --pf-st-expired-bg: #7F1D1D;
+  --pf-st-expired-fg: #F87171;
+  --pf-st-expired-bd: rgba(248, 113, 113, 0.25);
+  --pf-st-inactive-bg: #374151;
+  --pf-st-inactive-fg: #D1D5DB;
+  --pf-st-inactive-bd: rgba(209, 213, 219, 0.2);
+  --pf-st-pending-bg: #1E3A8A;
+  --pf-st-pending-fg: #93C5FD;
+  --pf-st-pending-bd: rgba(147, 197, 253, 0.25);
+  --pf-st-processing-bg: #4C1D95;
+  --pf-st-processing-fg: #C4B5FD;
+  --pf-st-processing-bd: rgba(196, 181, 253, 0.25);
+
+  /* Plan Badges (Independent of Status) */
+  --pf-plan-monthly-bg: rgba(242, 189, 50, 0.16);
+  --pf-plan-monthly-fg: #F2BD32;
+  --pf-plan-monthly-bd: rgba(242, 189, 50, 0.38);
+  --pf-plan-quarterly-bg: rgba(34, 184, 207, 0.16);
+  --pf-plan-quarterly-fg: #22B8CF;
+  --pf-plan-quarterly-bd: rgba(34, 184, 207, 0.38);
+  --pf-plan-annual-bg: rgba(100, 116, 139, 0.22);
+  --pf-plan-annual-fg: #CBD5E1;
+  --pf-plan-annual-bd: rgba(100, 116, 139, 0.45);
+  --pf-plan-daily-bg: rgba(56, 189, 248, 0.16);
+  --pf-plan-daily-fg: #38BDF8;
+  --pf-plan-daily-bd: rgba(56, 189, 248, 0.38);
+  --pf-plan-unassigned-bg: rgba(100, 116, 139, 0.16);
+  --pf-plan-unassigned-fg: #94A3B8;
+  --pf-plan-unassigned-bd: rgba(100, 116, 139, 0.35);
+}
+
+body:not(.dark) {
+  --pf-tbl-head: #64748B;
+  --pf-tbl-text: #0F172A;
+  --pf-tbl-muted: #64748B;
+  --pf-tbl-date: #1E293B;
+  --pf-tbl-disabled: #94A3B8;
+  --pf-tbl-divider: #E2E8F0;
+  --pf-tbl-hover: rgba(242, 189, 50, 0.10);
+  --pf-tbl-selected: rgba(242, 189, 50, 0.16);
+
+  --pf-st-active-bg: #DCFCE7;
+  --pf-st-active-fg: #166534;
+  --pf-st-active-bd: #86EFAC;
+  --pf-st-expiring-bg: #FEF3C7;
+  --pf-st-expiring-fg: #92400E;
+  --pf-st-expiring-bd: #FDE68A;
+  --pf-st-expired-bg: #FEE2E2;
+  --pf-st-expired-fg: #991B1B;
+  --pf-st-expired-bd: #FECACA;
+  --pf-st-inactive-bg: #F1F5F9;
+  --pf-st-inactive-fg: #475569;
+  --pf-st-inactive-bd: #CBD5E1;
+  --pf-st-pending-bg: #DBEAFE;
+  --pf-st-pending-fg: #1E40AF;
+  --pf-st-pending-bd: #93C5FD;
+  --pf-st-processing-bg: #EDE9FE;
+  --pf-st-processing-fg: #5B21B6;
+  --pf-st-processing-bd: #C4B5FD;
+
+  --pf-plan-monthly-bg: #FEF9C3;
+  --pf-plan-monthly-fg: #A16207;
+  --pf-plan-monthly-bd: #FDE047;
+  --pf-plan-quarterly-bg: #ECFEFF;
+  --pf-plan-quarterly-fg: #0E7490;
+  --pf-plan-quarterly-bd: #A5F3FC;
+  --pf-plan-annual-bg: #F1F5F9;
+  --pf-plan-annual-fg: #475569;
+  --pf-plan-annual-bd: #CBD5E1;
+  --pf-plan-daily-bg: #E0F2FE;
+  --pf-plan-daily-fg: #0369A1;
+  --pf-plan-daily-bd: #7DD3FC;
+  --pf-plan-unassigned-bg: #F1F5F9;
+  --pf-plan-unassigned-fg: #64748B;
+  --pf-plan-unassigned-bd: #CBD5E1;
 }
 body, button, input, select, textarea { font-family: var(--pp-body); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
 h1, h2, h3, h4, .headertxt strong, .imgbrand strong, .portal-brand strong, .member-logo b, .welcome, .nav-group-label, .sidebar-user-copy strong { font-family: var(--pp-head); letter-spacing: -.015em; }

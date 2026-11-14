@@ -1848,3 +1848,14 @@ Redesign the header/banner sections of Payments, Reports, and Browse Members sim
 - **Browse Members (`web/members-ui.css`, `web/members.html`)**: Replaced the decorative `.pp-top-wave` SVG with `.pp-header-bg` using `img/hero.jpg` (Functional Fitness Gym members group photo) and dark navy overlay, added the matching `3.5px` vertical gold accent bar on `.pp-browse-title::before`, unified `.pp-page-tab` active/inactive glass pill states while preserving `.pp-tab-ico` color distinctions (`is-amber`, `is-cyan`, `is-emerald`) and `#browseTotalBadge` / `#countBrowse`, and removed pulsing keyframe animations.
 ### Decision-log skill
 Use distinct real local photographs (`gal-4.jpg`, `hero-side.jpg`, `hero.jpg`) with a shared CSS mask + dark-navy overlay pattern and left gold vertical accent bar so module banners feel cohesive across the dashboard while remaining visually distinct per module.
+
+## 2026-11-14 17:31 (Asia/Manila): Standardize membership table, status badge, and plan badge color system
+### What I asked for
+Establish a centralized, consistent color system for all membership tables, status badges, plan badges, row interactions, typography, and light-mode equivalents across Browse Members, Member Details, Subscription Monitor, Payments, and Reports.
+### What the agent decided and why
+- Added centralized `--pf-st-*` (status badges), `--pf-plan-*` (plan badges independent of status: Monthly `#F2BD32`, Quarterly `#22B8CF`, Annual `#64748B`, Daily `#38BDF8`, Unassigned `#64748B`), and `--pf-tbl-*` (table headers, typography, `#263244` dividers, `rgba(242,189,50,0.07)` hover, `rgba(242,189,50,0.10)` selected) variables plus accessible `body:not(.dark)` Light Mode equivalents in `web/pro-theme.css`.
+- Updated `web/members-ui.css` and `web/finance-ui.css` to consume these shared variables for `.pp-status`, `.badge`, `.pp-plan-pill`, `.fn-plan-pill`, `.pp-members-table`, `.fn-table`, and action icon hover states, removing all orange `#ea580c`/`#fb923c` plan colors.
+- Updated `web/members.js` so Member Details (`#detailRoot` header & payment history table) renders `.pp-plan-pill plan-*` instead of plain text or `.pp-chip`.
+- Bumped `members-ui.css?v=15` and `finance-ui.css?v=10` in `web/members.html`, `web/payments.html`, and `web/reports.html`.
+### Decision-log skill
+Centralize semantic badge and table interaction tokens in `web/pro-theme.css` (`:root` + `body:not(.dark)`) so every module stylesheet (`members-ui.css`, `finance-ui.css`) inherits identical status and plan colors in both Dark and Light modes.
