@@ -135,62 +135,66 @@ body[data-page="members"] .pp-btn-primary:hover:not(:disabled) {
   box-shadow: 0 10px 26px rgba(255, 176, 32, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.65) !important;
 }
 
-/* 1) HEADER (2 columns, vertically centered) */
+/* 1) HEADER (Unified PROFit Banner with Members Community Photo) */
 body[data-page="members"] .pp-members-topbar {
+  position: relative;
   overflow: hidden;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 20px;
-  padding: 22px 24px;
-  margin-bottom: 18px;
+  gap: 22px;
+  min-height: 158px;
+  padding: 26px 28px;
+  margin-bottom: 20px;
+  border-radius: 18px !important;
+  border: 1px solid rgba(245, 158, 11, 0.24) !important;
+  background: linear-gradient(135deg, #0b1120 0%, #0f172a 60%, #111827 100%) !important;
+  box-shadow: 0 12px 32px rgba(2, 6, 23, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
-body[data-page="members"] .pp-top-wave {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 440px;
-  height: 52px;
-  pointer-events: none;
-  z-index: 0;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 35%);
-  mask-image: linear-gradient(90deg, transparent, #000 35%);
-}
-
-@keyframes ppWaveFlow {
-  from { stroke-dashoffset: 0; }
-  to { stroke-dashoffset: -32; }
-}
-
-@keyframes ppLivePulse {
-  0%, 100% { box-shadow: 0 0 14px rgba(255, 176, 32, 0.18); }
-  50% { box-shadow: 0 0 24px rgba(255, 176, 32, 0.36); }
-}
-
-@keyframes ppTopShimmer {
-  0%, 100% { opacity: 0.75; }
-  50% { opacity: 1; filter: brightness(1.18); }
+body:not(.dark)[data-page="members"] .pp-members-topbar {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+  border-color: rgba(217, 170, 82, 0.42) !important;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
 }
 
 body[data-page="members"] .pp-members-topbar::before {
-  animation: ppTopShimmer 3.6s ease-in-out infinite;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(245, 158, 11, 0.45) 50%, transparent 100%);
+  box-shadow: none;
+  opacity: 0.65;
+  animation: none !important;
 }
 
-body[data-page="members"] .pp-members-topbar .pp-browse-ico {
-  animation: ppLivePulse 3.6s ease-in-out infinite;
+body[data-page="members"] .pp-header-bg {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 66%;
+  background: url("img/hero.jpg") center 32% / cover no-repeat;
+  opacity: 0.36;
+  filter: grayscale(30%) contrast(1.06) brightness(0.86);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.5) 42%, rgba(0, 0, 0, 0.96) 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.5) 42%, rgba(0, 0, 0, 0.96) 100%);
+  pointer-events: none;
+  z-index: 0;
 }
 
-body[data-page="members"] .pp-top-wave path[stroke-dasharray] {
-  animation: ppWaveFlow 3.2s linear infinite;
+body[data-page="members"] .pp-header-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(11, 17, 32, 0.94) 0%, rgba(11, 17, 32, 0.52) 55%, rgba(11, 17, 32, 0.38) 100%);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  body[data-page="members"] .pp-members-topbar::before,
-  body[data-page="members"] .pp-members-topbar .pp-browse-ico,
-  body[data-page="members"] .pp-top-wave path[stroke-dasharray] {
-    animation: none !important;
-  }
+body:not(.dark)[data-page="members"] .pp-header-bg {
+  opacity: 0.14;
+  filter: grayscale(35%) contrast(1.05);
+}
+
+body:not(.dark)[data-page="members"] .pp-header-bg::after {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.65) 55%, rgba(255, 255, 255, 0.42) 100%);
 }
 
 body[data-page="members"] .pp-browse-title {
@@ -199,34 +203,46 @@ body[data-page="members"] .pp-browse-title {
   display: flex;
   align-items: center;
   gap: 15px;
+  padding-left: 16px;
+}
+
+body[data-page="members"] .pp-browse-title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 3.5px;
+  border-radius: 999px;
+  background: #f59e0b;
 }
 
 body[data-page="members"] .pp-browse-ico {
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
   display: grid;
   place-items: center;
-  background: rgba(255, 176, 32, 0.12);
-  border: 1px solid rgba(255, 176, 32, 0.42);
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.36);
   color: var(--bm-amber);
-  font-size: 18px;
+  font-size: 17px;
   flex-shrink: 0;
-  box-shadow: 0 0 18px rgba(255, 176, 32, 0.2);
+  box-shadow: none;
 }
 
 body[data-page="members"] .pp-browse-ico.is-emerald {
   background: rgba(16, 185, 129, 0.14);
-  border-color: rgba(16, 185, 129, 0.45);
+  border-color: rgba(16, 185, 129, 0.4);
   color: var(--bm-emerald);
-  box-shadow: 0 0 18px rgba(16, 185, 129, 0.22);
+  box-shadow: none;
 }
 
 body[data-page="members"] .pp-browse-ico.is-cyan {
   background: rgba(34, 211, 238, 0.14);
-  border-color: rgba(34, 211, 238, 0.45);
+  border-color: rgba(34, 211, 238, 0.4);
   color: var(--bm-cyan);
-  box-shadow: 0 0 18px rgba(34, 211, 238, 0.22);
+  box-shadow: none;
 }
 
 body[data-page="members"] .pp-header-copy {
@@ -285,13 +301,14 @@ body[data-page="members"] .pp-page-tabs {
 
 body[data-page="members"] .pp-page-tab {
   position: relative;
-  height: 76px !important;
+  height: 74px !important;
   margin: 0 !important;
-  padding: 10px 12px !important;
+  padding: 10px 14px !important;
   border-radius: 14px !important;
-  background: #111827 !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: rgba(15, 23, 42, 0.78) !important;
+  border: 1px solid rgba(148, 163, 184, 0.22) !important;
   box-shadow: none !important;
+  backdrop-filter: blur(8px);
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
@@ -299,44 +316,35 @@ body[data-page="members"] .pp-page-tab {
   gap: 7px;
   color: #a9b6cc !important;
   font-size: 0.79rem !important;
-  font-weight: 700 !important;
+  font-weight: 600 !important;
   line-height: 1 !important;
   cursor: pointer;
   transition: transform 160ms ease-out, border-color 160ms ease-out, background 160ms ease-out, color 160ms ease-out;
 }
 
 body[data-page="members"] .pp-page-tab::after {
-  content: "";
-  position: absolute;
-  left: 22%;
-  right: 22%;
-  bottom: 0;
-  height: 2px;
-  border-radius: 2px;
-  background: var(--bm-amber);
-  opacity: 0;
-  transform: scaleX(0.4);
-  transition: opacity 160ms ease-out, transform 160ms ease-out;
+  display: none;
 }
 
 body[data-page="members"] .pp-page-tab:not(.active):hover {
-  transform: translateY(-2px);
-  border-color: rgba(255, 170, 0, 0.35) !important;
-  background: rgba(255, 170, 0, 0.06) !important;
+  transform: translateY(-1px);
+  border-color: rgba(245, 158, 11, 0.45) !important;
+  background: rgba(15, 23, 42, 0.92) !important;
   box-shadow: none !important;
   color: #ffffff !important;
 }
 
 body[data-page="members"] .pp-page-tab:not(.active):hover .pp-tab-ico {
-  border-color: rgba(255, 170, 0, 0.55);
+  border-color: rgba(245, 158, 11, 0.55);
 }
 
 body[data-page="members"] .pp-page-tab.active,
 body[data-page="members"] .pp-page-tab[aria-selected="true"] {
-  background: linear-gradient(180deg, rgba(255, 170, 0, 0.24) 0%, rgba(255, 170, 0, 0.06) 100%), #121a2b !important;
-  border-color: rgba(255, 170, 0, 0.65) !important;
-  box-shadow: 0 0 20px rgba(255, 170, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  background: rgba(245, 158, 11, 0.16) !important;
+  border: 1.5px solid #f59e0b !important;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.14) !important;
   color: #ffffff !important;
+  font-weight: 700 !important;
 }
 
 body[data-page="members"] .pp-page-tab.active:hover,
@@ -1122,7 +1130,17 @@ body:not(.dark)[data-page="members"] .pp-chip { background: #f1f5f9; border-colo
 
 /* Responsive Breakpoints */
 @media (max-width: 1099px) {
-  body[data-page="members"] .pp-members-topbar { grid-template-columns: 1fr; }
+  body[data-page="members"] .pp-members-topbar {
+    grid-template-columns: 1fr;
+    padding: 20px;
+    min-height: 140px;
+  }
+  body[data-page="members"] .pp-header-bg {
+    width: 100%;
+    opacity: 0.22;
+    -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.85) 100%);
+    mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.85) 100%);
+  }
   body[data-page="members"] .pp-toolbar.pp-members-toolbar { flex-wrap: wrap; }
   body[data-page="members"] .pp-search { flex: 1 1 100% !important; }
   body[data-page="members"] .pp-status-dd { flex: 1 1 170px; }

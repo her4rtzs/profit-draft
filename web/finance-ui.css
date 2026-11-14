@@ -56,13 +56,12 @@ html body.pf-staff[data-page="reports"] .main-content {
   position: relative;
   overflow: hidden;
   border-radius: 18px;
-  padding: 24px 28px;
+  padding: 26px 28px;
+  min-height: 158px;
   margin-bottom: 20px !important;
-  border: 1px solid rgba(245, 158, 11, 0.28);
-  background:
-    radial-gradient(ellipse 36% 70% at 8% 15%, rgba(245, 158, 11, 0.1), transparent 72%),
-    var(--fn-bg-card);
-  box-shadow: var(--fn-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(245, 158, 11, 0.24);
+  background: linear-gradient(135deg, #0b1120 0%, #0f172a 60%, #111827 100%);
+  box-shadow: 0 12px 32px rgba(2, 6, 23, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.04);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -71,7 +70,9 @@ html body.pf-staff[data-page="reports"] .main-content {
 }
 
 body:not(.dark) .fn-header-card {
-  border-color: rgba(217, 170, 82, 0.45);
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-color: rgba(217, 170, 82, 0.42);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
 }
 
 .fn-header-card::before,
@@ -82,11 +83,10 @@ body:not(.dark) .fn-header-card {
   top: 0;
   left: 8%;
   right: 8%;
-  height: 1.5px;
+  height: 1px;
   border-radius: 999px;
-  background: linear-gradient(90deg, transparent 0%, var(--fn-top-line, rgba(255, 176, 32, 0.55)) 35%, var(--fn-top-line-2, rgba(224, 160, 32, 0.55)) 65%, transparent 100%);
-  box-shadow: 0 0 8px var(--fn-top-glow, rgba(255, 176, 32, 0.22));
-  opacity: 0.7;
+  background: linear-gradient(90deg, transparent 0%, rgba(245, 158, 11, 0.45) 50%, transparent 100%);
+  opacity: 0.65;
   pointer-events: none;
   z-index: 2;
 }
@@ -101,18 +101,37 @@ body:not(.dark) .fn-header-card {
   top: 0;
   right: 0;
   bottom: 0;
-  width: 62%;
-  background: url("img/hero.jpg") center right / cover no-repeat;
-  opacity: 0.34;
-  filter: grayscale(100%) contrast(1.12);
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.65) 48%, #000 100%);
-  mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.65) 48%, #000 100%);
+  width: 68%;
+  background: url("img/gal-4.jpg") center right / cover no-repeat;
+  opacity: 0.42;
+  filter: grayscale(35%) contrast(1.06) brightness(0.86);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.52) 42%, rgba(0, 0, 0, 0.96) 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.52) 42%, rgba(0, 0, 0, 0.96) 100%);
   pointer-events: none;
   z-index: 0 !important;
 }
 
+.fn-header-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(11, 17, 32, 0.92) 0%, rgba(11, 17, 32, 0.45) 55%, rgba(11, 17, 32, 0.35) 100%);
+}
+
+body[data-page="reports"] .fn-header-bg {
+  width: 72%;
+  background: url("img/hero-side.jpg") center 38% / cover no-repeat;
+  opacity: 0.36;
+  filter: grayscale(40%) contrast(1.06) brightness(0.84);
+}
+
 body:not(.dark) .fn-header-bg {
-  opacity: 0.12;
+  opacity: 0.14;
+  filter: grayscale(40%) contrast(1.05);
+}
+
+body:not(.dark) .fn-header-bg::after {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.6) 55%, rgba(255, 255, 255, 0.4) 100%);
 }
 
 .fn-header-title-wrap {
@@ -129,7 +148,6 @@ body:not(.dark) .fn-header-bg {
   width: 3.5px;
   border-radius: 999px;
   background: #f59e0b;
-  box-shadow: 0 0 10px rgba(245, 158, 11, 0.45);
 }
 
 .fn-eyebrow {
@@ -202,7 +220,7 @@ html body.pf-staff[data-page="reports"] .fn-tabs .tab.active,
   color: var(--fn-text) !important;
   border: 1.5px solid #f59e0b !important;
   background: rgba(245, 158, 11, 0.16) !important;
-  box-shadow: 0 0 16px rgba(245, 158, 11, 0.22) !important;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.14) !important;
 }
 
 .fn-tabs .tab.active::after {
@@ -1447,14 +1465,24 @@ body:not(.dark) .fn-tx-foot strong {
 /* ---------- 8. RESPONSIVE & REDUCED MOTION ---------- */
 @media (max-width: 900px) {
   .fn-header-card {
-    grid-template-columns: 1fr;
     gap: 14px;
-    padding: 18px 18px;
+    padding: 20px;
+    min-height: 140px;
+  }
+
+  .fn-header-bg,
+  body[data-page="reports"] .fn-header-bg {
+    width: 100%;
+    opacity: 0.22;
+    -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.85) 100%);
+    mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.85) 100%);
   }
 
   .fn-tabs {
-    grid-auto-flow: row;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 8px;
   }
 
   .fn-daily-grid,
@@ -1472,21 +1500,25 @@ body:not(.dark) .fn-tx-foot strong {
     border-radius: 16px;
   }
 
+  .fn-page-title {
+    font-size: 24px;
+  }
+
   .fn-tabs {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: 8px;
   }
 
-  body[data-page="reports"] .fn-tabs {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
+  html body.pf-staff[data-page="payments"] .fn-tabs .tab,
+  html body.pf-staff[data-page="reports"] .fn-tabs .tab,
   .fn-tabs .tab {
-    height: 58px;
-    min-height: 58px;
-    padding: 0 8px;
+    flex: 1 1 auto;
+    height: 40px !important;
+    min-height: 40px !important;
+    padding: 0 12px !important;
     gap: 6px;
-    font-size: 12px;
+    font-size: 12px !important;
   }
 
   .fn-tab-full {

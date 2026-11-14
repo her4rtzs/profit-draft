@@ -1838,3 +1838,13 @@ Update the `.fn-header-card` banner on `web/payments.html` and `web/reports.html
 - Updated `web/payments.html` and `web/reports.html` to swap `<svg class="fn-header-wave">` for `<div class="fn-header-bg" aria-hidden="true"></div>` and `<div class="fn-header-title-wrap">`, and bumped `finance-ui.css?v=8` for cache busting.
 ### Decision-log skill
 Reuse existing local assets (`web/img/hero.jpg`) with CSS `mask-image` and theme-aware opacity when adding editorial banner backgrounds so both Dark Mode and Light Mode stay legible without introducing extra image files.
+
+## 2026-11-14 17:17 (Asia/Manila): Redesign Payments, Reports, and Browse Members banners with distinct real gym imagery
+### What I asked for
+Redesign the header/banner sections of Payments, Reports, and Browse Members simultaneously so they share one consistent PROFit design language while each displays a different real gym photograph with dark navy overlay, responsive layout, and preserved navigation/functionality.
+### What the agent decided and why
+- **Payments (`web/finance-ui.css`, `web/payments.html`)**: Switched `.fn-header-bg` to `img/gal-4.jpg` (gym equipment: barbell, bench, machines), added a dark navy gradient overlay (`::after`), restrained excessive neon glows, and updated mobile/tablet responsive rules so `.fn-header-bg` and `.fn-tabs` wrap cleanly.
+- **Reports (`web/finance-ui.css`, `web/reports.html`)**: Configured `body[data-page="reports"] .fn-header-bg` to use `img/hero-side.jpg` (wide gym interior workout floor) with its own framing and dark navy overlay, keeping consistent banner height, left gold accent bar, typography, and pill tab states.
+- **Browse Members (`web/members-ui.css`, `web/members.html`)**: Replaced the decorative `.pp-top-wave` SVG with `.pp-header-bg` using `img/hero.jpg` (Functional Fitness Gym members group photo) and dark navy overlay, added the matching `3.5px` vertical gold accent bar on `.pp-browse-title::before`, unified `.pp-page-tab` active/inactive glass pill states while preserving `.pp-tab-ico` color distinctions (`is-amber`, `is-cyan`, `is-emerald`) and `#browseTotalBadge` / `#countBrowse`, and removed pulsing keyframe animations.
+### Decision-log skill
+Use distinct real local photographs (`gal-4.jpg`, `hero-side.jpg`, `hero.jpg`) with a shared CSS mask + dark-navy overlay pattern and left gold vertical accent bar so module banners feel cohesive across the dashboard while remaining visually distinct per module.
