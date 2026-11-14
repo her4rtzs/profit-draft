@@ -798,7 +798,7 @@ body:not(.dark) .fn-btn-dark:hover {
   border-radius: 9px;
 }
 
-/* ---------- 6. CHIPS: STANDARDIZED STATUS BADGES & PLAN PILLS ---------- */
+/* ---------- 6. CHIPS: UNIFORM PILL + DOT STATUS BADGES & PLAN PILLS ---------- */
 html body[data-page="payments"] .badge,
 html body[data-page="reports"] .badge,
 body[data-page="payments"] .badge,
@@ -806,15 +806,19 @@ body[data-page="reports"] .badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 100px;
-  height: 24px;
-  padding: 0 10px;
-  border-radius: 7px;
+  gap: 6px;
+  min-width: 124px;
+  width: 132px;
+  height: 26px;
+  padding: 0 12px;
+  box-sizing: border-box;
+  border-radius: 999px;
   border: 1px solid var(--pf-st-inactive-bd) !important;
   box-shadow: none !important;
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
+  line-height: 1;
   text-transform: uppercase;
   white-space: nowrap;
   justify-self: center;
@@ -824,8 +828,14 @@ body[data-page="reports"] .badge {
 
 body[data-page="payments"] .badge::before,
 body[data-page="reports"] .badge::before {
-  display: none !important;
-  content: none !important;
+  content: "" !important;
+  display: inline-block !important;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--pf-st-inactive-dot);
+  box-shadow: 0 0 6px currentColor;
 }
 
 html body[data-page="payments"] .badge.active,
@@ -836,6 +846,10 @@ html body[data-page="reports"] .badge.paid {
   color: var(--pf-st-active-fg) !important;
   border-color: var(--pf-st-active-bd) !important;
 }
+body[data-page="payments"] .badge.active::before,
+body[data-page="reports"] .badge.active::before,
+body[data-page="payments"] .badge.paid::before,
+body[data-page="reports"] .badge.paid::before { background: var(--pf-st-active-dot); }
 
 html body[data-page="payments"] .badge.warning,
 html body[data-page="reports"] .badge.warning,
@@ -845,6 +859,10 @@ html body[data-page="reports"] .badge.expiring {
   color: var(--pf-st-expiring-fg) !important;
   border-color: var(--pf-st-expiring-bd) !important;
 }
+body[data-page="payments"] .badge.warning::before,
+body[data-page="reports"] .badge.warning::before,
+body[data-page="payments"] .badge.expiring::before,
+body[data-page="reports"] .badge.expiring::before { background: var(--pf-st-expiring-dot); }
 
 html body[data-page="payments"] .badge.expired,
 html body[data-page="reports"] .badge.expired,
@@ -854,6 +872,10 @@ html body[data-page="reports"] .badge.overdue {
   color: var(--pf-st-expired-fg) !important;
   border-color: var(--pf-st-expired-bd) !important;
 }
+body[data-page="payments"] .badge.expired::before,
+body[data-page="reports"] .badge.expired::before,
+body[data-page="payments"] .badge.overdue::before,
+body[data-page="reports"] .badge.overdue::before { background: var(--pf-st-expired-dot); }
 
 html body[data-page="payments"] .badge.pending,
 html body[data-page="reports"] .badge.pending {
@@ -861,11 +883,11 @@ html body[data-page="reports"] .badge.pending {
   color: var(--pf-st-pending-fg) !important;
   border-color: var(--pf-st-pending-bd) !important;
 }
+body[data-page="payments"] .badge.pending::before,
+body[data-page="reports"] .badge.pending::before { background: var(--pf-st-pending-dot); }
 
 html body[data-page="payments"] .badge.inactive,
 html body[data-page="reports"] .badge.inactive,
-html body[data-page="payments"] .badge.unassigned,
-html body[data-page="reports"] .badge.unassigned,
 html body[data-page="payments"] .badge.cancelled,
 html body[data-page="reports"] .badge.cancelled,
 html body[data-page="payments"] .badge.declined,
@@ -874,6 +896,21 @@ html body[data-page="reports"] .badge.declined {
   color: var(--pf-st-inactive-fg) !important;
   border-color: var(--pf-st-inactive-bd) !important;
 }
+body[data-page="payments"] .badge.inactive::before,
+body[data-page="reports"] .badge.inactive::before,
+body[data-page="payments"] .badge.cancelled::before,
+body[data-page="reports"] .badge.cancelled::before,
+body[data-page="payments"] .badge.declined::before,
+body[data-page="reports"] .badge.declined::before { background: var(--pf-st-inactive-dot); }
+
+html body[data-page="payments"] .badge.unassigned,
+html body[data-page="reports"] .badge.unassigned {
+  background: var(--pf-st-unassigned-bg) !important;
+  color: var(--pf-st-unassigned-fg) !important;
+  border-color: var(--pf-st-unassigned-bd) !important;
+}
+body[data-page="payments"] .badge.unassigned::before,
+body[data-page="reports"] .badge.unassigned::before { background: var(--pf-st-unassigned-dot); }
 
 html body[data-page="payments"] .badge.processing,
 html body[data-page="reports"] .badge.processing {
@@ -881,18 +918,22 @@ html body[data-page="reports"] .badge.processing {
   color: var(--pf-st-processing-fg) !important;
   border-color: var(--pf-st-processing-bd) !important;
 }
+body[data-page="payments"] .badge.processing::before,
+body[data-page="reports"] .badge.processing::before { background: var(--pf-st-processing-dot); }
 
 .fn-plan-pill {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 82px;
-  height: 24px;
-  padding: 0 10px;
-  border-radius: 7px;
+  width: 108px;
+  height: 26px;
+  padding: 0 12px;
+  box-sizing: border-box;
+  border-radius: 999px;
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
+  line-height: 1;
   text-transform: uppercase;
   white-space: nowrap;
   justify-self: center;
@@ -946,18 +987,18 @@ html body[data-page="reports"] .badge.processing {
 }
 
 .fn-table--sub {
-  --fn-cols: minmax(220px, 2.2fr) minmax(115px, 1.05fr) minmax(175px, 1.55fr) minmax(118px, 0.95fr) minmax(96px, 0.75fr);
-  --fn-min-w: 724px;
+  --fn-cols: minmax(220px, 2.1fr) minmax(120px, 1fr) minmax(175px, 1.5fr) minmax(144px, 1.05fr) minmax(104px, 0.8fr);
+  --fn-min-w: 763px;
 }
 
 .fn-table--hist {
-  --fn-cols: minmax(96px, 1.1fr) minmax(200px, 2.1fr) minmax(96px, 0.95fr) minmax(150px, 1.55fr) minmax(115px, 1.2fr) minmax(92px, 0.95fr) minmax(92px, 0.95fr);
-  --fn-min-w: 841px;
+  --fn-cols: minmax(96px, 1.05fr) minmax(200px, 2fr) minmax(120px, 1fr) minmax(150px, 1.45fr) minmax(115px, 1.1fr) minmax(144px, 1.05fr) minmax(92px, 0.9fr);
+  --fn-min-w: 917px;
 }
 
 .fn-table--tx {
-  --fn-cols: minmax(115px, 1.15fr) minmax(100px, 1fr) minmax(200px, 2.2fr) minmax(96px, 0.95fr) minmax(155px, 1.5fr) minmax(100px, 1.05fr);
-  --fn-min-w: 766px;
+  --fn-cols: minmax(115px, 1.15fr) minmax(100px, 1fr) minmax(200px, 2.1fr) minmax(120px, 1fr) minmax(155px, 1.45fr) minmax(100px, 1fr);
+  --fn-min-w: 790px;
 }
 
 .fn-table thead,
@@ -1037,8 +1078,8 @@ html body.pf-staff[data-page="reports"] .fn-table thead th.fn-right {
   grid-template-columns: var(--fn-cols);
   align-items: center;
   gap: 0;
-  height: 56px;
-  min-height: 56px;
+  height: 66px;
+  min-height: 66px;
   padding: 0;
   border-radius: 0;
   background: transparent;

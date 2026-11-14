@@ -1859,3 +1859,14 @@ Establish a centralized, consistent color system for all membership tables, stat
 - Bumped `members-ui.css?v=15` and `finance-ui.css?v=10` in `web/members.html`, `web/payments.html`, and `web/reports.html`.
 ### Decision-log skill
 Centralize semantic badge and table interaction tokens in `web/pro-theme.css` (`:root` + `body:not(.dark)`) so every module stylesheet (`members-ui.css`, `finance-ui.css`) inherits identical status and plan colors in both Dark and Light modes.
+
+## 2026-11-14 17:40 (Asia/Manila): Final table UI polish — pill+dot status badges, red expiring soon, uniform sizing & alignment
+### What I asked for
+Polish both membership tables (Browse Members and Payments/Reports) using the pill+dot badge style from the first reference screenshot, make Expiring Soon red (#DC2626), Expired dark red (#991B1B), Active green (#16A34A), keep plan badge colors independent, and enforce uniform badge dimensions and column alignment across both tables.
+### What the agent decided and why
+- Updated `--pf-st-*` tokens in `web/pro-theme.css` to the translucent pill + crisp dot (`--pf-st-*-dot`) palette with Active `#16A34A`, Expiring Soon `#DC2626` (red), Expired `#991B1B` (dark red), Inactive `#475569`, and Unassigned `#64748B`, plus accessible `body:not(.dark)` Light Mode equivalents.
+- Unified `.pp-plan-pill` / `.fn-plan-pill` (`width: 108px`, `height: 26px`, `border-radius: 999px`) and `.pp-status` / `.badge` (`width: 132px`, `height: 26px`, `border-radius: 999px`, `6px` `::before` dot) across `web/members-ui.css` and `web/finance-ui.css`.
+- Widened `.fn-table--sub`, `.fn-table--hist`, and `.fn-table--tx` plan/status columns and standardized `.fn-table tbody tr` height (`66px`) so both tables share symmetrical alignment and spacing.
+- Bumped `members-ui.css?v=16` and `finance-ui.css?v=11` in `web/members.html`, `web/payments.html`, and `web/reports.html`.
+### Decision-log skill
+Keep status and plan badges identical in height (`26px`), radius (`999px`), font weight (`700`), and fixed widths per category across `members-ui.css` and `finance-ui.css` so multi-module tables stay visually symmetrical.

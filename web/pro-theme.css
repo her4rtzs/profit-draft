@@ -17,25 +17,35 @@
   --pf-tbl-hover: rgba(242, 189, 50, 0.07);
   --pf-tbl-selected: rgba(242, 189, 50, 0.10);
 
-  /* Status Badges */
-  --pf-st-active-bg: #14532D;
+  /* Status Badges (Pill + Dot Style) */
+  --pf-st-active-bg: rgba(22, 163, 74, 0.14);
   --pf-st-active-fg: #4ADE80;
-  --pf-st-active-bd: rgba(74, 222, 128, 0.25);
-  --pf-st-expiring-bg: #78350F;
-  --pf-st-expiring-fg: #FBBF24;
-  --pf-st-expiring-bd: rgba(251, 191, 36, 0.25);
-  --pf-st-expired-bg: #7F1D1D;
-  --pf-st-expired-fg: #F87171;
-  --pf-st-expired-bd: rgba(248, 113, 113, 0.25);
-  --pf-st-inactive-bg: #374151;
-  --pf-st-inactive-fg: #D1D5DB;
-  --pf-st-inactive-bd: rgba(209, 213, 219, 0.2);
-  --pf-st-pending-bg: #1E3A8A;
+  --pf-st-active-dot: #16A34A;
+  --pf-st-active-bd: rgba(22, 163, 74, 0.42);
+  --pf-st-expiring-bg: rgba(220, 38, 38, 0.16);
+  --pf-st-expiring-fg: #F87171;
+  --pf-st-expiring-dot: #DC2626;
+  --pf-st-expiring-bd: rgba(220, 38, 38, 0.48);
+  --pf-st-expired-bg: rgba(153, 27, 27, 0.24);
+  --pf-st-expired-fg: #FCA5A5;
+  --pf-st-expired-dot: #991B1B;
+  --pf-st-expired-bd: rgba(153, 27, 27, 0.58);
+  --pf-st-inactive-bg: rgba(71, 85, 105, 0.22);
+  --pf-st-inactive-fg: #CBD5E1;
+  --pf-st-inactive-dot: #475569;
+  --pf-st-inactive-bd: rgba(71, 85, 105, 0.48);
+  --pf-st-unassigned-bg: rgba(100, 116, 139, 0.18);
+  --pf-st-unassigned-fg: #CBD5E1;
+  --pf-st-unassigned-dot: #64748B;
+  --pf-st-unassigned-bd: rgba(100, 116, 139, 0.42);
+  --pf-st-pending-bg: rgba(37, 99, 235, 0.16);
   --pf-st-pending-fg: #93C5FD;
-  --pf-st-pending-bd: rgba(147, 197, 253, 0.25);
-  --pf-st-processing-bg: #4C1D95;
+  --pf-st-pending-dot: #2563EB;
+  --pf-st-pending-bd: rgba(37, 99, 235, 0.42);
+  --pf-st-processing-bg: rgba(124, 58, 237, 0.16);
   --pf-st-processing-fg: #C4B5FD;
-  --pf-st-processing-bd: rgba(196, 181, 253, 0.25);
+  --pf-st-processing-dot: #7C3AED;
+  --pf-st-processing-bd: rgba(124, 58, 237, 0.42);
 
   /* Plan Badges (Independent of Status) */
   --pf-plan-monthly-bg: rgba(242, 189, 50, 0.16);
@@ -66,22 +76,32 @@ body:not(.dark) {
   --pf-tbl-selected: rgba(242, 189, 50, 0.16);
 
   --pf-st-active-bg: #DCFCE7;
-  --pf-st-active-fg: #166534;
+  --pf-st-active-fg: #15803D;
+  --pf-st-active-dot: #16A34A;
   --pf-st-active-bd: #86EFAC;
-  --pf-st-expiring-bg: #FEF3C7;
-  --pf-st-expiring-fg: #92400E;
-  --pf-st-expiring-bd: #FDE68A;
+  --pf-st-expiring-bg: #FEE2E2;
+  --pf-st-expiring-fg: #B91C1C;
+  --pf-st-expiring-dot: #DC2626;
+  --pf-st-expiring-bd: #FCA5A5;
   --pf-st-expired-bg: #FEE2E2;
-  --pf-st-expired-fg: #991B1B;
-  --pf-st-expired-bd: #FECACA;
+  --pf-st-expired-fg: #7F1D1D;
+  --pf-st-expired-dot: #991B1B;
+  --pf-st-expired-bd: #F87171;
   --pf-st-inactive-bg: #F1F5F9;
   --pf-st-inactive-fg: #475569;
+  --pf-st-inactive-dot: #475569;
   --pf-st-inactive-bd: #CBD5E1;
+  --pf-st-unassigned-bg: #F1F5F9;
+  --pf-st-unassigned-fg: #475569;
+  --pf-st-unassigned-dot: #64748B;
+  --pf-st-unassigned-bd: #CBD5E1;
   --pf-st-pending-bg: #DBEAFE;
   --pf-st-pending-fg: #1E40AF;
+  --pf-st-pending-dot: #2563EB;
   --pf-st-pending-bd: #93C5FD;
   --pf-st-processing-bg: #EDE9FE;
   --pf-st-processing-fg: #5B21B6;
+  --pf-st-processing-dot: #7C3AED;
   --pf-st-processing-bd: #C4B5FD;
 
   --pf-plan-monthly-bg: #FEF9C3;
