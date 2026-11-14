@@ -1829,3 +1829,12 @@ Revert the global header redesign back to the previous header across all pages w
 - Restored `web/layout.js`, `web/layout-fixes.css`, and the HTML header script/stylesheet versions from commit `29a6b13`, and removed the `.member-top` override in `web/portal-ui.css`, leaving the Attendance `.ci-table` solid badges and column layout intact.
 ### Decision-log skill
 Keep global layout reverts scoped to `layout.js`, `layout-fixes.css`, and script/style query versions so unrelated feature/page improvements in `portal-ui.css` remain untouched.
+
+## 2026-11-14 17:07 (Asia/Manila): Match Finance header banner to gym photo and pill-tabs reference
+### What I asked for
+Update the `.fn-header-card` banner on `web/payments.html` and `web/reports.html` to match the reference banner layout: vertical amber bar beside the title, pill-shaped tabs stacked below the title on the left, and a faded grayscale gym photo on the right.
+### What the agent decided and why
+- Updated `.fn-header-card` in `web/finance-ui.css` to a stacked left flex layout, replaced `.fn-header-wave` with `.fn-header-bg` using the existing `web/img/hero.jpg` masked across the right side (`opacity: 0.34` dark / `0.12` light), added a `3.5px` `#f59e0b` left accent bar on `.fn-header-title-wrap::before`, and styled `.fn-tabs .tab` as `44px` left-aligned pill buttons (`border-radius: 14px`) directly under the title.
+- Updated `web/payments.html` and `web/reports.html` to swap `<svg class="fn-header-wave">` for `<div class="fn-header-bg" aria-hidden="true"></div>` and `<div class="fn-header-title-wrap">`, and bumped `finance-ui.css?v=8` for cache busting.
+### Decision-log skill
+Reuse existing local assets (`web/img/hero.jpg`) with CSS `mask-image` and theme-aware opacity when adding editorial banner backgrounds so both Dark Mode and Light Mode stay legible without introducing extra image files.

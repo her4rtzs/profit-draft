@@ -18,7 +18,7 @@
 <link rel="stylesheet" href="pf-modern.css?v=1">
 <link rel="stylesheet" href="sidebar-pro.css?v=7">
 <link rel="stylesheet" href="layout-fixes.css?v=5">
-<script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="staff-design.css"><link rel="stylesheet" href="finance-ui.css?v=7"></head>
+<script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="staff-design.css"><link rel="stylesheet" href="finance-ui.css?v=8"></head>
 
 <body class="pf-staff" data-page="payments" data-title="Payments" data-welcome="Record and track payments">
 <script>(function(){try{if(document.documentElement.classList.contains("dark"))document.body.classList.add("dark");}catch(e){}})();</script>
@@ -28,7 +28,8 @@
     <header class="topbar" id="topbar"></header>
 
     <section class="fn-header-card">
-        <div>
+        <div class="fn-header-bg" aria-hidden="true"></div>
+        <div class="fn-header-title-wrap">
             <p class="fn-eyebrow">RECORD AND TRACK PAYMENTS</p>
             <h1 class="fn-page-title">Payments</h1>
         </div>
@@ -55,11 +56,6 @@
                 <span class="fn-tab-short">History</span>
             </button>
         </div>
-        <svg class="fn-header-wave" viewBox="0 0 440 54" fill="none" aria-hidden="true" preserveAspectRatio="none">
-            <path d="M0 50 Q 130 46 240 34 T 440 8 L 440 54 L 0 54 Z" fill="rgba(255,176,32,0.08)"/>
-            <path d="M0 50 Q 130 46 240 34 T 440 8" stroke="rgba(255,176,32,0.55)" stroke-width="1.5"/>
-            <path d="M0 53 Q 135 50 245 40 T 440 16" stroke="rgba(255,176,32,0.3)" stroke-width="1" stroke-dasharray="4 4"/>
-        </svg>
     </section>
 
     <section class="pane active" id="pane-daily" role="tabpanel" aria-labelledby="tab-daily" data-pane="daily">
