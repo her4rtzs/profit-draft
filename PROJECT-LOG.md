@@ -1870,3 +1870,12 @@ Polish both membership tables (Browse Members and Payments/Reports) using the pi
 - Bumped `members-ui.css?v=16` and `finance-ui.css?v=11` in `web/members.html`, `web/payments.html`, and `web/reports.html`.
 ### Decision-log skill
 Keep status and plan badges identical in height (`26px`), radius (`999px`), font weight (`700`), and fixed widths per category across `members-ui.css` and `finance-ui.css` so multi-module tables stay visually symmetrical.
+
+## 2026-11-14 17:48 (Asia/Manila): Global hover system audit and standardization
+### What I asked for
+Audit and consolidate competing hover rules across `web/pf-modern.css`, `web/hover-fx.css`, `web/sidebar-pro.css`, and `web/assets/css/staff.css` into one unified PROFit gold interaction system using `--gold`, `--gold-soft`, `--pf-lime-hi`, and `--on-accent` across all Staff Dashboard modules in Dark and Light modes.
+### What the agent decided and why
+- Consolidated `web/hover-fx.css` around `--pf-hover-bg` (`rgba(232, 185, 58, 0.09)` dark / `0.12` light), `--pf-hover-row` (`0.08`/`0.09`), `--pf-hover-border`, and `--pf-ease-hover` (`160ms cubic-bezier(0.2, 0.8, 0.2, 1)`), removing `translateY` jumps and neon shadows, preserving primary gold buttons (`filter: brightness(1.06)`), destructive red actions, semantic status/plan badges, `:focus-visible` gold outlines, `:active` micro-press without moving table rows, and inert `:disabled` elements.
+- Updated `web/pf-modern.css` (`tbody tr:hover` -> `var(--gold-soft)`), `web/sidebar-pro.css` (`.menulist a:hover`, `.account-menu-toggle:hover`, `.account-menu a:hover` -> `rgba(232, 185, 58, 0.10)` with `#f2cb5c` accent while preserving dark navy sidebar and red logout hover), and `web/assets/css/staff.css` (`.nav-link`, `.icon-btn`, `.btn`, `.tbl tbody tr.click`, `.qa`, `.mcard` -> `--gold-soft` / `--gold`).
+### Decision-log skill
+Centralize hover tokens and `:not(:disabled):not(.active)` selectors in `web/hover-fx.css` rather than stacking `!important` overrides across page stylesheets, keeping hover distinct from active/selected states.

@@ -114,7 +114,7 @@ table { width: 100%; border-collapse: collapse; }
 th { font-size: .76rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 600; text-align: left; }
 th, td { padding: 14px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
 tbody tr { height: 56px; }
-tbody tr:hover { background: var(--hover); }
+tbody tr:hover { background: var(--gold-soft, rgba(232, 185, 58, .08)); }
 .table-wrap, .table-card { overflow-x: auto; }
 
 /* ---------- Status pills ---------- */

@@ -1,69 +1,180 @@
-/* One set of hover and focus rules for the whole app.
-   Mouse (hover: hover): colour and border change only, nothing moves, so nothing jumps.
-   Touch (hover: none): no hover state, so a tap never leaves a colour stuck on. */
+/* ProFit Global Hover & Interaction System
+   Uses the Dashboard gold tokens (--gold, --gold-soft, --pf-lime-hi, --on-accent).
+   Mouse (hover: hover): subtle 8-12% gold tint + gold border, smooth 160ms transition, no layout jumps.
+   Touch (hover: none): no sticky hover states. */
 
-/* Registrations panel: the table stays inside its card. Wide tables scroll inside their own box. */
-html body .registrations-panel { min-width: 0 !important; max-width: 100% !important; box-sizing: border-box; overflow: hidden !important; }
+:root {
+  --pf-hover-bg: rgba(232, 185, 58, 0.09);
+  --pf-hover-row: rgba(232, 185, 58, 0.08);
+  --pf-hover-border: rgba(232, 185, 58, 0.52);
+  --pf-hover-text: var(--pf-lime-hi, #f2cb5c);
+  --pf-ease-hover: 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+body:not(.dark) {
+  --pf-hover-bg: rgba(232, 185, 58, 0.12);
+  --pf-hover-row: rgba(232, 185, 58, 0.09);
+  --pf-hover-border: rgba(184, 137, 28, 0.55);
+  --pf-hover-text: #8a6200;
+}
+
+/* Registrations panel containment */
+html body .registrations-panel { min-width: 0; max-width: 100%; box-sizing: border-box; overflow: hidden; }
 html body .registrations-panel > * { min-width: 0; max-width: 100%; }
 html body .registrations-panel .panel-header { flex-wrap: wrap; gap: 12px; }
 html body .registrations-panel .view-all { white-space: nowrap; flex: 0 0 auto; }
-html body .registrations-panel .table-wrapper { width: 100%; max-width: 100%; overflow-x: auto !important; -webkit-overflow-scrolling: touch; }
+html body .registrations-panel .table-wrapper { width: 100%; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 html body .registrations-panel table { width: 100%; }
 @media (max-width: 760px) {
   html body .registrations-panel table { min-width: 640px; }
 }
 
-@media (hover: hover) {
-  html body .stat-card:hover, html body .member-metric-card:hover, html body .pp-stat:hover {
-    transform: translateY(-3px) !important;
-    border-color: color-mix(in srgb, var(--gold, #e8b93a) 50%, var(--border)) !important;
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08), 0 0 0 1px color-mix(in srgb, var(--gold, #e8b93a) 14%, transparent) !important;
+/* Smooth shared transitions */
+@media (prefers-reduced-motion: no-preference) {
+  .btn, .pp-btn, .fn-btn, .pp-chip-btn, .pp-icon-btn, .action-btn, .view-all,
+  .pp-status-btn, .pp-status-opt, .pp-page-tab, .pp-tab, .tab, .ci-chip,
+  .pp-segment button, .pp-view-toggle button, .ci-seg button,
+  .stat-card, .member-metric-card, .pp-stat, .pp-member, .pp-plan-card, .pp-picker-item,
+  input, select, textarea, .theme-toggle, .notification {
+    transition: background-color var(--pf-ease-hover), border-color var(--pf-ease-hover), color var(--pf-ease-hover), filter var(--pf-ease-hover);
   }
-  html body .btn:hover, html body .pp-btn:hover, html body .pp-chip-btn:hover, html body .pp-icon-btn:hover,
-  html body .action-btn:hover, html body .view-all:hover {
-    transform: translateY(-2px) !important;
-    border-color: var(--gold, #e8b93a) !important;
-    box-shadow: 0 4px 14px color-mix(in srgb, var(--gold, #e8b93a) 25%, transparent) !important;
-  }
-  html body .pp-mood:hover { border-color: var(--gold, #e8b93a) !important; transform: translateY(-2px) !important; }
-  html body .pp-mood:hover .pp-mood-emoji { transform: scale(1.1) !important; }
-  html body .table-wrapper tbody tr:hover, html body .pp-table-wrap tbody tr:hover {
-    background: color-mix(in srgb, var(--gold, #e8b93a) 7%, transparent) !important;
-  }
-  html body .pp-table-wrap tbody tr:hover td:first-child { box-shadow: none !important; }
 }
 
-/* Press feedback stays small, and table rows never shift while pressed. */
-html body .btn:active, html body .pp-btn:active, html body .pp-chip-btn:active, html body .pp-tab:active { transform: scale(.98) !important; }
-html body .pp-table-wrap tbody tr:active { transform: none !important; }
+@media (hover: hover) {
+  /* Secondary buttons, pagination, icon buttons, utility buttons */
+  .btn:not(.btn-primary):not(.primary):not(.is-danger):not(.btn-danger):not(:disabled):hover,
+  .pp-btn:not(.pp-btn-primary):not(.is-danger):not(:disabled):hover,
+  .fn-btn:not(.fn-btn-gold):not(.fn-btn-danger):not(:disabled):hover,
+  .pp-icon-btn:not(:disabled):hover,
+  .action-btn:not(:disabled):hover,
+  .view-all:not(:disabled):hover,
+  .pp-status-btn:not(:disabled):hover,
+  .theme-toggle:not(:disabled):hover,
+  .notification:not(:disabled):hover {
+    background-color: var(--pf-hover-bg);
+    border-color: var(--pf-hover-border);
+    color: var(--pf-hover-text);
+  }
+
+  /* Primary gold buttons: keep gold fill + dark ink, restrained brightness shift */
+  .btn-primary:not(:disabled):hover,
+  .primary:not(:disabled):hover,
+  .pp-btn-primary:not(:disabled):hover,
+  .fn-btn-gold:not(:disabled):hover,
+  button[type="submit"]:not(:disabled):hover {
+    filter: brightness(1.06);
+  }
+
+  /* Destructive buttons: retain red warning colors */
+  .is-danger:not(:disabled):hover,
+  .btn-danger:not(:disabled):hover,
+  .fn-btn-danger:not(:disabled):hover {
+    background-color: rgba(239, 68, 68, 0.14);
+    border-color: rgba(239, 68, 68, 0.6);
+    color: #f87171;
+  }
+
+  /* Tabs, segmented controls, filter chips, dropdown options */
+  .tab:not(.active):not(:disabled):hover,
+  .pp-tab:not(.active):not(:disabled):hover,
+  .pp-page-tab:not(.active):not([aria-selected="true"]):not(:disabled):hover,
+  .pp-segment button:not(.active):not(:disabled):hover,
+  .pp-view-toggle button:not(.active):not(:disabled):hover,
+  .ci-seg button:not(.active):not(:disabled):hover,
+  .pp-chip-btn:not(.active):not(:disabled):hover,
+  .ci-chip:not(.active):not(:disabled):hover,
+  .pp-status-opt:not(:disabled):hover,
+  .pf-menu button:not(:disabled):hover,
+  .pf-menu a:hover {
+    background-color: var(--pf-hover-bg);
+    border-color: var(--pf-hover-border);
+    color: var(--text);
+  }
+
+  /* Table rows: subtle gold-tinted background, never solid gold, no layout shift */
+  .table-wrapper tbody tr:hover,
+  .pp-table-wrap tbody tr:hover,
+  .pp-members-table tbody tr:hover,
+  .fn-table tbody tr:hover,
+  .ci-table tbody tr:hover {
+    background-color: var(--pf-hover-row);
+  }
+
+  /* Selectable & metric cards */
+  .stat-card:hover,
+  .member-metric-card:hover,
+  .pp-stat:hover,
+  .pp-member:hover,
+  .pp-plan-card:not(.selected):hover,
+  .pp-picker-item:not(.is-selected):hover {
+    border-color: var(--pf-hover-border);
+  }
+
+  /* Form controls & links */
+  input:not(:disabled):hover,
+  select:not(:disabled):hover,
+  textarea:not(:disabled):hover {
+    border-color: rgba(232, 185, 58, 0.42);
+  }
+
+  a.pf-link:hover,
+  .pp-link:hover {
+    color: var(--pf-hover-text);
+  }
+}
+
+/* Focus & pressed feedback (never shift table rows; disabled elements stay inert) */
+:focus-visible {
+  outline: 2px solid var(--gold, #e8b93a);
+  outline-offset: 2px;
+}
+
+.btn:not(:disabled):active,
+.pp-btn:not(:disabled):active,
+.fn-btn:not(:disabled):active,
+.pp-chip-btn:not(:disabled):active,
+.pp-tab:not(:disabled):active,
+.pp-page-tab:not(:disabled):active {
+  transform: scale(0.985);
+}
+
+tbody tr:active,
+.pp-table-wrap tbody tr:active {
+  transform: none;
+}
+
+button:disabled,
+.btn:disabled,
+.pp-btn:disabled,
+.fn-btn:disabled,
+[aria-disabled="true"] {
+  pointer-events: none;
+  transform: none;
+  box-shadow: none;
+}
 
 @media (hover: none) {
-  html body .btn:hover, html body .pp-btn:hover, html body .pp-chip-btn:hover, html body .pp-icon-btn:hover,
-  html body .action-btn:hover, html body .view-all:hover, html body .pp-tab:hover, html body .pp-mood:hover,
-  html body .pp-segment button:hover, html body .pp-view-toggle button:hover, html body .stat-card:hover,
-  html body .panel:hover, html body .pp-card:hover {
-    transform: none !important;
-    border-color: var(--border) !important;
+  .btn:hover, .pp-btn:hover, .fn-btn:hover, .pp-chip-btn:hover, .pp-icon-btn:hover,
+  .action-btn:hover, .view-all:hover, .pp-tab:hover, .pp-page-tab:hover,
+  .pp-segment button:hover, .pp-view-toggle button:hover, .stat-card:hover,
+  .panel:hover, .pp-card:hover {
+    transform: none;
   }
-  html body .pp-icon-btn:hover, html body .action-btn:hover { background: var(--card) !important; }
-  html body .sidebar .menulist a:hover { background: transparent !important; color: #a7b0bf !important; }
-  html body .sidebar .menulist a.active:hover { background: color-mix(in srgb, var(--gold) 16%, transparent) !important; color: #fff !important; }
-  html body .table-wrapper tbody tr:hover, html body .pp-table-wrap tbody tr:hover td { background: transparent !important; box-shadow: none !important; }
+  .sidebar .menulist a:hover { background: transparent; color: #a7b0bf; }
+  .table-wrapper tbody tr:hover, .pp-table-wrap tbody tr:hover { background: transparent; }
 }
 
-
-/* Empty states and short messages are centred everywhere. */
+/* Empty states & responsive controls */
 html body .pp-empty, html body .member-empty, html body .notification-empty, html body .pf-empty,
-html body .empty-state, html body .pp-empty-state { text-align: center !important; justify-items: center; }
+html body .empty-state, html body .pp-empty-state { text-align: center; justify-items: center; }
 
-/* Phone: segmented controls and header actions sit centred. */
 @media (max-width: 760px) {
   html body .pp-segment, html body .pp-view-toggle, html body .pp-tabs { justify-content: center; }
   html body .member-hero-actions { display: grid; justify-items: center; }
   html body .member-hero-actions .btn { width: min(100%, 320px); justify-content: center; }
 }
 
-/* Diary, in the soft pastel style of the inspo (light mode). Dark mode keeps its own colours. */
+/* Diary pastel theme (light mode) */
 body:not(.dark) .pp-tool-panel[data-panel="diary"] {
   background: linear-gradient(180deg, #fff6fb 0%, #f2f0ff 100%);
   border-radius: 28px; padding: 16px;

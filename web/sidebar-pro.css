@@ -235,12 +235,12 @@ html body nav.sidebar .menulist a .text {
 }
 
 html body nav.sidebar .menulist a:hover {
-  background: rgba(255, 255, 255, 0.07) !important;
-  color: #f1f5f9 !important;
+  background: rgba(232, 185, 58, 0.10) !important;
+  color: #f2cb5c !important;
 }
 
 html body nav.sidebar .menulist a:hover .icon {
-  color: #f1f5f9 !important;
+  color: #f2cb5c !important;
 }
 
 html body nav.sidebar .menulist a:focus-visible {
@@ -359,8 +359,8 @@ html body nav.sidebar .account-menu-toggle {
 }
 
 html body nav.sidebar .account-menu-toggle:hover {
-  background: rgba(255, 255, 255, 0.1) !important;
-  color: #fff !important;
+  background: rgba(232, 185, 58, 0.10) !important;
+  color: #f2cb5c !important;
 }
 
 /* Account Popup Menu (opens upward above the account card) */
@@ -413,12 +413,18 @@ html body nav.sidebar .account-menu button i {
 
 html body nav.sidebar .account-menu a:hover,
 html body nav.sidebar .account-menu button:hover {
-  background: rgba(255, 255, 255, 0.08) !important;
+  background: rgba(232, 185, 58, 0.10) !important;
+  color: #f2cb5c !important;
 }
 
 html body nav.sidebar .account-menu button[data-logout],
 html body nav.sidebar .account-menu button[data-logout] i {
   color: #ff7b7b !important;
+}
+
+html body nav.sidebar .account-menu button[data-logout]:hover {
+  background: rgba(239, 68, 68, 0.14) !important;
+  color: #ff8e8e !important;
 }
 
 /* ==========================================================================

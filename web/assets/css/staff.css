@@ -73,7 +73,7 @@ img{max-width:100%;display:block}
 .nav-list{list-style:none;margin:0;padding:0;display:grid;gap:3px}
 .nav-link{display:flex;align-items:center;gap:13px;padding:11px 12px;border-radius:12px;color:var(--nav-text);font-weight:600;font-size:13.5px;position:relative;transition:background .15s,color .15s}
 .nav-link .ico{width:19px;height:19px;opacity:.9}
-.nav-link:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav-link:hover{background:var(--gold-soft);color:var(--gold)}
 .nav-link.active{background:var(--gold);color:#1b1300}
 .nav-count{margin-left:auto;min-width:22px;height:20px;padding:0 6px;border-radius:99px;background:rgba(255,255,255,.12);color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center}
 .nav-link.active .nav-count{background:rgba(0,0,0,.18);color:#1b1300}
@@ -83,9 +83,9 @@ img{max-width:100%;display:block}
 .side-user strong{display:block;color:#fff;font-size:12.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .side-user small{color:var(--nav-muted);font-size:11px}
 .icon-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--card);display:grid;place-items:center;color:var(--text-2);position:relative;flex:none;transition:background .15s}
-.icon-btn:hover{background:var(--card-2)}
+.icon-btn:hover{background:var(--gold-soft);border-color:var(--gold);color:var(--gold)}
 .side-user .icon-btn{background:transparent;border:0;color:var(--nav-text);width:30px;height:30px}
-.side-user .icon-btn:hover{background:rgba(255,255,255,.1);box-shadow:none;transform:none}
+.side-user .icon-btn:hover{background:var(--gold-soft);color:var(--gold);box-shadow:none;transform:none}
 
 body.mini .sidebar{width:var(--sidebar-mini)}
 body.mini .brand-txt,body.mini .nav-text,body.mini .nav-count,body.mini .nav-label,body.mini .side-user .who,body.mini .side-user .icon-btn{display:none}
@@ -175,7 +175,7 @@ html[data-theme="dark"] #themeBtn{color:var(--gold-2,#f4cc64)}
 
 /* ---------- Buttons & forms ---------- */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:42px;padding:0 18px;border-radius:12px;border:1px solid var(--line-strong);background:var(--card);color:var(--text);font-weight:700;font-size:13.5px;white-space:nowrap;transition:transform .15s,box-shadow .15s,background .15s}
-.btn:hover{background:var(--card-2)}
+.btn:hover{background:var(--gold-soft);border-color:var(--gold)}
 .btn-gold:hover{background:var(--gold-3)}
 .btn:active{transform:none}
 .btn-gold{border:0;color:#1b1300;background:var(--gold)}
@@ -252,7 +252,7 @@ html[data-theme="dark"] .chip .chip-count{background:rgba(255,255,255,.1);color:
 .tbl td:last-child{border-right:1px solid var(--line);border-radius:0 14px 14px 0}
 .tbl tbody tr{transition:transform .12s}
 .tbl tbody tr.click{cursor:pointer}
-.tbl tbody tr.click:hover td{background:var(--card-2);border-color:var(--line-strong)}
+.tbl tbody tr.click:hover td{background:var(--gold-soft);border-color:rgba(232,185,58,.35)}
 .tbl.sm{min-width:440px}
 .tbl td.cell-act{white-space:nowrap}
 .tbl .num{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
@@ -362,7 +362,7 @@ html[data-theme="dark"] .pill.amber{color:#ffb347}
 .act small{color:var(--muted);font-size:12px}
 .qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .qa{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:16px;min-height:92px;padding:14px 16px;border-radius:16px;font-weight:700;font-size:13px;border:1px solid var(--line);transition:background .15s}
-.qa:hover{border-color:var(--line-strong)}
+.qa:hover{background:var(--gold-soft);border-color:var(--gold)}
 .qa .ico{width:24px;height:24px}
 .kv{display:grid;gap:0}
 .kv>div{display:flex;justify-content:space-between;gap:14px;padding:11px 0;border-bottom:1px solid var(--line);font-size:13px}
@@ -377,7 +377,7 @@ html[data-theme="dark"] .pill.amber{color:#ffb347}
 .tag.b{background:var(--purple-soft);color:var(--purple)}
 .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
 .mcard{padding:16px;border-radius:16px;background:var(--card);border:1px solid var(--line);display:grid;gap:12px;cursor:pointer;transition:background .15s}
-.mcard:hover{border-color:var(--line-strong)}
+.mcard:hover{border-color:var(--gold)}
 .tcard{padding:18px;border-radius:18px;background:var(--card);border:1px solid var(--line);display:grid;gap:14px}
 .tcard .top{display:flex;gap:14px;align-items:flex-start}
 .tcard .actions{display:flex;gap:8px}
