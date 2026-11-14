@@ -1907,3 +1907,13 @@ Combine the clean, flat, restrained SaaS visual design of the first reference sc
 - Removed neon `box-shadow` and `drop-shadow` glows from revenue bars, active period chips, donut SVG, and `.registrations-panel .badge`, aligning `EXPIRING` to the semantic red `--pf-st-warning-*` tokens.
 ### Decision-log skill
 Restrained flat SaaS styling is achieved by overriding card surfaces, hiding decorative glow/watermark pseudo-elements, and preserving semantic accent lines and badge tokens without altering layout structure or JS behavior.
+
+## 2026-11-14 23:02 (Asia/Manila): Flat navy/slate dashboard, Announcements UI & image fix, and module KPI audit
+### What I asked for
+Adapt the new flat dark navy/slate-blue dashboard visual reference across PROfit, redesign the Announcements page (remove auto-assigned stock photos, show images only when uploaded with preview, simplify action tiles, add relevant KPIs), and audit/fix KPI cards across all staff modules.
+### What the agent decided and why
+- Updated Dashboard, Trainers, and Finance KPI cards and panels in `web/portal-ui.css` and `web/finance-ui.css` to flat `#131C2E` dark navy/slate-blue (`#FFFFFF` light) surfaces with `1px` subtle borders, `14px–16px` radii, and zero neon glows or watermarks.
+- Removed hardcoded `12` fallback percentage on `web/index.html` (`kpiTotalMembersSub`) and aligned `kpiExpiringSub` label to `"within 7 days"` to match `d <= 7`; wired `web/attendance.html` and `web/chart-periods.js` so Attendance KPI labels dynamically reflect the selected period (`range_label`, `Busiest day/period`, and exact check-in count).
+- Redesigned `web/announcements.html`, `web/announcements.css`, and `web/announcements-staff.js`: added 4 DB-backed KPI cards (`Total`, `Active`, `Draft`, `Archived`), simplified the 4 quick-action tiles, removed `getThumbFor()` auto-assigned stock images, omitted `.ann-thumb` when no image is uploaded, preserved aspect ratio (`object-fit: contain`), and added optional image upload + modal preview.
+### Decision-log skill
+Never leave fallback constants (like `|| 12`) or static period labels (`Last 7 days`) on KPI cards; bind both values and sublabels to the live dataset and active period, and never auto-assign stock thumbnails to user-authored content.

@@ -996,8 +996,9 @@ body:not(.dark) .chart-stepper .stepper-input {
 /* Dark mode membership type panel */
 body.dark.pf-staff[data-page="dashboard"] .membership-type-panel,
 body.dark .membership-type-panel {
-  background: #111827 !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: #131C2E !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 16px !important;
   box-shadow: none !important;
 }
 .membership-type-panel::before,
@@ -1481,8 +1482,9 @@ body.pf-staff[data-page="dashboard"] .quick-action,
 /* Quick Action — Dark Mode */
 body.dark.pf-staff[data-page="dashboard"] .quick-action,
 body.dark .quick-action {
-  background: #111827 !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: #131C2E !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 14px !important;
   box-shadow: none !important;
 }
 
@@ -1704,8 +1706,9 @@ body.pf-staff[data-page="dashboard"] .stat-card.kpi-card,
 /* Dark mode KPI cards */
 body.dark.pf-staff[data-page="dashboard"] .stat-card.kpi-card,
 body.dark .stat-card.kpi-card {
-  background: #111827 !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: #131C2E !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 16px !important;
   box-shadow: none !important;
 }
 
@@ -2469,8 +2472,9 @@ body.pf-staff[data-page="dashboard"] .revenue-panel,
 /* Dark mode revenue panel */
 body.dark.pf-staff[data-page="dashboard"] .revenue-panel,
 body.dark .revenue-panel {
-  background: #111827 !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: #131C2E !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 16px !important;
   box-shadow: none !important;
 }
 
@@ -2636,8 +2640,9 @@ body.pf-staff[data-page="dashboard"] .registrations-panel,
 /* Dark mode registrations panel */
 body.dark.pf-staff[data-page="dashboard"] .registrations-panel,
 body.dark .registrations-panel {
-  background: #111827 !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: #131C2E !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 16px !important;
   box-shadow: none !important;
 }
 
@@ -3650,68 +3655,55 @@ body[data-page="trainers"] .tr-kpi {
   gap: 16px;
   min-height: 104px;
   padding: 20px 22px;
-  border-radius: 18px;
-  background-color: #121A28;
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
-  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+  border-radius: 16px;
+  background-color: #131C2E;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: none;
+  transition: transform 0.18s ease, border-color 0.18s ease;
 }
 body[data-page="trainers"] .tr-kpi:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.36);
+  transform: translateY(-1px);
+  box-shadow: none;
 }
 body[data-page="trainers"] .tr-kpi::before {
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
-  height: 3px;
-  opacity: 0.95;
+  height: 2px;
+  opacity: 0.9;
 }
-body[data-page="trainers"] .tr-kpi-gold::before { background: linear-gradient(90deg, #F59E0B, #FBBF24); box-shadow: 0 0 12px rgba(245, 158, 11, 0.5); }
-body[data-page="trainers"] .tr-kpi-cyan::before { background: linear-gradient(90deg, #06B6D4, #38BDF8); box-shadow: 0 0 12px rgba(6, 182, 212, 0.5); }
-body[data-page="trainers"] .tr-kpi-emerald::before { background: linear-gradient(90deg, #10B981, #34D399); box-shadow: 0 0 12px rgba(16, 185, 129, 0.5); }
-body[data-page="trainers"] .tr-kpi-violet::before { background: linear-gradient(90deg, #8B5CF6, #A78BFA); box-shadow: 0 0 12px rgba(139, 92, 246, 0.5); }
+body[data-page="trainers"] .tr-kpi-gold::before { background: #e8b93a; }
+body[data-page="trainers"] .tr-kpi-cyan::before { background: #38BDF8; }
+body[data-page="trainers"] .tr-kpi-emerald::before { background: #10B981; }
+body[data-page="trainers"] .tr-kpi-violet::before { background: #8B5CF6; }
 
-body[data-page="trainers"] .tr-kpi-gold {
-  border-color: rgba(245, 158, 11, 0.34);
-  background-image: radial-gradient(280px 150px at 10% 0%, rgba(245, 158, 11, 0.22), transparent 72%);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(245, 158, 11, 0.22);
-}
-body[data-page="trainers"] .tr-kpi-cyan {
-  border-color: rgba(6, 182, 212, 0.34);
-  background-image: radial-gradient(280px 150px at 10% 0%, rgba(6, 182, 212, 0.22), transparent 72%);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(6, 182, 212, 0.22);
-}
-body[data-page="trainers"] .tr-kpi-emerald {
-  border-color: rgba(16, 185, 129, 0.34);
-  background-image: radial-gradient(280px 150px at 10% 0%, rgba(16, 185, 129, 0.22), transparent 72%);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(16, 185, 129, 0.22);
-}
+body[data-page="trainers"] .tr-kpi-gold,
+body[data-page="trainers"] .tr-kpi-cyan,
+body[data-page="trainers"] .tr-kpi-emerald,
 body[data-page="trainers"] .tr-kpi-violet {
-  border-color: rgba(139, 92, 246, 0.34);
-  background-image: radial-gradient(280px 150px at 10% 0%, rgba(139, 92, 246, 0.22), transparent 72%);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(139, 92, 246, 0.22);
+  border-color: rgba(255, 255, 255, 0.06);
+  background-image: none;
+  box-shadow: none;
 }
 
-body[data-page="trainers"] .tr-kpi-gold:hover { border-color: rgba(245, 158, 11, 0.35); }
-body[data-page="trainers"] .tr-kpi-cyan:hover { border-color: rgba(6, 182, 212, 0.35); }
-body[data-page="trainers"] .tr-kpi-emerald:hover { border-color: rgba(16, 185, 129, 0.35); }
-body[data-page="trainers"] .tr-kpi-violet:hover { border-color: rgba(139, 92, 246, 0.35); }
+body[data-page="trainers"] .tr-kpi-gold:hover,
+body[data-page="trainers"] .tr-kpi-cyan:hover,
+body[data-page="trainers"] .tr-kpi-emerald:hover,
+body[data-page="trainers"] .tr-kpi-violet:hover { border-color: rgba(232, 185, 58, 0.4); }
 
 body[data-page="trainers"] .tr-kpi-ico {
-  width: 50px;
-  height: 50px;
-  border-radius: 14px;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
   display: grid;
   place-items: center;
-  font-size: 20px;
+  font-size: 18px;
   flex-shrink: 0;
 }
-body[data-page="trainers"] .tr-kpi-gold .tr-kpi-ico { background: rgba(245, 158, 11, 0.16); color: #F59E0B; border: 1px solid rgba(245, 158, 11, 0.32); }
-body[data-page="trainers"] .tr-kpi-cyan .tr-kpi-ico { background: rgba(6, 182, 212, 0.16); color: #06B6D4; border: 1px solid rgba(6, 182, 212, 0.32); }
-body[data-page="trainers"] .tr-kpi-emerald .tr-kpi-ico { background: rgba(16, 185, 129, 0.16); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.32); }
-body[data-page="trainers"] .tr-kpi-violet .tr-kpi-ico { background: rgba(139, 92, 246, 0.16); color: #8B5CF6; border: 1px solid rgba(139, 92, 246, 0.32); }
+body[data-page="trainers"] .tr-kpi-gold .tr-kpi-ico { background: rgba(232, 185, 58, 0.14); color: #e8b93a; border: 1px solid rgba(232, 185, 58, 0.25); }
+body[data-page="trainers"] .tr-kpi-cyan .tr-kpi-ico { background: rgba(56, 189, 248, 0.14); color: #38BDF8; border: 1px solid rgba(56, 189, 248, 0.25); }
+body[data-page="trainers"] .tr-kpi-emerald .tr-kpi-ico { background: rgba(16, 185, 129, 0.14); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.25); }
+body[data-page="trainers"] .tr-kpi-violet .tr-kpi-ico { background: rgba(139, 92, 246, 0.14); color: #8B5CF6; border: 1px solid rgba(139, 92, 246, 0.25); }
 
 body[data-page="trainers"] .tr-kpi-info {
   display: flex;
@@ -3735,12 +3727,7 @@ body[data-page="trainers"] .tr-kpi-info span {
   color: var(--muted, #94a3b8);
 }
 body[data-page="trainers"] .tr-kpi-wm {
-  position: absolute;
-  right: 16px;
-  bottom: 10px;
-  font-size: 46px;
-  opacity: 0.065;
-  pointer-events: none;
+  display: none !important;
 }
 
 /* Shared Glassmorphic Panel Surface */

@@ -133,17 +133,17 @@ body:not(.dark) .ann-field select {
 }
 
 .ann-hero-icon {
-  width: 54px;
-  height: 54px;
-  border-radius: 16px;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
   display: grid;
   place-items: center;
-  flex: 0 0 54px;
-  background: linear-gradient(135deg, rgba(245, 165, 36, 0.24), rgba(232, 185, 58, 0.08));
-  border: 1px solid rgba(232, 185, 58, 0.35);
-  color: #fbbf24;
-  font-size: 24px;
-  box-shadow: 0 10px 24px rgba(232, 185, 58, 0.14);
+  flex: 0 0 48px;
+  background: rgba(232, 185, 58, 0.12);
+  border: 1px solid rgba(232, 185, 58, 0.25);
+  color: #e8b93a;
+  font-size: 20px;
+  box-shadow: none;
 }
 
 .ann-hero-copy {
@@ -185,7 +185,71 @@ body:not(.dark) .ann-field select {
 }
 
 /* ==========================================================================
-   2. 4 COLORED ACTION TILES (Amber, Teal, Blue, Purple — matching screenshot)
+   1B. 4 ANNOUNCEMENT KPI CARDS (Flat Navy & Slate-Blue)
+   ========================================================================== */
+.ann-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0 0 18px 0;
+}
+@media (max-width: 1024px) {
+  .ann-kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+  .ann-kpi-grid { grid-template-columns: 1fr; }
+}
+.ann-kpi-card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: #131C2E;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: none;
+}
+.ann-kpi-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: #e8b93a;
+  opacity: 0.9;
+}
+.ann-kpi-card.is-green::before { background: #16A34A; }
+.ann-kpi-card.is-amber::before { background: #F59E0B; }
+.ann-kpi-card.is-slate::before { background: #64748B; }
+body:not(.dark) .ann-kpi-card {
+  background: #FFFFFF;
+  border-color: rgba(15, 23, 42, 0.08);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+.ann-kpi-ico {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  flex-shrink: 0;
+  background: rgba(232, 185, 58, 0.12);
+  color: #e8b93a;
+}
+.ann-kpi-card.is-green .ann-kpi-ico { background: rgba(22, 163, 74, 0.14); color: #4ADE80; }
+.ann-kpi-card.is-amber .ann-kpi-ico { background: rgba(245, 158, 11, 0.14); color: #FBBF24; }
+.ann-kpi-card.is-slate .ann-kpi-ico { background: rgba(100, 116, 139, 0.16); color: #94A3B8; }
+body:not(.dark) .ann-kpi-card.is-green .ann-kpi-ico { color: #16A34A; }
+body:not(.dark) .ann-kpi-card.is-amber .ann-kpi-ico { color: #D97706; }
+body:not(.dark) .ann-kpi-card.is-slate .ann-kpi-ico { color: #475569; }
+.ann-kpi-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ann-kpi-info strong { font-size: 24px; font-weight: 800; line-height: 1.1; color: var(--text, #fff); }
+.ann-kpi-info span { font-size: 12.5px; font-weight: 600; color: var(--muted, #94a3b8); }
+
+/* ==========================================================================
+   2. 4 SIMPLIFIED QUICK ACTION CARDS (Flat & Consistent with Dashboard)
    ========================================================================== */
 .ann-action-grid {
   display: grid !important;
@@ -199,105 +263,70 @@ body:not(.dark) .ann-field select {
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 18px 18px;
-  min-height: 82px;
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 16px 18px;
+  min-height: 76px;
+  border-radius: 14px;
+  background: #131C2E;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: none;
   text-align: left;
   text-decoration: none !important;
   cursor: pointer;
   overflow: hidden;
-  transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.18s ease, border-color 0.18s ease;
+  transition: transform 0.16s ease, border-color 0.16s ease, background-color 0.16s ease;
 }
 
 .ann-action-tile:hover {
-  transform: translateY(-2px);
+  transform: translateY(-1px);
+  border-color: rgba(232, 185, 58, 0.45);
+  background: color-mix(in srgb, #e8b93a 6%, #131C2E);
 }
 
 .ann-action-tile:active {
   transform: scale(0.99);
 }
 
-/* Amber Tile */
-.ann-action-tile.tone-amber {
-  background: linear-gradient(135deg, rgba(66, 43, 11, 0.88) 0%, rgba(31, 23, 13, 0.94) 100%);
-  border-color: rgba(245, 165, 36, 0.42);
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(251, 191, 36, 0.18);
-}
-.ann-action-tile.tone-amber:hover {
-  border-color: #fbbf24;
-  box-shadow: 0 14px 30px rgba(245, 158, 11, 0.18);
-}
 .ann-action-tile.tone-amber .ann-tile-ico {
-  background: rgba(245, 158, 11, 0.22);
-  color: #fbbf24;
-  border: 1px solid rgba(251, 191, 36, 0.35);
+  background: rgba(232, 185, 58, 0.14);
+  color: #e8b93a;
+  border: 1px solid rgba(232, 185, 58, 0.24);
 }
 
-/* Teal / Emerald Tile */
-.ann-action-tile.tone-teal {
-  background: linear-gradient(135deg, rgba(8, 56, 43, 0.88) 0%, rgba(11, 29, 27, 0.94) 100%);
-  border-color: rgba(16, 185, 129, 0.42);
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(52, 211, 153, 0.18);
-}
-.ann-action-tile.tone-teal:hover {
-  border-color: #34d399;
-  box-shadow: 0 14px 30px rgba(16, 185, 129, 0.18);
-}
 .ann-action-tile.tone-teal .ann-tile-ico {
-  background: rgba(16, 185, 129, 0.22);
+  background: rgba(16, 185, 129, 0.14);
   color: #34d399;
-  border: 1px solid rgba(52, 211, 153, 0.35);
+  border: 1px solid rgba(16, 185, 129, 0.24);
 }
 
-/* Blue Tile */
-.ann-action-tile.tone-blue {
-  background: linear-gradient(135deg, rgba(15, 39, 79, 0.88) 0%, rgba(12, 23, 44, 0.94) 100%);
-  border-color: rgba(59, 130, 246, 0.42);
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(96, 165, 250, 0.18);
-}
-.ann-action-tile.tone-blue:hover {
-  border-color: #60a5fa;
-  box-shadow: 0 14px 30px rgba(59, 130, 246, 0.18);
-}
 .ann-action-tile.tone-blue .ann-tile-ico {
-  background: rgba(59, 130, 246, 0.22);
+  background: rgba(59, 130, 246, 0.14);
   color: #60a5fa;
-  border: 1px solid rgba(96, 165, 250, 0.35);
+  border: 1px solid rgba(59, 130, 246, 0.24);
 }
 
-/* Purple Tile */
-.ann-action-tile.tone-purple {
-  background: linear-gradient(135deg, rgba(50, 24, 79, 0.88) 0%, rgba(24, 15, 42, 0.94) 100%);
-  border-color: rgba(139, 92, 246, 0.42);
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(167, 139, 250, 0.18);
-}
-.ann-action-tile.tone-purple:hover {
-  border-color: #a78bfa;
-  box-shadow: 0 14px 30px rgba(139, 92, 246, 0.18);
-}
 .ann-action-tile.tone-purple .ann-tile-ico {
-  background: rgba(139, 92, 246, 0.22);
-  color: #c084fc;
-  border: 1px solid rgba(192, 132, 252, 0.35);
+  background: rgba(148, 163, 184, 0.14);
+  color: #cbd5e1;
+  border: 1px solid rgba(148, 163, 184, 0.24);
 }
 
-/* Light mode softened adaptations for the 4 action tiles */
-body:not(.dark) .ann-action-tile.tone-amber {
-  background: linear-gradient(135deg, #fff8e6 0%, #faeed1 100%);
-  border-color: rgba(217, 119, 6, 0.35);
+/* Light mode adaptations for the 4 action tiles */
+body:not(.dark) .ann-action-tile {
+  background: #FFFFFF;
+  border-color: rgba(15, 23, 42, 0.08);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 }
-body:not(.dark) .ann-action-tile.tone-teal {
-  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
-  border-color: rgba(16, 185, 129, 0.35);
+body:not(.dark) .ann-action-tile:hover {
+  background: color-mix(in srgb, #e8b93a 6%, #FFFFFF);
+  border-color: rgba(232, 185, 58, 0.55);
 }
-body:not(.dark) .ann-action-tile.tone-blue {
-  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-  border-color: rgba(59, 130, 246, 0.35);
-}
+body:not(.dark) .ann-action-tile.tone-amber,
+body:not(.dark) .ann-action-tile.tone-teal,
+body:not(.dark) .ann-action-tile.tone-blue,
 body:not(.dark) .ann-action-tile.tone-purple {
-  background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
-  border-color: rgba(139, 92, 246, 0.35);
+  background: #FFFFFF;
+  border-color: rgba(15, 23, 42, 0.08);
+}
 }
 
 .ann-tile-ico {
@@ -385,6 +414,15 @@ body:not(.dark) .ann-tile-arrow {
    ========================================================================== */
 .ann-panel {
   padding: 22px 24px !important;
+  background: #131C2E !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 16px !important;
+  box-shadow: none !important;
+}
+body:not(.dark) .ann-panel {
+  background: #FFFFFF !important;
+  border-color: rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
 }
 
 .ann-toolbar {
@@ -625,54 +663,84 @@ body:not(.dark) .ann-select-wrap select {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 16px;
   padding: 16px 18px;
-  border-radius: 16px;
-  border: 1px solid var(--border);
-  background: rgba(15, 23, 42, 0.52);
-  transition: border-color 0.18s ease, background-color 0.18s ease, transform 0.18s ease;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(11, 18, 32, 0.65);
+  transition: border-color 0.16s ease, background-color 0.16s ease;
 }
 
 body:not(.dark) .ann-item {
-  background: var(--bg);
+  background: #F8FAFC;
+  border-color: rgba(15, 23, 42, 0.08);
 }
 
 .ann-item:hover {
-  border-color: rgba(232, 185, 58, 0.38);
-  background: rgba(20, 30, 52, 0.72);
+  border-color: rgba(232, 185, 58, 0.4);
+  background: color-mix(in srgb, #e8b93a 6%, #131C2E);
 }
 
 body:not(.dark) .ann-item:hover {
-  background: #ffffff;
+  background: color-mix(in srgb, #e8b93a 5%, #FFFFFF);
 }
 
-/* Left Visual Thumbnail Card with Gold Accent Bar (matching screenshot 3) */
+/* Optional Uploaded Image Thumbnail (preserves aspect ratio) */
 .ann-thumb {
   position: relative;
-  width: 140px;
-  height: 78px;
+  width: 112px;
+  height: 72px;
   border-radius: 10px;
   overflow: hidden;
-  flex: 0 0 140px;
+  flex: 0 0 112px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #0b111a;
+  background: #0B1220;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-left: 3.5px solid #f59e0b;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+body:not(.dark) .ann-thumb {
+  background: #F1F5F9;
+  border-color: rgba(15, 23, 42, 0.08);
 }
 
 .ann-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
   display: block;
 }
 
-.ann-thumb i {
-  font-size: 24px;
-  color: #f59e0b;
+.ann-image-upload {
+  display: grid;
+  gap: 10px;
+}
+.ann-image-preview-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(11, 18, 32, 0.5);
+}
+body:not(.dark) .ann-image-preview-wrap {
+  background: #F8FAFC;
+}
+.ann-image-preview-wrap img {
+  max-width: 120px;
+  max-height: 76px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 6px;
+}
+.ann-image-clear {
+  padding: 6px 10px;
+  min-height: 32px;
+  font-size: 12px;
 }
 
 .ann-item-content {
@@ -761,22 +829,25 @@ body:not(.dark) .ann-item:hover {
 }
 
 .ann-status-pill.published {
-  background: rgba(16, 185, 129, 0.14);
-  color: #10b981;
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  background: rgba(22, 163, 74, 0.14);
+  color: #4ADE80;
+  border: 1px solid rgba(22, 163, 74, 0.35);
 }
 
 .ann-status-pill.draft {
   background: rgba(245, 158, 11, 0.14);
-  color: #f59e0b;
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #FBBF24;
+  border: 1px solid rgba(245, 158, 11, 0.35);
 }
 
 .ann-status-pill.archived {
-  background: rgba(59, 130, 246, 0.14);
-  color: #3b82f6;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  background: rgba(100, 116, 139, 0.16);
+  color: #94A3B8;
+  border: 1px solid rgba(100, 116, 139, 0.35);
 }
+body:not(.dark) .ann-status-pill.published { color: #16A34A; }
+body:not(.dark) .ann-status-pill.draft { color: #D97706; }
+body:not(.dark) .ann-status-pill.archived { color: #475569; }
 
 /* 3-Dot Action Menu Button & Popover */
 .ann-menu-wrap {

@@ -39,32 +39,28 @@
     published: {
       badge: "Active",
       pillCls: "published",
-      thumbImg: "img/gal-1.jpg",
       icon: "fa-dumbbell",
       tag: "Active"
     },
     draft: {
-      badge: "Upcoming",
+      badge: "Draft",
       pillCls: "draft",
-      thumbImg: "img/gal-2.jpg",
-      icon: "fa-calendar-day",
-      tag: "Upcoming"
+      icon: "fa-file-pen",
+      tag: "Draft"
     },
     archived: {
-      badge: "Info",
+      badge: "Archived",
       pillCls: "archived",
-      thumbImg: "img/prog-1.jpg",
       icon: "fa-box-archive",
-      tag: "Info"
+      tag: "Archived"
     }
   };
 
   // DOM Elements
   const statTotal = document.getElementById("statTotal");
-  const statPublishedMonth = document.getElementById("statPublishedMonth");
-  const statLiveNow = document.getElementById("statLiveNow");
-  const statAudienceReach = document.getElementById("statAudienceReach");
+  const statPublished = document.getElementById("statPublished");
   const statDrafts = document.getElementById("statDrafts");
+  const statArchived = document.getElementById("statArchived");
 
   const countAll = document.getElementById("countAll");
   const countDraft = document.getElementById("countDraft");
@@ -103,6 +99,10 @@
   const audienceInput = document.getElementById("annAudienceInput");
   const eventDateInput = document.getElementById("annEventDateInput");
   const statusInput = document.getElementById("annStatusInput");
+  const imageInput = document.getElementById("annImageInput");
+  const imagePreviewWrap = document.getElementById("annImagePreviewWrap");
+  const imagePreview = document.getElementById("annImagePreview");
+  const imageClearBtn = document.getElementById("annImageClearBtn");
   const formGeneralErr = document.getElementById("annFormGeneralErr");
   const submitBtn = document.getElementById("annSubmitBtn");
   const submitLabel = document.getElementById("annSubmitLabel");
@@ -137,6 +137,64 @@
   let lastTriggerEl = null;
   let isSubmitting = false;
   let searchTimer = null;
+  let pendingImageData = "";
+
+  const IMG_STORAGE_KEY = "pf_ann_images";
+  function readLocalImages() {
+    try {
+      return JSON.parse(localStorage.getItem(IMG_STORAGE_KEY) || "{}") || {};
+    } catch (_) {
+      return {};
+    }
+  }
+  function getLocalImage(id) {
+    if (!id) return "";
+    return readLocalImages()[String(id)] || "";
+  }
+  function setLocalImage(id, dataUrl) {
+    if (!id) return;
+    try {
+      const map = readLocalImages();
+      if (dataUrl) map[String(id)] = dataUrl;
+      else delete map[String(id)];
+      localStorage.setItem(IMG_STORAGE_KEY, JSON.stringify(map));
+    } catch (_) {}
+  }
+  function setModalImagePreview(src) {
+    pendingImageData = src || "";
+    if (!imagePreviewWrap || !imagePreview) return;
+    if (pendingImageData) {
+      imagePreview.src = pendingImageData;
+      imagePreviewWrap.hidden = false;
+    } else {
+      imagePreview.removeAttribute("src");
+      imagePreviewWrap.hidden = true;
+    }
+  }
+  imageInput?.addEventListener("change", () => {
+    const file = imageInput.files && imageInput.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const maxW = 640;
+        const scale = img.width > maxW ? maxW / img.width : 1;
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        setModalImagePreview(canvas.toDataURL("image/jpeg", 0.82));
+      };
+      img.src = String(reader.result || "");
+    };
+    reader.readAsDataURL(file);
+  });
+  imageClearBtn?.addEventListener("click", () => {
+    if (imageInput) imageInput.value = "";
+    setModalImagePreview("");
+  });
 
   let toastTimer = null;
   function showToast(message, isError = false) {
@@ -176,17 +234,17 @@
       created_at: raw.created_at || null,
       updated_at: raw.updated_at || null,
       published_at: raw.published_at || raw.publish_on || raw.created_at || null,
-      author: raw.author_name || "Admin"
+      author: raw.author_name || "Admin",
+      image_url: raw.image_url || raw.image || ""
     };
   }
 
   function updateStatsAndCountsUI() {
     const reachCount = serverStats.people_count ?? serverStats.audience_reach ?? 0;
-    if (statTotal) statTotal.textContent = String(serverStats.total ?? 0);
-    if (statPublishedMonth) statPublishedMonth.textContent = String(serverStats.published_this_month ?? 0);
-    if (statLiveNow) statLiveNow.textContent = `${serverStats.live_now ?? 0} live now`;
-    if (statAudienceReach) statAudienceReach.textContent = String(reachCount);
-    if (statDrafts) statDrafts.textContent = String(serverStats.drafts ?? 0);
+    if (statTotal) statTotal.textContent = String(serverCounts.all ?? serverStats.total ?? 0);
+    if (statPublished) statPublished.textContent = String(serverCounts.published ?? 0);
+    if (statDrafts) statDrafts.textContent = String(serverCounts.draft ?? serverStats.drafts ?? 0);
+    if (statArchived) statArchived.textContent = String(serverCounts.archived ?? 0);
 
     if (countAll) countAll.textContent = String(serverCounts.all ?? 0);
     if (countDraft) countDraft.textContent = String(serverCounts.draft ?? 0);
@@ -217,19 +275,13 @@
     }
   }
 
-  function getThumbFor(item, meta) {
-    const t = String(item.title || "").toLowerCase();
-    if (t.includes("operation") || t.includes("hour")) return "img/gal-1.jpg";
-    if (t.includes("maintenance") || t.includes("close")) return "img/gal-2.jpg";
-    if (t.includes("program") || t.includes("launch") || t.includes("hiit")) return "img/prog-1.jpg";
-    if (t.includes("schedule")) return "img/gal-3.jpg";
-    return meta.thumbImg || "img/gal-1.jpg";
-  }
-
   function renderCard(item) {
     const meta = STATUS_META[item.status] || STATUS_META.draft;
     const displayDate = fmtDate(item.event_date || item.published_at || item.created_at);
-    const thumbSrc = getThumbFor(item, meta);
+    const uploadedThumb = item.image_url || getLocalImage(item.id);
+    const thumbHtml = uploadedThumb
+      ? `<div class="ann-thumb"><img src="${esc(uploadedThumb)}" alt="${esc(item.title)}"></div>`
+      : "";
 
     const menuActions = [];
     if (item.status === "draft") {
@@ -251,9 +303,7 @@
 
     return `
       <article class="ann-item" data-id="${esc(item.id)}">
-        <div class="ann-thumb" aria-hidden="true">
-          <img src="${thumbSrc}" alt="" onerror="this.parentElement.innerHTML='<i class=\\'fa-solid ${meta.icon}\\'></i>'">
-        </div>
+        ${thumbHtml}
         <div class="ann-item-content">
           <div class="ann-item-title-row">
             <h3>${esc(item.title)}</h3>
@@ -463,6 +513,8 @@
     if (statusInput) {
       statusInput.value = item && item.status === "draft" ? "draft" : "published";
     }
+    if (imageInput) imageInput.value = "";
+    setModalImagePreview(item ? (item.image_url || getLocalImage(item.id)) : "");
 
     if (modalEyebrow) {
       modalEyebrow.textContent = item ? "Edit Notice" : "Staff Notice";
@@ -569,11 +621,15 @@
     try {
       if (editingItem) {
         await window.ProFitAPI.patch(`/staff/announcements/${editingItem.id}/`, payload);
+        setLocalImage(editingItem.id, pendingImageData);
         showToast(
           status === "published" ? "Announcement updated and published." : "Draft saved."
         );
       } else {
-        await window.ProFitAPI.post("/staff/announcements/", payload);
+        const created = await window.ProFitAPI.post("/staff/announcements/", payload);
+        if (created && created.id && pendingImageData) {
+          setLocalImage(created.id, pendingImageData);
+        }
         showToast(
           status === "published"
             ? "Announcement published. Members and trainers can now see it."

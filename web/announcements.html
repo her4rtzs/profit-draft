@@ -10,7 +10,7 @@
 <script src="config.js"></script><script src="api.js"></script><script src="auth.js"></script>
 <link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=9"><link rel="stylesheet" href="ui-final.css?v=1">
 <script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script><link rel="stylesheet" href="hover-fx.css?v=2">
-<link rel="stylesheet" href="announcements.css?v=3">
+<link rel="stylesheet" href="announcements.css?v=4">
 <link rel="stylesheet" href="ui-polish.css?v=1">
 <link rel="stylesheet" href="ui-fixes.css?v=1">
 <link rel="stylesheet" href="pf-modern.css?v=1">
@@ -39,7 +39,39 @@
     </div>
   </section>
 
-  <!-- 4 Colored Action Cards -->
+  <!-- 4 Announcement KPI Cards -->
+  <section class="ann-kpi-grid" aria-label="Announcement statistics">
+    <article class="ann-kpi-card is-gold">
+      <div class="ann-kpi-ico" aria-hidden="true"><i class="fa-solid fa-bullhorn"></i></div>
+      <div class="ann-kpi-info">
+        <strong id="statTotal">0</strong>
+        <span>Total Announcements</span>
+      </div>
+    </article>
+    <article class="ann-kpi-card is-green">
+      <div class="ann-kpi-ico" aria-hidden="true"><i class="fa-solid fa-circle-check"></i></div>
+      <div class="ann-kpi-info">
+        <strong id="statPublished">0</strong>
+        <span>Active Announcements</span>
+      </div>
+    </article>
+    <article class="ann-kpi-card is-amber">
+      <div class="ann-kpi-ico" aria-hidden="true"><i class="fa-solid fa-file-pen"></i></div>
+      <div class="ann-kpi-info">
+        <strong id="statDrafts">0</strong>
+        <span>Draft Announcements</span>
+      </div>
+    </article>
+    <article class="ann-kpi-card is-slate">
+      <div class="ann-kpi-ico" aria-hidden="true"><i class="fa-solid fa-box-archive"></i></div>
+      <div class="ann-kpi-info">
+        <strong id="statArchived">0</strong>
+        <span>Archived Announcements</span>
+      </div>
+    </article>
+  </section>
+
+  <!-- 4 Simplified Quick Action Cards -->
   <section class="ann-action-grid" aria-label="Announcement actions">
     <button type="button" class="ann-action-tile tone-amber" id="annTileCreate">
       <span class="ann-tile-ico" aria-hidden="true"><i class="fa-solid fa-file-circle-plus"></i></span>
@@ -201,6 +233,19 @@
           </select>
         </div>
 
+        <div class="ann-field">
+          <label for="annImageInput">Image <span class="ann-opt">(optional)</span></label>
+          <div class="ann-image-upload">
+            <input id="annImageInput" type="file" accept="image/*">
+            <div class="ann-image-preview-wrap" id="annImagePreviewWrap" hidden>
+              <img id="annImagePreview" src="" alt="Announcement image preview">
+              <button type="button" class="ann-btn ann-image-clear" id="annImageClearBtn">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i> Remove image
+              </button>
+            </div>
+          </div>
+        </div>
+
         <p class="ann-field-err" id="annFormGeneralErr" role="alert" hidden></p>
 
         <div class="ann-modal-foot">
@@ -244,7 +289,7 @@
 <script src="portal-fx.js?v=2"></script>
 <script src="change-password.js?v=2" defer></script>
 <script src="notifications-live.js?v=1" defer></script>
-<script src="announcements-staff.js?v=4" defer></script>
+<script src="announcements-staff.js?v=5" defer></script>
 <script src="site-footer.js?v=2" defer></script>
 </body>
 </html>

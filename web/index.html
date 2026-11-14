@@ -782,23 +782,27 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
 
     const totalSub = document.getElementById("kpiTotalMembersSub") || cardFor("Total members")?.querySelector(".kpi-sub, small");
     if (totalSub) {
-      const pct = newThisMonth ? Math.round((newThisMonth / (total || 1)) * 100) : 12;
-      totalSub.innerHTML = `<span class="kpi-trend positive"><i class="fa-solid fa-arrow-up"></i> +${pct}%</span> from last month`;
+      if (newThisMonth > 0) {
+        const pct = total ? Math.round((newThisMonth / total) * 100) : 0;
+        totalSub.innerHTML = `<span class="kpi-trend positive"><i class="fa-solid fa-arrow-up"></i> +${newThisMonth}</span> (${pct}%) this month`;
+      } else {
+        totalSub.innerHTML = `<span class="kpi-trend neutral">&rarr; 0 new this month</span>`;
+      }
     }
 
     const expSub = document.getElementById("kpiExpiredSub") || cardFor("Expired members")?.querySelector(".kpi-sub, small");
     if (expSub) {
       if (expired > 0) {
-        expSub.innerHTML = `<span class="kpi-trend negative"><i class="fa-solid fa-arrow-down"></i> +${expired} lapsed</span>`;
+        expSub.innerHTML = `<span class="kpi-trend negative"><i class="fa-solid fa-arrow-down"></i> ${expired} lapsed</span>`;
       } else {
-        expSub.innerHTML = `<span class="kpi-trend neutral">&rarr; No change</span>`;
+        expSub.innerHTML = `<span class="kpi-trend neutral">&rarr; None expired</span>`;
       }
     }
 
     const soonSub = document.getElementById("kpiExpiringSub") || cardFor("Expiring soon")?.querySelector(".kpi-sub, small");
     if (soonSub) {
       if (expiring > 0) {
-        soonSub.innerHTML = `<span class="kpi-trend positive"><i class="fa-solid fa-arrow-up"></i> +${expiring}</span> this month`;
+        soonSub.innerHTML = `<span class="kpi-trend negative"><i class="fa-solid fa-clock"></i> ${expiring}</span> within 7 days`;
       } else {
         soonSub.innerHTML = `<span class="kpi-trend neutral">&rarr; All active</span>`;
       }

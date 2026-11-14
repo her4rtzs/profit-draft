@@ -683,8 +683,11 @@ window.PFChart = (function () {
           s.values.forEach(function (v, i) { if (v > best) { best = v; bestIdx = i; } });
           var set = function (id, v) { var el = document.getElementById(id); if (el) el.textContent = v; };
           set("statToday", String(s.values[s.values.length - 1] || 0));
+          set("statWeekLabel", s.range_label || "Selected period");
           set("statWeek", String(s.total));
+          set("statBestLabel", period === "month" || period === "year" ? "Busiest period" : "Busiest day");
           set("statBest", bestIdx >= 0 && best > 0 ? s.buckets[bestIdx].title.replace(/,.*/, "") : "—");
+          set("statBestSub", best > 0 ? best + " check-ins" : "No check-ins in period");
         }
       });
     }
