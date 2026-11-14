@@ -5,23 +5,23 @@
 
 body[data-page="payments"],
 body[data-page="reports"] {
-  --fn-bg-card: linear-gradient(160deg, #141f36 0%, #0e1627 55%, #0b1120 100%);
+  --fn-bg-card: linear-gradient(160deg, #111a2e 0%, #0d1424 60%, #090f1d 100%);
   --fn-bg-inset: rgba(8, 13, 24, 0.72);
-  --fn-border: rgba(255, 170, 0, 0.26);
-  --fn-divider: rgba(255, 255, 255, 0.07);
-  --fn-row-bg: rgba(255, 255, 255, 0.025);
+  --fn-border: rgba(148, 163, 184, 0.14);
+  --fn-divider: rgba(255, 255, 255, 0.06);
+  --fn-row-bg: rgba(255, 255, 255, 0.022);
   --fn-row-border: rgba(255, 255, 255, 0.045);
-  --fn-row-hover-bg: rgba(245, 158, 11, 0.08);
-  --fn-row-hover-border: rgba(255, 170, 0, 0.4);
+  --fn-row-hover-bg: rgba(245, 158, 11, 0.06);
+  --fn-row-hover-border: rgba(245, 158, 11, 0.28);
   --fn-text: #f8fafc;
   --fn-muted: #94a3b8;
   --fn-eyebrow: #fbbf24;
   --fn-input-bg: rgba(11, 17, 32, 0.85);
-  --fn-input-border: rgba(148, 163, 184, 0.22);
+  --fn-input-border: rgba(148, 163, 184, 0.2);
   --fn-btn-dark-bg: #101a2d;
-  --fn-btn-dark-border: rgba(148, 163, 184, 0.24);
+  --fn-btn-dark-border: rgba(148, 163, 184, 0.22);
   --fn-btn-dark-text: #e2e8f0;
-  --fn-shadow: 0 20px 46px -14px rgba(0, 0, 0, 0.72), 0 0 24px rgba(245, 158, 11, 0.07);
+  --fn-shadow: 0 14px 34px -14px rgba(0, 0, 0, 0.65);
 }
 
 body:not(.dark)[data-page="payments"],
@@ -55,19 +55,18 @@ html body.pf-staff[data-page="reports"] .main-content {
 .fn-header-card {
   position: relative;
   overflow: hidden;
-  border-radius: 20px;
-  padding: 18px 24px;
-  margin-bottom: 22px !important;
+  border-radius: 18px;
+  padding: 16px 22px;
+  margin-bottom: 20px !important;
   border: 1px solid var(--fn-border);
   background:
-    radial-gradient(ellipse 36% 70% at 10% 10%, rgba(255, 176, 32, 0.14), transparent 72%),
-    radial-gradient(ellipse 38% 75% at 94% 95%, rgba(56, 189, 248, 0.1), transparent 74%),
+    radial-gradient(ellipse 32% 65% at 8% 10%, rgba(255, 176, 32, 0.08), transparent 72%),
     var(--fn-bg-card);
-  box-shadow: var(--fn-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  box-shadow: var(--fn-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 20px;
+  gap: 18px;
 }
 
 .fn-header-card::before,
@@ -76,12 +75,13 @@ html body.pf-staff[data-page="reports"] .main-content {
   content: "";
   position: absolute;
   top: 0;
-  left: 6%;
-  right: 6%;
-  height: 2px;
+  left: 8%;
+  right: 8%;
+  height: 1.5px;
   border-radius: 999px;
-  background: linear-gradient(90deg, transparent 0%, var(--fn-top-line, #ffb020) 35%, var(--fn-top-line-2, #e0a020) 65%, transparent 100%);
-  box-shadow: 0 0 14px var(--fn-top-glow, rgba(255, 176, 32, 0.65));
+  background: linear-gradient(90deg, transparent 0%, var(--fn-top-line, rgba(255, 176, 32, 0.55)) 35%, var(--fn-top-line-2, rgba(224, 160, 32, 0.55)) 65%, transparent 100%);
+  box-shadow: 0 0 8px var(--fn-top-glow, rgba(255, 176, 32, 0.22));
+  opacity: 0.7;
   pointer-events: none;
   z-index: 2;
 }
@@ -129,8 +129,8 @@ body:not(.dark) .fn-header-wave {
 .fn-tabs {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: minmax(126px, 1fr);
-  gap: 10px;
+  grid-auto-columns: minmax(120px, 1fr);
+  gap: 8px;
   align-items: stretch;
 }
 
@@ -141,21 +141,21 @@ html body.pf-staff[data-page="reports"] .fn-tabs .tab,
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 10px;
-  height: 64px !important;
-  min-height: 64px !important;
+  gap: 9px;
+  height: 48px !important;
+  min-height: 48px !important;
   padding: 0 14px !important;
-  border-radius: 14px !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  background: rgba(15, 23, 42, 0.62) !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(148, 163, 184, 0.16) !important;
+  background: rgba(15, 23, 42, 0.58) !important;
   color: var(--fn-muted) !important;
   font: inherit;
   font-size: 13px !important;
   font-weight: 600 !important;
   white-space: nowrap;
   cursor: pointer;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
-  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, color 0.18s ease;
+  box-shadow: none !important;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
 }
 
 html body.pf-staff:not(.dark)[data-page="payments"] .fn-tabs .tab,
@@ -167,19 +167,19 @@ html body.pf-staff:not(.dark)[data-page="reports"] .fn-tabs .tab {
 html body.pf-staff[data-page="payments"] .fn-tabs .tab:hover,
 html body.pf-staff[data-page="reports"] .fn-tabs .tab:hover,
 .fn-tabs .tab:hover {
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   color: var(--fn-text) !important;
-  border-color: rgba(255, 170, 0, 0.45) !important;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24), 0 0 16px rgba(255, 170, 0, 0.14) !important;
+  border-color: rgba(245, 158, 11, 0.36) !important;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18) !important;
 }
 
 html body.pf-staff[data-page="payments"] .fn-tabs .tab.active,
 html body.pf-staff[data-page="reports"] .fn-tabs .tab.active,
 .fn-tabs .tab.active {
   color: var(--fn-text) !important;
-  border-color: rgba(255, 176, 32, 0.65) !important;
-  background: linear-gradient(155deg, rgba(245, 158, 11, 0.22), rgba(245, 158, 11, 0.06)) !important;
-  box-shadow: 0 8px 22px rgba(245, 158, 11, 0.18), inset 0 1px 0 rgba(255, 224, 130, 0.22) !important;
+  border-color: rgba(245, 158, 11, 0.5) !important;
+  background: linear-gradient(155deg, rgba(245, 158, 11, 0.18), rgba(245, 158, 11, 0.05)) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 224, 130, 0.16) !important;
 }
 
 .fn-tabs .tab.active::after {
@@ -240,41 +240,38 @@ body:not(.dark) .fn-tab-icon {
 .fn-card {
   position: relative;
   overflow: visible;
-  border-radius: 20px;
+  border-radius: 18px;
   padding: 22px 24px;
-  border: 1px solid var(--fn-card-border, rgba(255, 170, 0, 0.32));
+  border: 1px solid var(--fn-border);
   background: var(--fn-bg-card);
-  box-shadow: var(--fn-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  box-shadow: var(--fn-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .fn-card--amber {
-  --fn-card-border: rgba(255, 170, 0, 0.36);
-  --fn-top-line: #ffb020;
-  --fn-top-line-2: #e0a020;
-  --fn-top-glow: rgba(255, 176, 32, 0.65);
+  --fn-top-line: rgba(245, 158, 11, 0.55);
+  --fn-top-line-2: rgba(224, 160, 32, 0.55);
+  --fn-top-glow: rgba(245, 158, 11, 0.2);
   --fn-icon-color: #fbbf24;
-  --fn-icon-border: rgba(255, 176, 32, 0.42);
-  --fn-icon-glow: rgba(255, 176, 32, 0.22);
+  --fn-icon-border: rgba(245, 158, 11, 0.28);
+  --fn-icon-glow: rgba(245, 158, 11, 0.1);
 }
 
 .fn-card--green {
-  --fn-card-border: rgba(34, 197, 94, 0.34);
-  --fn-top-line: #22c55e;
-  --fn-top-line-2: #4ade80;
-  --fn-top-glow: rgba(34, 197, 94, 0.6);
+  --fn-top-line: rgba(34, 197, 94, 0.55);
+  --fn-top-line-2: rgba(74, 222, 128, 0.55);
+  --fn-top-glow: rgba(34, 197, 94, 0.2);
   --fn-icon-color: #4ade80;
-  --fn-icon-border: rgba(34, 197, 94, 0.42);
-  --fn-icon-glow: rgba(34, 197, 94, 0.22);
+  --fn-icon-border: rgba(34, 197, 94, 0.28);
+  --fn-icon-glow: rgba(34, 197, 94, 0.1);
 }
 
 .fn-card--cyan {
-  --fn-card-border: rgba(56, 189, 248, 0.34);
-  --fn-top-line: #38bdf8;
-  --fn-top-line-2: #7dd3fc;
-  --fn-top-glow: rgba(56, 189, 248, 0.6);
+  --fn-top-line: rgba(56, 189, 248, 0.55);
+  --fn-top-line-2: rgba(125, 211, 252, 0.55);
+  --fn-top-glow: rgba(56, 189, 248, 0.2);
   --fn-icon-color: #38bdf8;
-  --fn-icon-border: rgba(56, 189, 248, 0.42);
-  --fn-icon-glow: rgba(56, 189, 248, 0.22);
+  --fn-icon-border: rgba(56, 189, 248, 0.28);
+  --fn-icon-glow: rgba(56, 189, 248, 0.1);
 }
 
 .fn-card-head {
@@ -613,16 +610,16 @@ html body.pf-staff[data-page="payments"] .fn-search-pill input,
 html body.pf-staff[data-page="reports"] .fn-search-pill input,
 .fn-search-pill input {
   width: 100%;
-  height: 40px !important;
-  min-height: 40px !important;
+  height: 38px !important;
+  min-height: 38px !important;
   padding: 0 16px 0 38px !important;
   border-radius: 999px !important;
-  border: 1px solid rgba(255, 170, 0, 0.4) !important;
+  border: 1px solid rgba(148, 163, 184, 0.24) !important;
   background: var(--fn-input-bg) !important;
   color: var(--fn-text) !important;
   font: inherit;
   font-size: 13px !important;
-  box-shadow: 0 0 14px rgba(255, 170, 0, 0.12) !important;
+  box-shadow: none !important;
   transition: border-color 0.16s ease, box-shadow 0.16s ease;
 }
 
@@ -634,19 +631,19 @@ html body.pf-staff[data-page="payments"] .fn-search-pill input:focus,
 html body.pf-staff[data-page="reports"] .fn-search-pill input:focus,
 .fn-search-pill input:focus {
   outline: none;
-  border-color: rgba(255, 176, 32, 0.85) !important;
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.22), 0 0 16px rgba(255, 170, 0, 0.2) !important;
+  border-color: rgba(245, 158, 11, 0.72) !important;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.18) !important;
 }
 
 html body.pf-staff[data-page="reports"] .fn-toolbar-select,
 html body.pf-staff[data-page="payments"] .fn-toolbar-select {
-  height: 40px !important;
-  min-height: 40px !important;
+  height: 38px !important;
+  min-height: 38px !important;
   width: auto !important;
   min-width: 165px;
   padding: 0 14px !important;
-  border-radius: 11px !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 10px !important;
+  border: 1px solid rgba(148, 163, 184, 0.24) !important;
   background: var(--fn-input-bg) !important;
   color: var(--fn-text) !important;
   font: inherit;
@@ -662,12 +659,16 @@ html body.pf-staff:not(.dark)[data-page="payments"] .fn-toolbar-select {
 .fn-filter-chips {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 8px;
 }
 
 .fn-filter-chips .chip {
-  height: 36px;
-  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  padding: 0 15px;
   border-radius: 999px;
   border: 1px solid var(--fn-btn-dark-border);
   background: var(--fn-btn-dark-bg);
@@ -730,9 +731,9 @@ html body.pf-staff:not(.dark)[data-page="payments"] .fn-toolbar-select {
   align-items: center;
   justify-content: center;
   gap: 7px;
-  height: 40px;
+  height: 38px;
   padding: 0 14px;
-  border-radius: 11px;
+  border-radius: 10px;
   border: 1px solid var(--fn-btn-dark-border);
   background: var(--fn-btn-dark-bg);
   color: var(--fn-btn-dark-text);
@@ -741,17 +742,25 @@ html body.pf-staff:not(.dark)[data-page="payments"] .fn-toolbar-select {
   font-weight: 600;
   cursor: pointer;
   text-decoration: none;
-  transition: border-color 0.16s ease, background 0.16s ease, transform 0.16s ease;
+  transition: border-color 0.16s ease, background 0.16s ease, color 0.16s ease, transform 0.16s ease;
 }
 
 .fn-btn-dark:hover {
-  border-color: rgba(255, 170, 0, 0.48);
+  border-color: rgba(245, 158, 11, 0.52);
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.08);
   transform: translateY(-1px);
 }
 
+body:not(.dark) .fn-btn-dark:hover {
+  color: #b45309;
+  background: #fef3c7;
+}
+
 .fn-btn-sm {
+  min-width: 82px;
   height: 32px;
-  padding: 0 12px;
+  padding: 0 14px;
   font-size: 12px;
   border-radius: 9px;
 }
@@ -886,8 +895,8 @@ body:not(.dark) .fn-plan-pill.plan-unassigned { background: #f1f5f9; color: #647
 }
 
 .fn-table--sub {
-  --fn-cols: minmax(210px, 1.4fr) 120px minmax(160px, 1fr) 124px 96px;
-  --fn-min-w: 710px;
+  --fn-cols: minmax(220px, 1.55fr) 128px minmax(180px, 1.15fr) 136px 104px;
+  --fn-min-w: 768px;
 }
 
 .fn-table--hist {
@@ -1174,12 +1183,21 @@ body[data-page="reports"] .progress i {
   background: linear-gradient(90deg, #22c55e, #4ade80);
 }
 
+body[data-page="payments"] .progress.warning {
+  background: rgba(245, 158, 11, 0.16);
+}
+
 body[data-page="payments"] .progress.warning i {
   background: linear-gradient(90deg, #f59e0b, #fbbf24);
 }
 
+body[data-page="payments"] .progress.expired {
+  background: rgba(239, 68, 68, 0.2);
+}
+
 body[data-page="payments"] .progress.expired i {
   background: linear-gradient(90deg, #ef4444, #f87171);
+  min-width: 8px;
 }
 
 body[data-page="reports"] .progress.gold i {

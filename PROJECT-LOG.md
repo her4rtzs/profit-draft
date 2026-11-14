@@ -1785,3 +1785,12 @@ Fix the overlapping containers between the header card and the content cards bel
 - Set `display: block !important` on `.main-content` for Payments and Reports (deferring width/collapse behavior to `layout-fixes.css`) and added `margin-bottom: 22px !important` to `.fn-header-card` in `web/finance-ui.css` (`?v=5`), because `layout-fixes.css` zeroes `.pane` margins and was overriding flex `gap`.
 ### Decision-log skill
 Give `.fn-header-card` an explicit `margin-bottom: 22px !important` instead of relying on `.main-content` flex `gap`, since `layout-fixes.css` enforces `margin: 0 !important` on `.pane`.
+
+## 2026-11-14 16:26 (Asia/Manila): Restrained dark-navy hierarchy, compact tabs, and Subscription Monitor polish
+### What I asked for
+Reduce excessive gold borders/glow in favor of a cleaner dark navy surface, make the top navigation tabs more compact and consistent, align search/filter control heights, balance Subscription Monitor table column widths, add clear color indicators to the Remaining progress bar, and keep Renew buttons consistent.
+### What the agent decided and why
+- Replaced heavy gold card borders/outer glow in `web/finance-ui.css` (`?v=6`) with neutral `rgba(148, 163, 184, 0.14)` borders on dark navy `#111a2e` -> `#090f1d` surfaces and softened the top accent line so gold stands out as an intentional branding/action accent.
+- Made `.fn-tabs .tab` compact (`48px` height) with subtle borders/active highlight, unified `.fn-search-pill input`, `.fn-toolbar-select`, `.fn-filter-chips .chip`, and `.fn-btn-dark` to `38px` height, widened `.fn-table--sub` (`minmax(220px, 1.55fr) 128px minmax(180px, 1.15fr) 136px 104px`), gave `.progress.warning`/`.progress.expired` distinct amber/red track and minimum bar visibility, and standardized `.fn-btn-sm` (`min-width: 82px`) hover states.
+### Decision-log skill
+Reserve gold borders and glow for primary actions and active states; use neutral slate borders (`rgba(148, 163, 184, 0.14)`) on dark navy cards so visual hierarchy stays clean.
