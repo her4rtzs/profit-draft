@@ -78,11 +78,11 @@ html body .main-content > * {
    -------------------------------------------------------------------------- */
 html body .topbar {
   position: sticky !important;
-  top: 0 !important;
+  top: 12px !important;
   z-index: 50 !important;
-  margin: 0 0 20px 0 !important;
-  padding: 14px 0 16px 0 !important;
-  min-height: auto !important;
+  margin: 0 0 22px 0 !important;
+  padding: 12px 20px !important;
+  min-height: 68px !important;
   width: 100% !important;
   max-width: 100% !important;
   box-sizing: border-box !important;
@@ -91,18 +91,26 @@ html body .topbar {
   justify-content: space-between !important;
   gap: 16px !important;
   flex-wrap: wrap !important;
-  background: color-mix(in srgb, var(--bg) 88%, transparent) !important;
-  backdrop-filter: blur(14px) !important;
-  -webkit-backdrop-filter: blur(14px) !important;
-  border-bottom: 1px solid var(--border) !important;
+  border-radius: 16px !important;
+  background: rgba(13, 20, 36, 0.9) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(148, 163, 184, 0.14) !important;
+  box-shadow: 0 12px 30px -14px rgba(0, 0, 0, 0.6) !important;
+}
+
+html body:not(.dark) .topbar {
+  background: rgba(255, 253, 249, 0.94) !important;
+  border-color: rgba(203, 190, 170, 0.58) !important;
+  box-shadow: 0 10px 24px -12px rgba(45, 35, 20, 0.09) !important;
 }
 
 html body .topbar-heading {
   display: flex !important;
   align-items: center !important;
-  gap: 14px !important;
+  gap: 16px !important;
   min-width: 0 !important;
-  flex: 1 1 280px !important;
+  flex: 1 1 360px !important;
 }
 
 html body .topbar-title {
@@ -114,30 +122,203 @@ html body .topbar-title {
 
 html body .topbar-title .welcome {
   margin: 0 !important;
-  font-size: 11px !important;
+  font-size: 10.5px !important;
   font-weight: 700 !important;
-  letter-spacing: 0.12em !important;
+  letter-spacing: 0.11em !important;
   text-transform: uppercase !important;
-  color: var(--sb-gold, #e8b93a) !important;
+  color: #f59e0b !important;
   line-height: 1.2 !important;
 }
 
 html body .topbar-title h1 {
   margin: 0 !important;
-  font-size: clamp(22px, 2.5vw, 28px) !important;
-  font-weight: 800 !important;
+  font-size: clamp(20px, 2.2vw, 24px) !important;
+  font-weight: 700 !important;
   letter-spacing: -0.02em !important;
   color: var(--text) !important;
   line-height: 1.2 !important;
+  white-space: nowrap !important;
+}
+
+html body .topbar-search {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  width: 260px !important;
+  max-width: 100% !important;
+  margin-left: 8px !important;
+  flex: 0 1 260px !important;
+}
+
+html body .topbar-search-ico {
+  position: absolute !important;
+  left: 13px !important;
+  font-size: 13px !important;
+  color: #94a3b8 !important;
+  pointer-events: none !important;
+}
+
+html body .topbar-search input {
+  width: 100% !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  padding: 0 34px 0 36px !important;
+  border-radius: 10px !important;
+  border: 1px solid rgba(148, 163, 184, 0.2) !important;
+  background: rgba(10, 14, 23, 0.72) !important;
+  color: #f8fafc !important;
+  font: inherit !important;
+  font-size: 13px !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+html body:not(.dark) .topbar-search input {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: rgba(148, 163, 184, 0.42) !important;
+}
+
+html body .topbar-search input:focus {
+  outline: none !important;
+  border-color: rgba(245, 158, 11, 0.72) !important;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.18) !important;
+}
+
+html body .topbar-search-kbd {
+  position: absolute !important;
+  right: 10px !important;
+  padding: 2px 6px !important;
+  border-radius: 5px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: #94a3b8 !important;
+  background: rgba(148, 163, 184, 0.14) !important;
+  border: 1px solid rgba(148, 163, 184, 0.2) !important;
+  pointer-events: none !important;
+}
+
+html body .topbar-search-menu {
+  position: absolute !important;
+  top: calc(100% + 6px) !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 80 !important;
+  padding: 6px !important;
+  border-radius: 12px !important;
+  background: #0e1627 !important;
+  border: 1px solid rgba(148, 163, 184, 0.22) !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55) !important;
+}
+
+html body:not(.dark) .topbar-search-menu {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.12) !important;
+}
+
+html body .topbar-search-item {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  padding: 8px 10px !important;
+  border-radius: 8px !important;
+  color: var(--text) !important;
+  text-decoration: none !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+}
+
+html body .topbar-search-item small {
+  font-size: 11px !important;
+  color: #94a3b8 !important;
+}
+
+html body .topbar-search-item:hover {
+  background: rgba(245, 158, 11, 0.14) !important;
+  color: #fbbf24 !important;
 }
 
 html body .topbar-right {
   display: flex !important;
   align-items: center !important;
-  gap: 12px !important;
-  flex-wrap: wrap !important;
+  gap: 10px !important;
+  flex-wrap: nowrap !important;
   justify-content: flex-end !important;
   min-width: 0 !important;
+}
+
+html body .topbar-date {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  height: 38px !important;
+  padding: 0 13px !important;
+  border-radius: 10px !important;
+  border: 1px solid rgba(148, 163, 184, 0.16) !important;
+  background: rgba(10, 14, 23, 0.56) !important;
+  color: #cbd5e1 !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  white-space: nowrap !important;
+}
+
+html body:not(.dark) .topbar-date {
+  background: #ffffff !important;
+  border-color: rgba(148, 163, 184, 0.35) !important;
+  color: #334155 !important;
+}
+
+html body .topbar-date i {
+  color: #f59e0b !important;
+}
+
+html body .topbar-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+html body .topbar-actions .theme-toggle,
+html body .topbar-actions .notification,
+html body .topbar-actions .topbar-avatar {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 10px !important;
+}
+
+/* Unified Member Portal Header (.member-top) */
+html body header.member-top {
+  min-height: 68px !important;
+  background: rgba(13, 20, 36, 0.92) !important;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.14) !important;
+}
+
+html body:not(.dark) header.member-top {
+  background: rgba(255, 253, 249, 0.94) !important;
+  border-bottom-color: rgba(203, 190, 170, 0.58) !important;
+}
+
+@media (max-width: 1080px) {
+  html body .topbar-search {
+    width: 200px !important;
+    flex-basis: 200px !important;
+  }
+}
+
+@media (max-width: 860px) {
+  html body .topbar-date {
+    display: none !important;
+  }
+}
+
+@media (max-width: 680px) {
+  html body .topbar-search {
+    order: 3 !important;
+    width: 100% !important;
+    flex: 1 1 100% !important;
+    margin-left: 0 !important;
+  }
 }
 
 html body .topbar .search,

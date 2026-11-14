@@ -5405,3 +5405,136 @@ body:not(.dark)[data-page="trainers"] .tr-prof-mem-chip {
   background: #F8FAFC;
   border-color: #E2E8F0;
 }
+
+/* ==========================================================================
+   ATTENDANCE: SOLID STATUS BADGES & CONTENT-PROPORTIONAL TABLE
+   ========================================================================== */
+html body.pf-staff[data-page="attendance"] .ci-table {
+  --att-cols: minmax(96px, 0.9fr) minmax(220px, 2.2fr) minmax(120px, 1.1fr) minmax(118px, 0.95fr);
+  display: block;
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+}
+html body.pf-staff[data-page="attendance"] .ci-table thead,
+html body.pf-staff[data-page="attendance"] .ci-table tbody {
+  display: block;
+  width: 100%;
+}
+html body.pf-staff[data-page="attendance"] .ci-table thead tr,
+html body.pf-staff[data-page="attendance"] .ci-table tbody tr {
+  display: grid;
+  grid-template-columns: var(--att-cols);
+  align-items: center;
+  gap: 0;
+  width: 100%;
+}
+html body.pf-staff[data-page="attendance"] .ci-table thead tr {
+  height: 34px;
+  background: transparent !important;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+}
+html body.pf-staff[data-page="attendance"] .ci-table thead th {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 14px !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase;
+  color: #94a3b8 !important;
+}
+html body.pf-staff[data-page="attendance"] .ci-table thead th:last-child {
+  justify-content: center;
+}
+html body.pf-staff[data-page="attendance"] .ci-table tbody tr {
+  height: 56px;
+  min-height: 56px;
+  background: transparent !important;
+  border: 0;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  transition: background 0.15s ease;
+}
+html body.pf-staff[data-page="attendance"] .ci-table tbody tr:last-child {
+  border-bottom: 0;
+}
+html body.pf-staff[data-page="attendance"] .ci-table tbody tr:hover {
+  background: rgba(245, 158, 11, 0.06) !important;
+}
+html body.pf-staff[data-page="attendance"] .ci-table tbody td {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 14px !important;
+  border: 0 !important;
+  background: transparent !important;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  min-width: 0;
+}
+html body.pf-staff[data-page="attendance"] .ci-table tbody td:last-child {
+  justify-content: center;
+}
+html body.pf-staff[data-page="attendance"] .ci-table .badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 100px;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 7px;
+  border: 0 !important;
+  box-shadow: none !important;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #ffffff !important;
+}
+html body.pf-staff[data-page="attendance"] .ci-table .badge::before {
+  display: none !important;
+  content: none !important;
+}
+html body.pf-staff[data-page="attendance"] .ci-table .badge.active,
+html body.pf-staff[data-page="attendance"] .ci-table .badge.paid {
+  background: #16a34a !important;
+}
+html body.pf-staff[data-page="attendance"] .ci-table .badge.warning,
+html body.pf-staff[data-page="attendance"] .ci-table .badge.expiring {
+  background: #d97706 !important;
+}
+html body.pf-staff[data-page="attendance"] .ci-table .badge.expired,
+html body.pf-staff[data-page="attendance"] .ci-table .badge.overdue {
+  background: #dc2626 !important;
+}
+html body.pf-staff[data-page="attendance"] .ci-table .badge.pending {
+  background: #2563eb !important;
+}
+html body.pf-staff[data-page="attendance"] .ci-table .badge.cancelled,
+html body.pf-staff[data-page="attendance"] .ci-table .badge.declined {
+  background: #64748b !important;
+}
+html body.pf-staff[data-page="attendance"] .ci-table .badge.processing {
+  background: #7c3aed !important;
+}
+html body.pf-staff:not(.dark)[data-page="attendance"] .ci-table thead th {
+  color: #64748b !important;
+}
+html body.pf-staff:not(.dark)[data-page="attendance"] .ci-table tbody tr {
+  border-bottom-color: rgba(15, 23, 42, 0.08);
+}
+
+/* Unified Member Portal Header (.member-top) */
+html body header.member-top {
+  min-height: 68px !important;
+  background: rgba(13, 20, 36, 0.92) !important;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.14) !important;
+}
+html body:not(.dark) header.member-top {
+  background: rgba(255, 253, 249, 0.94) !important;
+  border-bottom-color: rgba(203, 190, 170, 0.58) !important;
+}

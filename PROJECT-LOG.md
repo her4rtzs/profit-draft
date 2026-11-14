@@ -1811,3 +1811,13 @@ Apply the solid badge style (solid background, white text, no gradients/glow) to
 - Updated `.pp-plan-pill` and `.pp-status` in `web/members-ui.css` (`?v=13`) to compact `24px` height, `7px` rounded corners, zero border/glow, and `#ffffff` text across both Dark and Light modes: Active/Paid (`#16a34a`), Expiring Soon (`#d97706`), Expired/Overdue (`#dc2626`), Pending (`#2563eb`), Cancelled/Declined/Frozen (`#64748b`), Processing (`#7c3aed`), and solid plan colors (`#ea580c`, `#ca8a04`, `#475569`, `#2563eb`, `#64748b`).
 ### Decision-log skill
 Keep status and plan badge color tokens consistent across Members, Payments, and Reports using solid fills with `#ffffff` text and no theme-specific pale overrides.
+
+## 2026-11-14 16:45 (Asia/Manila): Attendance solid badges/table and Global Header standardization
+### What I asked for
+Apply solid status badges and content-proportional table columns to Attendance, and standardize the main page header (`#topbar` and `.member-top`) across all pages and modules with page title, quick-jump search bar, date pill, and right-aligned global controls.
+### What the agent decided and why
+- Added `body[data-page="attendance"] .ci-table` rules in `web/portal-ui.css` for content-proportional columns (`minmax(96px, 0.9fr) minmax(220px, 2.2fr) minmax(120px, 1.1fr) minmax(118px, 0.95fr)`), clean row dividers, tabular numerals, and solid status badges (`#16a34a`, `#d97706`, `#dc2626`, `#ffffff` text).
+- Updated `web/layout.js` (`?v=19`) and `web/layout-fixes.css` (`?v=6`) to render a unified `68px`-min-height sticky header bar across all 9 staff/admin/trainer pages with upper-left page title, an interactive quick-jump/member search bar (`/` shortcut), an `Asia/Manila` date pill, and `38px` global action controls (theme toggle, notifications bell, avatar) with responsive wrapping.
+- Standardized `header.member-top` in `web/portal-ui.css` so the Member portal shares the same `68px` matte dark/light header surface and border treatment.
+### Decision-log skill
+Keep global navigation/search/date/profile controls in the shared `web/layout.js` `#topbar` component and `web/layout-fixes.css` so all portals inherit identical header geometry, contrast, and responsive behavior without per-page header duplication.
