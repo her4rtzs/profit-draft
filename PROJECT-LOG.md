@@ -1888,3 +1888,12 @@ Restore the warm golden yellow PROfit brand identity on the Dashboard (replacing
 - **Member Details (`web/members-ui.css`, `web/members.html`)**: Removed the 2px glowing top-line `::before` streaks and `.is-cyan/.is-emerald/.is-violet` neon icon halos across `.pp-card`, `.pp-det-kpi`, and `.pp-det-ico`, unified KPI & section icons to restrained `#e8b93a` gold, flattened `.pp-det-panel` to eliminate nested card-in-card clutter, simplified `.pp-detail-head` (24px name, clean gold avatar without neon shadow), refined `.pp-subtabs` with solid gold active and subtle gold hover, and restrained `.pp-btn-primary` shadow.
 ### Decision-log skill
 Use solid dark-navy/charcoal surfaces with single-accent `#e8b93a` gold highlights and flat 1px dividers rather than stacked top-line light streaks and multi-color neon icon halos.
+
+## 2026-11-14 18:01 (Asia/Manila): Restore original Dashboard Quick Action and KPI card colors
+### What I asked for
+Restore the previous Dashboard Quick Action and KPI card colors (`balik mo mnga colors sa dashboard`).
+### What the agent decided and why
+- Restored `.quick-action.qa-gold/.qa-cyan/.qa-emerald/.qa-violet` and `.kpi-card.kpi-gold/.kpi-red/.kpi-cyan/.kpi-violet` in `web/portal-ui.css` to their original multi-accent palette (`#F59E0B`, `#06B6D4`, `#10B981`, `#A855F7`, `#FB5364`), while keeping the Member Details refinement in `web/members-ui.css` intact.
+- Bumped `portal-ui.css?v=22` in `web/index.html`.
+### Decision-log skill
+Keep Dashboard Quick Action and KPI card accent overrides isolated to `web/portal-ui.css` so they can be reverted independently of Member Details or global hover tokens.
