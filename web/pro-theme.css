@@ -716,14 +716,14 @@ body.dark .pp-pct { color: var(--gold); }
   #receiptPrint { position: fixed; inset: 0; margin: 0; padding: 40px; background: #fff; color: #111; border: 0; }
   #receiptPrint * { color: #111 !important; }
 }
-/* Color picker: each option is labeled, so first-time users see the name, not just a dot */
-.pp-swatches { display: flex; gap: 6px; flex-wrap: wrap; }
-.pp-swatch { width: auto !important; height: auto !important; background: none !important; box-shadow: none !important; padding: 6px 8px; border-radius: 12px; display: grid; justify-items: center; gap: 4px; }
-.pp-swatch-dot { width: 28px; height: 28px; border-radius: 50%; background: var(--sw); box-shadow: 0 0 0 1px var(--border); }
-.pp-swatch[aria-checked="true"] { background: color-mix(in srgb, var(--gold) 10%, transparent) !important; }
-.pp-swatch[aria-checked="true"] .pp-swatch-dot { box-shadow: 0 0 0 2px var(--card), 0 0 0 4px var(--sw); }
-.pp-swatch-label { font-size: .72rem; font-weight: 700; color: var(--muted); }
-.pp-swatch[aria-checked="true"] .pp-swatch-label { color: var(--text); }
+/* Color picker: horizontal pill swatches matching Member, Staff, and Trainer settings */
+.pp-swatches { display: flex; gap: 10px; flex-wrap: wrap; }
+.pp-swatch { width: auto !important; height: auto !important; padding: 8px 16px 8px 8px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg) !important; display: inline-flex; align-items: center; gap: 10px; cursor: pointer; transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; }
+.pp-swatch-dot { width: 26px; height: 26px; border-radius: 50%; background: var(--sw); flex: none; }
+.pp-swatch[aria-checked="true"], .pp-swatch.active, .pp-swatch.is-on { border-color: var(--sw) !important; box-shadow: 0 0 0 1px var(--sw) !important; }
+.pp-swatch[aria-checked="true"] .pp-swatch-dot, .pp-swatch.active .pp-swatch-dot, .pp-swatch.is-on .pp-swatch-dot { box-shadow: 0 0 0 2px var(--card), 0 0 0 4px var(--sw); }
+.pp-swatch-label { font-size: 13.5px; font-weight: 700; color: var(--muted); }
+.pp-swatch[aria-checked="true"] .pp-swatch-label, .pp-swatch.active .pp-swatch-label, .pp-swatch.is-on .pp-swatch-label { color: var(--text); }
 @media (max-width: 1100px) {
   .pp-pass, .pp-streak-card, .pp-start, .pp-next { grid-column: span 12; }
   .pp-stat-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }

@@ -6,7 +6,7 @@
 (function () {
   const PF = (window.PF = window.PF || {});
   const KEY = 'pf-staff-v2';
-  const SEED_VERSION = 4;
+  const SEED_VERSION = 5;
 
   /* ---------- formatting helpers ---------- */
   const MS_DAY = 86400000;
@@ -146,14 +146,7 @@
       { id: 'n5', title: 'September promo ended', message: 'Thanks for joining! Annual plan promo has ended.', audience: 'Members', status: 'archived', at: at(-30, 9), author: 'Joyce Alvarez' }
     ];
 
-    const notifications = [
-      { id: 'x2', type: 'payments', icon: 'wallet', tone: 'gold', title: 'Payment received', text: '₱3,750 from Angela Melillo (GCash)', at: at(-1, 9, 17), read: false, href: 'transactions.html' },
-      { id: 'x3', type: 'payments', icon: 'alert-circle', tone: 'red', title: 'Payment failed', text: 'Chloe Rivera — GCash ₱1,500 was declined', at: at(-4, 13, 25), read: false, href: 'transactions.html' },
-      { id: 'x4', type: 'members', icon: 'clock', tone: 'amber', title: 'Memberships expiring soon', text: 'Ryan Garcia and James Lim expire within 7 days', at: at(-1, 8), read: true, href: 'subscriptions.html' },
-      { id: 'x5', type: 'members', icon: 'refresh', tone: 'purple', title: 'Membership renewed', text: 'Mara Villanueva renewed Monthly', at: at(-9, 12, 45), read: true, href: 'members.html' },
-      { id: 'x6', type: 'system', icon: 'settings', tone: 'blue', title: 'System update', text: 'Maintenance scheduled Sunday 2:00 AM', at: at(-2, 6), read: true, href: 'settings.html' },
-      { id: 'x7', type: 'members', icon: 'dumbbell', tone: 'blue', title: 'Trainer request', text: 'Liza Cortez requested a Flexibility trainer', at: at(-1, 14), read: true, href: 'trainers.html' }
-    ];
+    const notifications = [];
 
     return {
       v: SEED_VERSION, plans: PLANS, members, payments, trainers, requests, announcements, notifications, attendanceManual: [],
@@ -164,9 +157,18 @@
   }
 
   /* ---------- store ---------- */
+  const LEGACY_PLACEHOLDER_IDS = new Set(['x2', 'x3', 'x4', 'x5', 'x6', 'x7']);
   let S = null;
   const load = () => {
-    try { const raw = JSON.parse(localStorage.getItem(KEY) || 'null'); if (raw && raw.v >= SEED_VERSION) return raw; } catch (e) { /* storage blocked */ }
+    try {
+      const raw = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (raw && raw.v >= SEED_VERSION) {
+        if (Array.isArray(raw.notifications)) {
+          raw.notifications = raw.notifications.filter(n => !LEGACY_PLACEHOLDER_IDS.has(String(n.id)));
+        }
+        return raw;
+      }
+    } catch (e) { /* storage blocked */ }
     return null;
   };
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* storage blocked */ } };
@@ -339,8 +341,13 @@
     removeAnnouncement(id) { S.announcements = S.announcements.filter(a => a.id !== id); emit(); },
 
     /* API: POST /notifications/:id/read/, POST /notifications/read-all/ */
-    markRead(id) { const n = S.notifications.find(x => x.id === id); if (n) { n.read = true; emit(); } },
-    markAllRead() { S.notifications.forEach(n => (n.read = true)); emit(); },
+    setNotifications(items) {
+      S.notifications = Array.isArray(items) ? items : [];
+      emit();
+    },
+    markRead(id) { const n = S.notifications.find(x => String(x.id) === String(id)); if (n) { n.read = true; n.read_at = n.read_at || new Date().toISOString(); emit(); } },
+    markAllRead() { const now = new Date().toISOString(); S.notifications.forEach(n => { n.read = true; n.read_at = n.read_at || now; }); emit(); },
+    removeNotification(id) { S.notifications = S.notifications.filter(x => String(x.id) !== String(id)); emit(); },
     clearNotifications() { S.notifications = []; emit(); },
 
     /* API: PATCH /member/me/ equivalent for staff (profile), settings endpoints to be added */

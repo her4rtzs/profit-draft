@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ProFit — Settings (Trainer Portal)</title>
-<script>try{var t=localStorage.getItem('pf-theme')||localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);var a=localStorage.getItem('pf-accent')||localStorage.getItem('accent');if(a)document.documentElement.setAttribute('data-accent',a);}catch(e){}</script>
+<script>try{var t=localStorage.getItem('pf-theme')||localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);var a=localStorage.getItem('pp-accent')||localStorage.getItem('pf-accent')||localStorage.getItem('accent')||'gold';if(a==='blue')a='ocean';document.documentElement.setAttribute('data-accent',a);}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/staff.css?v=10">
-<link rel="stylesheet" href="trainer.css?v=10">
+<link rel="stylesheet" href="../assets/css/staff.css?v=12">
+<link rel="stylesheet" href="trainer.css?v=12">
 </head>
 <body data-page="settings" data-portal="trainer" data-head="none">
 <div class="app">
@@ -37,85 +37,65 @@
       <!-- Settings 2-Column Grid -->
       <section class="tw-settings-grid tw-anim" style="--i:1">
 
-        <!-- Card 1: Display Theme Mode -->
-        <article class="tw-card">
+        <!-- Card 1: Unified Appearance (Consistent across Member, Staff & Trainer) -->
+        <article id="appearance" class="tw-card">
           <div class="tw-card-head">
             <div>
-              <h2 class="tw-card-title">Appearance &amp; Color Mode</h2>
-              <p class="tw-card-sub">Switch between Obsidian Dark and Warm Cream Light mode across all trainer pages.</p>
+              <h2 class="tw-card-title" style="font-size:20px">Appearance</h2>
+              <p class="tw-card-sub" style="font-size:14.5px;margin-top:4px">Pick how ProFit looks on this device.</p>
             </div>
-            <div class="tw-kpi-ico" data-ico="sun"></div>
           </div>
 
-          <div class="tw-choice-grid" id="themeOptGroup">
-            <button type="button" class="tw-choice-card" data-theme-val="dark">
-              <div class="tw-kpi-ico" data-ico="moon"></div>
-              <div>
-                <strong style="display:block;font-size:14px">Obsidian Dark</strong>
-                <span style="font-size:12px;color:var(--muted)">Deep navy &amp; gold contrast</span>
-              </div>
+          <div class="pp-segment" id="themeOptGroup" role="radiogroup" aria-label="Theme">
+            <button type="button" role="radio" data-theme-pick="dark" aria-checked="true">
+              <span data-ico="moon"></span> Dark
             </button>
+            <button type="button" role="radio" data-theme-pick="light" aria-checked="false">
+              <span data-ico="sun"></span> Light
+            </button>
+          </div>
 
-            <button type="button" class="tw-choice-card" data-theme-val="light">
-              <div class="tw-kpi-ico" data-ico="sun"></div>
-              <div>
-                <strong style="display:block;font-size:14px">Warm Cream</strong>
-                <span style="font-size:12px;color:var(--muted)">Soft daylight stone palette</span>
-              </div>
-            </button>
-
-            <button type="button" class="tw-choice-card" data-theme-val="system">
-              <div class="tw-kpi-ico" data-ico="settings"></div>
-              <div>
-                <strong style="display:block;font-size:14px">System Sync</strong>
-                <span style="font-size:12px;color:var(--muted)">Follow device OS setting</span>
-              </div>
-            </button>
+          <div style="margin-top:20px">
+            <span class="pp-label" id="lblTrainerAccent">Accent colour</span>
+            <div class="pp-swatches" id="accentOptGroup" role="radiogroup" aria-labelledby="lblTrainerAccent">
+              <button type="button" class="pp-swatch" role="radio" data-accent="gold" aria-checked="true" style="--sw:#e0b94a"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Gold</span></button>
+              <button type="button" class="pp-swatch" role="radio" data-accent="spotify" aria-checked="false" style="--sw:#1db954"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Spotify green</span></button>
+              <button type="button" class="pp-swatch" role="radio" data-accent="ocean" aria-checked="false" style="--sw:#2dd4bf"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Ocean</span></button>
+              <button type="button" class="pp-swatch" role="radio" data-accent="indigo" aria-checked="false" style="--sw:#818cf8"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Indigo</span></button>
+              <button type="button" class="pp-swatch" role="radio" data-accent="coral" aria-checked="false" style="--sw:#fb7185"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Coral</span></button>
+              <button type="button" class="pp-swatch" role="radio" data-accent="emerald" aria-checked="false" style="--sw:#34d399"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Emerald</span></button>
+              <button type="button" class="pp-swatch" role="radio" data-accent="sunset" aria-checked="false" style="--sw:#fb923c"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Sunset</span></button>
+            </div>
+            <p class="pp-small">Your favourite colour, everywhere in the app.</p>
           </div>
         </article>
 
-        <!-- Card 2: Accent Color Palette -->
+        <!-- Card 2: Notifications & Alerts -->
         <article class="tw-card">
           <div class="tw-card-head">
             <div>
-              <h2 class="tw-card-title">Workspace Accent Color</h2>
-              <p class="tw-card-sub">Choose the highlight color for active badges, buttons, and charts.</p>
+              <h2 class="tw-card-title" style="font-size:20px">Notifications</h2>
+              <p class="tw-card-sub" style="font-size:14.5px;margin-top:4px">Control how coaching alerts and gym updates appear.</p>
             </div>
-            <div class="tw-kpi-ico" data-ico="bolt"></div>
+            <div class="tw-kpi-ico" data-ico="bell"></div>
           </div>
 
-          <div class="tw-swatch-grid" id="accentOptGroup">
-            <button type="button" class="tw-swatch-card" data-accent-val="gold">
-              <span class="tw-swatch-dot" style="background:linear-gradient(135deg,#FBBF24,#D97706)"></span>
+          <div style="display:grid;gap:12px">
+            <div class="tw-toggle-row">
               <div>
-                <strong style="display:block;font-size:13.5px">ProFit Gold</strong>
-                <span style="font-size:11.5px;color:var(--muted)">Signature gym amber</span>
+                <strong style="display:block;font-size:14px;color:var(--text)">Unread badge</strong>
+                <span style="font-size:12.5px;color:var(--muted)">Show the unread count on the bell icon in the header and sidebar.</span>
               </div>
-            </button>
+              <input type="checkbox" id="prefTrainerBadge" checked style="width:20px;height:20px;accent-color:var(--gold);cursor:pointer">
+            </div>
 
-            <button type="button" class="tw-swatch-card" data-accent-val="blue">
-              <span class="tw-swatch-dot" style="background:linear-gradient(135deg,#60A5FA,#2563EB)"></span>
+            <div class="tw-toggle-row">
               <div>
-                <strong style="display:block;font-size:13.5px">Ocean Blue</strong>
-                <span style="font-size:11.5px;color:var(--muted)">Crisp athletic cobalt</span>
+                <strong style="display:block;font-size:14px;color:var(--text)">Notification center</strong>
+                <span style="font-size:12.5px;color:var(--muted)">Read, mark, or clear your coaching assignments and gym updates.</span>
               </div>
-            </button>
-
-            <button type="button" class="tw-swatch-card" data-accent-val="emerald">
-              <span class="tw-swatch-dot" style="background:linear-gradient(135deg,#34D399,#059669)"></span>
-              <div>
-                <strong style="display:block;font-size:13.5px">Vitality Emerald</strong>
-                <span style="font-size:11.5px;color:var(--muted)">Fresh performance green</span>
-              </div>
-            </button>
-
-            <button type="button" class="tw-swatch-card" data-accent-val="indigo">
-              <span class="tw-swatch-dot" style="background:linear-gradient(135deg,#A78BFA,#6366F1)"></span>
-              <div>
-                <strong style="display:block;font-size:13.5px">Electric Indigo</strong>
-                <span style="font-size:11.5px;color:var(--muted)">Modern studio violet</span>
-              </div>
-            </button>
+              <a href="notifications.html" class="tw-btn"><span data-ico="bell"></span> Open Inbox</a>
+            </div>
           </div>
         </article>
 
@@ -177,58 +157,88 @@
 <script src="../api.js?v=5"></script>
 <script src="../auth.js?v=5"></script>
 <script src="../assets/js/staff-icons.js?v=5"></script>
-<script src="../assets/js/staff-data.js?v=8"></script>
-<script src="../assets/js/staff.js?v=10"></script>
-<script src="trainer.js?v=10"></script>
+<script src="../assets/js/staff-data.js?v=12"></script>
+<script src="../assets/js/staff.js?v=12"></script>
+<script src="trainer.js?v=12"></script>
 <script>
 PF.ready(() => {
-  const curThemePref = localStorage.getItem('pf-theme-pref') || localStorage.getItem('pf-theme') || localStorage.getItem('theme') || 'dark';
-  const curAccent = localStorage.getItem('pf-accent') || localStorage.getItem('accent') || 'gold';
+  const VALID_ACCENTS = ['gold', 'spotify', 'ocean', 'indigo', 'coral', 'emerald', 'sunset'];
+  const getSavedTheme = () => {
+    const raw = localStorage.getItem('pf-theme') || localStorage.getItem('theme') || 'dark';
+    return raw === 'light' ? 'light' : 'dark';
+  };
+  const getSavedAccent = () => {
+    let raw = localStorage.getItem('pp-accent') || localStorage.getItem('pf-accent') || localStorage.getItem('accent') || 'gold';
+    if (raw === 'blue') raw = 'ocean';
+    return VALID_ACCENTS.includes(raw) ? raw : 'gold';
+  };
+
+  function paintThemeButtons(mode) {
+    document.querySelectorAll('[data-theme-pick]').forEach(btn => {
+      const on = btn.dataset.themePick === mode;
+      btn.classList.toggle('active', on);
+      btn.setAttribute('aria-checked', String(on));
+    });
+  }
+
+  function paintAccentButtons(accent) {
+    document.querySelectorAll('[data-accent]').forEach(btn => {
+      const on = btn.dataset.accent === accent;
+      btn.classList.toggle('is-on', on);
+      btn.classList.toggle('active', on);
+      btn.setAttribute('aria-checked', String(on));
+    });
+  }
 
   function applyThemeChoice(val) {
-    localStorage.setItem('pf-theme-pref', val);
-    const resolved = val === 'system'
-      ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-      : val;
-    document.documentElement.setAttribute('data-theme', resolved);
-    localStorage.setItem('pf-theme', resolved);
-    localStorage.setItem('theme', resolved);
-
-    document.querySelectorAll('[data-theme-val]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.themeVal === val);
-    });
+    const resolved = val === 'light' ? 'light' : 'dark';
+    if (PF.setTheme) PF.setTheme(resolved);
+    paintThemeButtons(resolved);
   }
 
   function applyAccentChoice(val) {
-    localStorage.setItem('pf-accent', val);
-    localStorage.setItem('accent', val);
-    if (val === 'gold') document.documentElement.removeAttribute('data-accent');
-    else document.documentElement.setAttribute('data-accent', val);
+    const norm = VALID_ACCENTS.includes(val) ? val : 'gold';
+    if (PF.setAccent) PF.setAccent(norm);
+    paintAccentButtons(norm);
+  }
 
-    document.querySelectorAll('[data-accent-val]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.accentVal === val);
+  applyThemeChoice(getSavedTheme());
+  applyAccentChoice(getSavedAccent());
+
+  document.querySelectorAll('[data-theme-pick]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      applyThemeChoice(btn.dataset.themePick);
+      PF.toast(`Theme set to ${btn.dataset.themePick === 'light' ? 'Light' : 'Dark'}.`, 'success');
+    });
+  });
+
+  document.querySelectorAll('[data-accent]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      applyAccentChoice(btn.dataset.accent);
+      PF.toast('Accent colour saved.', 'success');
+    });
+  });
+
+  document.addEventListener('pf:theme', () => {
+    const current = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+    paintThemeButtons(current);
+  });
+
+  const badgeCheck = document.getElementById('prefTrainerBadge');
+  if (badgeCheck) {
+    badgeCheck.checked = localStorage.getItem('pref-badge') !== 'off';
+    badgeCheck.addEventListener('change', () => {
+      localStorage.setItem('pref-badge', badgeCheck.checked ? 'on' : 'off');
+      const bellBadge = document.getElementById('bellBadge');
+      if (bellBadge) bellBadge.style.display = badgeCheck.checked ? '' : 'none';
+      PF.toast('Notification preference saved.', 'success');
     });
   }
 
-  applyThemeChoice(curThemePref);
-  applyAccentChoice(curAccent);
-
-  document.querySelectorAll('[data-theme-val]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      applyThemeChoice(btn.dataset.themeVal);
-      PF.toast(`Theme set to ${btn.dataset.themeVal}.`, 'success');
-    });
-  });
-
-  document.querySelectorAll('[data-accent-val]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      applyAccentChoice(btn.dataset.accentVal);
-      PF.toast('Workspace accent updated.', 'success');
-    });
-  });
-
   document.getElementById('trainerSignOutBtn').addEventListener('click', async () => {
-    if (window.ProFitAPI && window.ProFitAPI.logout) {
+    if (PF.logout) {
+      await PF.logout();
+    } else if (window.ProFitAPI && window.ProFitAPI.logout) {
       await window.ProFitAPI.logout();
     } else {
       window.location.href = '../login.html';

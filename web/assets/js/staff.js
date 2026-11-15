@@ -258,7 +258,7 @@
       { id: 'attendance', label: 'Attendance', icon: 'calendar-check', href: 'attendance.html' },
       { id: 'schedule', label: 'My Schedule', icon: 'calendar', href: 'schedule.html' }] },
     { label: 'ACCOUNT', items: [
-      { id: 'notifications', label: 'Notifications', icon: 'bell', href: 'notifications.html' },
+      { id: 'notifications', label: 'Notifications', icon: 'bell', href: 'notifications.html', badge: () => PF.db.unread() },
       { id: 'profile', label: 'My Profile', icon: 'user', href: 'profile.html' },
       { id: 'settings', label: 'Settings', icon: 'settings', href: 'settings.html' }] }
   ];
@@ -294,7 +294,7 @@
     const tagline = isTrainer ? 'TRAINER WORKSPACE' : (gym.tagline || 'FUNCTIONAL FITNESS');
     const displayRole = isTrainer ? 'Personal Trainer' : (me.role || 'Staff');
     return `<div class="brand"><a href="${homeHref}" style="display:flex;align-items:center;gap:12px;min-width:0" aria-label="${esc(gym.name)} dashboard"><img class="brand-logo" src="${esc(gym.logo || PF.assetBase + 'img/logo.jpg')}" alt=""><span class="brand-txt"><strong>${esc(gym.name)}</strong><small>${esc(tagline)}</small></span></a><button class="collapse-btn" id="collapseBtn" type="button" aria-label="Collapse sidebar" title="Collapse sidebar">${PF.icon('chevrons-left')}</button></div>
-      <nav class="side-scroll" aria-label="Main navigation">${navItems.map(g => { const items = g.items.filter(allowed); return items.length ? `<p class="nav-label">${g.label}</p><ul class="nav-list">${items.map(it => { const b = it.badge ? it.badge() : 0; return `<li><a class="nav-link ${it.id === cur ? 'active' : ''}" href="${it.href}" title="${esc(it.label)}" ${it.id === cur ? 'aria-current="page"' : ''}>${PF.icon(it.icon)}<span class="nav-text">${esc(it.label)}</span>${b ? `<span class="nav-count" data-badge="${it.id}">${b}</span>` : ''}</a></li>`; }).join('')}</ul>` : ''; }).join('')}</nav>
+      <nav class="side-scroll" aria-label="Main navigation">${navItems.map(g => { const items = g.items.filter(allowed); return items.length ? `<p class="nav-label">${g.label}</p><ul class="nav-list">${items.map(it => { const hasBadge = typeof it.badge === 'function'; const b = hasBadge ? it.badge() : 0; return `<li><a class="nav-link ${it.id === cur ? 'active' : ''}" href="${it.href}" title="${esc(it.label)}" ${it.id === cur ? 'aria-current="page"' : ''}>${PF.icon(it.icon)}<span class="nav-text">${esc(it.label)}</span>${hasBadge ? `<span class="nav-count" data-badge="${it.id}" ${b ? '' : 'hidden'}>${b || 0}</span>` : ''}</a></li>`; }).join('')}</ul>` : ''; }).join('')}</nav>
       <div class="side-foot"><div class="side-user" id="sideUserCard" role="button" tabindex="0" aria-haspopup="menu" aria-expanded="false" aria-controls="sideAccountMenu">${PF.avatar(me.name, 'md', me.photo)}<div class="who"><strong>${esc(me.name)}</strong><small>${esc(displayRole)}</small></div><button class="icon-btn" id="accountBtn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="sideAccountMenu" aria-label="Account menu" title="Account">${PF.icon('more-v')}</button><div class="side-account-menu" id="sideAccountMenu" role="menu" aria-label="Account actions"><a href="profile.html" role="menuitem" class="${cur === 'profile' ? 'active' : ''}">${PF.icon('user')}<span>My profile</span></a><a href="settings.html" role="menuitem" class="${cur === 'settings' ? 'active' : ''}">${PF.icon('settings')}<span>Settings</span></a><hr><button type="button" role="menuitem" class="danger" id="sideLogoutBtn">${PF.icon('log-out')}<span>Log out</span></button></div></div></div>`;
   }
 
@@ -331,22 +331,130 @@
     return `<div class="page-head"><span class="tile">${PF.icon(b.icon || 'home')}</span><div><div class="eyebrow">${esc(b.eyebrow || '')}</div><h1>${esc(b.title || '')}</h1>${b.sub ? `<p>${esc(b.sub)}</p>` : ''}</div>${tag}</div>`;
   }
 
+  function resolveNotifHref(rawLink, kind) {
+    const isTrainer = isTrainerContext();
+    let link = String(rawLink || '').trim();
+    if (link === 'trainer-portal.html') link = 'members.html';
+    if (isTrainer && link.startsWith('trainer/')) link = link.slice('trainer/'.length);
+    if (!link) {
+      const k = String(kind || '').toUpperCase();
+      if (k === 'ANNOUNCEMENT') return 'announcements.html';
+      if (k === 'TRAINER') return isTrainer ? 'members.html' : 'trainers.html';
+      if (k === 'MEMBERSHIP') return 'members.html';
+      if (k === 'PAYMENT') return isTrainer ? 'notifications.html' : 'transactions.html';
+      return 'notifications.html';
+    }
+    return link;
+  }
+
+  PF.mapServerNotification = n => {
+    const k = String(n.kind || n.type || 'GENERAL').toUpperCase();
+    let icon = n.icon || 'bell';
+    let tone = n.tone || 'purple';
+    if (k === 'TRAINER') { icon = 'dumbbell'; tone = 'gold'; }
+    else if (k === 'ANNOUNCEMENT') { icon = 'megaphone'; tone = 'blue'; }
+    else if (k === 'MEMBERSHIP' || k === 'MEMBERS') { icon = 'shield'; tone = 'green'; }
+    else if (k === 'PAYMENT' || k === 'PAYMENTS') { icon = 'wallet'; tone = 'gold'; }
+    const ts = n.created_at || n.time || n.at || new Date().toISOString();
+    const isRead = Boolean(n.read || n.read_at);
+    const href = resolveNotifHref(n.link || n.href, k);
+    return {
+      id: n.id,
+      kind: k,
+      type: k.toLowerCase(),
+      icon,
+      tone,
+      title: n.title || 'Notification',
+      text: n.body !== undefined ? n.body : (n.text || ''),
+      body: n.body !== undefined ? n.body : (n.text || ''),
+      at: ts,
+      created_at: ts,
+      time: ts,
+      read: isRead,
+      read_at: n.read_at || (isRead ? ts : null),
+      href,
+      link: href
+    };
+  };
+
+  PF.syncNotifications = async () => {
+    try {
+      let rawItems = null;
+      if (isTrainerContext() && window.Trainer && Trainer.api && Trainer.api.getNotifications) {
+        rawItems = await Trainer.api.getNotifications({ syncShell: false });
+      } else if (window.ProFitAPI) {
+        const path = isTrainerContext() ? '/trainer/notifications/?limit=40' : '/notifications/?limit=40';
+        const res = await window.ProFitAPI.get(path, { silent: true });
+        rawItems = Array.isArray(res) ? res : (res && Array.isArray(res.items) ? res.items : []);
+      }
+      if (Array.isArray(rawItems) && PF.db && PF.db.setNotifications) {
+        const mapped = rawItems.map(PF.mapServerNotification);
+        PF.db.setNotifications(mapped);
+        document.dispatchEvent(new CustomEvent('pf:notifications-updated', { detail: { items: mapped } }));
+        return mapped;
+      }
+    } catch (e) {
+      // keep existing state if offline
+    }
+    return PF.db ? PF.db.notifications() : [];
+  };
+
+  PF.markNotificationRead = async (id) => {
+    if (PF.db && PF.db.markRead) PF.db.markRead(id);
+    try {
+      if (isTrainerContext() && window.Trainer && Trainer.api && Trainer.api.markNotifRead) {
+        await Trainer.api.markNotifRead(id, { syncShell: false });
+      } else if (window.ProFitAPI) {
+        const path = isTrainerContext() ? `/trainer/notifications/${id}/read/` : `/notifications/${id}/read/`;
+        await window.ProFitAPI.post(path, {}, { silent: true });
+      }
+    } catch (e) { /* ignore */ }
+    document.dispatchEvent(new CustomEvent('pf:notifications-updated', { detail: { items: PF.db.notifications() } }));
+  };
+
+  PF.markAllNotificationsRead = async () => {
+    if (PF.db && PF.db.markAllRead) PF.db.markAllRead();
+    try {
+      if (isTrainerContext() && window.Trainer && Trainer.api && Trainer.api.markAllNotifsRead) {
+        await Trainer.api.markAllNotifsRead({ syncShell: false });
+      } else if (window.ProFitAPI) {
+        const path = isTrainerContext() ? '/trainer/notifications/read-all/' : '/notifications/read-all/';
+        await window.ProFitAPI.post(path, {}, { silent: true });
+      }
+    } catch (e) { /* ignore */ }
+    document.dispatchEvent(new CustomEvent('pf:notifications-updated', { detail: { items: PF.db.notifications() } }));
+  };
+
   function renderNotifPanel() {
     const p = $('#npanel'); if (!p) return;
     const list = PF.db.notifications().slice(0, 6);
-    p.innerHTML = `<div class="npanel-head"><div><strong>Notifications</strong><div class="muted">${PF.db.unread() ? PF.db.unread() + ' unread' : 'You\'re all caught up'}</div></div><button class="link-btn" id="markAll" type="button">Mark all read</button></div>
+    const unreadCount = PF.db.unread();
+    p.innerHTML = `<div class="npanel-head"><div><strong>Notifications</strong><div class="muted">${unreadCount ? unreadCount + ' unread' : 'You\'re all caught up'}</div></div><button class="link-btn" id="markAll" type="button" ${unreadCount ? '' : 'disabled'}>Mark all read</button></div>
       <div class="nlist">${list.length ? list.map(PF.notifItem).join('') : '<div class="empty compact">' + PF.icon('bell') + '<span>No notifications yet</span></div>'}</div>
       <div class="npanel-foot"><a class="link-btn" href="notifications.html">View all notifications</a></div>`;
-    $('#markAll', p).onclick = () => PF.db.markAllRead();
-    $$('.nitem', p).forEach(b => b.onclick = () => { PF.db.markRead(b.dataset.id); if (b.dataset.href) location.href = b.dataset.href; });
+    const markAllBtn = $('#markAll', p);
+    if (markAllBtn) {
+      markAllBtn.onclick = async e => {
+        e.stopPropagation();
+        await PF.markAllNotificationsRead();
+      };
+    }
+    $$('.nitem', p).forEach(b => {
+      b.onclick = async e => {
+        e.stopPropagation();
+        await PF.markNotificationRead(b.dataset.id);
+        const target = b.dataset.href || 'notifications.html';
+        location.href = target;
+      };
+    });
   }
-  PF.notifItem = n => `<button class="nitem ${n.read ? '' : 'unread'}" type="button" data-id="${esc(n.id)}" data-href="${esc(n.href || '')}"><span class="ni tone-${n.tone || 'gold'}">${PF.icon(n.icon || 'bell')}</span><span><strong>${esc(n.title)}</strong><small>${esc(n.text)} · ${timeAgo(n.at)}</small></span></button>`;
+  PF.notifItem = n => `<button class="nitem ${n.read ? '' : 'unread'}" type="button" data-id="${esc(n.id)}" data-href="${esc(n.href || 'notifications.html')}"><span class="ni tone-${n.tone || 'gold'}">${PF.icon(n.icon || 'bell')}</span><span><strong>${esc(n.title)}</strong><small>${esc(n.text ? n.text + ' · ' : '')}${timeAgo(n.at)}</small></span></button>`;
 
   function syncBadges() {
     const n = PF.db.unread(), b = $('#bellBadge');
     if (b) { b.textContent = n; b.hidden = !n; }
     const set = (id, v) => { const el = $(`[data-badge="${id}"]`); if (el) { el.textContent = v; el.hidden = !v; } };
-    
+    set('notifications', n);
     renderNotifPanel();
   }
   PF.refreshNav = () => { $$('.nav-link').forEach(a => a.classList.remove('active')); const cur = currentId(); const t = $$('.nav-link').find(a => a.getAttribute('href') === (getNav().flatMap(g => g.items).find(i => i.id === cur) || {}).href); if (t) t.classList.add('active'); };
@@ -371,8 +479,28 @@
   };
 
   function themeIcon() { const b = $('#themeBtn'); if (b) b.innerHTML = PF.icon(document.documentElement.getAttribute('data-theme') === 'dark' ? 'sun' : 'moon'); }
-  PF.setTheme = t => { try { localStorage.setItem('pf-theme', t); } catch (e) { /* ignore */ } const eff = t === 'system' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : t; document.documentElement.setAttribute('data-theme', eff); themeIcon(); document.dispatchEvent(new CustomEvent('pf:theme')); };
-  PF.setAccent = a => { try { localStorage.setItem('pf-accent', a); } catch (e) { /* ignore */ } if (a === 'gold') document.documentElement.removeAttribute('data-accent'); else document.documentElement.setAttribute('data-accent', a); };
+  PF.setTheme = t => {
+    const eff = t === 'system' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : (t === 'light' ? 'light' : 'dark');
+    try {
+      localStorage.setItem('pf-theme', eff);
+      localStorage.setItem('theme', eff);
+      localStorage.setItem('pf-theme-pref', eff);
+    } catch (e) { /* ignore */ }
+    document.documentElement.setAttribute('data-theme', eff);
+    document.body.classList.toggle('dark', eff === 'dark');
+    themeIcon();
+    document.dispatchEvent(new CustomEvent('pf:theme', { detail: { theme: eff } }));
+  };
+  PF.setAccent = a => {
+    const norm = a === 'blue' ? 'ocean' : (a || 'gold');
+    try {
+      localStorage.setItem('pp-accent', norm);
+      localStorage.setItem('pf-accent', norm);
+      localStorage.setItem('accent', norm);
+    } catch (e) { /* ignore */ }
+    document.documentElement.setAttribute('data-accent', norm);
+    document.dispatchEvent(new CustomEvent('pf:accent', { detail: { accent: norm } }));
+  };
 
   function globalSearch() {
     const input = $('#gSearch'), box = $('#gResults'); if (!input) return;
@@ -420,7 +548,16 @@
     const bb = $('#backBtn'); if (bb) bb.onclick = () => (history.length > 1 ? history.back() : (location.href = 'index.html'));
     $('#themeBtn').onclick = () => PF.setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
     const bell = $('#bellBtn'), panel = $('#npanel');
-    bell.onclick = e => { e.stopPropagation(); const on = panel.hidden; panel.hidden = !on; bell.setAttribute('aria-expanded', on); if (on) renderNotifPanel(); };
+    bell.onclick = e => {
+      e.stopPropagation();
+      const on = panel.hidden;
+      panel.hidden = !on;
+      bell.setAttribute('aria-expanded', on);
+      if (on) {
+        renderNotifPanel();
+        if (PF.syncNotifications) PF.syncNotifications();
+      }
+    };
     document.addEventListener('click', e => { if (!panel.hidden && !panel.contains(e.target) && !bell.contains(e.target)) { panel.hidden = true; bell.setAttribute('aria-expanded', 'false'); } });
     const accountBtn = $('#accountBtn'), sideUserCard = $('#sideUserCard'), sideAccountMenu = $('#sideAccountMenu'), sideLogoutBtn = $('#sideLogoutBtn');
     const setAccountMenu = open => {
@@ -467,6 +604,7 @@
     });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') setAccountMenu(false); });
     globalSearch(); renderNotifPanel();
+    if (PF.syncNotifications) PF.syncNotifications();
     document.addEventListener('pf:data', syncBadges);
     window.addEventListener('hashchange', PF.refreshNav);
     // Another tab changed the data: refresh in place (never reload, never write back).

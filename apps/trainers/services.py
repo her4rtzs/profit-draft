@@ -58,13 +58,13 @@ def assign_trainer(member, trainer, *, actor):
         new = TrainerAssignment.objects.create(member=member, trainer=trainer, assigned_by=actor)
         if previous:
             notify(previous.user, f"{member_name(member)} was reassigned", kind=KIND,
-                   body="They now train with another coach.", link="trainer-portal.html")
+                   body="They now train with another coach.", link="members.html")
             body = f"Your trainer changed from {_name(previous.user)} to {_name(trainer.user)}."
         else:
             body = f"{_name(trainer.user)} is now your trainer."
         notify(member.user, "Trainer assignment updated", kind=KIND, body=body, link="member-home.html#profile")
         notify(trainer.user, f"New member: {member_name(member)}", kind=KIND,
-               body="Check their goals in the trainer portal.", link="trainer-portal.html")
+               body="Check their goals in the trainer portal.", link="members.html")
     return new
 
 
@@ -78,7 +78,7 @@ def remove_trainer(member, *, actor):
         notify(member.user, "Trainer removed", kind=KIND,
                body=f"{_name(current.trainer.user)} is no longer your trainer.", link="member-home.html#profile")
         notify(current.trainer.user, f"{member_name(member)} is no longer assigned to you", kind=KIND,
-               body="The member has been removed from your list.", link="trainer-portal.html")
+               body="The member has been removed from your list.", link="members.html")
     return current
 
 

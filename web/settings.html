@@ -22,32 +22,24 @@
 <div class="portal-result" id="settingsNotice" role="status" hidden></div>
 
   <article id="appearance" class="pp-section-card">
-    <div class="pp-card-head"><div><h2><i class="fa-solid fa-palette"></i> Appearance</h2><p>Changes apply across ProFit on this browser.</p></div></div>
-    <div class="pp-setting">
-      <div class="pp-setting-copy"><strong id="lblDark">Dark mode</strong><p>Charcoal interface that works with any color theme below. The sign-in page opens in dark mode by default.</p></div>
-      <div class="pp-setting-controls">
-        <span class="pp-default" data-default-for="prefDark">Default: On</span>
-        <button class="pp-reset" type="button" data-reset="prefDark">Reset</button>
-        <label class="pp-switch"><input type="checkbox" id="prefDark" aria-labelledby="lblDark"><span></span></label>
-      </div>
+    <div class="pp-card-head"><div><h2>Appearance</h2><p class="pp-muted">Pick how ProFit looks on this device.</p></div></div>
+    <div class="pp-segment" role="radiogroup" aria-label="Theme" style="display:flex;width:100%;margin-top:8px">
+      <button type="button" role="radio" class="active" data-theme-pick="dark" aria-checked="true"><i class="fa-solid fa-moon"></i> Dark</button>
+      <button type="button" role="radio" data-theme-pick="light" aria-checked="false"><i class="fa-regular fa-sun"></i> Light</button>
     </div>
-    <div class="pp-setting">
-      <div class="pp-setting-copy"><strong id="lblAccent">Color theme</strong><p>Choose a color for buttons and highlights. It applies everywhere right away and does not change any of your data.</p></div>
-      <div class="pp-setting-controls">
-        <span class="pp-default" data-default-for="prefAccent">Default: Gold</span>
-        <button class="pp-reset" type="button" data-reset="prefAccent">Reset</button>
-        <div class="pp-swatches" role="radiogroup" aria-labelledby="lblAccent">
-          <button type="button" class="pp-swatch" role="radio" aria-checked="true" data-accent-pick="gold" style="--sw:#e8b93a"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Gold</span></button>
-          <button type="button" class="pp-swatch" role="radio" aria-checked="false" data-accent-pick="spotify" style="--sw:#1db954"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Spotify</span></button>
-          <button type="button" class="pp-swatch" role="radio" aria-checked="false" data-accent-pick="ocean" style="--sw:#0d9488"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Ocean</span></button>
-          <button type="button" class="pp-swatch" role="radio" aria-checked="false" data-accent-pick="indigo" style="--sw:#6366f1"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Indigo</span></button>
-          <button type="button" class="pp-swatch" role="radio" aria-checked="false" data-accent-pick="coral" style="--sw:#f43f5e"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Coral</span></button>
-          <button type="button" class="pp-swatch" role="radio" aria-checked="false" data-accent-pick="emerald" style="--sw:#10b981"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Emerald</span></button>
-          <button type="button" class="pp-swatch" role="radio" aria-checked="false" data-accent-pick="sunset" style="--sw:#f97316"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Sunset</span></button>
-        </div>
+    <div class="pp-field" style="margin-top:18px">
+      <span class="pp-label" id="lblAccent" style="display:block;font-size:13.5px;font-weight:700;color:var(--muted);margin-bottom:10px">Accent colour</span>
+      <div class="pp-swatches" role="radiogroup" aria-labelledby="lblAccent">
+        <button type="button" class="pp-swatch" role="radio" aria-checked="true" data-accent-pick="gold" style="--sw:#e0b94a"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Gold</span></button>
+        <button type="button" class="pp-swatch" role="radio" aria-checked="false" data-accent-pick="spotify" style="--sw:#1db954"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Spotify green</span></button>
+        <button type="button" class="pp-swatch" role="radio" aria-checked="false" data-accent-pick="ocean" style="--sw:#2dd4bf"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Ocean</span></button>
+        <button type="button" class="pp-swatch" role="radio" aria-checked="false" data-accent-pick="indigo" style="--sw:#818cf8"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Indigo</span></button>
+        <button type="button" class="pp-swatch" role="radio" aria-checked="false" data-accent-pick="coral" style="--sw:#fb7185"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Coral</span></button>
+        <button type="button" class="pp-swatch" role="radio" aria-checked="false" data-accent-pick="emerald" style="--sw:#34d399"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Emerald</span></button>
+        <button type="button" class="pp-swatch" role="radio" aria-checked="false" data-accent-pick="sunset" style="--sw:#fb923c"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Sunset</span></button>
       </div>
+      <p class="pp-small pp-muted" style="margin-top:14px">Your favourite colour, everywhere in the app.</p>
     </div>
-
   </article>
 
   <article class="pp-section-card">

@@ -5,20 +5,26 @@
     get: k => { try { return localStorage.getItem(k); } catch { return null; } },
     set: (k, v) => { try { localStorage.setItem(k, v); } catch { /* storage blocked */ } }
   };
-  const ACCENTS = { gold: "Gold", spotify: "Spotify", ocean: "Ocean", indigo: "Indigo", coral: "Coral", emerald: "Emerald", sunset: "Sunset" };
+  const ACCENTS = { gold: "Gold", spotify: "Spotify green", ocean: "Ocean", indigo: "Indigo", coral: "Coral", emerald: "Emerald", sunset: "Sunset" };
   const DEFAULT_ACCENT = "gold";
   const DEFAULTS = { prefDark: true, prefBadge: true };
   const current = {
-    prefDark: store.get("theme") !== "light",
+    prefDark: (store.get("theme") || store.get("pf-theme") || "dark") !== "light",
     prefBadge: store.get("pref-badge") !== "off"
   };
-  let accent = ACCENTS[store.get("pp-accent")] ? store.get("pp-accent") : DEFAULT_ACCENT;
+  const savedAccent = store.get("pp-accent") || store.get("pf-accent") || store.get("accent");
+  let accent = ACCENTS[savedAccent] ? savedAccent : DEFAULT_ACCENT;
   document.documentElement.dataset.accent = accent;
   const onOff = v => (v ? "On" : "Off");
 
   // Each switch reuses the control the rest of the app already uses, so state never drifts.
   const apply = {
-    prefDark: on => { if (document.body.classList.contains("dark") !== on) $("themeToggle")?.click(); },
+    prefDark: on => {
+      store.set("theme", on ? "dark" : "light");
+      store.set("pf-theme", on ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", on ? "dark" : "light");
+      if (document.body.classList.contains("dark") !== on) $("themeToggle")?.click();
+    },
     prefBadge: on => {
       store.set("pref-badge", on ? "on" : "off");
       document.body.classList.toggle("hide-notif-badge", !on);
@@ -34,6 +40,12 @@
       const reset = document.querySelector(`[data-reset="${id}"]`);
       if (reset) reset.disabled = current[id] === DEFAULTS[id];
     });
+    document.querySelectorAll("[data-theme-pick]").forEach(b => {
+      const wantDark = b.dataset.themePick === "dark";
+      const on = wantDark === current.prefDark;
+      b.classList.toggle("active", on);
+      b.setAttribute("aria-checked", String(on));
+    });
     const chip = document.querySelector('[data-default-for="prefAccent"]');
     if (chip) chip.textContent = `Default: ${ACCENTS[DEFAULT_ACCENT]}`;
     const reset = document.querySelector('[data-reset="prefAccent"]');
@@ -42,6 +54,7 @@
       const on = b.dataset.accentPick === accent;
       b.setAttribute("aria-checked", String(on));
       b.classList.toggle("active", on);
+      b.classList.toggle("is-on", on);
     });
   }
 
@@ -54,12 +67,17 @@
     accent = name;
     document.documentElement.dataset.accent = name;
     store.set("pp-accent", name);
+    store.set("pf-accent", name);
+    store.set("accent", name);
     paint();
   }
 
   Object.keys(DEFAULTS).forEach(id => {
     $(id)?.addEventListener("change", e => set(id, e.target.checked));
     document.querySelector(`[data-reset="${id}"]`)?.addEventListener("click", () => set(id, DEFAULTS[id]));
+  });
+  document.querySelectorAll("[data-theme-pick]").forEach(b => {
+    b.addEventListener("click", () => set("prefDark", b.dataset.themePick === "dark"));
   });
   document.querySelectorAll("[data-accent-pick]").forEach(b => b.addEventListener("click", () => setAccent(b.dataset.accentPick)));
   document.querySelector('[data-reset="prefAccent"]')?.addEventListener("click", () => setAccent(DEFAULT_ACCENT));

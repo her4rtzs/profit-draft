@@ -26,6 +26,11 @@ from .trainers import (
     TrainerDashboardView,
     TrainerMemberDetailView,
     TrainerMembersView,
+    TrainerNotificationClearView,
+    TrainerNotificationDeleteView,
+    TrainerNotificationListView,
+    TrainerNotificationReadAllView,
+    TrainerNotificationReadView,
     TrainerProfileView,
     TrainerScheduleView,
 )
@@ -36,7 +41,13 @@ from .announcements import (
     StaffAnnouncementListView,
     StaffAnnouncementPublishView,
 )
-from .notifications import NotificationListView, NotificationReadAllView, NotificationReadView
+from .notifications import (
+    NotificationClearView,
+    NotificationDeleteView,
+    NotificationListView,
+    NotificationReadAllView,
+    NotificationReadView,
+)
 from .staff import (
     StaffAttendanceView,
     StaffCheckInView,
@@ -77,7 +88,9 @@ urlpatterns = [
     path("staff/reports/revenue/", StaffRevenueAnalyticsView.as_view(), name="staff-revenue-analytics"),
     path("notifications/", NotificationListView.as_view(), name="notifications"),
     path("notifications/read-all/", NotificationReadAllView.as_view(), name="notifications-read-all"),
+    path("notifications/clear/", NotificationClearView.as_view(), name="notifications-clear"),
     path("notifications/<int:pk>/read/", NotificationReadView.as_view(), name="notification-read"),
+    path("notifications/<int:pk>/", NotificationDeleteView.as_view(), name="notification-delete"),
     path("announcements/", MemberAnnouncementListView.as_view(), name="announcements"),
     path("staff/announcements/", StaffAnnouncementListView.as_view(), name="staff-announcements"),
     path("staff/announcements/<int:pk>/", StaffAnnouncementDetailView.as_view(), name="staff-announcement-detail"),
@@ -99,6 +112,11 @@ urlpatterns = [
     path("trainer/attendance/", TrainerAttendanceListView.as_view(), name="trainer-attendance"),
     path("trainer/attendance/check-in/", TrainerCheckInView.as_view(), name="trainer-checkin"),
     path("trainer/announcements/", TrainerAnnouncementsView.as_view(), name="trainer-announcements"),
+    path("trainer/notifications/", TrainerNotificationListView.as_view(), name="trainer-notifications"),
+    path("trainer/notifications/read-all/", TrainerNotificationReadAllView.as_view(), name="trainer-notifications-read-all"),
+    path("trainer/notifications/clear/", TrainerNotificationClearView.as_view(), name="trainer-notifications-clear"),
+    path("trainer/notifications/<int:pk>/read/", TrainerNotificationReadView.as_view(), name="trainer-notification-read"),
+    path("trainer/notifications/<int:pk>/", TrainerNotificationDeleteView.as_view(), name="trainer-notification-delete"),
     path("trainer/schedule/", TrainerScheduleView.as_view(), name="trainer-schedule"),
     path("trainer/schedule/note/", TrainerScheduleView.as_view(), name="trainer-schedule-note"),
     path("trainer-requests/", MemberTrainerRequestView.as_view(), name="member-trainer-request"),

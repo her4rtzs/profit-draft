@@ -2046,3 +2046,22 @@ Upgrade the Trainer Portal subpages (Announcements, My Members, Attendance, My S
 - Replaced the bottom-anchored `PF.menu` call on `#accountBtn` (which opened below the viewport and behind the `z-index: 500` fixed `.sidebar`) with an inline upward-opening `.side-account-menu` (`bottom: calc(100% + 8px); z-index: 600`) inside `#sideUserCard`, matching the Staff Portal's `.account-menu` interaction and gold-gradient avatar styling.
 ### Decision-log skill
 - When attaching popovers or dropdown menus to elements inside a `position: fixed` sidebar footer, anchor the menu directly inside the trigger container with `bottom: calc(100% + 8px)` (opening upward) or ensure body-level popovers use `position: fixed` with a `z-index` higher than the sidebar and viewport-clamped vertical coordinates.
+
+## 2026-11-15 10:02 (Asia/Manila): Remove Notification Placeholders, Add Trainer Notification Backend, and Connect Bell Panel to Notifications Section
+### What I asked for
+Fix the notifications dropdown and section: add backend support, remove the hardcoded placeholder notifications, and connect the topbar bell dropdown directly to the Notifications section.
+### What the agent decided and why
+- Removed all 6 hardcoded staff placeholder notifications (`x2`..`x7`: Liza Cortez trainer request, Angela Melillo payment, Ryan Garcia & James Lim expiring, System update, Chloe Rivera failed payment, Mara Villanueva renewal) from `seed()` in `web/assets/js/staff-data.js`, bumped `SEED_VERSION` to `5` with legacy ID filtering, and removed the 3 demo placeholder items from `Trainer.demo.getNotifications()` in `web/trainer/trainer.js`.
+- Added `delete_notification` and `clear_notifications` in `apps/notifications/services.py`, extended `api/notifications.py` with `build_notification_payload`, `NotificationDeleteView`, and `NotificationClearView`, and added Trainer-scoped notification endpoints (`GET /api/trainer/notifications/`, `POST /api/trainer/notifications/<id>/read/`, `POST /api/trainer/notifications/read-all/`, `DELETE /api/trainer/notifications/<id>/`, `POST /api/trainer/notifications/clear/`) plus real-time notification creation on trainer check-ins and schedule broadcasts in `api/trainers.py`.
+- Connected the topbar `#bellBtn` / `#npanel` dropdown, sidebar `Notifications` unread badge (`[data-badge="notifications"]`), and `web/trainer/notifications.html` via `PF.syncNotifications()`, `PF.markNotificationRead()`, `PF.markAllNotificationsRead()`, and the `pf:notifications-updated` event so reading, deleting, or clearing alerts in either the bell popover or `notifications.html` updates both views and the backend simultaneously.
+### Decision-log skill
+- Keep topbar notification popovers and dedicated notification pages backed by a single server-synced store and custom DOM event (`pf:notifications-updated`) rather than separate seeded local arrays.
+
+## 2026-11-15 11:34 (Asia/Manila): Unified Settings Appearance Card Across Trainer, Member, and Staff Portals
+### What I asked for
+Make the Settings Appearance section consistent across the Trainer, Member, and Staff portals.
+### What the agent decided and why
+- Unified the Settings **Appearance** card across `web/trainer/settings.html`, `web/settings.html` (Staff), and `web/member-tabs.js` (Member) with identical layout and controls: heading (`Appearance` / `Pick how ProFit looks on this device.`), the full-width `[ ☾ Dark | ☀ Light ]` segmented pill bar (`.pp-segment`), the `Accent colour` section with all 7 horizontal pill swatches (`Gold`, `Spotify green`, `Ocean`, `Indigo`, `Coral`, `Emerald`, `Sunset`), and caption (`Your favourite colour, everywhere in the app.`).
+- Added CSS token support for all 7 accents (`gold`, `spotify`, `ocean`, `indigo`, `coral`, `emerald`, `sunset`) in `web/assets/css/staff.css` and `web/trainer/trainer.css`, fixed the `.pp-swatch` horizontal pill override in `web/pro-theme.css`, and synchronized `localStorage` persistence (`theme` / `pf-theme` and `pp-accent` / `pf-accent` / `accent`) across `web/assets/js/staff.js`, `web/assets/js/staff-boot.js`, `web/settings.js`, and `web/member-tabs.js`.
+### Decision-log skill
+- Keep cross-portal appearance controls (theme mode and accent swatches) unified in markup, CSS token names (`html[data-accent="..."]`), and `localStorage` keys so user preferences carry seamlessly across Member, Staff, and Trainer portals.

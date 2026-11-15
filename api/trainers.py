@@ -25,7 +25,16 @@ from apps.announcements.models import Announcement
 from apps.membership.models import Attendance, MemberProfile
 from apps.membership.services import check_in_member
 from apps.notifications.models import Notification
-from apps.notifications.services import notify_many
+from apps.notifications.services import (
+    clear_notifications,
+    delete_notification,
+    mark_all_read,
+    mark_read,
+    notify,
+    notify_many,
+    unread_count,
+)
+from .notifications import build_notification_payload
 from apps.trainers import services
 from apps.trainers.models import TrainerAssignment, TrainerProfile, TrainerRequest
 
@@ -889,6 +898,14 @@ class TrainerCheckInView(APIView):
         except DjangoValidationError as exc:
             return Response({"detail": " ".join(exc.messages)}, status=400)
 
+        notify(
+            user,
+            f"Attendance logged: {_name(member.user)}",
+            kind=Notification.Kind.TRAINER,
+            body=f"{_name(member.user)} checked in on {record.check_in_date.isoformat()}.",
+            link="attendance.html",
+        )
+
         return Response({
             "id": record.pk,
             "member_id": member.pk,
@@ -1056,6 +1073,13 @@ class TrainerScheduleView(APIView):
                 body=f"{coach_label}: {note}",
                 link="member-home.html#timetable",
             )
+        notify(
+            user,
+            title=f"Schedule update sent: {session_name}",
+            kind=Notification.Kind.TRAINER,
+            body=f"Broadcast delivered to {len(member_users)} athlete{'s' if len(member_users) != 1 else ''}: {note[:140]}",
+            link="schedule.html",
+        )
         return Response({
             "detail": f"Schedule update sent to {len(member_users)} athlete{'s' if len(member_users) != 1 else ''}.",
             "recipient_count": len(member_users),
@@ -1063,3 +1087,83 @@ class TrainerScheduleView(APIView):
             "note": note,
             "sent_at": timezone.now().isoformat(),
         })
+
+
+class TrainerNotificationListView(APIView):
+    """GET /api/trainer/notifications/ -> notifications for the active trainer with stats."""
+
+    permission_classes = [IsTrainerOrOwner]
+
+    def get(self, request):
+        user = _effective_trainer_user(request)
+        try:
+            limit = min(max(int(request.query_params.get("limit", 40)), 1), 100)
+        except ValueError:
+            limit = 40
+        kind = str(request.query_params.get("kind") or "").strip()
+        unread_only = str(request.query_params.get("unread") or "").strip().lower() in ("1", "true", "yes")
+        return Response(
+            build_notification_payload(
+                user,
+                limit=limit,
+                kind=kind,
+                unread_only=unread_only,
+            )
+        )
+
+
+class TrainerNotificationReadView(APIView):
+    """POST /api/trainer/notifications/<int:pk>/read/"""
+
+    permission_classes = [IsTrainerOrOwner]
+
+    def post(self, request, pk):
+        user = _effective_trainer_user(request)
+        try:
+            note = mark_read(user, pk)
+        except LookupError:
+            return Response({"detail": "Notification not found."}, status=404)
+        return Response({
+            "id": note.pk,
+            "read": True,
+            "read_at": note.read_at.isoformat() if note.read_at else None,
+            "unread": unread_count(user),
+        })
+
+
+class TrainerNotificationReadAllView(APIView):
+    """POST /api/trainer/notifications/read-all/"""
+
+    permission_classes = [IsTrainerOrOwner]
+
+    def post(self, request):
+        user = _effective_trainer_user(request)
+        mark_all_read(user)
+        return Response({"unread": 0})
+
+
+class TrainerNotificationDeleteView(APIView):
+    """DELETE /api/trainer/notifications/<int:pk>/"""
+
+    permission_classes = [IsTrainerOrOwner]
+
+    def delete(self, request, pk):
+        user = _effective_trainer_user(request)
+        try:
+            delete_notification(user, pk)
+        except LookupError:
+            return Response({"detail": "Notification not found."}, status=404)
+        return Response({"deleted": pk, "unread": unread_count(user)})
+
+
+class TrainerNotificationClearView(APIView):
+    """POST /api/trainer/notifications/clear/"""
+
+    permission_classes = [IsTrainerOrOwner]
+
+    def post(self, request):
+        user = _effective_trainer_user(request)
+        read_only = bool(request.data.get("read_only", False))
+        cleared = clear_notifications(user, read_only=read_only)
+        return Response({"cleared": cleared, "unread": unread_count(user)})
+

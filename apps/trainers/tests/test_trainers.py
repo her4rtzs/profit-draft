@@ -150,6 +150,29 @@ class TrainerTests(TestCase):
         self.assertIn("items", ann_res.json())
         self.assertIn("stats", ann_res.json())
 
+        # 9. Trainer notification endpoints (list, mark read, read-all, delete, clear)
+        notif_res = self.client.get("/api/trainer/notifications/")
+        self.assertEqual(notif_res.status_code, 200)
+        notif_payload = notif_res.json()
+        self.assertGreaterEqual(notif_payload["total"], 2)
+        first_id = notif_payload["items"][0]["id"]
+
+        read_res = self.client.post(f"/api/trainer/notifications/{first_id}/read/", {}, content_type="application/json")
+        self.assertEqual(read_res.status_code, 200)
+        self.assertTrue(read_res.json()["read"])
+
+        del_res = self.client.delete(f"/api/trainer/notifications/{first_id}/")
+        self.assertEqual(del_res.status_code, 200)
+        self.assertEqual(del_res.json()["deleted"], first_id)
+
+        read_all_res = self.client.post("/api/trainer/notifications/read-all/", {}, content_type="application/json")
+        self.assertEqual(read_all_res.status_code, 200)
+        self.assertEqual(read_all_res.json()["unread"], 0)
+
+        clear_res = self.client.post("/api/trainer/notifications/clear/", {}, content_type="application/json")
+        self.assertEqual(clear_res.status_code, 200)
+        self.assertEqual(clear_res.json()["unread"], 0)
+
     def test_attendance_week_bucketing_across_month_boundaries(self):
         """Monday-start week spanning Sep 28 – Oct 4 aggregates Sep and Oct check-ins into one bucket."""
         self.m.date_joined = timezone.datetime(2026, 9, 1).date()

@@ -6,7 +6,13 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.notifications.models import Notification
-from apps.notifications.services import mark_all_read, mark_read, unread_count
+from apps.notifications.services import (
+    clear_notifications,
+    delete_notification,
+    mark_all_read,
+    mark_read,
+    unread_count,
+)
 
 
 class NotificationSerializer(serializers.ModelSerializer):
@@ -24,21 +30,59 @@ class NotificationSerializer(serializers.ModelSerializer):
         return obj.read_at is not None
 
 
+def build_notification_payload(user, *, limit=30, kind="", unread_only=False):
+    all_qs = Notification.objects.filter(recipient=user)
+    all_rows = list(all_qs)
+    unread_total = sum(1 for n in all_rows if n.read_at is None)
+    trainer_count = sum(1 for n in all_rows if n.kind == Notification.Kind.TRAINER)
+    ann_count = sum(1 for n in all_rows if n.kind == Notification.Kind.ANNOUNCEMENT)
+    membership_count = sum(1 for n in all_rows if n.kind == Notification.Kind.MEMBERSHIP)
+    payment_count = sum(1 for n in all_rows if n.kind == Notification.Kind.PAYMENT)
+    general_count = sum(1 for n in all_rows if n.kind == Notification.Kind.GENERAL)
+
+    filtered = all_qs
+    if kind:
+        filtered = filtered.filter(kind__iexact=kind)
+    if unread_only:
+        filtered = filtered.filter(read_at__isnull=True)
+    rows = filtered[:limit]
+
+    return {
+        "unread": unread_total,
+        "total": len(all_rows),
+        "stats": {
+            "total": len(all_rows),
+            "unread": unread_total,
+            "trainer": trainer_count,
+            "announcement": ann_count,
+            "membership": membership_count,
+            "payment": payment_count,
+            "general": general_count,
+        },
+        "items": NotificationSerializer(rows, many=True).data,
+    }
+
+
 class NotificationListView(APIView):
-    """GET /api/notifications/?limit=30 -> {"unread": n, "items": [...]}"""
+    """GET /api/notifications/?limit=30 -> {"unread": n, "total": t, "stats": {...}, "items": [...]}"""
 
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         try:
-            limit = min(max(int(request.query_params.get("limit", 20)), 1), 50)
+            limit = min(max(int(request.query_params.get("limit", 30)), 1), 100)
         except ValueError:
-            limit = 20
-        rows = Notification.objects.filter(recipient=request.user)[:limit]
-        return Response({
-            "unread": unread_count(request.user),
-            "items": NotificationSerializer(rows, many=True).data,
-        })
+            limit = 30
+        kind = str(request.query_params.get("kind") or "").strip()
+        unread_only = str(request.query_params.get("unread") or "").strip().lower() in ("1", "true", "yes")
+        return Response(
+            build_notification_payload(
+                request.user,
+                limit=limit,
+                kind=kind,
+                unread_only=unread_only,
+            )
+        )
 
 
 class NotificationReadView(APIView):
@@ -51,7 +95,12 @@ class NotificationReadView(APIView):
             note = mark_read(request.user, pk)
         except LookupError:
             return Response({"detail": "Notification not found."}, status=404)
-        return Response({"id": note.pk, "read": True, "unread": unread_count(request.user)})
+        return Response({
+            "id": note.pk,
+            "read": True,
+            "read_at": note.read_at.isoformat() if note.read_at else None,
+            "unread": unread_count(request.user),
+        })
 
 
 class NotificationReadAllView(APIView):
@@ -62,3 +111,28 @@ class NotificationReadAllView(APIView):
     def post(self, request):
         mark_all_read(request.user)
         return Response({"unread": 0})
+
+
+class NotificationDeleteView(APIView):
+    """DELETE /api/notifications/<id>/"""
+
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, pk):
+        try:
+            delete_notification(request.user, pk)
+        except LookupError:
+            return Response({"detail": "Notification not found."}, status=404)
+        return Response({"deleted": pk, "unread": unread_count(request.user)})
+
+
+class NotificationClearView(APIView):
+    """POST /api/notifications/clear/"""
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        read_only = bool(request.data.get("read_only", False))
+        cleared = clear_notifications(request.user, read_only=read_only)
+        return Response({"cleared": cleared, "unread": unread_count(request.user)})
+

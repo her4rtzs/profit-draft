@@ -953,12 +953,16 @@
   const ACCENT_KEY = "pp-accent";
   const readAccent = () => {
     let v = "gold";
-    try { v = localStorage.getItem(ACCENT_KEY) || "gold"; } catch { /* ignore */ }
+    try { v = localStorage.getItem(ACCENT_KEY) || localStorage.getItem("pf-accent") || "gold"; } catch { /* ignore */ }
     if (!ACCENT_SWATCHES.some(a => a.id === v)) v = "gold";
     return { value: v };
   };
   const writeAccent = v => {
-    try { localStorage.setItem(ACCENT_KEY, v); } catch { /* ignore */ }
+    try {
+      localStorage.setItem(ACCENT_KEY, v);
+      localStorage.setItem("pf-accent", v);
+      localStorage.setItem("accent", v);
+    } catch { /* ignore */ }
     document.documentElement.dataset.accent = v;
   };
 

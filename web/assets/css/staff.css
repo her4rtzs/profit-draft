@@ -33,12 +33,20 @@ html[data-theme="dark"]{
   --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.28);
   color-scheme:dark;
 }
-html[data-accent="ocean"]{--gold:#2f8fe0;--gold-2:#62b3f5;--gold-3:#1f6fb8;--gold-ink:#0d4a82;--gold-soft:rgba(47,143,224,.14);--bg-glow:rgba(98,179,245,.25)}
-html[data-accent="emerald"]{--gold:#12a57f;--gold-2:#4cd1ac;--gold-3:#0b8365;--gold-ink:#06583f;--gold-soft:rgba(18,165,127,.14);--bg-glow:rgba(76,209,172,.22)}
-html[data-accent="indigo"]{--gold:#6a5be2;--gold-2:#9a8cf5;--gold-3:#4e40c2;--gold-ink:#33288f;--gold-soft:rgba(106,91,226,.14);--bg-glow:rgba(154,140,245,.22)}
-html[data-theme="dark"][data-accent="ocean"]{--gold-ink:#8ec8fa}
-html[data-theme="dark"][data-accent="emerald"]{--gold-ink:#7fe0c3}
-html[data-theme="dark"][data-accent="indigo"]{--gold-ink:#b9b0fa}
+html[data-accent="gold"]{--gold:#e3ae2b;--gold-2:#f4cc64;--gold-3:#c8921a;--gold-ink:#7a5300;--gold-soft:rgba(227,174,43,.14);--bg-glow:rgba(240,199,94,.28)}
+html[data-accent="spotify"]{--gold:#1db954;--gold-2:#4ded88;--gold-3:#12964a;--gold-ink:#0b6b2f;--gold-soft:rgba(29,185,84,.14);--bg-glow:rgba(29,185,84,.22)}
+html[data-accent="ocean"],html[data-accent="blue"]{--gold:#0d9488;--gold-2:#2dd4bf;--gold-3:#0f766e;--gold-ink:#0f766e;--gold-soft:rgba(45,212,191,.14);--bg-glow:rgba(45,212,191,.22)}
+html[data-accent="indigo"]{--gold:#6366f1;--gold-2:#818cf8;--gold-3:#4f46e5;--gold-ink:#33288f;--gold-soft:rgba(129,140,248,.14);--bg-glow:rgba(129,140,248,.22)}
+html[data-accent="coral"]{--gold:#f43f5e;--gold-2:#fb7185;--gold-3:#e11d48;--gold-ink:#be123c;--gold-soft:rgba(244,63,94,.14);--bg-glow:rgba(251,113,133,.22)}
+html[data-accent="emerald"]{--gold:#10b981;--gold-2:#34d399;--gold-3:#059669;--gold-ink:#06583f;--gold-soft:rgba(16,185,129,.14);--bg-glow:rgba(52,211,153,.22)}
+html[data-accent="sunset"]{--gold:#f97316;--gold-2:#fb923c;--gold-3:#ea580c;--gold-ink:#c2410c;--gold-soft:rgba(249,115,22,.14);--bg-glow:rgba(251,146,60,.22)}
+html[data-theme="dark"][data-accent="gold"]{--gold-ink:#f4cc64}
+html[data-theme="dark"][data-accent="spotify"]{--gold:#1ed760;--gold-2:#4ded88;--gold-ink:#6ef29d;--gold-soft:rgba(30,215,96,.16)}
+html[data-theme="dark"][data-accent="ocean"],html[data-theme="dark"][data-accent="blue"]{--gold:#2dd4bf;--gold-2:#5eead4;--gold-ink:#5eead4;--gold-soft:rgba(45,212,191,.16)}
+html[data-theme="dark"][data-accent="indigo"]{--gold:#818cf8;--gold-2:#a5b4fc;--gold-ink:#a5b4fc;--gold-soft:rgba(129,140,248,.18)}
+html[data-theme="dark"][data-accent="coral"]{--gold:#fb7185;--gold-2:#fda4af;--gold-ink:#fda4af;--gold-soft:rgba(251,113,133,.18)}
+html[data-theme="dark"][data-accent="emerald"]{--gold:#34d399;--gold-2:#6ee7b7;--gold-ink:#6ee7b7;--gold-soft:rgba(52,211,153,.16)}
+html[data-theme="dark"][data-accent="sunset"]{--gold:#fb923c;--gold-2:#fdba74;--gold-ink:#fdba74;--gold-soft:rgba(251,146,60,.16)}
 
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}

@@ -99,6 +99,7 @@
             bc.postMessage({ type: 'checkin', memberId: Number(memberId), ts: Date.now() });
             bc.close();
           }
+          if (window.PF && PF.syncNotifications) PF.syncNotifications();
         } catch (_) {}
         return res;
       },
@@ -115,7 +116,9 @@
         const payload = { session_name: sessionName, note: note };
         if (memberId && memberId !== 'all') payload.member_id = Number(memberId);
         if (!api) return Trainer.demo.sendScheduleNote(sessionName, note, memberId);
-        return await api.post('/trainer/schedule/note/', payload);
+        const res = await api.post('/trainer/schedule/note/', payload);
+        if (window.PF && PF.syncNotifications) PF.syncNotifications();
+        return res;
       },
       async getAnnouncements() {
         if (!api) return Trainer.demo.getAnnouncements();
@@ -134,40 +137,97 @@
           return Trainer.demo.getAnnouncements();
         }
       },
-      async getNotifications() {
+      async getNotifications({ syncShell = true } = {}) {
         const normalizeList = (raw) => {
           const list = Array.isArray(raw) ? raw : (raw && Array.isArray(raw.items) ? raw.items : []);
-          return list.map(n => ({
+          const items = list.map(n => ({
             ...n,
             created_at: n.created_at || n.time || new Date().toISOString(),
             time: n.time || n.created_at || new Date().toISOString(),
             read_at: n.read_at !== undefined ? n.read_at : (n.read ? (n.time || n.created_at || new Date().toISOString()) : null),
             read: Boolean(n.read || n.read_at)
           }));
+          if (syncShell && window.PF && PF.db && PF.db.setNotifications && PF.mapServerNotification) {
+            PF.db.setNotifications(items.map(PF.mapServerNotification));
+          }
+          return items;
         };
         if (!api) return normalizeList(Trainer.demo.getNotifications());
         try {
-          const res = await api.get('/notifications/?limit=40');
+          const res = await api.get('/trainer/notifications/?limit=40');
           return normalizeList(res);
         } catch (e) {
-          console.warn('API error, using demo fallback:', e);
-          return normalizeList(Trainer.demo.getNotifications());
+          try {
+            const fallback = await api.get('/notifications/?limit=40');
+            return normalizeList(fallback);
+          } catch (_) {
+            return normalizeList(Trainer.demo.getNotifications());
+          }
         }
       },
-      async markNotifRead(id) {
+      async markNotifRead(id, { syncShell = true } = {}) {
+        if (syncShell && window.PF && PF.db && PF.db.markRead) PF.db.markRead(id);
         if (!api) return;
         try {
-          return await api.post(`/notifications/${id}/read/`, {});
+          return await api.post(`/trainer/notifications/${id}/read/`, {});
         } catch (e) {
-          console.warn(e);
+          try {
+            return await api.post(`/notifications/${id}/read/`, {});
+          } catch (err) {
+            console.warn(err);
+          }
         }
       },
-      async markAllNotifsRead() {
+      async markAllNotifsRead({ syncShell = true } = {}) {
+        if (syncShell && window.PF && PF.db && PF.db.markAllRead) PF.db.markAllRead();
         if (!api) return;
         try {
-          return await api.post('/notifications/read-all/', {});
+          return await api.post('/trainer/notifications/read-all/', {});
         } catch (e) {
-          console.warn(e);
+          try {
+            return await api.post('/notifications/read-all/', {});
+          } catch (err) {
+            console.warn(err);
+          }
+        }
+      },
+      async deleteNotif(id, { syncShell = true } = {}) {
+        if (syncShell && window.PF && PF.db && PF.db.removeNotification) PF.db.removeNotification(id);
+        if (!api) return;
+        try {
+          if (typeof api.delete === 'function') {
+            return await api.delete(`/trainer/notifications/${id}/`);
+          }
+          return await api.request('DELETE', `/trainer/notifications/${id}/`);
+        } catch (e) {
+          try {
+            if (typeof api.delete === 'function') {
+              return await api.delete(`/notifications/${id}/`);
+            }
+            return await api.request('DELETE', `/notifications/${id}/`);
+          } catch (err) {
+            console.warn(err);
+          }
+        }
+      },
+      async clearNotifs(readOnly = false, { syncShell = true } = {}) {
+        if (syncShell && window.PF && PF.db) {
+          if (readOnly) {
+            const unreadItems = PF.db.notifications().filter(n => !n.read);
+            PF.db.setNotifications(unreadItems);
+          } else if (PF.db.clearNotifications) {
+            PF.db.clearNotifications();
+          }
+        }
+        if (!api) return;
+        try {
+          return await api.post('/trainer/notifications/clear/', { read_only: Boolean(readOnly) });
+        } catch (e) {
+          try {
+            return await api.post('/notifications/clear/', { read_only: Boolean(readOnly) });
+          } catch (err) {
+            console.warn(err);
+          }
         }
       },
       async changePassword(currentPassword, newPassword) {
@@ -197,7 +257,7 @@
           load: 6,
           active_members: 6,
           today_checkins: 3,
-          unread_notifications: 2,
+          unread_notifications: 0,
           is_full: false,
           is_active: true
         };
@@ -231,7 +291,7 @@
           announcements: [
             { id: 1, title: 'Gym Equipment Upgrades', message: 'New Olympic barbells and bumper plates have arrived in Studio 1.', publish_on: new Date().toISOString().slice(0, 10), pinned: true }
           ],
-          unread_notifications: 2
+          unread_notifications: 0
         };
       },
       getMembers() {
@@ -465,11 +525,7 @@
         ];
       },
       getNotifications() {
-        return [
-          { id: 1, kind: 'TRAINER', title: 'New member assigned: Joyce Alvarez', body: 'Joyce Alvarez has been matched to your coaching roster by the gym owner.', link: 'members.html', read_at: null, read: false, created_at: new Date(Date.now() - 3600000).toISOString() },
-          { id: 2, kind: 'ANNOUNCEMENT', title: 'Pinned Notice: Q4 Coach Alignment Sync', body: 'New trainer-only announcement posted for Saturday at 1:00 PM in Studio 2.', link: 'announcements.html', read_at: null, read: false, created_at: new Date(Date.now() - 14400000).toISOString() },
-          { id: 3, kind: 'TRAINER', title: 'Schedule Update Confirmed', body: 'Your broadcast note for Sunrise HIIT was delivered to your assigned athletes.', link: 'schedule.html', read_at: new Date().toISOString(), read: true, created_at: new Date(Date.now() - 86400000).toISOString() }
-        ];
+        return [];
       }
     },
 
@@ -510,7 +566,8 @@
       try {
         const [prof, members] = await Promise.all([
           Trainer.api.getProfile(),
-          Trainer.api.getMembers()
+          Trainer.api.getMembers(),
+          window.PF && PF.syncNotifications ? PF.syncNotifications() : Promise.resolve()
         ]);
         Trainer._cachedMembers = members;
         if (window.PF && PF.syncShellProfile && prof) {

@@ -68,3 +68,24 @@ class NotificationApiTests(TestCase):
         notes = Notification.objects.filter(recipient=self.member, kind="MEMBERSHIP")
         self.assertEqual(notes.count(), 1)
         self.assertIn("monthly", notes.first().body)
+
+    def test_delete_and_clear_notifications(self):
+        n1 = notify(self.member, "Alert 1", kind="TRAINER")
+        notify(self.member, "Alert 2", kind="ANNOUNCEMENT")
+        self.as_(self.member)
+
+        # Delete one
+        del_res = self.api.delete(f"/api/notifications/{n1.pk}/")
+        self.assertEqual(del_res.status_code, 200)
+        self.assertEqual(del_res.json()["unread"], 1)
+
+        # Cannot delete someone else's notification
+        other_note = notify(self.other, "Private")
+        self.assertEqual(self.api.delete(f"/api/notifications/{other_note.pk}/").status_code, 404)
+
+        # Clear remaining
+        clear_res = self.api.post("/api/notifications/clear/", {}, format="json")
+        self.assertEqual(clear_res.status_code, 200)
+        self.assertEqual(clear_res.json()["unread"], 0)
+        self.assertEqual(Notification.objects.filter(recipient=self.member).count(), 0)
+

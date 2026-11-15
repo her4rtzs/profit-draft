@@ -4,11 +4,12 @@
   try {
     var qTheme = (typeof window !== 'undefined' && window.location && window.location.search) ? new URLSearchParams(window.location.search).get('theme') : null;
     var def = h.getAttribute('data-default-theme') || 'light';
-    var t = qTheme || localStorage.getItem('pf-theme') || def;
+    var t = qTheme || localStorage.getItem('pf-theme') || localStorage.getItem('theme') || def;
     if (t === 'system') t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     h.setAttribute('data-theme', t === 'dark' ? 'dark' : 'light');
-    var a = localStorage.getItem('pf-accent') || 'gold';
-    if (a !== 'gold') h.setAttribute('data-accent', a);
+    var a = localStorage.getItem('pp-accent') || localStorage.getItem('pf-accent') || localStorage.getItem('accent') || 'gold';
+    if (a === 'blue') a = 'ocean';
+    h.setAttribute('data-accent', a);
     if (localStorage.getItem('pf-mini') === '1') h.classList.add('pre-mini');
   } catch (e) { h.setAttribute('data-theme', 'light'); }
 })();
