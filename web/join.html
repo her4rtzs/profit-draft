@@ -32,7 +32,7 @@
 <label class="auth-label" for="name">Full name</label><input class="auth-input" id="name" autocomplete="name" maxlength="100" placeholder="Enter your full name">
 <div class="jn-row"><div><label class="auth-label" for="email">Email</label><input class="auth-input" id="email" type="email" autocomplete="email" maxlength="254" placeholder="you@example.com"></div><div><label class="auth-label" for="phone">Mobile number</label><input class="auth-input" id="phone" type="tel" autocomplete="tel" maxlength="20" placeholder="09XX XXX XXXX"></div></div>
 <div class="jn-row"><div><label class="auth-label" for="pw">Password</label><input class="auth-input" id="pw" type="password" autocomplete="new-password" maxlength="128" placeholder="8+ characters"></div><div><label class="auth-label" for="pw2">Confirm password</label><input class="auth-input" id="pw2" type="password" autocomplete="new-password" maxlength="128" placeholder="Repeat password"></div></div>
-<label class="jn-terms"><input type="checkbox" id="terms"><span>I have read and agree to the <a href="terms.html" target="_blank" rel="noopener">Terms of Service</a> and <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</span></label>
+<label class="jn-terms"><input type="checkbox" id="terms"><span>I have read and agree to the <a href="terms.html" data-legal="terms">Terms of Service</a> and <a href="privacy.html" data-legal="privacy">Privacy Policy</a>.</span></label>
 <p class="jn-err" id="err" role="alert"></p>
 <button class="portal-submit auth-submit" id="go" type="submit"><span>Continue to secure payment</span><i class="fa-solid fa-arrow-right"></i></button>
 </form>
@@ -80,28 +80,158 @@
 })();
 </script>
 <script src="portal-fx.js?v=2"></script>
-<script src="site-footer.js?v=2" defer></script>
-<dialog id="legalDialog" class="legal-dialog" aria-labelledby="legalDialogTitle">
-<div class="legal-dialog-bar"><strong id="legalDialogTitle">Legal</strong><button type="button" class="legal-dialog-close" aria-label="Close">&times;</button></div>
-<div class="legal-dialog-body" id="legalDialogBody"></div>
-</dialog>
+<script src="site-footer.js?v=6" defer></script>
+<style>
+.jn-legal-backdrop{position:fixed;inset:0;z-index:1200;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(7,10,18,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;visibility:hidden;transition:opacity .22s ease,visibility .22s ease}
+.jn-legal-backdrop.is-open{opacity:1;visibility:visible}
+.jn-legal-modal{width:min(740px,100%);max-height:min(86vh,760px);display:flex;flex-direction:column;background:#131C2E;color:#f6efdc;border:1px solid rgba(255,255,255,.1);border-radius:18px;box-shadow:0 24px 64px rgba(0,0,0,.55);overflow:hidden;transform:translateY(12px) scale(.97);transition:transform .22s cubic-bezier(.2,.8,.2,1)}
+.jn-legal-backdrop.is-open .jn-legal-modal{transform:translateY(0) scale(1)}
+.jn-legal-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:18px 22px;border-bottom:1px solid rgba(255,255,255,.08)}
+.jn-legal-head-left{display:flex;align-items:center;gap:12px;min-width:0}
+.jn-legal-ico{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:rgba(232,185,58,.14);color:#e8b93a;border:1px solid rgba(232,185,58,.28);font-size:17px;flex:none}
+.jn-legal-head h3{margin:0;font:700 18px/1.2 "Plus Jakarta Sans",Inter,sans-serif;color:#fff}
+.jn-legal-head p{margin:3px 0 0;font-size:12.5px;color:#94a3b8}
+.jn-legal-x{width:36px;height:36px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:#cbd5e1;font-size:20px;line-height:1;display:grid;place-items:center;cursor:pointer;transition:background-color .15s,border-color .15s,color .15s}
+.jn-legal-x:hover{background:rgba(232,185,58,.14);border-color:rgba(232,185,58,.45);color:#e8b93a}
+.jn-legal-tabs{display:flex;gap:8px;padding:12px 22px;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(11,18,32,.45)}
+.jn-legal-tab{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.1);background:transparent;color:#94a3b8;font:600 13px/1.2 "Plus Jakarta Sans",Inter,sans-serif;cursor:pointer;transition:all .15s ease}
+.jn-legal-tab:hover{border-color:rgba(232,185,58,.45);color:#fff}
+.jn-legal-tab.is-active{background:#e8b93a;color:#1a1407;border-color:#e8b93a;font-weight:700}
+.jn-legal-body{flex:1 1 auto;overflow-y:auto;padding:20px 22px;font-size:14px;line-height:1.65;color:#cbd5e1}
+.jn-legal-body .legal-sec{margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.06)}
+.jn-legal-body .legal-sec:last-child{border-bottom:0;margin-bottom:0}
+.jn-legal-body h2{display:flex;align-items:center;gap:10px;font-size:15.5px;font-weight:700;color:#fff;margin:0 0 8px}
+.jn-legal-body .legal-num{width:24px;height:24px;border-radius:7px;display:inline-grid;place-items:center;background:rgba(232,185,58,.15);color:#e8b93a;font-size:12px;font-weight:700;flex:none}
+.jn-legal-body p{margin:0 0 8px}
+.jn-legal-body ul{margin:6px 0 0;padding-left:20px;display:grid;gap:6px}
+.jn-legal-body a{color:#e8b93a;text-decoration:underline}
+.jn-legal-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 22px;border-top:1px solid rgba(255,255,255,.08);background:rgba(11,18,32,.55)}
+.jn-legal-note{margin:0;font-size:12.5px;color:#94a3b8}
+.jn-legal-acts{display:flex;align-items:center;gap:10px;margin-left:auto}
+.jn-legal-btn{height:38px;padding:0 16px;border-radius:10px;font:600 13.5px/1 "Plus Jakarta Sans",Inter,sans-serif;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:#e2e8f0;cursor:pointer;transition:all .15s ease}
+.jn-legal-btn:hover{border-color:rgba(232,185,58,.45);color:#fff}
+.jn-legal-btn.primary{background:#e8b93a;color:#1a1407;border-color:#e8b93a;font-weight:700}
+.jn-legal-btn.primary:hover{filter:brightness(1.06)}
+@media(max-width:560px){.jn-legal-backdrop{padding:12px}.jn-legal-head,.jn-legal-tabs,.jn-legal-body,.jn-legal-foot{padding-left:16px;padding-right:16px}.jn-legal-foot{flex-direction:column;align-items:stretch}.jn-legal-acts{justify-content:flex-end}}
+</style>
+
+<div id="legalModalBackdrop" class="jn-legal-backdrop" hidden aria-hidden="true">
+  <div id="legalModal" class="jn-legal-modal" role="dialog" aria-modal="true" aria-labelledby="legalModalTitle">
+    <div class="jn-legal-head">
+      <div class="jn-legal-head-left">
+        <span class="jn-legal-ico" aria-hidden="true"><i class="fa-regular fa-file-lines"></i></span>
+        <div>
+          <h3 id="legalModalTitle">Terms of Service</h3>
+          <p>ProFit · Functional Performance · Last updated: October 2026</p>
+        </div>
+      </div>
+      <button type="button" class="jn-legal-x" id="legalModalCloseX" aria-label="Close modal">&times;</button>
+    </div>
+    <div class="jn-legal-tabs" role="tablist" aria-label="Legal documents">
+      <button type="button" class="jn-legal-tab is-active" role="tab" aria-selected="true" data-doc="terms">
+        <i class="fa-regular fa-file-lines" aria-hidden="true"></i> Terms of Service
+      </button>
+      <button type="button" class="jn-legal-tab" role="tab" aria-selected="false" data-doc="privacy">
+        <i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Privacy Policy
+      </button>
+    </div>
+    <div class="jn-legal-body" id="legalModalBody" tabindex="0"></div>
+    <div class="jn-legal-foot">
+      <p class="jn-legal-note">Review both documents, then check the agreement box to continue.</p>
+      <div class="jn-legal-acts">
+        <button type="button" class="jn-legal-btn" id="legalModalCloseBtn">Close</button>
+        <button type="button" class="jn-legal-btn primary" id="legalModalDoneBtn">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 (function(){
-  var dlg=document.getElementById('legalDialog'), body=document.getElementById('legalDialogBody'), title=document.getElementById('legalDialogTitle');
-  if(!dlg||!dlg.showModal) return;
-  function openLegal(a){
-    var href=a.getAttribute('href');
-    title.textContent=a.textContent.trim();
-    body.innerHTML='<p class="legal-meta">Loading...</p>';
-    dlg.showModal();
-    fetch(href,{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.text();})
-      .then(function(t){var doc=new DOMParser().parseFromString(t,'text/html');var main=doc.querySelector('.legal-main');body.innerHTML=main?main.innerHTML:'<p>Could not load this page.</p>';body.scrollTop=0;})
-      .catch(function(){body.innerHTML='<p>Could not load this page. Please try again.</p>';});
+  var backdrop = document.getElementById('legalModalBackdrop');
+  var bodyEl = document.getElementById('legalModalBody');
+  var titleEl = document.getElementById('legalModalTitle');
+  var tabs = document.querySelectorAll('.jn-legal-tab[data-doc]');
+  var closeX = document.getElementById('legalModalCloseX');
+  var closeBtn = document.getElementById('legalModalCloseBtn');
+  var doneBtn = document.getElementById('legalModalDoneBtn');
+  if(!backdrop || !bodyEl) return;
+
+  var DOCS = {
+    terms: { url: 'terms.html', title: 'Terms of Service' },
+    privacy: { url: 'privacy.html', title: 'Privacy Policy' }
+  };
+  var cache = {};
+  var lastTrigger = null;
+
+  function loadDoc(key){
+    var cfg = DOCS[key] || DOCS.terms;
+    titleEl.textContent = cfg.title;
+    tabs.forEach(function(t){
+      var on = t.getAttribute('data-doc') === key;
+      t.classList.toggle('is-active', on);
+      t.setAttribute('aria-selected', String(on));
+    });
+    if(cache[key]){
+      bodyEl.innerHTML = cache[key];
+      bodyEl.scrollTop = 0;
+      return;
+    }
+    bodyEl.innerHTML = '<p style="color:#94a3b8">Loading ' + cfg.title + '...</p>';
+    fetch(cfg.url, { cache: 'no-store' })
+      .then(function(r){ if(!r.ok) throw new Error(r.status); return r.text(); })
+      .then(function(html){
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        var card = doc.querySelector('.legal-card');
+        var content = card ? card.innerHTML : '<p>Could not load this document.</p>';
+        cache[key] = content;
+        bodyEl.innerHTML = content;
+        bodyEl.scrollTop = 0;
+      })
+      .catch(function(){
+        bodyEl.innerHTML = '<p>Could not load this document. Please try again.</p>';
+      });
   }
-  document.querySelectorAll('a[href="terms.html"],a[href="privacy.html"]').forEach(function(a){
-    a.addEventListener('click',function(e){e.preventDefault();openLegal(a);});
+
+  function openModal(key, trigger){
+    lastTrigger = trigger || document.activeElement;
+    backdrop.hidden = false;
+    backdrop.setAttribute('aria-hidden', 'false');
+    loadDoc(key);
+    requestAnimationFrame(function(){ backdrop.classList.add('is-open'); });
+    setTimeout(function(){ closeX && closeX.focus(); }, 30);
+  }
+
+  function closeModal(){
+    backdrop.classList.remove('is-open');
+    backdrop.setAttribute('aria-hidden', 'true');
+    setTimeout(function(){
+      if(!backdrop.classList.contains('is-open')) backdrop.hidden = true;
+    }, 220);
+    if(lastTrigger && typeof lastTrigger.focus === 'function') lastTrigger.focus();
+  }
+
+  document.querySelectorAll('a[data-legal]').forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      openModal(a.getAttribute('data-legal'), a);
+    });
   });
-  dlg.querySelector('.legal-dialog-close').addEventListener('click',function(){dlg.close();});
-  dlg.addEventListener('click',function(e){if(e.target===dlg)dlg.close();});
+
+  tabs.forEach(function(t){
+    t.addEventListener('click', function(){ loadDoc(t.getAttribute('data-doc')); });
+  });
+
+  [closeX, closeBtn, doneBtn].forEach(function(btn){
+    if(btn) btn.addEventListener('click', closeModal);
+  });
+
+  backdrop.addEventListener('click', function(e){
+    if(e.target === backdrop) closeModal();
+  });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && !backdrop.hidden) closeModal();
+  });
 })();
 </script></body></html>

@@ -2075,3 +2075,13 @@ Plan the concept and then replace the horizontal `.pp-tabs` pill bar on `member-
 - Grouped the member navigation into 3 sections (`My gym`, `My progress`, `Account`), added the upward-opening `.side-account-menu` inside `#memberSideUserCard`, synced `#sideAnnounceBadge` with `#homeAnnounceCount`, and restricted `.member-hero` visibility to the `overview` tab.
 ### Decision-log skill
 Before reusing existing CSS hook classes (`.pp-tabs`, `.pp-tab`) on a new shell component, check loaded stylesheets for `!important` overrides; when present, use clean shell classes (`.nav-link[data-tab]`) and point the tab controller at them.
+
+## 2026-11-16 04:56 (Asia/Manila): Landing navigation, FAQ legal tabs, and Join popup modal
+### What I asked for
+Keep FAQ in the landing page header, remove FAQ/Terms/Privacy links from the footer, integrate Terms of Service and Privacy Policy inside the FAQ page, and upgrade the Sign Up (`join.html`) legal links to an animated popup modal overlay without auto-checking the agreement checkbox.
+### What the agent decided and why
+- Added `FAQ` to the primary header `<nav>` in `web/welcome.html` with no separate Terms/Privacy links or Legal dropdown, and removed `.legal` footer links from `web/site-footer.js`, `web/faq.html`, `web/terms.html`, and `web/privacy.html`.
+- Organized `web/faq.html` with accessible tabs (`Frequently Asked Questions`, `Terms of Service`, `Privacy Policy`) reusing the exact existing content from `faq.html`, `terms.html`, and `privacy.html` (supporting `#terms` and `#privacy` URL hashes).
+- Replaced the basic `<dialog>` in `web/join.html` with an animated ProFit-themed popup modal overlay (`#legalModalBackdrop`) featuring document-switching tabs, a scrollable `.legal-card` content area, `Close` and `Done` buttons, and manual-only checkbox validation (`#terms`).
+### Decision-log skill
+Consolidating legal documents inside the FAQ page while keeping `terms.html` and `privacy.html` intact lets the registration modal reuse existing authoritative legal content via `fetch` without duplicating copy or breaking direct URLs.
