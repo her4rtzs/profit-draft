@@ -2138,3 +2138,13 @@ Integrate the editorial paper-and-poster Login and Join designs (with Anton & Pe
 - Enhanced `web/welcome.html` in place with `Anton`/`Permanent Marker` accents, hazard tape, gold marquee ticker, `01`–`04` feature numbers, gallery captions with click-to-enlarge lightbox, and `Alfonso crew` tag while preserving colors, info, and `prefers-reduced-motion` support.
 ### Decision-log skill
 When integrating rich multi-page UI references into an existing static portal, modify existing HTML files in place, preserve all backend API contracts, and honor `prefers-reduced-motion` across all keyframe and scroll animations.
+
+## 2026-11-16 06:34 (Asia/Manila): Viewport Fit, Facebook-Style Forgot Password, and Landing Page Overlap/Blue-Overlay Fixes
+### What I asked for
+Fit Login and Sign Up within the initial desktop viewport without clipping, move Forgot Password centered below Sign In, remove the unwanted blue overlay on gym photos, fix section transitions and overlaps (especially Membership and Our Story), equalize membership card heights, and add subtle 200–300ms hover animations on the landing page.
+### What the agent decided and why
+- Updated `web/login.html` to use `100svh` layout sizing and compact `clamp()` spacing so both panels fit cleanly at `1366x768`, `1440x900`, and `1920x1080`, and moved `Forgot password?` centered directly below the `Sign in` button.
+- Compacted `web/join.html` vertical rhythm (4-in-1-row plans, `min-height: 0` empty error slots, compact checklist) so the complete signup form, strength meter, agreement, and submit button fit in the initial desktop viewport while stacking/scrolling cleanly on smaller screens.
+- Fixed `web/welcome.html` gym image overlays and overlaps: removed broken `img/gym-*.jpg` + `.pc-img` wrapper inside `.prog .pic` (eliminating the blue/navy gap), switched `.hero-media` chips/controls to neutral charcoal with non-overlapping mobile bounds, removed `.s + .s { padding-top: 0 }` and `.plan.hot` `scale(1.02)` so Membership and Our Story have clean boundaries and equal-height cards, and added subtle `240ms` hover lift + gold border/image zoom with `prefers-reduced-motion` support.
+### Decision-log skill
+Avoid `padding-top: 0` on adjacent sections (`.s + .s`) and `scale(1.02)` transforms on grid cards when badges or borders sit on the card perimeter, as they cause visual overlap at section boundaries.

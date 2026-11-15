@@ -41,15 +41,16 @@
   body.auth-page.pf-editorial{
     background:#090b10 !important;
     color:#f6f1e4;
-    min-height:100vh;
+    min-height:100svh;
     display:flex;
     flex-direction:column;
     font-family:"Plus Jakarta Sans",Inter,system-ui,sans-serif;
   }
   .pf-editorial .portal-nav{
     position:sticky;top:0;z-index:40;
+    height:58px;
     display:flex;align-items:center;justify-content:space-between;gap:16px;
-    padding:12px 24px;
+    padding:8px 24px;
     background:rgba(9,11,16,.94);
     border-bottom:1px solid rgba(255,255,255,.08);
   }
@@ -64,7 +65,10 @@
     flex:1;
     display:grid;
     grid-template-columns:minmax(0,1.2fr) minmax(360px,0.8fr);
-    min-height:calc(100vh - 66px);
+    min-height:calc(100svh - 58px);
+  }
+  @media(min-width:981px) and (min-height:680px){
+    .lg-shell{height:calc(100svh - 58px);min-height:0}
   }
 
   /* Left warehouse panel */
@@ -184,7 +188,7 @@
   /* Right paper card panel */
   .lg-form-pane{
     display:flex;align-items:center;justify-content:center;
-    padding:36px 28px;
+    padding:clamp(14px,2.2vh,28px) 24px;
     background:radial-gradient(circle at 80% 10%,rgba(232,185,58,.08),transparent 45%),#0b0d13;
   }
   .lg-paper{
@@ -192,7 +196,7 @@
     width:min(420px,100%);
     background:var(--pf-paper);
     color:var(--pf-ink);
-    padding:30px 28px 26px;
+    padding:clamp(18px,2.5vh,26px) 26px clamp(16px,2.2vh,22px);
     border:2px solid #111318;
     box-shadow:8px 8px 0 var(--pf-gold);
     animation:lgCardIn .6s cubic-bezier(.2,.8,.2,1) .12s both;
@@ -210,22 +214,25 @@
     box-shadow:0 4px 10px rgba(0,0,0,.25);
   }
   .lg-paper h2{
-    font-family:"Anton",sans-serif;font-size:34px;line-height:1;letter-spacing:.02em;
-    margin:6px 0 6px;color:#111318;text-transform:uppercase;
+    font-family:"Anton",sans-serif;font-size:clamp(28px,3vw,34px);line-height:1;letter-spacing:.02em;
+    margin:4px 0 4px;color:#111318;text-transform:uppercase;
   }
-  .lg-paper .lg-lead{font-size:13.5px;color:#4b5563;margin:0 0 20px}
+  .lg-paper .lg-lead{font-size:13.5px;color:#4b5563;margin:0 0 14px}
   .lg-field-label{
     display:flex;align-items:center;justify-content:space-between;gap:8px;
     font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
-    color:#374151;margin:14px 0 6px;
+    color:#374151;margin:10px 0 5px;
+  }
+  .lg-forgot-row{
+    display:flex;justify-content:center;margin:11px 0 2px;
   }
   .lg-forgot{
-    color:#111318;font-size:11.5px;font-weight:700;text-transform:none;letter-spacing:0;
+    color:#111318;font-size:13px;font-weight:700;
     text-decoration:underline;text-decoration-color:var(--pf-gold);text-underline-offset:3px;
   }
   .lg-forgot:hover{color:#92680b}
   .lg-input{
-    width:100%;height:44px;padding:0 14px;
+    width:100%;height:41px;padding:0 14px;
     background:#fff;color:#111318;
     border:1.5px solid #cbd5e1;border-radius:4px;
     font:500 14.5px/1 "Plus Jakarta Sans",Inter,sans-serif;
@@ -240,14 +247,14 @@
     display:grid;place-items:center;cursor:pointer;border-radius:4px;
   }
   .lg-eye:hover{color:#111318;background:rgba(17,19,24,.06)}
-  .lg-err-sm{display:block;min-height:16px;margin-top:4px;font-size:12px;font-weight:600;color:var(--pf-red)}
+  .lg-err-sm{display:block;min-height:0;margin-top:3px;font-size:12px;font-weight:600;color:var(--pf-red)}
   .lg-caps{
     display:inline-flex;align-items:center;gap:6px;margin-top:4px;
     font-size:12px;font-weight:700;color:#b45309;
   }
   .lg-caps[hidden]{display:none}
   .lg-remember{
-    display:inline-flex;align-items:center;gap:8px;margin:10px 0 14px;
+    display:inline-flex;align-items:center;gap:8px;margin:8px 0 12px;
     font-size:13.5px;font-weight:600;color:#374151;cursor:pointer;
   }
   .lg-remember input{width:16px;height:16px;accent-color:#111318}
@@ -389,10 +396,7 @@
         <input class="lg-input" id="identity" name="identity" autocomplete="username" maxlength="254" required placeholder="you@example.com">
         <small class="lg-err-sm" id="identityError"></small>
 
-        <div class="lg-field-label">
-          <label for="password" style="margin:0">Password</label>
-          <a class="lg-forgot" href="forgot.html">Forgot password?</a>
-        </div>
+        <label class="lg-field-label" for="password">Password</label>
         <div class="lg-pw-wrap">
           <input class="lg-input" id="password" name="password" type="password" autocomplete="current-password" required maxlength="256" placeholder="Enter your password">
           <button type="button" class="lg-eye" id="showPassword" aria-label="Show password" aria-pressed="false"><i class="fa-regular fa-eye"></i></button>
@@ -408,6 +412,10 @@
           <span>Sign in</span>
           <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
         </button>
+
+        <div class="lg-forgot-row">
+          <a class="lg-forgot" href="forgot.html">Forgot password?</a>
+        </div>
       </form>
 
       <div class="lg-divider"><span>Or continue with</span></div>
