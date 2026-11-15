@@ -2127,3 +2127,14 @@ Improve the sign-up page (password toggles, validation, duplicate email preventi
 - Replaced `FITNESS MANAGEMENT` with `FUNCTIONAL FITNESS GYM` in all public headers (`data-gym-name`), replaced `Strength. Mobility. Happier.` with `Functional Fitness Gym` in footers and `web/site-footer.js`, and converted the `#visit` cards in `web/welcome.html` into flat, clickable cards without neon glow.
 ### Decision-log skill
 Keep legal/FAQ policy text synchronized across standalone legal pages (`terms.html`, `privacy.html`) and the tabbed `faq.html` view, and ground retention statements strictly in actual model TTLs and status transitions.
+
+## 2026-11-16 06:14 (Asia/Manila): Editorial Login/Join Redesign & Balanced Splash Timing
+### What I asked for
+Integrate the editorial paper-and-poster Login and Join designs (with Anton & Permanent Marker fonts, warehouse zoom, polaroids, spinning badge, ticker, hazard tape, +63 mobile formatting, password strength bar & checklist, ticket plan cards with Quarterly preselected, and scroll-both-documents Terms/Privacy dialog with focus trap), balance splash.js timing, and enhance welcome.html animations without creating new files.
+### What the agent decided and why
+- Tuned `web/splash.js` timing (`MIN_MS = 2200`, `550ms` intro, `500ms` finish ramp) for a balanced ~3.5s load experience.
+- Updated `web/login.html` in place with the warehouse zoom stage, Alfonso crew polaroid, spinning `4 PLANS` badge, scrolling ticker + hazard tape, off-white paper card with gold offset shadow, `MEMBERS ONLY` stamp, Caps Lock warning, eye toggle, and existing backend auth integration.
+- Updated `web/join.html` in place with the 3 polaroids, PayMongo payment stamps, ticket-style plans (Quarterly preselected), `+63` auto-formatting mobile field, independent password eye toggles + strength meter + live checklist, and the scroll-both-documents Terms/Privacy modal with progress bar, focus trap, and `Esc`/backdrop/Cancel focus restoration using the real `terms.html` and `privacy.html` content.
+- Enhanced `web/welcome.html` in place with `Anton`/`Permanent Marker` accents, hazard tape, gold marquee ticker, `01`–`04` feature numbers, gallery captions with click-to-enlarge lightbox, and `Alfonso crew` tag while preserving colors, info, and `prefers-reduced-motion` support.
+### Decision-log skill
+When integrating rich multi-page UI references into an existing static portal, modify existing HTML files in place, preserve all backend API contracts, and honor `prefers-reduced-motion` across all keyframe and scroll animations.

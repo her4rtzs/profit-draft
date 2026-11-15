@@ -58,7 +58,7 @@
         color: var(--text) !important;
         font-family: "Plus Jakarta Sans", Inter, system-ui, -apple-system, "Segoe UI", sans-serif !important;
         clip-path: circle(150% at 50% 50%);
-        transition: clip-path 1s cubic-bezier(.76,0,.24,1), visibility 0s 1s;
+        transition: clip-path .65s cubic-bezier(.76,0,.24,1), visibility 0s .65s;
         padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px);
       }
       #pf-loader * { box-sizing: border-box !important; }
@@ -82,7 +82,7 @@
 
       #pf-loader .pf-stage { position: relative; width: 220px; height: 220px; display: grid; place-items: center; }
       #pf-loader .pf-dial { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
-      #pf-loader.play .pf-dial { animation: pfDialin 1.4s cubic-bezier(.2,.8,.2,1) .5s forwards; }
+      #pf-loader.play .pf-dial { animation: pfDialin .8s cubic-bezier(.2,.8,.2,1) .15s forwards; }
       @keyframes pfDialin { from { opacity: 0; transform: scale(.8) rotate(-40deg); } to { opacity: 1; transform: none; } }
       #pf-loader .pf-tick { stroke: rgba(255,255,255,.17); stroke-width: 1.6; stroke-linecap: round; opacity: 0; transition: stroke .5s, filter .5s; }
       #pf-loader .pf-tick.lit { stroke: var(--gold); filter: drop-shadow(0 0 3px rgba(242,182,50,.9)); }
@@ -237,7 +237,7 @@
   const cv = loader.querySelector("#pf-canvas");
   const ctx = cv.getContext("2d");
 
-  const MIN_MS = 5200;
+  const MIN_MS = 2200;
   const C = 552.92;
   const N = 72;
   const steps = [
@@ -267,7 +267,7 @@
     l.setAttribute("y1", 110 + r1 * Math.sin(a));
     l.setAttribute("x2", 110 + r2 * Math.cos(a));
     l.setAttribute("y2", 110 + r2 * Math.sin(a));
-    l.style.animationDelay = (0.7 + i * 0.018) + "s";
+    l.style.animationDelay = (0.25 + i * 0.008) + "s";
     ticksG.appendChild(l);
     ticks.push(l);
   }
@@ -275,7 +275,7 @@
   "ProFit".split("").forEach((ch, i) => {
     const s = document.createElement("span");
     s.textContent = ch;
-    s.style.animationDelay = (1.2 + i * 0.15) + "s";
+    s.style.animationDelay = (0.45 + i * 0.08) + "s";
     brand.appendChild(s);
   });
 
@@ -367,7 +367,7 @@
   startCanvas();
   paint(0);
   loader.classList.add("play");
-  const start = performance.now() + 1800;
+  const start = performance.now() + 550;
   let p = 0, fin = false, f0 = 0, from = 0;
   function frame(now) {
     if (!fin) {
@@ -375,20 +375,20 @@
       p = inOut(t) * 92;
       if (t >= 1 && loaded) { fin = true; f0 = now; from = p; }
     } else {
-      const f = Math.min((now - f0) / 900, 1);
+      const f = Math.min((now - f0) / 500, 1);
       p = from + (100 - from) * ease(f);
       if (f >= 1) {
         paint(100);
         setMsg("Let’s go!");
         loader.classList.add("finish");
         burst();
-        setTimeout(() => { loader.classList.add("done"); }, 1100);
+        setTimeout(() => { loader.classList.add("done"); }, 450);
         setTimeout(() => {
           canvasOn = false;
           cancelAnimationFrame(craf);
           window.removeEventListener("resize", size);
           try { loader.remove(); } catch (_) {}
-        }, 2300);
+        }, 1150);
         return;
       }
     }

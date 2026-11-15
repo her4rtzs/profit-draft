@@ -2,7 +2,7 @@
 <html lang="en"><head><script src="splash.js?v=6"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#07080c">
 <title>ProFit · Functional Fitness Gym, Alfonso</title><meta name="description" content="Functional Fitness Gym in Alfonso, Calabarzon. Join online, pay with GCash, Maya or card, and manage your membership.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Permanent+Marker&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <link rel="stylesheet" href="site-footer.css?v=5">
 <style>
@@ -290,6 +290,30 @@ header.top{background:#0b0c10;backdrop-filter:none;-webkit-backdrop-filter:none}
  #navt:checked ~ header nav a{padding:13px 0;border-top:1px solid var(--line);font-size:16px}
 }
 @media(max-width:420px){.m-only{display:block}}
+
+/* Editorial & animation enhancements (preserving ProFit colors and info) */
+.wl-motto{display:inline-block;margin-top:14px;font-family:"Permanent Marker",cursive;font-size:15px;color:var(--gold);letter-spacing:.04em}
+.wl-hazard{height:10px;background:repeating-linear-gradient(-45deg,var(--gold) 0 14px,#0b0c10 14px 28px);background-size:40px 40px;animation:wlHazard 1.4s linear infinite}
+@keyframes wlHazard{to{background-position:40px 0}}
+.wl-marquee{overflow:hidden;background:var(--gold);color:#111318;padding:11px 0;white-space:nowrap;border-top:1px solid #111318;border-bottom:1px solid #111318}
+.wl-marquee-track{display:inline-flex;gap:28px;align-items:center;font-family:"Anton",sans-serif;font-size:15px;letter-spacing:.1em;text-transform:uppercase;animation:wlMarquee 22s linear infinite}
+@keyframes wlMarquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.anim-features .box{position:relative;overflow:hidden}
+.wl-num{position:absolute;top:14px;right:18px;font-family:"Anton",sans-serif;font-size:38px;line-height:1;color:rgba(255,255,255,.06);pointer-events:none;user-select:none}
+.gal-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.gal-hint{font-family:"Permanent Marker",cursive;font-size:13px;color:var(--gold);letter-spacing:.04em}
+.gal-grid figure{position:relative;cursor:pointer;overflow:hidden;border-radius:16px}
+.gal-grid figure img{transition:transform .35s ease}
+.gal-grid figure:hover img{transform:scale(1.04)}
+.gal-cap{position:absolute;left:10px;bottom:10px;background:rgba(11,12,16,.86);color:#f6efdc;font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;border:1px solid rgba(255,255,255,.14)}
+.wl-crew-pill{position:absolute;left:16px;bottom:16px;z-index:2;background:var(--gold);color:#111318;font-family:"Permanent Marker",cursive;font-size:14px;padding:6px 14px;border-radius:6px;transform:rotate(-2deg);box-shadow:0 8px 20px rgba(0,0,0,.45)}
+.wl-lightbox{position:fixed;inset:0;z-index:2000;display:grid;place-items:center;padding:20px;background:rgba(7,8,12,.88);backdrop-filter:blur(6px)}
+.wl-lightbox[hidden]{display:none}
+.wl-lightbox-inner{position:relative;max-width:min(860px,94vw);max-height:88vh;display:flex;flex-direction:column;align-items:center;gap:10px}
+.wl-lightbox-inner img{max-width:100%;max-height:78vh;border-radius:12px;border:1px solid rgba(255,255,255,.15);object-fit:contain}
+.wl-lightbox-cap{font-family:"Permanent Marker",cursive;font-size:16px;color:var(--gold)}
+.wl-lightbox-x{position:absolute;top:-14px;right:-14px;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:#131C2E;color:#fff;font-size:20px;cursor:pointer;display:grid;place-items:center}
+@media(prefers-reduced-motion:reduce){.wl-hazard,.wl-marquee-track,.gal-grid figure img{animation:none !important;transition:none !important}}
 </style><script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script><link rel="preload" as="image" href="img/hero.jpg"></head>
 <body class="dark pf-glow">
 <input id="navt" type="checkbox" hidden><header class="top"><div class="wrap"><a class="brand" href="welcome.html"><img src="logo.jpg" alt="ProFit logo" width="40" height="40"><span class="brand-copy"><strong>ProFit</strong><small data-gym-name>FUNCTIONAL FITNESS GYM</small></span></a>
@@ -300,7 +324,8 @@ header.top{background:#0b0c10;backdrop-filter:none;-webkit-backdrop-filter:none}
 <span class="eyebrow">Functional Fitness Gym · Alfonso</span>
 <h1>Stronger people.<br><em>Healthier</em> community.</h1>
 <p class="lead">Train with coaches who know your name. Join online in minutes, pay with GCash, Maya or card, and manage everything in your member portal.</p>
-<div class="acts"><a class="btn p" href="join.html">Join now <i class="fa-solid fa-arrow-right"></i></a><a class="btn" href="#plans">View plans</a></div></div>
+<div class="acts"><a class="btn p" href="join.html">Join now <i class="fa-solid fa-arrow-right"></i></a><a class="btn" href="#plans">View plans</a></div>
+<span class="wl-motto">We lift and uplift.</span></div>
 <div class="hero-media" id="heroCarousel" aria-roledescription="carousel" aria-label="Gym highlights">
 <div class="carousel-track">
 <div class="carousel-slide active" aria-hidden="false"><img src="img/hero-side.jpg" alt="ProFit gym interior with members training"></div>
@@ -322,15 +347,16 @@ header.top{background:#0b0c10;backdrop-filter:none;-webkit-backdrop-filter:none}
 </div>
 <button type="button" class="c-arrow c-next" aria-label="Next image"><i class="fa-solid fa-chevron-right"></i></button>
 </div></div></div></section>
+<div class="wl-hazard" aria-hidden="true"></div>
 <div class="strip"><div class="wrap anim-ticker">
-<div><i class="fa-solid fa-ticket"></i>3 flexible plans</div><div><i class="fa-solid fa-credit-card"></i>Pay online, account ready</div><div><i class="fa-solid fa-mobile-screen"></i>Member portal on your phone</div><div><i class="fa-solid fa-user-group"></i>Coaches on the floor</div></div></div>
+<div><i class="fa-solid fa-ticket"></i>4 flexible plans</div><div><i class="fa-solid fa-credit-card"></i>Pay online, account ready</div><div><i class="fa-solid fa-mobile-screen"></i>Member portal on your phone</div><div><i class="fa-solid fa-user-group"></i>Coaches on the floor</div></div></div>
 
 <section class="s" id="why"><div class="wrap"><div class="sh anim-header"><div><span class="eyebrow">Why choose us</span><h2>Everything you need to keep showing up</h2></div><p>From your first workout to your hundredth, ProFit keeps your plan, schedule and progress in one place.</p></div>
 <div class="grid4 anim-features">
-<div class="box"><div class="ic"><i class="fa-solid fa-dumbbell"></i></div><h3>Functional training</h3><p>Strength, conditioning and mobility built around real-life movement.</p></div>
-<div class="box"><div class="ic"><i class="fa-solid fa-user-check"></i></div><h3>Coach guidance</h3><p>Trainers assigned to you, with schedules and notes inside your portal.</p></div>
-<div class="box"><div class="ic"><i class="fa-solid fa-chart-line"></i></div><h3>Track progress</h3><p>Attendance, health goals and your diary, all in one dashboard.</p></div>
-<div class="box"><div class="ic"><i class="fa-solid fa-shield-halved"></i></div><h3>Secure payments</h3><p>Checkout by PayMongo. Your membership starts as soon as you pay.</p></div></div></div></section>
+<div class="box"><span class="wl-num" aria-hidden="true">01</span><div class="ic"><i class="fa-solid fa-dumbbell"></i></div><h3>Functional training</h3><p>Strength, conditioning and mobility built around real-life movement.</p></div>
+<div class="box"><span class="wl-num" aria-hidden="true">02</span><div class="ic"><i class="fa-solid fa-user-check"></i></div><h3>Coach guidance</h3><p>Trainers assigned to you, with schedules and notes inside your portal.</p></div>
+<div class="box"><span class="wl-num" aria-hidden="true">03</span><div class="ic"><i class="fa-solid fa-chart-line"></i></div><h3>Track progress</h3><p>Attendance, health goals and your diary, all in one dashboard.</p></div>
+<div class="box"><span class="wl-num" aria-hidden="true">04</span><div class="ic"><i class="fa-solid fa-shield-halved"></i></div><h3>Secure payments</h3><p>Checkout by PayMongo. Your membership starts as soon as you pay.</p></div></div></div></section>
 
 <section class="s" id="difference" style="padding-top:0"><div class="wrap"><div class="sh anim-header"><div><span class="eyebrow">The Difference</span><h2>Why ProFit is not your typical gym</h2></div><p>We built Functional Fitness Gym to solve the friction of traditional gyms — from transparent pricing to real coaching on the floor.</p></div>
 <div class="diff-grid">
@@ -360,14 +386,15 @@ header.top{background:#0b0c10;backdrop-filter:none;-webkit-backdrop-filter:none}
 <button type="button" class="prog-arrow next" aria-label="Next program"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg></button>
 </div></div></section>
 
-<section class="s gal" aria-label="Inside ProFit"><div class="wrap"><h2 class="anim-header">Inside ProFit</h2><div class="gal-grid anim-gallery"><figure><img src="img/gal-1.jpg" alt="Team photo at the ProFit gym" loading="lazy"></figure><figure><img src="img/gal-2.jpg" alt="Group of members posing together in the gym" loading="lazy"></figure><figure><img src="img/gal-3.jpg" alt="Member training at the squat rack" loading="lazy"></figure><figure><img src="img/gal-4.jpg" alt="Equipment on the ProFit gym floor" loading="lazy"></figure></div></div></section>
-<section class="s plans" id="plans"><div class="wrap"><div class="sh anim-header"><div><span class="eyebrow">Membership</span><h2>Simple plans, no surprises</h2></div><p>Choose a plan, pay online, and your account is created right away.</p></div>
+<section class="s gal" aria-label="Inside ProFit"><div class="wrap"><div class="gal-head anim-header"><h2>Inside ProFit</h2><span class="gal-hint">Tap a photo to enlarge</span></div><div class="gal-grid anim-gallery"><figure tabindex="0" data-cap="Rain or shine"><img src="img/gal-1.jpg" alt="Team photo at the ProFit gym" loading="lazy"><span class="gal-cap">Rain or shine</span></figure><figure tabindex="0" data-cap="The crew"><img src="img/gal-2.jpg" alt="Group of members posing together in the gym" loading="lazy"><span class="gal-cap">The crew</span></figure><figure tabindex="0" data-cap="Strength"><img src="img/gal-3.jpg" alt="Member training at the squat rack" loading="lazy"><span class="gal-cap">Strength</span></figure><figure tabindex="0" data-cap="Real equipment"><img src="img/gal-4.jpg" alt="Equipment on the ProFit gym floor" loading="lazy"><span class="gal-cap">Real equipment</span></figure></div></div></section>
+<div class="wl-marquee" aria-hidden="true"><div class="wl-marquee-track"><span>WE LIFT AND UPLIFT</span><span>◆</span><span>OPEN 7 AM</span><span>◆</span><span>PAY ONLINE, ACCOUNT READY</span><span>◆</span><span>ALFONSO, CALABARZON</span><span>◆</span><span>WE LIFT AND UPLIFT</span><span>◆</span><span>OPEN 7 AM</span><span>◆</span><span>PAY ONLINE, ACCOUNT READY</span><span>◆</span><span>ALFONSO, CALABARZON</span><span>◆</span></div></div>
+<section class="s plans" id="plans"><div class="wrap"><div class="sh anim-header"><div><span class="eyebrow">Membership</span><h2>Simple plans, no surprises</h2></div><p>Choose a plan, pay online, and your account is created right away. Need just one visit? A Daily pass is ₱80.</p></div>
 <div class="grid3 anim-plans">
 <div class="box plan"><h3>Monthly</h3><div class="price">₱800<small> / 30 days</small></div><ul><li><i class="fa-solid fa-check"></i>Gym access</li><li><i class="fa-solid fa-check"></i>Member portal</li><li><i class="fa-solid fa-check"></i>Attendance tracking</li></ul><a class="btn" href="join.html?plan=monthly">Choose plan</a></div>
 <div class="box plan hot"><span class="badge">MOST POPULAR</span><h3>Quarterly</h3><div class="price">₱2,100<small> / 90 days</small></div><ul><li><i class="fa-solid fa-check"></i>Gym access</li><li><i class="fa-solid fa-check"></i>Member portal</li><li><i class="fa-solid fa-check"></i>Attendance tracking</li></ul><a class="btn p" href="join.html?plan=quarterly">Choose plan</a></div>
 <div class="box plan"><h3>Annual</h3><div class="price">₱7,500<small> / 365 days</small></div><ul><li><i class="fa-solid fa-check"></i>Gym access</li><li><i class="fa-solid fa-check"></i>Member portal</li><li><i class="fa-solid fa-check"></i>Attendance tracking</li></ul><a class="btn" href="join.html?plan=annual">Choose plan</a></div></div></div></section>
 
-<section class="s" id="about"><div class="wrap story"><div class="pic anim-story-pic"><img src="img/hero.jpg" alt="ProFit members posing together in the gym" onerror="this.remove()"></div>
+<section class="s" id="about"><div class="wrap story"><div class="pic anim-story-pic"><img src="img/hero.jpg" alt="ProFit members posing together in the gym" onerror="this.remove()"><span class="wl-crew-pill">Alfonso crew</span></div>
 <div class="anim-story-text"><span class="eyebrow">Our story</span><h2>A neighborhood gym built on community</h2><p>Functional Fitness Gym is a local gym in Alfonso, Calabarzon. We focus on practical strength, steady habits and a friendly floor where everyone belongs.</p><p>ProFit is the system behind it: join online, check in, and follow your progress without paperwork.</p>
 <ul><li><i class="fa-solid fa-circle-check"></i>Friendly, beginner-welcome environment</li><li><i class="fa-solid fa-circle-check"></i>Coaches who track your progress</li><li><i class="fa-solid fa-circle-check"></i>Clear pricing, paid online</li></ul></div></div></section>
 
@@ -543,5 +570,47 @@ document.querySelectorAll('header nav a').forEach(function(a){a.addEventListener
     isDown = false;
     track.classList.remove('is-dragging');
   });
+})();
+</script>
+<div class="wl-lightbox" id="wlLightbox" hidden role="dialog" aria-modal="true" aria-label="Photo preview">
+  <div class="wl-lightbox-inner">
+    <button type="button" class="wl-lightbox-x" id="wlLightboxClose" aria-label="Close photo">&times;</button>
+    <img id="wlLightboxImg" src="" alt="">
+    <div class="wl-lightbox-cap" id="wlLightboxCap"></div>
+  </div>
+</div>
+<script>
+(function(){
+  var box = document.getElementById('wlLightbox');
+  var img = document.getElementById('wlLightboxImg');
+  var cap = document.getElementById('wlLightboxCap');
+  var closeBtn = document.getElementById('wlLightboxClose');
+  if(!box || !img) return;
+  var lastEl = null;
+  function open(fig){
+    var im = fig.querySelector('img');
+    if(!im) return;
+    lastEl = fig;
+    img.src = im.src;
+    img.alt = im.alt || '';
+    cap.textContent = fig.getAttribute('data-cap') || '';
+    box.hidden = false;
+    document.body.style.overflow = 'hidden';
+    closeBtn && closeBtn.focus();
+  }
+  function close(){
+    box.hidden = true;
+    document.body.style.overflow = '';
+    if(lastEl && typeof lastEl.focus === 'function') lastEl.focus();
+  }
+  document.querySelectorAll('.gal-grid figure').forEach(function(fig){
+    fig.addEventListener('click', function(){ open(fig); });
+    fig.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); open(fig); }
+    });
+  });
+  closeBtn && closeBtn.addEventListener('click', close);
+  box.addEventListener('click', function(e){ if(e.target === box) close(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !box.hidden) close(); });
 })();
 </script></body></html>
