@@ -2166,3 +2166,13 @@ Make header size/fonts consistent across auth pages, unify dark form inputs and 
 - Rewrote `web/login.html` and `web/join.html` with a unified `68px` header (`Plus Jakarta Sans` `19px` `ProFit`, `40x40` logo, `10px` gold gym subtitle), dark `#131C2E` cards, `#0b1220` inputs with `#e8b93a` gold focus rings, flex-aligned checkboxes, dark-themed Legal modal (preserving the scroll-both-documents rule and focus trap), and a compact `.auth-mini-footer` inside the `100svh` desktop layout.
 ### Decision-log skill
 Auth pages that target `100svh` no-scroll desktop viewports should render their own compact `.auth-mini-footer` inside the flex-column shell rather than appending the full multi-column site footer.
+
+## 2026-11-16 07:01 (Asia/Manila): Remove duplicate Sign in nav link and restore original site-footer on Login and Join
+### What I asked for
+Remove the repeated "Sign in" link in the landing header and restore the original shared footer on Login and Join instead of using a custom mini footer.
+### What the agent decided and why
+- Removed `<a class="m-only" href="login.html">Sign in</a>` from `<nav aria-label="Primary">` in `web/welcome.html` so "Sign in" only appears in the header CTA button group.
+- Restored `login|join` in `web/site-footer.js` so `.site-footer` is injected on `login.html` and `join.html`.
+- Removed `.auth-mini-footer` from `web/login.html` and `web/join.html` and changed `height: 100svh; overflow: hidden` to `min-height: 100svh` so the main auth shell fills the initial viewport while the injected `.site-footer` renders cleanly below.
+### Decision-log skill
+Keep one canonical "Sign in" entry point in the top header CTA rather than duplicating it inside `<nav>`, and reuse `site-footer.js` across public pages.
