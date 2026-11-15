@@ -1,227 +1,276 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" data-default-theme="dark">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>My Profile — ProFit Trainer</title>
-  <meta name="theme-color" content="#0a1220">
-  <link rel="icon" href="../assets/img/logo.jpg">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
-  <link rel="stylesheet" href="../assets/css/staff.css">
-  <script src="../assets/js/staff-boot.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProFit — My Profile (Trainer Portal)</title>
+<script>try{var t=localStorage.getItem('pf-theme')||localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);var a=localStorage.getItem('pf-accent')||localStorage.getItem('accent');if(a)document.documentElement.setAttribute('data-accent',a);}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/staff.css?v=10">
+<link rel="stylesheet" href="trainer.css?v=10">
 </head>
-<body data-portal="trainer" data-page="profile" data-title="My Profile" data-eyebrow="Coach Account" data-sub="Manage your trainer profile, bio, coaching availability and account credentials." data-icon="user">
+<body data-page="profile" data-portal="trainer" data-head="none">
 <div class="app">
   <aside class="sidebar" id="sidebar"></aside>
   <div class="scrim" id="scrim"></div>
   <div class="main">
     <header class="topbar" id="topbar"></header>
     <main class="content" id="content">
-      <div class="grid grid-3" style="gap:24px;align-items:start">
-        <!-- Left: Overview + Password (1 col) -->
-        <div style="display:grid;gap:24px">
-          <!-- Coach Badge Card -->
-          <div class="card" style="text-align:center;padding:28px 20px">
-            <div id="profileAvatarBox" style="display:flex;justify-content:center;margin-bottom:14px"></div>
-            <h2 id="profNameDisplay" style="font-size:18px;margin:0 0 4px">—</h2>
-            <div style="margin-bottom:12px"><span class="pill gold">Personal Trainer</span></div>
-            <div id="profSpecPill" style="font-size:13px;color:var(--text-2);margin-bottom:14px">Loading...</div>
-            <div style="padding:10px 14px;background:var(--card-2);border-radius:var(--r-sm);font-size:12.5px;color:var(--muted)">
-              Roster capacity: <strong id="profCapacityDisplay" style="color:var(--text)">—</strong>
+
+      <!-- Page Hero Banner -->
+      <section class="tw-page-hero tw-anim" style="--i:0">
+        <div class="tw-hero-left">
+          <div class="tw-hero-ico" data-ico="user"></div>
+          <div class="tw-hero-text">
+            <span class="tw-hero-eyebrow">Coach Credentials · Public Directory Profile</span>
+            <h1 class="tw-hero-title">My Trainer Profile &amp; Security</h1>
+            <p class="tw-hero-sub">Customize your public specialization, availability schedule, and bio seen by members when requesting a coach.</p>
+          </div>
+        </div>
+        <div class="tw-hero-actions">
+          <span class="tw-pill is-green" id="profStatusBadge">Active Coach</span>
+          <a href="members.html" class="tw-btn"><span data-ico="users"></span> View My Roster</a>
+        </div>
+      </section>
+
+      <!-- Profile 2-Column Layout -->
+      <section class="tw-profile-layout tw-anim" style="--i:1">
+
+        <!-- Left Column: Coach Identity Card + Password Security -->
+        <div style="display:grid;gap:20px">
+          <article class="tw-card">
+            <div class="tw-coach-banner">
+              <div class="tw-coach-avatar" id="profAvatar">CM</div>
+              <h2 style="margin:0;font-size:20px;font-weight:800;color:var(--text)" id="profName">Coach</h2>
+              <p style="margin:4px 0 10px;font-size:13px;color:var(--muted)" id="profEmail">coach@example.com</p>
+              <div style="display:flex;align-items:center;gap:8px;justify-content:center;flex-wrap:wrap">
+                <span class="tw-pill is-amber" id="profSpecPill">Functional Fitness</span>
+                <span class="tw-pill is-blue">Personal Trainer</span>
+              </div>
             </div>
+
+            <!-- Roster Capacity Meter -->
+            <div style="padding:14px 16px;border-radius:12px;border:1px solid var(--line);background:var(--card-2);margin-bottom:14px">
+              <div class="tw-cap-head">
+                <span>Assigned Roster Capacity</span>
+                <strong id="profLoadText">0 / 20 Athletes</strong>
+              </div>
+              <div class="tw-progress" id="profLoadBar"><i style="width:0%"></i></div>
+              <div style="display:flex;justify-content:space-between;margin-top:10px;font-size:12px;color:var(--muted)">
+                <span>Active Members: <strong style="color:var(--text)" id="profActiveCount">0</strong></span>
+                <span>In Today: <strong style="color:var(--tw-green)" id="profTodayCount">0</strong></span>
+              </div>
+            </div>
+
+            <!-- Accepting New Members Live Toggle -->
+            <div class="tw-toggle-row">
+              <div>
+                <strong style="display:block;font-size:13.5px;color:var(--text)">Accepting New Athletes</strong>
+                <span style="font-size:12px;color:var(--muted)">Show as available in member trainer requests</span>
+              </div>
+              <input type="checkbox" id="profActiveToggle" checked style="width:20px;height:20px;accent-color:var(--tw-amber);cursor:pointer">
+            </div>
+          </article>
+
+          <!-- Password Security Card -->
+          <article class="tw-card">
+            <div class="tw-card-head">
+              <div>
+                <h2 class="tw-card-title">Password &amp; Account Security</h2>
+                <p class="tw-card-sub">Keep your trainer portal credentials secure.</p>
+              </div>
+              <div class="tw-kpi-ico" data-ico="lock"></div>
+            </div>
+            <form id="pwForm" style="display:grid;gap:14px">
+              <div class="tw-field">
+                <label for="curPw">Current Password</label>
+                <input type="password" id="curPw" required placeholder="Enter current password">
+              </div>
+              <div class="tw-field">
+                <label for="newPw">New Password</label>
+                <input type="password" id="newPw" required placeholder="At least 8 characters">
+              </div>
+              <div class="tw-field">
+                <label for="confPw">Confirm New Password</label>
+                <input type="password" id="confPw" required placeholder="Re-enter new password">
+              </div>
+              <div style="display:flex;justify-content:flex-end;margin-top:4px">
+                <button type="submit" class="tw-btn" id="pwSubmitBtn"><span data-ico="key"></span> Update Password</button>
+              </div>
+            </form>
+          </article>
+        </div>
+
+        <!-- Right Column: Public Coaching Details Form -->
+        <article class="tw-card">
+          <div class="tw-card-head">
+            <div>
+              <h2 class="tw-card-title">Coaching Bio &amp; Public Details</h2>
+              <p class="tw-card-sub">Changes saved here update your card in the Member Portal and Owner Trainer Directory immediately.</p>
+            </div>
+            <div class="tw-kpi-ico" data-ico="award"></div>
           </div>
 
-          <!-- Password Card -->
-          <div class="card">
-            <div class="card-head">
-              <div>
-                <h3 class="card-title">Change Password</h3>
-                <p class="card-sub">Update your account credentials</p>
+          <form id="profileForm" style="display:grid;gap:18px">
+            <div class="tw-form-grid">
+              <div class="tw-field">
+                <label for="inpName">Full Display Name</label>
+                <input type="text" id="inpName" maxlength="120" placeholder="e.g. Coach Mika Reyes">
+              </div>
+              <div class="tw-field">
+                <label for="inpPhone">Contact Phone Number</label>
+                <input type="tel" id="inpPhone" maxlength="40" placeholder="e.g. 0917-555-0190">
+              </div>
+              <div class="tw-field span-2">
+                <label for="inpSpec">
+                  <span>Coaching Specialization</span>
+                  <span style="font-size:11px;font-weight:500;text-transform:none">Max 120 chars</span>
+                </label>
+                <input type="text" id="inpSpec" maxlength="120" placeholder="e.g. HIIT, Olympic Lifting &amp; Functional Strength">
+              </div>
+              <div class="tw-field span-2">
+                <label for="inpAvail">
+                  <span>Weekly Availability Schedule</span>
+                  <span style="font-size:11px;font-weight:500;text-transform:none">Displayed on member timetable</span>
+                </label>
+                <input type="text" id="inpAvail" maxlength="160" placeholder="e.g. Mon - Fri: 6:00 AM - 2:00 PM, Sat: 8:00 AM - 12:00 PM">
+              </div>
+              <div class="tw-field span-2">
+                <label for="inpBio">
+                  <span>Coach Bio &amp; Training Philosophy</span>
+                  <span id="bioCounter" style="font-size:11px;font-weight:600;text-transform:none">0 / 500</span>
+                </label>
+                <textarea id="inpBio" rows="5" maxlength="500" placeholder="Share your coaching background, certifications, and how you help athletes reach their goals..."></textarea>
               </div>
             </div>
-            <form id="pwdForm" style="display:grid;gap:12px;margin-top:14px">
-              <div class="form-grp">
-                <label for="currPwd">Current Password</label>
-                <input id="currPwd" type="password" required autocomplete="current-password" style="width:100%">
-              </div>
-              <div class="form-grp">
-                <label for="newPwd">New Password</label>
-                <input id="newPwd" type="password" required minlength="8" autocomplete="new-password" style="width:100%">
-              </div>
-              <div class="form-grp">
-                <label for="confirmPwd">Confirm New Password</label>
-                <input id="confirmPwd" type="password" required minlength="8" autocomplete="new-password" style="width:100%">
-              </div>
-              <button class="btn btn-primary" type="submit" id="btnChangePwd" style="margin-top:6px">
-                Update Password
+
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:14px;border-top:1px solid var(--line);flex-wrap:wrap">
+              <span style="font-size:12.5px;color:var(--muted)">Visible to members choosing a personal trainer.</span>
+              <button type="submit" class="tw-btn-primary" id="saveProfBtn">
+                <span data-ico="check"></span> Save Profile Changes
               </button>
-            </form>
-          </div>
-        </div>
-
-        <!-- Right: Profile Details Form (2 cols) -->
-        <div style="grid-column:span 2">
-          <div class="card">
-            <div class="card-head">
-              <div>
-                <h2 class="card-title">Trainer Profile Details</h2>
-                <p class="card-sub">Members see your specialization, bio and schedule availability</p>
-              </div>
             </div>
-            <form id="profileForm" style="display:grid;gap:16px;margin-top:18px">
-              <div class="grid grid-2" style="gap:16px">
-                <div class="form-grp">
-                  <label for="profName">Full Name</label>
-                  <input id="profName" type="text" readonly style="width:100%;background:var(--card-2)">
-                </div>
-                <div class="form-grp">
-                  <label for="profEmail">Email Address</label>
-                  <input id="profEmail" type="email" readonly style="width:100%;background:var(--card-2)">
-                </div>
-              </div>
+          </form>
+        </article>
 
-              <div class="grid grid-2" style="gap:16px">
-                <div class="form-grp">
-                  <label for="profUser">Username</label>
-                  <input id="profUser" type="text" readonly style="width:100%;background:var(--card-2)">
-                </div>
-                <div class="form-grp">
-                  <label for="profMax">Roster Limit (Members)</label>
-                  <input id="profMax" type="number" readonly style="width:100%;background:var(--card-2)">
-                  <small class="muted">Configured by gym owner</small>
-                </div>
-              </div>
+      </section>
 
-              <div class="form-grp">
-                <label for="profSpec">Specialization & Certifications</label>
-                <input id="profSpec" type="text" placeholder="e.g. Strength & Conditioning, HIIT, Mobility" maxlength="120" style="width:100%">
-                <small class="muted">Shown to members when requesting a coach</small>
-              </div>
-
-              <div class="form-grp">
-                <label for="profAvail">Coaching Availability & Hours</label>
-                <input id="profAvail" type="text" placeholder="e.g. Mon-Fri 6:00 AM - 2:00 PM, Sat 8:00 AM - 12:00 PM" maxlength="160" style="width:100%">
-              </div>
-
-              <div class="form-grp">
-                <label for="profBio">Bio & Coaching Philosophy</label>
-                <textarea id="profBio" rows="5" placeholder="Tell members about your coaching background, philosophy, and training approach..." maxlength="500" style="width:100%"></textarea>
-                <small class="muted">Maximum 500 characters</small>
-              </div>
-
-              <div style="display:flex;align-items:center;justify-content:flex-end;gap:12px;margin-top:8px">
-                <button class="btn btn-primary" type="submit" id="btnSaveProfile">
-                  Save Changes
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
     </main>
   </div>
   <nav class="bottom-nav" id="bottomNav" aria-label="Quick navigation"></nav>
 </div>
 
-<!-- Scripts -->
-<script src="../config.js"></script>
-<script src="../api.js"></script>
-<script src="../auth.js"></script>
-<script src="../assets/js/staff-icons.js"></script>
-<script src="../assets/js/staff-data.js"></script>
-<script src="../assets/js/staff.js"></script>
-<script src="trainer.js"></script>
+<script src="../config.js?v=5"></script>
+<script src="../api.js?v=5"></script>
+<script src="../auth.js?v=5"></script>
+<script src="../assets/js/staff-icons.js?v=5"></script>
+<script src="../assets/js/staff-data.js?v=8"></script>
+<script src="../assets/js/staff.js?v=10"></script>
+<script src="trainer.js?v=10"></script>
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  const PF = window.PF || {};
-  const T = window.Trainer;
+PF.ready(async () => {
+  const inpName = document.getElementById('inpName');
+  const inpPhone = document.getElementById('inpPhone');
+  const inpSpec = document.getElementById('inpSpec');
+  const inpAvail = document.getElementById('inpAvail');
+  const inpBio = document.getElementById('inpBio');
+  const bioCounter = document.getElementById('bioCounter');
+  const activeToggle = document.getElementById('profActiveToggle');
 
-  async function loadProfile() {
-    try {
-      const p = await T.api.getProfile();
-      document.getElementById('profNameDisplay').textContent = p.name || 'Coach';
-      document.getElementById('profSpecPill').textContent = p.specialization || 'Functional Fitness Trainer';
-      document.getElementById('profCapacityDisplay').textContent = `${p.load ?? 0} / ${p.max_members ?? 20} members`;
+  function updateBioCount() {
+    bioCounter.textContent = `${(inpBio.value || '').length} / 500`;
+  }
+  inpBio.addEventListener('input', updateBioCount);
 
-      if (PF.avatar) {
-        document.getElementById('profileAvatarBox').innerHTML = PF.avatar(p.name || 'Coach', 'lg');
-      }
+  function renderProfile(p) {
+    document.getElementById('profAvatar').textContent = PF.initials(p.name || 'Coach');
+    document.getElementById('profName').textContent = p.name || 'Coach';
+    document.getElementById('profEmail').textContent = p.email || '';
+    document.getElementById('profSpecPill').textContent = p.specialization || 'General Fitness';
 
-      document.getElementById('profName').value = p.name || '';
-      document.getElementById('profEmail').value = p.email || '';
-      document.getElementById('profUser').value = p.username || '';
-      document.getElementById('profMax').value = p.max_members || 20;
-      document.getElementById('profSpec').value = p.specialization || '';
-      document.getElementById('profAvail').value = p.availability || '';
-      document.getElementById('profBio').value = p.bio || '';
-    } catch (e) {
-      console.error(e);
-      PF.toast('Error loading profile: ' + e.message, 'error');
-    }
+    const max = p.max_members || 20;
+    const load = p.load || 0;
+    const pct = Math.min(100, Math.round((load / max) * 100));
+    document.getElementById('profLoadText').textContent = `${load} / ${max} Athletes (${pct}%)`;
+    const bar = document.querySelector('#profLoadBar > i');
+    if (bar) bar.style.width = `${pct}%`;
+
+    document.getElementById('profActiveCount').textContent = p.active_members ?? load;
+    document.getElementById('profTodayCount').textContent = p.today_checkins ?? 0;
+
+    const badge = document.getElementById('profStatusBadge');
+    const isAct = p.is_active !== false;
+    activeToggle.checked = isAct;
+    badge.className = `tw-pill ${isAct ? 'is-green' : 'is-amber'}`;
+    badge.textContent = isAct ? 'Accepting Athletes' : 'Roster Paused';
+
+    inpName.value = p.name || '';
+    inpPhone.value = p.phone || '';
+    inpSpec.value = p.specialization || '';
+    inpAvail.value = p.availability || '';
+    inpBio.value = p.bio || '';
+    updateBioCount();
   }
 
-  // Save Profile Form
-  document.getElementById('profileForm').onsubmit = async (e) => {
+  const prof = await Trainer.api.getProfile();
+  renderProfile(prof);
+
+  document.getElementById('profileForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const btn = document.getElementById('btnSaveProfile');
-    btn.disabled = true;
-    btn.textContent = 'Saving...';
-
-    const payload = {
-      specialization: document.getElementById('profSpec').value.trim(),
-      availability: document.getElementById('profAvail').value.trim(),
-      bio: document.getElementById('profBio').value.trim()
-    };
-
+    const saveBtn = document.getElementById('saveProfBtn');
+    saveBtn.disabled = true;
     try {
-      const res = await T.api.updateProfile(payload);
-      PF.toast(res.detail || 'Profile updated successfully!', 'success');
-      loadProfile();
+      const payload = {
+        full_name: inpName.value.trim(),
+        phone: inpPhone.value.trim(),
+        specialization: inpSpec.value.trim(),
+        availability: inpAvail.value.trim(),
+        bio: inpBio.value.trim(),
+        is_active: activeToggle.checked
+      };
+      const updated = await Trainer.api.updateProfile(payload);
+      renderProfile({ ...prof, ...payload, ...updated, name: updated.name || payload.full_name || prof.name });
+      Trainer.syncShell();
+      PF.toast('Trainer profile updated!', 'success');
     } catch (err) {
-      PF.toast(err.message || 'Failed to update profile.', 'error');
+      PF.toast(err.message || 'Could not update profile.', 'error');
     } finally {
-      btn.disabled = false;
-      btn.textContent = 'Save Changes';
+      saveBtn.disabled = false;
     }
-  };
+  });
 
-  // Change Password Form
-  document.getElementById('pwdForm').onsubmit = async (e) => {
+  activeToggle.addEventListener('change', async () => {
+    try {
+      const updated = await Trainer.api.updateProfile({ is_active: activeToggle.checked });
+      const badge = document.getElementById('profStatusBadge');
+      badge.className = `tw-pill ${activeToggle.checked ? 'is-green' : 'is-amber'}`;
+      badge.textContent = activeToggle.checked ? 'Accepting Athletes' : 'Roster Paused';
+      PF.toast(activeToggle.checked ? 'Now accepting new athletes.' : 'Paused new athlete assignments.', 'success');
+    } catch (err) {
+      PF.toast('Could not update availability status.', 'error');
+    }
+  });
+
+  document.getElementById('pwForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const curr = document.getElementById('currPwd').value;
-    const np = document.getElementById('newPwd').value;
-    const cp = document.getElementById('confirmPwd').value;
-
-    if (np !== cp) {
+    const cur = document.getElementById('curPw').value;
+    const nw = document.getElementById('newPw').value;
+    const cf = document.getElementById('confPw').value;
+    if (nw !== cf) {
       PF.toast('New passwords do not match.', 'error');
       return;
     }
-    if (np.length < 8) {
-      PF.toast('Password must be at least 8 characters.', 'error');
-      return;
-    }
-
-    const btn = document.getElementById('btnChangePwd');
-    btn.disabled = true;
-    btn.textContent = 'Updating...';
-
     try {
-      const res = await T.api.changePassword(curr, np);
-      PF.toast(res.detail || 'Password changed successfully!', 'success');
-      document.getElementById('pwdForm').reset();
+      await Trainer.api.changePassword(cur, nw);
+      PF.toast('Password updated successfully!', 'success');
+      e.target.reset();
     } catch (err) {
-      PF.toast(err.message || 'Password update failed.', 'error');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Update Password';
+      PF.toast(err.message || 'Failed to update password.', 'error');
     }
-  };
-
-  loadProfile();
+  });
 });
 </script>
 </body>
 </html>
-

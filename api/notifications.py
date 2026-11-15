@@ -11,11 +11,13 @@ from apps.notifications.services import mark_all_read, mark_read, unread_count
 
 class NotificationSerializer(serializers.ModelSerializer):
     time = serializers.DateTimeField(source="created_at", read_only=True)
+    created_at = serializers.DateTimeField(read_only=True)
+    read_at = serializers.DateTimeField(read_only=True)
     read = serializers.SerializerMethodField()
 
     class Meta:
         model = Notification
-        fields = ["id", "kind", "title", "body", "link", "time", "read"]
+        fields = ["id", "kind", "title", "body", "link", "time", "created_at", "read", "read_at"]
         read_only_fields = fields
 
     def get_read(self, obj):

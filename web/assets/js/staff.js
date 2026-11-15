@@ -295,7 +295,7 @@
     const displayRole = isTrainer ? 'Personal Trainer' : (me.role || 'Staff');
     return `<div class="brand"><a href="${homeHref}" style="display:flex;align-items:center;gap:12px;min-width:0" aria-label="${esc(gym.name)} dashboard"><img class="brand-logo" src="${esc(gym.logo || PF.assetBase + 'img/logo.jpg')}" alt=""><span class="brand-txt"><strong>${esc(gym.name)}</strong><small>${esc(tagline)}</small></span></a><button class="collapse-btn" id="collapseBtn" type="button" aria-label="Collapse sidebar" title="Collapse sidebar">${PF.icon('chevrons-left')}</button></div>
       <nav class="side-scroll" aria-label="Main navigation">${navItems.map(g => { const items = g.items.filter(allowed); return items.length ? `<p class="nav-label">${g.label}</p><ul class="nav-list">${items.map(it => { const b = it.badge ? it.badge() : 0; return `<li><a class="nav-link ${it.id === cur ? 'active' : ''}" href="${it.href}" title="${esc(it.label)}" ${it.id === cur ? 'aria-current="page"' : ''}>${PF.icon(it.icon)}<span class="nav-text">${esc(it.label)}</span>${b ? `<span class="nav-count" data-badge="${it.id}">${b}</span>` : ''}</a></li>`; }).join('')}</ul>` : ''; }).join('')}</nav>
-      <div class="side-foot"><div class="side-user">${PF.avatar(me.name, 'md', me.photo)}<div class="who"><strong>${esc(me.name)}</strong><small>${esc(displayRole)}</small></div><button class="icon-btn" id="accountBtn" type="button" aria-haspopup="menu" aria-label="Account menu">${PF.icon('more-v')}</button></div></div>`;
+      <div class="side-foot"><div class="side-user" id="sideUserCard" role="button" tabindex="0" aria-haspopup="menu" aria-expanded="false" aria-controls="sideAccountMenu">${PF.avatar(me.name, 'md', me.photo)}<div class="who"><strong>${esc(me.name)}</strong><small>${esc(displayRole)}</small></div><button class="icon-btn" id="accountBtn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="sideAccountMenu" aria-label="Account menu" title="Account">${PF.icon('more-v')}</button><div class="side-account-menu" id="sideAccountMenu" role="menu" aria-label="Account actions"><a href="profile.html" role="menuitem" class="${cur === 'profile' ? 'active' : ''}">${PF.icon('user')}<span>My profile</span></a><a href="settings.html" role="menuitem" class="${cur === 'settings' ? 'active' : ''}">${PF.icon('settings')}<span>Settings</span></a><hr><button type="button" role="menuitem" class="danger" id="sideLogoutBtn">${PF.icon('log-out')}<span>Log out</span></button></div></div></div>`;
   }
 
   function topbarHTML() {
@@ -422,9 +422,50 @@
     const bell = $('#bellBtn'), panel = $('#npanel');
     bell.onclick = e => { e.stopPropagation(); const on = panel.hidden; panel.hidden = !on; bell.setAttribute('aria-expanded', on); if (on) renderNotifPanel(); };
     document.addEventListener('click', e => { if (!panel.hidden && !panel.contains(e.target) && !bell.contains(e.target)) { panel.hidden = true; bell.setAttribute('aria-expanded', 'false'); } });
-    $('#accountBtn').onclick = e => { e.stopPropagation(); PF.menu($('#accountBtn'), [
-      { label: 'My profile', icon: 'user', href: 'profile.html' }, { label: 'Settings', icon: 'settings', href: 'settings.html' }, 'hr',
-      { label: 'Log out', icon: 'log-out', danger: true, onClick: async () => { if (await PF.confirm({ title: 'Log out?', message: 'You will need to sign in again to use the staff portal.', confirm: 'Log out' })) PF.logout(); } }]); };
+    const accountBtn = $('#accountBtn'), sideUserCard = $('#sideUserCard'), sideAccountMenu = $('#sideAccountMenu'), sideLogoutBtn = $('#sideLogoutBtn');
+    const setAccountMenu = open => {
+      if (!sideAccountMenu) return;
+      sideAccountMenu.classList.toggle('is-open', open);
+      if (accountBtn) accountBtn.setAttribute('aria-expanded', String(open));
+      if (sideUserCard) sideUserCard.setAttribute('aria-expanded', String(open));
+    };
+    const toggleAccountMenu = e => {
+      if (e.target.closest('#sideAccountMenu')) return;
+      e.preventDefault();
+      e.stopPropagation();
+      setAccountMenu(!sideAccountMenu.classList.contains('is-open'));
+    };
+    if (accountBtn) accountBtn.onclick = toggleAccountMenu;
+    if (sideUserCard) {
+      sideUserCard.onclick = toggleAccountMenu;
+      sideUserCard.onkeydown = e => {
+        if (e.key === 'Enter' || e.key === ' ') toggleAccountMenu(e);
+      };
+    }
+    if (sideAccountMenu) {
+      sideAccountMenu.addEventListener('click', e => {
+        if (e.target.closest('[role="menuitem"]')) setAccountMenu(false);
+      });
+    }
+    if (sideLogoutBtn) {
+      sideLogoutBtn.onclick = async e => {
+        e.preventDefault();
+        e.stopPropagation();
+        setAccountMenu(false);
+        const msg = isTrainerContext()
+          ? 'You will need to sign in again to use the trainer portal.'
+          : 'You will need to sign in again to use the staff portal.';
+        if (await PF.confirm({ title: 'Log out?', message: msg, confirm: 'Log out', danger: true })) {
+          PF.logout();
+        }
+      };
+    }
+    document.addEventListener('click', e => {
+      if (sideAccountMenu && !sideAccountMenu.contains(e.target) && (!sideUserCard || !sideUserCard.contains(e.target))) {
+        setAccountMenu(false);
+      }
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') setAccountMenu(false); });
     globalSearch(); renderNotifPanel();
     document.addEventListener('pf:data', syncBadges);
     window.addEventListener('hashchange', PF.refreshNav);

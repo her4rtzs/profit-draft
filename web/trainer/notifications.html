@@ -1,152 +1,276 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" data-default-theme="dark">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Notifications — ProFit Trainer</title>
-  <meta name="theme-color" content="#0a1220">
-  <link rel="icon" href="../assets/img/logo.jpg">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
-  <link rel="stylesheet" href="../assets/css/staff.css">
-  <script src="../assets/js/staff-boot.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProFit — Notifications (Trainer Portal)</title>
+<script>try{var t=localStorage.getItem('pf-theme')||localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);var a=localStorage.getItem('pf-accent')||localStorage.getItem('accent');if(a)document.documentElement.setAttribute('data-accent',a);}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/staff.css?v=10">
+<link rel="stylesheet" href="trainer.css?v=10">
 </head>
-<body data-portal="trainer" data-page="notifications" data-title="Notifications" data-eyebrow="Alerts & Activity" data-sub="Recent updates, member assignments, and system alerts." data-icon="bell">
+<body data-page="notifications" data-portal="trainer" data-head="none">
 <div class="app">
   <aside class="sidebar" id="sidebar"></aside>
   <div class="scrim" id="scrim"></div>
   <div class="main">
     <header class="topbar" id="topbar"></header>
     <main class="content" id="content">
-      <!-- Toolbar -->
-      <div class="card" style="margin-bottom:20px;padding:12px 18px">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
-          <div class="tab-bar" style="margin:0;padding:3px">
-            <button class="tab-btn active" type="button" id="tabNotifAll">All Alerts</button>
-            <button class="tab-btn" type="button" id="tabNotifUnread">Unread Only</button>
+
+      <!-- Page Hero Banner -->
+      <section class="tw-page-hero tw-anim" style="--i:0">
+        <div class="tw-hero-left">
+          <div class="tw-hero-ico" data-ico="bell"></div>
+          <div class="tw-hero-text">
+            <span class="tw-hero-eyebrow">Coach Inbox · Real-Time Activity</span>
+            <h1 class="tw-hero-title">Notifications &amp; Assignment Alerts</h1>
+            <p class="tw-hero-sub">Stay updated on new athlete assignments, coaching requests, schedule broadcasts, and gym notices.</p>
           </div>
-          <div style="display:flex;align-items:center;gap:10px">
-            <button class="btn btn-ghost btn-sm" type="button" id="btnMarkAllRead">
-              <span id="icoCheckAll"></span>
-              <span>Mark all as read</span>
+        </div>
+        <div class="tw-hero-actions">
+          <button type="button" class="tw-btn-primary" id="markAllReadBtn">
+            <span data-ico="check"></span> Mark All as Read
+          </button>
+        </div>
+      </section>
+
+      <!-- KPI Summary Cards -->
+      <section class="tw-kpi-grid tw-anim" style="--i:1" aria-label="Notification metrics">
+        <article class="tw-kpi-card is-amber">
+          <div class="tw-kpi-top">
+            <span class="tw-kpi-label">Unread Alerts</span>
+            <div class="tw-kpi-ico" data-ico="bell"></div>
+          </div>
+          <div class="tw-kpi-val" id="kpiNotifUnread">0</div>
+          <div class="tw-kpi-sub">Awaiting your review</div>
+        </article>
+
+        <article class="tw-kpi-card is-green">
+          <div class="tw-kpi-top">
+            <span class="tw-kpi-label">Total Inbox</span>
+            <div class="tw-kpi-ico" data-ico="layers"></div>
+          </div>
+          <div class="tw-kpi-val" id="kpiNotifTotal">0</div>
+          <div class="tw-kpi-sub">Recent system notifications</div>
+        </article>
+
+        <article class="tw-kpi-card is-purple">
+          <div class="tw-kpi-top">
+            <span class="tw-kpi-label">Coaching &amp; Roster</span>
+            <div class="tw-kpi-ico" data-ico="dumbbell"></div>
+          </div>
+          <div class="tw-kpi-val" id="kpiNotifTrainer">0</div>
+          <div class="tw-kpi-sub">Assignments &amp; schedule notes</div>
+        </article>
+
+        <article class="tw-kpi-card is-blue">
+          <div class="tw-kpi-top">
+            <span class="tw-kpi-label">Gym Bulletins</span>
+            <div class="tw-kpi-ico" data-ico="megaphone"></div>
+          </div>
+          <div class="tw-kpi-val" id="kpiNotifAnn">0</div>
+          <div class="tw-kpi-sub">Facility &amp; announcement alerts</div>
+        </article>
+      </section>
+
+      <!-- Filter & Search Toolbar -->
+      <section class="tw-toolbar tw-anim" style="--i:2">
+        <div class="tw-toolbar-left">
+          <div class="tw-filter-pills" id="notifFilterSeg" role="tablist">
+            <button type="button" class="tw-filter-pill active" data-filter="all">
+              All Alerts <span class="tw-filter-count" id="cntNotifAll">0</span>
+            </button>
+            <button type="button" class="tw-filter-pill" data-filter="unread">
+              Unread <span class="tw-filter-count" id="cntNotifUnread">0</span>
+            </button>
+            <button type="button" class="tw-filter-pill" data-filter="trainer">
+              Coaching <span class="tw-filter-count" id="cntNotifTrainer">0</span>
+            </button>
+            <button type="button" class="tw-filter-pill" data-filter="announcement">
+              Bulletins <span class="tw-filter-count" id="cntNotifAnn">0</span>
             </button>
           </div>
         </div>
-      </div>
-
-      <!-- Notifications List -->
-      <div class="card" style="padding:0;overflow:hidden;max-width:880px">
-        <div id="notifListWrap" style="display:grid;divide-y:1px solid var(--line)">
-          <div class="empty compact" style="padding:40px 0">Loading notifications...</div>
+        <div class="tw-toolbar-right">
+          <div class="tw-search-box">
+            <span data-ico="search"></span>
+            <input type="search" id="notifSearch" class="tw-search-input" placeholder="Search notification title or body...">
+          </div>
         </div>
-      </div>
+      </section>
+
+      <!-- Notifications Feed Card -->
+      <section class="tw-card tw-anim" style="--i:3">
+        <div class="tw-card-head">
+          <div>
+            <h2 class="tw-card-title">Activity Feed</h2>
+            <p class="tw-card-sub">Click any unread alert to mark it as read.</p>
+          </div>
+        </div>
+        <div id="notifFeed" class="tw-notif-list">
+          <span class="tw-skel tw-skel-row"></span>
+          <span class="tw-skel tw-skel-row"></span>
+        </div>
+      </section>
+
     </main>
   </div>
   <nav class="bottom-nav" id="bottomNav" aria-label="Quick navigation"></nav>
 </div>
 
-<!-- Scripts -->
-<script src="../config.js"></script>
-<script src="../api.js"></script>
-<script src="../auth.js"></script>
-<script src="../assets/js/staff-icons.js"></script>
-<script src="../assets/js/staff-data.js"></script>
-<script src="../assets/js/staff.js"></script>
-<script src="trainer.js"></script>
+<script src="../config.js?v=5"></script>
+<script src="../api.js?v=5"></script>
+<script src="../auth.js?v=5"></script>
+<script src="../assets/js/staff-icons.js?v=5"></script>
+<script src="../assets/js/staff-data.js?v=8"></script>
+<script src="../assets/js/staff.js?v=10"></script>
+<script src="trainer.js?v=10"></script>
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  const PF = window.PF || {};
-  const T = window.Trainer;
-
-  document.getElementById('icoCheckAll').innerHTML = PF.icon('check');
-
+PF.ready(async () => {
   let allNotifs = [];
-  let filterMode = 'all';
+  let currentFilter = 'all';
+  const searchInput = document.getElementById('notifSearch');
 
-  async function loadNotifications() {
-    try {
-      allNotifs = await T.api.getNotifications();
-      renderNotifs();
-    } catch (e) {
-      console.error(e);
-      PF.toast('Failed to load notifications: ' + e.message, 'error');
-    }
+  function isUnread(n) {
+    return !n.read && !n.read_at;
   }
 
-  function renderNotifs() {
-    const list = allNotifs.filter(n => filterMode === 'all' || !n.read_at);
-    const box = document.getElementById('notifListWrap');
+  function isTrainerKind(n) {
+    return String(n.kind || '').toUpperCase() === 'TRAINER';
+  }
 
-    if (!list.length) {
-      box.innerHTML = `<div class="empty" style="padding:40px 0">${PF.icon('bell')}<h3>No notifications</h3><p>You are all caught up with your alerts.</p></div>`;
+  function isAnnKind(n) {
+    return String(n.kind || '').toUpperCase() === 'ANNOUNCEMENT';
+  }
+
+  function updateKPIs(list) {
+    const total = list.length;
+    const unread = list.filter(isUnread).length;
+    const trainer = list.filter(isTrainerKind).length;
+    const ann = list.filter(isAnnKind).length;
+
+    document.getElementById('kpiNotifUnread').textContent = unread;
+    document.getElementById('kpiNotifTotal').textContent = total;
+    document.getElementById('kpiNotifTrainer').textContent = trainer;
+    document.getElementById('kpiNotifAnn').textContent = ann;
+
+    document.getElementById('cntNotifAll').textContent = total;
+    document.getElementById('cntNotifUnread').textContent = unread;
+    document.getElementById('cntNotifTrainer').textContent = trainer;
+    document.getElementById('cntNotifAnn').textContent = ann;
+  }
+
+  function getIconConfig(n) {
+    const k = String(n.kind || '').toUpperCase();
+    if (k === 'TRAINER') return { ico: 'dumbbell', cls: '', badge: '<span class="tw-pill is-amber">Coaching</span>' };
+    if (k === 'ANNOUNCEMENT') return { ico: 'megaphone', cls: 'is-blue', badge: '<span class="tw-pill is-blue">Bulletin</span>' };
+    if (k === 'MEMBERSHIP') return { ico: 'shield', cls: 'is-green', badge: '<span class="tw-pill is-green">Membership</span>' };
+    return { ico: 'bell', cls: 'is-purple', badge: '<span class="tw-pill is-purple">System</span>' };
+  }
+
+  function render() {
+    const feed = document.getElementById('notifFeed');
+    const q = (searchInput.value || '').trim().toLowerCase();
+
+    const rows = allNotifs.filter(n => {
+      if (currentFilter === 'unread' && !isUnread(n)) return false;
+      if (currentFilter === 'trainer' && !isTrainerKind(n)) return false;
+      if (currentFilter === 'announcement' && !isAnnKind(n)) return false;
+      if (q) {
+        const hay = `${n.title || ''} ${n.body || ''}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+
+    if (!rows.length) {
+      feed.innerHTML = `
+        <div class="tw-empty">
+          <div class="tw-empty-ico">${PF.icon('bell')}</div>
+          <strong>All caught up!</strong>
+          <p>${allNotifs.length ? 'No notifications match your current filter or search.' : 'You have no notifications in your inbox right now.'}</p>
+        </div>
+      `;
       return;
     }
 
-    box.innerHTML = list.map(n => `
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--line);background:${n.read_at ? 'transparent' : 'rgba(227,174,43,0.04)'};gap:14px;cursor:pointer" onclick="handleNotifClick(${n.id}, '${PF.esc(n.link || '')}')">
-        <div style="display:flex;align-items:flex-start;gap:14px;min-width:0">
-          <span class="stat-ico tone-${n.read_at ? 'blue' : 'gold'}" style="width:38px;height:38px;border-radius:10px;flex:none">
-            ${PF.icon(n.kind === 'TRAINER' ? 'dumbbell' : 'bell')}
-          </span>
-          <div>
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
-              <strong style="font-size:14px">${PF.esc(n.title)}</strong>
-              ${!n.read_at ? '<span class="badge-dot" style="display:inline-block"></span>' : ''}
+    feed.innerHTML = rows.map(n => {
+      const unread = isUnread(n);
+      const cfg = getIconConfig(n);
+      const ts = n.created_at || n.time;
+      return `
+        <article class="tw-notif-item ${unread ? 'is-unread' : ''}" data-notif-id="${n.id}">
+          <div class="tw-notif-left">
+            <div class="tw-notif-ico ${cfg.cls}">${PF.icon(cfg.ico)}</div>
+            <div class="tw-notif-content">
+              <div class="tw-notif-title-row">
+                ${unread ? '<span class="tw-notif-dot" title="Unread"></span>' : ''}
+                <h4 class="tw-notif-title">${PF.esc(n.title)}</h4>
+                ${cfg.badge}
+              </div>
+              <p class="tw-notif-body">${PF.esc(n.body)}</p>
+              <div class="tw-notif-meta">
+                <span>${Trainer.format.timeAgo(ts)}</span>
+                <span>·</span>
+                <span>${Trainer.format.date(ts)} at ${Trainer.format.time(ts)}</span>
+              </div>
             </div>
-            <p style="font-size:13px;color:var(--text-2);margin:0 0 6px;line-height:1.4">${PF.esc(n.body)}</p>
-            <small style="color:var(--muted);font-size:11.5px">${T.format.timeAgo(n.created_at)}</small>
           </div>
-        </div>
-        <div style="flex:none">
-          ${!n.read_at ? `<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();markSingleRead(${n.id})">Mark read</button>` : ''}
-        </div>
-      </div>
-    `).join('');
+          <div style="display:flex;align-items:center;gap:8px;flex:none">
+            ${unread
+              ? `<button type="button" class="tw-btn" data-mark-read="${n.id}">Mark Read</button>`
+              : `<span class="tw-pill is-gray">Read</span>`}
+          </div>
+        </article>
+      `;
+    }).join('');
+
+    feed.querySelectorAll('[data-notif-id]').forEach(el => {
+      el.addEventListener('click', async (ev) => {
+        const id = Number(el.dataset.notifId);
+        const item = allNotifs.find(x => x.id === id);
+        if (item && isUnread(item)) {
+          item.read = true;
+          item.read_at = new Date().toISOString();
+          await Trainer.api.markNotifRead(id);
+          updateKPIs(allNotifs);
+          render();
+        }
+      });
+    });
   }
 
-  window.handleNotifClick = async (id, link) => {
-    await T.api.markNotifRead(id);
-    const item = allNotifs.find(n => n.id === id);
-    if (item) item.read_at = new Date().toISOString();
-    renderNotifs();
-    if (link) {
-      if (link.includes('trainer-portal.html')) location.href = 'index.html';
-      else location.href = link;
-    }
-  };
+  async function loadNotifs() {
+    allNotifs = await Trainer.api.getNotifications();
+    updateKPIs(allNotifs);
+    render();
+  }
 
-  window.markSingleRead = async (id) => {
-    await T.api.markNotifRead(id);
-    const item = allNotifs.find(n => n.id === id);
-    if (item) item.read_at = new Date().toISOString();
-    renderNotifs();
-    PF.toast('Marked as read', 'success');
-  };
+  document.querySelectorAll('#notifFilterSeg [data-filter]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#notifFilterSeg [data-filter]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = btn.dataset.filter;
+      render();
+    });
+  });
 
-  document.getElementById('btnMarkAllRead').onclick = async () => {
-    await T.api.markAllNotifsRead();
-    allNotifs.forEach(n => { n.read_at = new Date().toISOString(); });
-    renderNotifs();
-    PF.toast('All marked as read', 'success');
-  };
+  document.getElementById('markAllReadBtn').addEventListener('click', async () => {
+    await Trainer.api.markAllNotifsRead();
+    allNotifs.forEach(n => {
+      n.read = true;
+      n.read_at = new Date().toISOString();
+    });
+    updateKPIs(allNotifs);
+    render();
+    PF.toast('All notifications marked as read.', 'success');
+  });
 
-  document.getElementById('tabNotifAll').onclick = () => {
-    document.getElementById('tabNotifAll').classList.add('active');
-    document.getElementById('tabNotifUnread').classList.remove('active');
-    filterMode = 'all';
-    renderNotifs();
-  };
-  document.getElementById('tabNotifUnread').onclick = () => {
-    document.getElementById('tabNotifUnread').classList.add('active');
-    document.getElementById('tabNotifAll').classList.remove('active');
-    filterMode = 'unread';
-    renderNotifs();
-  };
-
-  loadNotifications();
+  searchInput.addEventListener('input', render);
+  await loadNotifs();
 });
 </script>
 </body>
 </html>
-

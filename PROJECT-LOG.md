@@ -2026,3 +2026,23 @@ Stop the server and push the changes to `master`.
 - Stopped the background static HTTP preview server (`task-534`) via `manage_task` (`kill`), staged the modified files (`web/announcements.css`, `web/ui-polish.css`, `web/member-home.html`, and `PROJECT-LOG.md`), committed them, and pushed to `origin/master`.
 ### Decision-log skill
 - Always stop running preview servers before staging, committing, and pushing to `origin/master`.
+
+## 2026-11-15 09:13 (Asia/Manila): Trainer Portal Subpages UI & Backend Upgrade
+### What I asked for
+Add an aesthetic UI that correlates with the Member and Staff portals across the Trainer Portal pages (`announcements`, `my members`, `attendance`, `myschedule`, `notifications`, `my profile`, `settings`) and add the supporting backend endpoints.
+### What the agent decided and why
+- Extended `web/trainer/trainer.css` with shared `.tw-*` design system components (hero banners, 4-column tinted KPI cards, filter/search toolbars, pill tabs with live badge counters, announcement cards, athlete cards, attendance quick check-in panel, 7-day schedule selector strip, notification inbox cards, coach profile/credential cards, and theme/accent selector cards) in both Obsidian Dark (`#0A0E17` / `#111827`) and Warm Cream Light (`#F2EEE5` / `#FAF8F3`) modes.
+- Linked `trainer.css?v=7` across all 7 Trainer Portal subpages (`announcements.html`, `members.html`, `attendance.html`, `schedule.html`, `notifications.html`, `profile.html`, `settings.html`) so they share the exact visual language of `web/trainer/index.html`, `web/trainers.html`, and `web/member-home.html`.
+- Upgraded `api/trainers.py`, `api/notifications.py`, and `api/urls.py` with `TrainerCheckInView` (`/api/trainer/attendance/check-in/`), `TrainerAnnouncementsView` (`/api/trainer/announcements/`), enriched `TrainerProfileView` (`full_name`, `phone`, `is_active` toggle, live capacity metrics), targeted member support in `TrainerScheduleView`, morning/afternoon session breakdowns in `TrainerAttendanceListView`, and normalized `created_at`/`read_at` fields in `NotificationSerializer`.
+### Decision-log skill
+When upgrading multi-page portals, load the shared portal stylesheet on every subpage and normalize API response shapes in the shared client (`trainer.js`) so both paginated/wrapped responses (`{unread, items}`) and array responses render without client-side errors.
+
+## 2026-11-15 09:41 (Asia/Manila): Trainer Portal Subpages UI/Backend Upgrade & Sidebar Account Menu Fix
+### What I asked for
+Upgrade the Trainer Portal subpages (Announcements, My Members, Attendance, My Schedule, Notifications, My Profile, Settings) with aesthetic UI matching the Staff and Member portals and full backend API integration, preview the pages, and fix the non-interactive Trainer sidebar account card (`Coach Mika / Personal Trainer`).
+### What the agent decided and why
+- Extended the Trainer DRF endpoints in `api/trainers.py`, `api/notifications.py`, and `api/urls.py` (`TrainerCheckInView`, `TrainerAnnouncementsView`, enhanced `TrainerProfileView`, `TrainerAttendanceListView`, `TrainerScheduleView`, and `NotificationSerializer` timestamps) with unit tests in `apps/trainers/tests/test_trainers.py` so every Trainer subpage is backed by real server endpoints with fallback support.
+- Unified script imports (`../config.js`, `../api.js`, `../auth.js`, `../assets/js/staff-icons.js`, `../assets/js/staff-data.js`, `../assets/js/staff.js`, `trainer.js`) and layout containers (`#scrim`, `#bottomNav`, `#content[data-head="none"]`) across all 7 Trainer subpages so they hydrate cleanly without console 404s or missing icon helpers.
+- Replaced the bottom-anchored `PF.menu` call on `#accountBtn` (which opened below the viewport and behind the `z-index: 500` fixed `.sidebar`) with an inline upward-opening `.side-account-menu` (`bottom: calc(100% + 8px); z-index: 600`) inside `#sideUserCard`, matching the Staff Portal's `.account-menu` interaction and gold-gradient avatar styling.
+### Decision-log skill
+- When attaching popovers or dropdown menus to elements inside a `position: fixed` sidebar footer, anchor the menu directly inside the trigger container with `bottom: calc(100% + 8px)` (opening upward) or ensure body-level popovers use `position: fixed` with a `z-index` higher than the sidebar and viewport-clamped vertical coordinates.

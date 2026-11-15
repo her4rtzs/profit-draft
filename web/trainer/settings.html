@@ -1,199 +1,240 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" data-default-theme="dark">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Settings — ProFit Trainer</title>
-  <meta name="theme-color" content="#0a1220">
-  <link rel="icon" href="../assets/img/logo.jpg">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
-  <link rel="stylesheet" href="../assets/css/staff.css">
-  <script src="../assets/js/staff-boot.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProFit — Settings (Trainer Portal)</title>
+<script>try{var t=localStorage.getItem('pf-theme')||localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);var a=localStorage.getItem('pf-accent')||localStorage.getItem('accent');if(a)document.documentElement.setAttribute('data-accent',a);}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/staff.css?v=10">
+<link rel="stylesheet" href="trainer.css?v=10">
 </head>
-<body data-portal="trainer" data-page="settings" data-title="Settings" data-eyebrow="Preferences" data-sub="Customize your workspace appearance and interface options." data-icon="settings">
+<body data-page="settings" data-portal="trainer" data-head="none">
 <div class="app">
   <aside class="sidebar" id="sidebar"></aside>
   <div class="scrim" id="scrim"></div>
   <div class="main">
     <header class="topbar" id="topbar"></header>
     <main class="content" id="content">
-      <div style="max-width:880px;display:grid;gap:24px">
-        <!-- Theme Mode Card -->
-        <div class="card">
-          <div class="card-head">
-            <div>
-              <h2 class="card-title">Theme Mode</h2>
-              <p class="card-sub">Choose between light, dark, or system matching theme</p>
-            </div>
-          </div>
-          <div class="grid grid-3" style="gap:14px;margin-top:16px">
-            <label class="card" style="cursor:pointer;border:2px solid var(--line);padding:16px;text-align:center" id="themeOptLight">
-              <input type="radio" name="themeMode" value="light" style="display:none">
-              <div style="font-size:24px;margin-bottom:8px">☀️</div>
-              <strong style="display:block">Light Cream</strong>
-              <small class="muted">Clean cream & gold</small>
-            </label>
-            <label class="card" style="cursor:pointer;border:2px solid var(--line);padding:16px;text-align:center" id="themeOptDark">
-              <input type="radio" name="themeMode" value="dark" style="display:none">
-              <div style="font-size:24px;margin-bottom:8px">🌙</div>
-              <strong style="display:block">Obsidian Dark</strong>
-              <small class="muted">Navy & black night mode</small>
-            </label>
-            <label class="card" style="cursor:pointer;border:2px solid var(--line);padding:16px;text-align:center" id="themeOptSystem">
-              <input type="radio" name="themeMode" value="system" style="display:none">
-              <div style="font-size:24px;margin-bottom:8px">💻</div>
-              <strong style="display:block">System Auto</strong>
-              <small class="muted">Sync with OS setting</small>
-            </label>
-          </div>
-        </div>
 
-        <!-- Accent Color Card -->
-        <div class="card">
-          <div class="card-head">
-            <div>
-              <h2 class="card-title">Workspace Accent Color</h2>
-              <p class="card-sub">Personalize highlight colors across buttons, badges, and active states</p>
-            </div>
-          </div>
-          <div class="grid grid-4" style="gap:14px;margin-top:16px">
-            <button type="button" class="btn" id="accentGold" style="display:flex;align-items:center;gap:10px;padding:14px;border:2px solid var(--line);background:var(--card);text-align:left">
-              <span style="width:20px;height:20px;border-radius:50%;background:#e3ae2b;display:inline-block;flex:none"></span>
-              <strong>Gold (Default)</strong>
-            </button>
-            <button type="button" class="btn" id="accentOcean" style="display:flex;align-items:center;gap:10px;padding:14px;border:2px solid var(--line);background:var(--card);text-align:left">
-              <span style="width:20px;height:20px;border-radius:50%;background:#2f8fe0;display:inline-block;flex:none"></span>
-              <strong>Ocean Blue</strong>
-            </button>
-            <button type="button" class="btn" id="accentEmerald" style="display:flex;align-items:center;gap:10px;padding:14px;border:2px solid var(--line);background:var(--card);text-align:left">
-              <span style="width:20px;height:20px;border-radius:50%;background:#12a57f;display:inline-block;flex:none"></span>
-              <strong>Emerald</strong>
-            </button>
-            <button type="button" class="btn" id="accentIndigo" style="display:flex;align-items:center;gap:10px;padding:14px;border:2px solid var(--line);background:var(--card);text-align:left">
-              <span style="width:20px;height:20px;border-radius:50%;background:#6a5be2;display:inline-block;flex:none"></span>
-              <strong>Indigo</strong>
-            </button>
+      <!-- Page Hero Banner -->
+      <section class="tw-page-hero tw-anim" style="--i:0">
+        <div class="tw-hero-left">
+          <div class="tw-hero-ico" data-ico="settings"></div>
+          <div class="tw-hero-text">
+            <span class="tw-hero-eyebrow">Workspace Preferences · Personalization</span>
+            <h1 class="tw-hero-title">Trainer Portal Settings</h1>
+            <p class="tw-hero-sub">Customize your display theme, accent palette, dashboard preferences, and active session security.</p>
           </div>
         </div>
+        <div class="tw-hero-actions">
+          <a href="profile.html" class="tw-btn"><span data-ico="user"></span> Edit Coach Profile</a>
+        </div>
+      </section>
 
-        <!-- Gym Information Block -->
-        <div class="card">
-          <div class="card-head">
-            <div>
-              <h2 class="card-title">Gym Information</h2>
-              <p class="card-sub">Functional Fitness Gym facility details</p>
-            </div>
-          </div>
-          <div class="grid grid-2" style="gap:16px;margin-top:16px;font-size:13.5px">
-            <div>
-              <small class="muted">Facility Name</small>
-              <div style="font-weight:700" id="gymNameDisplay">ProFit Gym</div>
-            </div>
-            <div>
-              <small class="muted">Tagline</small>
-              <div style="font-weight:700" id="gymTagDisplay">FUNCTIONAL FITNESS</div>
-            </div>
-            <div>
-              <small class="muted">Desk Contact Phone</small>
-              <div style="font-weight:700" id="gymPhoneDisplay">+63 917 555 0142</div>
-            </div>
-            <div>
-              <small class="muted">Support Email</small>
-              <div style="font-weight:700" id="gymEmailDisplay">hello@profitgym.ph</div>
-            </div>
-          </div>
-        </div>
+      <!-- Settings 2-Column Grid -->
+      <section class="tw-settings-grid tw-anim" style="--i:1">
 
-        <!-- Session / Logout Block -->
-        <div class="card" style="border:1px solid var(--line-strong)">
-          <div class="card-head">
+        <!-- Card 1: Display Theme Mode -->
+        <article class="tw-card">
+          <div class="tw-card-head">
             <div>
-              <h3 class="card-title">Session Security</h3>
-              <p class="card-sub">End your active coaching session securely</p>
+              <h2 class="tw-card-title">Appearance &amp; Color Mode</h2>
+              <p class="tw-card-sub">Switch between Obsidian Dark and Warm Cream Light mode across all trainer pages.</p>
             </div>
-            <button class="btn btn-danger" type="button" id="btnSettingsLogout">
-              Log out of Coach Portal
+            <div class="tw-kpi-ico" data-ico="sun"></div>
+          </div>
+
+          <div class="tw-choice-grid" id="themeOptGroup">
+            <button type="button" class="tw-choice-card" data-theme-val="dark">
+              <div class="tw-kpi-ico" data-ico="moon"></div>
+              <div>
+                <strong style="display:block;font-size:14px">Obsidian Dark</strong>
+                <span style="font-size:12px;color:var(--muted)">Deep navy &amp; gold contrast</span>
+              </div>
+            </button>
+
+            <button type="button" class="tw-choice-card" data-theme-val="light">
+              <div class="tw-kpi-ico" data-ico="sun"></div>
+              <div>
+                <strong style="display:block;font-size:14px">Warm Cream</strong>
+                <span style="font-size:12px;color:var(--muted)">Soft daylight stone palette</span>
+              </div>
+            </button>
+
+            <button type="button" class="tw-choice-card" data-theme-val="system">
+              <div class="tw-kpi-ico" data-ico="settings"></div>
+              <div>
+                <strong style="display:block;font-size:14px">System Sync</strong>
+                <span style="font-size:12px;color:var(--muted)">Follow device OS setting</span>
+              </div>
             </button>
           </div>
-        </div>
-      </div>
+        </article>
+
+        <!-- Card 2: Accent Color Palette -->
+        <article class="tw-card">
+          <div class="tw-card-head">
+            <div>
+              <h2 class="tw-card-title">Workspace Accent Color</h2>
+              <p class="tw-card-sub">Choose the highlight color for active badges, buttons, and charts.</p>
+            </div>
+            <div class="tw-kpi-ico" data-ico="bolt"></div>
+          </div>
+
+          <div class="tw-swatch-grid" id="accentOptGroup">
+            <button type="button" class="tw-swatch-card" data-accent-val="gold">
+              <span class="tw-swatch-dot" style="background:linear-gradient(135deg,#FBBF24,#D97706)"></span>
+              <div>
+                <strong style="display:block;font-size:13.5px">ProFit Gold</strong>
+                <span style="font-size:11.5px;color:var(--muted)">Signature gym amber</span>
+              </div>
+            </button>
+
+            <button type="button" class="tw-swatch-card" data-accent-val="blue">
+              <span class="tw-swatch-dot" style="background:linear-gradient(135deg,#60A5FA,#2563EB)"></span>
+              <div>
+                <strong style="display:block;font-size:13.5px">Ocean Blue</strong>
+                <span style="font-size:11.5px;color:var(--muted)">Crisp athletic cobalt</span>
+              </div>
+            </button>
+
+            <button type="button" class="tw-swatch-card" data-accent-val="emerald">
+              <span class="tw-swatch-dot" style="background:linear-gradient(135deg,#34D399,#059669)"></span>
+              <div>
+                <strong style="display:block;font-size:13.5px">Vitality Emerald</strong>
+                <span style="font-size:11.5px;color:var(--muted)">Fresh performance green</span>
+              </div>
+            </button>
+
+            <button type="button" class="tw-swatch-card" data-accent-val="indigo">
+              <span class="tw-swatch-dot" style="background:linear-gradient(135deg,#A78BFA,#6366F1)"></span>
+              <div>
+                <strong style="display:block;font-size:13.5px">Electric Indigo</strong>
+                <span style="font-size:11.5px;color:var(--muted)">Modern studio violet</span>
+              </div>
+            </button>
+          </div>
+        </article>
+
+        <!-- Card 3: Facility & Operations Reference -->
+        <article class="tw-card">
+          <div class="tw-card-head">
+            <div>
+              <h2 class="tw-card-title">Gym Facility Information</h2>
+              <p class="tw-card-sub">Functional Fitness Gym operating hours and regional standards.</p>
+            </div>
+            <div class="tw-kpi-ico" data-ico="dumbbell"></div>
+          </div>
+
+          <div class="tw-modal-stats" style="margin:0">
+            <div class="tw-modal-stat">
+              <span>Facility Name</span>
+              <strong>Functional Fitness Gym</strong>
+            </div>
+            <div class="tw-modal-stat">
+              <span>Standard Hours</span>
+              <strong>6:00 AM – 10:00 PM</strong>
+            </div>
+            <div class="tw-modal-stat">
+              <span>Timezone &amp; Currency</span>
+              <strong>Asia/Manila · PHP (₱)</strong>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 4: Active Session & Sign Out -->
+        <article class="tw-card">
+          <div class="tw-card-head">
+            <div>
+              <h2 class="tw-card-title">Session &amp; Account Access</h2>
+              <p class="tw-card-sub">Sign out safely when using a shared gym floor tablet or front-desk workstation.</p>
+            </div>
+            <div class="tw-kpi-ico" data-ico="shield"></div>
+          </div>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 16px;border-radius:12px;border:1px solid var(--line);background:var(--card-2);flex-wrap:wrap">
+            <div>
+              <strong style="display:block;font-size:14px;color:var(--text)">End Current Coaching Session</strong>
+              <span style="font-size:12px;color:var(--muted)">Clears local session cache and returns to the sign-in screen.</span>
+            </div>
+            <button type="button" class="tw-btn" id="trainerSignOutBtn" style="border-color:rgba(239,68,68,.4);color:var(--red)">
+              <span data-ico="log-out"></span> Sign Out
+            </button>
+          </div>
+        </article>
+
+      </section>
+
     </main>
   </div>
   <nav class="bottom-nav" id="bottomNav" aria-label="Quick navigation"></nav>
 </div>
 
-<!-- Scripts -->
-<script src="../config.js"></script>
-<script src="../api.js"></script>
-<script src="../auth.js"></script>
-<script src="../assets/js/staff-icons.js"></script>
-<script src="../assets/js/staff-data.js"></script>
-<script src="../assets/js/staff.js"></script>
-<script src="trainer.js"></script>
+<script src="../config.js?v=5"></script>
+<script src="../api.js?v=5"></script>
+<script src="../auth.js?v=5"></script>
+<script src="../assets/js/staff-icons.js?v=5"></script>
+<script src="../assets/js/staff-data.js?v=8"></script>
+<script src="../assets/js/staff.js?v=10"></script>
+<script src="trainer.js?v=10"></script>
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  const PF = window.PF || {};
+PF.ready(() => {
+  const curThemePref = localStorage.getItem('pf-theme-pref') || localStorage.getItem('pf-theme') || localStorage.getItem('theme') || 'dark';
+  const curAccent = localStorage.getItem('pf-accent') || localStorage.getItem('accent') || 'gold';
 
-  // Theme Mode
-  const curTheme = localStorage.getItem('pf-theme') || 'light';
-  function updateThemeUI(t) {
-    ['light','dark','system'].forEach(mode => {
-      const el = document.getElementById('themeOpt' + mode.charAt(0).toUpperCase() + mode.slice(1));
-      if (el) {
-        el.style.borderColor = (t === mode) ? 'var(--gold)' : 'var(--line)';
-        el.style.background = (t === mode) ? 'rgba(227,174,43,0.06)' : 'var(--card)';
-      }
+  function applyThemeChoice(val) {
+    localStorage.setItem('pf-theme-pref', val);
+    const resolved = val === 'system'
+      ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+      : val;
+    document.documentElement.setAttribute('data-theme', resolved);
+    localStorage.setItem('pf-theme', resolved);
+    localStorage.setItem('theme', resolved);
+
+    document.querySelectorAll('[data-theme-val]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.themeVal === val);
     });
   }
-  updateThemeUI(curTheme);
 
-  document.querySelectorAll('input[name="themeMode"]').forEach(radio => {
-    radio.onchange = () => {
-      PF.setTheme(radio.value);
-      updateThemeUI(radio.value);
-      PF.toast(`Theme set to ${radio.value}`, 'success');
-    };
+  function applyAccentChoice(val) {
+    localStorage.setItem('pf-accent', val);
+    localStorage.setItem('accent', val);
+    if (val === 'gold') document.documentElement.removeAttribute('data-accent');
+    else document.documentElement.setAttribute('data-accent', val);
+
+    document.querySelectorAll('[data-accent-val]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.accentVal === val);
+    });
+  }
+
+  applyThemeChoice(curThemePref);
+  applyAccentChoice(curAccent);
+
+  document.querySelectorAll('[data-theme-val]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      applyThemeChoice(btn.dataset.themeVal);
+      PF.toast(`Theme set to ${btn.dataset.themeVal}.`, 'success');
+    });
   });
 
-  // Accents
-  const curAccent = localStorage.getItem('pf-accent') || 'gold';
-  function updateAccentUI(a) {
-    ['gold','ocean','emerald','indigo'].forEach(c => {
-      const btn = document.getElementById('accent' + c.charAt(0).toUpperCase() + c.slice(1));
-      if (btn) {
-        btn.style.borderColor = (a === c) ? 'var(--gold)' : 'var(--line)';
-        btn.style.boxShadow = (a === c) ? '0 0 0 2px var(--gold-soft)' : 'none';
-      }
+  document.querySelectorAll('[data-accent-val]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      applyAccentChoice(btn.dataset.accentVal);
+      PF.toast('Workspace accent updated.', 'success');
     });
-  }
-  updateAccentUI(curAccent);
+  });
 
-  document.getElementById('accentGold').onclick = () => { PF.setAccent('gold'); updateAccentUI('gold'); PF.toast('Accent set to Gold', 'success'); };
-  document.getElementById('accentOcean').onclick = () => { PF.setAccent('ocean'); updateAccentUI('ocean'); PF.toast('Accent set to Ocean Blue', 'success'); };
-  document.getElementById('accentEmerald').onclick = () => { PF.setAccent('emerald'); updateAccentUI('emerald'); PF.toast('Accent set to Emerald', 'success'); };
-  document.getElementById('accentIndigo').onclick = () => { PF.setAccent('indigo'); updateAccentUI('indigo'); PF.toast('Accent set to Indigo', 'success'); };
-
-  // Gym Profile Info
-  const gym = window.ProFitGym || {};
-  if (gym.name) document.getElementById('gymNameDisplay').textContent = gym.name;
-  if (gym.tag) document.getElementById('gymTagDisplay').textContent = gym.tag;
-  if (gym.phone) document.getElementById('gymPhoneDisplay').textContent = gym.phone;
-  if (gym.email) document.getElementById('gymEmailDisplay').textContent = gym.email;
-
-  // Logout
-  document.getElementById('btnSettingsLogout').onclick = async () => {
-    if (await PF.confirm({
-      title: 'Log out?',
-      message: 'Are you sure you want to log out of the trainer workspace?',
-      confirm: 'Log out'
-    })) {
-      PF.logout();
+  document.getElementById('trainerSignOutBtn').addEventListener('click', async () => {
+    if (window.ProFitAPI && window.ProFitAPI.logout) {
+      await window.ProFitAPI.logout();
+    } else {
+      window.location.href = '../login.html';
     }
-  };
+  });
 });
 </script>
 </body>
 </html>
-

@@ -85,7 +85,12 @@
         if (!api) {
           res = await Trainer.demo.checkIn(memberId);
         } else {
-          res = await api.post('/staff/attendance/check-in/', { member_id: Number(memberId) });
+          try {
+            res = await api.post('/trainer/attendance/check-in/', { member_id: Number(memberId) });
+          } catch (e) {
+            if (e && (e.status === 400 || e.status === 404)) throw e;
+            res = await api.post('/staff/attendance/check-in/', { member_id: Number(memberId) });
+          }
         }
         try {
           localStorage.setItem('profit-last-checkin-ts', String(Date.now()));
@@ -106,26 +111,47 @@
           return Trainer.demo.getSchedule();
         }
       },
-      async sendScheduleNote(sessionName, note) {
-        if (!api) return Trainer.demo.sendScheduleNote(sessionName, note);
-        return await api.post('/trainer/schedule/note/', { session_name: sessionName, note: note });
+      async sendScheduleNote(sessionName, note, memberId = 'all') {
+        const payload = { session_name: sessionName, note: note };
+        if (memberId && memberId !== 'all') payload.member_id = Number(memberId);
+        if (!api) return Trainer.demo.sendScheduleNote(sessionName, note, memberId);
+        return await api.post('/trainer/schedule/note/', payload);
       },
       async getAnnouncements() {
         if (!api) return Trainer.demo.getAnnouncements();
         try {
-          return await api.get('/announcements/');
+          const data = await api.get('/trainer/announcements/');
+          if (data && Array.isArray(data.items)) return data.items;
+          if (Array.isArray(data)) return data;
+          const fallback = await api.get('/announcements/');
+          return Array.isArray(fallback) ? fallback : (fallback && fallback.items ? fallback.items : []);
         } catch (e) {
+          try {
+            const fallback = await api.get('/announcements/');
+            if (Array.isArray(fallback)) return fallback;
+          } catch (_) {}
           console.warn('API error, using demo fallback:', e);
           return Trainer.demo.getAnnouncements();
         }
       },
       async getNotifications() {
-        if (!api) return Trainer.demo.getNotifications();
+        const normalizeList = (raw) => {
+          const list = Array.isArray(raw) ? raw : (raw && Array.isArray(raw.items) ? raw.items : []);
+          return list.map(n => ({
+            ...n,
+            created_at: n.created_at || n.time || new Date().toISOString(),
+            time: n.time || n.created_at || new Date().toISOString(),
+            read_at: n.read_at !== undefined ? n.read_at : (n.read ? (n.time || n.created_at || new Date().toISOString()) : null),
+            read: Boolean(n.read || n.read_at)
+          }));
+        };
+        if (!api) return normalizeList(Trainer.demo.getNotifications());
         try {
-          return await api.get('/notifications/');
+          const res = await api.get('/notifications/?limit=40');
+          return normalizeList(res);
         } catch (e) {
           console.warn('API error, using demo fallback:', e);
-          return Trainer.demo.getNotifications();
+          return normalizeList(Trainer.demo.getNotifications());
         }
       },
       async markNotifRead(id) {
@@ -159,13 +185,19 @@
         return {
           id: 1,
           name: 'Coach Mika',
+          first_name: 'Coach',
+          last_name: 'Mika',
           email: 'coach@example.com',
+          phone: '0917-555-0190',
           username: 'coach',
           specialization: 'HIIT & Functional Strength',
           bio: 'Passionate about high-intensity interval training, mobility and helping members achieve peak daily energy.',
           availability: 'Mon - Fri: 6:00 AM - 2:00 PM, Sat: 8:00 AM - 12:00 PM',
           max_members: 20,
           load: 6,
+          active_members: 6,
+          today_checkins: 3,
+          unread_notifications: 2,
           is_full: false,
           is_active: true
         };
@@ -204,8 +236,9 @@
       },
       getMembers() {
         return [
-          { id: 1, name: 'Joyce Alvarez', email: 'joyce.alvarez@example.com', phone: '0917-555-0101', membership_status: 'ACTIVE', is_active: true, expiry_date: '2026-12-15', date_joined: '2026-09-01', assigned_at: '2026-09-05', total_checkins: 24, last_checkin: new Date().toISOString(), today_checked_in: false },
-          { id: 2, name: 'Angelo Metillo', email: 'angelo.metillo@example.com', phone: '0917-555-0102', membership_status: 'ACTIVE', is_active: true, expiry_date: '2026-11-28', date_joined: '2026-08-10', assigned_at: '2026-08-12', total_checkins: 19, last_checkin: new Date(Date.now() - 3600000).toISOString(), today_checked_in: false }
+          { id: 1, name: 'Joyce Alvarez', email: 'joyce.alvarez@example.com', phone: '0917-555-0101', membership_status: 'ACTIVE', is_active: true, days_remaining: 30, expiring_soon: false, expiry_date: '2026-12-15', date_joined: '2026-09-01', assigned_at: '2026-09-05', total_checkins: 24, last_checkin: new Date().toISOString(), today_checked_in: true },
+          { id: 2, name: 'Angelo Metillo', email: 'angelo.metillo@example.com', phone: '0917-555-0102', membership_status: 'ACTIVE', is_active: true, days_remaining: 13, expiring_soon: false, expiry_date: '2026-11-28', date_joined: '2026-08-10', assigned_at: '2026-08-12', total_checkins: 19, last_checkin: new Date(Date.now() - 3600000).toISOString(), today_checked_in: false },
+          { id: 3, name: 'Carlos Dizon', email: 'carlos.dizon@example.com', phone: '0918-555-0203', membership_status: 'ACTIVE', is_active: true, days_remaining: 5, expiring_soon: true, expiry_date: '2026-11-20', date_joined: '2026-07-15', assigned_at: '2026-07-18', total_checkins: 31, last_checkin: new Date(Date.now() - 7200000).toISOString(), today_checked_in: true }
         ];
       },
       getMemberDetail(id) {
@@ -426,14 +459,16 @@
       },
       getAnnouncements() {
         return [
-          { id: 1, title: 'Gym Equipment Upgrades', message: 'New Olympic barbells and bumper plates have arrived in Studio 1. Please re-rack all weights after training.', publish_on: '2026-11-01', pinned: true },
-          { id: 2, title: 'Holiday Operating Hours', message: 'Special schedule for the upcoming holidays. Morning sessions will run normally from 6:00 AM - 11:00 AM.', publish_on: '2026-10-28', pinned: false }
+          { id: 1, title: 'Gym Equipment Upgrades in Studio 1', body: 'New Olympic barbells, calibrated competition bumper plates, and adjustable benches have arrived in Studio 1. Please remind members to re-rack all weights after training sessions.', message: 'New Olympic barbells, calibrated competition bumper plates, and adjustable benches have arrived in Studio 1. Please remind members to re-rack all weights after training sessions.', audience: 'everyone', event_date: '2026-11-20', publish_on: '2026-11-10', pinned: true },
+          { id: 2, title: 'Q4 Coach Alignment & Programming Sync', body: 'All Personal Trainers will meet this Saturday at 1:00 PM in Studio 2 to review progressive overload templates and member retention check-ins.', message: 'All Personal Trainers will meet this Saturday at 1:00 PM in Studio 2 to review progressive overload templates and member retention check-ins.', audience: 'trainers', event_date: '2026-11-22', publish_on: '2026-11-08', pinned: true },
+          { id: 3, title: 'Holiday Operating Hours', body: 'Special schedule for the upcoming holidays. Morning conditioning and open-gym sessions will run normally from 6:00 AM - 11:00 AM.', message: 'Special schedule for the upcoming holidays. Morning conditioning and open-gym sessions will run normally from 6:00 AM - 11:00 AM.', audience: 'everyone', event_date: null, publish_on: '2026-10-28', pinned: false }
         ];
       },
       getNotifications() {
         return [
-          { id: 1, kind: 'TRAINER', title: 'New member assigned: Ana Santos', body: 'Ana Santos has been matched to your coaching roster.', read_at: null, created_at: new Date(Date.now() - 3600000).toISOString() },
-          { id: 2, kind: 'TRAINER', title: 'Schedule Update Confirmed', body: 'Your note for Sunrise HIIT was broadcast to members.', read_at: new Date().toISOString(), created_at: new Date(Date.now() - 86400000).toISOString() }
+          { id: 1, kind: 'TRAINER', title: 'New member assigned: Joyce Alvarez', body: 'Joyce Alvarez has been matched to your coaching roster by the gym owner.', link: 'members.html', read_at: null, read: false, created_at: new Date(Date.now() - 3600000).toISOString() },
+          { id: 2, kind: 'ANNOUNCEMENT', title: 'Pinned Notice: Q4 Coach Alignment Sync', body: 'New trainer-only announcement posted for Saturday at 1:00 PM in Studio 2.', link: 'announcements.html', read_at: null, read: false, created_at: new Date(Date.now() - 14400000).toISOString() },
+          { id: 3, kind: 'TRAINER', title: 'Schedule Update Confirmed', body: 'Your broadcast note for Sunrise HIIT was delivered to your assigned athletes.', link: 'schedule.html', read_at: new Date().toISOString(), read: true, created_at: new Date(Date.now() - 86400000).toISOString() }
         ];
       }
     },
@@ -492,10 +527,40 @@
   };
 
   window.Trainer = Trainer;
+
+  const hydrateStaticIcons = () => {
+    if (!window.PF || !PF.icon) return;
+    document.querySelectorAll('[data-icon]:not(body)').forEach(el => {
+      if (!el.innerHTML.trim()) el.innerHTML = PF.icon(el.dataset.icon);
+    });
+    document.querySelectorAll('[data-ico]:not(body)').forEach(el => {
+      if (!el.innerHTML.trim()) el.innerHTML = PF.icon(el.dataset.ico);
+    });
+    if (!PF.openModal) {
+      PF.openModal = id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('open');
+      };
+      PF.closeModal = id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove('open');
+      };
+      document.querySelectorAll('[data-close-modal]').forEach(btn => {
+        btn.addEventListener('click', () => PF.closeModal(btn.dataset.closeModal));
+      });
+    }
+  };
+
   if (window.PF && PF.ready) {
-    PF.ready(() => Trainer.syncShell());
+    PF.ready(() => {
+      hydrateStaticIcons();
+      Trainer.syncShell();
+    });
   } else {
-    document.addEventListener('DOMContentLoaded', () => Trainer.syncShell());
+    document.addEventListener('DOMContentLoaded', () => {
+      hydrateStaticIcons();
+      Trainer.syncShell();
+    });
   }
 })();
 

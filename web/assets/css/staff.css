@@ -77,15 +77,28 @@ img{max-width:100%;display:block}
 .nav-link.active{background:var(--gold);color:#1b1300}
 .nav-count{margin-left:auto;min-width:22px;height:20px;padding:0 6px;border-radius:99px;background:rgba(255,255,255,.12);color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center}
 .nav-link.active .nav-count{background:rgba(0,0,0,.18);color:#1b1300}
-.side-foot{padding:12px 14px 16px;position:relative;z-index:1}
-.side-user{display:flex;align-items:center;gap:11px;padding:10px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid var(--nav-line);position:relative}
+.side-foot{padding:12px 14px 16px;position:relative;z-index:10}
+.side-user{display:flex;align-items:center;gap:11px;padding:10px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid var(--nav-line);position:relative;cursor:pointer;user-select:none;transition:background .15s,border-color .15s}
+.side-user:hover,.side-user[aria-expanded="true"]{background:rgba(255,255,255,.10);border-color:rgba(227,174,43,.38)}
 .side-user .who{min-width:0;flex:1;line-height:1.25}
 .side-user strong{display:block;color:#fff;font-size:12.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .side-user small{color:var(--nav-muted);font-size:11px}
 .icon-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--card);display:grid;place-items:center;color:var(--text-2);position:relative;flex:none;transition:background .15s}
 .icon-btn:hover{background:var(--gold-soft);border-color:var(--gold);color:var(--gold)}
-.side-user .icon-btn{background:transparent;border:0;color:var(--nav-text);width:30px;height:30px}
-.side-user .icon-btn:hover{background:var(--gold-soft);color:var(--gold);box-shadow:none;transform:none}
+.side-user .icon-btn{background:transparent;border:0;color:var(--nav-text);width:30px;height:30px;border-radius:8px}
+.side-user .icon-btn:hover,.side-user[aria-expanded="true"] .icon-btn{background:var(--gold-soft);color:var(--gold);box-shadow:none;transform:none}
+.side-account-menu{position:absolute;left:0;right:0;bottom:calc(100% + 8px);display:none;flex-direction:column;gap:2px;padding:6px;border-radius:14px;background:#1a2230;border:1px solid rgba(255,255,255,.12);box-shadow:0 16px 40px rgba(0,0,0,.55);z-index:600;animation:pop .14s ease-out}
+.side-account-menu.is-open{display:flex}
+body.mini .side-account-menu{left:0;right:auto;min-width:196px}
+.side-account-menu a,.side-account-menu button{display:flex;align-items:center;gap:10px;width:100%;padding:9px 12px;border:0;border-radius:10px;background:transparent;color:#dfe4ee;font:600 13px/1.2 var(--font);text-align:left;text-decoration:none;cursor:pointer;transition:background .15s,color .15s}
+.side-account-menu a .ico,.side-account-menu button .ico{width:16px;height:16px;color:#98a2b6;flex:none}
+.side-account-menu a:hover,.side-account-menu button:hover,.side-account-menu a.active{background:rgba(232,185,58,.12);color:#f2cb5c}
+.side-account-menu a:hover .ico,.side-account-menu button:hover .ico,.side-account-menu a.active .ico{color:#f2cb5c}
+.side-account-menu hr{border:0;border-top:1px solid rgba(255,255,255,.08);margin:4px 4px}
+.side-account-menu .danger,.side-account-menu .danger .ico{color:#ff7b7b}
+.side-account-menu .danger:hover{background:rgba(239,68,68,.15);color:#ff8e8e}
+.side-account-menu .danger:hover .ico{color:#ff8e8e}
+.menu{position:fixed;z-index:600}
 
 body.mini .sidebar{width:var(--sidebar-mini)}
 body.mini .brand-txt,body.mini .nav-text,body.mini .nav-count,body.mini .nav-label,body.mini .side-user .who,body.mini .side-user .icon-btn{display:none}

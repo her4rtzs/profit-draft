@@ -1,283 +1,309 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" data-default-theme="dark">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Attendance — ProFit Trainer</title>
-  <meta name="theme-color" content="#0a1220">
-  <link rel="icon" href="../assets/img/logo.jpg">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
-  <link rel="stylesheet" href="../assets/css/staff.css">
-  <script src="../assets/js/staff-boot.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProFit — Attendance Log (Trainer Portal)</title>
+<script>try{var t=localStorage.getItem('pf-theme')||localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);var a=localStorage.getItem('pf-accent')||localStorage.getItem('accent');if(a)document.documentElement.setAttribute('data-accent',a);}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/staff.css?v=10">
+<link rel="stylesheet" href="trainer.css?v=10">
 </head>
-<body data-portal="trainer" data-page="attendance" data-title="Attendance" data-eyebrow="Check-in Log" data-sub="Monitor gym check-ins and athlete attendance history." data-icon="calendar-check">
+<body data-page="attendance" data-portal="trainer" data-head="none">
 <div class="app">
   <aside class="sidebar" id="sidebar"></aside>
   <div class="scrim" id="scrim"></div>
   <div class="main">
     <header class="topbar" id="topbar"></header>
     <main class="content" id="content">
-      <!-- Attendance Stats -->
-      <section class="grid grid-4" style="margin-bottom:20px">
-        <div class="stat-card">
-          <div class="stat-ico tone-gold" id="icoTotalAtt"></div>
-          <div>
-            <div class="stat-num" id="statDayTotal">—</div>
-            <div class="stat-label">Gym Total Check-ins</div>
-            <small class="muted" id="statDateLabel">Selected Date</small>
+
+      <!-- Page Hero Banner -->
+      <section class="tw-page-hero tw-anim" style="--i:0">
+        <div class="tw-hero-left">
+          <div class="tw-hero-ico" data-ico="check"></div>
+          <div class="tw-hero-text">
+            <span class="tw-hero-eyebrow">Gym Floor · Daily Check-Ins</span>
+            <h1 class="tw-hero-title">Attendance &amp; Floor Check-In</h1>
+            <p class="tw-hero-sub">Log live session arrivals for your assigned athletes and inspect daily gym floor activity.</p>
           </div>
         </div>
-        <div class="stat-card">
-          <div class="stat-ico tone-green" id="icoMyMembers"></div>
+        <div class="tw-hero-actions">
+          <div class="tw-date-stepper">
+            <button type="button" class="tw-chart-nav-btn" id="attPrevDay" title="Previous day" aria-label="Previous day">
+              <span data-ico="chevron-left"></span>
+            </button>
+            <input type="date" id="attDate" aria-label="Attendance date">
+            <button type="button" class="tw-chart-nav-btn" id="attNextDay" title="Next day" aria-label="Next day">
+              <span data-ico="chevron-right"></span>
+            </button>
+          </div>
+          <button type="button" class="tw-btn" id="attTodayBtn">Today</button>
+        </div>
+      </section>
+
+      <!-- Quick Floor Check-In Bar -->
+      <section class="tw-checkin-panel tw-anim" style="--i:1" aria-label="Quick athlete check-in">
+        <div class="tw-checkin-info">
+          <div class="tw-hero-ico" data-ico="bolt" style="width:42px;height:42px;border-radius:12px"></div>
           <div>
-            <div class="stat-num" id="statMyAtt">—</div>
-            <div class="stat-label">My Members Present</div>
-            <small class="muted">Assigned athletes</small>
+            <strong style="display:block;font-size:15px;font-weight:700;color:var(--text)">Quick Athlete Check-In</strong>
+            <span style="font-size:12.5px;color:var(--muted)">Select an assigned athlete from your roster to record their gym arrival for today.</span>
           </div>
         </div>
-        <div class="stat-card">
-          <div class="stat-ico tone-blue" id="icoMorning"></div>
-          <div>
-            <div class="stat-num" id="statMorning">—</div>
-            <div class="stat-label">Morning Sessions</div>
-            <small class="muted">Before 12:00 PM</small>
+        <form class="tw-checkin-form" id="quickCheckinForm">
+          <select id="quickCheckinSelect" class="tw-checkin-select" aria-label="Select assigned member">
+            <option value="">Select an athlete to check in...</option>
+          </select>
+          <button type="submit" class="tw-btn-primary" id="quickCheckinBtn">
+            <span data-ico="check"></span> Check In Athlete
+          </button>
+        </form>
+      </section>
+
+      <!-- KPI Summary Cards -->
+      <section class="tw-kpi-grid tw-anim" style="--i:2" aria-label="Attendance metrics">
+        <article class="tw-kpi-card is-amber">
+          <div class="tw-kpi-top">
+            <span class="tw-kpi-label">My Athletes In</span>
+            <div class="tw-kpi-ico" data-ico="dumbbell"></div>
+          </div>
+          <div class="tw-kpi-val" id="statMyMembers">0</div>
+          <div class="tw-kpi-sub">Assigned roster check-ins</div>
+        </article>
+
+        <article class="tw-kpi-card is-green">
+          <div class="tw-kpi-top">
+            <span class="tw-kpi-label">Total Gym Visits</span>
+            <div class="tw-kpi-ico" data-ico="users"></div>
+          </div>
+          <div class="tw-kpi-val" id="statTotalDay">0</div>
+          <div class="tw-kpi-sub">All gym floor arrivals</div>
+        </article>
+
+        <article class="tw-kpi-card is-blue">
+          <div class="tw-kpi-top">
+            <span class="tw-kpi-label">Morning Session</span>
+            <div class="tw-kpi-ico" data-ico="clock"></div>
+          </div>
+          <div class="tw-kpi-val" id="statMorning">0</div>
+          <div class="tw-kpi-sub">Arrivals before 12:00 PM</div>
+        </article>
+
+        <article class="tw-kpi-card is-purple">
+          <div class="tw-kpi-top">
+            <span class="tw-kpi-label">Afternoon / Evening</span>
+            <div class="tw-kpi-ico" data-ico="activity"></div>
+          </div>
+          <div class="tw-kpi-val" id="statEvening">0</div>
+          <div class="tw-kpi-sub">Arrivals from 12:00 PM onwards</div>
+        </article>
+      </section>
+
+      <!-- Filter & Search Toolbar -->
+      <section class="tw-toolbar tw-anim" style="--i:3">
+        <div class="tw-toolbar-left">
+          <div class="tw-filter-pills" id="attFilterSeg" role="tablist">
+            <button type="button" class="tw-filter-pill active" data-filter="mine">
+              My Athletes <span class="tw-filter-count" id="cntAttMine">0</span>
+            </button>
+            <button type="button" class="tw-filter-pill" data-filter="all">
+              All Gym Floor <span class="tw-filter-count" id="cntAttAll">0</span>
+            </button>
           </div>
         </div>
-        <div class="stat-card">
-          <div class="stat-ico tone-purple" id="icoEvening"></div>
-          <div>
-            <div class="stat-num" id="statEvening">—</div>
-            <div class="stat-label">Evening Sessions</div>
-            <small class="muted">After 12:00 PM</small>
+        <div class="tw-toolbar-right">
+          <div class="tw-search-box">
+            <span data-ico="search"></span>
+            <input type="search" id="attSearchInput" class="tw-search-input" placeholder="Search member or staff...">
           </div>
         </div>
       </section>
 
-      <!-- Date & Filter Controls -->
-      <div class="card" style="margin-bottom:20px;padding:14px 18px">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
-          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-            <button class="icon-btn" type="button" id="prevDayBtn" title="Previous day"><span id="icoPrev"></span></button>
-            <input type="date" id="datePicker" style="padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-weight:600">
-            <button class="icon-btn" type="button" id="nextDayBtn" title="Next day"><span id="icoNext"></span></button>
-            <button class="btn btn-ghost btn-sm" type="button" id="todayBtn">Today</button>
+      <!-- Attendance Table Card -->
+      <section class="tw-card tw-anim" style="--i:4">
+        <div class="tw-card-head">
+          <div>
+            <h2 class="tw-card-title" id="attTableTitle">Check-In Log</h2>
+            <p class="tw-card-sub">Verified entry timestamps recorded at the front desk or by coaches.</p>
           </div>
-          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-            <div class="tab-bar" style="margin:0;padding:3px">
-              <button class="tab-btn active" type="button" id="filterAll">All Check-ins</button>
-              <button class="tab-btn" type="button" id="filterMine">My Members Only</button>
-            </div>
-            <button class="btn btn-primary" type="button" id="btnRecordCheckIn">
-              <span id="icoCheckInPlus"></span>
-              <span>Record Check-in</span>
-            </button>
-          </div>
+          <a href="index.html#twChartStage" class="tw-link">View Analytics Chart →</a>
         </div>
-      </div>
-
-      <!-- Attendance Table -->
-      <div class="card" style="padding:0;overflow:hidden">
-        <div class="table-wrap">
-          <table class="tbl">
+        <div class="tw-table-wrap">
+          <table class="tw-table">
             <thead>
               <tr>
-                <th>Check-in Time</th>
+                <th>Time</th>
                 <th>Member</th>
+                <th>Assignment</th>
                 <th>Phone</th>
-                <th>Roster Status</th>
-                <th>Membership</th>
+                <th>Status</th>
                 <th>Recorded By</th>
-                <th style="text-align:right">Action</th>
               </tr>
             </thead>
-            <tbody id="attendanceTbody">
-              <tr><td colspan="7" class="empty compact">Loading attendance log...</td></tr>
+            <tbody id="attBody">
+              <tr><td colspan="6"><span class="tw-skel tw-skel-row"></span></td></tr>
             </tbody>
           </table>
         </div>
-      </div>
+      </section>
+
     </main>
   </div>
   <nav class="bottom-nav" id="bottomNav" aria-label="Quick navigation"></nav>
 </div>
 
-<!-- Scripts -->
-<script src="../config.js"></script>
-<script src="../api.js"></script>
-<script src="../auth.js"></script>
-<script src="../assets/js/staff-icons.js"></script>
-<script src="../assets/js/staff-data.js"></script>
-<script src="../assets/js/staff.js"></script>
-<script src="trainer.js"></script>
+<script src="../config.js?v=5"></script>
+<script src="../api.js?v=5"></script>
+<script src="../auth.js?v=5"></script>
+<script src="../assets/js/staff-icons.js?v=5"></script>
+<script src="../assets/js/staff-data.js?v=8"></script>
+<script src="../assets/js/staff.js?v=10"></script>
+<script src="trainer.js?v=10"></script>
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  const PF = window.PF || {};
-  const T = window.Trainer;
+PF.ready(async () => {
+  const dateInput = document.getElementById('attDate');
+  const searchInput = document.getElementById('attSearchInput');
+  const quickSelect = document.getElementById('quickCheckinSelect');
+  const todayIso = new Date().toISOString().slice(0, 10);
+  dateInput.value = todayIso;
 
-  // Insert icons
-  document.getElementById('icoTotalAtt').innerHTML = PF.icon('calendar-check');
-  document.getElementById('icoMyMembers').innerHTML = PF.icon('users');
-  document.getElementById('icoMorning').innerHTML = PF.icon('sun');
-  document.getElementById('icoEvening').innerHTML = PF.icon('moon');
-  document.getElementById('icoPrev').innerHTML = PF.icon('chevron-left');
-  document.getElementById('icoNext').innerHTML = PF.icon('chevron-right');
-  document.getElementById('icoCheckInPlus').innerHTML = PF.icon('plus');
+  let currentFilter = 'mine';
+  let currentRows = [];
+  let rosterMembers = [];
 
-  const datePicker = document.getElementById('datePicker');
-  const todayISO = new Date().toISOString().slice(0, 10);
-  datePicker.value = todayISO;
-
-  let currentFilter = 'all';
-
-  async function loadAttendance() {
-    const selDate = datePicker.value || todayISO;
-    document.getElementById('statDateLabel').textContent = T.format.date(selDate);
-
-    try {
-      const data = await T.api.getAttendance(selDate, currentFilter);
-      const rows = data.attendances || [];
-
-      document.getElementById('statDayTotal').textContent = data.total ?? rows.length;
-      document.getElementById('statMyAtt').textContent = data.my_members_count ?? rows.filter(r => r.is_my_member).length;
-
-      let morning = 0, evening = 0;
-      rows.forEach(r => {
-        const h = new Date(r.check_in_at).getHours();
-        if (h < 12) morning++; else evening++;
-      });
-      document.getElementById('statMorning').textContent = morning;
-      document.getElementById('statEvening').textContent = evening;
-
-      const tbody = document.getElementById('attendanceTbody');
-      if (!rows.length) {
-        tbody.innerHTML = `<tr><td colspan="7" class="empty" style="padding:40px 0">${PF.icon('calendar-check')}<h3>No check-ins recorded for this date</h3><p>Use the "Record Check-in" button to check in an athlete.</p></td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = rows.map(r => `
-        <tr style="${r.is_my_member ? 'background:rgba(227,174,43,0.04)' : ''}">
-          <td>
-            <strong>${T.format.time(r.check_in_at)}</strong>
-          </td>
-          <td>
-            <div style="display:flex;align-items:center;gap:10px">
-              ${PF.avatar ? PF.avatar(r.member_name, 'sm') : ''}
-              <div>
-                <strong>${PF.esc(r.member_name)}</strong>
-                <div style="font-size:11px;color:var(--muted)">ID: #${r.member_id}</div>
-              </div>
-            </div>
-          </td>
-          <td>${PF.esc(r.member_phone || '—')}</td>
-          <td>
-            ${r.is_my_member 
-              ? '<span class="pill gold">● My Athlete</span>' 
-              : '<span class="pill gray">Gym Member</span>'}
-          </td>
-          <td>${T.format.statusPill(r.membership_status, true)}</td>
-          <td>${PF.esc(r.recorded_by || 'Staff')}</td>
-          <td style="text-align:right">
-            ${r.is_my_member 
-              ? `<a class="btn btn-ghost btn-sm" href="members.html#detail=${r.member_id}">Profile</a>` 
-              : '—'}
-          </td>
-        </tr>
-      `).join('');
-
-    } catch (e) {
-      console.error(e);
-      PF.toast('Failed to load attendance: ' + e.message, 'error');
-    }
+  async function populateQuickCheckin() {
+    rosterMembers = await Trainer.api.getMembers();
+    const unchecked = rosterMembers.filter(m => !m.today_checked_in);
+    const list = unchecked.length ? unchecked : rosterMembers;
+    quickSelect.innerHTML = `<option value="">Select an athlete to check in (${rosterMembers.length} assigned)...</option>` +
+      list.map(m => `<option value="${m.id}">${PF.esc(m.name)}${m.today_checked_in ? ' (Already in today)' : ''}</option>`).join('');
   }
 
-  // Date controls
-  datePicker.addEventListener('change', loadAttendance);
-  document.getElementById('todayBtn').onclick = () => {
-    datePicker.value = todayISO;
-    loadAttendance();
-  };
-  document.getElementById('prevDayBtn').onclick = () => {
-    const cur = new Date(datePicker.value || todayISO);
-    cur.setDate(cur.getDate() - 1);
-    datePicker.value = cur.toISOString().slice(0, 10);
-    loadAttendance();
-  };
-  document.getElementById('nextDayBtn').onclick = () => {
-    const cur = new Date(datePicker.value || todayISO);
-    cur.setDate(cur.getDate() + 1);
-    datePicker.value = cur.toISOString().slice(0, 10);
-    loadAttendance();
-  };
-
-  // Filter tabs
-  document.getElementById('filterAll').onclick = () => {
-    document.getElementById('filterAll').classList.add('active');
-    document.getElementById('filterMine').classList.remove('active');
-    currentFilter = 'all';
-    loadAttendance();
-  };
-  document.getElementById('filterMine').onclick = () => {
-    document.getElementById('filterMine').classList.add('active');
-    document.getElementById('filterAll').classList.remove('active');
-    currentFilter = 'mine';
-    loadAttendance();
-  };
-
-  // Record Check-in Button
-  document.getElementById('btnRecordCheckIn').onclick = async () => {
-    let members = [];
-    try { members = await T.api.getMembers(); } catch(e){}
-    const opts = members.map(m => `<option value="${m.id}">${PF.esc(m.name)} (ID: ${m.id})</option>`).join('');
-
-    PF.modal({
-      title: 'Record Member Check-in',
-      body: `
-        <form id="checkInModalForm">
-          <p class="muted" style="margin-bottom:14px">Select an athlete from your roster or enter any member ID to record check-in.</p>
-          <div class="form-grp">
-            <label for="attModalSelect">My Roster</label>
-            <select id="attModalSelect" style="width:100%">
-              <option value="">-- Choose member from roster --</option>
-              ${opts}
-            </select>
-          </div>
-          <div class="form-grp" style="margin-top:12px">
-            <label for="attModalInput">Or Member ID</label>
-            <input id="attModalInput" type="number" placeholder="e.g. 1" min="1" style="width:100%">
-          </div>
-        </form>
-      `,
-      confirm: 'Confirm Check-in',
-      onConfirm: async (mEl) => {
-        const sel = mEl.querySelector('#attModalSelect').value;
-        const inp = mEl.querySelector('#attModalInput').value;
-        const id = sel || inp;
-        if (!id) {
-          PF.toast('Please select or enter a member ID.', 'error');
-          return false;
-        }
-        try {
-          const res = await T.api.checkIn(id);
-          PF.toast(res.detail || 'Check-in recorded!', 'success');
-          loadAttendance();
-          return true;
-        } catch (err) {
-          PF.toast(err.message || 'Check-in failed.', 'error');
-          return false;
-        }
-      }
+  function renderTable() {
+    const tbody = document.getElementById('attBody');
+    const q = (searchInput.value || '').trim().toLowerCase();
+    const filtered = currentRows.filter(a => {
+      if (!q) return true;
+      return `${a.member_name || ''} ${a.member_phone || ''} ${a.recorded_by || ''}`.toLowerCase().includes(q);
     });
-  };
 
-  loadAttendance().then(() => {
-    if (location.hash === '#checkin') {
-      document.getElementById('btnRecordCheckIn').click();
+    if (!filtered.length) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6">
+            <div class="tw-empty">
+              <div class="tw-empty-ico">${PF.icon('check')}</div>
+              <strong>No check-ins recorded</strong>
+              <p>No check-in entries match this date and filter selection.</p>
+            </div>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(a => `
+      <tr>
+        <td style="font-variant-numeric:tabular-nums"><strong>${Trainer.format.time(a.check_in_at)}</strong></td>
+        <td>
+          <div class="tw-member-cell">
+            <div class="avatar">${PF.initials(a.member_name)}</div>
+            <strong>${PF.esc(a.member_name)}</strong>
+          </div>
+        </td>
+        <td>
+          ${a.is_my_member
+            ? '<span class="tw-pill is-amber">My Athlete</span>'
+            : '<span class="tw-pill is-gray">General Member</span>'}
+        </td>
+        <td>${PF.esc(a.member_phone || '—')}</td>
+        <td>${Trainer.format.statusPill(a.membership_status, a.membership_status === 'ACTIVE')}</td>
+        <td>${PF.esc(a.recorded_by || 'Staff')}</td>
+      </tr>
+    `).join('');
+  }
+
+  async function loadAttendance() {
+    const res = await Trainer.api.getAttendance(dateInput.value, currentFilter);
+    currentRows = res.attendances || [];
+
+    const myCount = res.my_members_count ?? currentRows.filter(r => r.is_my_member).length;
+    const totalCount = res.total ?? currentRows.length;
+
+    let morning = res.morning_count;
+    let evening = res.evening_count;
+    if (morning === undefined || evening === undefined) {
+      morning = 0;
+      evening = 0;
+      currentRows.forEach(r => {
+        const dt = new Date(r.check_in_at);
+        if (!isNaN(dt.getTime()) && dt.getHours() < 12) morning++;
+        else evening++;
+      });
+    }
+
+    document.getElementById('statMyMembers').textContent = myCount;
+    document.getElementById('statTotalDay').textContent = totalCount;
+    document.getElementById('statMorning').textContent = morning;
+    document.getElementById('statEvening').textContent = evening;
+
+    document.getElementById('cntAttMine').textContent = myCount;
+    document.getElementById('cntAttAll').textContent = totalCount;
+    document.getElementById('attTableTitle').textContent = `Check-In Log · ${Trainer.format.date(dateInput.value)}`;
+
+    renderTable();
+  }
+
+  function stepDate(days) {
+    const d = new Date(dateInput.value || todayIso);
+    d.setDate(d.getDate() + days);
+    dateInput.value = d.toISOString().slice(0, 10);
+    loadAttendance();
+  }
+
+  document.getElementById('attPrevDay').addEventListener('click', () => stepDate(-1));
+  document.getElementById('attNextDay').addEventListener('click', () => stepDate(1));
+  document.getElementById('attTodayBtn').addEventListener('click', () => {
+    dateInput.value = todayIso;
+    loadAttendance();
+  });
+  dateInput.addEventListener('change', loadAttendance);
+  searchInput.addEventListener('input', renderTable);
+
+  document.querySelectorAll('#attFilterSeg [data-filter]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#attFilterSeg [data-filter]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = btn.dataset.filter;
+      loadAttendance();
+    });
+  });
+
+  document.getElementById('quickCheckinForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const memberId = quickSelect.value;
+    if (!memberId) {
+      PF.toast('Please select an athlete to check in.', 'warning');
+      return;
+    }
+    const btn = document.getElementById('quickCheckinBtn');
+    btn.disabled = true;
+    try {
+      const m = rosterMembers.find(x => String(x.id) === String(memberId));
+      await Trainer.api.checkIn(memberId);
+      PF.toast(`${m ? m.name : 'Athlete'} checked in!`, 'success');
+      await Promise.all([populateQuickCheckin(), loadAttendance()]);
+    } catch (err) {
+      PF.toast(err.message || 'Check-in failed.', 'error');
+    } finally {
+      btn.disabled = false;
     }
   });
+
+  await Promise.all([populateQuickCheckin(), loadAttendance()]);
 });
 </script>
 </body>
 </html>
-

@@ -96,11 +96,26 @@ class TrainerTests(TestCase):
         self.assertEqual(res.json()["name"], "Mika")
         self.assertEqual(res.json()["load"], 1)
 
-        # 4. Trainer can update own profile
-        res = self.client.patch("/api/trainer/profile/", {"specialization": "Kettlebell & HIIT", "availability": "Mon-Fri 7AM-1PM"}, content_type="application/json")
+        # 4. Trainer can update own profile (including full_name, phone, is_active)
+        res = self.client.patch(
+            "/api/trainer/profile/",
+            {
+                "full_name": "Mika Reyes",
+                "phone": "0917-555-0199",
+                "specialization": "Kettlebell & HIIT",
+                "availability": "Mon-Fri 7AM-1PM",
+                "is_active": False,
+            },
+            content_type="application/json",
+        )
         self.assertEqual(res.status_code, 200)
         self.t1.refresh_from_db()
+        self.t1_user.refresh_from_db()
         self.assertEqual(self.t1.specialization, "Kettlebell & HIIT")
+        self.assertEqual(self.t1.phone, "0917-555-0199")
+        self.assertFalse(self.t1.is_active)
+        self.assertEqual(self.t1_user.first_name, "Mika")
+        self.assertEqual(self.t1_user.last_name, "Reyes")
 
         # 5. Trainer can get assigned members
         res = self.client.get("/api/trainer/members/")
@@ -119,10 +134,21 @@ class TrainerTests(TestCase):
         self.assertEqual(dash["stats"]["expiring_soon_members"], 0)
         self.assertEqual(dash["stats"]["expired_members"], 0)
 
-        # 7. Trainer schedule note sends notification
-        res = self.client.post("/api/trainer/schedule/note/", {"session_name": "Sunrise HIIT", "note": "Moving to Studio 2"}, content_type="application/json")
+        # 7. Trainer schedule note sends notification (all or targeted member)
+        res = self.client.post("/api/trainer/schedule/note/", {"session_name": "Sunrise HIIT", "note": "Moving to Studio 2", "member_id": self.m.pk}, content_type="application/json")
         self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.json()["recipient_count"], 1)
         self.assertTrue(Notification.objects.filter(recipient=self.m_user, kind="TRAINER", title__contains="Sunrise HIIT").exists())
+
+        # 8. Trainer can check in a member and fetch announcements
+        checkin_res = self.client.post("/api/trainer/attendance/check-in/", {"member_id": self.m.pk}, content_type="application/json")
+        self.assertEqual(checkin_res.status_code, 200)
+        self.assertEqual(checkin_res.json()["member_id"], self.m.pk)
+
+        ann_res = self.client.get("/api/trainer/announcements/")
+        self.assertEqual(ann_res.status_code, 200)
+        self.assertIn("items", ann_res.json())
+        self.assertIn("stats", ann_res.json())
 
     def test_attendance_week_bucketing_across_month_boundaries(self):
         """Monday-start week spanning Sep 28 – Oct 4 aggregates Sep and Oct check-ins into one bucket."""
