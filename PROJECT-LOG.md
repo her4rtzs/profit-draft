@@ -2148,3 +2148,12 @@ Fit Login and Sign Up within the initial desktop viewport without clipping, move
 - Fixed `web/welcome.html` gym image overlays and overlaps: removed broken `img/gym-*.jpg` + `.pc-img` wrapper inside `.prog .pic` (eliminating the blue/navy gap), switched `.hero-media` chips/controls to neutral charcoal with non-overlapping mobile bounds, removed `.s + .s { padding-top: 0 }` and `.plan.hot` `scale(1.02)` so Membership and Our Story have clean boundaries and equal-height cards, and added subtle `240ms` hover lift + gold border/image zoom with `prefers-reduced-motion` support.
 ### Decision-log skill
 Avoid `padding-top: 0` on adjacent sections (`.s + .s`) and `scale(1.02)` transforms on grid cards when badges or borders sit on the card perimeter, as they cause visual overlap at section boundaries.
+
+## 2026-11-16 06:36 (Asia/Manila): Landing Page Navbar Spacing Refinement
+### What I asked for
+Increase horizontal spacing between navigation links (~32–40px), balance spacing between logo, menu, and CTA buttons, add a ~24px gap between Sign in and Join now, and vertically center all navbar elements without crowding or wrapping.
+### What the agent decided and why
+- Updated `web/welcome.html` `.top .wrap` (`min-height: 68px`, `gap: clamp(24px, 2.5vw, 40px)`, `width: min(1280px, 100% - 40px)`), `.top nav` (`gap: clamp(22px, 2.4vw, 38px)`, `align-items: center`), and `.top .cta` (`gap: 24px`, `align-items: center`) using consistent flexbox gaps rather than individual margins.
+- Adjusted the mobile/tablet menu collapse breakpoint from `860px` to `1060px` so the wider 8-link nav never wraps or crowds at intermediate widths.
+### Decision-log skill
+When increasing flexbox `gap` on an 8-item desktop navbar, also widen the container max-width or raise the drawer breakpoint so links never wrap before the hamburger menu activates.
