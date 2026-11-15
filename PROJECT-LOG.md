@@ -2157,3 +2157,12 @@ Increase horizontal spacing between navigation links (~32–40px), balance spaci
 - Adjusted the mobile/tablet menu collapse breakpoint from `860px` to `1060px` so the wider 8-link nav never wraps or crowds at intermediate widths.
 ### Decision-log skill
 When increasing flexbox `gap` on an 8-item desktop navbar, also widen the container max-width or raise the drawer breakpoint so links never wrap before the hamburger menu activates.
+
+## 2026-11-16 06:48 (Asia/Manila): Unify dark form styling, 68px header, aligned checkboxes, and viewport-fitted footer on Login and Join
+### What I asked for
+Make header size/fonts consistent across auth pages, unify dark form inputs and cards with gold focus borders, align checkboxes with Terms/Privacy text, keep Forgot Password below Sign In, and fit Login and Join within a standard desktop viewport with the footer immediately visible.
+### What the agent decided and why
+- Updated `web/site-footer.js` so the tall 3-column footer only injects on `welcome.html`, `faq.html`, `terms.html`, and `privacy.html`, preventing it from pushing below the `100svh` viewport on `login.html` and `join.html`.
+- Rewrote `web/login.html` and `web/join.html` with a unified `68px` header (`Plus Jakarta Sans` `19px` `ProFit`, `40x40` logo, `10px` gold gym subtitle), dark `#131C2E` cards, `#0b1220` inputs with `#e8b93a` gold focus rings, flex-aligned checkboxes, dark-themed Legal modal (preserving the scroll-both-documents rule and focus trap), and a compact `.auth-mini-footer` inside the `100svh` desktop layout.
+### Decision-log skill
+Auth pages that target `100svh` no-scroll desktop viewports should render their own compact `.auth-mini-footer` inside the flex-column shell rather than appending the full multi-column site footer.
