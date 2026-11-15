@@ -84,9 +84,11 @@
   .back-link{
     display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 6px;
     color:#9a9788;text-decoration:none;font:600 14px/1 Inter,system-ui,sans-serif;
-    transition:color .15s ease;white-space:nowrap;
+    transition:color .18s ease,transform .18s ease;white-space:nowrap;
   }
+  .back-link i{transition:transform .18s cubic-bezier(.22,1,.36,1)}
   .back-link:hover{color:var(--gold)}
+  .back-link:hover i{transform:translateX(-3px)}
 
   /* Full-bleed hero with flat overlay */
   .jn-shell{
@@ -96,6 +98,7 @@
     background:url("img/hero.jpg") center/cover no-repeat;
     display:flex;align-items:center;
     padding:clamp(28px,4vh,48px) clamp(16px,4vw,48px);
+    overflow:hidden;
   }
   .jn-shell::before{
     content:"";position:absolute;inset:0;
@@ -114,24 +117,34 @@
   }
 
   /* Left copy */
+  @keyframes pfRiseIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
   .jn-eyebrow{
     display:inline-flex;align-items:center;gap:10px;
     font:700 12px/1.2 "Plus Jakarta Sans",sans-serif;
     letter-spacing:.16em;text-transform:uppercase;color:var(--gold);
     margin:0 0 16px;
+    animation:pfRiseIn .45s cubic-bezier(.22,1,.36,1) both;
   }
   .jn-eyebrow::before{content:"";width:24px;height:2px;background:var(--gold);flex:none}
   .jn-title{
     margin:0 0 16px;
     font-size:clamp(38px,4.8vw,58px);font-weight:800;line-height:1.04;letter-spacing:-.03em;
     color:var(--tx);
+    animation:pfRiseIn .5s cubic-bezier(.22,1,.36,1) .06s both;
   }
   .jn-title .hl{color:var(--gold);display:block}
-  .jn-desc{margin:0 0 24px;max-width:440px;font-size:16px;line-height:1.6;color:var(--mu)}
-  .jn-checks{list-style:none;margin:0 0 24px;padding:0;display:grid;gap:12px}
-  .jn-checks li{display:flex;align-items:center;gap:10px;font-size:14.5px;font-weight:500;color:var(--tx)}
+  .jn-desc{
+    margin:0 0 24px;max-width:440px;font-size:16px;line-height:1.6;color:var(--mu);
+    animation:pfRiseIn .5s cubic-bezier(.22,1,.36,1) .12s both;
+  }
+  .jn-checks{list-style:none;margin:0 0 24px;padding:0;display:grid;gap:12px;animation:pfRiseIn .5s cubic-bezier(.22,1,.36,1) .18s both}
+  .jn-checks li{
+    display:flex;align-items:center;gap:10px;font-size:14.5px;font-weight:500;color:var(--tx);
+    transition:transform .18s ease;
+  }
+  .jn-checks li:hover{transform:translateX(3px)}
   .jn-checks i{color:var(--gold);font-size:14px;flex:none}
-  .jn-gym-foot{margin:0;font-size:12.5px;color:var(--mu)}
+  .jn-gym-foot{margin:0;font-size:12.5px;color:var(--mu);animation:pfRiseIn .5s cubic-bezier(.22,1,.36,1) .24s both}
 
   /* Right 600px Card */
   .jn-card{
@@ -140,6 +153,8 @@
     border:1px solid var(--line);
     border-radius:16px;
     padding:clamp(22px,2.8vw,30px);
+    box-shadow:0 24px 48px -20px rgba(0,0,0,.75);
+    animation:pfRiseIn .52s cubic-bezier(.22,1,.36,1) .08s both;
   }
   .jn-card h2{margin:0 0 4px;font-size:26px;font-weight:800;letter-spacing:-.02em;color:var(--tx)}
   .jn-lead{margin:0 0 18px;font-size:13.5px;color:var(--mu)}
@@ -152,11 +167,11 @@
     position:relative;display:flex;flex-direction:column;justify-content:space-between;
     min-height:86px;padding:12px 12px 10px;
     border-radius:12px;border:1px solid var(--field-line);background:var(--bg2);
-    cursor:pointer;transition:border-color .15s ease,background-color .15s ease;
+    cursor:pointer;transition:border-color .16s ease,background-color .16s ease,transform .16s cubic-bezier(.22,1,.36,1),box-shadow .16s ease;
   }
   .plan input{position:absolute;opacity:0;pointer-events:none}
-  .plan:hover{border-color:var(--gold)}
-  .plan.on{border:1.5px solid var(--gold);background:rgba(232,185,58,.08)}
+  .plan:hover{border-color:rgba(232,185,58,.65);transform:translateY(-2px)}
+  .plan.on{border:1.5px solid var(--gold);background:rgba(232,185,58,.08);box-shadow:0 8px 18px -10px rgba(232,185,58,.45)}
   .plan strong{font-family:"Plus Jakarta Sans",sans-serif;font-size:13.5px;font-weight:700;color:var(--tx)}
   .plan small{font-size:11.5px;color:var(--mu);margin-bottom:4px}
   .plan b{font-family:"Plus Jakarta Sans",sans-serif;font-size:18px;font-weight:800;color:var(--tx)}
@@ -179,11 +194,20 @@
     border-radius:12px;border:1px solid var(--field-line);
     background:var(--bg2);color:var(--tx);
     font:400 14.5px/1.2 Inter,system-ui,sans-serif;
-    transition:border-color .15s ease,box-shadow .15s ease;
+    transition:border-color .16s ease,box-shadow .16s ease,background-color .16s ease;
   }
   .jn-input::placeholder{color:var(--mu)}
+  .jn-input:hover:not(:focus){border-color:rgba(232,185,58,.55)}
   .jn-input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,185,58,.22)}
   .jn-input.is-invalid{border-color:var(--err)}
+  .jn-input:-webkit-autofill,
+  .jn-input:-webkit-autofill:hover,
+  .jn-input:-webkit-autofill:focus{
+    -webkit-box-shadow:0 0 0 100px var(--bg2) inset !important;
+    -webkit-text-fill-color:var(--tx) !important;
+    caret-color:var(--tx);
+    transition:background-color 5000s ease-in-out 0s;
+  }
 
   .jn-phone-wrap{display:flex;align-items:center}
   .jn-prefix{
@@ -244,12 +268,12 @@
     background:var(--gold);color:var(--on);
     font:700 15px/1 "Plus Jakarta Sans",sans-serif;
     display:inline-flex;align-items:center;justify-content:center;
-    cursor:pointer;transition:filter .15s ease,opacity .15s ease;
+    cursor:pointer;transition:filter .16s ease,transform .16s cubic-bezier(.22,1,.36,1),box-shadow .16s ease,opacity .16s ease;
   }
-  .jn-btn-gold:hover:not(:disabled){filter:brightness(1.07)}
+  .jn-btn-gold:hover:not(:disabled){filter:brightness(1.06);transform:translateY(-1px);box-shadow:0 8px 20px -6px rgba(232,185,58,.45)}
+  .jn-btn-gold:active:not(:disabled){transform:translateY(1px);box-shadow:none}
   .jn-btn-gold:disabled{opacity:.48;cursor:not-allowed}
 
-  .jn-hint{margin:8px 0 0;text-align:center;font-size:12px;color:var(--mu)}
   .jn-paynote{margin:10px 0 0;text-align:center;font-size:12px;color:var(--mu)}
   .jn-alt{margin:8px 0 0;text-align:center;font-size:13.5px;color:var(--mu)}
   .jn-alt a{
@@ -414,7 +438,6 @@
 
         <p class="jn-err" id="err" role="alert"></p>
         <button class="jn-btn-gold" id="go" type="submit" disabled>Continue to secure payment</button>
-        <p class="jn-hint" id="formHint" aria-live="polite"></p>
       </form>
 
       <div class="jn-ok" id="ok" hidden>
@@ -578,15 +601,6 @@
       pwEl.classList.toggle("is-invalid", !!ePw);
       pw2El.classList.toggle("is-invalid", !!ePw2);
     }
-
-    const missing = [];
-    if (eName) missing.push("full name");
-    if (eEmail) missing.push("valid email");
-    if (ePhone) missing.push("10-digit mobile");
-    if (ePw) missing.push("8+ char password");
-    if (ePw2) missing.push("matching password");
-    if (!termsOk) missing.push("Terms & Privacy agreement");
-    $("formHint").textContent = missing.length ? `Complete ${missing.join(", ")} to continue.` : "";
 
     return !eName && !eEmail && !ePhone && !ePw && !ePw2 && termsOk;
   }

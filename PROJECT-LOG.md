@@ -2196,3 +2196,13 @@ Port the Login v2 and Join v2 design onto `web/login.html` and `web/join.html` u
 - Bumped `web/sw.js` cache to `profit-shell-v19` and added `join.html` to `SHELL`.
 ### Decision-log skill
 Keep auth pages aligned with the landing page's exact CSS variable tokens (`--gold`, `--bg`, `--bg2`, `--card`, `--line`, `--tx`, `--mu`) and typography (`Plus Jakarta Sans` + `Inter`) without introducing extra display fonts or decorative stickers.
+
+## 2026-11-16 07:46 (Asia/Manila): Add tactile hover/entrance animations, autofill color parity, and remove formHint on Join
+### What I asked for
+Add clean non-AI hover/entrance animations on Login and Sign Up, keep input/autofill fill colors uniform across both pages, and remove the missing-fields hint text below the payment button on Sign Up.
+### What the agent decided and why
+- Added `pfRiseIn` staggered entrance animations, subtle hover lifts on plan cards, buttons, and check items, gold hover borders on inputs, and `:-webkit-autofill` overrides (`var(--bg2)` fill + `var(--tx)` text) on both `web/login.html` and `web/join.html`, respecting `prefers-reduced-motion: reduce`.
+- Removed `#formHint` and its missing-fields text generator from `web/join.html`.
+- Bumped `web/sw.js` cache to `profit-shell-v20`.
+### Decision-log skill
+Style `:-webkit-autofill` explicitly on dark-themed auth inputs so browser-filled credentials match `var(--bg2)` instead of flashing white.
