@@ -31,7 +31,7 @@
 
   // The bell and "See all" link to #announcements. Open that tab when the hash says so.
   const openTab = () => {
-    if (location.hash === "#announcements") document.querySelector('.pp-tab[data-tab="announcements"]')?.click();
+    if (location.hash === "#announcements") document.querySelector('[data-tab="announcements"]')?.click();
   };
   window.addEventListener("hashchange", openTab);
 

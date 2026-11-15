@@ -2065,3 +2065,13 @@ Make the Settings Appearance section consistent across the Trainer, Member, and 
 - Added CSS token support for all 7 accents (`gold`, `spotify`, `ocean`, `indigo`, `coral`, `emerald`, `sunset`) in `web/assets/css/staff.css` and `web/trainer/trainer.css`, fixed the `.pp-swatch` horizontal pill override in `web/pro-theme.css`, and synchronized `localStorage` persistence (`theme` / `pf-theme` and `pp-accent` / `pf-accent` / `accent`) across `web/assets/js/staff.js`, `web/assets/js/staff-boot.js`, `web/settings.js`, and `web/member-tabs.js`.
 ### Decision-log skill
 - Keep cross-portal appearance controls (theme mode and accent swatches) unified in markup, CSS token names (`html[data-accent="..."]`), and `localStorage` keys so user preferences carry seamlessly across Member, Staff, and Trainer portals.
+
+## 2026-11-15 16:07 (Asia/Manila): Member portal Staff/Admin-style sidebar
+### What I asked for
+Plan the concept and then replace the horizontal `.pp-tabs` pill bar on `member-home.html` with a collapsible left sidebar matching the Staff/Admin and Trainer portals, keeping single-page hash navigation and showing the welcome hero only on Overview.
+### What the agent decided and why
+- Created `web/member-shell.css` and `web/member-shell.js` scoped to `body.member-home` rather than importing `staff.css`, because `staff.css` would collide with the member portal's existing card, modal, and theme tokens.
+- Avoided putting `.pp-tabs` / `.pp-tab` classes on the sidebar `<nav>` and `.nav-link` buttons because `spotify.css` styles `.pp-tabs` / `.pp-tab` with `!important` pill rules; instead updated `initHomeTabs()` in `web/member-tabs.js` to drive `.member-sidebar .nav-link[data-tab]` directly and sync `aria-selected`, `.active`, `aria-current="page"`, and `location.hash`.
+- Grouped the member navigation into 3 sections (`My gym`, `My progress`, `Account`), added the upward-opening `.side-account-menu` inside `#memberSideUserCard`, synced `#sideAnnounceBadge` with `#homeAnnounceCount`, and restricted `.member-hero` visibility to the `overview` tab.
+### Decision-log skill
+Before reusing existing CSS hook classes (`.pp-tabs`, `.pp-tab`) on a new shell component, check loaded stylesheets for `!important` overrides; when present, use clean shell classes (`.nav-link[data-tab]`) and point the tab controller at them.

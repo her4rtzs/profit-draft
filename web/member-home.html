@@ -33,63 +33,141 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
 <link rel="stylesheet" href="ui-polish.css?v=2">
 <link rel="stylesheet" href="ui-fixes.css?v=1">
 <link rel="stylesheet" href="pf-modern.css?v=1">
+<link rel="stylesheet" href="member-shell.css?v=1">
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script></head>
 <body class="member-home">
-  <header class="member-top">
-    <a class="member-logo" href="member-home.html"><span><i class="fa-solid fa-dumbbell" id="homeLogoIcon"></i><img id="homeLogoImg" alt="" hidden></span><b id="homeGymName">ProFit</b></a>
-    <div class="member-top-actions">
-      <a class="member-top-chip" href="member-home.html#announcements" aria-label="Announcements and notifications"><i class="fa-solid fa-bell" aria-hidden="true"></i><span id="homeAnnounceCount">0</span></a>
-      <button class="theme-toggle" id="memberTheme" aria-label="Toggle theme"><i class="fa-solid fa-moon"></i></button>
-      <div class="member-user">
-        <button class="member-avatar" id="memberMenuToggle" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="memberMenu">
-          <span class="member-avatar-face" id="memberInitials" aria-hidden="true">M</span>
-          <span class="member-avatar-copy"><b id="memberName">Member</b><small id="memberPlan">Membership</small></span>
-          <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+  <div class="member-app-shell">
+    <aside class="member-sidebar" id="memberSidebar" aria-label="Member navigation">
+      <div class="brand">
+        <a class="brand-link" href="member-home.html" aria-label="ProFit Member Portal">
+          <span class="brand-logo-wrap"><i class="fa-solid fa-dumbbell" id="homeLogoIcon" aria-hidden="true"></i><img id="homeLogoImg" alt="" hidden></span>
+          <span class="brand-txt"><strong id="homeGymName">ProFit</strong><small>MEMBER PORTAL</small></span>
+        </a>
+        <button class="collapse-btn" id="memberCollapseBtn" type="button" aria-label="Collapse sidebar" title="Collapse sidebar">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m11 17-5-5 5-5M18 17l-5-5 5-5"/></svg>
         </button>
-        <div class="member-menu" id="memberMenu" role="menu" hidden>
-          <div class="member-menu-head">
-            <span class="member-avatar-face" id="menuInitials" aria-hidden="true">M</span>
-            <span><b id="menuName">Member</b><small id="menuEmail">member@profit.test</small></span>
+      </div>
+
+      <nav class="side-scroll" role="tablist" aria-label="Member sections">
+        <p class="nav-label">My gym</p>
+        <ul class="nav-list">
+          <li>
+            <button class="nav-link active" type="button" role="tab" data-tab="overview" aria-selected="true" aria-current="page" title="Overview">
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="2"/><rect x="14" y="3" width="7" height="5" rx="2"/><rect x="14" y="12" width="7" height="9" rx="2"/><rect x="3" y="16" width="7" height="5" rx="2"/></svg>
+              <span class="nav-text">Overview</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-link" type="button" role="tab" data-tab="schedule" aria-selected="false" title="Schedule">
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              <span class="nav-text">Schedule</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-link" type="button" role="tab" data-tab="announcements" aria-selected="false" title="Announcements">
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+              <span class="nav-text">Announcements</span>
+              <span class="nav-count" id="sideAnnounceBadge" hidden>0</span>
+            </button>
+          </li>
+        </ul>
+
+        <p class="nav-label">My progress</p>
+        <ul class="nav-list">
+          <li>
+            <button class="nav-link" type="button" role="tab" data-tab="diary" aria-selected="false" title="Diary">
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+              <span class="nav-text">Diary</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-link" type="button" role="tab" data-tab="health" aria-selected="false" title="Health &amp; goals">
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l1.5-2 2 4.5 2-2.5h5.27"/></svg>
+              <span class="nav-text">Health &amp; goals</span>
+            </button>
+          </li>
+        </ul>
+
+        <p class="nav-label">Account</p>
+        <ul class="nav-list">
+          <li>
+            <button class="nav-link" type="button" role="tab" data-tab="profile" aria-selected="false" title="My profile">
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M5 20a7 7 0 0 1 14 0"/></svg>
+              <span class="nav-text">My profile</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-link" type="button" role="tab" data-tab="settings" aria-selected="false" title="Settings">
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+              <span class="nav-text">Settings</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="side-foot">
+        <div class="side-user" id="memberSideUserCard" role="button" tabindex="0" aria-haspopup="menu" aria-expanded="false" aria-controls="memberSideAccountMenu">
+          <span class="member-avatar-face" id="memberInitials" aria-hidden="true">M</span>
+          <div class="who">
+            <strong id="memberName">Member</strong>
+            <small id="memberPlan">Membership</small>
           </div>
-          <button type="button" role="menuitem" data-member-goto="profile"><i class="fa-regular fa-id-card" aria-hidden="true"></i> My profile</button>
-          <button type="button" role="menuitem" data-member-goto="settings"><i class="fa-solid fa-sliders" aria-hidden="true"></i> Settings</button>
-          <hr>
-          <button type="button" role="menuitem" data-member-goto="schedule"><i class="fa-regular fa-calendar" aria-hidden="true"></i> My schedule</button>
-          <button type="button" role="menuitem" data-member-goto="health"><i class="fa-solid fa-heart-pulse" aria-hidden="true"></i> Health &amp; goals</button>
-          <button type="button" role="menuitem" data-member-goto="diary"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Training diary</button>
-          <hr>
-          <button type="button" role="menuitem" class="is-danger" data-logout><i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i> Sign out</button>
+          <button class="icon-btn" id="memberAccountBtn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="memberSideAccountMenu" aria-label="Account menu" title="Account">
+            <svg class="ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+          </button>
+          <div class="side-account-menu" id="memberSideAccountMenu" role="menu" aria-label="Account actions">
+            <button type="button" role="menuitem" data-member-goto="profile">
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M5 20a7 7 0 0 1 14 0"/></svg>
+              <span>My profile</span>
+            </button>
+            <button type="button" role="menuitem" data-member-goto="settings">
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+              <span>Settings</span>
+            </button>
+            <hr>
+            <button type="button" role="menuitem" class="danger" data-logout>
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg>
+              <span>Log out</span>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-  </header>
+    </aside>
 
-  <main class="member-content">
-    <section class="member-welcome member-hero">
-      <div>
-        <p class="eyebrow"><span></span> MEMBER SPACE</p>
-        <h1 id="memberGreeting">Welcome back, <span data-user-name>member</span></h1>
-        <p>Your membership, streaks, payments, and gym progress in one organized workspace.</p>
-      </div>
-      <div class="member-hero-actions">
-        <button class="btn btn-soft" id="checkInButton" type="button"><i class="fa-solid fa-location-check"></i> Check in today</button>
-        <a class="btn btn-primary" href="join.html"><i class="fa-solid fa-plus"></i> Explore plans</a>
-        <!-- Contact used to live only on the public portal, so a signed-in
-             member had to log out to find the gym's number. Reads the same
-             ProFitGym store, so it can never drift from the portal copy. -->
-        <button class="btn btn-soft" id="gymContactBtn" type="button"><i class="fa-solid fa-headset"></i> Contact the gym</button>
-      </div>
-    </section>
+    <div class="member-scrim" id="memberSideBackdrop" hidden></div>
 
-    <nav class="pp-tabs" role="tablist" aria-label="Member sections">
-      <button class="pp-tab" type="button" role="tab" data-tab="overview" aria-selected="true"><i class="fa-solid fa-gauge-high"></i> Overview</button>
-      <button class="pp-tab" type="button" role="tab" data-tab="schedule" aria-selected="false"><i class="fa-regular fa-calendar"></i> Schedule</button>
-      <button class="pp-tab" type="button" role="tab" data-tab="announcements" aria-selected="false"><i class="fa-solid fa-bullhorn"></i> Announcements</button>
-      <button class="pp-tab" type="button" role="tab" data-tab="diary" aria-selected="false"><i class="fa-solid fa-book-open"></i> Diary</button>
-      <button class="pp-tab" type="button" role="tab" data-tab="health" aria-selected="false"><i class="fa-solid fa-heart-pulse"></i> Health &amp; goals</button>
-      <button class="pp-tab" type="button" role="tab" data-tab="profile" aria-selected="false"><i class="fa-regular fa-id-card"></i> My profile</button>
-    </nav>
-    <div class="portal-result" id="memberNotice" role="status" hidden></div>
+    <div class="member-main">
+      <header class="member-top">
+        <div class="member-top-left">
+          <button class="member-top-menu" id="memberMenuBtn" type="button" aria-label="Open navigation" aria-expanded="false">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+          <p class="member-top-title" id="memberTopTitle">Overview</p>
+        </div>
+        <div class="member-top-actions">
+          <a class="member-top-chip" href="member-home.html#announcements" aria-label="Announcements and notifications"><i class="fa-solid fa-bell" aria-hidden="true"></i><span id="homeAnnounceCount">0</span></a>
+          <button class="theme-toggle" id="memberTheme" aria-label="Toggle theme"><i class="fa-solid fa-moon"></i></button>
+        </div>
+      </header>
+
+      <main class="member-content">
+        <section class="member-welcome member-hero">
+          <div>
+            <p class="eyebrow"><span></span> MEMBER SPACE</p>
+            <h1 id="memberGreeting">Welcome back, <span data-user-name>member</span></h1>
+            <p>Your membership, streaks, payments, and gym progress in one organized workspace.</p>
+          </div>
+          <div class="member-hero-actions">
+            <button class="btn btn-soft" id="checkInButton" type="button"><i class="fa-solid fa-location-check"></i> Check in today</button>
+            <a class="btn btn-primary" href="join.html"><i class="fa-solid fa-plus"></i> Explore plans</a>
+            <!-- Contact used to live only on the public portal, so a signed-in
+                 member had to log out to find the gym's number. Reads the same
+                 ProFitGym store, so it can never drift from the portal copy. -->
+            <button class="btn btn-soft" id="gymContactBtn" type="button"><i class="fa-solid fa-headset"></i> Contact the gym</button>
+          </div>
+        </section>
+
+        <div class="portal-result" id="memberNotice" role="status" hidden></div>
     <div class="pp-tool-panel" data-panel="overview">
     <section class="panel ann-overview" style="margin-bottom:24px">
       <div class="panel-header"><div><h2>Latest from the gym</h2><p>Notices and updates.</p></div><a class="ann-btn" href="#announcements">See all</a></div>
@@ -272,6 +350,8 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
 <div id="memberSettingsRoot"></div>
     </div>
   </main>
+    </div><!-- /.member-main -->
+  </div><!-- /.member-app-shell -->
 
 <script>
 (() => {
@@ -619,11 +699,12 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
 })();
 </script>
 <script src="pf-common.js"></script>
-<script src="member-tabs.js?v=15"></script>
+<script src="member-tabs.js?v=16"></script>
+<script src="member-shell.js?v=1"></script>
 <script src="change-password.js?v=1"></script>
 <script src="member-pay.js?v=1"></script>
 <script src="portal-fx.js?v=2"></script>
-<style>@media (max-width:760px){body{padding-bottom:112px}}body.member-home .pp-tabs{justify-content:space-between}</style>
+<style>@media (max-width:760px){body{padding-bottom:112px}}</style>
 <nav class="pf-bottomnav" aria-label="Member sections">
   <button type="button" data-go-tab="overview"><i class="fa-solid fa-gauge-high" aria-hidden="true"></i><span>Overview</span></button>
   <button type="button" data-go-tab="schedule"><i class="fa-regular fa-calendar" aria-hidden="true"></i><span>Schedule</span></button>
@@ -636,7 +717,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
 (() => {
   const nav = document.querySelector(".pf-bottomnav");
   if (!nav) return;
-  const current = () => document.querySelector('.pp-tab[aria-selected="true"]')?.dataset.tab;
+  const current = () => document.querySelector('.member-sidebar .nav-link[aria-selected="true"]')?.dataset.tab;
   const hero = document.querySelector('.member-hero');
   const sync = () => {
     const now = current();
@@ -649,10 +730,10 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
   nav.addEventListener("click", e => {
     const b = e.target.closest("[data-go-tab]");
     if (!b) return;
-    document.querySelector(`.pp-tab[data-tab="${b.dataset.goTab}"]`)?.click();
+    document.querySelector(`.member-sidebar .nav-link[data-tab="${b.dataset.goTab}"]`)?.click();
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
-  const tabs = document.querySelector(".pp-tabs");
+  const tabs = document.querySelector(".member-sidebar .side-scroll");
   if (tabs) new MutationObserver(sync).observe(tabs, { attributes: true, subtree: true, attributeFilter: ["aria-selected"] });
   sync();
 })();

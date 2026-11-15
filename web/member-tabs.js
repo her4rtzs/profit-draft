@@ -55,31 +55,44 @@
     document.querySelector(`[data-panel="${name}"]`)?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
   function initHomeTabs() {
-    const tabs = [...document.querySelectorAll(".pp-tab")];
+    const sideTabs = [...document.querySelectorAll(".member-sidebar .nav-link[data-tab]")];
+    const tabs = sideTabs.length ? sideTabs : [...document.querySelectorAll(".pp-tab")];
     if (!tabs.length) return;
     const names = tabs.map(t => t.dataset.tab);
+    const hero = document.querySelector(".member-hero");
     const select = (name, updateHash = true) => {
       tabs.forEach(t => {
         const on = t.dataset.tab === name;
         t.setAttribute("aria-selected", String(on));
+        t.classList.toggle("active", on);
+        if (on) t.setAttribute("aria-current", "page");
+        else t.removeAttribute("aria-current");
         t.tabIndex = on ? 0 : -1;
       });
-      // Settings has no tab; keep one tab in the keyboard order for the tablist.
+      // Fallback tab order if a panel has no nav button.
       if (!names.includes(name)) tabs[0].tabIndex = 0;
       document.querySelectorAll("[data-panel]").forEach(p => { p.hidden = p.dataset.panel !== name; });
+      if (hero) hero.hidden = name !== "overview";
       if (updateHash) history.replaceState(null, "", "#" + name);
     };
     tabs.forEach((t, i) => {
       t.addEventListener("click", () => select(t.dataset.tab));
       t.addEventListener("keydown", e => {
-        if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
-        const next = names[(i + (e.key === "ArrowRight" ? 1 : names.length - 1)) % names.length];
+        const forward = sideTabs.length ? "ArrowDown" : "ArrowRight";
+        const backward = sideTabs.length ? "ArrowUp" : "ArrowLeft";
+        if (e.key !== forward && e.key !== backward) return;
+        e.preventDefault();
+        const next = names[(i + (e.key === forward ? 1 : names.length - 1)) % names.length];
         select(next);
-        document.querySelector(`.pp-tab[data-tab="${next}"]`)?.focus();
+        tabs.find(el => el.dataset.tab === next)?.focus();
       });
     });
     const hash = location.hash.slice(1);
     select(names.includes(hash) ? hash : names[0], false);
+    window.addEventListener("hashchange", () => {
+      const h = location.hash.slice(1);
+      if (names.includes(h)) select(h, false);
+    });
     selectTab = select;
   }
   const SUN_SVG = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.8" fill="currentColor" stroke="none"/><path d="M12 1.2v4M12 18.8v4M1.2 12h4M18.8 12h4M5.21 5.21l1.98 1.98M16.81 16.81l1.98 1.98M5.21 18.79l1.98-1.98M16.81 7.19l1.98-1.98"/></svg>';
@@ -1323,17 +1336,17 @@
 
   // ---------- Header menu ----------
   function bindMemberMenu() {
+    document.addEventListener("click", e => {
+      const b = e.target.closest("[data-member-goto]");
+      if (!b || e.target.closest("#memberMenu")) return;
+      goTab(b.dataset.memberGoto);
+    });
     const btn = $("memberMenuToggle"), menu = $("memberMenu");
     if (!btn || !menu) return;
     const setOpen = open => { menu.hidden = !open; btn.setAttribute("aria-expanded", String(open)); };
     btn.addEventListener("click", e => { e.stopPropagation(); setOpen(menu.hidden); });
     document.addEventListener("click", e => { if (!menu.hidden && !e.target.closest(".member-user")) setOpen(false); });
     document.addEventListener("keydown", e => { if (e.key === "Escape") setOpen(false); });
-    document.addEventListener("click", e => {
-      const b = e.target.closest("[data-member-goto]");
-      if (!b || menu.contains(b)) return;
-      goTab(b.dataset.memberGoto);
-    });
     menu.addEventListener("click", e => {
       const b = e.target.closest("[data-member-goto]");
       if (!b) return;
