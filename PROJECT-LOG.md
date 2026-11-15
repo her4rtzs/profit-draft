@@ -2106,3 +2106,13 @@ Enhance the loading screen logo animation and slow down its dismissal, remove th
 - Enforced `dark public-dark-theme` on `faq.html`, `terms.html`, and `privacy.html` so they match `login.html` and `join.html` instead of falling back to light mode.
 ### Decision-log skill
 Public pages that share `member-portal.css` / `legal.css` must explicitly include `dark public-dark-theme` on both `<html>` and `<body>` to match `login.html` and `join.html` regardless of portal theme state.
+
+## 2026-11-16 05:15 (Asia/Manila): Apply ProFit Loader Design to splash.js
+### What I asked for
+Apply the provided ProFit Loader HTML/CSS/JS design directly into the existing loader without creating any new files.
+### What the agent decided and why
+- Rewrote `web/splash.js` in place (no new files created) to implement the dial, ticks, sweeping arc, shockwave rings, heartbeat logo, ECG pulse, canvas ember particles, percentage progress, and circular iris exit animation.
+- Scoped all styles and selectors under `#pf-loader` with `.pf-*` prefixes so none of the classes collide with `web/welcome.html`, and preserved existing gating (`welcome.html` / `/` or `pf-auth-just-logged-in`, skipping auth forms).
+- Referenced `logo.jpg` (or saved custom gym profile logo/name) instead of embedding the large base64 data URI from the sample HTML, and bumped the cache-buster to `splash.js?v=6` in `web/welcome.html`.
+### Decision-log skill
+When adapting standalone HTML loader prototypes into an existing static portal script, scope all CSS rules under a dedicated root ID and prefix class names so host page styles remain isolated.
