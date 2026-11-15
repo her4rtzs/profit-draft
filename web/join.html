@@ -8,370 +8,339 @@
 <link rel="icon" type="image/jpeg" href="logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Permanent+Marker&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
-<link rel="stylesheet" href="app.css?v=5">
 <script src="api.js?v=4"></script>
 <style>
   :root{
-    --pf-bg:#07080c;
-    --pf-paper:#faf6ea;
-    --pf-paper-in:#f3ede0;
-    --pf-ink:#111318;
-    --pf-muted:#52525b;
-    --pf-gold:#f5c41f;
-    --pf-gold-hi:#ffd23f;
-    --pf-green:#15803d;
-    --pf-red:#dc2626;
+    --gold:#e8b93a;
+    --lime:#e8b93a;
+    --lime-hi:#f2cb5c;
+    --on:#1a1407;
+    --bg:#07080c;
+    --bg2:#0b0d16;
+    --card:#111320;
+    --line:#232636;
+    --tx:#f6efdc;
+    --mu:#9a9788;
+    --field-line:#4A4E66;
+    --err:#f87171;
+    --ok:#4ade80;
   }
+  html[data-theme="light"],body.light{
+    --bg:#f4f5f8;
+    --bg2:#ffffff;
+    --card:#ffffff;
+    --line:#d8dce6;
+    --tx:#111318;
+    --mu:#5b6070;
+    --field-line:#b8bfd0;
+    --err:#dc2626;
+    --ok:#15803d;
+  }
+  @media(prefers-color-scheme:light){
+    html[data-theme="auto"]{
+      --bg:#f4f5f8;
+      --bg2:#ffffff;
+      --card:#ffffff;
+      --line:#d8dce6;
+      --tx:#111318;
+      --mu:#5b6070;
+      --field-line:#b8bfd0;
+      --err:#dc2626;
+      --ok:#15803d;
+    }
+  }
+
   *{box-sizing:border-box}
-  html,body{margin:0;padding:0;overflow-x:hidden;background:var(--pf-bg);color:#f8fafc;font-family:"Plus Jakarta Sans",system-ui,-apple-system,sans-serif}
-  body.auth-page.pf-dark-auth{min-height:100svh;display:flex;flex-direction:column}
+  html,body{margin:0;padding:0;overflow-x:hidden}
+  body{
+    min-height:100vh;
+    background:var(--bg);
+    color:var(--tx);
+    font:15px/1.6 Inter,system-ui,-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    display:flex;
+    flex-direction:column;
+  }
+  h1,h2,h3,button,.portal-brand strong{font-family:"Plus Jakarta Sans",Inter,system-ui,sans-serif}
+  :focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 
-  /* Consistent 68px Header matching welcome.html and login.html */
+  /* Header matching landing & login */
   .portal-nav{
+    height:68px;min-height:68px;
+    background:#0b0c10;
+    border-bottom:1px solid var(--line);
+    padding:0 clamp(16px,4vw,40px);
     display:flex;align-items:center;justify-content:space-between;gap:16px;
-    min-height:68px;height:68px;padding:0 clamp(16px,4vw,32px);
-    background:rgba(11,12,16,.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-    border-bottom:1px solid rgba(255,255,255,.09);position:sticky;top:0;z-index:40;flex:none;
+    position:sticky;top:0;z-index:40;flex:none;
   }
-  .portal-brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:#f8fafc;min-width:0}
-  .brand-mark{width:40px;height:40px;border-radius:10px;overflow:hidden;border:1.5px solid rgba(245,196,31,.45);background:#000;display:grid;place-items:center;flex:none}
-  .brand-mark img{width:100%;height:100%;object-fit:cover;display:block}
-  .portal-brand span:last-child{display:flex;flex-direction:column;line-height:1.1;min-width:0}
-  .portal-brand strong{font-family:"Plus Jakarta Sans",sans-serif;font-size:19px;font-weight:800;letter-spacing:-.01em;color:#f6efdc}
-  .portal-brand small{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#e8b93a;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .secure-label{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:#cbd5e1;white-space:nowrap}
-  .secure-label i{color:#e8b93a}
+  .portal-brand{
+    display:inline-flex;align-items:center;gap:12px;
+    text-decoration:none;color:#f6efdc;min-height:44px;
+  }
+  .portal-brand img{width:36px;height:36px;border-radius:10px;object-fit:cover;display:block;flex:none}
+  .portal-brand strong{font-size:22px;font-weight:800;letter-spacing:-.02em;color:#f6efdc}
+  .back-link{
+    display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 6px;
+    color:#9a9788;text-decoration:none;font:600 14px/1 Inter,system-ui,sans-serif;
+    transition:color .15s ease;white-space:nowrap;
+  }
+  .back-link:hover{color:var(--gold)}
 
+  /* Full-bleed hero with flat overlay */
   .jn-shell{
-    flex:1 1 auto;
-    display:grid;grid-template-columns:1.05fr 1fr;min-height:calc(100svh - 68px);
-    background:var(--pf-bg);
-  }
-
-  /* Left Promo Stage */
-  .jn-stage{
-    position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;
-    border-right:1px solid rgba(255,255,255,.08);background:#090b10;
-  }
-  .jn-bg{
-    position:absolute;inset:0;background:url("img/hero-gym.jpg") center/cover no-repeat;
-    opacity:.28;transform:scale(1.03);animation:jnZoom 26s ease-in-out infinite alternate;
-  }
-  @keyframes jnZoom{from{transform:scale(1.02)}to{transform:scale(1.09)}}
-  .jn-scrim{
-    position:absolute;inset:0;
-    background:linear-gradient(145deg,rgba(7,8,12,.88) 0%,rgba(11,18,32,.72) 55%,rgba(7,8,12,.94) 100%);
-  }
-  .jn-stage-inner{
-    position:relative;z-index:2;padding:clamp(22px,3.5vh,38px) clamp(18px,3.6vw,44px) clamp(16px,2.2vh,24px);
-    display:flex;flex-direction:column;gap:clamp(14px,2vh,20px);margin:auto 0;
-  }
-  .jn-tag{
-    display:inline-block;padding:5px 12px;border-radius:5px;
-    background:var(--pf-gold);color:var(--pf-ink);border:1.5px solid var(--pf-ink);
-    font-family:"Anton",sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;
-    width:fit-content;margin-bottom:10px;
-  }
-  .jn-headline{
-    margin:0;font-family:"Anton",sans-serif;font-size:clamp(36px,4.6vw,58px);line-height:.94;
-    letter-spacing:.01em;text-transform:uppercase;color:#faf6ea;
-  }
-  .jn-headline em{font-style:normal;color:var(--pf-gold);display:block}
-  .jn-sub{margin:0;max-width:460px;font-size:14px;line-height:1.55;color:#e2e8f0}
-
-  /* Polaroids */
-  .jn-polaroids{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;max-width:480px}
-  .jn-pol{
-    margin:0;background:var(--pf-paper);border:2px solid var(--pf-ink);border-radius:4px;
-    padding:6px 6px 9px;position:relative;box-shadow:4px 5px 0 rgba(0,0,0,.45);
-    transition:transform .2s ease;
-  }
-  .jn-pol:nth-child(1){transform:rotate(-2.2deg)}
-  .jn-pol:nth-child(2){transform:rotate(1.5deg)}
-  .jn-pol:nth-child(3){transform:rotate(-1.4deg)}
-  .jn-pol:hover{transform:translateY(-3px) rotate(0deg)}
-  .jn-tape{
-    position:absolute;top:-7px;left:50%;transform:translateX(-50%);
-    width:38px;height:12px;background:rgba(245,196,31,.82);border-radius:2px;
-  }
-  .jn-pol img{width:100%;height:clamp(68px,10vh,96px);object-fit:cover;border-radius:2px;display:block;border:1px solid rgba(17,19,24,.18)}
-  .jn-pol figcaption{
-    margin-top:6px;text-align:center;color:var(--pf-ink);
-    font-family:"Permanent Marker",cursive;font-size:11.5px;letter-spacing:.02em;
-  }
-
-  /* Pay with stamps */
-  .jn-paywith{display:flex;flex-direction:column;gap:8px}
-  .jn-paywith-lbl{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#cbd5e1}
-  .jn-stamps{display:flex;flex-wrap:wrap;gap:8px}
-  .jn-stamp-pill{
-    display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:6px;
-    border:1.5px solid var(--pf-gold);background:rgba(11,13,18,.8);
-    color:#faf6ea;font-family:"Anton",sans-serif;font-size:13px;letter-spacing:.06em;text-transform:uppercase;
-  }
-
-  /* Bottom ticker & hazard */
-  .jn-bottom-strip{position:relative;z-index:2}
-  .jn-ticker{overflow:hidden;border-top:1px solid rgba(255,255,255,.12);background:#0b0d12;padding:7px 0;white-space:nowrap}
-  .jn-ticker-track{display:inline-flex;align-items:center;gap:18px;font-family:"Anton",sans-serif;font-size:13px;letter-spacing:.1em;color:#faf6ea;animation:jnTick 24s linear infinite}
-  .jn-ticker-track .sep{color:var(--pf-gold)}
-  @keyframes jnTick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-  .jn-hazard{height:10px;background:repeating-linear-gradient(-45deg,var(--pf-gold) 0 12px,var(--pf-ink) 12px 24px)}
-
-  /* Right Form Pane - Editorial Off-White Paper Card */
-  .jn-form-pane{
-    display:flex;align-items:center;justify-content:center;
-    padding:clamp(20px,3vh,34px) clamp(14px,3vw,36px);
-    background:var(--pf-bg);
-  }
-  .jn-paper{
-    width:min(540px,100%);
-    background:var(--pf-paper);color:var(--pf-ink);
-    border:2px solid var(--pf-ink);border-radius:16px;
-    box-shadow:8px 8px 0 var(--pf-gold);
-    padding:clamp(20px,2.6vh,28px) clamp(16px,2.6vw,26px);
     position:relative;
+    flex:1 1 auto;
+    min-height:calc(100vh - 68px);
+    background:url("img/hero.jpg") center/cover no-repeat;
+    display:flex;align-items:center;
+    padding:clamp(28px,4vh,48px) clamp(16px,4vw,48px);
   }
-  .jn-stamp{
-    position:absolute;top:-12px;right:18px;
-    padding:4px 12px;border-radius:4px;
-    background:var(--pf-ink);color:var(--pf-gold);
-    border:1.5px solid var(--pf-ink);
-    font-family:"Anton",sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;
-    transform:rotate(2.5deg);
+  .jn-shell::before{
+    content:"";position:absolute;inset:0;
+    background:rgba(7,8,12,.7);
+    z-index:0;
   }
-  .jn-paper h2{
-    margin:0 0 3px;font-family:"Anton",sans-serif;font-size:clamp(26px,3vw,32px);
-    line-height:1;letter-spacing:.02em;text-transform:uppercase;color:var(--pf-ink);
+  html[data-theme="light"] .jn-shell::before,
+  body.light .jn-shell::before{
+    background:rgba(244,245,248,.82);
   }
-  .jn-lead{margin:0 0 14px;font-size:13px;color:var(--pf-muted)}
+  .jn-wrap{
+    position:relative;z-index:1;
+    width:min(1180px,100%);margin-inline:auto;
+    display:grid;grid-template-columns:minmax(0,1fr) 600px;
+    gap:clamp(28px,4.5vw,56px);align-items:center;
+  }
 
-  /* Plans row */
-  .jn-lbl{display:block;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--pf-ink);margin:0 0 5px}
-  .jn-plans{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:12px}
+  /* Left copy */
+  .jn-eyebrow{
+    display:inline-flex;align-items:center;gap:10px;
+    font:700 12px/1.2 "Plus Jakarta Sans",sans-serif;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--gold);
+    margin:0 0 16px;
+  }
+  .jn-eyebrow::before{content:"";width:24px;height:2px;background:var(--gold);flex:none}
+  .jn-title{
+    margin:0 0 16px;
+    font-size:clamp(38px,4.8vw,58px);font-weight:800;line-height:1.04;letter-spacing:-.03em;
+    color:var(--tx);
+  }
+  .jn-title .hl{color:var(--gold);display:block}
+  .jn-desc{margin:0 0 24px;max-width:440px;font-size:16px;line-height:1.6;color:var(--mu)}
+  .jn-checks{list-style:none;margin:0 0 24px;padding:0;display:grid;gap:12px}
+  .jn-checks li{display:flex;align-items:center;gap:10px;font-size:14.5px;font-weight:500;color:var(--tx)}
+  .jn-checks i{color:var(--gold);font-size:14px;flex:none}
+  .jn-gym-foot{margin:0;font-size:12.5px;color:var(--mu)}
+
+  /* Right 600px Card */
+  .jn-card{
+    width:100%;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:clamp(22px,2.8vw,30px);
+  }
+  .jn-card h2{margin:0 0 4px;font-size:26px;font-weight:800;letter-spacing:-.02em;color:var(--tx)}
+  .jn-lead{margin:0 0 18px;font-size:13.5px;color:var(--mu)}
+
+  .jn-lbl{display:block;margin:0 0 6px;font:600 13px/1.2 Inter,system-ui,sans-serif;color:var(--tx)}
+
+  /* 4 equal-size plan cards */
+  .jn-plans{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:0 0 14px}
   .plan{
-    position:relative;display:flex;flex-direction:column;gap:1px;padding:9px 8px 8px;
-    border-radius:8px;border:1.5px solid var(--pf-ink);background:var(--pf-paper-in);
-    cursor:pointer;transition:transform .15s ease,background-color .15s ease,box-shadow .15s ease;
+    position:relative;display:flex;flex-direction:column;justify-content:space-between;
+    min-height:86px;padding:12px 12px 10px;
+    border-radius:12px;border:1px solid var(--field-line);background:var(--bg2);
+    cursor:pointer;transition:border-color .15s ease,background-color .15s ease;
   }
   .plan input{position:absolute;opacity:0;pointer-events:none}
-  .plan:hover{transform:translateY(-1px)}
-  .plan.on{
-    background:var(--pf-gold);border:2px solid var(--pf-ink);
-    transform:translateY(-2px);box-shadow:0 3px 0 var(--pf-ink);
-  }
-  .plan strong{font-family:"Anton",sans-serif;font-size:13.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--pf-ink)}
-  .plan small{font-size:10.5px;font-weight:600;color:#3f3f46}
-  .plan b{font-family:"Anton",sans-serif;font-size:16px;color:var(--pf-ink);margin-top:2px}
+  .plan:hover{border-color:var(--gold)}
+  .plan.on{border:1.5px solid var(--gold);background:rgba(232,185,58,.08)}
+  .plan strong{font-family:"Plus Jakarta Sans",sans-serif;font-size:13.5px;font-weight:700;color:var(--tx)}
+  .plan small{font-size:11.5px;color:var(--mu);margin-bottom:4px}
+  .plan b{font-family:"Plus Jakarta Sans",sans-serif;font-size:18px;font-weight:800;color:var(--tx)}
   .plan .tag{
-    position:absolute;top:-8px;right:6px;padding:2px 6px;border-radius:4px;
-    background:var(--pf-ink);color:var(--pf-gold);
-    font-family:"Anton",sans-serif;font-size:9px;letter-spacing:.06em;
+    position:absolute;top:-10px;left:10px;padding:2px 8px;border-radius:999px;
+    background:var(--gold);color:var(--on);
+    font:700 10.5px/1.3 "Plus Jakarta Sans",sans-serif;white-space:nowrap;
   }
 
   .jn-note{
-    margin-bottom:10px;padding:8px 10px;border-radius:8px;font-size:12px;font-weight:700;
-    background:#fee2e2;border:1.5px solid #b91c1c;color:#991b1b;
+    margin-bottom:12px;padding:10px 12px;border-radius:12px;font-size:13px;font-weight:500;
+    background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.38);color:var(--err);
   }
 
-  /* Paper Inputs */
-  .jn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .jn-field{margin-bottom:8px}
+  /* 48px Fields, radius 12px */
+  .jn-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .jn-field{margin-bottom:10px}
   .jn-input{
-    width:100%;height:40px;padding:0 12px;border-radius:8px;
-    border:1.5px solid var(--pf-ink);background:var(--pf-paper-in);color:var(--pf-ink);
-    font:500 13.5px/1.2 "Plus Jakarta Sans",sans-serif;
-    transition:box-shadow .15s ease,background-color .15s ease;
+    width:100%;height:48px;padding:0 14px;
+    border-radius:12px;border:1px solid var(--field-line);
+    background:var(--bg2);color:var(--tx);
+    font:400 14.5px/1.2 Inter,system-ui,sans-serif;
+    transition:border-color .15s ease,box-shadow .15s ease;
   }
-  .jn-input::placeholder{color:#6b7280}
-  .jn-input:focus{outline:none;background:#fff;box-shadow:0 0 0 3px rgba(245,196,31,.45)}
-  .jn-input.is-invalid{border-color:var(--pf-red)}
+  .jn-input::placeholder{color:var(--mu)}
+  .jn-input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,185,58,.22)}
+  .jn-input.is-invalid{border-color:var(--err)}
 
   .jn-phone-wrap{display:flex;align-items:center}
   .jn-prefix{
-    height:40px;padding:0 10px;display:inline-flex;align-items:center;
-    background:#eae3d0;border:1.5px solid var(--pf-ink);border-right:0;
-    border-radius:8px 0 0 8px;font-size:13px;font-weight:800;color:var(--pf-ink);flex:none;
+    height:48px;padding:0 13px;display:inline-flex;align-items:center;
+    background:var(--bg2);border:1px solid var(--field-line);border-right:0;
+    border-radius:12px 0 0 12px;font:600 14px/1 Inter,sans-serif;color:var(--tx);flex:none;
   }
-  .jn-phone-wrap .jn-input{border-radius:0 8px 8px 0}
+  .jn-phone-wrap .jn-input{border-radius:0 12px 12px 0}
 
   .jn-pw-wrap{position:relative}
-  .jn-pw-wrap .jn-input{padding-right:38px}
+  .jn-pw-wrap .jn-input{padding-right:48px}
   .jn-eye{
-    position:absolute;right:5px;top:50%;transform:translateY(-50%);
-    width:30px;height:30px;border:0;background:transparent;color:var(--pf-ink);
-    display:grid;place-items:center;cursor:pointer;border-radius:6px;
+    position:absolute;right:4px;top:50%;transform:translateY(-50%);
+    width:44px;height:44px;border:0;background:transparent;color:var(--mu);
+    display:grid;place-items:center;cursor:pointer;border-radius:10px;
+    transition:color .15s ease;
   }
-  .jn-eye:hover{background:rgba(17,19,24,.08)}
+  .jn-eye:hover{color:var(--gold)}
 
-  .jn-f-err{display:block;min-height:13px;margin-top:2px;font-size:11px;font-weight:600;color:var(--pf-red)}
+  .jn-f-err{display:block;min-height:14px;margin-top:3px;font-size:11.5px;font-weight:500;color:var(--err)}
 
-  /* Strength & Checklist */
-  .jn-strength{
-    margin:2px 0 10px;padding:8px 10px;border-radius:8px;
-    background:var(--pf-paper-in);border:1.5px solid var(--pf-ink);
-  }
-  .jn-strength-track{height:5px;border-radius:99px;background:#fff;border:1px solid rgba(17,19,24,.25);overflow:hidden;margin-bottom:5px}
+  /* Strength & live checklist */
+  .jn-strength{margin:0 0 12px}
+  .jn-strength-track{height:4px;border-radius:99px;background:var(--line);overflow:hidden;margin-bottom:6px}
   .jn-strength-fill{height:100%;width:0%;transition:width .2s ease,background-color .2s ease}
-  .jn-strength-meta{display:flex;justify-content:space-between;font-size:11px;font-weight:700;color:var(--pf-ink);margin-bottom:5px}
-  .jn-checklist{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:3px 10px}
-  .jn-checklist li{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:#3f3f46}
-  .jn-checklist li.ok{color:var(--pf-green)}
+  .jn-strength-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--mu);margin-bottom:8px}
+  .jn-checklist{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px 16px}
+  .jn-checklist li{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--mu)}
+  .jn-checklist li.ok{color:var(--ok)}
 
-  /* Aligned Checkbox */
+  /* 20px Checkbox aligned with first line of text */
   .jn-terms{
-    display:flex;align-items:center;gap:10px;margin:2px 0 8px;
-    font-size:12.5px;font-weight:600;line-height:1.4;color:var(--pf-ink);cursor:pointer;
+    display:flex;align-items:flex-start;gap:10px;margin:2px 0 12px;
+    font-size:13px;line-height:1.45;color:var(--tx);cursor:pointer;min-height:44px;padding-top:6px;
   }
   .jn-terms input[type="checkbox"]{
-    width:17px;height:17px;margin:0;flex-shrink:0;accent-color:var(--pf-ink);cursor:pointer;
+    appearance:none;-webkit-appearance:none;
+    width:20px;height:20px;margin:0;flex:none;
+    border-radius:6px;border:1px solid var(--field-line);background:var(--bg2);
+    display:grid;place-items:center;cursor:pointer;
+    transition:border-color .15s ease,background-color .15s ease;
   }
-  .jn-terms a{color:var(--pf-ink);font-weight:800;text-decoration:underline;text-underline-offset:2px}
-  .jn-terms a:hover{color:#92400e}
+  .jn-terms input[type="checkbox"]:focus-visible{
+    outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,185,58,.22);
+  }
+  .jn-terms input[type="checkbox"]:checked{background:var(--gold);border-color:var(--gold)}
+  .jn-terms input[type="checkbox"]:checked::after{
+    content:"";width:5px;height:9px;border:solid var(--on);border-width:0 2px 2px 0;
+    transform:rotate(45deg);margin-bottom:2px;
+  }
+  .jn-terms a{color:var(--gold);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+  .jn-terms a:hover{color:var(--lime-hi)}
 
-  .jn-err{margin:0 0 8px;min-height:14px;font-size:12px;font-weight:700;color:var(--pf-red)}
+  .jn-err{margin:0 0 8px;min-height:16px;font-size:12.5px;font-weight:500;color:var(--err)}
+
   .jn-btn-gold{
-    width:100%;height:46px;border:2px solid var(--pf-ink);border-radius:9px;
-    background:var(--pf-gold);color:var(--pf-ink);
-    font-family:"Anton",sans-serif;font-size:17px;letter-spacing:.06em;text-transform:uppercase;
-    display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;
-    box-shadow:0 3px 0 var(--pf-ink);
-    transition:background-color .15s ease,transform .12s ease,box-shadow .12s ease;
+    width:100%;height:48px;border:0;border-radius:999px;
+    background:var(--gold);color:var(--on);
+    font:700 15px/1 "Plus Jakarta Sans",sans-serif;
+    display:inline-flex;align-items:center;justify-content:center;
+    cursor:pointer;transition:filter .15s ease,opacity .15s ease;
   }
-  .jn-btn-gold:hover:not(:disabled){background:var(--pf-gold-hi);transform:translateY(-1px);box-shadow:0 4px 0 var(--pf-ink)}
-  .jn-btn-gold:active:not(:disabled){transform:translateY(1px);box-shadow:0 1px 0 var(--pf-ink)}
-  .jn-btn-gold:disabled{opacity:.55;cursor:not-allowed}
+  .jn-btn-gold:hover:not(:disabled){filter:brightness(1.07)}
+  .jn-btn-gold:disabled{opacity:.48;cursor:not-allowed}
 
-  .jn-ok{text-align:center;padding:18px 8px}
-  .jn-ok i{font-size:38px;color:var(--pf-green);margin-bottom:10px}
-  .jn-ok h2{margin-bottom:6px}
-  .jn-ok p{color:#3f3f46;font-size:13.5px;margin:0 0 16px}
+  .jn-hint{margin:8px 0 0;text-align:center;font-size:12px;color:var(--mu)}
+  .jn-paynote{margin:10px 0 0;text-align:center;font-size:12px;color:var(--mu)}
+  .jn-alt{margin:8px 0 0;text-align:center;font-size:13.5px;color:var(--mu)}
+  .jn-alt a{
+    display:inline-flex;align-items:center;min-height:44px;
+    color:var(--gold);font-weight:600;text-decoration:underline;text-underline-offset:3px;
+  }
 
-  .jn-alt{margin:12px 0 0;text-align:center;font-size:12.5px;font-weight:600;color:var(--pf-muted)}
-  .jn-alt a{color:var(--pf-ink);font-weight:800;text-decoration:underline;text-underline-offset:2px}
+  .jn-ok{text-align:center;padding:24px 8px}
+  .jn-ok i{font-size:40px;color:var(--ok);margin-bottom:12px}
+  .jn-ok h2{margin-bottom:8px}
+  .jn-ok p{color:var(--mu);font-size:14px;margin:0 0 18px}
 
-  /* Responsive on Any Device */
-  @media(max-width:980px){
-    .jn-shell{grid-template-columns:1fr;min-height:auto}
-    .jn-stage{border-right:0;border-bottom:1px solid rgba(255,255,255,.08)}
+  @media(max-width:900px){
+    .jn-shell{min-height:auto;padding:28px 16px 36px;align-items:flex-start}
+    .jn-wrap{grid-template-columns:1fr;gap:24px}
+    .jn-card{max-width:600px;margin-inline:auto}
   }
   @media(max-width:600px){
-    .secure-label{display:none}
-    .jn-stage-inner{padding:20px 16px 18px}
-    .jn-polaroids{gap:8px}
-    .jn-pol img{height:64px}
-    .jn-pol figcaption{font-size:10px}
-    .jn-form-pane{padding:20px 12px 26px}
-    .jn-paper{padding:22px 15px;box-shadow:5px 5px 0 var(--pf-gold)}
-    .jn-plans{grid-template-columns:1fr 1fr;gap:10px 8px}
-    .jn-row,.jn-checklist{grid-template-columns:1fr}
-    .jn-input{font-size:16px;height:42px}
-    .jn-prefix{height:42px}
+    .jn-plans{grid-template-columns:1fr 1fr;gap:14px 10px}
+  }
+  @media(max-width:480px){
+    .jn-row{grid-template-columns:1fr}
+    .jn-input{font-size:16px}
   }
   @media(prefers-reduced-motion:reduce){
-    .jn-bg,.jn-ticker-track{animation:none !important}
+    *{transition:none !important;animation:none !important}
   }
 
-  /* Legal Modal matching paper + #111318 + gold system */
+  /* Legal Modal matching ProFit tokens */
   .jn-legal-backdrop{position:fixed;inset:0;z-index:1200;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(7,8,12,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;visibility:hidden;transition:opacity .2s ease,visibility .2s ease}
   .jn-legal-backdrop.is-open{opacity:1;visibility:visible}
-  .jn-legal-modal{width:min(760px,100%);max-height:min(88vh,780px);display:flex;flex-direction:column;background:var(--pf-paper);color:var(--pf-ink);border:2px solid var(--pf-ink);border-radius:14px;box-shadow:10px 10px 0 var(--pf-gold);overflow:hidden;transform:translateY(10px) scale(.98);transition:transform .2s cubic-bezier(.2,.8,.2,1)}
+  .jn-legal-modal{width:min(760px,100%);max-height:min(88vh,780px);display:flex;flex-direction:column;background:var(--card);color:var(--tx);border:1px solid var(--line);border-radius:16px;overflow:hidden;transform:translateY(10px) scale(.98);transition:transform .2s cubic-bezier(.2,.8,.2,1)}
   .jn-legal-backdrop.is-open .jn-legal-modal{transform:none}
-  .jn-legal-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 22px;background:var(--pf-ink);color:#fff;border-bottom:2px solid var(--pf-gold)}
+  .jn-legal-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 22px;background:var(--bg2);border-bottom:1px solid var(--line)}
   .jn-legal-head-left{display:flex;align-items:center;gap:12px;min-width:0}
-  .jn-legal-ico{width:38px;height:38px;border-radius:8px;display:grid;place-items:center;background:var(--pf-gold);color:var(--pf-ink);font-size:16px;flex:none}
-  .jn-legal-head h3{margin:0;font-family:"Anton",sans-serif;font-size:21px;letter-spacing:.03em;text-transform:uppercase;color:#fff}
-  .jn-legal-head p{margin:2px 0 0;font-size:12px;color:#cbd5e1}
-  .jn-legal-x{width:34px;height:34px;border-radius:6px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.06);color:#fff;font-size:19px;line-height:1;display:grid;place-items:center;cursor:pointer}
-  .jn-legal-x:hover{background:var(--pf-gold);color:var(--pf-ink);border-color:var(--pf-gold)}
-  .jn-legal-tabs{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 22px;background:#efe8d4;border-bottom:1px solid rgba(17,19,24,.14)}
+  .jn-legal-ico{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:var(--gold);color:var(--on);font-size:16px;flex:none}
+  .jn-legal-head h3{margin:0;font-size:18px;font-weight:700;color:var(--tx)}
+  .jn-legal-head p{margin:2px 0 0;font-size:12px;color:var(--mu)}
+  .jn-legal-x{width:44px;height:44px;border-radius:10px;border:1px solid var(--field-line);background:var(--bg2);color:var(--tx);font-size:20px;line-height:1;display:grid;place-items:center;cursor:pointer}
+  .jn-legal-x:hover{border-color:var(--gold);color:var(--gold)}
+  .jn-legal-tabs{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 22px;background:var(--bg);border-bottom:1px solid var(--line)}
   .jn-legal-tab-group{display:flex;gap:8px;flex-wrap:wrap}
-  .jn-legal-tab{display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border-radius:6px;border:1.5px solid var(--pf-ink);background:#fff;color:var(--pf-ink);font:700 12.5px/1.2 "Plus Jakarta Sans",sans-serif;cursor:pointer}
-  .jn-legal-tab.is-active{background:var(--pf-ink);color:var(--pf-gold)}
-  .jn-legal-tab .chk{display:none;color:#15803d;font-weight:800}
+  .jn-legal-tab{display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--field-line);background:var(--bg2);color:var(--tx);font:600 13px/1 "Plus Jakarta Sans",sans-serif;cursor:pointer}
+  .jn-legal-tab.is-active{background:var(--gold);color:var(--on);border-color:var(--gold)}
+  .jn-legal-tab .chk{display:none;color:var(--ok);font-weight:800}
   .jn-legal-tab.is-read .chk{display:inline}
-  .jn-legal-tab.is-active.is-read .chk{color:#4ade80}
-  .jn-legal-prog{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:700;color:#374151}
-  .jn-legal-prog-bar{width:90px;height:6px;background:rgba(17,19,24,.15);border-radius:99px;overflow:hidden}
-  .jn-legal-prog-fill{height:100%;width:0%;background:var(--pf-green);transition:width .25s ease}
-  .jn-legal-body{flex:1 1 auto;overflow-y:auto;padding:20px 22px;font-size:13.5px;line-height:1.65;color:#1f2937;background:#fff}
-  .jn-legal-body .legal-sec{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid #e5e7eb}
+  .jn-legal-tab.is-active.is-read .chk{color:var(--on)}
+  .jn-legal-prog{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:600;color:var(--mu)}
+  .jn-legal-prog-bar{width:90px;height:6px;background:var(--line);border-radius:99px;overflow:hidden}
+  .jn-legal-prog-fill{height:100%;width:0%;background:var(--ok);transition:width .25s ease}
+  .jn-legal-body{flex:1 1 auto;overflow-y:auto;padding:20px 22px;font-size:14px;line-height:1.65;color:var(--tx);background:var(--bg2)}
+  .jn-legal-body .legal-sec{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--line)}
   .jn-legal-body .legal-sec:last-child{border-bottom:0;margin-bottom:0}
-  .jn-legal-body h2{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:800;color:var(--pf-ink);margin:0 0 8px}
-  .jn-legal-body .legal-num{width:24px;height:24px;border-radius:4px;display:inline-grid;place-items:center;background:var(--pf-ink);color:var(--pf-gold);font-size:12px;font-weight:800;flex:none}
+  .jn-legal-body h2{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:700;color:var(--tx);margin:0 0 8px}
+  .jn-legal-body .legal-num{width:24px;height:24px;border-radius:6px;display:inline-grid;place-items:center;background:var(--gold);color:var(--on);font-size:12px;font-weight:800;flex:none}
   .jn-legal-body p{margin:0 0 8px}
   .jn-legal-body ul{margin:6px 0 0;padding-left:20px;display:grid;gap:5px}
-  .jn-legal-body a{color:#92400e;font-weight:700;text-decoration:underline}
-  .jn-legal-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 22px;border-top:1px solid rgba(17,19,24,.14);background:#efe8d4}
-  .jn-legal-note{margin:0;font-size:12.5px;font-weight:600;color:#374151}
+  .jn-legal-body a{color:var(--gold);font-weight:600;text-decoration:underline}
+  .jn-legal-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 22px;border-top:1px solid var(--line);background:var(--bg)}
+  .jn-legal-note{margin:0;font-size:12.5px;color:var(--mu)}
   .jn-legal-acts{display:flex;align-items:center;gap:10px;margin-left:auto}
-  .jn-legal-btn{height:38px;padding:0 16px;border-radius:6px;font:700 13px/1 "Plus Jakarta Sans",sans-serif;border:1.5px solid var(--pf-ink);background:#fff;color:var(--pf-ink);cursor:pointer}
-  .jn-legal-btn.primary{background:var(--pf-gold);color:var(--pf-ink);font-family:"Anton",sans-serif;font-size:15px;letter-spacing:.06em;text-transform:uppercase}
+  .jn-legal-btn{height:44px;padding:0 18px;border-radius:999px;font:600 13.5px/1 "Plus Jakarta Sans",sans-serif;border:1px solid var(--field-line);background:var(--bg2);color:var(--tx);cursor:pointer}
+  .jn-legal-btn.primary{background:var(--gold);color:var(--on);border-color:var(--gold);font-weight:700}
   .jn-legal-btn.primary:disabled{opacity:.45;cursor:not-allowed}
   @media(max-width:560px){.jn-legal-backdrop{padding:10px}.jn-legal-head,.jn-legal-tabs,.jn-legal-body,.jn-legal-foot{padding-left:14px;padding-right:14px}.jn-legal-foot{flex-direction:column;align-items:stretch}.jn-legal-acts{justify-content:flex-end}}
 </style>
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script>
 </head>
-<body class="portal-body auth-page dark public-dark-theme pf-dark-auth">
+<body class="portal-body auth-page dark public-dark-theme">
 <header class="portal-nav">
   <a class="portal-brand" href="welcome.html">
-    <span class="brand-mark"><img src="logo.jpg" alt="ProFit logo" width="40" height="40"></span>
-    <span><strong>ProFit</strong><small data-gym-name>FUNCTIONAL FITNESS GYM</small></span>
+    <img src="logo.jpg" alt="ProFit logo" width="36" height="36">
+    <strong>ProFit</strong>
   </a>
-  <span class="secure-label"><i class="fa-solid fa-lock" aria-hidden="true"></i> Secure checkout</span>
+  <a class="back-link" href="welcome.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i><span>Back to home</span></a>
 </header>
 
 <main class="jn-shell">
-  <section class="jn-stage" aria-label="Self-enrollment overview">
-    <div class="jn-bg" aria-hidden="true"></div>
-    <div class="jn-scrim" aria-hidden="true"></div>
+  <div class="jn-wrap">
+    <section class="jn-copy" aria-label="Self-enrollment overview">
+      <p class="jn-eyebrow">Join the gym</p>
+      <h1 class="jn-title">Pay online.<span class="hl">Start training.</span></h1>
+      <p class="jn-desc">Choose a plan and pay with GCash, Maya, card or QR. Your member account is created as soon as payment is confirmed.</p>
+      <ul class="jn-checks">
+        <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>No waiting for staff approval</span></li>
+        <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Four plans, from one day to a full year</span></li>
+      </ul>
+      <p class="jn-gym-foot"><span data-gym-name>Functional Fitness Gym</span> · Alfonso, Calabarzon</p>
+    </section>
 
-    <div class="jn-stage-inner">
-      <div>
-        <span class="jn-tag">Join the gym</span>
-        <h1 class="jn-headline">Pay once.<em>Your account is ready.</em></h1>
-      </div>
-      <p class="jn-sub">Choose a plan and pay with GCash, Maya, card or QR. As soon as payment is confirmed, your member account is created automatically — with no waiting for staff approval.</p>
-
-      <div class="jn-polaroids">
-        <figure class="jn-pol"><span class="jn-tape" aria-hidden="true"></span><img src="img/gal-3.jpg" alt="Strength training"><figcaption>Strength</figcaption></figure>
-        <figure class="jn-pol"><span class="jn-tape" aria-hidden="true"></span><img src="img/gal-1.jpg" alt="Rain or shine community"><figcaption>Rain or shine</figcaption></figure>
-        <figure class="jn-pol"><span class="jn-tape" aria-hidden="true"></span><img src="img/gal-4.jpg" alt="Real gym equipment"><figcaption>Real equipment</figcaption></figure>
-      </div>
-
-      <div class="jn-paywith">
-        <span class="jn-paywith-lbl">Pay with PayMongo</span>
-        <div class="jn-stamps">
-          <span class="jn-stamp-pill">GCash</span>
-          <span class="jn-stamp-pill">Maya</span>
-          <span class="jn-stamp-pill">Card</span>
-          <span class="jn-stamp-pill">QR Ph</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="jn-bottom-strip" aria-hidden="true">
-      <div class="jn-ticker">
-        <div class="jn-ticker-track">
-          <span>INSTANT ACTIVATION</span><span class="sep">/</span>
-          <span>4 FLEXIBLE PLANS</span><span class="sep">/</span>
-          <span>GCASH · MAYA · CARD · QR</span><span class="sep">/</span>
-          <span>WE LIFT AND UPLIFT</span><span class="sep">/</span>
-          <span>INSTANT ACTIVATION</span><span class="sep">/</span>
-          <span>4 FLEXIBLE PLANS</span><span class="sep">/</span>
-          <span>GCASH · MAYA · CARD · QR</span><span class="sep">/</span>
-          <span>WE LIFT AND UPLIFT</span><span class="sep">/</span>
-        </div>
-      </div>
-      <div class="jn-hazard"></div>
-    </div>
-  </section>
-
-  <section class="jn-form-pane">
-    <div class="jn-paper" id="box">
-      <span class="jn-stamp" aria-hidden="true">New member</span>
+    <section class="jn-card" id="box" aria-label="Create your account">
       <h2>Create your account</h2>
       <p class="jn-lead">Pick a plan, add your details, then pay securely.</p>
 
@@ -380,8 +349,8 @@
         <div class="jn-plans" id="plans">
           <label class="plan"><input type="radio" name="plan" value="daily"><strong>Daily</strong><small>1 day</small><b>₱80</b></label>
           <label class="plan"><input type="radio" name="plan" value="monthly"><strong>Monthly</strong><small>30 days</small><b>₱800</b></label>
-          <label class="plan on"><input type="radio" name="plan" value="quarterly" checked><span class="tag">POPULAR</span><strong>Quarterly</strong><small>90 days</small><b>₱2,100</b></label>
-          <label class="plan"><input type="radio" name="plan" value="annual"><span class="tag">SAVE 22%</span><strong>Annual</strong><small>365 days</small><b>₱7,500</b></label>
+          <label class="plan on"><input type="radio" name="plan" value="quarterly" checked><span class="tag">Popular</span><strong>Quarterly</strong><small>90 days</small><b>₱2,100</b></label>
+          <label class="plan"><input type="radio" name="plan" value="annual"><span class="tag">Save 22%</span><strong>Annual</strong><small>365 days</small><b>₱7,500</b></label>
         </div>
 
         <div id="cancel" class="jn-note" hidden>Payment was cancelled. No account was created and you were not charged.</div>
@@ -402,7 +371,7 @@
             <label class="jn-lbl" for="phone">Mobile number</label>
             <div class="jn-phone-wrap">
               <span class="jn-prefix" aria-hidden="true">+63</span>
-              <input class="jn-input" id="phone" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="12" placeholder="9XX XXX XXXX">
+              <input class="jn-input" id="phone" type="tel" inputmode="numeric" autocomplete="tel" maxlength="12" placeholder="9XX XXX XXXX">
             </div>
             <small class="jn-f-err" id="phoneErr"></small>
           </div>
@@ -444,22 +413,21 @@
         </label>
 
         <p class="jn-err" id="err" role="alert"></p>
-        <button class="jn-btn-gold" id="go" type="submit" disabled>
-          <span>Continue to secure payment</span>
-          <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-        </button>
+        <button class="jn-btn-gold" id="go" type="submit" disabled>Continue to secure payment</button>
+        <p class="jn-hint" id="formHint" aria-live="polite"></p>
       </form>
 
       <div class="jn-ok" id="ok" hidden>
         <i class="fa-solid fa-circle-check"></i>
         <h2>Payment received</h2>
         <p id="okmsg">We're creating your account now. This usually takes a few seconds.</p>
-        <a class="jn-btn-gold" id="okgo" href="login.html" style="text-decoration:none"><span>Sign in</span></a>
+        <a class="jn-btn-gold" id="okgo" href="login.html" style="text-decoration:none">Sign in</a>
       </div>
 
+      <p class="jn-paynote" id="paynote">Paid securely through PayMongo: GCash, Maya, card or QR Ph.</p>
       <p class="jn-alt" id="alt">Already a member? <a href="login.html">Sign in</a></p>
-    </div>
-  </section>
+    </section>
+  </div>
 </main>
 
 <div id="legalModalBackdrop" class="jn-legal-backdrop" hidden aria-hidden="true">
@@ -527,7 +495,7 @@
   bindToggle("togglePw", "pw", "password");
   bindToggle("togglePw2", "pw2", "confirm password");
 
-  // +63 mobile formatting as you type
+  // +63 mobile formatting as you type (9XX XXX XXXX)
   const phoneEl = $("phone");
   function formatPHPhone(raw) {
     let d = String(raw || "").replace(/\D/g, "");
@@ -574,13 +542,13 @@
     if (!v) {
       bar.style.width = "0%"; lbl.textContent = "Enter password";
     } else if (!hasLen) {
-      bar.style.width = "25%"; bar.style.backgroundColor = "#dc2626"; lbl.textContent = "Too short (8+ chars)";
+      bar.style.width = "25%"; bar.style.backgroundColor = "#f87171"; lbl.textContent = "Too short (8+ chars)";
     } else if (score <= 2) {
-      bar.style.width = "50%"; bar.style.backgroundColor = "#d97706"; lbl.textContent = "Fair";
+      bar.style.width = "50%"; bar.style.backgroundColor = "#f59e0b"; lbl.textContent = "Fair";
     } else if (score === 3) {
-      bar.style.width = "75%"; bar.style.backgroundColor = "#2563eb"; lbl.textContent = "Good";
+      bar.style.width = "75%"; bar.style.backgroundColor = "#60a5fa"; lbl.textContent = "Good";
     } else {
-      bar.style.width = "100%"; bar.style.backgroundColor = "#15803d"; lbl.textContent = "Strong";
+      bar.style.width = "100%"; bar.style.backgroundColor = "#4ade80"; lbl.textContent = "Strong";
     }
   }
 
@@ -610,6 +578,16 @@
       pwEl.classList.toggle("is-invalid", !!ePw);
       pw2El.classList.toggle("is-invalid", !!ePw2);
     }
+
+    const missing = [];
+    if (eName) missing.push("full name");
+    if (eEmail) missing.push("valid email");
+    if (ePhone) missing.push("10-digit mobile");
+    if (ePw) missing.push("8+ char password");
+    if (ePw2) missing.push("matching password");
+    if (!termsOk) missing.push("Terms & Privacy agreement");
+    $("formHint").textContent = missing.length ? `Complete ${missing.join(", ")} to continue.` : "";
+
     return !eName && !eEmail && !ePhone && !ePw && !ePw2 && termsOk;
   }
 
@@ -630,7 +608,7 @@
 
   if (q.get("cancelled")) $("cancel").hidden = false;
   if (q.get("paid")) {
-    $("f").hidden = true; $("ok").hidden = false; $("alt").hidden = true;
+    $("f").hidden = true; $("ok").hidden = false; $("alt").hidden = true; $("paynote").hidden = true;
     const token = q.get("t") || "";
     let tries = 0;
     const check = async () => {
@@ -666,14 +644,14 @@
       phone: "0" + digits,
       password: pwEl.value
     };
-    btn.disabled = true; btn.querySelector("span").textContent = "Opening secure checkout...";
+    btn.disabled = true; btn.textContent = "Opening secure checkout...";
     try {
       const r = await window.ProFitAPI.post("/join/checkout", body);
       location.href = r.checkout_url;
     } catch (ex) {
       err.textContent = ex.message || "Could not start the payment.";
       btn.disabled = false;
-      btn.querySelector("span").textContent = "Continue to secure payment";
+      btn.textContent = "Continue to secure payment";
       updateFormState(false);
     }
   });
@@ -725,7 +703,7 @@
       requestAnimationFrame(checkScrolledToEnd);
       return;
     }
-    bodyEl.innerHTML = `<p style="color:#6b7280">Loading ${cfg.title}...</p>`;
+    bodyEl.innerHTML = `<p style="color:#9a9788">Loading ${cfg.title}...</p>`;
     fetch(cfg.url, { cache: "no-store" })
       .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
       .then(html => {

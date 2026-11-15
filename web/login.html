@@ -7,397 +7,344 @@
 <link rel="icon" type="image/jpeg" href="logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Permanent+Marker&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
-<link rel="stylesheet" href="app.css?v=4">
 <script src="api.js?v=4"></script>
 <style>
   :root{
-    --pf-bg:#07080c;
-    --pf-paper:#faf6ea;
-    --pf-paper-in:#f3ede0;
-    --pf-ink:#111318;
-    --pf-muted:#52525b;
-    --pf-gold:#f5c41f;
-    --pf-gold-hi:#ffd23f;
-    --pf-red:#dc2626;
-    --pf-green:#15803d;
+    --gold:#e8b93a;
+    --lime:#e8b93a;
+    --lime-hi:#f2cb5c;
+    --on:#1a1407;
+    --bg:#07080c;
+    --bg2:#0b0d16;
+    --card:#111320;
+    --line:#232636;
+    --tx:#f6efdc;
+    --mu:#9a9788;
+    --field-line:#4A4E66;
+    --err:#f87171;
+    --ok:#4ade80;
   }
+  html[data-theme="light"],body.light{
+    --bg:#f4f5f8;
+    --bg2:#ffffff;
+    --card:#ffffff;
+    --line:#d8dce6;
+    --tx:#111318;
+    --mu:#5b6070;
+    --field-line:#b8bfd0;
+    --err:#dc2626;
+    --ok:#15803d;
+  }
+  @media(prefers-color-scheme:light){
+    html[data-theme="auto"]{
+      --bg:#f4f5f8;
+      --bg2:#ffffff;
+      --card:#ffffff;
+      --line:#d8dce6;
+      --tx:#111318;
+      --mu:#5b6070;
+      --field-line:#b8bfd0;
+      --err:#dc2626;
+      --ok:#15803d;
+    }
+  }
+
   *{box-sizing:border-box}
   html,body{margin:0;padding:0;overflow-x:hidden}
-  body.auth-page.pf-dark-auth{
-    min-height:100svh;
-    background:var(--pf-bg);
-    color:#f8fafc;
-    font-family:"Plus Jakarta Sans",system-ui,-apple-system,sans-serif;
+  body{
+    min-height:100vh;
+    background:var(--bg);
+    color:var(--tx);
+    font:15px/1.6 Inter,system-ui,-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;
     display:flex;
     flex-direction:column;
   }
+  h1,h2,h3,button,.portal-brand strong{font-family:"Plus Jakarta Sans",Inter,system-ui,sans-serif}
+  :focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 
-  /* Consistent 68px header */
-  .pf-dark-auth .portal-nav{
+  /* Header matching landing & join */
+  .portal-nav{
+    height:68px;min-height:68px;
+    background:#0b0c10;
+    border-bottom:1px solid var(--line);
+    padding:0 clamp(16px,4vw,40px);
     display:flex;align-items:center;justify-content:space-between;gap:16px;
-    padding:0 clamp(16px,4vw,32px);
-    min-height:68px;height:68px;
-    background:rgba(11,12,16,.95);
-    border-bottom:1px solid rgba(255,255,255,.09);
-    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
     position:sticky;top:0;z-index:40;flex:none;
   }
-  .pf-dark-auth .portal-brand{display:flex;align-items:center;gap:12px;text-decoration:none;min-width:0}
-  .pf-dark-auth .brand-mark{
-    width:40px;height:40px;border-radius:10px;overflow:hidden;
-    border:1.5px solid rgba(245,196,31,.45);background:#000;flex:none;
+  .portal-brand{
+    display:inline-flex;align-items:center;gap:12px;
+    text-decoration:none;color:#f6efdc;min-height:44px;
   }
-  .pf-dark-auth .brand-mark img{width:100%;height:100%;object-fit:cover;display:block}
-  .pf-dark-auth .portal-brand span:last-child{display:flex;flex-direction:column;line-height:1.1;min-width:0}
-  .pf-dark-auth .portal-brand strong{font-size:19px;font-weight:800;letter-spacing:-.01em;color:#f6efdc}
-  .pf-dark-auth .portal-brand small{font-size:10px;font-weight:700;letter-spacing:.14em;color:#e8b93a;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .pf-dark-auth .secure-label{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:#cbd5e1;white-space:nowrap}
-  .pf-dark-auth .secure-label i{color:#e8b93a}
+  .portal-brand img{
+    width:36px;height:36px;border-radius:10px;object-fit:cover;display:block;flex:none;
+  }
+  .portal-brand strong{font-size:22px;font-weight:800;letter-spacing:-.02em;color:#f6efdc}
+  .back-link{
+    display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 6px;
+    color:#9a9788;text-decoration:none;font:600 14px/1 Inter,system-ui,sans-serif;
+    transition:color .15s ease;white-space:nowrap;
+  }
+  .back-link:hover{color:var(--gold)}
 
+  /* Full-bleed hero with flat overlay */
   .lg-shell{
-    flex:1 1 auto;
-    display:grid;
-    grid-template-columns:minmax(0,1.15fr) minmax(360px,0.85fr);
-    min-height:calc(100svh - 68px);
-  }
-
-  /* Left editorial stage */
-  .lg-stage{
-    position:relative;overflow:hidden;
-    display:flex;flex-direction:column;justify-content:flex-end;
-    background:#0b0d12;
-    border-right:1px solid rgba(255,255,255,.08);
-  }
-  .lg-bg{
-    position:absolute;inset:0;
-    background:url('img/hero.jpg') center/cover no-repeat;
-    filter:grayscale(.15) contrast(1.06);
-    transform:scale(1.04);
-    animation:lgSlowZoom 24s ease-in-out infinite alternate;
-  }
-  @keyframes lgSlowZoom{from{transform:scale(1.02)}to{transform:scale(1.1)}}
-  .lg-scrim{
-    position:absolute;inset:0;
-    background:linear-gradient(180deg,rgba(7,8,12,.45) 0%,rgba(7,8,12,.68) 48%,rgba(7,8,12,.94) 100%);
-  }
-
-  .lg-polaroid{
-    position:absolute;top:28px;right:28px;z-index:2;
-    width:clamp(150px,15vw,196px);margin:0;padding:8px 8px 12px;
-    background:var(--pf-paper);color:var(--pf-ink);
-    border:2px solid var(--pf-ink);border-radius:4px;
-    box-shadow:6px 6px 0 rgba(0,0,0,.45);
-    transform:rotate(3deg);
-    animation:lgPopIn .65s cubic-bezier(.2,.8,.2,1) .15s both;
-  }
-  .lg-tape{
-    position:absolute;top:-10px;left:50%;transform:translateX(-50%) rotate(-2deg);
-    width:52px;height:16px;background:rgba(245,196,31,.8);border-radius:2px;
-  }
-  .lg-polaroid img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;border:1px solid rgba(17,19,24,.2)}
-  .lg-polaroid figcaption{
-    margin-top:8px;text-align:center;
-    font-family:"Permanent Marker",cursive;font-size:13px;letter-spacing:.03em;color:var(--pf-ink);
-  }
-
-  .lg-badge{
-    position:absolute;bottom:76px;right:28px;z-index:2;
-    width:104px;height:104px;border-radius:50%;
-    background:var(--pf-gold);color:var(--pf-ink);
-    border:2px solid var(--pf-ink);
-    display:grid;place-items:center;
-    box-shadow:4px 4px 0 var(--pf-ink);
-  }
-  .lg-badge svg{position:absolute;inset:0;width:100%;height:100%;animation:lgSpin 18s linear infinite}
-  @keyframes lgSpin{to{transform:rotate(360deg)}}
-  .lg-badge-center{text-align:center;font-family:"Anton",sans-serif;font-size:17px;line-height:1;letter-spacing:.04em}
-
-  .lg-stage-inner{
-    position:relative;z-index:2;
-    padding:clamp(24px,4vh,44px) clamp(20px,4vw,44px) clamp(22px,3.2vh,32px);
-    max-width:560px;
-  }
-  .lg-tag{
-    display:inline-block;padding:5px 12px;border-radius:5px;
-    background:var(--pf-gold);color:var(--pf-ink);border:1.5px solid var(--pf-ink);
-    font-family:"Anton",sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;
-    margin-bottom:14px;animation:lgSlideUp .5s ease both;
-  }
-  .lg-headline{
-    margin:0 0 12px;
-    font-family:"Anton",sans-serif;
-    font-size:clamp(38px,5.2vw,68px);
-    line-height:.94;letter-spacing:.01em;text-transform:uppercase;color:#faf6ea;
-    animation:lgSlideUp .55s ease .08s both;
-  }
-  .lg-headline .hl{color:var(--pf-gold)}
-  .lg-sub{
-    margin:0;max-width:440px;font-size:14.5px;line-height:1.55;color:#e2e8f0;
-    animation:lgSlideUp .6s ease .14s both;
-  }
-
-  .lg-bottom-strip{position:relative;z-index:2}
-  .lg-ticker{overflow:hidden;background:#0b0d12;border-top:1px solid rgba(255,255,255,.12);padding:8px 0;white-space:nowrap}
-  .lg-ticker-track{
-    display:inline-flex;align-items:center;gap:18px;
-    font-family:"Anton",sans-serif;font-size:13px;letter-spacing:.1em;color:#faf6ea;
-    animation:lgTicker 24s linear infinite;
-  }
-  .lg-ticker-track .sep{color:var(--pf-gold)}
-  @keyframes lgTicker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-  .lg-hazard{height:10px;background:repeating-linear-gradient(-45deg,var(--pf-gold) 0 12px,var(--pf-ink) 12px 24px)}
-
-  /* Right pane: Off-white Editorial Paper Card */
-  .lg-form-pane{
-    display:flex;align-items:center;justify-content:center;
-    padding:clamp(22px,3.2vh,40px) clamp(16px,3vw,36px);
-    background:var(--pf-bg);
-  }
-  .lg-card{
-    width:min(420px,100%);
-    background:var(--pf-paper);
-    color:var(--pf-ink);
-    border:2px solid var(--pf-ink);
-    border-radius:16px;
-    box-shadow:8px 8px 0 var(--pf-gold);
-    padding:clamp(22px,3vw,30px) clamp(20px,2.8vw,28px);
     position:relative;
-    animation:lgCardIn .5s cubic-bezier(.2,.8,.2,1) both;
+    flex:1 1 auto;
+    min-height:calc(100vh - 68px);
+    background:url("img/hero.jpg") center/cover no-repeat;
+    display:flex;align-items:center;
+    padding:clamp(32px,5vh,56px) clamp(16px,4vw,48px);
   }
-  .lg-stamp{
-    position:absolute;top:-12px;right:18px;
-    padding:4px 12px;border-radius:4px;
-    background:var(--pf-ink);color:var(--pf-gold);
-    border:1.5px solid var(--pf-ink);
-    font-family:"Anton",sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;
-    transform:rotate(2.5deg);
+  .lg-shell::before{
+    content:"";position:absolute;inset:0;
+    background:rgba(7,8,12,.7);
+    z-index:0;
   }
-  .lg-card h2{
-    margin:0 0 4px;
-    font-family:"Anton",sans-serif;font-size:32px;line-height:1;letter-spacing:.02em;text-transform:uppercase;
-    color:var(--pf-ink);
+  html[data-theme="light"] .lg-shell::before,
+  body.light .lg-shell::before{
+    background:rgba(244,245,248,.82);
   }
-  .lg-lead{margin:0 0 18px;font-size:13.5px;color:var(--pf-muted)}
+  .lg-wrap{
+    position:relative;z-index:1;
+    width:min(1160px,100%);margin-inline:auto;
+    display:grid;grid-template-columns:minmax(0,1fr) 440px;
+    gap:clamp(28px,5vw,64px);align-items:center;
+  }
 
-  .lg-field-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 6px}
-  .lg-field-label{display:block;font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--pf-ink);margin:0}
-  .lg-field-label.standalone{margin:0 0 6px}
-  .lg-forgot{font-size:12px;font-weight:700;color:var(--pf-ink);text-decoration:underline;text-underline-offset:2px}
-  .lg-forgot:hover{color:#92400e}
+  /* Left copy */
+  .lg-eyebrow{
+    display:inline-flex;align-items:center;gap:10px;
+    font:700 12px/1.2 "Plus Jakarta Sans",sans-serif;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--gold);
+    margin:0 0 16px;
+  }
+  .lg-eyebrow::before{content:"";width:24px;height:2px;background:var(--gold);flex:none}
+  .lg-title{
+    margin:0 0 16px;
+    font-size:clamp(38px,5vw,60px);font-weight:800;line-height:1.04;letter-spacing:-.03em;
+    color:var(--tx);
+  }
+  .lg-title .hl{color:var(--gold)}
+  .lg-desc{margin:0 0 24px;max-width:460px;font-size:16.5px;line-height:1.6;color:var(--mu)}
+  .lg-checks{list-style:none;margin:0 0 24px;padding:0;display:grid;gap:12px}
+  .lg-checks li{display:flex;align-items:center;gap:10px;font-size:14.5px;font-weight:500;color:var(--tx)}
+  .lg-checks i{color:var(--gold);font-size:14px;flex:none}
+  .lg-gym-foot{margin:0;font-size:12.5px;color:var(--mu)}
 
+  /* Right card */
+  .lg-card{
+    width:100%;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:clamp(22px,3vw,32px);
+  }
+  .lg-card h2{margin:0 0 4px;font-size:26px;font-weight:800;letter-spacing:-.02em;color:var(--tx)}
+  .lg-lead{margin:0 0 22px;font-size:13.5px;color:var(--mu)}
+
+  .lg-field-label{
+    display:block;margin:0 0 6px;
+    font:600 13px/1.2 Inter,system-ui,sans-serif;color:var(--tx);
+  }
   .lg-input{
-    width:100%;height:44px;padding:0 13px;border-radius:8px;
-    border:1.5px solid var(--pf-ink);background:var(--pf-paper-in);color:var(--pf-ink);
-    font:500 14.5px/1.2 "Plus Jakarta Sans",sans-serif;
-    transition:border-color .15s,box-shadow .15s,background-color .15s;
+    width:100%;height:48px;padding:0 14px;
+    border-radius:12px;border:1px solid var(--field-line);
+    background:var(--bg2);color:var(--tx);
+    font:400 14.5px/1.2 Inter,system-ui,sans-serif;
+    transition:border-color .15s ease,box-shadow .15s ease;
   }
-  .lg-input::placeholder{color:#6b7280}
-  .lg-input:focus{outline:none;background:#fff;border-color:var(--pf-ink);box-shadow:0 0 0 3px rgba(245,196,31,.45)}
+  .lg-input::placeholder{color:var(--mu)}
+  .lg-input:focus{
+    outline:none;border-color:var(--gold);
+    box-shadow:0 0 0 3px rgba(232,185,58,.22);
+  }
 
   .lg-pw-wrap{position:relative}
-  .lg-pw-wrap .lg-input{padding-right:44px}
+  .lg-pw-wrap .lg-input{padding-right:48px}
   .lg-eye{
-    position:absolute;right:5px;top:50%;transform:translateY(-50%);
-    width:34px;height:34px;border:0;background:transparent;color:var(--pf-ink);
-    display:grid;place-items:center;cursor:pointer;border-radius:6px;
+    position:absolute;right:4px;top:50%;transform:translateY(-50%);
+    width:44px;height:44px;border:0;background:transparent;color:var(--mu);
+    display:grid;place-items:center;cursor:pointer;border-radius:10px;
+    transition:color .15s ease;
   }
-  .lg-eye:hover{background:rgba(17,19,24,.08)}
+  .lg-eye:hover{color:var(--gold)}
 
-  .lg-err-sm{display:block;min-height:15px;margin:3px 0 8px;font-size:11.5px;font-weight:600;color:var(--pf-red)}
-  .lg-caps{display:flex;align-items:center;gap:6px;margin:5px 0 2px;font-size:12px;font-weight:700;color:#b45309}
+  .lg-err-sm{display:block;min-height:16px;margin:4px 0 8px;font-size:12px;font-weight:500;color:var(--err)}
+  .lg-caps{display:flex;align-items:center;gap:6px;margin:6px 0 0;font-size:12px;font-weight:600;color:var(--gold)}
   .lg-caps[hidden]{display:none}
 
   .lg-remember{
-    display:flex;align-items:center;gap:9px;margin:2px 0 14px;
-    font-size:13px;font-weight:600;color:var(--pf-ink);cursor:pointer;
+    display:inline-flex;align-items:flex-start;gap:10px;
+    margin:2px 0 18px;font-size:13.5px;font-weight:500;color:var(--tx);
+    cursor:pointer;min-height:44px;padding-top:10px;
   }
   .lg-remember input[type="checkbox"]{
-    width:17px;height:17px;margin:0;flex-shrink:0;accent-color:var(--pf-ink);cursor:pointer;
+    appearance:none;-webkit-appearance:none;
+    width:20px;height:20px;margin:0;flex:none;
+    border-radius:6px;border:1px solid var(--field-line);background:var(--bg2);
+    display:grid;place-items:center;cursor:pointer;
+    transition:border-color .15s ease,background-color .15s ease;
+  }
+  .lg-remember input[type="checkbox"]:focus-visible{
+    outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,185,58,.22);
+  }
+  .lg-remember input[type="checkbox"]:checked{
+    background:var(--gold);border-color:var(--gold);
+  }
+  .lg-remember input[type="checkbox"]:checked::after{
+    content:"";width:5px;height:9px;border:solid var(--on);border-width:0 2px 2px 0;
+    transform:rotate(45deg);margin-bottom:2px;
   }
 
   .lg-msg{
-    margin:0 0 12px;padding:10px 12px;border-radius:8px;font-size:12.5px;font-weight:600;
-    background:#dcfce7;border:1.5px solid #166534;color:#14532d;
+    margin:0 0 14px;padding:11px 14px;border-radius:12px;font-size:13px;font-weight:500;
+    background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.35);color:var(--ok);
   }
-  .lg-msg.error{background:#fee2e2;border-color:#b91c1c;color:#991b1b}
+  .lg-msg.error{
+    background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.38);color:var(--err);
+  }
   .lg-msg[hidden]{display:none}
 
   .lg-btn-gold{
-    width:100%;height:46px;border:2px solid var(--pf-ink);border-radius:9px;
-    background:var(--pf-gold);color:var(--pf-ink);
-    font-family:"Anton",sans-serif;font-size:17px;letter-spacing:.06em;text-transform:uppercase;
-    display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;
-    box-shadow:0 3px 0 var(--pf-ink);
-    transition:transform .12s ease,background-color .15s ease,box-shadow .12s ease;
+    width:100%;height:48px;border:0;border-radius:999px;
+    background:var(--gold);color:var(--on);
+    font:700 15px/1 "Plus Jakarta Sans",sans-serif;
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    cursor:pointer;transition:filter .15s ease;
   }
-  .lg-btn-gold:hover:not(:disabled){background:var(--pf-gold-hi);transform:translateY(-1px);box-shadow:0 4px 0 var(--pf-ink)}
-  .lg-btn-gold:active:not(:disabled){transform:translateY(1px);box-shadow:0 1px 0 var(--pf-ink)}
+  .lg-btn-gold:hover:not(:disabled){filter:brightness(1.07)}
   .lg-btn-gold:disabled{opacity:.65;cursor:not-allowed}
 
+  .lg-forgot-row{display:flex;justify-content:center;margin:12px 0 0}
+  .lg-forgot{
+    display:inline-flex;align-items:center;min-height:44px;padding:0 10px;
+    font-size:13px;font-weight:600;color:var(--gold);
+    text-decoration:underline;text-underline-offset:3px;
+  }
+  .lg-forgot:hover{color:var(--lime-hi)}
+
   .lg-divider{
-    display:flex;align-items:center;gap:10px;margin:16px 0 12px;
-    font-size:12px;font-weight:600;color:var(--pf-muted);
+    display:flex;align-items:center;gap:12px;margin:8px 0 14px;
+    font-size:12px;color:var(--mu);
   }
-  .lg-divider::before,.lg-divider::after{content:"";flex:1;height:1px;background:rgba(17,19,24,.18)}
+  .lg-divider::before,.lg-divider::after{content:"";flex:1;height:1px;background:var(--line)}
 
-  .lg-sso{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .lg-sso{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   .lg-sso-btn{
-    height:40px;border-radius:8px;border:1.5px solid var(--pf-ink);
-    background:var(--pf-paper-in);color:var(--pf-ink);
-    font:700 12.5px/1 "Plus Jakarta Sans",sans-serif;
-    display:inline-flex;align-items:center;justify-content:center;gap:7px;cursor:not-allowed;opacity:.72;
+    height:48px;padding:0 14px;border-radius:999px;
+    border:1px solid var(--field-line);background:var(--bg2);color:var(--tx);
+    font:600 14px/1 "Plus Jakarta Sans",sans-serif;
+    display:inline-flex;align-items:center;justify-content:center;gap:9px;
+    cursor:pointer;transition:border-color .15s ease,background-color .15s ease;
   }
+  .lg-sso-btn:hover{border-color:var(--gold)}
+  .lg-sso-btn svg{width:18px;height:18px;flex:none}
 
-  .lg-new-lbl{margin:16px 0 8px;text-align:center;font-size:12.5px;font-weight:600;color:var(--pf-muted)}
-  .lg-btn-outline{
-    width:100%;height:44px;border:1.5px solid var(--pf-ink);border-radius:9px;
-    background:#fff;color:var(--pf-ink);text-decoration:none;
-    font-family:"Anton",sans-serif;font-size:15.5px;letter-spacing:.06em;text-transform:uppercase;
-    display:inline-flex;align-items:center;justify-content:center;gap:8px;
-    transition:background-color .15s ease,transform .12s ease;
+  .lg-join-row{
+    margin:18px 0 0;text-align:center;font-size:13.5px;color:var(--mu);
   }
-  .lg-btn-outline:hover{background:var(--pf-gold);transform:translateY(-1px)}
-
-  @keyframes lgSlideUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-  @keyframes lgPopIn{from{opacity:0;transform:scale(.92) rotate(3deg)}to{opacity:1;transform:rotate(3deg)}}
-  @keyframes lgCardIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-
-  /* Tablet & Mobile */
-  @media(max-width:980px){
-    .lg-shell{grid-template-columns:1fr;min-height:auto}
-    .lg-stage{min-height:360px;border-right:0;border-bottom:1px solid rgba(255,255,255,.08)}
-    .lg-polaroid{width:140px;top:18px;right:18px}
-    .lg-badge{width:84px;height:84px;bottom:60px;right:18px}
-    .lg-badge-center{font-size:14px}
+  .lg-join-row a{
+    display:inline-flex;align-items:center;min-height:44px;
+    color:var(--gold);font-weight:600;text-decoration:underline;text-underline-offset:3px;
   }
-  @media(max-width:600px){
-    .pf-dark-auth .secure-label{display:none}
-    .lg-stage{min-height:300px}
-    .lg-stage-inner{padding:24px 16px 20px}
-    .lg-polaroid,.lg-badge{display:none}
-    .lg-form-pane{padding:22px 14px 28px}
-    .lg-card{padding:22px 16px;box-shadow:5px 5px 0 var(--pf-gold)}
+  .lg-join-row a:hover{color:var(--lime-hi)}
+
+  @media(max-width:900px){
+    .lg-shell{min-height:auto;padding:28px 16px 36px;align-items:flex-start}
+    .lg-wrap{grid-template-columns:1fr;gap:24px}
+    .lg-card{max-width:480px;margin-inline:auto}
+  }
+  @media(max-width:480px){
     .lg-input{font-size:16px}
-  }
-  @media(max-width:360px){
     .lg-sso{grid-template-columns:1fr}
   }
   @media(prefers-reduced-motion:reduce){
-    .lg-bg,.lg-polaroid,.lg-badge svg,.lg-tag,.lg-headline,.lg-sub,.lg-ticker-track,.lg-card{
-      animation:none !important;opacity:1 !important;
-    }
+    *{transition:none !important;animation:none !important}
   }
 </style>
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script>
 </head>
-<body class="portal-body auth-page dark public-dark-theme pf-dark-auth">
+<body class="portal-body auth-page dark public-dark-theme">
 <header class="portal-nav">
   <a class="portal-brand" href="welcome.html">
-    <span class="brand-mark"><img src="logo.jpg" alt="ProFit logo" width="40" height="40"></span>
-    <span><strong>ProFit</strong><small data-gym-name>FUNCTIONAL FITNESS GYM</small></span>
+    <img src="logo.jpg" alt="ProFit logo" width="36" height="36">
+    <strong>ProFit</strong>
   </a>
-  <span class="secure-label"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Secure account access</span>
+  <a class="back-link" href="welcome.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i><span>Back to home</span></a>
 </header>
 
 <main class="lg-shell">
-  <section class="lg-stage" aria-label="ProFit member portal overview">
-    <div class="lg-bg" aria-hidden="true"></div>
-    <div class="lg-scrim" aria-hidden="true"></div>
+  <div class="lg-wrap">
+    <section class="lg-copy" aria-label="ProFit member portal overview">
+      <p class="lg-eyebrow">Your gym. One platform.</p>
+      <h1 class="lg-title">Progress starts<br>with <span class="hl">ProFit.</span></h1>
+      <p class="lg-desc">A focused space for your fitness journey and the people who keep your gym moving.</p>
+      <ul class="lg-checks">
+        <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>One secure sign-in</span></li>
+        <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Your account opens the right workspace</span></li>
+        <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Member and admin access kept separate</span></li>
+      </ul>
+      <p class="lg-gym-foot"><span data-gym-name>Functional Fitness Gym</span> · Alfonso, Calabarzon</p>
+    </section>
 
-    <figure class="lg-polaroid">
-      <span class="lg-tape" aria-hidden="true"></span>
-      <img src="img/gal-1.jpg" alt="Alfonso gym crew together">
-      <figcaption>ALFONSO CREW</figcaption>
-    </figure>
-
-    <div class="lg-badge" aria-label="Open 7 AM, Pay online, 4 plans">
-      <svg viewBox="0 0 120 120" aria-hidden="true">
-        <defs><path id="lgCirclePath" d="M 60,60 m -44,0 a 44,44 0 1,1 88,0 a 44,44 0 1,1 -88,0"/></defs>
-        <text fill="#111318" font-family="Anton, sans-serif" font-size="10.5" letter-spacing="2.1">
-          <textPath href="#lgCirclePath">OPEN 7 AM · PAY ONLINE · 4 PLANS · </textPath>
-        </text>
-      </svg>
-      <div class="lg-badge-center">4<br>PLANS</div>
-    </div>
-
-    <div class="lg-stage-inner">
-      <span class="lg-tag">Member portal</span>
-      <h1 class="lg-headline">Progress<br>starts with<br><span class="hl">ProFit.</span></h1>
-      <p class="lg-sub">A focused space for your fitness journey and the people who keep your gym moving.</p>
-    </div>
-
-    <div class="lg-bottom-strip" aria-hidden="true">
-      <div class="lg-ticker">
-        <div class="lg-ticker-track">
-          <span>WE LIFT AND UPLIFT</span><span class="sep">/</span>
-          <span>OPEN 7 AM</span><span class="sep">/</span>
-          <span>PAY ONLINE, ACCOUNT READY</span><span class="sep">/</span>
-          <span>4 FLEXIBLE PLANS</span><span class="sep">/</span>
-          <span>WE LIFT AND UPLIFT</span><span class="sep">/</span>
-          <span>OPEN 7 AM</span><span class="sep">/</span>
-          <span>PAY ONLINE, ACCOUNT READY</span><span class="sep">/</span>
-          <span>4 FLEXIBLE PLANS</span><span class="sep">/</span>
-        </div>
-      </div>
-      <div class="lg-hazard"></div>
-    </div>
-  </section>
-
-  <section class="lg-form-pane">
-    <div class="lg-card">
-      <span class="lg-stamp" aria-hidden="true">Members only</span>
+    <section class="lg-card" aria-label="Sign in form">
       <h2>Sign in</h2>
       <p class="lg-lead">Use the account details provided by your gym.</p>
 
       <form id="signInForm" method="post" action="javascript:void(0)" novalidate>
-        <label class="lg-field-label standalone" for="identity">Email or username</label>
-        <input class="lg-input" id="identity" name="identity" autocomplete="username" maxlength="254" required placeholder="you@example.com">
+        <label class="lg-field-label" for="identity">Email or username</label>
+        <input class="lg-input" id="identity" name="identity" autocomplete="username" maxlength="254" required placeholder="Enter your email or username">
         <small class="lg-err-sm" id="identityError"></small>
 
-        <div class="lg-field-row">
-          <label class="lg-field-label" for="password">Password</label>
-          <a class="lg-forgot" href="forgot.html">Forgot password?</a>
-        </div>
+        <label class="lg-field-label" for="password">Password</label>
         <div class="lg-pw-wrap">
-          <input class="lg-input" id="password" name="password" type="password" autocomplete="current-password" required maxlength="256" placeholder="Your password">
+          <input class="lg-input" id="password" name="password" type="password" autocomplete="current-password" required maxlength="256" placeholder="Enter your password">
           <button type="button" class="lg-eye" id="showPassword" aria-label="Show password" aria-pressed="false"><i class="fa-regular fa-eye"></i></button>
         </div>
         <div class="lg-caps" id="capsWarn" hidden><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Caps Lock is on</div>
         <small class="lg-err-sm" id="passwordError"></small>
 
-        <label class="lg-remember"><input type="checkbox" id="rememberMe" name="remember"> <span>Remember me</span></label>
+        <label class="lg-remember"><input type="checkbox" id="rememberMe" name="remember"><span>Remember me</span></label>
 
         <div id="authMessage" class="lg-msg" role="alert" aria-live="polite" hidden></div>
 
-        <button class="lg-btn-gold" type="submit">
-          <span>Sign in</span>
-          <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-        </button>
+        <button class="lg-btn-gold" type="submit">Sign in</button>
+
+        <div class="lg-forgot-row">
+          <a class="lg-forgot" href="forgot.html">Forgot password?</a>
+        </div>
       </form>
 
       <div class="lg-divider"><span>Or continue with</span></div>
       <div class="lg-sso">
-        <button type="button" class="lg-sso-btn" disabled title="Configure Google OAuth credentials to enable">
-          <span>Google · Soon</span>
+        <button type="button" class="lg-sso-btn" id="googleSignInBtn">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z"/>
+            <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24Z"/>
+            <path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14Z"/>
+            <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96Z"/>
+          </svg>
+          <span>Google</span>
         </button>
-        <button type="button" class="lg-sso-btn" disabled title="Configure Apple OAuth credentials to enable">
-          <span>Apple · Soon</span>
+        <button type="button" class="lg-sso-btn" id="appleSignInBtn">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="#f6efdc" d="M16.365 1.43c0 1.14-.493 2.27-1.177 3.08-.744.9-1.99 1.57-2.987 1.57-.12 0-.23-.02-.3-.03-.01-.06-.04-.22-.04-.39 0-1.15.572-2.27 1.206-2.98.804-.94 2.142-1.64 3.248-1.68.03.13.05.28.05.43Zm4.565 15.71c-.03.07-.463 1.58-1.518 3.12-.945 1.34-1.94 2.71-3.43 2.71-1.517 0-1.9-.88-3.63-.88-1.698 0-2.302.91-3.67.91-1.377 0-2.332-1.26-3.428-2.8-1.287-1.82-2.323-4.63-2.323-7.28 0-4.28 2.797-6.55 5.552-6.55 1.448 0 2.675.95 3.6.95.865 0 2.222-1.01 3.902-1.01.613 0 2.886.06 4.374 2.19-.13.09-2.383 1.37-2.383 4.19 0 3.26 2.854 4.42 2.955 4.45Z"/>
+          </svg>
+          <span>Apple</span>
         </button>
       </div>
 
-      <p class="lg-new-lbl">New to ProFit?</p>
-      <a class="lg-btn-outline" href="join.html">Join and pay online</a>
-    </div>
-  </section>
+      <p class="lg-join-row">New to ProFit? <a href="join.html">Join and pay online</a></p>
+    </section>
+  </div>
 </main>
 
 <script>
 (() => {
   const $ = id => document.getElementById(id);
-  const yr = $('yr'); if (yr) yr.textContent = new Date().getFullYear();
-  document.body.classList.add('dark');
   const form = $('signInForm'), submit = form.querySelector('[type=submit]');
   const HOME = { admin: 'index.html', trainer: 'trainer/index.html', member: 'member-home.html' };
 
@@ -426,11 +373,16 @@
     box.textContent = text;
   }
 
+  $('googleSignInBtn')?.addEventListener('click', () => {
+    message("Google sign-in isn't available yet", true);
+  });
+  $('appleSignInBtn')?.addEventListener('click', () => {
+    message("Apple sign-in isn't available yet", true);
+  });
+
   function setBusy(busy) {
     submit.disabled = busy;
-    submit.innerHTML = busy
-      ? '<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i><span>Signing in…</span>'
-      : '<span>Sign in</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i>';
+    submit.textContent = busy ? 'Signing in…' : 'Sign in';
   }
 
   form.addEventListener('submit', async e => {

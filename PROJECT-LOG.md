@@ -2185,3 +2185,14 @@ Apply the editorial paper-card design (from the reference screenshots) to both L
 - Added responsive rules for desktop, tablet (`<=980px`), mobile (`<=600px`), and narrow phones (`<=360px`), including `overflow-x: hidden`, 2x2 plan grids on mobile, 1-column form rows, and `16px` mobile input font sizing to prevent iOS Safari auto-zoom.
 ### Decision-log skill
 Keep editorial high-contrast styling (`#faf6ea` + `#111318` + `#f5c41f`) consistent across both auth entry points while ensuring `16px` mobile inputs and `overflow-x: hidden` for multi-device usability.
+
+## 2026-11-16 07:20 (Asia/Manila): Port Login v2 and Join v2 design to ProFit
+### What I asked for
+Port the Login v2 and Join v2 design onto `web/login.html` and `web/join.html` using existing design tokens, `Plus Jakarta Sans` and `Inter` fonts, unified 68px header, flat full-bleed hero overlay, 48px fields, pill buttons, active Google/Apple OAuth placeholders, and updated service worker cache.
+### What the agent decided and why
+- Updated `web/login.html` and `web/join.html` to use the exact `welcome.html` tokens (`--gold: #e8b93a`, `--on: #1a1407`, `--bg: #07080c`, `--bg2: #0b0d16`, `--card: #111320`, `--line: #232636`, `--tx: #f6efdc`, `--mu: #9a9788`), `Plus Jakarta Sans` + `Inter` only, flat `rgba(7,8,12,.7)` hero overlay over `img/hero.jpg`, 48px/12px-radius `#4A4E66` inputs, 48px pill buttons, 20px aligned checkboxes, and `min-height: calc(100vh - 68px)` hero so the footer sits below the initial screen.
+- Unified the 68px `#0b0c10` header with 36px rounded-10px logo + `ProFit` 22px/800 across `web/welcome.html`, `web/login.html`, and `web/join.html`, with a `Back to home` link on Login and Join.
+- Wired Google and Apple buttons in `web/login.html` to show inline `"Google sign-in isn't available yet"` / `"Apple sign-in isn't available yet"` notices since `web/auth.js` has no OAuth handler.
+- Bumped `web/sw.js` cache to `profit-shell-v19` and added `join.html` to `SHELL`.
+### Decision-log skill
+Keep auth pages aligned with the landing page's exact CSS variable tokens (`--gold`, `--bg`, `--bg2`, `--card`, `--line`, `--tx`, `--mu`) and typography (`Plus Jakarta Sans` + `Inter`) without introducing extra display fonts or decorative stickers.
