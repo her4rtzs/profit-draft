@@ -169,11 +169,38 @@ html body .auth-card, html body .auth-story, html body .portal-nav {
   background-image: none !important;
 }
 html body .member-hero, html body .member-status-card, html body .pp-note { background-color: var(--card) !important; }
-html body .brand-mark, html body .portal-heading-icon {
+html body .brand-mark {
   background: var(--pf-grad) !important; color: var(--on-accent) !important;
   box-shadow: none !important;
 }
-html body .brand-mark i, html body .portal-heading-icon i { color: var(--on-accent) !important; }
+html body .brand-mark:has(img) {
+  background: transparent !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+html body .brand-mark img {
+  width: 100%; height: 100%; object-fit: cover; border-radius: inherit;
+  filter: none !important; mix-blend-mode: normal !important; opacity: 1 !important;
+}
+html body .portal-heading-icon {
+  background: rgba(232, 185, 58, 0.14) !important;
+  border: 1px solid rgba(232, 185, 58, 0.3) !important;
+  color: #e8b93a !important;
+  box-shadow: none !important;
+}
+html body .brand-mark i { color: var(--on-accent) !important; }
+html body .portal-heading-icon i { color: #e8b93a !important; }
+html body .portal-brand .brand-sep {
+  width: 1px; height: 20px; background: rgba(255, 255, 255, 0.22); margin: 0 2px; flex: none;
+}
+html body .portal-brand .brand-gym {
+  font-size: 13.5px; font-weight: 600; color: #cbd5e1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px;
+}
+body:not(.dark) .portal-brand .brand-sep { background: rgba(15, 23, 42, 0.18); }
+body:not(.dark) .portal-brand .brand-gym { color: #475569; }
+@media (max-width: 520px) {
+  html body .portal-brand .brand-gym { max-width: 120px; font-size: 12px; }
+}
 html body .portal-submit, html body .auth-submit {
   background: var(--pf-grad) !important; color: var(--on-accent) !important; box-shadow: none !important; border: 0 !important;
 }

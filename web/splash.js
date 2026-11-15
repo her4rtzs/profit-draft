@@ -42,14 +42,17 @@
   loader.setAttribute("aria-label", "Loading ProFit");
 
   // Read gym branding if stored
-  let gymName = "FUNCTIONAL FITNESS";
-  let gymTag = "GYM OPERATIONS";
+  let gymName = "ProFit";
+  let gymTag = "Functional Fitness Gym";
   let gymLogo = "logo.jpg";
   try {
     const prof = JSON.parse(localStorage.getItem("profit-gym-profile") || "null");
     if (prof) {
-      if (prof.name) gymName = prof.name;
-      if (prof.tagline) gymTag = prof.tagline;
+      if (prof.name && prof.name.trim() && prof.name.trim().toLowerCase() !== "profit") {
+        gymTag = prof.name.trim();
+      } else if (prof.tagline && prof.tagline.trim()) {
+        gymTag = prof.tagline.trim();
+      }
       if (prof.logo) gymLogo = prof.logo;
     }
   } catch (_) {}
@@ -233,24 +236,20 @@
     document.addEventListener("DOMContentLoaded", () => document.documentElement.appendChild(loader));
   }
 
-  // Dismissal logic
-  const startTime = performance.now();
-  const MIN_DISPLAY_MS = 450;
-  const MAX_SAFETY_MS = 2400;
+  // Dismissal logic (no artificial delay — dismisses as soon as page is ready)
+  const MIN_DISPLAY_MS = 0;
+  const MAX_SAFETY_MS = 1800;
   let dismissed = false;
 
   function dismiss() {
     if (dismissed) return;
     dismissed = true;
-    const elapsed = performance.now() - startTime;
-    const delay = Math.max(0, MIN_DISPLAY_MS - elapsed);
-
     setTimeout(() => {
       loader.classList.add("pf-loader-hide");
       setTimeout(() => {
         try { loader.remove(); } catch (_) {}
-      }, 460);
-    }, delay);
+      }, 360);
+    }, MIN_DISPLAY_MS);
   }
 
   // Dismiss when window load settles or timeout reached

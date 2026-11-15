@@ -2085,3 +2085,14 @@ Keep FAQ in the landing page header, remove FAQ/Terms/Privacy links from the foo
 - Replaced the basic `<dialog>` in `web/join.html` with an animated ProFit-themed popup modal overlay (`#legalModalBackdrop`) featuring document-switching tabs, a scrollable `.legal-card` content area, `Close` and `Done` buttons, and manual-only checkbox validation (`#terms`).
 ### Decision-log skill
 Consolidating legal documents inside the FAQ page while keeping `terms.html` and `privacy.html` intact lets the registration modal reuse existing authoritative legal content via `fetch` without duplicating copy or breaking direct URLs.
+
+## 2026-11-16 05:02 (Asia/Manila): Header gym name, full-color auth logo, icon contrast, and loading screen polish
+### What I asked for
+Display the registered gym name beside ProFit in the header, lock background scroll on the registration legal modal, restore the full-color official ProFit logo on Login and Sign Up, fix the dark heading icon colors, place Create your account and its icon on one row, and polish the branded loading screen.
+### What the agent decided and why
+- Added `<span class="brand-sep"></span><span class="brand-gym" data-gym-name>Functional Fitness Gym</span>` to public headers (`welcome.html`, `login.html`, `join.html`, `faq.html`, `terms.html`, `privacy.html`) and hydrated `[data-gym-name]` dynamically in `site-footer.js` from `profit-gym-profile` (`localStorage`).
+- Restored `<img src="logo.jpg">` in `login.html` and `join.html` `.brand-mark` with `background: transparent` and `filter: none`, and fixed `.portal-heading-icon i` in `web/pf-modern.css` from dark `--on-accent` to gold `#e8b93a` on dark translucent gold border.
+- Aligned `.jn-title-row` (`Create your account` + user-plus icon) on one row and added `document.body.style.overflow = 'hidden'` while the `join.html` legal modal is open.
+- Updated `web/splash.js` to display `ProFit` with the dynamic gym name, full-color `logo.jpg`, and `MIN_DISPLAY_MS = 0` so there is no artificial loading delay.
+### Decision-log skill
+Check `pf-modern.css` specificity overrides whenever `.portal-heading-icon` or `.brand-mark` loses icon contrast or background transparency, because `pf-modern.css` loads after `portal-ui.css`.

@@ -1,5 +1,14 @@
-// Shared footer for public pages. Pages that already contain <footer class="site-footer"> are left alone.
+// Shared footer + dynamic gym name hydration for public pages.
 (() => {
+  try {
+    const prof = JSON.parse(localStorage.getItem("profit-gym-profile") || "null");
+    const customName = prof && prof.name && prof.name.trim() && prof.name.trim().toLowerCase() !== "profit"
+      ? prof.name.trim()
+      : "Functional Fitness Gym";
+    document.querySelectorAll("[data-gym-name]").forEach(el => {
+      el.textContent = customName;
+    });
+  } catch (_) {}
   if (!/(welcome|login|join|faq|terms|privacy)\.html$/.test(location.pathname)) return; // never inside the portal
   if (document.querySelector(".site-footer")) return;
   if (!document.querySelector('link[href^="site-footer.css"]')) {

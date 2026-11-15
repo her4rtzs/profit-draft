@@ -2,10 +2,13 @@
 <html lang="en" class="dark public-dark-theme"><head><script>document.documentElement.classList.add('dark','public-dark-theme');</script><script src="splash.js?v=2"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b0b0d"><meta name="description" content="Join ProFit and pay online. Your account is created right after payment."><title>Join · ProFit</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="member-portal.css"><script src="config.js"></script><script src="api.js"></script><script src="auth.js"></script><link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=9"><link rel="stylesheet" href="ui-final.css?v=1"><script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="pwa.js"></script><link rel="stylesheet" href="hover-fx.css?v=1">
 <link rel="stylesheet" href="ui-polish.css?v=1">
 <link rel="stylesheet" href="ui-fixes.css?v=1">
-<link rel="stylesheet" href="pf-modern.css?v=1">
+<link rel="stylesheet" href="pf-modern.css?v=2">
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script></head>
-<body class="portal-body auth-page dark public-dark-theme"><header class="portal-nav"><a class="portal-brand" href="welcome.html"><span class="brand-mark"><i class="fa-solid fa-dumbbell"></i></span><span><strong>ProFit</strong><small>FITNESS MANAGEMENT</small></span></a><span class="secure-label"><i class="fa-solid fa-lock"></i> Secure checkout</span></header>
+<body class="portal-body auth-page dark public-dark-theme"><header class="portal-nav"><a class="portal-brand" href="welcome.html"><span class="brand-mark"><img src="logo.jpg" alt="ProFit logo" width="40" height="40"></span><span><strong>ProFit</strong><small>FITNESS MANAGEMENT</small></span><span class="brand-sep" aria-hidden="true"></span><span class="brand-gym" data-gym-name>Functional Fitness Gym</span></a><span class="secure-label"><i class="fa-solid fa-lock"></i> Secure checkout</span></header>
 <style>
+.jn-title-row{display:flex;align-items:center;gap:14px;margin:8px 0 6px}
+.jn-title-row .portal-heading-icon{margin:0!important;flex:0 0 auto}
+.jn-title-row h2{margin:0!important;line-height:1.15}
 .jn-plans{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:6px 0 4px}
 .jn-plans .plan{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:6px;min-height:92px;padding:14px;border:1px solid var(--border);border-radius:10px;cursor:pointer;background:var(--hover)}
 .jn-plans .plan input{position:absolute;opacity:0}
@@ -19,7 +22,7 @@
 @media(max-width:560px){.jn-plans{grid-template-columns:1fr 1fr}.jn-row{grid-template-columns:1fr}.jn-plans .plan{flex-direction:row;align-items:center;min-height:0}}
 </style>
 <main class="auth-shell"><section class="auth-story"><div class="eyebrow"><span></span> JOIN THE GYM</div><h1>Pay once.<br><em>Your account is ready.</em></h1><p>Choose a plan and pay with GCash, Maya, card or QR. As soon as payment is confirmed, your member account is created automatically. No waiting for staff approval.</p><div class="auth-points"><span><i class="fa-solid fa-check"></i> Secure checkout by PayMongo</span><span><i class="fa-solid fa-check"></i> Account and membership start right after you pay</span><span><i class="fa-solid fa-check"></i> Sign in with the email and password you set here</span></div></section>
-<section class="auth-card" id="box"><div class="portal-heading-icon"><i class="fa-solid fa-user-plus"></i></div><p class="portal-kicker">NEW MEMBER</p><h2>Create your account</h2><p class="auth-sub">Pick a plan, add your details, then pay securely.</p>
+<section class="auth-card" id="box"><p class="portal-kicker">NEW MEMBER</p><div class="jn-title-row"><div class="portal-heading-icon"><i class="fa-solid fa-user-plus"></i></div><h2>Create your account</h2></div><p class="auth-sub">Pick a plan, add your details, then pay securely.</p>
 <form id="f" novalidate>
 <label class="auth-label">Plan</label>
 <div class="jn-plans" id="plans">
@@ -195,6 +198,7 @@
 
   function openModal(key, trigger){
     lastTrigger = trigger || document.activeElement;
+    document.body.style.overflow = 'hidden';
     backdrop.hidden = false;
     backdrop.setAttribute('aria-hidden', 'false');
     loadDoc(key);
@@ -205,6 +209,7 @@
   function closeModal(){
     backdrop.classList.remove('is-open');
     backdrop.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
     setTimeout(function(){
       if(!backdrop.classList.contains('is-open')) backdrop.hidden = true;
     }, 220);
