@@ -1,82 +1,69 @@
 <!doctype html>
-<html lang="en" class="dark public-dark-theme">
+<html lang="en">
 <head>
-<script>document.documentElement.classList.add('dark','public-dark-theme');</script>
-<script src="splash.js?v=6"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0b0b0d">
-<meta name="description" content="Secure sign in to ProFit gym management.">
-<title>Sign in · ProFit</title>
+<title>Sign in — ProFit</title>
+<link rel="icon" type="image/jpeg" href="logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Permanent+Marker&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="member-portal.css">
-<script src="config.js"></script>
-<script src="api.js"></script>
-<script src="auth.js"></script>
-<link rel="stylesheet" href="pro-theme.css">
-<link rel="stylesheet" href="spotify.css?v=14">
-<link rel="stylesheet" href="portal-ui.css?v=9">
-<link rel="stylesheet" href="ui-final.css?v=1">
-<script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script>
-<link rel="manifest" href="manifest.webmanifest">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="ProFit">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
-<script src="pwa.js"></script>
-<link rel="stylesheet" href="hover-fx.css?v=1">
-<link rel="stylesheet" href="ui-polish.css?v=1">
-<link rel="stylesheet" href="ui-fixes.css?v=1">
-<link rel="stylesheet" href="pf-modern.css?v=2">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Permanent+Marker&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
+<link rel="stylesheet" href="app.css?v=4">
+<script src="api.js?v=4"></script>
 <style>
   :root{
     --pf-bg:#07080c;
-    --pf-card:#131C2E;
-    --pf-input:#0b1220;
-    --pf-border:rgba(255,255,255,.12);
-    --pf-gold:#e8b93a;
-    --pf-text:#f6efdc;
-    --pf-muted:#94a3b8;
-    --pf-red:#f87171;
+    --pf-paper:#faf6ea;
+    --pf-paper-in:#f3ede0;
+    --pf-ink:#111318;
+    --pf-muted:#52525b;
+    --pf-gold:#f5c41f;
+    --pf-gold-hi:#ffd23f;
+    --pf-red:#dc2626;
+    --pf-green:#15803d;
   }
   *{box-sizing:border-box}
+  html,body{margin:0;padding:0;overflow-x:hidden}
   body.auth-page.pf-dark-auth{
-    margin:0;
-    background:var(--pf-bg) !important;
-    color:var(--pf-text);
     min-height:100svh;
+    background:var(--pf-bg);
+    color:#f8fafc;
+    font-family:"Plus Jakarta Sans",system-ui,-apple-system,sans-serif;
     display:flex;
     flex-direction:column;
-    font-family:"Plus Jakarta Sans",Inter,system-ui,sans-serif;
   }
 
-  /* Consistent header matching welcome.html */
+  /* Consistent 68px header */
   .pf-dark-auth .portal-nav{
-    position:sticky;top:0;z-index:40;
-    min-height:68px;
-    padding:0 24px;
-    display:flex;align-items:center;justify-content:space-between;gap:20px;
-    background:#0b0c10;
-    border-bottom:1px solid #232636;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:0 clamp(16px,4vw,32px);
+    min-height:68px;height:68px;
+    background:rgba(11,12,16,.95);
+    border-bottom:1px solid rgba(255,255,255,.09);
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    position:sticky;top:0;z-index:40;flex:none;
   }
-  .pf-dark-auth .portal-brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--pf-text);flex:none}
-  .pf-dark-auth .portal-brand img{width:40px;height:40px;border-radius:10px;display:block;object-fit:cover}
-  .pf-dark-auth .portal-brand strong{display:block;font-family:"Plus Jakarta Sans",Inter,sans-serif;font-size:19px;font-weight:800;letter-spacing:-.02em;line-height:1.05;color:#f6efdc}
-  .pf-dark-auth .portal-brand small{display:block;font-size:10px;font-weight:700;letter-spacing:.14em;color:var(--pf-gold);text-transform:uppercase;margin-top:3px;line-height:1.05}
-  .pf-dark-auth .secure-label{font-size:13px;font-weight:600;color:#cbd5e1;display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
-  .pf-dark-auth .secure-label i{color:var(--pf-gold)}
+  .pf-dark-auth .portal-brand{display:flex;align-items:center;gap:12px;text-decoration:none;min-width:0}
+  .pf-dark-auth .brand-mark{
+    width:40px;height:40px;border-radius:10px;overflow:hidden;
+    border:1.5px solid rgba(245,196,31,.45);background:#000;flex:none;
+  }
+  .pf-dark-auth .brand-mark img{width:100%;height:100%;object-fit:cover;display:block}
+  .pf-dark-auth .portal-brand span:last-child{display:flex;flex-direction:column;line-height:1.1;min-width:0}
+  .pf-dark-auth .portal-brand strong{font-size:19px;font-weight:800;letter-spacing:-.01em;color:#f6efdc}
+  .pf-dark-auth .portal-brand small{font-size:10px;font-weight:700;letter-spacing:.14em;color:#e8b93a;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pf-dark-auth .secure-label{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:#cbd5e1;white-space:nowrap}
+  .pf-dark-auth .secure-label i{color:#e8b93a}
 
   .lg-shell{
     flex:1 1 auto;
     display:grid;
-    grid-template-columns:minmax(0,1.15fr) minmax(380px,0.85fr);
+    grid-template-columns:minmax(0,1.15fr) minmax(360px,0.85fr);
     min-height:calc(100svh - 68px);
   }
 
-  /* Left side info panel */
+  /* Left editorial stage */
   .lg-stage{
     position:relative;overflow:hidden;
     display:flex;flex-direction:column;justify-content:flex-end;
@@ -85,174 +72,222 @@
   }
   .lg-bg{
     position:absolute;inset:0;
-    background:url("img/hero.jpg") center/cover no-repeat;
-    filter:brightness(.48) contrast(1.06);
-    transform:scale(1.03);
-    animation:lgZoom 22s ease-in-out infinite alternate;
+    background:url('img/hero.jpg') center/cover no-repeat;
+    filter:grayscale(.15) contrast(1.06);
+    transform:scale(1.04);
+    animation:lgSlowZoom 24s ease-in-out infinite alternate;
   }
+  @keyframes lgSlowZoom{from{transform:scale(1.02)}to{transform:scale(1.1)}}
   .lg-scrim{
     position:absolute;inset:0;
-    background:linear-gradient(180deg,rgba(7,8,12,.55) 0%,rgba(7,8,12,.3) 45%,rgba(7,8,12,.92) 100%);
+    background:linear-gradient(180deg,rgba(7,8,12,.45) 0%,rgba(7,8,12,.68) 48%,rgba(7,8,12,.94) 100%);
   }
-  @keyframes lgZoom{from{transform:scale(1.03)}to{transform:scale(1.11)}}
+
+  .lg-polaroid{
+    position:absolute;top:28px;right:28px;z-index:2;
+    width:clamp(150px,15vw,196px);margin:0;padding:8px 8px 12px;
+    background:var(--pf-paper);color:var(--pf-ink);
+    border:2px solid var(--pf-ink);border-radius:4px;
+    box-shadow:6px 6px 0 rgba(0,0,0,.45);
+    transform:rotate(3deg);
+    animation:lgPopIn .65s cubic-bezier(.2,.8,.2,1) .15s both;
+  }
+  .lg-tape{
+    position:absolute;top:-10px;left:50%;transform:translateX(-50%) rotate(-2deg);
+    width:52px;height:16px;background:rgba(245,196,31,.8);border-radius:2px;
+  }
+  .lg-polaroid img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;border:1px solid rgba(17,19,24,.2)}
+  .lg-polaroid figcaption{
+    margin-top:8px;text-align:center;
+    font-family:"Permanent Marker",cursive;font-size:13px;letter-spacing:.03em;color:var(--pf-ink);
+  }
+
+  .lg-badge{
+    position:absolute;bottom:76px;right:28px;z-index:2;
+    width:104px;height:104px;border-radius:50%;
+    background:var(--pf-gold);color:var(--pf-ink);
+    border:2px solid var(--pf-ink);
+    display:grid;place-items:center;
+    box-shadow:4px 4px 0 var(--pf-ink);
+  }
+  .lg-badge svg{position:absolute;inset:0;width:100%;height:100%;animation:lgSpin 18s linear infinite}
+  @keyframes lgSpin{to{transform:rotate(360deg)}}
+  .lg-badge-center{text-align:center;font-family:"Anton",sans-serif;font-size:17px;line-height:1;letter-spacing:.04em}
 
   .lg-stage-inner{
     position:relative;z-index:2;
-    padding:clamp(20px,3vh,36px) clamp(24px,3vw,42px) clamp(18px,2.5vh,28px);
-    display:flex;flex-direction:column;justify-content:flex-end;flex:1;
+    padding:clamp(24px,4vh,44px) clamp(20px,4vw,44px) clamp(22px,3.2vh,32px);
+    max-width:560px;
   }
-  .lg-polaroid{
-    position:absolute;top:24px;right:32px;z-index:3;
-    width:188px;padding:8px 8px 12px;
-    background:#fffdf6;color:#111318;border-radius:4px;
-    box-shadow:0 16px 36px rgba(0,0,0,.55);
-    transform:rotate(3deg);
-    animation:lgPopIn .65s cubic-bezier(.2,.8,.2,1) .12s both;
-  }
-  .lg-polaroid .lg-tape{
-    position:absolute;top:-10px;left:50%;transform:translateX(-50%) rotate(-2deg);
-    width:64px;height:18px;background:rgba(232,185,58,.86);
-  }
-  .lg-polaroid img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}
-  .lg-polaroid figcaption{margin-top:7px;text-align:center;font-family:"Permanent Marker",cursive;font-size:14px;color:#111318}
-
-  .lg-badge{
-    position:absolute;bottom:76px;right:34px;z-index:3;
-    width:106px;height:106px;border-radius:50%;
-    background:var(--pf-gold);color:#111318;display:grid;place-items:center;
-    box-shadow:0 12px 26px rgba(0,0,0,.45);
-    animation:lgPopIn .65s cubic-bezier(.2,.8,.2,1) .25s both;
-  }
-  .lg-badge svg{position:absolute;inset:0;width:100%;height:100%;animation:lgSpin 16s linear infinite}
-  .lg-badge-center{position:relative;text-align:center;font-family:"Anton",sans-serif;font-size:18px;line-height:.95;color:#111318}
-  @keyframes lgSpin{to{transform:rotate(360deg)}}
-
   .lg-tag{
-    display:inline-block;width:max-content;
-    background:var(--pf-gold);color:#111318;
-    font-family:"Anton",sans-serif;font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;
-    padding:4px 11px;margin-bottom:12px;border-radius:3px;
-    animation:lgSlideUp .5s cubic-bezier(.2,.8,.2,1) .05s both;
+    display:inline-block;padding:5px 12px;border-radius:5px;
+    background:var(--pf-gold);color:var(--pf-ink);border:1.5px solid var(--pf-ink);
+    font-family:"Anton",sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+    margin-bottom:14px;animation:lgSlideUp .5s ease both;
   }
   .lg-headline{
+    margin:0 0 12px;
     font-family:"Anton",sans-serif;
-    font-size:clamp(40px,4.8vw,68px);
-    line-height:.95;letter-spacing:.01em;text-transform:uppercase;
-    margin:0 0 14px;max-width:560px;color:#fff;
-    animation:lgSlideUp .55s cubic-bezier(.2,.8,.2,1) .1s both;
+    font-size:clamp(38px,5.2vw,68px);
+    line-height:.94;letter-spacing:.01em;text-transform:uppercase;color:#faf6ea;
+    animation:lgSlideUp .55s ease .08s both;
   }
-  .lg-headline .hl{position:relative;display:inline-block;color:var(--pf-gold)}
-  .lg-headline .hl::after{content:"";position:absolute;left:0;right:4px;bottom:-5px;height:4px;background:var(--pf-gold);border-radius:4px;transform:rotate(-1deg)}
-  .lg-sub{max-width:420px;font-size:14.5px;line-height:1.5;color:#d6dce8;margin:0;animation:lgSlideUp .55s cubic-bezier(.2,.8,.2,1) .18s both}
+  .lg-headline .hl{color:var(--pf-gold)}
+  .lg-sub{
+    margin:0;max-width:440px;font-size:14.5px;line-height:1.55;color:#e2e8f0;
+    animation:lgSlideUp .6s ease .14s both;
+  }
 
-  .lg-bottom-strip{position:relative;z-index:3}
-  .lg-ticker{overflow:hidden;background:#090b10;border-top:1px solid rgba(255,255,255,.1);padding:8px 0;white-space:nowrap}
-  .lg-ticker-track{display:inline-flex;gap:24px;align-items:center;font-family:"Anton",sans-serif;font-size:12px;letter-spacing:.1em;color:#f6f1e4;animation:lgMarquee 24s linear infinite}
+  .lg-bottom-strip{position:relative;z-index:2}
+  .lg-ticker{overflow:hidden;background:#0b0d12;border-top:1px solid rgba(255,255,255,.12);padding:8px 0;white-space:nowrap}
+  .lg-ticker-track{
+    display:inline-flex;align-items:center;gap:18px;
+    font-family:"Anton",sans-serif;font-size:13px;letter-spacing:.1em;color:#faf6ea;
+    animation:lgTicker 24s linear infinite;
+  }
   .lg-ticker-track .sep{color:var(--pf-gold)}
-  @keyframes lgMarquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-  .lg-hazard{height:8px;background:repeating-linear-gradient(-45deg,var(--pf-gold) 0 14px,#111318 14px 28px);background-size:40px 40px;animation:lgHazard 1.4s linear infinite}
-  @keyframes lgHazard{to{background-position:40px 0}}
+  @keyframes lgTicker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .lg-hazard{height:10px;background:repeating-linear-gradient(-45deg,var(--pf-gold) 0 12px,var(--pf-ink) 12px 24px)}
 
-  /* Right dark form panel */
+  /* Right pane: Off-white Editorial Paper Card */
   .lg-form-pane{
     display:flex;align-items:center;justify-content:center;
-    padding:clamp(14px,2vh,24px) 24px;
-    background:#090b10;
+    padding:clamp(22px,3.2vh,40px) clamp(16px,3vw,36px);
+    background:var(--pf-bg);
   }
   .lg-card{
     width:min(420px,100%);
-    background:var(--pf-card);
-    color:var(--pf-text);
-    padding:clamp(20px,2.4vh,26px) 26px clamp(18px,2.2vh,22px);
-    border:1px solid var(--pf-border);
+    background:var(--pf-paper);
+    color:var(--pf-ink);
+    border:2px solid var(--pf-ink);
     border-radius:16px;
-    box-shadow:0 20px 48px rgba(0,0,0,.45);
-    animation:lgCardIn .5s cubic-bezier(.2,.8,.2,1) .1s both;
+    box-shadow:8px 8px 0 var(--pf-gold);
+    padding:clamp(22px,3vw,30px) clamp(20px,2.8vw,28px);
+    position:relative;
+    animation:lgCardIn .5s cubic-bezier(.2,.8,.2,1) both;
   }
-  .lg-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px}
-  .lg-card h2{margin:0;font-family:"Plus Jakarta Sans",sans-serif;font-size:clamp(22px,2.2vw,26px);font-weight:800;color:#fff;letter-spacing:-.02em}
-  .lg-pill{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:999px;background:rgba(232,185,58,.14);color:var(--pf-gold);border:1px solid rgba(232,185,58,.3)}
-  .lg-lead{font-size:13.5px;color:var(--pf-muted);margin:0 0 14px}
+  .lg-stamp{
+    position:absolute;top:-12px;right:18px;
+    padding:4px 12px;border-radius:4px;
+    background:var(--pf-ink);color:var(--pf-gold);
+    border:1.5px solid var(--pf-ink);
+    font-family:"Anton",sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+    transform:rotate(2.5deg);
+  }
+  .lg-card h2{
+    margin:0 0 4px;
+    font-family:"Anton",sans-serif;font-size:32px;line-height:1;letter-spacing:.02em;text-transform:uppercase;
+    color:var(--pf-ink);
+  }
+  .lg-lead{margin:0 0 18px;font-size:13.5px;color:var(--pf-muted)}
 
-  .lg-field-label{display:block;font-size:12px;font-weight:700;color:#cbd5e1;margin:10px 0 5px}
+  .lg-field-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 6px}
+  .lg-field-label{display:block;font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--pf-ink);margin:0}
+  .lg-field-label.standalone{margin:0 0 6px}
+  .lg-forgot{font-size:12px;font-weight:700;color:var(--pf-ink);text-decoration:underline;text-underline-offset:2px}
+  .lg-forgot:hover{color:#92400e}
+
   .lg-input{
-    width:100%;height:42px;padding:0 14px;
-    background:var(--pf-input);color:#f8fafc;
-    border:1px solid rgba(255,255,255,.14);border-radius:10px;
-    font:500 14px/1 "Plus Jakarta Sans",Inter,sans-serif;
-    transition:border-color .15s,box-shadow .15s;
+    width:100%;height:44px;padding:0 13px;border-radius:8px;
+    border:1.5px solid var(--pf-ink);background:var(--pf-paper-in);color:var(--pf-ink);
+    font:500 14.5px/1.2 "Plus Jakarta Sans",sans-serif;
+    transition:border-color .15s,box-shadow .15s,background-color .15s;
   }
-  .lg-input::placeholder{color:#64748b}
-  .lg-input:focus{outline:none;border-color:var(--pf-gold);box-shadow:0 0 0 3px rgba(232,185,58,.2)}
+  .lg-input::placeholder{color:#6b7280}
+  .lg-input:focus{outline:none;background:#fff;border-color:var(--pf-ink);box-shadow:0 0 0 3px rgba(245,196,31,.45)}
+
   .lg-pw-wrap{position:relative}
   .lg-pw-wrap .lg-input{padding-right:44px}
   .lg-eye{
-    position:absolute;right:4px;top:50%;transform:translateY(-50%);
-    width:36px;height:36px;border:0;background:transparent;color:#94a3b8;
-    display:grid;place-items:center;cursor:pointer;border-radius:8px;
+    position:absolute;right:5px;top:50%;transform:translateY(-50%);
+    width:34px;height:34px;border:0;background:transparent;color:var(--pf-ink);
+    display:grid;place-items:center;cursor:pointer;border-radius:6px;
   }
-  .lg-eye:hover{color:var(--pf-gold);background:rgba(232,185,58,.1)}
-  .lg-err-sm{display:block;min-height:0;margin-top:4px;font-size:12px;font-weight:600;color:var(--pf-red)}
-  .lg-caps{display:inline-flex;align-items:center;gap:6px;margin-top:4px;font-size:12px;font-weight:600;color:#fbbf24}
+  .lg-eye:hover{background:rgba(17,19,24,.08)}
+
+  .lg-err-sm{display:block;min-height:15px;margin:3px 0 8px;font-size:11.5px;font-weight:600;color:var(--pf-red)}
+  .lg-caps{display:flex;align-items:center;gap:6px;margin:5px 0 2px;font-size:12px;font-weight:700;color:#b45309}
   .lg-caps[hidden]{display:none}
 
   .lg-remember{
-    display:inline-flex;align-items:center;gap:9px;margin:10px 0 12px;
-    font-size:13.5px;font-weight:500;color:#cbd5e1;cursor:pointer;line-height:1.2;
+    display:flex;align-items:center;gap:9px;margin:2px 0 14px;
+    font-size:13px;font-weight:600;color:var(--pf-ink);cursor:pointer;
   }
-  .lg-remember input{width:17px;height:17px;margin:0;accent-color:var(--pf-gold);cursor:pointer;flex:none}
+  .lg-remember input[type="checkbox"]{
+    width:17px;height:17px;margin:0;flex-shrink:0;accent-color:var(--pf-ink);cursor:pointer;
+  }
 
-  .lg-msg{padding:9px 12px;border-radius:8px;font-size:13px;font-weight:600;margin-bottom:10px;background:rgba(34,197,94,.14);color:#86efac;border:1px solid rgba(34,197,94,.3)}
-  .lg-msg.error{background:rgba(248,113,113,.14);color:#fca5a5;border-color:rgba(248,113,113,.35)}
+  .lg-msg{
+    margin:0 0 12px;padding:10px 12px;border-radius:8px;font-size:12.5px;font-weight:600;
+    background:#dcfce7;border:1.5px solid #166534;color:#14532d;
+  }
+  .lg-msg.error{background:#fee2e2;border-color:#b91c1c;color:#991b1b}
   .lg-msg[hidden]{display:none}
 
   .lg-btn-gold{
-    width:100%;height:42px;border:0;border-radius:10px;
-    background:var(--pf-gold);color:#1a1407;
-    font:800 14.5px/1 "Plus Jakarta Sans",sans-serif;
-    display:inline-flex;align-items:center;justify-content:center;gap:9px;cursor:pointer;
-    transition:filter .15s,transform .15s;
+    width:100%;height:46px;border:2px solid var(--pf-ink);border-radius:9px;
+    background:var(--pf-gold);color:var(--pf-ink);
+    font-family:"Anton",sans-serif;font-size:17px;letter-spacing:.06em;text-transform:uppercase;
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;
+    box-shadow:0 3px 0 var(--pf-ink);
+    transition:transform .12s ease,background-color .15s ease,box-shadow .12s ease;
   }
-  .lg-btn-gold:hover:not(:disabled){filter:brightness(1.06);transform:translateY(-1px)}
-  .lg-btn-gold:disabled{opacity:.65;cursor:wait}
+  .lg-btn-gold:hover:not(:disabled){background:var(--pf-gold-hi);transform:translateY(-1px);box-shadow:0 4px 0 var(--pf-ink)}
+  .lg-btn-gold:active:not(:disabled){transform:translateY(1px);box-shadow:0 1px 0 var(--pf-ink)}
+  .lg-btn-gold:disabled{opacity:.65;cursor:not-allowed}
 
-  .lg-forgot-row{display:flex;justify-content:center;margin:11px 0 2px}
-  .lg-forgot{color:var(--pf-gold);font-size:13px;font-weight:600;text-decoration:underline;text-underline-offset:3px}
-  .lg-forgot:hover{filter:brightness(1.15)}
+  .lg-divider{
+    display:flex;align-items:center;gap:10px;margin:16px 0 12px;
+    font-size:12px;font-weight:600;color:var(--pf-muted);
+  }
+  .lg-divider::before,.lg-divider::after{content:"";flex:1;height:1px;background:rgba(17,19,24,.18)}
 
-  .lg-divider{display:flex;align-items:center;gap:10px;margin:12px 0 10px;font-size:12px;color:#64748b}
-  .lg-divider::before,.lg-divider::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.1)}
   .lg-sso{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .lg-sso-btn{
-    height:38px;border:1px solid rgba(255,255,255,.12);border-radius:10px;
-    background:var(--pf-input);color:#94a3b8;font:600 13px/1 "Plus Jakarta Sans",sans-serif;
-    display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:not-allowed;opacity:.75;
+    height:40px;border-radius:8px;border:1.5px solid var(--pf-ink);
+    background:var(--pf-paper-in);color:var(--pf-ink);
+    font:700 12.5px/1 "Plus Jakarta Sans",sans-serif;
+    display:inline-flex;align-items:center;justify-content:center;gap:7px;cursor:not-allowed;opacity:.72;
   }
-  .lg-join-row{text-align:center;margin:12px 0 0;font-size:13px;color:var(--pf-muted)}
-  .lg-join-row a{color:var(--pf-gold);font-weight:700;text-decoration:underline;text-underline-offset:3px}
+
+  .lg-new-lbl{margin:16px 0 8px;text-align:center;font-size:12.5px;font-weight:600;color:var(--pf-muted)}
+  .lg-btn-outline{
+    width:100%;height:44px;border:1.5px solid var(--pf-ink);border-radius:9px;
+    background:#fff;color:var(--pf-ink);text-decoration:none;
+    font-family:"Anton",sans-serif;font-size:15.5px;letter-spacing:.06em;text-transform:uppercase;
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    transition:background-color .15s ease,transform .12s ease;
+  }
+  .lg-btn-outline:hover{background:var(--pf-gold);transform:translateY(-1px)}
 
   @keyframes lgSlideUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-  @keyframes lgPopIn{from{opacity:0;transform:scale(.92) rotate(3deg)}to{opacity:1}}
+  @keyframes lgPopIn{from{opacity:0;transform:scale(.92) rotate(3deg)}to{opacity:1;transform:rotate(3deg)}}
   @keyframes lgCardIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 
+  /* Tablet & Mobile */
   @media(max-width:980px){
-    .lg-shell{grid-template-columns:1fr}
+    .lg-shell{grid-template-columns:1fr;min-height:auto}
     .lg-stage{min-height:360px;border-right:0;border-bottom:1px solid rgba(255,255,255,.08)}
-    .lg-polaroid{width:145px;top:18px;right:18px}
-    .lg-badge{width:88px;height:88px;bottom:64px;right:18px}
-    .lg-badge-center{font-size:15px}
+    .lg-polaroid{width:140px;top:18px;right:18px}
+    .lg-badge{width:84px;height:84px;bottom:60px;right:18px}
+    .lg-badge-center{font-size:14px}
   }
   @media(max-width:600px){
-    .lg-stage-inner{padding:24px 18px 20px}
+    .pf-dark-auth .secure-label{display:none}
+    .lg-stage{min-height:300px}
+    .lg-stage-inner{padding:24px 16px 20px}
     .lg-polaroid,.lg-badge{display:none}
-    .lg-form-pane{padding:20px 16px}
-    .lg-card{padding:20px 18px}
+    .lg-form-pane{padding:22px 14px 28px}
+    .lg-card{padding:22px 16px;box-shadow:5px 5px 0 var(--pf-gold)}
+    .lg-input{font-size:16px}
+  }
+  @media(max-width:360px){
+    .lg-sso{grid-template-columns:1fr}
   }
   @media(prefers-reduced-motion:reduce){
-    .lg-bg,.lg-polaroid,.lg-badge,.lg-badge svg,.lg-tag,.lg-headline,.lg-sub,.lg-ticker-track,.lg-hazard,.lg-card{
-      animation:none !important;transform:none !important;opacity:1 !important;
+    .lg-bg,.lg-polaroid,.lg-badge svg,.lg-tag,.lg-headline,.lg-sub,.lg-ticker-track,.lg-card{
+      animation:none !important;opacity:1 !important;
     }
-    .lg-polaroid{transform:rotate(3deg) !important}
   }
 </style>
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script>
@@ -296,16 +331,14 @@
     <div class="lg-bottom-strip" aria-hidden="true">
       <div class="lg-ticker">
         <div class="lg-ticker-track">
-          <span>PAY ONLINE, ACCOUNT READY</span><span class="sep">◆</span>
-          <span>4 FLEXIBLE PLANS</span><span class="sep">◆</span>
-          <span>MEMBER PORTAL ON YOUR PHONE</span><span class="sep">◆</span>
-          <span>WE LIFT AND UPLIFT</span><span class="sep">◆</span>
-          <span>OPEN 7 AM</span><span class="sep">◆</span>
-          <span>PAY ONLINE, ACCOUNT READY</span><span class="sep">◆</span>
-          <span>4 FLEXIBLE PLANS</span><span class="sep">◆</span>
-          <span>MEMBER PORTAL ON YOUR PHONE</span><span class="sep">◆</span>
-          <span>WE LIFT AND UPLIFT</span><span class="sep">◆</span>
-          <span>OPEN 7 AM</span><span class="sep">◆</span>
+          <span>WE LIFT AND UPLIFT</span><span class="sep">/</span>
+          <span>OPEN 7 AM</span><span class="sep">/</span>
+          <span>PAY ONLINE, ACCOUNT READY</span><span class="sep">/</span>
+          <span>4 FLEXIBLE PLANS</span><span class="sep">/</span>
+          <span>WE LIFT AND UPLIFT</span><span class="sep">/</span>
+          <span>OPEN 7 AM</span><span class="sep">/</span>
+          <span>PAY ONLINE, ACCOUNT READY</span><span class="sep">/</span>
+          <span>4 FLEXIBLE PLANS</span><span class="sep">/</span>
         </div>
       </div>
       <div class="lg-hazard"></div>
@@ -314,20 +347,21 @@
 
   <section class="lg-form-pane">
     <div class="lg-card">
-      <div class="lg-card-head">
-        <h2>Sign in</h2>
-        <span class="lg-pill">Members &amp; Staff</span>
-      </div>
+      <span class="lg-stamp" aria-hidden="true">Members only</span>
+      <h2>Sign in</h2>
       <p class="lg-lead">Use the account details provided by your gym.</p>
 
       <form id="signInForm" method="post" action="javascript:void(0)" novalidate>
-        <label class="lg-field-label" for="identity">Email or username</label>
+        <label class="lg-field-label standalone" for="identity">Email or username</label>
         <input class="lg-input" id="identity" name="identity" autocomplete="username" maxlength="254" required placeholder="you@example.com">
         <small class="lg-err-sm" id="identityError"></small>
 
-        <label class="lg-field-label" for="password">Password</label>
+        <div class="lg-field-row">
+          <label class="lg-field-label" for="password">Password</label>
+          <a class="lg-forgot" href="forgot.html">Forgot password?</a>
+        </div>
         <div class="lg-pw-wrap">
-          <input class="lg-input" id="password" name="password" type="password" autocomplete="current-password" required maxlength="256" placeholder="Enter your password">
+          <input class="lg-input" id="password" name="password" type="password" autocomplete="current-password" required maxlength="256" placeholder="Your password">
           <button type="button" class="lg-eye" id="showPassword" aria-label="Show password" aria-pressed="false"><i class="fa-regular fa-eye"></i></button>
         </div>
         <div class="lg-caps" id="capsWarn" hidden><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Caps Lock is on</div>
@@ -341,23 +375,20 @@
           <span>Sign in</span>
           <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
         </button>
-
-        <div class="lg-forgot-row">
-          <a class="lg-forgot" href="forgot.html">Forgot password?</a>
-        </div>
       </form>
 
       <div class="lg-divider"><span>Or continue with</span></div>
       <div class="lg-sso">
         <button type="button" class="lg-sso-btn" disabled title="Configure Google OAuth credentials to enable">
-          <i class="fa-brands fa-google" aria-hidden="true"></i><span>Google</span>
+          <span>Google · Soon</span>
         </button>
         <button type="button" class="lg-sso-btn" disabled title="Configure Apple OAuth credentials to enable">
-          <i class="fa-brands fa-apple" aria-hidden="true"></i><span>Apple</span>
+          <span>Apple · Soon</span>
         </button>
       </div>
 
-      <p class="lg-join-row">New to ProFit? <a href="join.html">Join and pay online</a></p>
+      <p class="lg-new-lbl">New to ProFit?</p>
+      <a class="lg-btn-outline" href="join.html">Join and pay online</a>
     </div>
   </section>
 </main>

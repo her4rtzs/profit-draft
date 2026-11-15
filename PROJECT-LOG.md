@@ -2176,3 +2176,12 @@ Remove the repeated "Sign in" link in the landing header and restore the origina
 - Removed `.auth-mini-footer` from `web/login.html` and `web/join.html` and changed `height: 100svh; overflow: hidden` to `min-height: 100svh` so the main auth shell fills the initial viewport while the injected `.site-footer` renders cleanly below.
 ### Decision-log skill
 Keep one canonical "Sign in" entry point in the top header CTA rather than duplicating it inside `<nav>`, and reuse `site-footer.js` across public pages.
+
+## 2026-11-16 07:08 (Asia/Manila): Apply editorial paper-card design to Login and Join across all devices
+### What I asked for
+Apply the editorial paper-card design (from the reference screenshots) to both Login and Sign Up and ensure it works smoothly on any device.
+### What the agent decided and why
+- Updated `web/login.html` and `web/join.html` with the `#faf6ea` off-white paper card, `#111318` borders, gold `#f5c41f` offset shadow, `Anton` display headings, tilted `MEMBERS ONLY` / `NEW MEMBER` stamps, `Permanent Marker` polaroid captions, and matching ticket-style plan cards and paper/gold Legal Modal while keeping the consistent `68px` header, shared `site-footer.js` footer, and all backend/validation/payment flows intact.
+- Added responsive rules for desktop, tablet (`<=980px`), mobile (`<=600px`), and narrow phones (`<=360px`), including `overflow-x: hidden`, 2x2 plan grids on mobile, 1-column form rows, and `16px` mobile input font sizing to prevent iOS Safari auto-zoom.
+### Decision-log skill
+Keep editorial high-contrast styling (`#faf6ea` + `#111318` + `#f5c41f`) consistent across both auth entry points while ensuring `16px` mobile inputs and `overflow-x: hidden` for multi-device usability.
