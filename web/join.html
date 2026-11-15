@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="ui-fixes.css?v=1">
 <link rel="stylesheet" href="pf-modern.css?v=2">
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script></head>
-<body class="portal-body auth-page dark public-dark-theme"><header class="portal-nav"><a class="portal-brand" href="welcome.html"><span class="brand-mark"><img src="logo.jpg" alt="ProFit logo" width="40" height="40"></span><span><strong>ProFit</strong><small>FITNESS MANAGEMENT</small></span></a><span class="secure-label"><i class="fa-solid fa-lock"></i> Secure checkout</span></header>
+<body class="portal-body auth-page dark public-dark-theme"><header class="portal-nav"><a class="portal-brand" href="welcome.html"><span class="brand-mark"><img src="logo.jpg" alt="ProFit logo" width="40" height="40"></span><span><strong>ProFit</strong><small data-gym-name>FUNCTIONAL FITNESS GYM</small></span></a><span class="secure-label"><i class="fa-solid fa-lock"></i> Secure checkout</span></header>
 <style>
 .jn-title-row{display:flex;align-items:center;gap:14px;margin:8px 0 6px}
 .jn-title-row .portal-heading-icon{margin:0!important;flex:0 0 auto}
@@ -34,7 +34,22 @@
 <div id="cancel" class="jn-note" hidden>Payment was cancelled. No account was created and you were not charged.</div>
 <label class="auth-label" for="name">Full name</label><input class="auth-input" id="name" autocomplete="name" maxlength="100" placeholder="Enter your full name">
 <div class="jn-row"><div><label class="auth-label" for="email">Email</label><input class="auth-input" id="email" type="email" autocomplete="email" maxlength="254" placeholder="you@example.com"></div><div><label class="auth-label" for="phone">Mobile number</label><input class="auth-input" id="phone" type="tel" autocomplete="tel" maxlength="20" placeholder="09XX XXX XXXX"></div></div>
-<div class="jn-row"><div><label class="auth-label" for="pw">Password</label><input class="auth-input" id="pw" type="password" autocomplete="new-password" maxlength="128" placeholder="8+ characters"></div><div><label class="auth-label" for="pw2">Confirm password</label><input class="auth-input" id="pw2" type="password" autocomplete="new-password" maxlength="128" placeholder="Repeat password"></div></div>
+<div class="jn-row">
+  <div>
+    <label class="auth-label" for="pw">Password</label>
+    <div class="password-wrap auth-password">
+      <input class="auth-input" id="pw" type="password" autocomplete="new-password" minlength="8" maxlength="128" placeholder="8+ characters">
+      <button type="button" id="togglePw" aria-label="Show password" aria-pressed="false"><i class="fa-regular fa-eye"></i></button>
+    </div>
+  </div>
+  <div>
+    <label class="auth-label" for="pw2">Confirm password</label>
+    <div class="password-wrap auth-password">
+      <input class="auth-input" id="pw2" type="password" autocomplete="new-password" minlength="8" maxlength="128" placeholder="Repeat password">
+      <button type="button" id="togglePw2" aria-label="Show confirm password" aria-pressed="false"><i class="fa-regular fa-eye"></i></button>
+    </div>
+  </div>
+</div>
 <label class="jn-terms"><input type="checkbox" id="terms"><span>I have read and agree to the <a href="terms.html" data-legal="terms">Terms of Service</a> and <a href="privacy.html" data-legal="privacy">Privacy Policy</a>.</span></label>
 <p class="jn-err" id="err" role="alert"></p>
 <button class="portal-submit auth-submit" id="go" type="submit"><span>Continue to secure payment</span><i class="fa-solid fa-arrow-right"></i></button>
@@ -44,7 +59,29 @@
 <script>
 (() => {
   const $ = id => document.getElementById(id), q = new URLSearchParams(location.search);
-  document.querySelectorAll(".plan input").forEach(r => r.addEventListener("change", () => document.querySelectorAll(".plan").forEach(p => p.classList.toggle("on", p.querySelector("input").checked))));
+  const planParam = (q.get("plan") || "").toLowerCase();
+  if (planParam) {
+    const match = document.querySelector(`.plan input[value="${planParam}"]`);
+    if (match) match.checked = true;
+  }
+  const syncPlans = () => document.querySelectorAll(".plan").forEach(p => p.classList.toggle("on", p.querySelector("input").checked));
+  syncPlans();
+  document.querySelectorAll(".plan input").forEach(r => r.addEventListener("change", syncPlans));
+
+  function bindToggle(btnId, inputId, labelWord) {
+    const btn = $(btnId), input = $(inputId);
+    if (!btn || !input) return;
+    btn.addEventListener("click", () => {
+      const show = input.type === "password";
+      input.type = show ? "text" : "password";
+      btn.setAttribute("aria-label", show ? `Hide ${labelWord}` : `Show ${labelWord}`);
+      btn.setAttribute("aria-pressed", String(show));
+      btn.innerHTML = `<i class="fa-regular ${show ? "fa-eye-slash" : "fa-eye"}"></i>`;
+    });
+  }
+  bindToggle("togglePw", "pw", "password");
+  bindToggle("togglePw2", "pw2", "confirm password");
+
   if (q.get("cancelled")) $("cancel").hidden = false;
   if (q.get("paid")) {
     $("f").hidden = true; $("ok").hidden = false; $("alt").hidden = true;
@@ -70,12 +107,13 @@
     e.preventDefault();
     const err = $("err"), btn = $("go"); err.textContent = "";
     const body = { plan: document.querySelector('input[name=plan]:checked').value, name: $("name").value.trim(), email: $("email").value.trim(), phone: $("phone").value.trim(), password: $("pw").value };
-    if (body.name.length < 2) return err.textContent = "Enter your full name.";
-    if (!/^\S+@\S+\.\S+$/.test(body.email)) return err.textContent = "Enter a valid email address.";
-    if (body.phone.replace(/\D/g, "").length < 10) return err.textContent = "Enter a valid mobile number.";
-    if (body.password.length < 8) return err.textContent = "Password must be at least 8 characters.";
-    if (body.password !== $("pw2").value) return err.textContent = "The two passwords do not match.";
-    if (!$("terms").checked) return err.textContent = "Please accept the Terms of Service and Privacy Policy to continue.";
+    if (body.name.length < 2) { $("name").focus(); return err.textContent = "Enter your full name (at least 2 characters)."; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(body.email)) { $("email").focus(); return err.textContent = "Enter a valid email address."; }
+    const digits = body.phone.replace(/\D/g, "");
+    if (digits.length < 10 || digits.length > 13) { $("phone").focus(); return err.textContent = "Enter a valid mobile number (10 to 13 digits, e.g. 09XX XXX XXXX)."; }
+    if (body.password.length < 8) { $("pw").focus(); return err.textContent = "Password must be at least 8 characters."; }
+    if (body.password !== $("pw2").value) { $("pw2").focus(); return err.textContent = "Passwords do not match."; }
+    if (!$("terms").checked) { $("terms").focus(); return err.textContent = "Please read and agree to the Terms of Service and Privacy Policy before continuing."; }
     btn.disabled = true; btn.querySelector("span").textContent = "Opening secure checkout...";
     try { const r = await window.ProFitAPI.post("/join/checkout", body); location.href = r.checkout_url; }
     catch (ex) { err.textContent = ex.message || "Could not start the payment."; btn.disabled = false; btn.querySelector("span").textContent = "Continue to secure payment"; }
@@ -161,15 +199,29 @@
   if(!backdrop || !bodyEl) return;
 
   var DOCS = {
-    terms: { url: 'terms.html', title: 'Terms of Service' },
-    privacy: { url: 'privacy.html', title: 'Privacy Policy' }
+    terms: {
+      url: 'terms.html',
+      title: 'Terms of Service',
+      sub: 'ProFit · Functional Fitness Gym · Last updated: October 2026',
+      icon: 'fa-regular fa-file-lines'
+    },
+    privacy: {
+      url: 'privacy.html',
+      title: 'Privacy Policy',
+      sub: 'R.A. No. 10173 (Data Privacy Act of 2012) · Last updated: October 2026',
+      icon: 'fa-solid fa-shield-halved'
+    }
   };
+  var icoEl = document.querySelector('.jn-legal-ico');
+  var subEl = document.querySelector('.jn-legal-head p');
   var cache = {};
   var lastTrigger = null;
 
   function loadDoc(key){
     var cfg = DOCS[key] || DOCS.terms;
     titleEl.textContent = cfg.title;
+    if(subEl) subEl.textContent = cfg.sub;
+    if(icoEl) icoEl.innerHTML = '<i class="' + cfg.icon + '" aria-hidden="true"></i>';
     tabs.forEach(function(t){
       var on = t.getAttribute('data-doc') === key;
       t.classList.toggle('is-active', on);

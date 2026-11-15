@@ -2116,3 +2116,14 @@ Apply the provided ProFit Loader HTML/CSS/JS design directly into the existing l
 - Referenced `logo.jpg` (or saved custom gym profile logo/name) instead of embedding the large base64 data URI from the sample HTML, and bumped the cache-buster to `splash.js?v=6` in `web/welcome.html`.
 ### Decision-log skill
 When adapting standalone HTML loader prototypes into an existing static portal script, scope all CSS rules under a dedicated root ID and prefix class names so host page styles remain isolated.
+
+## 2026-11-16 05:43 (Asia/Manila): Signup Validation, Legal Policy & Branding Polish
+### What I asked for
+Improve the sign-up page (password toggles, validation, duplicate email prevention), Terms & Privacy modals, agreement checkbox, Privacy Policy retention section, Terms accuracy, FAQ verification, header/footer gym branding, clickable Visit cards on the landing page, and provide an updated ZIP deliverable.
+### What the agent decided and why
+- Added independent show/hide password eye toggles (`#togglePw`, `#togglePw2`) and inline field-focus validation in `web/join.html` alongside server-side email, 10–13 digit mobile, and case-insensitive duplicate email checks in `apps/billing/services.py` (with unit test coverage in `apps/billing/tests/test_checkout.py`).
+- Completed Section 7 ("How long we keep it") in `web/privacy.html` and `web/faq.html` using only actual implemented retention/expiry behavior (10-minute `EmailOTP`, 72-hour `StaffInvite`, retained membership/payment/attendance history on expiry), and added PayMongo to Section 4 ("Service providers").
+- Updated `web/terms.html` and `web/faq.html` to accurately reflect PayMongo online self-enrollment, staff-recorded cash payments, and the implemented `forgot.html` password reset flow.
+- Replaced `FITNESS MANAGEMENT` with `FUNCTIONAL FITNESS GYM` in all public headers (`data-gym-name`), replaced `Strength. Mobility. Happier.` with `Functional Fitness Gym` in footers and `web/site-footer.js`, and converted the `#visit` cards in `web/welcome.html` into flat, clickable cards without neon glow.
+### Decision-log skill
+Keep legal/FAQ policy text synchronized across standalone legal pages (`terms.html`, `privacy.html`) and the tabbed `faq.html` view, and ground retention statements strictly in actual model TTLs and status transitions.

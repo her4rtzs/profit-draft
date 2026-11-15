@@ -129,6 +129,10 @@ class JoinPayFirstTests(TestCase):
         self.assertEqual(self._join({**self.BODY, "password": "123"}).status_code, 400)
         self.assertEqual(self._join({**self.BODY, "plan": "platinum"}).status_code, 400)
 
+    def test_invalid_phone_is_refused(self):
+        self.assertEqual(self._join({**self.BODY, "phone": "123"}).status_code, 400)
+        self.assertEqual(self._join({**self.BODY, "phone": ""}).status_code, 400)
+
 
 @override_settings(PAYMONGO_SECRET_KEY="sk_test_dummy", PAYMONGO_WEBHOOK_SECRET=SECRET)
 class JoinConfirmTests(TestCase):

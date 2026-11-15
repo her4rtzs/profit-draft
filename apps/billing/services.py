@@ -11,6 +11,7 @@ no-op once the payment has reached a terminal state (NIT-4).
 
 import base64
 import json
+import re
 import secrets
 import logging
 import urllib.error
@@ -18,7 +19,9 @@ import urllib.request
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from django.db import transaction
+from django.db.models import Q
 from django.utils import timezone
 
 from apps.finance.services import PLAN_PRICE_CENTAVOS
@@ -182,18 +185,24 @@ def create_join_checkout(*, name, email, phone, plan, password, success_url, can
         raise ValidationError("Choose a plan.")
     name = (name or "").strip()
     email = (email or "").strip().lower()
+    phone_clean = (phone or "").strip()
+    phone_digits = re.sub(r"\D", "", phone_clean)
     if len(name) < 2:
         raise ValidationError("Enter your full name.")
-    if "@" not in email or "." not in email.rsplit("@", 1)[-1]:
+    try:
+        validate_email(email)
+    except ValidationError:
         raise ValidationError("Enter a valid email address.")
-    if get_user_model().objects.filter(username=email).exists():
+    if len(phone_digits) < 10 or len(phone_digits) > 13:
+        raise ValidationError("Enter a valid mobile number (10 to 13 digits).")
+    if get_user_model().objects.filter(Q(username__iexact=email) | Q(email__iexact=email)).exists():
         raise ValidationError("An account with this email already exists. Sign in instead, then choose a plan.")
     validate_password(password or "")
     token = secrets.token_urlsafe(24)
     session_id, checkout_url, _ = _paymongo_session(
         plan, success_url=f"{success_url}&t={token}", cancel_url=cancel_url)
     PendingSignup.objects.create(
-        checkout_session_id=session_id, token=token, name=name, email=email, phone=(phone or "").strip(),
+        checkout_session_id=session_id, token=token, name=name, email=email, phone=phone_clean,
         plan=plan, password_hash=make_password(password),
     )
     return checkout_url
