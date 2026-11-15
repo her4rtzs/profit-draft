@@ -2096,3 +2096,13 @@ Display the registered gym name beside ProFit in the header, lock background scr
 - Updated `web/splash.js` to display `ProFit` with the dynamic gym name, full-color `logo.jpg`, and `MIN_DISPLAY_MS = 0` so there is no artificial loading delay.
 ### Decision-log skill
 Check `pf-modern.css` specificity overrides whenever `.portal-heading-icon` or `.brand-mark` loses icon contrast or background transparency, because `pf-modern.css` loads after `portal-ui.css`.
+
+## 2026-11-16 05:11 (Asia/Manila): Splash logo animation, clean ProFit header lockup, and dark FAQ/legal pages
+### What I asked for
+Enhance the loading screen logo animation and slow down its dismissal, remove the redundant "Functional Fitness Gym" text on the right of the header lockup, apply that `[logo] ProFit / FITNESS MANAGEMENT` lockup to the landing page header, and make the FAQ/legal pages use the same dark UI as Login.
+### What the agent decided and why
+- Updated `web/splash.js` with a spinning gold ring (`.pf-loader-logo-ring`), entrance/breathing logo animations (`pfLogoEnter`, `pfLogoBreath`), and `MIN_DISPLAY_MS = 1150` for a smoother, unhurried reveal.
+- Removed `.brand-sep` and `.brand-gym` from `login.html`, `join.html`, `faq.html`, `terms.html`, `privacy.html`, and `welcome.html`, and applied the `[logo.jpg] ProFit / FITNESS MANAGEMENT` lockup to `welcome.html`'s header.
+- Enforced `dark public-dark-theme` on `faq.html`, `terms.html`, and `privacy.html` so they match `login.html` and `join.html` instead of falling back to light mode.
+### Decision-log skill
+Public pages that share `member-portal.css` / `legal.css` must explicitly include `dark public-dark-theme` on both `<html>` and `<body>` to match `login.html` and `join.html` regardless of portal theme state.

@@ -104,20 +104,31 @@
       }
       #pf-global-loader .pf-loader-logo-wrap {
         position: relative !important;
-        width: 88px !important;
-        height: 88px !important;
-        margin-bottom: 22px !important;
+        width: 104px !important;
+        height: 104px !important;
+        margin-bottom: 24px !important;
         display: grid !important;
         place-items: center !important;
         background: transparent !important;
+        animation: pfLogoEnter 0.7s cubic-bezier(0.16, 1, 0.3, 1) both, pfLogoBreath 2.6s ease-in-out 0.7s infinite !important;
+      }
+      #pf-global-loader .pf-loader-logo-ring {
+        position: absolute !important;
+        inset: -8px !important;
+        border-radius: 28px !important;
+        border: 2px solid transparent !important;
+        border-top-color: #e8b93a !important;
+        border-right-color: rgba(232, 185, 58, 0.35) !important;
+        animation: pfSpin 1.4s linear infinite !important;
+        pointer-events: none !important;
       }
       #pf-global-loader .pf-loader-logo-glow {
         position: absolute !important;
-        inset: -14px !important;
-        border-radius: 32px !important;
-        background: radial-gradient(circle, rgba(245, 158, 11, 0.35) 0%, transparent 72%) !important;
-        filter: blur(14px) !important;
-        animation: pfGlowPulse 2.4s ease-in-out infinite alternate !important;
+        inset: -16px !important;
+        border-radius: 34px !important;
+        background: radial-gradient(circle, rgba(232, 185, 58, 0.28) 0%, transparent 72%) !important;
+        filter: blur(16px) !important;
+        animation: pfGlowPulse 2.2s ease-in-out infinite alternate !important;
         pointer-events: none !important;
       }
       #pf-global-loader .pf-loader-logo-box {
@@ -125,9 +136,9 @@
         width: 100% !important;
         height: 100% !important;
         border-radius: 22px !important;
-        background: #111522 !important;
-        border: 1.5px solid rgba(245, 158, 11, 0.45) !important;
-        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7), 0 0 22px rgba(245, 158, 11, 0.22) !important;
+        background: #0B1220 !important;
+        border: 1.5px solid rgba(232, 185, 58, 0.5) !important;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.7), 0 0 26px rgba(232, 185, 58, 0.22) !important;
         overflow: hidden !important;
         display: grid !important;
         place-items: center !important;
@@ -138,6 +149,7 @@
         object-fit: cover !important;
         border-radius: 20px !important;
         display: block !important;
+        filter: none !important;
       }
       #pf-global-loader .pf-loader-logo-fallback {
         display: none !important;
@@ -193,21 +205,31 @@
       @keyframes pfSpin {
         to { transform: rotate(360deg); }
       }
+      @keyframes pfLogoEnter {
+        from { opacity: 0; transform: scale(0.84) translateY(8px); }
+        to { opacity: 1; transform: scale(1) translateY(0); }
+      }
+      @keyframes pfLogoBreath {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.045); }
+      }
       @keyframes pfLoaderFadeIn {
         from { opacity: 0; transform: translateY(12px) scale(0.97); }
         to { opacity: 1; transform: translateY(0) scale(1); }
       }
       @keyframes pfGlowPulse {
         from { opacity: 0.4; transform: scale(0.96); }
-        to { opacity: 0.85; transform: scale(1.08); }
+        to { opacity: 0.9; transform: scale(1.1); }
       }
       @keyframes pfTextFade {
         from { opacity: 0.65; }
         to { opacity: 1; }
       }
       @media (prefers-reduced-motion: reduce) {
-        #pf-global-loader .pf-loader-spinner { animation: none !important; border-color: #F59E0B !important; }
-        #pf-global-loader .pf-loader-stage { animation: none !important; }
+        #pf-global-loader .pf-loader-spinner,
+        #pf-global-loader .pf-loader-logo-ring { animation: none !important; border-color: #F59E0B !important; }
+        #pf-global-loader .pf-loader-stage,
+        #pf-global-loader .pf-loader-logo-wrap { animation: none !important; }
         #pf-global-loader .pf-loader-logo-glow { animation: none !important; }
         #pf-global-loader .pf-loader-msg { animation: none !important; }
       }
@@ -215,6 +237,7 @@
     <div class="pf-loader-stage">
       <div class="pf-loader-logo-wrap">
         <div class="pf-loader-logo-glow" aria-hidden="true"></div>
+        <div class="pf-loader-logo-ring" aria-hidden="true"></div>
         <div class="pf-loader-logo-box">
           <img src="${gymLogo}" alt="${gymName}" class="pf-loader-logo-img" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='block';">
           <div class="pf-loader-logo-fallback" aria-hidden="true"><i class="fa-solid fa-dumbbell"></i></div>
@@ -236,20 +259,23 @@
     document.addEventListener("DOMContentLoaded", () => document.documentElement.appendChild(loader));
   }
 
-  // Dismissal logic (no artificial delay — dismisses as soon as page is ready)
-  const MIN_DISPLAY_MS = 0;
-  const MAX_SAFETY_MS = 1800;
+  // Dismissal logic (smooth unhurried reveal)
+  const startTime = performance.now();
+  const MIN_DISPLAY_MS = 1150;
+  const MAX_SAFETY_MS = 2800;
   let dismissed = false;
 
   function dismiss() {
     if (dismissed) return;
     dismissed = true;
+    const elapsed = performance.now() - startTime;
+    const delay = Math.max(0, MIN_DISPLAY_MS - elapsed);
     setTimeout(() => {
       loader.classList.add("pf-loader-hide");
       setTimeout(() => {
         try { loader.remove(); } catch (_) {}
-      }, 360);
-    }, MIN_DISPLAY_MS);
+      }, 480);
+    }, delay);
   }
 
   // Dismiss when window load settles or timeout reached
