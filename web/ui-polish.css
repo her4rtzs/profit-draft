@@ -30,6 +30,8 @@ html body .panel {
 html body .panel-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
 html body .panel-header p { margin: 4px 0 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
 html body .panel + .panel { margin-top: 18px; }
+html body .panel + .member-status-card,
+html body .ann-overview + .member-status-card { margin-top: 24px !important; }
 html body .stat-card, html body .pp-card { border-radius: var(--ui-radius-lg) !important; }
 
 /* Buttons */

@@ -1917,3 +1917,112 @@ Adapt the new flat dark navy/slate-blue dashboard visual reference across PROfit
 - Redesigned `web/announcements.html`, `web/announcements.css`, and `web/announcements-staff.js`: added 4 DB-backed KPI cards (`Total`, `Active`, `Draft`, `Archived`), simplified the 4 quick-action tiles, removed `getThumbFor()` auto-assigned stock images, omitted `.ann-thumb` when no image is uploaded, preserved aspect ratio (`object-fit: contain`), and added optional image upload + modal preview.
 ### Decision-log skill
 Never leave fallback constants (like `|| 12`) or static period labels (`Last 7 days`) on KPI cards; bind both values and sublabels to the live dataset and active period, and never auto-assign stock thumbnails to user-authored content.
+
+
+## 2026-11-13 22:42 (Asia/Manila): Document Data Validation Rules and Security/Privacy Requirements
+### What I asked for
+Draft the answers for documentation sections 3.1 (Data Validation Rules) and 3.2 (Data Security and Privacy Requirements) based on the implemented ProFit system.
+### What the agent decided and why
+- Grounded every validation constraint and security control directly in the implemented Django models, DRF serializers, PayMongo webhook handler, and production security settings (`apps/accounts/`, `apps/membership/`, `apps/billing/`, `api/serializers.py`, and `profit/settings.py`).
+- Structured the response so it can be pasted directly into a technical/academic report (both narrative paragraphs and structured summary tables), covering required fields, format checks, value ranges, database uniqueness constraints, RBAC, Argon2 hashing, PayMongo HMAC-SHA256 verification, and compliance with the Philippine Data Privacy Act of 2012 (RA 10173).
+### Decision-log skill
+- When drafting system documentation or thesis sections for the project, map each requirement directly to the actual ORM constraints, serializer validators, and security middleware in the repository so documentation stays 100% consistent with the codebase.
+
+
+## 2026-11-13 22:46 (Asia/Manila): Simplify Sections 3.1 and 3.2 for Project Documentation
+### What I asked for
+Make the answers for 3.1 (Data Validation Rules) and 3.2 (Data Security and Privacy Requirements) simpler and remove overly specific code/syntax names.
+### What the agent decided and why
+- Rewrote both sections in clean, natural academic prose suitable for direct insertion into a project report or thesis, replacing internal class/field/variable identifiers with clear functional descriptions of how the ProFit system validates and protects data.
+### Decision-log skill
+- When writing formal report sections (like Data Validation and Security Requirements), default to clear, high-level system descriptions rather than code identifiers unless code-level detail is explicitly requested.
+
+
+## 2026-11-14 16:46 (Asia/Manila): Document Section 4.1 Functional Requirements
+### What I asked for
+Provide the answer for documentation section 4.1 (Functional Requirements) under 4. System Features and Requirements, keeping it simple and free of overly specific code syntax.
+### What the agent decided and why
+- Organized the functional requirements of the ProFit system by its core operational modules and user roles (Account & Access Management, Membership & Enrollment, Attendance Tracking, Billing & Subscription Management, Trainer & Schedule Management, Announcements, and Owner Financial Dashboard & Reporting) in clean, non-technical report language.
+### Decision-log skill
+- Group functional requirements by system module and actor capability so readers can immediately trace how each role (Owner, Cashier, Personal Trainer, Member) interacts with the system.
+
+
+## 2026-11-14 16:48 (Asia/Manila): Document Section 5.4 Activity Diagram
+### What I asked for
+Provide the Activity Diagram(s) and explanation for documentation section 5.4 (Activity Diagram) showing the flow of key processes (registration and main transaction flow).
+### What the agent decided and why
+- Created three visual Mermaid Activity Diagrams (`flowchart TD`) covering the three core operational workflows of the ProFit system: (1) Online Member Self-Registration & PayMongo Payment Flow, (2) Staff-Assisted Walk-In Enrollment & Desk Payment Flow, and (3) Daily Member Attendance Check-In & Automated Expiry Flow, accompanied by brief, simple descriptions for the report.
+### Decision-log skill
+- For Activity Diagram sections in system documentation, provide both visual diagrams (`flowchart TD` with clear start/end nodes and decision diamonds) and concise step-by-step prose descriptions of each key transaction flow.
+
+
+## 2026-11-14 16:56 (Asia/Manila): Generate PNG Activity Diagrams for Section 5.4
+### What I asked for
+Generate PNG diagrams for Section 5.4 (Activity Diagram).
+### What the agent decided and why
+- Used Windows `System.Drawing` via PowerShell (`generate_activity_diagrams.ps1`) to render three high-resolution, publication-ready PNG activity diagrams directly into the artifacts directory and embedded them in `activity_diagrams.md` after visually inspecting all three PNGs via `read_file` to ensure zero overlapping labels or clipped shapes.
+### Decision-log skill
+- When generating custom diagram PNGs on Windows where `Pillow` is not installed in the Python environment, PowerShell's built-in `.NET System.Drawing` assembly provides crisp anti-aliased rendering with zero external dependencies.
+
+
+## 2026-11-14 17:00 (Asia/Manila): Copy Activity Diagrams into Workspace docs/ Folder
+### What I asked for
+Show where `activity_diagrams.md` is located and open it.
+### What the agent decided and why
+- Copied `activity_diagrams.md` and the three PNG files into the project workspace under `docs/activity_diagrams.md` and `docs/diagrams/` so they are directly accessible inside the project folder in the IDE and File Explorer, in addition to the artifact panel path.
+### Decision-log skill
+- When users ask to locate or open generated documentation/diagrams, mirror them into `docs/` inside the workspace so they are immediately visible in the project file tree as well as the artifact viewer.
+
+
+## 2026-11-14 22:45 (Asia/Manila): Pull Latest Changes from origin/master
+### What I asked for
+Pull the `master` branch from `https://github.com/her4rtzs/profit-draft.git`.
+### What the agent decided and why
+- Reset the unstaged local append in `PROJECT-LOG.md` to allow a clean fast-forward merge from `5a73caa` to `47aecaf` (`112 files changed, 12057 insertions(+), 7315 deletions(-)`), then re-appended the local session log entries in chronological order.
+### Decision-log skill
+- When `PROJECT-LOG.md` has unstaged local appends and `origin/master` also has new commits touching `PROJECT-LOG.md`, reset `PROJECT-LOG.md` to `HEAD`, fast-forward `git pull origin master`, and re-append the local entries on top.
+
+
+## 2026-11-14 22:49 (Asia/Manila): Add Vertical Spacing Between Member Announcements Panel and Membership Overview Card
+### What I asked for
+Add spacing between the "Latest from the gym" announcements panel and the "Membership Overview" card on the member home page so they look more aesthetic.
+### What the agent decided and why
+- Added `margin-bottom: 22px` to `.ann-overview` in `web/announcements.css` and `html body .panel + .member-status-card { margin-top: 22px; }` in `web/ui-polish.css` (and bumped the cache-busting query versions in `web/member-home.html`) so the gap between the announcements panel and `.member-status-card` matches the `22px` spacing below `.member-status-card`.
+### Decision-log skill
+- When stacking `.panel` elements above non-`.panel` cards (such as `.member-status-card`), include both explicit bottom margin on the upper panel and adjacent-sibling top margin in `ui-polish.css` so card spacing stays uniform across the member overview layout.
+
+
+## 2026-11-14 22:55 (Asia/Manila): Stop Preview Server
+### What I asked for
+Stop the preview and stop the server.
+### What the agent decided and why
+- Stopped the background static HTTP preview server on port `8091` (`task-453`) via `manage_task` (`kill`) and verified via `manage_task` (`list`) that zero background tasks are running.
+### Decision-log skill
+- Always verify with `manage_task` (`list`) after stopping a server task to confirm no background processes remain active.
+
+
+## 2026-11-14 23:05 (Asia/Manila): Pull Latest Changes from origin/master (47aecaf..12c4713)
+### What I asked for
+Pull the `master` repo again.
+### What the agent decided and why
+- Reset the unstaged local append in `PROJECT-LOG.md`, pulled `origin/master` (`47aecaf..12c4713`, updating `web/index.html`, `web/portal-ui.css`, and `PROJECT-LOG.md`), and re-appended the local session log entries while preserving the local spacing edits in `web/announcements.css`, `web/ui-polish.css`, and `web/member-home.html`.
+### Decision-log skill
+- Keep local feature edits untouched when fast-forwarding `origin/master` by only resetting `PROJECT-LOG.md` before `git pull` and re-appending local session entries immediately afterward.
+
+
+## 2026-11-15 08:40 (Asia/Manila): Pull Latest origin/master (12c4713..e79154d) and Enforce Member Overview Card Spacing
+### What I asked for
+Pull the `master` branch from `https://github.com/her4rtzs/profit-draft` and ensure spacing between the "Latest from the gym" panel and the "Membership Overview" card.
+### What the agent decided and why
+- Pulled `origin/master` (`12c4713..e79154d`, `9 files changed, 391 insertions(+), 214 deletions(-)`), then re-applied `margin-bottom: 24px !important` on `.ann-overview` in `web/announcements.css`, `margin-top: 24px !important` on `html body .ann-overview + .member-status-card` in `web/ui-polish.css`, and inline `style="margin-bottom:24px"` / `style="margin-top:24px"` on `.ann-overview` and `.member-status-card` in `web/member-home.html` so the 24px gap renders immediately even if an older stylesheet is cached.
+### Decision-log skill
+- Pair stylesheet spacing updates with explicit spacing on the target container when browser or service-worker CSS caching might delay stylesheet reloads.
+
+
+## 2026-11-15 08:46 (Asia/Manila): Stop Preview Server and Push Member Overview Spacing to Master
+### What I asked for
+Stop the server and push the changes to `master`.
+### What the agent decided and why
+- Stopped the background static HTTP preview server (`task-534`) via `manage_task` (`kill`), staged the modified files (`web/announcements.css`, `web/ui-polish.css`, `web/member-home.html`, and `PROJECT-LOG.md`), committed them, and pushed to `origin/master`.
+### Decision-log skill
+- Always stop running preview servers before staging, committing, and pushing to `origin/master`.
