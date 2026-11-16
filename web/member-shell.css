@@ -560,9 +560,13 @@ body.member-home .member-content {
 
 /* ---------- Standardized Portal Panels, Grids & Alignment ---------- */
 body.member-home .pp-tool-panel {
-  display: grid;
-  gap: 18px;
-  align-content: start;
+  display: grid !important;
+  gap: 16px !important;
+  align-content: start !important;
+}
+
+body.member-home .pp-tool-panel > * {
+  margin: 0 !important;
 }
 
 body.member-home .pp-tool-panel[hidden] {
@@ -589,7 +593,7 @@ body.member-home .member-status-card {
 }
 
 body.member-home .member-hero {
-  margin-bottom: 18px !important;
+  margin: 0 0 16px 0 !important;
 }
 
 body.member-home .member-metrics {

@@ -33,7 +33,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
 <link rel="stylesheet" href="ui-polish.css?v=2">
 <link rel="stylesheet" href="ui-fixes.css?v=1">
 <link rel="stylesheet" href="pf-modern.css?v=1">
-<link rel="stylesheet" href="member-shell.css?v=3">
+<link rel="stylesheet" href="member-shell.css?v=4">
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script></head>
 <body class="member-home">
   <div class="member-app-shell">
@@ -259,21 +259,6 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
       </div>
     </section>
 
-    <section class="member-metrics" aria-label="Member progress metrics">
-      <article class="member-metric-card streak-card">
-        <span class="metric-icon fire"><i class="fa-solid fa-fire"></i></span>
-        <div><small>Current streak</small><strong id="streakCount">0 days</strong><p>Train consistently to unlock rewards.</p></div>
-      </article>
-      <article class="member-metric-card">
-        <span class="metric-icon"><i class="fa-solid fa-bullseye"></i></span>
-        <div><small>Weekly goal</small><strong id="weeklyGoalText">0 / 4 visits</strong><div class="mini-progress"><span id="weeklyGoalBar"></span></div></div>
-      </article>
-      <article class="member-metric-card">
-        <span class="metric-icon green"><i class="fa-solid fa-trophy"></i></span>
-        <div><small>Achievements</small><strong id="achievementCount">0 unlocked</strong><p id="achievementHint">Start checking in to earn badges.</p></div>
-      </article>
-    </section>
-
     <section class="member-grid">
       <div class="panel member-panel">
         <div class="panel-header">
@@ -337,7 +322,12 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
     </section>
   </div>
     <div class="pp-tool-panel" data-panel="schedule" hidden>
-<div id="scheduleRoot"></div>
+      <div class="pf-sk-wrap pf-sk-card" data-skeleton="schedule">
+        <div class="pf-sk-line lg"></div>
+        <div class="pf-sk-row"><div class="pf-sk-line md"></div><div class="pf-sk-line sm"></div></div>
+        <div class="pf-sk-row"><div class="pf-sk-line md"></div><div class="pf-sk-line sm"></div></div>
+      </div>
+      <div id="scheduleRoot"></div>
     </div>
     <div class="pp-tool-panel" data-panel="announcements" hidden>
       <section class="panel member-panel">
@@ -349,9 +339,20 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
       </section>
     </div>
     <div class="pp-tool-panel" data-panel="diary" hidden>
-<div id="diaryRoot"></div>
+      <div class="pf-sk-wrap pf-sk-card" data-skeleton="diary">
+        <div class="pf-sk-line lg"></div>
+        <div class="pf-sk-row"><div class="pf-sk-line md"></div><div class="pf-sk-line sm"></div></div>
+        <div class="pf-sk-row"><div class="pf-sk-line md"></div><div class="pf-sk-line sm"></div></div>
+      </div>
+      <div id="diaryRoot"></div>
     </div>
     <div class="pp-tool-panel" data-panel="health" hidden>
+      <div class="pf-sk-wrap pf-sk-card" data-skeleton="health">
+        <div class="pf-sk-line lg"></div>
+        <div class="pf-sk-line md"></div>
+        <div class="pf-sk-line md"></div>
+      </div>
+      <div id="healthRootWrap">
 <div class="pp-stats">
   <div class="pp-stat"><span>BMI</span><strong id="statBmi">—</strong><small id="statBmiCat">Add height and a weight entry</small></div>
   <div class="pp-stat"><span>Current weight</span><strong id="statWeight">—</strong><small id="statWeightChange">Log weight to see your change</small></div>
@@ -427,6 +428,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
     <p>This is for your own tracking. BMI is a rough guide and does not measure body fat or muscle. Check with a doctor or dietitian before big changes to your diet or training.</p>
   </div>
 </div>
+      </div>
     </div>
     <div class="pp-tool-panel" data-panel="membership" hidden>
       <section class="panel member-panel" id="membershipPanel">
@@ -611,11 +613,11 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
     const weekly = (typeof data.weeklyVisits === "number") ? data.weeklyVisits : calcWeeklyVisits(attendance);
     const goal = 4;
     const achievements = [streak >= 3, weekly >= goal, attendance.length >= 10].filter(Boolean).length;
-    $("streakCount").textContent = `${streak} day${streak === 1 ? "" : "s"}`;
-    $("weeklyGoalText").textContent = `${Math.min(weekly, goal)} / ${goal} visits`;
-    $("weeklyGoalBar").style.width = `${Math.min(100, (weekly / goal) * 100)}%`;
-    $("achievementCount").textContent = `${achievements} unlocked`;
-    $("achievementHint").textContent = achievements ? "Great momentum. Keep collecting badges." : "Start checking in to earn badges.";
+    if ($("streakCount")) $("streakCount").textContent = `${streak} day${streak === 1 ? "" : "s"}`;
+    if ($("weeklyGoalText")) $("weeklyGoalText").textContent = `${Math.min(weekly, goal)} / ${goal} visits`;
+    if ($("weeklyGoalBar")) $("weeklyGoalBar").style.width = `${Math.min(100, (weekly / goal) * 100)}%`;
+    if ($("achievementCount")) $("achievementCount").textContent = `${achievements} unlocked`;
+    if ($("achievementHint")) $("achievementHint").textContent = achievements ? "Great momentum. Keep collecting badges." : "Start checking in to earn badges.";
 
     // App-style Progress Ring & Week Strip
     const ringCount = $("weeklyRingCount");
@@ -679,7 +681,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
       el.hidden = !isLoading;
       el.style.display = isLoading ? "" : "none";
     });
-    ["overviewMembershipBody", "membershipTabBody", "attendanceHistoryRoot", "paymentsHistoryRoot"].forEach(id => {
+    ["overviewMembershipBody", "membershipTabBody", "attendanceHistoryRoot", "paymentsHistoryRoot", "scheduleRoot", "diaryRoot", "healthRootWrap", "profileRoot", "memberSettingsRoot"].forEach(id => {
       const el = $(id);
       if (el) el.hidden = isLoading;
     });
