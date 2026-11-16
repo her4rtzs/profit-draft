@@ -1,9 +1,11 @@
 """Single-writer / stale-transition guard tests for the payment mutators."""
 
 from django.test import TestCase
+from django.utils import timezone
 
 from apps.billing.models import Payment, Subscription, WebhookEvent
 from apps.billing.services import (
+    activate_paid_payment,
     create_payment_intent,
     mark_payment_failed,
     mark_payment_paid,
@@ -14,10 +16,10 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-def _make_payment(status=Payment.Status.PENDING, pm_id="pm_1"):
+def _make_payment(status=Payment.Status.PENDING, pm_id="pm_1", plan=""):
     user = User.objects.create_user(username=f"u_{pm_id}", password="x")
     profile = MemberProfile.objects.create(user=user)
-    sub = Subscription.objects.create(member=profile, amount_centavos=10000)
+    sub = Subscription.objects.create(member=profile, plan=plan, amount_centavos=10000)
     return Payment.objects.create(
         subscription=sub,
         amount_centavos=10000,
@@ -50,6 +52,18 @@ class PaymentMutatorTests(TestCase):
         mark_payment_paid(payment)
         payment.refresh_from_db()
         self.assertEqual(payment.status, Payment.Status.FAILED)
+
+    def test_activate_uses_current_expiry_not_stale_object(self):
+        payment = _make_payment(pm_id="pm_race", plan="monthly")
+        member = payment.subscription.member
+        # Another renewal lands after this member object was loaded.
+        moved_to = timezone.localdate() + timezone.timedelta(days=10)
+        MemberProfile.objects.filter(pk=member.pk).update(
+            expiry_date=moved_to, membership_status=MemberProfile.MembershipStatus.ACTIVE
+        )
+        activate_paid_payment(payment)
+        member.refresh_from_db()
+        self.assertEqual(member.expiry_date, moved_to + timezone.timedelta(days=30))
 
     def test_create_payment_intent_is_stub(self):
         with self.assertRaises(NotImplementedError):

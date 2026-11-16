@@ -25,6 +25,7 @@ from django.db.models import Q
 from django.utils import timezone
 
 from apps.finance.services import PLAN_PRICE_CENTAVOS
+from apps.membership.models import MemberProfile
 from apps.membership.services import renew_member
 
 from .models import Payment, PendingSignup, Subscription
@@ -131,6 +132,8 @@ def activate_paid_payment(payment):
     """
     sub = payment.subscription
     member = sub.member
+    # Lock the member so two paid events cannot both extend from the same expiry.
+    member = MemberProfile.objects.select_for_update().get(pk=member.pk)
     today = timezone.localdate()
     start = member.expiry_date if member.expiry_date and member.expiry_date >= today else today
     if sub.plan:
