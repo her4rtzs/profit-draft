@@ -92,15 +92,24 @@
   .back-link:hover{color:var(--gold)}
   .back-link:hover i{transform:translateX(-3px)}
 
-  /* Full-bleed hero with flat overlay */
+  /* Full-bleed hero with flat overlay & subtle parallax layer */
+  @keyframes pfPageFade{from{opacity:0}to{opacity:1}}
   .lg-shell{
     position:relative;
     flex:1 1 auto;
     min-height:calc(100vh - 68px);
-    background:url("img/hero.jpg") center/cover no-repeat;
     display:flex;align-items:center;
     padding:clamp(16px,2.5vh,28px) clamp(16px,4vw,48px);
     overflow:hidden;
+    animation:pfPageFade .35s ease-out both;
+  }
+  .lg-shell::after{
+    content:"";position:absolute;inset:-18px;
+    background:url("img/hero.jpg") center/cover no-repeat;
+    transform:translate3d(var(--px,0px),var(--py,0px),0) scale(1.02);
+    transition:transform .35s cubic-bezier(.22,1,.36,1);
+    will-change:transform;
+    z-index:-1;
   }
   .lg-shell::before{
     content:"";position:absolute;inset:0;
@@ -120,6 +129,8 @@
 
   /* Left copy */
   @keyframes pfRiseIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  @keyframes pfCardSlideIn{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+  @keyframes pfCheckPop{0%{transform:rotate(45deg) scale(.35);opacity:0}70%{transform:rotate(45deg) scale(1.15);opacity:1}100%{transform:rotate(45deg) scale(1);opacity:1}}
   .lg-eyebrow{
     display:inline-flex;align-items:center;gap:10px;
     font:700 12px/1.2 "Plus Jakarta Sans",sans-serif;
@@ -139,14 +150,19 @@
     margin:0 0 24px;max-width:460px;font-size:16.5px;line-height:1.6;color:var(--mu);
     animation:pfRiseIn .5s cubic-bezier(.22,1,.36,1) .12s both;
   }
-  .lg-checks{list-style:none;margin:0 0 24px;padding:0;display:grid;gap:12px;animation:pfRiseIn .5s cubic-bezier(.22,1,.36,1) .18s both}
+  .lg-checks{list-style:none;margin:0 0 24px;padding:0;display:grid;gap:12px}
   .lg-checks li{
     display:flex;align-items:center;gap:10px;font-size:14.5px;font-weight:500;color:var(--tx);
     transition:transform .18s ease;
+    animation:pfRiseIn .45s cubic-bezier(.22,1,.36,1) both;
   }
+  .lg-checks li:nth-child(1){animation-delay:.18s}
+  .lg-checks li:nth-child(2){animation-delay:.24s}
+  .lg-checks li:nth-child(3){animation-delay:.30s}
   .lg-checks li:hover{transform:translateX(3px)}
-  .lg-checks i{color:var(--gold);font-size:14px;flex:none}
-  .lg-gym-foot{margin:0;font-size:12.5px;color:var(--mu);animation:pfRiseIn .5s cubic-bezier(.22,1,.36,1) .24s both}
+  .lg-checks i{color:var(--gold);font-size:14px;flex:none;transition:transform .2s cubic-bezier(.22,1,.36,1)}
+  .lg-checks li:hover i{transform:scale(1.18)}
+  .lg-gym-foot{margin:0;font-size:12.5px;color:var(--mu);animation:pfRiseIn .5s cubic-bezier(.22,1,.36,1) .34s both}
 
   /* Right card */
   .lg-card{
@@ -156,8 +172,16 @@
     border-radius:16px;
     padding:clamp(18px,2.4vh,24px) clamp(20px,2.5vw,28px);
     box-shadow:0 24px 48px -20px rgba(0,0,0,.75);
-    animation:pfRiseIn .52s cubic-bezier(.22,1,.36,1) .08s both;
+    animation:pfCardSlideIn .52s cubic-bezier(.22,1,.36,1) .08s both;
   }
+  .lg-card form > *{animation:pfRiseIn .42s cubic-bezier(.22,1,.36,1) both}
+  .lg-card form > *:nth-child(1){animation-delay:.14s}
+  .lg-card form > *:nth-child(2){animation-delay:.17s}
+  .lg-card form > *:nth-child(4){animation-delay:.20s}
+  .lg-card form > *:nth-child(5){animation-delay:.23s}
+  .lg-card form > *:nth-child(8){animation-delay:.26s}
+  .lg-card form > *:nth-child(10){animation-delay:.29s}
+  .lg-card form > *:nth-child(11){animation-delay:.32s}
   .lg-card h2{margin:0 0 3px;font-size:24px;font-weight:800;letter-spacing:-.02em;color:var(--tx)}
   .lg-lead{margin:0 0 14px;font-size:13.5px;color:var(--mu)}
 
@@ -193,9 +217,12 @@
     position:absolute;right:4px;top:50%;transform:translateY(-50%);
     width:44px;height:44px;border:0;background:transparent;color:var(--mu);
     display:grid;place-items:center;cursor:pointer;border-radius:10px;
-    transition:color .15s ease;
+    transition:color .16s ease,transform .15s ease;
   }
+  .lg-eye i{transition:transform .16s cubic-bezier(.22,1,.36,1)}
   .lg-eye:hover{color:var(--gold)}
+  .lg-eye:hover i{transform:scale(1.12)}
+  .lg-eye:active i{transform:scale(.88)}
 
   .lg-err-sm{display:block;min-height:0;margin:3px 0 8px;font-size:12px;font-weight:500;color:var(--err)}
   .lg-caps{display:flex;align-items:center;gap:6px;margin:4px 0 0;font-size:12px;font-weight:600;color:var(--gold)}
@@ -222,6 +249,7 @@
   .lg-remember input[type="checkbox"]:checked::after{
     content:"";width:5px;height:9px;border:solid var(--on);border-width:0 2px 2px 0;
     transform:rotate(45deg);margin-bottom:2px;
+    animation:pfCheckPop .22s cubic-bezier(.22,1,.36,1) both;
   }
 
   .lg-msg{
@@ -238,19 +266,26 @@
     background:var(--gold);color:var(--on);
     font:700 15px/1 "Plus Jakarta Sans",sans-serif;
     display:inline-flex;align-items:center;justify-content:center;gap:8px;
-    cursor:pointer;transition:filter .16s ease,transform .16s cubic-bezier(.22,1,.36,1),box-shadow .16s ease;
+    cursor:pointer;transition:filter .16s ease,background-color .16s ease,transform .16s cubic-bezier(.22,1,.36,1);
   }
-  .lg-btn-gold:hover:not(:disabled){filter:brightness(1.06);transform:translateY(-1px);box-shadow:0 8px 20px -6px rgba(232,185,58,.45)}
-  .lg-btn-gold:active:not(:disabled){transform:translateY(1px);box-shadow:none}
+  .lg-btn-gold:hover:not(:disabled){filter:brightness(1.06);transform:translateY(-1px)}
+  .lg-btn-gold:active:not(:disabled){transform:translateY(1px) scale(.99);filter:brightness(.97)}
   .lg-btn-gold:disabled{opacity:.65;cursor:not-allowed}
 
   .lg-forgot-row{display:flex;justify-content:center;margin:8px 0 0}
   .lg-forgot{
+    position:relative;
     display:inline-flex;align-items:center;min-height:36px;padding:0 10px;
     font-size:13px;font-weight:600;color:var(--gold);
-    text-decoration:underline;text-underline-offset:3px;
+    text-decoration:none;transition:color .16s ease;
+  }
+  .lg-forgot::after{
+    content:"";position:absolute;left:10px;right:10px;bottom:8px;height:1.5px;
+    background:currentColor;transform:scaleX(.35);transform-origin:center;opacity:.65;
+    transition:transform .2s cubic-bezier(.22,1,.36,1),opacity .2s ease;
   }
   .lg-forgot:hover{color:var(--lime-hi)}
+  .lg-forgot:hover::after{transform:scaleX(1);opacity:1}
 
   .lg-divider{
     display:flex;align-items:center;gap:12px;margin:8px 0 10px;
@@ -274,10 +309,17 @@
     margin:10px 0 0;text-align:center;font-size:13.5px;color:var(--mu);
   }
   .lg-join-row a{
+    position:relative;
     display:inline-flex;align-items:center;min-height:36px;
-    color:var(--gold);font-weight:600;text-decoration:underline;text-underline-offset:3px;
+    color:var(--gold);font-weight:600;text-decoration:none;transition:color .16s ease;
+  }
+  .lg-join-row a::after{
+    content:"";position:absolute;left:0;right:0;bottom:8px;height:1.5px;
+    background:currentColor;transform:scaleX(.35);transform-origin:left;opacity:.65;
+    transition:transform .2s cubic-bezier(.22,1,.36,1),opacity .2s ease;
   }
   .lg-join-row a:hover{color:var(--lime-hi)}
+  .lg-join-row a:hover::after{transform:scaleX(1);opacity:1}
 
   @media(max-width:900px){
     .lg-shell{min-height:auto;padding:28px 16px 36px;align-items:flex-start}
@@ -468,6 +510,28 @@
       setBusy(false);
       pwEl.value = '';
     }
+  });
+})();
+</script>
+<script>
+(() => {
+  const shell = document.querySelector(".lg-shell");
+  if (!shell || window.matchMedia("(prefers-reduced-motion: reduce)").matches || window.matchMedia("(pointer: coarse)").matches) return;
+  let raf = 0;
+  shell.addEventListener("pointermove", e => {
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      raf = 0;
+      const r = shell.getBoundingClientRect();
+      const x = ((e.clientX - r.left) / r.width - 0.5) * -12;
+      const y = ((e.clientY - r.top) / r.height - 0.5) * -12;
+      shell.style.setProperty("--px", `${x.toFixed(1)}px`);
+      shell.style.setProperty("--py", `${y.toFixed(1)}px`);
+    });
+  }, { passive: true });
+  shell.addEventListener("pointerleave", () => {
+    shell.style.setProperty("--px", "0px");
+    shell.style.setProperty("--py", "0px");
   });
 })();
 </script>
