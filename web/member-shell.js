@@ -3,9 +3,12 @@
   const $ = id => document.getElementById(id);
 
   const TAB_TITLES = {
-    overview: "Overview",
+    overview: "Dashboard",
+    membership: "My Membership",
+    attendance: "Attendance History",
+    payments: "Payment History",
     schedule: "Schedule",
-    announcements: "Announcements",
+    announcements: "Announcements & Notifications",
     diary: "Training diary",
     health: "Health & goals",
     profile: "My profile",

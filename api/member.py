@@ -8,11 +8,13 @@ from datetime import timedelta
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.exceptions import NotFound
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.billing.models import Payment
-from apps.membership.models import Attendance, MemberProfile
+from apps.billing.models import Payment, Subscription
+from apps.membership.models import Attendance, Enrollment, MemberProfile
+from apps.membership.services import PLAN_DAYS
 
 
 PHOTO_PREFIX = "data:image/jpeg;base64,"
@@ -33,6 +35,8 @@ def _clean_photo(value):
 
 
 class MemberMeView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def patch(self, request):
         """Members may update their own photo, phone and address."""
         profile = MemberProfile.objects.filter(user=request.user).first()
@@ -88,8 +92,47 @@ class MemberMeView(APIView):
         weekly_visits = sum(1 for d in visit_set if d >= week_monday)
 
         visits_for_display = all_visits[:30]
-        paid = (Payment.objects.filter(subscription__member=profile, status=Payment.Status.PAID)
-                .order_by("-created_at")[:20])
+        latest_sub = (
+            Subscription.objects.filter(member=profile)
+            .order_by("-created_at")
+            .first()
+        )
+        latest_enrollment = (
+            Enrollment.objects.filter(member=profile)
+            .order_by("-end_date", "-created_at")
+            .first()
+        )
+        all_payments = list(
+            Payment.objects.select_related("subscription")
+            .filter(subscription__member=profile)
+            .order_by("-created_at")[:30]
+        )
+        latest_payment = all_payments[0] if all_payments else None
+
+        plan_key = (latest_sub.plan or "").strip().lower() if latest_sub and latest_sub.plan else None
+        plan_name = plan_key.title() if plan_key else "No active plan"
+        start_date = latest_enrollment.start_date if latest_enrollment else None
+        end_date = profile.expiry_date or (latest_enrollment.end_date if latest_enrollment else None)
+        if plan_key and plan_key in PLAN_DAYS:
+            duration_days = PLAN_DAYS[plan_key]
+        elif latest_enrollment and latest_enrollment.end_date and latest_enrollment.start_date:
+            duration_days = max(1, (latest_enrollment.end_date - latest_enrollment.start_date).days)
+        else:
+            duration_days = None
+
+        remaining_days = max(0, (end_date - today).days) if end_date else 0
+        raw_status = profile.membership_status
+        if raw_status == MemberProfile.MembershipStatus.PENDING and not end_date:
+            effective_status = "PENDING"
+        elif end_date and end_date < today:
+            effective_status = "EXPIRED"
+        elif raw_status == MemberProfile.MembershipStatus.EXPIRED:
+            effective_status = "EXPIRED"
+        elif end_date and (end_date - today).days <= 7:
+            effective_status = "EXPIRING_SOON"
+        else:
+            effective_status = "ACTIVE"
+
         user = request.user
         return Response({
             "user": {
@@ -98,9 +141,17 @@ class MemberMeView(APIView):
                 "memberId": f"M{202600 + profile.pk}",
             },
             "membership": {
-                "planName": "Membership",
-                "status": profile.membership_status,
-                "expiry": profile.expiry_date.isoformat() if profile.expiry_date else None,
+                "plan": plan_key,
+                "planName": plan_name,
+                "status": effective_status,
+                "rawStatus": raw_status,
+                "expiringSoon": effective_status == "EXPIRING_SOON",
+                "startDate": start_date.isoformat() if start_date else None,
+                "endDate": end_date.isoformat() if end_date else None,
+                "expiry": end_date.isoformat() if end_date else None,
+                "durationDays": duration_days,
+                "remainingDays": remaining_days,
+                "paymentStatus": latest_payment.status if latest_payment else "NONE",
             },
             # attendance: YYYY-MM-DD strings (localdate) — no UTC shift on the client
             "attendance": [{"date": d.isoformat(), "location": "Gym check-in"} for d in visits_for_display],
@@ -112,14 +163,18 @@ class MemberMeView(APIView):
                 "reference": f"PF-{p.pk:06d}",
                 "date": timezone.localdate(p.created_at).isoformat(),
                 "method": "Online",
+                "status": p.status,
+                "plan": (p.subscription.plan.title() if p.subscription and p.subscription.plan else "Membership"),
+                "durationDays": PLAN_DAYS.get((p.subscription.plan or "").lower()) if p.subscription else None,
                 "amount_centavos": p.amount_centavos,
                 "amountFormatted": f"₱{p.amount_centavos / 100:,.2f}",
-            } for p in paid],
+            } for p in all_payments],
         })
 
 
 class MemberCheckoutView(APIView):
     """POST /api/member/checkout/ {plan}: start an online payment for the caller."""
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         from django.conf import settings
@@ -148,6 +203,7 @@ class MemberCheckoutView(APIView):
 
 class MemberCheckInView(APIView):
     """POST /api/member/check-in/: self check-in for the authenticated member."""
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         from django.core.exceptions import ValidationError as DjangoValidationError

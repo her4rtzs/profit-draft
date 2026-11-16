@@ -2216,3 +2216,13 @@ Make the Login and Join cards fit cleanly on screen without vertical scrolling, 
 - Added `<link rel="icon" type="image/jpeg" href="logo.jpg">` and `<link rel="apple-touch-icon" href="logo.jpg">` across `welcome.html`, `login.html`, `join.html`, `forgot.html`, `faq.html`, `terms.html`, and `privacy.html`, and bumped `web/sw.js` to `profit-shell-v21`.
 ### Decision-log skill
 Avoid reserving blank `min-height` on hidden inline field error slots (`min-height: 0`) so checkboxes like "Remember me" stay visually grouped with their preceding input.
+
+## 2026-11-16 08:18 (Asia/Manila): Upgrade Member Portal sidebar, My Membership, skeletons, and layout alignment
+### What I asked for
+Upgrade the ProFit Member Portal (`web/member-home.html`, `web/member-shell.css`, `web/member-shell.js`, `web/member-pay.js`, and `api/member.py`) to match the Staff Portal sidebar design with member-specific navigation, add real DB-backed My Membership / Attendance History / Payment History tabs, add skeleton loading on every tab, fix negative remaining days, and standardize container alignment across all tabs.
+### What the agent decided and why
+- Enriched `GET /api/member/me/` (`api/member.py`) with `IsAuthenticated` and real `Subscription`, `Enrollment`, and `Payment` (`PAID`, `PENDING`, `FAILED`) data, clamping `remainingDays >= 0` and reporting `EXPIRED` / `EXPIRING_SOON` / `ACTIVE` / `PENDING` accurately.
+- Styled `.member-sidebar` in `web/member-shell.css` to match `sidebar-pro.css` (`260px` / `80px` rail, `#141b27 -> #0c1119` gradient, `0 20px 20px 0` radius, `.nav-group` containers, `#e8b93a` active pill, and direct Logout item) while preserving Schedule, Diary, and Health & goals tabs.
+- Added standardized `.pf-grid-*`, `.pf-meta-grid`, `.pf-progress-track`, `.pf-status-badge`, `.pf-table-wrap`, `.pf-state-box`, and shimmer `.pf-sk-*` skeleton loaders across all member portal tabs, removing silent `demoData()` fallback on API error in favor of explicit error/retry states.
+### Decision-log skill
+Clamp computed `remainingDays` at zero both on the API and client, and never mask live API failures with demo fallback data in authenticated portals.

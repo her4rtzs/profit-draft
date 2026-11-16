@@ -10,19 +10,24 @@
 .pfpay-x{background:none;border:0;color:var(--muted,#666);cursor:pointer;width:100%;padding:8px}`;
   document.head.appendChild(css);
   function open() {
+    if (document.querySelector(".pfpay")) return;
     const m = document.createElement("div"); m.className = "pfpay";
-    m.innerHTML = `<div class="pfpay-box" role="dialog" aria-modal="true"><h3>Choose a plan</h3><p>Pay with GCash, Maya, card or QR. Your membership starts as soon as the payment is confirmed.</p>${PLANS.map(p => `<button type="button" class="pfpay-plan" data-plan="${p[0]}"><span><strong>${p[1]}</strong><br><small>${p[3]}</small></span><b>${p[2]}</b></button>`).join("")}<div class="pfpay-err" role="alert"></div><button type="button" class="pfpay-x">Cancel</button></div>`;
+    m.innerHTML = `<div class="pfpay-box" role="dialog" aria-modal="true"><h3>Choose a plan</h3><p>Pay with GCash, Maya, card or QR. Active memberships extend from your current expiry date.</p>${PLANS.map(p => `<button type="button" class="pfpay-plan" data-plan="${p[0]}"><span><strong>${p[1]}</strong><br><small>${p[3]}</small></span><b>${p[2]}</b></button>`).join("")}<div class="pfpay-err" role="alert"></div><button type="button" class="pfpay-x">Cancel</button></div>`;
     document.body.appendChild(m);
+    let busy = false;
     m.addEventListener("click", async e => {
-      if (e.target === m || e.target.closest(".pfpay-x")) return m.remove();
-      const b = e.target.closest("[data-plan]"); if (!b) return;
+      if (!busy && (e.target === m || e.target.closest(".pfpay-x"))) return m.remove();
+      const b = e.target.closest("[data-plan]"); if (!b || busy) return;
+      busy = true;
       const err = m.querySelector(".pfpay-err"); err.textContent = "Opening secure checkout...";
       m.querySelectorAll("button").forEach(x => x.disabled = true);
       try { const r = await window.ProFitAPI.post("/member/checkout", { plan: b.dataset.plan }); location.href = r.checkout_url; }
-      catch (ex) { err.textContent = ex.message || "Could not start the payment."; m.querySelectorAll("button").forEach(x => x.disabled = false); }
+      catch (ex) { busy = false; err.textContent = ex.message || "Could not start the payment."; m.querySelectorAll("button").forEach(x => x.disabled = false); }
     });
   }
+  window.ProFitMemberPay = { open };
   document.addEventListener("click", e => {
+    if (e.target.closest("[data-renew-membership]")) { e.preventDefault(); open(); return; }
     const a = e.target.closest('a[href="member-portal.html"],a[href="join.html"]');
     if (a && /explore plans/i.test(a.textContent)) { e.preventDefault(); open(); }
   }, true);

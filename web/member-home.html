@@ -49,60 +49,90 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
       </div>
 
       <nav class="side-scroll" role="tablist" aria-label="Member sections">
-        <p class="nav-label">My gym</p>
-        <ul class="nav-list">
-          <li>
-            <button class="nav-link active" type="button" role="tab" data-tab="overview" aria-selected="true" aria-current="page" title="Overview">
-              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="2"/><rect x="14" y="3" width="7" height="5" rx="2"/><rect x="14" y="12" width="7" height="9" rx="2"/><rect x="3" y="16" width="7" height="5" rx="2"/></svg>
-              <span class="nav-text">Overview</span>
-            </button>
-          </li>
-          <li>
-            <button class="nav-link" type="button" role="tab" data-tab="schedule" aria-selected="false" title="Schedule">
-              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-              <span class="nav-text">Schedule</span>
-            </button>
-          </li>
-          <li>
-            <button class="nav-link" type="button" role="tab" data-tab="announcements" aria-selected="false" title="Announcements">
-              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
-              <span class="nav-text">Announcements</span>
-              <span class="nav-count" id="sideAnnounceBadge" hidden>0</span>
-            </button>
-          </li>
-        </ul>
+        <div class="nav-group">
+          <p class="nav-label">Member Portal</p>
+          <ul class="nav-list">
+            <li>
+              <button class="nav-link active" type="button" role="tab" data-tab="overview" aria-selected="true" aria-current="page" title="Dashboard">
+                <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="2"/><rect x="14" y="3" width="7" height="5" rx="2"/><rect x="14" y="12" width="7" height="9" rx="2"/><rect x="3" y="16" width="7" height="5" rx="2"/></svg>
+                <span class="nav-text">Dashboard</span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-link" type="button" role="tab" data-tab="profile" aria-selected="false" title="My Profile">
+                <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M5 20a7 7 0 0 1 14 0"/></svg>
+                <span class="nav-text">My Profile</span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-link" type="button" role="tab" data-tab="membership" aria-selected="false" title="My Membership">
+                <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+                <span class="nav-text">My Membership</span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-link" type="button" role="tab" data-tab="attendance" aria-selected="false" title="Attendance History">
+                <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                <span class="nav-text">Attendance History</span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-link" type="button" role="tab" data-tab="payments" aria-selected="false" title="Payment History">
+                <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1z"/><path d="M8 7h8M8 11h8M8 15h5"/></svg>
+                <span class="nav-text">Payment History</span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-link" type="button" role="tab" data-tab="announcements" aria-selected="false" title="Announcements &amp; Notifications">
+                <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+                <span class="nav-text">Notifications</span>
+                <span class="nav-count" id="sideAnnounceBadge" hidden>0</span>
+              </button>
+            </li>
+          </ul>
+        </div>
 
-        <p class="nav-label">My progress</p>
-        <ul class="nav-list">
-          <li>
-            <button class="nav-link" type="button" role="tab" data-tab="diary" aria-selected="false" title="Diary">
-              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-              <span class="nav-text">Diary</span>
-            </button>
-          </li>
-          <li>
-            <button class="nav-link" type="button" role="tab" data-tab="health" aria-selected="false" title="Health &amp; goals">
-              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l1.5-2 2 4.5 2-2.5h5.27"/></svg>
-              <span class="nav-text">Health &amp; goals</span>
-            </button>
-          </li>
-        </ul>
+        <div class="nav-group">
+          <p class="nav-label">Training</p>
+          <ul class="nav-list">
+            <li>
+              <button class="nav-link" type="button" role="tab" data-tab="schedule" aria-selected="false" title="Schedule">
+                <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                <span class="nav-text">Schedule</span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-link" type="button" role="tab" data-tab="diary" aria-selected="false" title="Diary">
+                <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                <span class="nav-text">Diary</span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-link" type="button" role="tab" data-tab="health" aria-selected="false" title="Health &amp; goals">
+                <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l1.5-2 2 4.5 2-2.5h5.27"/></svg>
+                <span class="nav-text">Health &amp; goals</span>
+              </button>
+            </li>
+          </ul>
+        </div>
 
-        <p class="nav-label">Account</p>
-        <ul class="nav-list">
-          <li>
-            <button class="nav-link" type="button" role="tab" data-tab="profile" aria-selected="false" title="My profile">
-              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M5 20a7 7 0 0 1 14 0"/></svg>
-              <span class="nav-text">My profile</span>
-            </button>
-          </li>
-          <li>
-            <button class="nav-link" type="button" role="tab" data-tab="settings" aria-selected="false" title="Settings">
-              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
-              <span class="nav-text">Settings</span>
-            </button>
-          </li>
-        </ul>
+        <div class="nav-group">
+          <p class="nav-label">Account</p>
+          <ul class="nav-list">
+            <li>
+              <button class="nav-link" type="button" role="tab" data-tab="settings" aria-selected="false" title="Settings">
+                <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+                <span class="nav-text">Settings</span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-link nav-logout" type="button" data-logout title="Logout">
+                <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                <span class="nav-text">Logout</span>
+              </button>
+            </li>
+          </ul>
+        </div>
       </nav>
 
       <div class="side-foot">
@@ -173,13 +203,33 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
       <div class="panel-header"><div><h2>Latest from the gym</h2><p>Notices and updates.</p></div><a class="ann-btn" href="#announcements">See all</a></div>
       <div id="annPreview" class="ann-list"></div>
     </section>
-    <section class="member-status-card" style="margin-top:24px">
-      <div>
-        <span class="member-status-label"><i class="fa-solid fa-circle-check"></i> MEMBERSHIP OVERVIEW</span>
-        <h2 id="membershipName">Loading</h2>
-        <p id="membershipDetail">Checking your current account details.</p>
+    <section class="member-status-card" id="overviewMembershipCard">
+      <div class="pf-sk-wrap" data-skeleton="overview-membership" style="width:100%;display:grid;gap:10px">
+        <div class="pf-sk-line sm"></div>
+        <div class="pf-sk-line lg"></div>
+        <div class="pf-sk-line md"></div>
+        <div class="pf-sk-bar"></div>
       </div>
-      <span class="member-status-chip" id="membershipStatus">Loading</span>
+      <div id="overviewMembershipBody" hidden style="width:100%">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap">
+          <div>
+            <span class="member-status-label"><i class="fa-solid fa-circle-check"></i> MEMBERSHIP SUMMARY</span>
+            <h2 id="membershipName">—</h2>
+            <p id="membershipDetail">Checking your current account details.</p>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <span class="pf-status-badge" id="membershipStatus">—</span>
+            <button type="button" class="btn btn-primary" data-renew-membership><i class="fa-solid fa-rotate"></i> Renew membership</button>
+          </div>
+        </div>
+        <div class="pf-progress-wrap">
+          <div class="pf-progress-labels">
+            <span id="overviewMembershipRemaining">—</span>
+            <span id="overviewMembershipPct">0%</span>
+          </div>
+          <div class="pf-progress-track"><div class="pf-progress-fill" id="overviewMembershipBar"></div></div>
+        </div>
+      </div>
     </section>
 
     <section class="member-metrics" aria-label="Member progress metrics">
@@ -223,7 +273,10 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
           <div><h2>Recent attendance</h2><p>Your latest gym check-ins</p></div>
           <i class="fa-solid fa-calendar-check"></i>
         </div>
-        <div id="attendanceList" class="member-list"><p class="member-loading">Loading</p></div>
+        <div id="attendanceList" class="member-list">
+          <div class="pf-sk-row"><div class="pf-sk-line md"></div><div class="pf-sk-line sm"></div></div>
+          <div class="pf-sk-row"><div class="pf-sk-line md"></div><div class="pf-sk-line sm"></div></div>
+        </div>
       </div>
 
       <div class="panel member-panel">
@@ -231,7 +284,10 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
           <div><h2>Payment history</h2><p>Recent membership payments</p></div>
           <i class="fa-solid fa-receipt"></i>
         </div>
-        <div id="paymentList" class="member-list"><p class="member-loading">Loading</p></div>
+        <div id="paymentList" class="member-list">
+          <div class="pf-sk-row"><div class="pf-sk-line md"></div><div class="pf-sk-line sm"></div></div>
+          <div class="pf-sk-row"><div class="pf-sk-line md"></div><div class="pf-sk-line sm"></div></div>
+        </div>
       </div>
     </section>
 
@@ -259,7 +315,10 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
     <div class="pp-tool-panel" data-panel="announcements" hidden>
       <section class="panel member-panel">
         <div class="panel-header"><div><h2>Announcements</h2><p>Notices from the gym.</p></div></div>
-        <div id="announcementList" class="ann-list"></div>
+        <div id="announcementList" class="ann-list">
+          <div class="pf-sk-row"><div class="pf-sk-line lg"></div><div class="pf-sk-line sm"></div></div>
+          <div class="pf-sk-row"><div class="pf-sk-line md"></div><div class="pf-sk-line sm"></div></div>
+        </div>
       </section>
     </div>
     <div class="pp-tool-panel" data-panel="diary" hidden>
@@ -342,12 +401,79 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
   </div>
 </div>
     </div>
+    <div class="pp-tool-panel" data-panel="membership" hidden>
+      <section class="panel member-panel" id="membershipPanel">
+        <div class="pf-panel-head">
+          <div>
+            <h2><i class="fa-solid fa-id-card"></i> My Membership</h2>
+            <p>Your active plan, coverage dates, and renewal status.</p>
+          </div>
+          <button type="button" class="btn btn-primary" data-renew-membership><i class="fa-solid fa-rotate"></i> Renew membership</button>
+        </div>
+        <div class="pf-sk-wrap" data-skeleton="membership" style="display:grid;gap:14px">
+          <div class="pf-meta-grid">
+            <div class="pf-sk-card"><div class="pf-sk-line sm"></div><div class="pf-sk-line lg"></div></div>
+            <div class="pf-sk-card"><div class="pf-sk-line sm"></div><div class="pf-sk-line lg"></div></div>
+            <div class="pf-sk-card"><div class="pf-sk-line sm"></div><div class="pf-sk-line lg"></div></div>
+          </div>
+          <div class="pf-sk-bar"></div>
+        </div>
+        <div id="membershipTabBody" hidden></div>
+      </section>
+    </div>
+
+    <div class="pp-tool-panel" data-panel="attendance" hidden>
+      <section class="panel member-panel">
+        <div class="pf-panel-head">
+          <div>
+            <h2><i class="fa-solid fa-calendar-check"></i> Attendance History</h2>
+            <p>Your recorded gym check-ins and streaks.</p>
+          </div>
+          <span class="pf-status-badge is-active" id="attendanceCountBadge">0 check-ins</span>
+        </div>
+        <div class="pf-sk-wrap" data-skeleton="attendance" style="display:grid;gap:8px">
+          <div class="pf-sk-row"><div class="pf-sk-line md"></div><div class="pf-sk-line sm"></div></div>
+          <div class="pf-sk-row"><div class="pf-sk-line md"></div><div class="pf-sk-line sm"></div></div>
+          <div class="pf-sk-row"><div class="pf-sk-line md"></div><div class="pf-sk-line sm"></div></div>
+        </div>
+        <div id="attendanceHistoryRoot" hidden></div>
+      </section>
+    </div>
+
+    <div class="pp-tool-panel" data-panel="payments" hidden>
+      <section class="panel member-panel">
+        <div class="pf-panel-head">
+          <div>
+            <h2><i class="fa-solid fa-receipt"></i> Payment History</h2>
+            <p>Membership payments, pending checkouts, and receipts.</p>
+          </div>
+          <button type="button" class="btn btn-soft" data-renew-membership><i class="fa-solid fa-plus"></i> Pay / Renew online</button>
+        </div>
+        <div class="pf-sk-wrap" data-skeleton="payments" style="display:grid;gap:8px">
+          <div class="pf-sk-row"><div class="pf-sk-line md"></div><div class="pf-sk-line sm"></div></div>
+          <div class="pf-sk-row"><div class="pf-sk-line md"></div><div class="pf-sk-line sm"></div></div>
+          <div class="pf-sk-row"><div class="pf-sk-line md"></div><div class="pf-sk-line sm"></div></div>
+        </div>
+        <div id="paymentsHistoryRoot" hidden></div>
+      </section>
+    </div>
+
     <div class="pp-tool-panel" data-panel="profile" hidden>
       <section class="panel member-panel" style="margin-bottom:16px"><div id="trainerCard"></div></section>
-<div id="profileRoot"></div>
+      <div class="pf-sk-wrap pf-sk-card" data-skeleton="profile">
+        <div style="display:flex;align-items:center;gap:14px"><div class="pf-sk-circle"></div><div style="flex:1;display:grid;gap:8px"><div class="pf-sk-line lg"></div><div class="pf-sk-line sm"></div></div></div>
+        <div class="pf-sk-line md"></div>
+        <div class="pf-sk-line md"></div>
+      </div>
+      <div id="profileRoot"></div>
     </div>
     <div class="pp-tool-panel" data-panel="settings" hidden>
-<div id="memberSettingsRoot"></div>
+      <div class="pf-sk-wrap pf-sk-card" data-skeleton="settings">
+        <div class="pf-sk-line lg"></div>
+        <div class="pf-sk-line md"></div>
+        <div class="pf-sk-line md"></div>
+      </div>
+      <div id="memberSettingsRoot"></div>
     </div>
   </main>
     </div><!-- /.member-main -->
@@ -476,47 +602,155 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
       box.append(row);
     });
   }
+  function statusBadgeClass(st) {
+    const s = String(st || "").toUpperCase();
+    if (s === "ACTIVE" || s === "PAID") return "is-active";
+    if (s === "EXPIRING_SOON" || s === "PENDING") return "is-expiring";
+    if (s === "EXPIRED" || s === "FAILED") return "is-expired";
+    return "is-pending";
+  }
+
+  function formatStatusLabel(st) {
+    const s = String(st || "").toUpperCase();
+    if (s === "EXPIRING_SOON") return "Expiring Soon";
+    if (!s || s === "NONE") return "Not Enrolled";
+    return s.charAt(0) + s.slice(1).toLowerCase();
+  }
+
+  function setLoadingState(isLoading) {
+    document.querySelectorAll("[data-skeleton]").forEach(el => {
+      el.hidden = !isLoading;
+      el.style.display = isLoading ? "" : "none";
+    });
+    ["overviewMembershipBody", "membershipTabBody", "attendanceHistoryRoot", "paymentsHistoryRoot"].forEach(id => {
+      const el = $(id);
+      if (el) el.hidden = isLoading;
+    });
+  }
+
   function render(data) {
+    setLoadingState(false);
+    const eh = v => String(v ?? "—").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
     const raw = data.membership || {};
-    const m = { ...raw,
-      expiresAt: raw.expiry ? raw.expiry + "T00:00:00" : raw.expiresAt,
-      daysRemaining: raw.expiry ? Math.round((new Date(raw.expiry + "T00:00:00") - new Date(new Date().toDateString())) / 86400000) : raw.daysRemaining };
-    $("membershipName").textContent = safe(m.planName || m.plan);
-    $("membershipDetail").textContent = m.expiresAt ? `Membership expires ${date(m.expiresAt)}${m.daysRemaining != null ? ` · ${m.daysRemaining} days remaining` : ""}` : "Your membership details are not available yet.";
-    $("membershipStatus").textContent = safe(m.status || "Not enrolled");
+    const endIso = raw.endDate || raw.expiry || (raw.expiresAt ? localDateStr(raw.expiresAt) : null);
+    const startIso = raw.startDate || null;
+    const todayIso = todayKey();
+    const daysBetween = (a, b) => {
+      if (!a || !b) return null;
+      const [ay, am, ad] = a.split("-").map(Number);
+      const [by, bm, bd] = b.split("-").map(Number);
+      return Math.round((new Date(by, bm - 1, bd) - new Date(ay, am - 1, ad)) / 86400000);
+    };
+    const rawRemaining = endIso ? daysBetween(todayIso, endIso) : (typeof raw.remainingDays === "number" ? raw.remainingDays : null);
+    const remainingDays = rawRemaining != null ? Math.max(0, rawRemaining) : 0;
+    const durationDays = raw.durationDays || (startIso && endIso ? Math.max(1, daysBetween(startIso, endIso)) : null);
+    let effStatus = String(raw.status || "PENDING").toUpperCase();
+    if (endIso && rawRemaining < 0) effStatus = "EXPIRED";
+    else if (endIso && rawRemaining >= 0 && rawRemaining <= 7 && effStatus === "ACTIVE") effStatus = "EXPIRING_SOON";
+
+    const progressPct = durationDays
+      ? Math.max(0, Math.min(100, Math.round((remainingDays / durationDays) * 100)))
+      : (effStatus === "ACTIVE" ? 100 : 0);
+
+    $("membershipName").textContent = safe(raw.planName || raw.plan || "No active plan");
+    $("membershipDetail").textContent = endIso
+      ? (effStatus === "EXPIRED"
+          ? `Membership expired on ${date(endIso)} · 0 days remaining`
+          : `Expires ${date(endIso)} · ${remainingDays} day${remainingDays === 1 ? "" : "s"} remaining`)
+      : "No active membership period yet. Choose a plan to get started.";
+    const badgeEl = $("membershipStatus");
+    badgeEl.textContent = formatStatusLabel(effStatus);
+    badgeEl.className = `pf-status-badge ${statusBadgeClass(effStatus)}`;
+    $("overviewMembershipRemaining").textContent = durationDays
+      ? `${remainingDays} of ${durationDays} days remaining`
+      : (endIso ? `${remainingDays} days remaining` : "No active coverage");
+    $("overviewMembershipPct").textContent = `${progressPct}%`;
+    $("overviewMembershipBar").style.width = `${progressPct}%`;
+
+    const mBody = $("membershipTabBody");
+    if (mBody) {
+      mBody.innerHTML = `
+        <div class="pf-meta-grid">
+          <div class="pf-meta-cell"><span class="k">Plan</span><span class="v">${eh(raw.planName || raw.plan || "No active plan")}</span></div>
+          <div class="pf-meta-cell"><span class="k">Start Date</span><span class="v">${startIso ? eh(date(startIso)) : "—"}</span></div>
+          <div class="pf-meta-cell"><span class="k">Expiration Date</span><span class="v">${endIso ? eh(date(endIso)) : "—"}</span></div>
+          <div class="pf-meta-cell"><span class="k">Duration</span><span class="v">${durationDays ? `${durationDays} day${durationDays === 1 ? "" : "s"}` : "—"}</span></div>
+          <div class="pf-meta-cell"><span class="k">Remaining Days</span><span class="v">${endIso ? `${remainingDays} day${remainingDays === 1 ? "" : "s"}` : "0 days"}</span></div>
+          <div class="pf-meta-cell"><span class="k">Status &amp; Payment</span><span class="v" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px"><span class="pf-status-badge ${statusBadgeClass(effStatus)}">${eh(formatStatusLabel(effStatus))}</span><span class="pf-status-badge ${statusBadgeClass(raw.paymentStatus)}">${eh(formatStatusLabel(raw.paymentStatus))}</span></span></div>
+        </div>
+        <div class="pf-progress-wrap">
+          <div class="pf-progress-labels">
+            <span>Remaining coverage</span>
+            <span>${progressPct}% (${durationDays ? `${remainingDays} / ${durationDays} days` : `${remainingDays} days`})</span>
+          </div>
+          <div class="pf-progress-track"><div class="pf-progress-fill" style="width:${progressPct}%"></div></div>
+        </div>`;
+    }
+
     if (data.user && data.user.memberId) {
       window.__pfMemberMe = data;
       // Real member session: clear any leftover demo check-ins from previous sessions or accounts
       try { localStorage.removeItem(demoCheckinsKey); } catch (e) {}
     }
-    const eh = v => String(v ?? "—").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
     const paintProfileCard = () => {
       const u = (window.__pfMemberMe || data).user || {};
       $("profileDetails").innerHTML = `<dl class="profile-grid"><div><dt>Name</dt><dd>${eh(u.name)}</dd></div><div><dt>Email</dt><dd>${eh(u.email)}</dd></div><div><dt>Phone</dt><dd>${eh(u.phone || "—")}</dd></div><div><dt>Address</dt><dd>${eh(u.address || "—")}</dd></div></dl>`;
     };
     paintProfileCard();
     window.__pfRefreshProfileCard = paintProfileCard;
+
+    const attendanceItems = Array.isArray(data.attendance) ? data.attendance : [];
+    const attBadge = $("attendanceCountBadge");
+    if (attBadge) attBadge.textContent = `${attendanceItems.length} check-in${attendanceItems.length === 1 ? "" : "s"}`;
+    const attRoot = $("attendanceHistoryRoot");
+    if (attRoot) {
+      if (!attendanceItems.length) {
+        attRoot.innerHTML = `<div class="pf-state-box"><i class="fa-regular fa-calendar-xmark" style="font-size:22px"></i><strong>No attendance records yet</strong><span>Your gym check-ins will appear here once recorded.</span></div>`;
+      } else {
+        attRoot.innerHTML = `<div class="pf-table-wrap"><table class="pf-table"><thead><tr><th>Date</th><th>Location</th><th>Status</th></tr></thead><tbody>${attendanceItems.map(x => `<tr><td>${eh(date(localDateStr(x.date)))}</td><td>${eh(x.location || "Gym check-in")}</td><td><span class="pf-status-badge is-active">Checked in</span></td></tr>`).join("")}</tbody></table></div>`;
+      }
+    }
+
+    const paymentItems = Array.isArray(data.payments) ? data.payments : [];
+    const payRoot = $("paymentsHistoryRoot");
+    if (payRoot) {
+      if (!paymentItems.length) {
+        payRoot.innerHTML = `<div class="pf-state-box"><i class="fa-solid fa-receipt" style="font-size:22px"></i><strong>No payment history yet</strong><span>Completed and pending online payments will appear here.</span></div>`;
+      } else {
+        payRoot.innerHTML = `<div class="pf-table-wrap"><table class="pf-table"><thead><tr><th>Reference</th><th>Plan</th><th>Date</th><th>Method</th><th>Amount</th><th>Status</th><th>Receipt</th></tr></thead><tbody>${paymentItems.map(x => `<tr><td><strong>${eh(x.reference || "Payment")}</strong></td><td>${eh(x.plan || "Membership")}</td><td>${eh(date(x.date))}</td><td>${eh(x.method || "Online")}</td><td><strong>${eh(x.amountFormatted || x.amount)}</strong></td><td><span class="pf-status-badge ${statusBadgeClass(x.status || "PAID")}">${eh(formatStatusLabel(x.status || "PAID"))}</span></td><td><button type="button" class="member-receipt" data-receipt="${eh(x.reference || "Payment")}" data-when="${eh(x.date)}" data-method="${eh(x.method || "Online")}" data-amount="${eh(x.amountFormatted || x.amount || "")}"><i class="fa-solid fa-receipt" aria-hidden="true"></i> Receipt</button></td></tr>`).join("")}</tbody></table></div>`;
+      }
+    }
+
     // Attendance dates from the API are already "YYYY-MM-DD" strings; use date()
     // which calls localDateStr() internally to avoid the UTC midnight shift.
-    list("attendanceList", data.attendance, "No attendance records yet.", x => `<span><b>${date(localDateStr(x.date))}</b><small>${safe(x.location || "Gym check-in")}</small></span><i class="fa-solid fa-arrow-right"></i>`);
-    list("paymentList", data.payments, "No payment records yet.", x => `<span><b>${safe(x.reference || "Payment")}</b><small>${date(x.date)} · ${safe(x.method)}</small></span><strong>${safe(x.amountFormatted || x.amount)}</strong><button type="button" class="member-receipt" data-receipt="${safe(x.reference || "Payment")}" data-when="${safe(x.date)}" data-method="${safe(x.method)}" data-amount="${safe(x.amountFormatted || x.amount || "")}"><i class="fa-solid fa-receipt" aria-hidden="true"></i> Receipt</button>`);
+    list("attendanceList", attendanceItems, "No attendance records yet.", x => `<span><b>${date(localDateStr(x.date))}</b><small>${safe(x.location || "Gym check-in")}</small></span><i class="fa-solid fa-arrow-right"></i>`);
+    list("paymentList", paymentItems, "No payment records yet.", x => `<span><b>${safe(x.reference || "Payment")}</b><small>${date(x.date)} · ${safe(x.method)}</small></span><strong>${safe(x.amountFormatted || x.amount)}</strong><button type="button" class="member-receipt" data-receipt="${safe(x.reference || "Payment")}" data-when="${safe(x.date)}" data-method="${safe(x.method)}" data-amount="${safe(x.amountFormatted || x.amount || "")}"><i class="fa-solid fa-receipt" aria-hidden="true"></i> Receipt</button>`);
     // Store attendance days as local YYYY-MM-DD strings so the calendar and
     // syncMemberChrome todayKey comparison are timezone-consistent.
-    window.__pfAttendanceDays = (data.attendance || []).map(x => localDateStr(x.date));
+    window.__pfAttendanceDays = attendanceItems.map(x => localDateStr(x.date));
     renderProgress(data);
     syncMemberChrome(data);
     window.__pfRefreshMemberSpace?.();
   }
   async function load() {
+    setLoadingState(true);
+    const notice = $("memberNotice");
+    if (notice) notice.hidden = true;
     try {
       if (window.PROFIT_CONFIG?.DEMO_MODE && !window.PROFIT_CONFIG?.API_BASE_URL) render(demoData());
       else render(await ProFitAPI.get("/member/me"));
     } catch (e) {
-      render(demoData());
-      const notice = $("memberNotice");
-      notice.hidden = false;
-      notice.classList.add("error");
-      notice.textContent = "Live member data is unavailable, so demo progress is shown for preview.";
+      setLoadingState(false);
+      if (notice) {
+        notice.hidden = false;
+        notice.classList.add("error");
+        notice.innerHTML = `Could not load your member data (${String(e?.message || "network error").replace(/</g, "&lt;")}). <button type="button" class="btn btn-soft" id="retryMemberLoad" style="margin-left:10px;padding:4px 12px">Retry</button>`;
+        $("retryMemberLoad")?.addEventListener("click", load);
+      }
+      const errHtml = `<div class="pf-state-box is-error"><i class="fa-solid fa-triangle-exclamation" style="font-size:20px"></i><strong>Unable to load records</strong><span>Please check your connection and try again.</span></div>`;
+      if ($("membershipTabBody")) $("membershipTabBody").innerHTML = errHtml;
+      if ($("attendanceHistoryRoot")) $("attendanceHistoryRoot").innerHTML = errHtml;
+      if ($("paymentsHistoryRoot")) $("paymentsHistoryRoot").innerHTML = errHtml;
     }
   }
   // Gym contact details for signed-in members. Same ProFitGym store the public
@@ -649,8 +883,8 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
   // Payment rows open the actual receipt rather than being a dead label.
   // pf-common.js loads after this script and declares `PF` as a lexical binding
   // (so it is `PF`, not `window.PF`); resolve it lazily, at click time.
-  $("paymentList")?.addEventListener("click", e => {
-    const btn = e.target.closest("[data-receipt]");
+  document.addEventListener("click", e => {
+    const btn = e.target.closest("#paymentList [data-receipt], #paymentsHistoryRoot [data-receipt]");
     if (!btn) return;
     const p = (typeof PF === "object" && PF) ? PF : null;
     const esc = p ? p.esc : s => String(s ?? "");
