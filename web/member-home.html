@@ -8,7 +8,7 @@
     var explicitLogout = sessionStorage.getItem('profit-logged-out') === '1';
     if (!isLocal && (!hasSession || explicitLogout)) {
       document.documentElement.classList.add('auth-pending');
-      location.replace('welcome.html');
+      location.replace('login.html');
     }
   }catch(e){}
 })();

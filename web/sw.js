@@ -1,7 +1,7 @@
 /* ProFit service worker: offline shell only.
    - Pages and assets are network-first and fall back to the cache when offline.
    - /api/ is never cached, so member and staff data always comes from the server. */
-const CACHE = "profit-shell-v29";
+const CACHE = "profit-shell-v30";
 const SHELL = [
   "./", "index.html", "login.html", "join.html", "forgot.html", "ui-final.css", "welcome.html", "splash.js", "member-home.html", "member-shell.css", "member-shell.js", "member-tabs.js", "member-pay.js", "trainer-portal.html",
   "styles.css", "sidebar-pro.css", "layout-fixes.css", "pro-theme.css", "spotify.css", "portal-ui.css", "portal-fx.js", "api.js", "auth.js", "config.js",
@@ -12,7 +12,7 @@ const SHELL = [
 self.addEventListener("install", event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE);
-    await Promise.all(SHELL.map(url => cache.add(url).catch(() => {})));
+    await Promise.all(SHELL.map(url => cache.add(url).catch(() => { })));
     await self.skipWaiting();
   })());
 });

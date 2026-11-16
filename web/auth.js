@@ -39,8 +39,57 @@
         /* ignore offline/demo errors so client logout always succeeds */
       }
     }
-    const welcomeTarget = isTrainerSection || isStaffSection ? "../welcome.html" : "welcome.html";
-    location.replace(welcomeTarget);
+    location.replace(loginTarget);
+  }
+
+  function confirmLogoutDialog() {
+    return new Promise(resolve => {
+      if (typeof HTMLDialogElement !== "function") {
+        resolve(window.confirm("Are you sure you want to log out?"));
+        return;
+      }
+      let dlg = document.getElementById("pfLogoutConfirm");
+      if (!dlg) {
+        const st = document.createElement("style");
+        st.textContent = `
+          #pfLogoutConfirm{margin:auto;inset:0;padding:0;width:min(380px,92vw);border-radius:16px;border:1px solid rgba(255,255,255,.14);background:#111320;color:#f6efdc;box-shadow:0 24px 60px rgba(0,0,0,.55);font-family:Inter,system-ui,sans-serif}
+          #pfLogoutConfirm::backdrop{background:rgba(5,8,14,.65);backdrop-filter:blur(3px)}
+          #pfLogoutConfirm .pf-lo-box{padding:22px;display:grid;gap:12px}
+          #pfLogoutConfirm h3{margin:0;font:700 18px/1.2 "Plus Jakarta Sans",Inter,sans-serif}
+          #pfLogoutConfirm p{margin:0;font-size:14px;color:#9a9788;line-height:1.5}
+          #pfLogoutConfirm .pf-lo-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:6px}
+          #pfLogoutConfirm button{height:40px;padding:0 18px;border-radius:999px;font:600 13.5px/1 "Plus Jakarta Sans",Inter,sans-serif;cursor:pointer}
+          #pfLogoutConfirm .pf-lo-cancel{border:1px solid rgba(255,255,255,.18);background:transparent;color:#f6efdc}
+          #pfLogoutConfirm .pf-lo-ok{border:0;background:#e8b93a;color:#1a1407;font-weight:700}
+        `;
+        document.head.appendChild(st);
+        dlg = document.createElement("dialog");
+        dlg.id = "pfLogoutConfirm";
+        dlg.setAttribute("aria-labelledby", "pfLogoutTitle");
+        dlg.innerHTML = `<div class="pf-lo-box">
+          <h3 id="pfLogoutTitle">Log out of ProFit?</h3>
+          <p>Are you sure you want to log out? You will be redirected to the sign-in page.</p>
+          <div class="pf-lo-actions">
+            <button type="button" class="pf-lo-cancel" data-lo-cancel>Cancel</button>
+            <button type="button" class="pf-lo-ok" data-lo-confirm>Log out</button>
+          </div>
+        </div>`;
+        document.body.appendChild(dlg);
+      }
+      const finish = ok => {
+        dlg.removeEventListener("cancel", onCancel);
+        dlg.removeEventListener("click", onBackdrop);
+        if (dlg.open) dlg.close();
+        resolve(ok);
+      };
+      const onCancel = e => { e.preventDefault(); finish(false); };
+      const onBackdrop = e => { if (e.target === dlg) finish(false); };
+      dlg.querySelector("[data-lo-cancel]").onclick = () => finish(false);
+      dlg.querySelector("[data-lo-confirm]").onclick = () => finish(true);
+      dlg.addEventListener("cancel", onCancel);
+      dlg.addEventListener("click", onBackdrop);
+      dlg.showModal();
+    });
   }
 
   let logoutBound = false;
@@ -51,6 +100,8 @@
       const button = event.target.closest("[data-logout]");
       if (!button) return;
       event.preventDefault();
+      const confirmed = await confirmLogoutDialog();
+      if (!confirmed) return;
       button.disabled = true;
       try {
         if (window.ProFitAuth && typeof window.ProFitAuth.logout === "function") {
