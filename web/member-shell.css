@@ -978,6 +978,26 @@ body.member-home .pf-progress-fill {
   transition: width .35s ease;
 }
 
+body.member-home .pf-status-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+body.member-home .pf-status-actions .pf-status-badge,
+body.member-home .pf-status-actions .btn {
+  height: 40px;
+  min-height: 40px;
+  padding: 0 18px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  margin: 0;
+}
+
 body.member-home .pf-status-badge {
   display: inline-flex;
   align-items: center;

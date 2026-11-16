@@ -33,7 +33,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
 <link rel="stylesheet" href="ui-polish.css?v=2">
 <link rel="stylesheet" href="ui-fixes.css?v=1">
 <link rel="stylesheet" href="pf-modern.css?v=1">
-<link rel="stylesheet" href="member-shell.css?v=5">
+<link rel="stylesheet" href="member-shell.css?v=6">
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script></head>
 <body class="member-home">
   <div class="member-app-shell">
@@ -195,7 +195,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
             <h2 id="membershipName">—</h2>
             <p id="membershipDetail">Checking your current account details.</p>
           </div>
-          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <div class="pf-status-actions">
             <span class="pf-status-badge" id="membershipStatus">—</span>
             <button type="button" class="btn btn-primary" data-renew-membership><i class="fa-solid fa-rotate"></i> Renew membership</button>
           </div>
