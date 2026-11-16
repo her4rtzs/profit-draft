@@ -467,9 +467,16 @@ body.member-home.member-side-collapsed .member-sidebar .collapse-btn {
   transform: rotate(180deg);
 }
 
+body.member-home.member-side-collapsed .member-sidebar .nav-group {
+  padding: 6px 4px !important;
+}
+
 body.member-home.member-side-collapsed .member-sidebar .nav-link {
   justify-content: center;
-  padding: 12px;
+  padding: 0;
+  width: 44px;
+  height: 44px;
+  margin: 0 auto;
 }
 
 body.member-home.member-side-collapsed .member-sidebar .side-user {
@@ -565,6 +572,105 @@ body.member-home .member-panel {
   border: 1px solid var(--line);
   background: var(--card);
   box-sizing: border-box;
+  margin: 0 !important;
+}
+
+/* Uniform alignment & equal heights across all Overview / Portal containers */
+body.member-home .member-hero,
+body.member-home .ann-overview,
+body.member-home .member-status-card {
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 16px;
+  margin: 0 !important;
+}
+
+body.member-home .member-hero {
+  margin-bottom: 18px !important;
+}
+
+body.member-home .member-metrics {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  margin: 0 !important;
+  align-items: stretch !important;
+}
+
+body.member-home .member-metrics > .member-metric-card {
+  height: 100%;
+  margin: 0 !important;
+  border-radius: 16px !important;
+  box-sizing: border-box;
+}
+
+body.member-home .member-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  margin: 0 !important;
+  align-items: stretch !important;
+}
+
+body.member-home .member-grid > .member-panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+body.member-home .member-grid > .member-panel > .btn,
+body.member-home .member-grid > .member-panel > button.btn {
+  margin-top: auto;
+}
+
+@media (max-width: 900px) {
+  body.member-home .member-metrics,
+  body.member-home .member-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Mobile App-Icon Bottom Dock */
+@media (max-width: 760px) {
+  body.member-home .pf-bottomnav {
+    display: grid !important;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    align-items: center;
+    gap: 4px;
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom, 0px));
+    background: linear-gradient(180deg, rgba(20, 27, 39, 0.96) 0%, rgba(12, 17, 25, 0.99) 100%) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.45);
+  }
+
+  body.member-home .pf-bottomnav button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-height: 52px;
+    padding: 6px 2px;
+    border-radius: 14px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: #94a3b8;
+    font-size: 10.5px;
+    font-weight: 600;
+    transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+  }
+
+  body.member-home .pf-bottomnav button i {
+    font-size: 17px;
+  }
+
+  body.member-home .pf-bottomnav button[aria-current="page"] {
+    background: linear-gradient(135deg, rgba(244, 197, 66, 0.22), rgba(244, 197, 66, 0.08));
+    border-color: rgba(244, 197, 66, 0.42);
+    color: #F4C542;
+  }
 }
 
 body.member-home .pf-grid-2 {
