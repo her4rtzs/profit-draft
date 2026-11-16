@@ -565,8 +565,14 @@ body.member-home .pp-tool-panel {
   align-content: start !important;
 }
 
-body.member-home .pp-tool-panel > * {
+body.member-home .pp-tool-panel > *,
+body.member-home .pp-tool-panel > section.ann-overview,
+body.member-home .pp-tool-panel > section.member-status-card,
+body.member-home .pp-tool-panel > section.member-metrics,
+body.member-home .pp-tool-panel > section.member-grid {
   margin: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
 }
 
 body.member-home .pp-tool-panel[hidden] {

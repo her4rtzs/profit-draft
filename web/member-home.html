@@ -33,7 +33,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
 <link rel="stylesheet" href="ui-polish.css?v=2">
 <link rel="stylesheet" href="ui-fixes.css?v=1">
 <link rel="stylesheet" href="pf-modern.css?v=1">
-<link rel="stylesheet" href="member-shell.css?v=4">
+<link rel="stylesheet" href="member-shell.css?v=5">
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script></head>
 <body class="member-home">
   <div class="member-app-shell">
@@ -108,24 +108,6 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
               <button class="nav-link" type="button" role="tab" data-tab="health" aria-selected="false" title="Health &amp; goals">
                 <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l1.5-2 2 4.5 2-2.5h5.27"/></svg>
                 <span class="nav-text">Health &amp; goals</span>
-              </button>
-            </li>
-          </ul>
-        </div>
-
-        <div class="nav-group">
-          <p class="nav-label">Account</p>
-          <ul class="nav-list">
-            <li>
-              <button class="nav-link" type="button" role="tab" data-tab="settings" aria-selected="false" title="Settings">
-                <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
-                <span class="nav-text">Settings</span>
-              </button>
-            </li>
-            <li>
-              <button class="nav-link nav-logout" type="button" data-logout title="Logout">
-                <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                <span class="nav-text">Logout</span>
               </button>
             </li>
           </ul>
@@ -228,35 +210,19 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
       </div>
     </section>
 
-    <section class="pf-app-week-progress">
-      <div class="panel member-panel pf-week-panel">
-        <div class="pf-panel-head" style="margin-bottom:10px">
-          <div><span class="pf-sec-kicker">THIS WEEK</span></div>
-        </div>
-        <div class="pf-week-strip" id="weekStrip"></div>
-      </div>
-      <div class="panel member-panel pf-ring-panel">
-        <div class="pf-panel-head" style="margin-bottom:10px">
-          <div><span class="pf-sec-kicker">PROGRESS</span></div>
-        </div>
-        <div class="pf-ring-layout">
-          <div class="pf-ring-box">
-            <svg viewBox="0 0 100 100" class="pf-ring-svg" aria-hidden="true">
-              <circle cx="50" cy="50" r="42" class="pf-ring-bg"></circle>
-              <circle cx="50" cy="50" r="42" class="pf-ring-fg" id="weeklyRingFg"></circle>
-            </svg>
-            <div class="pf-ring-label">
-              <strong id="weeklyRingCount">0/4</strong>
-              <span>visits</span>
-            </div>
-          </div>
-          <div class="pf-ring-stats">
-            <div class="pf-ring-stat"><span>Streak</span><strong id="ringStreakVal">0 days</strong></div>
-            <div class="pf-ring-stat"><span>Badges</span><strong id="ringBadgesVal">0</strong></div>
-            <div class="pf-ring-stat"><span>Check-ins</span><strong id="ringTotalVal">0</strong></div>
-          </div>
-        </div>
-      </div>
+    <section class="member-metrics" aria-label="Member progress metrics">
+      <article class="member-metric-card streak-card">
+        <span class="metric-icon fire"><i class="fa-solid fa-fire"></i></span>
+        <div><small>Current streak</small><strong id="streakCount">0 days</strong><p>Train consistently to unlock rewards.</p></div>
+      </article>
+      <article class="member-metric-card">
+        <span class="metric-icon"><i class="fa-solid fa-bullseye"></i></span>
+        <div><small>Weekly goal</small><strong id="weeklyGoalText">0 / 4 visits</strong><div class="mini-progress"><span id="weeklyGoalBar"></span></div></div>
+      </article>
+      <article class="member-metric-card">
+        <span class="metric-icon green"><i class="fa-solid fa-trophy"></i></span>
+        <div><small>Achievements</small><strong id="achievementCount">0 unlocked</strong><p id="achievementHint">Start checking in to earn badges.</p></div>
+      </article>
     </section>
 
     <section class="member-grid">
