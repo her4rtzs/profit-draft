@@ -33,19 +33,16 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
 <link rel="stylesheet" href="ui-polish.css?v=2">
 <link rel="stylesheet" href="ui-fixes.css?v=1">
 <link rel="stylesheet" href="pf-modern.css?v=1">
-<link rel="stylesheet" href="member-shell.css?v=2">
+<link rel="stylesheet" href="member-shell.css?v=3">
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script></head>
 <body class="member-home">
   <div class="member-app-shell">
     <aside class="member-sidebar" id="memberSidebar" aria-label="Member navigation">
       <div class="brand">
         <a class="brand-link" href="member-home.html" aria-label="ProFit Member Portal">
-          <span class="brand-logo-wrap"><i class="fa-solid fa-dumbbell" id="homeLogoIcon" aria-hidden="true"></i><img id="homeLogoImg" alt="" hidden></span>
+          <span class="brand-logo-wrap"><img id="homeLogoImg" src="logo.jpg" alt="ProFit Functional Fitness Gym"></span>
           <span class="brand-txt"><strong id="homeGymName">ProFit</strong><small>MEMBER PORTAL</small></span>
         </a>
-        <button class="collapse-btn" id="memberCollapseBtn" type="button" aria-label="Collapse sidebar" title="Collapse sidebar">
-          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m11 17-5-5 5-5M18 17l-5-5 5-5"/></svg>
-        </button>
       </div>
 
       <nav class="side-scroll" role="tablist" aria-label="Member sections">
@@ -181,19 +178,16 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
       </header>
 
       <main class="member-content">
-        <section class="member-welcome member-hero">
-          <div>
-            <p class="eyebrow"><span></span> MEMBER SPACE</p>
-            <h1 id="memberGreeting">Welcome back, <span data-user-name>member</span></h1>
-            <p>Your membership, streaks, payments, and gym progress in one organized workspace.</p>
+        <section class="member-welcome member-hero pf-app-hero">
+          <div class="pf-app-hero-copy">
+            <span class="pf-date-pill" id="heroDatePill">TODAY</span>
+            <h1 id="memberGreeting">HI, <span id="heroFirstName">MEMBER</span>.</h1>
+            <p id="heroMembershipLine">Your membership, streaks, payments, and gym progress in one organized workspace.</p>
           </div>
           <div class="member-hero-actions">
-            <button class="btn btn-soft" id="checkInButton" type="button"><i class="fa-solid fa-location-check"></i> Check in today</button>
-            <a class="btn btn-primary" href="join.html"><i class="fa-solid fa-plus"></i> Explore plans</a>
-            <!-- Contact used to live only on the public portal, so a signed-in
-                 member had to log out to find the gym's number. Reads the same
-                 ProFitGym store, so it can never drift from the portal copy. -->
-            <button class="btn btn-soft" id="gymContactBtn" type="button"><i class="fa-solid fa-headset"></i> Contact the gym</button>
+            <button class="btn btn-primary pf-pill-btn" type="button" data-renew-membership><i class="fa-solid fa-rotate"></i> Renew membership</button>
+            <button class="btn btn-soft pf-pill-btn" id="checkInButton" type="button"><i class="fa-solid fa-location-check"></i> Check in</button>
+            <button class="btn btn-soft pf-pill-btn" id="gymContactBtn" type="button"><i class="fa-solid fa-headset"></i> Contact</button>
           </div>
         </section>
 
@@ -230,6 +224,37 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
             <span id="overviewMembershipPct">0%</span>
           </div>
           <div class="pf-progress-track"><div class="pf-progress-fill" id="overviewMembershipBar"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pf-app-week-progress">
+      <div class="panel member-panel pf-week-panel">
+        <div class="pf-panel-head" style="margin-bottom:10px">
+          <div><span class="pf-sec-kicker">THIS WEEK</span></div>
+        </div>
+        <div class="pf-week-strip" id="weekStrip"></div>
+      </div>
+      <div class="panel member-panel pf-ring-panel">
+        <div class="pf-panel-head" style="margin-bottom:10px">
+          <div><span class="pf-sec-kicker">PROGRESS</span></div>
+        </div>
+        <div class="pf-ring-layout">
+          <div class="pf-ring-box">
+            <svg viewBox="0 0 100 100" class="pf-ring-svg" aria-hidden="true">
+              <circle cx="50" cy="50" r="42" class="pf-ring-bg"></circle>
+              <circle cx="50" cy="50" r="42" class="pf-ring-fg" id="weeklyRingFg"></circle>
+            </svg>
+            <div class="pf-ring-label">
+              <strong id="weeklyRingCount">0/4</strong>
+              <span>visits</span>
+            </div>
+          </div>
+          <div class="pf-ring-stats">
+            <div class="pf-ring-stat"><span>Streak</span><strong id="ringStreakVal">0 days</strong></div>
+            <div class="pf-ring-stat"><span>Badges</span><strong id="ringBadgesVal">0</strong></div>
+            <div class="pf-ring-stat"><span>Check-ins</span><strong id="ringTotalVal">0</strong></div>
+          </div>
         </div>
       </div>
     </section>
@@ -591,6 +616,36 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
     $("weeklyGoalBar").style.width = `${Math.min(100, (weekly / goal) * 100)}%`;
     $("achievementCount").textContent = `${achievements} unlocked`;
     $("achievementHint").textContent = achievements ? "Great momentum. Keep collecting badges." : "Start checking in to earn badges.";
+
+    // App-style Progress Ring & Week Strip
+    const ringCount = $("weeklyRingCount");
+    const ringFg = $("weeklyRingFg");
+    if (ringCount) ringCount.textContent = `${Math.min(weekly, goal)}/${goal}`;
+    if (ringFg) {
+      const circ = 2 * Math.PI * 42;
+      const pct = Math.min(1, weekly / goal);
+      ringFg.style.strokeDasharray = String(circ);
+      ringFg.style.strokeDashoffset = String(circ * (1 - pct));
+    }
+    if ($("ringStreakVal")) $("ringStreakVal").textContent = `${streak} day${streak === 1 ? "" : "s"}`;
+    if ($("ringBadgesVal")) $("ringBadgesVal").textContent = String(achievements);
+    if ($("ringTotalVal")) $("ringTotalVal").textContent = String(attendance.length);
+
+    const strip = $("weekStrip");
+    if (strip) {
+      const visitSet = new Set(attendance.map(x => localDateStr(x.date)));
+      const now = new Date();
+      const sunday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
+      const todayIso = todayKey();
+      const letters = ["S", "M", "T", "W", "T", "F", "S"];
+      strip.innerHTML = letters.map((ch, idx) => {
+        const d = new Date(sunday.getFullYear(), sunday.getMonth(), sunday.getDate() + idx);
+        const iso = localDateStr(d);
+        const isToday = iso === todayIso;
+        const hasVisit = visitSet.has(iso);
+        return `<div class="pf-week-day${isToday ? " is-today" : ""}${hasVisit ? " has-visit" : ""}"><span>${ch}</span><strong>${d.getDate()}</strong>${hasVisit ? '<i></i>' : ''}</div>`;
+      }).join("");
+    }
     const challenges = [
       { title: "3-day consistency", done: streak >= 3, detail: "Check in 3 days in a row" },
       { title: "Weekly finisher", done: weekly >= goal, detail: "Complete 4 visits this week" },
@@ -879,8 +934,26 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
     set("memberPlan", data?.membership?.planName || data?.membership?.plan || "Membership");
     set("menuName", name);
     set("menuEmail", user.email || "member@profit.test");
+    const datePill = $("heroDatePill");
+    if (datePill) {
+      const now = new Date();
+      datePill.textContent = `${now.toLocaleDateString(undefined, { weekday: "short" }).toUpperCase()} · ${now.toLocaleDateString(undefined, { month: "short", day: "numeric" }).toUpperCase()}`;
+    }
     const greeting = $("memberGreeting");
-    if (greeting) greeting.textContent = `Welcome back, ${first}!`;
+    if (greeting) greeting.innerHTML = `HI, <span style="color:var(--m-gold,#e8b93a)">${first.toUpperCase()}</span>.`;
+    const heroLine = $("heroMembershipLine");
+    if (heroLine && data?.membership) {
+      const m = data.membership;
+      const endIso = m.endDate || m.expiry;
+      const rem = typeof m.remainingDays === "number" ? Math.max(0, m.remainingDays) : null;
+      if (m.status === "EXPIRED" && endIso) {
+        heroLine.textContent = `Your ${m.planName || "membership"} ended ${date(endIso)}. Renew to keep training.`;
+      } else if (endIso) {
+        heroLine.textContent = `Your ${m.planName || "membership"} is active until ${date(endIso)}${rem != null ? ` (${rem} day${rem === 1 ? "" : "s"} left)` : ""}.`;
+      } else {
+        heroLine.textContent = "Choose a plan to activate your membership and start tracking check-ins.";
+      }
+    }
   }
   // Payment rows open the actual receipt rather than being a dead label.
   // pf-common.js loads after this script and declares `PF` as a lexical binding
@@ -942,11 +1015,10 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
 <script src="portal-fx.js?v=2"></script>
 <style>@media (max-width:760px){body{padding-bottom:92px}}</style>
 <nav class="pf-bottomnav" aria-label="Member sections">
-  <button type="button" data-go-tab="overview"><i class="fa-solid fa-gauge-high" aria-hidden="true"></i><span>Home</span></button>
-  <button type="button" data-go-tab="membership"><i class="fa-solid fa-id-card" aria-hidden="true"></i><span>Plan</span></button>
-  <button type="button" data-go-tab="attendance"><i class="fa-solid fa-calendar-check" aria-hidden="true"></i><span>Visits</span></button>
-  <button type="button" data-go-tab="payments"><i class="fa-solid fa-receipt" aria-hidden="true"></i><span>Pay</span></button>
-  <button type="button" data-go-tab="announcements"><i class="fa-solid fa-bullhorn" aria-hidden="true"></i><span>Notices</span></button>
+  <button type="button" data-go-tab="overview"><i class="fa-solid fa-house" aria-hidden="true"></i><span>Home</span></button>
+  <button type="button" data-go-tab="schedule"><i class="fa-regular fa-calendar" aria-hidden="true"></i><span>Classes</span></button>
+  <button type="button" data-go-tab="attendance"><i class="fa-solid fa-check" aria-hidden="true"></i><span>Check in</span></button>
+  <button type="button" data-go-tab="payments"><i class="fa-regular fa-credit-card" aria-hidden="true"></i><span>Payments</span></button>
   <button type="button" data-go-tab="profile"><i class="fa-regular fa-user" aria-hidden="true"></i><span>Profile</span></button>
 </nav>
 <script>

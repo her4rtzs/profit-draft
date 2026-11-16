@@ -261,6 +261,18 @@ body.member-home .member-sidebar .nav-link.nav-logout:hover .ico {
   color: #fca5a5;
 }
 
+/* change-password.js clones the logout button; keep Change Password neutral */
+body.member-home .member-sidebar .nav-link.pf-cp-item,
+body.member-home .member-sidebar .nav-link.pf-cp-item .ico {
+  color: var(--m-nav-text) !important;
+}
+
+body.member-home .member-sidebar .nav-link.pf-cp-item:hover,
+body.member-home .member-sidebar .nav-link.pf-cp-item:hover .ico {
+  background: var(--m-gold-soft) !important;
+  color: #f2cb5c !important;
+}
+
 body.member-home .member-sidebar .nav-count {
   margin-left: auto;
   min-width: 22px;
@@ -442,67 +454,58 @@ body.member-home .member-sidebar .side-account-menu .danger:hover .ico {
   color: #ff8e8e;
 }
 
-/* ---------- Collapsed Desktop Rail ---------- */
-body.member-home.member-side-collapsed .member-sidebar {
-  width: var(--m-sidebar-mini);
-}
+/* ---------- Staff-Style Hover-Expand Icon Rail (Desktop >= 769px) ---------- */
+@media (min-width: 769px) {
+  body.member-home .member-sidebar {
+    transition: width .22s cubic-bezier(.22, .61, .36, 1), transform .25s cubic-bezier(.22, .61, .36, 1);
+  }
 
-body.member-home.member-side-collapsed .member-sidebar .brand-txt,
-body.member-home.member-side-collapsed .member-sidebar .nav-text,
-body.member-home.member-side-collapsed .member-sidebar .nav-count,
-body.member-home.member-side-collapsed .member-sidebar .nav-label,
-body.member-home.member-side-collapsed .member-sidebar .side-user .who,
-body.member-home.member-side-collapsed .member-sidebar .side-user .icon-btn {
-  display: none;
-}
+  body.member-home .member-sidebar:not(:hover):not(:focus-within) {
+    width: var(--m-sidebar-mini) !important;
+  }
 
-body.member-home.member-side-collapsed .member-sidebar .brand {
-  padding: 20px 0 14px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
+  body.member-home .member-sidebar:not(:hover):not(:focus-within) .brand {
+    padding: 16px 0 10px;
+    justify-content: center;
+  }
 
-body.member-home.member-side-collapsed .member-sidebar .collapse-btn {
-  margin: 0;
-  transform: rotate(180deg);
-}
+  body.member-home .member-sidebar:not(:hover):not(:focus-within) .brand-txt,
+  body.member-home .member-sidebar:not(:hover):not(:focus-within) .nav-text,
+  body.member-home .member-sidebar:not(:hover):not(:focus-within) .nav-count,
+  body.member-home .member-sidebar:not(:hover):not(:focus-within) .nav-label,
+  body.member-home .member-sidebar:not(:hover):not(:focus-within) .side-user .who,
+  body.member-home .member-sidebar:not(:hover):not(:focus-within) .side-user .icon-btn {
+    display: none !important;
+  }
 
-body.member-home.member-side-collapsed .member-sidebar .nav-group {
-  padding: 6px 4px !important;
-}
+  body.member-home .member-sidebar:not(:hover):not(:focus-within) .nav-group {
+    padding: 6px 4px !important;
+  }
 
-body.member-home.member-side-collapsed .member-sidebar .nav-link {
-  justify-content: center;
-  padding: 0;
-  width: 44px;
-  height: 44px;
-  margin: 0 auto;
-}
+  body.member-home .member-sidebar:not(:hover):not(:focus-within) .nav-link {
+    justify-content: center;
+    padding: 0;
+    width: 44px;
+    height: 44px;
+    margin: 0 auto;
+  }
 
-body.member-home.member-side-collapsed .member-sidebar .side-user {
-  justify-content: center;
-  padding: 8px;
-}
+  body.member-home .member-sidebar:not(:hover):not(:focus-within) .side-user {
+    justify-content: center;
+    padding: 8px;
+  }
 
-body.member-home.member-side-collapsed .member-sidebar .nav-list {
-  margin-bottom: 10px;
-}
-
-body.member-home.member-side-collapsed .member-sidebar .side-account-menu {
-  left: 0;
-  right: auto;
-  min-width: 196px;
+  body.member-home .member-main {
+    margin-left: var(--m-sidebar-mini) !important;
+  }
 }
 
 /* ---------- Main Workspace & Slim Topbar ---------- */
 body.member-home .member-main {
-  margin-left: var(--m-sidebar);
-  min-width: 0;
-  transition: margin-left .22s ease;
-}
-
-body.member-home.member-side-collapsed .member-main {
   margin-left: var(--m-sidebar-mini);
+  min-width: 0;
+  flex: 1 1 auto;
+  transition: margin-left .22s ease;
 }
 
 body.member-home .member-top {
@@ -630,11 +633,191 @@ body.member-home .member-grid > .member-panel > button.btn {
   }
 }
 
+/* ---------- App-Inspired Hero, Week Strip & Progress Ring ---------- */
+body.member-home .pf-app-hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(115deg, rgba(11, 14, 22, 0.92) 0%, rgba(17, 19, 32, 0.78) 100%), url("img/hero.jpg") center/cover no-repeat !important;
+  border: 1px solid var(--line) !important;
+  padding: 26px 26px !important;
+}
+
+body.member-home .pf-date-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: #e8b93a;
+  color: #1a1407;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+body.member-home .pf-pill-btn {
+  border-radius: 999px !important;
+  min-height: 44px;
+  padding: 0 20px !important;
+}
+
+body.member-home .pf-sec-kicker {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+body.member-home .pf-app-week-progress {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 16px;
+  align-items: stretch;
+}
+
+body.member-home .pf-app-week-progress > .member-panel {
+  height: 100%;
+}
+
+body.member-home .pf-week-strip {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+  align-items: center;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+body.member-home .pf-week-day {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 10px 4px;
+  border-radius: 16px;
+  color: var(--muted);
+  font-size: 12px;
+  position: relative;
+}
+
+body.member-home .pf-week-day strong {
+  font-size: 16px;
+  color: var(--text);
+}
+
+body.member-home .pf-week-day.is-today {
+  background: #e8b93a;
+  color: #1a1407;
+}
+
+body.member-home .pf-week-day.is-today strong {
+  color: #1a1407;
+}
+
+body.member-home .pf-week-day i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #e8b93a;
+}
+
+body.member-home .pf-week-day.is-today i {
+  background: #1a1407;
+}
+
+body.member-home .pf-ring-layout {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+body.member-home .pf-ring-box {
+  position: relative;
+  width: 104px;
+  height: 104px;
+  flex: none;
+}
+
+body.member-home .pf-ring-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+body.member-home .pf-ring-bg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.09);
+  stroke-width: 9;
+}
+
+body.member-home .pf-ring-fg {
+  fill: none;
+  stroke: #e8b93a;
+  stroke-width: 9;
+  stroke-linecap: round;
+  transition: stroke-dashoffset .35s ease;
+}
+
+body.member-home .pf-ring-label {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  line-height: 1.1;
+}
+
+body.member-home .pf-ring-label strong {
+  font-size: 20px;
+  font-weight: 800;
+}
+
+body.member-home .pf-ring-label span {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+body.member-home .pf-ring-stats {
+  flex: 1;
+  display: grid;
+  gap: 10px;
+}
+
+body.member-home .pf-ring-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+  font-size: 13.5px;
+}
+
+body.member-home .pf-ring-stat:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+body.member-home .pf-ring-stat span {
+  color: var(--muted);
+}
+
+body.member-home .pf-ring-stat strong {
+  font-size: 15px;
+  font-weight: 800;
+}
+
+@media (max-width: 900px) {
+  body.member-home .pf-app-week-progress {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Mobile App-Icon Bottom Dock */
 @media (max-width: 760px) {
   body.member-home .pf-bottomnav {
     display: grid !important;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     align-items: center;
     gap: 4px;
     padding: 8px 10px calc(8px + env(safe-area-inset-bottom, 0px));
