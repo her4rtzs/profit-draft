@@ -236,6 +236,9 @@ else:
 # manifest and service worker share one origin: no CORS, cookies just work.
 WHITENOISE_ROOT = BASE_DIR / "web"
 WHITENOISE_INDEX_FILE = False
+# `.webmanifest` is not a known extension to Python's mimetypes, so a static
+# manifest would be served as octet-stream and Chrome would ignore it.
+WHITENOISE_MIMETYPES = {".webmanifest": "application/manifest+json"}
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 

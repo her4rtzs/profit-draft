@@ -4,7 +4,6 @@ import json
 import struct
 
 from django.conf import settings
-from django.templatetags.static import static
 from django.test import TestCase, override_settings
 
 WEB = settings.BASE_DIR / "web"
@@ -27,34 +26,35 @@ _PLAIN_STATIC = {
 
 @override_settings(STORAGES=_PLAIN_STATIC)
 class ManifestTests(TestCase):
-    def test_anonymous_client_gets_manifest(self):
+    def test_manifest_is_served_as_manifest_json(self):
+        self.assertEqual(
+            settings.WHITENOISE_MIMETYPES.get(".webmanifest"),
+            "application/manifest+json",
+        )
         response = self.client.get("/manifest.webmanifest")
         self.assertEqual(response.status_code, 200)
         self.assertTrue(
             response["Content-Type"].startswith("application/manifest+json"),
             response["Content-Type"],
         )
+        self.assertNotIn("no-store", response.get("Cache-Control", ""))
 
     def test_manifest_contract(self):
-        data = json.loads(self.client.get("/manifest.webmanifest").content)
+        data = json.loads((WEB / "manifest.webmanifest").read_text(encoding="utf-8"))
         self.assertEqual(data["id"], "/")
         self.assertEqual(data["start_url"], "/")
         self.assertEqual(data["scope"], "/")
         self.assertEqual(data["name"], "ProFit")
         self.assertEqual(data["short_name"], "ProFit")
         self.assertEqual(data["display"], "standalone")
-        self.assertEqual(data["theme_color"], "#f0f2f5")
-        self.assertEqual(data["background_color"], "#f0f2f5")
+        self.assertEqual(data["theme_color"], "#0a0e17")
+        self.assertEqual(data["background_color"], "#0a0e17")
         self.assertNotIn("orientation", data)
 
         icons = {icon["src"]: icon for icon in data["icons"]}
-        self.assertEqual(
-            icons[static("icons/icon-192.png")]["sizes"], "192x192"
-        )
-        self.assertEqual(
-            icons[static("icons/icon-512.png")]["sizes"], "512x512"
-        )
-        maskable = icons[static("icons/maskable-icon-512.png")]
+        self.assertEqual(icons["/static/icons/icon-192.png"]["sizes"], "192x192")
+        self.assertEqual(icons["/static/icons/icon-512.png"]["sizes"], "512x512")
+        maskable = icons["/static/icons/maskable-icon-512.png"]
         self.assertEqual(maskable["sizes"], "512x512")
         self.assertEqual(maskable["purpose"], "maskable")
         for icon in data["icons"]:
@@ -82,7 +82,7 @@ class HeadTagTests(TestCase):
         html = self.client.get("/accounts/login/").content.decode()
         self.assertIn('rel="manifest"', html)
         self.assertIn('href="/manifest.webmanifest"', html)
-        self.assertIn('<meta name="theme-color" content="#f0f2f5"', html)
+        self.assertIn('<meta name="theme-color" content="#0a0e17"', html)
         self.assertIn('rel="apple-touch-icon"', html)
         self.assertIn("/static/icons/apple-touch-icon.png", html)
         self.assertIn(
@@ -90,6 +90,29 @@ class HeadTagTests(TestCase):
         )
         self.assertIn('<meta name="apple-mobile-web-app-title" content="ProFit"', html)
         self.assertIn('name="apple-mobile-web-app-status-bar-style"', html)
+
+    def test_every_static_page_head_has_install_tags(self):
+        pages = sorted(WEB.rglob("*.html"))
+        self.assertTrue(pages, "no web pages found")
+        for page in pages:
+            html = page.read_text(encoding="utf-8", errors="surrogateescape")
+            head = html.split("</head>", 1)[0]
+            self.assertEqual(
+                head.count('rel="manifest" href="/manifest.webmanifest"'), 1, page.name
+            )
+            self.assertEqual(
+                head.count('<meta name="theme-color" content="#0a0e17"'), 1, page.name
+            )
+            self.assertEqual(
+                head.count('rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"'),
+                1,
+                page.name,
+            )
+            self.assertEqual(
+                head.count('<meta name="apple-mobile-web-app-capable" content="yes"'),
+                1,
+                page.name,
+            )
 
 
 CARD_PAGES = (
@@ -124,7 +147,7 @@ class InstallCardTests(TestCase):
 
 class NoServiceWorkerTests(TestCase):
     def test_no_service_worker_files(self):
-        for name in ("sw.js", "pwa.js", "manifest.webmanifest"):
+        for name in ("sw.js", "pwa.js"):
             self.assertFalse((WEB / name).exists(), f"web/{name} should be gone")
 
     def test_no_page_registers_a_service_worker(self):
