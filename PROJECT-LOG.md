@@ -2239,3 +2239,14 @@ Check the edited `AGENTS.md` and `Architecture.md`, then follow the installable-
 - Recorded the baseline and the deviations in `docs/PROGRESS.md`, added Phase 4.5 to `ROADMAP.md` with the real-phone gate unchecked, and added a "Current phase" section to `AGENTS.md`.
 ### Decision-log skill
 Check what a prefixed `STATICFILES_DIRS` entry actually produces by running `collectstatic`, and remember that `finders.find` compares against `os.sep`, so prefix lookups fail on Windows — assert against the real repo path in tests instead.
+
+## 2026-11-16 12:10 (Asia/Manila): Manifest as a static file, dark chrome color, QR Ph hero
+### What I asked for
+Make the portal installable per AGENTS.md, preferring less code where the `web/` folder is already served by WhiteNoise at the site root, then (separate commit) stop the home page advertising GCash, Maya and cards.
+### What the agent decided and why
+- Moved the manifest from the Django view back to a static `web/manifest.webmanifest` and added `.webmanifest` to `WHITENOISE_MIMETYPES` as `application/manifest+json`, because `WHITENOISE_ROOT = web` already serves that folder at the site root, so the view and its route were pure extra code.
+- Switched `theme_color`, `background_color` and the `theme-color` tag to `#0a0e17` (the portal's dark chrome, `#0A0E17` x11 in the CSS), so the launch splash and phone status bar match the default staff portal and the icons.
+- Added a test that walks every `web/**/*.html` head, not just one page, because a single page missing the tags brings the browser bar back.
+- Changed only the home hero (lead sentence and its "Pay online" chip) to QR Ph and left every other public mention in place, because the user asked for a list before changing the rest.
+### Decision-log skill
+When a folder is served by `WHITENOISE_ROOT`, a static file beats a Django view for anything that does not need templating; the only thing to remember is registering the MIME type, since Python's `mimetypes` does not know `.webmanifest`.
