@@ -2816,14 +2816,57 @@ body:not(.dark) .registrations-panel .member-id {
   border-radius: 12px !important;
   display: grid !important;
   place-items: center !important;
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.22) 0%, rgba(245, 158, 11, 0.06) 100%) !important;
-  border: 1px solid rgba(245, 158, 11, 0.35) !important;
-  color: #FBBF24 !important;
-  font-weight: 750 !important;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.28) 0%, rgba(245, 158, 11, 0.12) 100%) !important;
+  border: 1px solid rgba(245, 158, 11, 0.50) !important;
+  color: #FCD34D !important;
+  font-weight: 800 !important;
   font-size: 13px !important;
-  box-shadow: 0 0 10px rgba(245, 158, 11, 0.15) !important;
   flex: none !important;
 }
+
+.registrations-panel tbody tr:nth-child(6n+2) .mini-avatar,
+table tbody tr:nth-child(6n+2) .mini-avatar {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.28) 0%, rgba(6, 182, 212, 0.12) 100%) !important;
+  border-color: rgba(6, 182, 212, 0.50) !important;
+  color: #67E8F9 !important;
+}
+.registrations-panel tbody tr:nth-child(6n+3) .mini-avatar,
+table tbody tr:nth-child(6n+3) .mini-avatar {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.28) 0%, rgba(16, 185, 129, 0.12) 100%) !important;
+  border-color: rgba(16, 185, 129, 0.50) !important;
+  color: #6EE7B7 !important;
+}
+.registrations-panel tbody tr:nth-child(6n+4) .mini-avatar,
+table tbody tr:nth-child(6n+4) .mini-avatar {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.28) 0%, rgba(139, 92, 246, 0.12) 100%) !important;
+  border-color: rgba(139, 92, 246, 0.50) !important;
+  color: #C4B5FD !important;
+}
+.registrations-panel tbody tr:nth-child(6n+5) .mini-avatar,
+table tbody tr:nth-child(6n+5) .mini-avatar {
+  background: linear-gradient(135deg, rgba(244, 63, 94, 0.28) 0%, rgba(244, 63, 94, 0.12) 100%) !important;
+  border-color: rgba(244, 63, 94, 0.50) !important;
+  color: #FDA4AF !important;
+}
+.registrations-panel tbody tr:nth-child(6n+6) .mini-avatar,
+table tbody tr:nth-child(6n+6) .mini-avatar {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.28) 0%, rgba(59, 130, 246, 0.12) 100%) !important;
+  border-color: rgba(59, 130, 246, 0.50) !important;
+  color: #93C5FD !important;
+}
+
+body:not(.dark) .registrations-panel tbody tr:nth-child(6n+1) .mini-avatar,
+body:not(.dark) table tbody tr:nth-child(6n+1) .mini-avatar { color: #92400E !important; }
+body:not(.dark) .registrations-panel tbody tr:nth-child(6n+2) .mini-avatar,
+body:not(.dark) table tbody tr:nth-child(6n+2) .mini-avatar { color: #155E75 !important; }
+body:not(.dark) .registrations-panel tbody tr:nth-child(6n+3) .mini-avatar,
+body:not(.dark) table tbody tr:nth-child(6n+3) .mini-avatar { color: #065F46 !important; }
+body:not(.dark) .registrations-panel tbody tr:nth-child(6n+4) .mini-avatar,
+body:not(.dark) table tbody tr:nth-child(6n+4) .mini-avatar { color: #5B21B6 !important; }
+body:not(.dark) .registrations-panel tbody tr:nth-child(6n+5) .mini-avatar,
+body:not(.dark) table tbody tr:nth-child(6n+5) .mini-avatar { color: #9F1239 !important; }
+body:not(.dark) .registrations-panel tbody tr:nth-child(6n+6) .mini-avatar,
+body:not(.dark) table tbody tr:nth-child(6n+6) .mini-avatar { color: #1E40AF !important; }
 
 .registrations-panel .member {
   display: flex !important;
