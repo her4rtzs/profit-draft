@@ -2226,3 +2226,16 @@ Upgrade the ProFit Member Portal (`web/member-home.html`, `web/member-shell.css`
 - Added standardized `.pf-grid-*`, `.pf-meta-grid`, `.pf-progress-track`, `.pf-status-badge`, `.pf-table-wrap`, `.pf-state-box`, and shimmer `.pf-sk-*` skeleton loaders across all member portal tabs, removing silent `demoData()` fallback on API error in favor of explicit error/retry states.
 ### Decision-log skill
 Clamp computed `remainingDays` at zero both on the API and client, and never mask live API failures with demo fallback data in authenticated portals.
+
+## 2026-11-16 11:00 (Asia/Manila): Installable web app (Phase 4.5)
+### What I asked for
+Check the edited `AGENTS.md` and `Architecture.md`, then follow the installable-app step: manifest, icons, head tags, install card, tests, no service worker, with the roadmap and current phase updated.
+### What the agent decided and why
+- Served `/manifest.webmanifest` from a public Django view in `profit/views.py` (no auth, no DB) instead of a static file, because `WHITENOISE_ROOT = web` would let a static `web/manifest.webmanifest` shadow the route; icon URLs come from `static()` so WhiteNoise's hashed names keep working.
+- Deleted `web/sw.js`, `web/pwa.js` and `web/manifest.webmanifest`: the step forbids offline caching of member and payment data on shared front-desk phones, and the old service worker was registered on every staff page.
+- Exported the four icons from the approved `web/logo.jpg` with PowerShell `System.Drawing` (no image library added), solid `#0a0e17` background, RGB with no alpha, maskable art inside the middle 80%.
+- Used one `theme-color` (`#f0f2f5`, the `--bg` variable in `web/styles.css`) because the portal theme is a per-user `localStorage` choice, not the OS setting.
+- Put the install card on three pages (staff settings, trainer settings, member home) instead of one shared partial, because no single page is open to every role.
+- Recorded the baseline and the deviations in `docs/PROGRESS.md`, added Phase 4.5 to `ROADMAP.md` with the real-phone gate unchecked, and added a "Current phase" section to `AGENTS.md`.
+### Decision-log skill
+Check what a prefixed `STATICFILES_DIRS` entry actually produces by running `collectstatic`, and remember that `finders.find` compares against `os.sep`, so prefix lookups fail on Windows — assert against the real repo path in tests instead.

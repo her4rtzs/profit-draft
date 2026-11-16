@@ -9,6 +9,7 @@ from . import views
 
 urlpatterns = [
     path("", views.home, name="home"),
+    path("manifest.webmanifest", views.manifest, name="manifest"),
     path("admin/", admin.site.urls),
     path("api/", include("api.urls")),
     path("accounts/", include("apps.accounts.urls")),

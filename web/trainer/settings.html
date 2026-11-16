@@ -10,7 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/css/staff.css?v=12">
 <link rel="stylesheet" href="trainer.css?v=12">
-</head>
+<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#f0f2f5"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
 <body data-page="settings" data-portal="trainer" data-head="none">
 <div class="app">
   <aside class="sidebar" id="sidebar"></aside>
@@ -125,7 +125,33 @@
           </div>
         </article>
 
-        <!-- Card 4: Active Session & Sign Out -->
+        <!-- Card 4: Install the app -->
+        <article class="tw-card" id="install">
+          <div class="tw-card-head">
+            <div>
+              <h2 class="tw-card-title">Install the app</h2>
+              <p class="tw-card-sub">Add ProFit to this phone's home screen. It opens like an app and still needs internet.</p>
+            </div>
+            <div class="tw-kpi-ico" data-ico="smartphone"></div>
+          </div>
+          <p id="installHelpStatus" role="status">Checking...</p>
+          <div data-install-steps>
+            <h3>iPhone (Safari)</h3>
+            <ol>
+              <li>Open ProFit in Safari.</li>
+              <li>Tap the Share button.</li>
+              <li>Tap Add to Home Screen, then Add.</li>
+            </ol>
+            <h3>Android (Chrome)</h3>
+            <ol>
+              <li>Open ProFit in Chrome.</li>
+              <li>Tap the three-dot menu.</li>
+              <li>Tap Install app (or Add to Home screen), then Install.</li>
+            </ol>
+          </div>
+        </article>
+
+        <!-- Card 5: Active Session & Sign Out -->
         <article class="tw-card">
           <div class="tw-card-head">
             <div>
@@ -246,5 +272,6 @@ PF.ready(() => {
   });
 });
 </script>
+<script src="/static/js/install-help.js" defer></script>
 </body>
 </html>

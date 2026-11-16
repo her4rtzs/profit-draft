@@ -202,6 +202,9 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [
     BASE_DIR / "static" / "dist",
     BASE_DIR / "static" / "vendor",
+    # Prefixed so the URLs are /static/icons/... and /static/js/... (manifest view and portal pages).
+    ("icons", BASE_DIR / "static" / "icons"),
+    ("js", BASE_DIR / "static" / "js"),
 ]
 
 STORAGES = {
