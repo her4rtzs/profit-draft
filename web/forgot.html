@@ -1,17 +1,323 @@
 <!doctype html>
-<html lang="en" class="dark public-dark-theme"><head><script>document.documentElement.classList.add('dark','public-dark-theme');</script><script src="splash.js?v=2"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b0b0d"><meta name="description" content="Secure sign in to ProFit gym management."><title>Sign in · ProFit</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="member-portal.css"><link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=9"><link rel="stylesheet" href="ui-final.css?v=1"><script>try{var pa=localStorage.getItem('pp-accent');document.documentElement.dataset.accent=['gold','spotify','ocean','indigo','coral','emerald','sunset'].indexOf(pa)>-1?pa:'gold'}catch(e){document.documentElement.dataset.accent='gold'}</script><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0d9488"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><link rel="apple-touch-icon" href="icons/icon-192.png"><link rel="stylesheet" href="hover-fx.css?v=1">
-<link rel="stylesheet" href="ui-polish.css?v=1">
-<link rel="stylesheet" href="ui-fixes.css?v=1">
-<link rel="stylesheet" href="pf-modern.css?v=1">
-<script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script></head>
-<body class="portal-body auth-page dark public-dark-theme"><header class="portal-nav"><a class="portal-brand" href="welcome.html"><span class="brand-mark"><i class="fa-solid fa-dumbbell"></i></span><span><strong>ProFit</strong><small data-gym-name>FUNCTIONAL FITNESS GYM</small></span></a><span class="secure-label"><i class="fa-solid fa-shield-halved"></i> Secure account access</span></header><main class="auth-shell"><section class="auth-story"><div class="eyebrow"><span></span> YOUR GYM. ONE PLATFORM.</div><h1>Reset your<br><em>password.</em></h1><p>We will email you a 6-digit code. Enter it with a new password and you are back in.</p></section><section class="auth-card"><div class="portal-heading-icon"><i class="fa-solid fa-key"></i></div><p class="portal-kicker">PASSWORD RESET</p><h2 id="fpTitle">Forgot your password?</h2><p class="auth-sub" id="fpSub">Enter the email on your account and we will send you a code.</p>
-<form id="fpForm1" novalidate><label class="auth-label" for="fpEmail">Email</label><input class="auth-input" id="fpEmail" type="email" autocomplete="email" maxlength="254" required placeholder="you@example.com"><div id="fpMsg1" class="portal-result" role="alert" aria-live="polite" hidden></div><button class="portal-submit auth-submit" type="submit"><span>Send code</span><i class="fa-solid fa-arrow-right"></i></button></form>
-<form id="fpForm2" novalidate hidden><label class="auth-label" for="fpCode">6-digit code</label><input class="auth-input" id="fpCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required placeholder="123456"><label class="auth-label" for="fpNew">New password</label><input class="auth-input" id="fpNew" type="password" autocomplete="new-password" maxlength="256" required placeholder="At least 8 characters"><label class="auth-label" for="fpConf">Confirm new password</label><input class="auth-input" id="fpConf" type="password" autocomplete="new-password" maxlength="256" required placeholder="Type it again"><div id="fpMsg2" class="portal-result" role="alert" aria-live="polite" hidden></div><button class="portal-submit auth-submit" type="submit"><span>Reset password</span><i class="fa-solid fa-arrow-right"></i></button><p class="auth-sub" style="margin-top:14px"><a href="#" id="fpResend">Send a new code</a></p></form>
-<p class="auth-sub" style="margin-top:18px"><a href="login.html">Back to sign in</a></p></section></main><script src="config.js"></script><script src="api.js"></script><script>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reset password — ProFit</title>
+<meta name="description" content="Reset your ProFit account password.">
+<link rel="icon" type="image/jpeg" href="logo.jpg">
+<link rel="apple-touch-icon" href="logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
+<script src="config.js"></script>
+<script src="api.js?v=4"></script>
+<style>
+  :root{
+    --gold:#e8b93a;
+    --lime:#e8b93a;
+    --lime-hi:#f2cb5c;
+    --on:#1a1407;
+    --bg:#07080c;
+    --bg2:#0b0d16;
+    --card:#111320;
+    --line:#232636;
+    --tx:#f6efdc;
+    --mu:#9a9788;
+    --field-line:#4A4E66;
+    --err:#f87171;
+    --ok:#4ade80;
+  }
+  html[data-theme="light"],body.light{
+    --bg:#f4f5f8;
+    --bg2:#ffffff;
+    --card:#ffffff;
+    --line:#d8dce6;
+    --tx:#111318;
+    --mu:#5b6070;
+    --field-line:#b8bfd0;
+    --err:#dc2626;
+    --ok:#15803d;
+  }
+  @media(prefers-color-scheme:light){
+    html[data-theme="auto"]{
+      --bg:#f4f5f8;
+      --bg2:#ffffff;
+      --card:#ffffff;
+      --line:#d8dce6;
+      --tx:#111318;
+      --mu:#5b6070;
+      --field-line:#b8bfd0;
+      --err:#dc2626;
+      --ok:#15803d;
+    }
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;overflow-x:hidden}
+  body{
+    min-height:100vh;
+    background:var(--bg);
+    color:var(--tx);
+    font:15px/1.6 Inter,system-ui,-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    display:flex;
+    flex-direction:column;
+  }
+  h1,h2,h3,button,.portal-brand strong{font-family:"Plus Jakarta Sans",Inter,system-ui,sans-serif}
+  :focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+  /* Header matching landing, login & join */
+  .portal-nav{
+    height:68px;min-height:68px;
+    background:#0b0c10;
+    border-bottom:1px solid var(--line);
+    padding:0 clamp(16px,4vw,40px);
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    position:sticky;top:0;z-index:40;flex:none;
+  }
+  .portal-brand{
+    display:inline-flex;align-items:center;gap:12px;
+    text-decoration:none;color:#f6efdc;min-height:44px;
+  }
+  .portal-brand img{width:36px;height:36px;border-radius:10px;object-fit:cover;display:block;flex:none}
+  .portal-brand strong{font-size:22px;font-weight:800;letter-spacing:-.02em;color:#f6efdc}
+  .back-link{
+    display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 6px;
+    color:#9a9788;text-decoration:none;font:600 14px/1 Inter,system-ui,sans-serif;
+    transition:color .18s ease,transform .18s ease;white-space:nowrap;
+  }
+  .back-link i{transition:transform .18s cubic-bezier(.22,1,.36,1)}
+  .back-link:hover{color:var(--gold)}
+  .back-link:hover i{transform:translateX(-3px)}
+
+  /* Full-bleed hero with flat overlay */
+  .fp-shell{
+    position:relative;
+    flex:1 1 auto;
+    min-height:calc(100vh - 68px);
+    background:url("img/hero.jpg") center/cover no-repeat;
+    display:flex;align-items:center;
+    padding:clamp(16px,2.5vh,28px) clamp(16px,4vw,48px);
+    overflow:hidden;
+  }
+  .fp-shell::before{
+    content:"";position:absolute;inset:0;
+    background:rgba(7,8,12,.7);
+    z-index:0;
+  }
+  html[data-theme="light"] .fp-shell::before,
+  body.light .fp-shell::before{
+    background:rgba(244,245,248,.82);
+  }
+  .fp-wrap{
+    position:relative;z-index:1;
+    width:min(1160px,100%);margin-inline:auto;
+    display:grid;grid-template-columns:minmax(0,1fr) 410px;
+    gap:clamp(28px,5vw,64px);align-items:center;
+  }
+
+  /* Left copy */
+  @keyframes pfRiseIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  .fp-eyebrow{
+    display:inline-flex;align-items:center;gap:10px;
+    font:700 12px/1.2 "Plus Jakarta Sans",sans-serif;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--gold);
+    margin:0 0 16px;
+    animation:pfRiseIn .45s cubic-bezier(.22,1,.36,1) both;
+  }
+  .fp-eyebrow::before{content:"";width:24px;height:2px;background:var(--gold);flex:none}
+  .fp-title{
+    margin:0 0 16px;
+    font-size:clamp(38px,5vw,60px);font-weight:800;line-height:1.04;letter-spacing:-.03em;
+    color:var(--tx);
+    animation:pfRiseIn .5s cubic-bezier(.22,1,.36,1) .06s both;
+  }
+  .fp-title .hl{color:var(--gold)}
+  .fp-desc{
+    margin:0 0 24px;max-width:460px;font-size:16.5px;line-height:1.6;color:var(--mu);
+    animation:pfRiseIn .5s cubic-bezier(.22,1,.36,1) .12s both;
+  }
+  .fp-checks{list-style:none;margin:0 0 24px;padding:0;display:grid;gap:12px;animation:pfRiseIn .5s cubic-bezier(.22,1,.36,1) .18s both}
+  .fp-checks li{display:flex;align-items:center;gap:10px;font-size:14.5px;font-weight:500;color:var(--tx);transition:transform .18s ease}
+  .fp-checks li:hover{transform:translateX(3px)}
+  .fp-checks i{color:var(--gold);font-size:14px;flex:none}
+  .fp-gym-foot{margin:0;font-size:12.5px;color:var(--mu);animation:pfRiseIn .5s cubic-bezier(.22,1,.36,1) .24s both}
+
+  /* Right card */
+  .fp-card{
+    width:100%;max-width:410px;justify-self:end;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:clamp(20px,2.5vh,28px) clamp(20px,2.5vw,28px);
+    box-shadow:0 24px 48px -20px rgba(0,0,0,.75);
+    animation:pfRiseIn .52s cubic-bezier(.22,1,.36,1) .08s both;
+  }
+  .fp-kicker{
+    margin:0 0 6px;font:700 11px/1.2 "Plus Jakarta Sans",sans-serif;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--gold);
+  }
+  .fp-card h2{margin:0 0 4px;font-size:24px;font-weight:800;letter-spacing:-.02em;color:var(--tx)}
+  .fp-lead{margin:0 0 18px;font-size:13.5px;color:var(--mu)}
+  .fp-lead a{color:var(--gold);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+
+  .fp-field-label{display:block;margin:0 0 5px;font:600 13px/1.2 Inter,system-ui,sans-serif;color:var(--tx)}
+  .fp-field{margin-bottom:12px}
+  .fp-input{
+    width:100%;height:44px;padding:0 14px;
+    border-radius:12px;border:1px solid var(--field-line);
+    background:var(--bg2);color:var(--tx);
+    font:400 14.5px/1.2 Inter,system-ui,sans-serif;
+    transition:border-color .16s ease,box-shadow .16s ease,background-color .16s ease;
+  }
+  .fp-input::placeholder{color:var(--mu)}
+  .fp-input:hover:not(:focus){border-color:rgba(232,185,58,.55)}
+  .fp-input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,185,58,.22)}
+  .fp-input:-webkit-autofill,
+  .fp-input:-webkit-autofill:hover,
+  .fp-input:-webkit-autofill:focus{
+    -webkit-box-shadow:0 0 0 100px var(--bg2) inset !important;
+    -webkit-text-fill-color:var(--tx) !important;
+    caret-color:var(--tx);
+    transition:background-color 5000s ease-in-out 0s;
+  }
+
+  .fp-pw-wrap{position:relative}
+  .fp-pw-wrap .fp-input{padding-right:46px}
+  .fp-eye{
+    position:absolute;right:4px;top:50%;transform:translateY(-50%);
+    width:40px;height:40px;border:0;background:transparent;color:var(--mu);
+    display:grid;place-items:center;cursor:pointer;border-radius:10px;transition:color .15s ease;
+  }
+  .fp-eye:hover{color:var(--gold)}
+
+  .fp-msg{
+    margin:0 0 12px;padding:10px 12px;border-radius:12px;font-size:13px;font-weight:500;
+    background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.35);color:var(--ok);
+  }
+  .fp-msg.error{background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.38);color:var(--err)}
+  .fp-msg[hidden]{display:none}
+
+  .fp-btn-gold{
+    width:100%;height:44px;border:0;border-radius:999px;
+    background:var(--gold);color:var(--on);
+    font:700 15px/1 "Plus Jakarta Sans",sans-serif;
+    display:inline-flex;align-items:center;justify-content:center;
+    cursor:pointer;transition:filter .16s ease,transform .16s cubic-bezier(.22,1,.36,1),box-shadow .16s ease;
+  }
+  .fp-btn-gold:hover:not(:disabled){filter:brightness(1.06);transform:translateY(-1px);box-shadow:0 8px 20px -6px rgba(232,185,58,.45)}
+  .fp-btn-gold:active:not(:disabled){transform:translateY(1px);box-shadow:none}
+  .fp-btn-gold:disabled{opacity:.65;cursor:not-allowed}
+
+  .fp-links{margin:12px 0 0;text-align:center;font-size:13px;color:var(--mu)}
+  .fp-links a{
+    display:inline-flex;align-items:center;min-height:36px;
+    color:var(--gold);font-weight:600;text-decoration:underline;text-underline-offset:3px;
+  }
+  .fp-links a:hover{color:var(--lime-hi)}
+
+  @media(max-width:900px){
+    .fp-shell{min-height:auto;padding:28px 16px 36px;align-items:flex-start}
+    .fp-wrap{grid-template-columns:1fr;gap:24px}
+    .fp-card{max-width:480px;margin-inline:auto;justify-self:center}
+  }
+  @media(max-width:480px){
+    .fp-input{font-size:16px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{transition:none !important;animation:none !important}
+  }
+</style>
+<script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script>
+</head>
+<body class="portal-body auth-page dark public-dark-theme">
+<header class="portal-nav">
+  <a class="portal-brand" href="welcome.html">
+    <img src="logo.jpg" alt="ProFit logo" width="36" height="36">
+    <strong>ProFit</strong>
+  </a>
+  <a class="back-link" href="welcome.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i><span>Back to home</span></a>
+</header>
+
+<main class="fp-shell">
+  <div class="fp-wrap">
+    <section class="fp-copy" aria-label="Password reset overview">
+      <p class="fp-eyebrow">Your gym. One platform.</p>
+      <h1 class="fp-title">Reset your<br><span class="hl">password.</span></h1>
+      <p class="fp-desc">We will email you a 6-digit code. Enter it with a new password and you are back in.</p>
+      <ul class="fp-checks">
+        <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>6-digit verification code sent by email</span></li>
+        <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Code expires after 10 minutes</span></li>
+        <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Your account stays protected</span></li>
+      </ul>
+      <p class="fp-gym-foot"><span data-gym-name>Functional Fitness Gym</span> · Alfonso, Calabarzon</p>
+    </section>
+
+    <section class="fp-card" aria-label="Password reset form">
+      <p class="fp-kicker">Password reset</p>
+      <h2 id="fpTitle">Forgot your password?</h2>
+      <p class="fp-lead" id="fpSub">Enter the email on your account and we will send you a code.</p>
+
+      <form id="fpForm1" novalidate>
+        <div class="fp-field">
+          <label class="fp-field-label" for="fpEmail">Email</label>
+          <input class="fp-input" id="fpEmail" type="email" autocomplete="email" maxlength="254" required placeholder="you@example.com">
+        </div>
+        <div id="fpMsg1" class="fp-msg" role="alert" aria-live="polite" hidden></div>
+        <button class="fp-btn-gold" type="submit">Send code</button>
+      </form>
+
+      <form id="fpForm2" novalidate hidden>
+        <div class="fp-field">
+          <label class="fp-field-label" for="fpCode">6-digit code</label>
+          <input class="fp-input" id="fpCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required placeholder="123456">
+        </div>
+        <div class="fp-field">
+          <label class="fp-field-label" for="fpNew">New password</label>
+          <div class="fp-pw-wrap">
+            <input class="fp-input" id="fpNew" type="password" autocomplete="new-password" maxlength="256" required placeholder="At least 8 characters">
+            <button type="button" class="fp-eye" id="toggleFpNew" aria-label="Show password" aria-pressed="false"><i class="fa-regular fa-eye"></i></button>
+          </div>
+        </div>
+        <div class="fp-field">
+          <label class="fp-field-label" for="fpConf">Confirm new password</label>
+          <div class="fp-pw-wrap">
+            <input class="fp-input" id="fpConf" type="password" autocomplete="new-password" maxlength="256" required placeholder="Type it again">
+            <button type="button" class="fp-eye" id="toggleFpConf" aria-label="Show confirm password" aria-pressed="false"><i class="fa-regular fa-eye"></i></button>
+          </div>
+        </div>
+        <div id="fpMsg2" class="fp-msg" role="alert" aria-live="polite" hidden></div>
+        <button class="fp-btn-gold" type="submit">Reset password</button>
+        <p class="fp-links"><a href="#" id="fpResend">Send a new code</a></p>
+      </form>
+
+      <p class="fp-links"><a href="login.html">Back to sign in</a></p>
+    </section>
+  </div>
+</main>
+
+<script>
 (() => {
   const $ = id => document.getElementById(id);
   const show = (el, text, bad) => { el.hidden = false; el.textContent = text; el.classList.toggle("error", !!bad); };
   const api = (path, body) => window.ProFitAPI.post(path, body);
+
+  function bindToggle(btnId, inputId, labelWord) {
+    const btn = $(btnId), input = $(inputId);
+    if (!btn || !input) return;
+    btn.addEventListener("click", () => {
+      const showPw = input.type === "password";
+      input.type = showPw ? "text" : "password";
+      btn.setAttribute("aria-label", showPw ? `Hide ${labelWord}` : `Show ${labelWord}`);
+      btn.setAttribute("aria-pressed", String(showPw));
+      btn.innerHTML = `<i class="fa-regular ${showPw ? "fa-eye-slash" : "fa-eye"}"></i>`;
+    });
+  }
+  bindToggle("toggleFpNew", "fpNew", "new password");
+  bindToggle("toggleFpConf", "fpConf", "confirm password");
+
   let email = "";
   const send = async (msgEl) => {
     try { await api("/auth/forgot-password", { email }); show(msgEl, "If that email has an account, a code is on its way. It expires in 10 minutes.", false); return true; }
@@ -37,4 +343,8 @@
     btn.disabled = false;
   });
 })();
-</script></body></html>
+</script>
+<script src="portal-fx.js?v=2"></script>
+<script src="site-footer.js?v=6" defer></script>
+</body>
+</html>

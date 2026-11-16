@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Sign in — ProFit</title>
 <link rel="icon" type="image/jpeg" href="logo.jpg">
+<link rel="apple-touch-icon" href="logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -98,7 +99,7 @@
     min-height:calc(100vh - 68px);
     background:url("img/hero.jpg") center/cover no-repeat;
     display:flex;align-items:center;
-    padding:clamp(32px,5vh,56px) clamp(16px,4vw,48px);
+    padding:clamp(16px,2.5vh,28px) clamp(16px,4vw,48px);
     overflow:hidden;
   }
   .lg-shell::before{
@@ -149,23 +150,23 @@
 
   /* Right card */
   .lg-card{
-    width:100%;
+    width:100%;max-width:410px;justify-self:end;
     background:var(--card);
     border:1px solid var(--line);
     border-radius:16px;
-    padding:clamp(22px,3vw,32px);
+    padding:clamp(18px,2.4vh,24px) clamp(20px,2.5vw,28px);
     box-shadow:0 24px 48px -20px rgba(0,0,0,.75);
     animation:pfRiseIn .52s cubic-bezier(.22,1,.36,1) .08s both;
   }
-  .lg-card h2{margin:0 0 4px;font-size:26px;font-weight:800;letter-spacing:-.02em;color:var(--tx)}
-  .lg-lead{margin:0 0 22px;font-size:13.5px;color:var(--mu)}
+  .lg-card h2{margin:0 0 3px;font-size:24px;font-weight:800;letter-spacing:-.02em;color:var(--tx)}
+  .lg-lead{margin:0 0 14px;font-size:13.5px;color:var(--mu)}
 
   .lg-field-label{
-    display:block;margin:0 0 6px;
+    display:block;margin:0 0 5px;
     font:600 13px/1.2 Inter,system-ui,sans-serif;color:var(--tx);
   }
   .lg-input{
-    width:100%;height:48px;padding:0 14px;
+    width:100%;height:44px;padding:0 14px;
     border-radius:12px;border:1px solid var(--field-line);
     background:var(--bg2);color:var(--tx);
     font:400 14.5px/1.2 Inter,system-ui,sans-serif;
@@ -196,14 +197,14 @@
   }
   .lg-eye:hover{color:var(--gold)}
 
-  .lg-err-sm{display:block;min-height:16px;margin:4px 0 8px;font-size:12px;font-weight:500;color:var(--err)}
-  .lg-caps{display:flex;align-items:center;gap:6px;margin:6px 0 0;font-size:12px;font-weight:600;color:var(--gold)}
+  .lg-err-sm{display:block;min-height:0;margin:3px 0 8px;font-size:12px;font-weight:500;color:var(--err)}
+  .lg-caps{display:flex;align-items:center;gap:6px;margin:4px 0 0;font-size:12px;font-weight:600;color:var(--gold)}
   .lg-caps[hidden]{display:none}
 
   .lg-remember{
-    display:inline-flex;align-items:flex-start;gap:10px;
-    margin:2px 0 18px;font-size:13.5px;font-weight:500;color:var(--tx);
-    cursor:pointer;min-height:44px;padding-top:10px;
+    display:inline-flex;align-items:center;gap:10px;
+    margin:0 0 12px;font-size:13.5px;font-weight:500;color:var(--tx);
+    cursor:pointer;min-height:36px;
   }
   .lg-remember input[type="checkbox"]{
     appearance:none;-webkit-appearance:none;
@@ -233,7 +234,7 @@
   .lg-msg[hidden]{display:none}
 
   .lg-btn-gold{
-    width:100%;height:48px;border:0;border-radius:999px;
+    width:100%;height:44px;border:0;border-radius:999px;
     background:var(--gold);color:var(--on);
     font:700 15px/1 "Plus Jakarta Sans",sans-serif;
     display:inline-flex;align-items:center;justify-content:center;gap:8px;
@@ -243,23 +244,23 @@
   .lg-btn-gold:active:not(:disabled){transform:translateY(1px);box-shadow:none}
   .lg-btn-gold:disabled{opacity:.65;cursor:not-allowed}
 
-  .lg-forgot-row{display:flex;justify-content:center;margin:12px 0 0}
+  .lg-forgot-row{display:flex;justify-content:center;margin:8px 0 0}
   .lg-forgot{
-    display:inline-flex;align-items:center;min-height:44px;padding:0 10px;
+    display:inline-flex;align-items:center;min-height:36px;padding:0 10px;
     font-size:13px;font-weight:600;color:var(--gold);
     text-decoration:underline;text-underline-offset:3px;
   }
   .lg-forgot:hover{color:var(--lime-hi)}
 
   .lg-divider{
-    display:flex;align-items:center;gap:12px;margin:8px 0 14px;
+    display:flex;align-items:center;gap:12px;margin:8px 0 10px;
     font-size:12px;color:var(--mu);
   }
   .lg-divider::before,.lg-divider::after{content:"";flex:1;height:1px;background:var(--line)}
 
-  .lg-sso{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .lg-sso{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .lg-sso-btn{
-    height:48px;padding:0 14px;border-radius:999px;
+    height:44px;padding:0 14px;border-radius:999px;
     border:1px solid var(--field-line);background:var(--bg2);color:var(--tx);
     font:600 14px/1 "Plus Jakarta Sans",sans-serif;
     display:inline-flex;align-items:center;justify-content:center;gap:9px;
@@ -270,10 +271,10 @@
   .lg-sso-btn svg{width:18px;height:18px;flex:none}
 
   .lg-join-row{
-    margin:18px 0 0;text-align:center;font-size:13.5px;color:var(--mu);
+    margin:10px 0 0;text-align:center;font-size:13.5px;color:var(--mu);
   }
   .lg-join-row a{
-    display:inline-flex;align-items:center;min-height:44px;
+    display:inline-flex;align-items:center;min-height:36px;
     color:var(--gold);font-weight:600;text-decoration:underline;text-underline-offset:3px;
   }
   .lg-join-row a:hover{color:var(--lime-hi)}

@@ -9,7 +9,7 @@
       el.textContent = customName;
     });
   } catch (_) {}
-  if (!/(welcome|login|join|faq|terms|privacy)\.html$/.test(location.pathname)) return;
+  if (!/(welcome|login|join|forgot|faq|terms|privacy)\.html$/.test(location.pathname)) return;
   if (document.querySelector(".site-footer")) return;
   if (!document.querySelector('link[href^="site-footer.css"]')) {
     const link = document.createElement("link");

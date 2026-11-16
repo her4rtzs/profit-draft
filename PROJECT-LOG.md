@@ -2206,3 +2206,13 @@ Add clean non-AI hover/entrance animations on Login and Sign Up, keep input/auto
 - Bumped `web/sw.js` cache to `profit-shell-v20`.
 ### Decision-log skill
 Style `:-webkit-autofill` explicitly on dark-themed auth inputs so browser-filled credentials match `var(--bg2)` instead of flashing white.
+
+## 2026-11-16 08:00 (Asia/Manila): Compact auth containers, tighten Remember me spacing, unify Reset Password UI, and standardize gym favicon
+### What I asked for
+Make the Login and Join cards fit cleanly on screen without vertical scrolling, move "Remember me" closer to the Password field, apply the same Login/Join v2 UI to Reset Password (`forgot.html`), and add the gym logo (`logo.jpg`) consistently as the site favicon.
+### What the agent decided and why
+- Compacted card padding, field heights (`44px`), vertical margins, and error slot heights in `web/login.html` and `web/join.html`, and tightened `.lg-remember` (`align-items: center; margin: 0 0 12px`) so "Remember me" sits close to Password and both cards fit within a standard laptop viewport.
+- Rewrote `web/forgot.html` to match the `login.html`/`join.html` v2 design (`68px` header, `Back to home`, flat `rgba(7,8,12,.7)` hero overlay, `410px` card, eye toggles, and all `/auth/forgot-password` + `/auth/reset-password` handlers preserved), and added `forgot` to `web/site-footer.js`.
+- Added `<link rel="icon" type="image/jpeg" href="logo.jpg">` and `<link rel="apple-touch-icon" href="logo.jpg">` across `welcome.html`, `login.html`, `join.html`, `forgot.html`, `faq.html`, `terms.html`, and `privacy.html`, and bumped `web/sw.js` to `profit-shell-v21`.
+### Decision-log skill
+Avoid reserving blank `min-height` on hidden inline field error slots (`min-height: 0`) so checkboxes like "Remember me" stay visually grouped with their preceding input.
