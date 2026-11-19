@@ -24,6 +24,7 @@ logger = logging.getLogger("apps.accounts.email")
 
 RESEND_API_URL = "https://api.resend.com/emails"
 RESEND_TIMEOUT = 10
+RESEND_SANDBOX_FROM = "ProFit <onboarding@resend.dev>"
 
 
 def select_email_backend(
@@ -115,8 +116,9 @@ class ResendEmailBackend(BaseEmailBackend):
     def _send_one(self, message, api_key):
         from .services import EmailDeliveryError
 
+        sender = (message.from_email or "").strip() or RESEND_SANDBOX_FROM
         payload = {
-            "from": message.from_email,
+            "from": sender,
             "to": list(message.to),
             "subject": message.subject,
             "text": message.body,
@@ -126,6 +128,28 @@ class ResendEmailBackend(BaseEmailBackend):
             if mimetype == "text/html":
                 payload["html"] = content
                 break
+
+        try:
+            self._post_payload(payload, api_key)
+        except urllib.error.HTTPError as exc:
+            # Retry once with Resend's sandbox sender if the custom domain is not
+            # verified in Resend yet (403/422) so dev/owner testing stays working.
+            if (
+                exc.code in (403, 422)
+                and sender != RESEND_SANDBOX_FROM
+                and "onboarding@resend.dev" not in sender.lower()
+            ):
+                logger.warning("event=resend_sender_fallback status=%s", exc.code)
+                fallback_payload = {**payload, "from": RESEND_SANDBOX_FROM}
+                try:
+                    self._post_payload(fallback_payload, api_key)
+                    return
+                except urllib.error.HTTPError as retry_exc:
+                    raise EmailDeliveryError("Resend returned an HTTP error.") from retry_exc
+            raise EmailDeliveryError("Resend returned an HTTP error.") from exc
+
+    def _post_payload(self, payload, api_key):
+        from .services import EmailDeliveryError
 
         request = urllib.request.Request(
             RESEND_API_URL,
@@ -145,7 +169,7 @@ class ResendEmailBackend(BaseEmailBackend):
                     raise EmailDeliveryError("Resend returned a non-2xx status.")
         except urllib.error.HTTPError as exc:
             logger.warning("event=resend_send_failed status=%s", exc.code)
-            raise EmailDeliveryError("Resend returned an HTTP error.") from exc
+            raise
         except (urllib.error.URLError, TimeoutError) as exc:
             logger.warning("event=resend_send_failed status=network_error")
             raise EmailDeliveryError("Could not reach Resend.") from exc
