@@ -1,0 +1,221 @@
+{
+  "main": {
+    "id": "9f83c056e608987f",
+    "type": "split",
+    "children": [
+      {
+        "id": "38056a49520e90b2",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "82ada7d355fdc343",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "05 - Decisions/2026-11-16 Manifest static file, dark chrome colour.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "2026-11-16 Manifest static file, dark chrome colour"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "9db5bd53d0f8233a",
+    "type": "split",
+    "children": [
+      {
+        "id": "724583264f9f07e0",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "035e293205433c6b",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "4eed6e7c0e294022",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "fcb360dcefd96647",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "735b714728e8fc01",
+    "type": "split",
+    "children": [
+      {
+        "id": "bb6e734d197432a5",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c3d31225f986cd50",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "03 - Development/Development Workflow.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "85c5c2292bf00758",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "03 - Development/Development Workflow.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "979ca425bbad24c2",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "fae2f73d190e1478",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "2e27dea6cc874d54",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "03 - Development/Development Workflow.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "82ada7d355fdc343",
+  "lastOpenFiles": [
+    "05 - Decisions/2026-10-30 members.html reuses its Cards view.md",
+    "2026-10-07 Webhook follows binding spec, single writer.md",
+    "2026-10-07 Session and CSRF login as plain views.md",
+    "2026-10-07 Membership API isolates each member.md",
+    "2026-10-07 Django scaffold and fail-fast settings.md",
+    "05 - Decisions/2026-11-19 Decorative CSS layer removed.md",
+    "05 - Decisions/Unknown Member photo is a base64 data URL.md",
+    "05 - Decisions/2026-11-16 Home hero says QR Ph only.md",
+    "05 - Decisions/2026-10-30 Every staff list row becomes a card.md",
+    "05 - Decisions/2026-11-14 Root URL and head guard stop dashboard flash.md",
+    "05 - Decisions/Decision Log.md",
+    "05 - Decisions/2026-11-16 Manifest static file, dark chrome colour.md",
+    "05 - Decisions/2026-11-16 Installable web app, no service worker.md",
+    "05 - Decisions/2026-11-16 Member endpoint requires auth, real records.md",
+    "05 - Decisions/2026-11-15 Notifications server-synced, not seeded.md",
+    "05 - Decisions/2026-11-15 Trainer subpages get shared design.md",
+    "05 - Decisions/2026-11-14 Debug screenshots and prototypes removed.md",
+    "05 - Decisions/2026-11-14 Serverless deploy keeps migrations out.md",
+    "05 - Decisions/2026-11-13 Validation and security docs from code.md",
+    "05 - Decisions/Unknown PayMongo test mode and payment methods.md",
+    "05 - Decisions/Unknown Desk payments live in ManualPayment.md",
+    "05 - Decisions/Unknown Pay-first join has no account until paid.md",
+    "05 - Decisions/Unknown PayMongo Checkout Sessions.md",
+    "PROGRESS.md",
+    "Untitled.base",
+    "03 - Development/Development Workflow.md",
+    "02 - Architecture/System Architecture.md"
+  ]
+}

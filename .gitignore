@@ -5,4 +5,3 @@ __pycache__/
 staticfiles/
 node_modules/
 static/dist/
-docs/.obsidian/workspace.json
