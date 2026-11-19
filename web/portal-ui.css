@@ -339,7 +339,7 @@ body:has(.member-content){background:radial-gradient(900px 500px at 8% -5%,color
 /* Recent registrations table: rows become soft cards, menu anchored to its button */
 .panel:has(.row-menu-wrap) .table-wrapper{padding:0!important}
 .panel:has(.row-menu-wrap) table{border-collapse:separate!important;border-spacing:0 8px!important;width:100%;background:transparent!important}
-.panel:has(.row-menu-wrap) thead th{background:transparent!important;border:0!important;padding:4px 16px!important;font-size:10.5px;font-weight:800;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;position:static}
+.panel:has(.row-menu-wrap) thead th{background:transparent!important;border:0!important;padding:4px 16px!important;font-size:12px;font-weight:800;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;position:static}
 .panel:has(.row-menu-wrap) tbody tr{background:var(--hover);transition:transform .2s ease,box-shadow .2s ease}
 .panel:has(.row-menu-wrap) tbody tr:hover{background:color-mix(in srgb,var(--gold) 9%,var(--hover));transform:translateY(-1px);box-shadow:0 10px 26px rgba(0,0,0,.14)}
 .panel:has(.row-menu-wrap) tbody td{padding:14px 16px!important;border:0!important;vertical-align:middle;background:transparent}
@@ -427,7 +427,7 @@ body:has(.member-content){background:radial-gradient(900px 500px at 8% -5%,color
 /* --- Members table --- */
 .pp-table-wrap{border-radius:20px;border:1px solid var(--border);background:var(--card);overflow:auto;box-shadow:var(--shadow)}
 .pp-table-wrap table{width:100%;border-collapse:separate;border-spacing:0}
-.pp-table-wrap thead th{position:sticky;top:0;z-index:2;padding:14px 18px;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);background:color-mix(in srgb,var(--card) 88%,var(--hover));border-bottom:1px solid var(--border)}
+.pp-table-wrap thead th{position:sticky;top:0;z-index:2;padding:14px 18px;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);background:color-mix(in srgb,var(--card) 88%,var(--hover));border-bottom:1px solid var(--border)}
 .pp-table-wrap tbody td{padding:14px 18px;border-bottom:1px solid var(--border);vertical-align:middle;transition:background .18s ease}
 .pp-table-wrap tbody tr{cursor:pointer;transition:transform .18s ease}
 .pp-table-wrap tbody tr:hover td{background:color-mix(in srgb,var(--gold) 8%,transparent)}
@@ -3103,7 +3103,7 @@ html body.public-dark-theme .portal-heading-icon {
 html body.auth-page .portal-kicker,
 html body.public-dark-theme .portal-kicker {
   color: #F4C542 !important;
-  font-size: 10.5px !important;
+  font-size: 11px !important;
   font-weight: 800 !important;
   letter-spacing: 0.12em !important;
   text-transform: uppercase !important;
@@ -4430,7 +4430,7 @@ body[data-page="trainers"] .tr-req-table {
 }
 body[data-page="trainers"] .tr-req-table th {
   text-align: left;
-  font-size: 10.5px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -4645,7 +4645,7 @@ body[data-page="trainers"] .tr-access-top strong {
 body[data-page="trainers"] .tr-rec-badge {
   padding: 2px 8px;
   border-radius: 999px;
-  font-size: 10.5px;
+  font-size: 12px;
   font-weight: 800;
   background: rgba(16, 185, 129, 0.16);
   color: #10B981;

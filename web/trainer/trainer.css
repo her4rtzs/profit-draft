@@ -1022,7 +1022,7 @@ html[data-theme="light"] .tw-hit-col:hover {
 }
 .tw-time-badge small {
   display: block;
-  font-size: 10.5px;
+  font-size: 12px;
   color: var(--muted);
   line-height: 1.2;
   margin-top: 1px;
@@ -1086,7 +1086,7 @@ html[data-theme="light"] .tw-hit-col:hover {
 .tw-table th {
   padding: 11px 16px;
   text-align: left;
-  font-size: 10.5px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -1547,7 +1547,7 @@ html[data-theme="light"] .tw-skel-bar {
   min-width: 0;
 }
 .tw-att-filters .tw-ctrl-field label {
-  font-size: 10.5px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -2038,7 +2038,7 @@ html[data-theme="light"] .tw-filter-pill.active {
   height: 18px;
   padding: 0 5px;
   border-radius: 99px;
-  font-size: 10.5px;
+  font-size: 12px;
   font-weight: 700;
   background: rgba(255, 255, 255, .08);
   color: inherit;
@@ -2272,7 +2272,7 @@ html[data-theme="light"] .tw-athlete-metrics {
 }
 .tw-athlete-metric span {
   display: block;
-  font-size: 10.5px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .06em;
