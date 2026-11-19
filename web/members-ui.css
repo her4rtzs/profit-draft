@@ -1,9 +1,7 @@
 /* Members page: dark glassmorphism + amber/gold accents matching reference */
 body[data-page="members"] {
   --bm-page-bg: #070b14;
-  --bm-card-bg: radial-gradient(circle at 0% 0%, rgba(255, 176, 32, 0.12), transparent 46%),
-                radial-gradient(circle at 100% 100%, rgba(56, 189, 248, 0.1), transparent 48%),
-                linear-gradient(160deg, #141f36, #0e1627, #0b1120);
+  --bm-card-bg: linear-gradient(160deg, #141f36, #0e1627, #0b1120);
   --bm-surface: rgba(11, 17, 32, 0.72);
   --bm-surface-hi: rgba(18, 28, 49, 0.85);
   --bm-border: rgba(255, 170, 0, 0.24);
@@ -182,18 +180,6 @@ body[data-page="members"] .pp-browse-title {
   display: flex;
   align-items: center;
   gap: 15px;
-  padding-left: 16px;
-}
-
-body[data-page="members"] .pp-browse-title::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 4px;
-  bottom: 4px;
-  width: 3.5px;
-  border-radius: 999px;
-  background: #f59e0b;
 }
 
 body[data-page="members"] .pp-browse-ico {

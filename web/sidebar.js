@@ -77,10 +77,9 @@
     if(window.PF_LIVE_NOTIFICATIONS)return;
     if(!list||!badge)return;
     const unread=notifications.filter(n=>!n.read).length;
-    // The badge is a dot; the count belongs in the label and the panel header.
+    // Keep the bell's accessible name equal to its visible label; the count lives in the badge and panel header.
     badge.hidden=unread===0;badge.textContent="";
     badge.setAttribute("aria-hidden","true");
-    if(button)button.setAttribute("aria-label",unread?`Notifications, ${unread} unread update${unread===1?"":"s"}`:"Notifications, you're all caught up");
     const summary=$("#notificationSummary");if(summary)summary.textContent=unread?`${unread} unread update${unread===1?"":"s"}`:"You're all caught up";
     // A notification that knows where it came from becomes a real link, so the
     // bell actually takes you to the record instead of being a dead end.

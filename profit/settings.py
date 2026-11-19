@@ -202,6 +202,9 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [
     BASE_DIR / "static" / "dist",
     BASE_DIR / "static" / "vendor",
+    # Prefixed so the URLs are /static/icons/... and /static/js/... (manifest view and portal pages).
+    ("icons", BASE_DIR / "static" / "icons"),
+    ("js", BASE_DIR / "static" / "js"),
 ]
 
 STORAGES = {
@@ -233,6 +236,9 @@ else:
 # manifest and service worker share one origin: no CORS, cookies just work.
 WHITENOISE_ROOT = BASE_DIR / "web"
 WHITENOISE_INDEX_FILE = False
+# `.webmanifest` is not a known extension to Python's mimetypes, so a static
+# manifest would be served as octet-stream and Chrome would ignore it.
+WHITENOISE_MIMETYPES = {".webmanifest": "application/manifest+json"}
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 

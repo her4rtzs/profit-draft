@@ -170,8 +170,6 @@ html body .empty-state, html body .pp-empty-state { text-align: center; justify-
 
 @media (max-width: 760px) {
   html body .pp-segment, html body .pp-view-toggle, html body .pp-tabs { justify-content: center; }
-  html body .member-hero-actions { display: grid; justify-items: center; }
-  html body .member-hero-actions .btn { width: min(100%, 320px); justify-content: center; }
 }
 
 /* Diary pastel theme (light mode) */

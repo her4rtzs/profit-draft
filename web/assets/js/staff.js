@@ -492,7 +492,7 @@
     document.dispatchEvent(new CustomEvent('pf:theme', { detail: { theme: eff } }));
   };
   PF.setAccent = a => {
-    const norm = a === 'blue' ? 'ocean' : (a || 'gold');
+    const norm = 'gold';
     try {
       localStorage.setItem('pp-accent', norm);
       localStorage.setItem('pf-accent', norm);

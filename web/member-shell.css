@@ -22,14 +22,7 @@ html[data-theme="dark"] body.member-home {
   --line: rgba(255, 255, 255, .10);
 }
 
-html[data-accent="gold"] body.member-home { --m-gold: #e3ae2b; --m-gold-2: #f4cc64; --m-gold-soft: rgba(227, 174, 43, .14); }
-html[data-accent="spotify"] body.member-home { --m-gold: #1db954; --m-gold-2: #4ded88; --m-gold-soft: rgba(29, 185, 84, .14); }
-html[data-accent="ocean"] body.member-home,
-html[data-accent="blue"] body.member-home { --m-gold: #0d9488; --m-gold-2: #2dd4bf; --m-gold-soft: rgba(45, 212, 191, .14); }
-html[data-accent="indigo"] body.member-home { --m-gold: #6366f1; --m-gold-2: #818cf8; --m-gold-soft: rgba(129, 140, 248, .14); }
-html[data-accent="coral"] body.member-home { --m-gold: #f43f5e; --m-gold-2: #fb7185; --m-gold-soft: rgba(244, 63, 94, .14); }
-html[data-accent="emerald"] body.member-home { --m-gold: #10b981; --m-gold-2: #34d399; --m-gold-soft: rgba(16, 185, 129, .14); }
-html[data-accent="sunset"] body.member-home { --m-gold: #f97316; --m-gold-2: #fb923c; --m-gold-soft: rgba(249, 115, 22, .14); }
+body.member-home { --m-gold: #e3ae2b; --m-gold-2: #f4cc64; --m-gold-soft: rgba(227, 174, 43, .14); }
 
 body.member-home .member-app-shell {
   min-height: 100vh;
@@ -175,7 +168,7 @@ body.member-home .member-sidebar .nav-group {
 
 body.member-home .member-sidebar .nav-label {
   margin: 2px 10px 8px;
-  font-size: 10.5px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.16em;
   color: var(--m-nav-muted);
@@ -235,7 +228,7 @@ body.member-home .member-sidebar .nav-link[aria-selected="true"] {
   border-color: rgba(244, 197, 66, 0.45);
   color: #ffffff;
   font-weight: 700;
-  box-shadow: inset 3px 0 0 #F4C542, 0 4px 16px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
 body.member-home .member-sidebar .nav-link.active .ico,
@@ -664,16 +657,32 @@ body.member-home .pf-app-hero p {
   opacity: 0.88;
 }
 
+/* Single owner for the member hero actions: two up, Contact on its own row, stack on small phones. */
 body.member-home .pf-app-hero .member-hero-actions {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  justify-items: center;
   align-items: center;
   gap: 10px;
-  flex-wrap: wrap;
 }
-
+body.member-home .pf-app-hero .member-hero-actions > :nth-child(3):last-child {
+  grid-column: 1 / -1;
+}
 body.member-home .pf-app-hero .member-hero-actions .btn {
   width: auto !important;
   white-space: nowrap;
+  justify-content: center;
+}
+
+/* Small phones: one per row, full width, so the two labels cannot collide. */
+@media (max-width: 400px) {
+  body.member-home .pf-app-hero .member-hero-actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  body.member-home .pf-app-hero .member-hero-actions .btn {
+    width: 100% !important;
+    white-space: normal;
+  }
 }
 
 body.member-home .pf-app-hero .btn-soft {
@@ -930,7 +939,7 @@ body.member-home .pf-ring-stat strong {
     border: 1px solid transparent;
     background: transparent;
     color: #94a3b8;
-    font-size: 10.5px;
+    font-size: 12px;
     font-weight: 600;
     transition: background-color .15s ease, color .15s ease, border-color .15s ease;
   }

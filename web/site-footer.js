@@ -1,5 +1,26 @@
 // Shared footer + dynamic gym name hydration for public pages.
 (() => {
+  // Site-wide a11y shell: a keyboard skip link on every page with main content,
+  // and a page heading only where the markup has none (staff pages build theirs in layout.js).
+  const main = document.querySelector('main');
+  if (main) {
+    if (!main.id) main.id = 'main-content';
+    if (!main.hasAttribute('tabindex')) main.tabIndex = -1;
+    const skip = document.createElement('a');
+    skip.href = '#' + main.id;
+    skip.className = 'pf-skip-link';
+    skip.textContent = 'Skip to content';
+    skip.style.cssText = 'position:fixed;top:-60px;left:12px;z-index:99999;padding:10px 16px;background:#0a0e16;color:#fff;border-radius:0 0 8px 8px;font:600 14px/1.2 system-ui,sans-serif;text-decoration:none';
+    skip.addEventListener('focus', () => { skip.style.top = '0'; });
+    skip.addEventListener('blur', () => { skip.style.top = '-60px'; });
+    document.body.insertBefore(skip, document.body.firstChild);
+  }
+  if (!document.querySelector('h1')) {
+    const h1 = document.createElement('h1');
+    h1.style.cssText = 'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0';
+    h1.textContent = document.body.dataset.title || document.title.split('|')[0].trim();
+    (main || document.body).insertBefore(h1, (main || document.body).firstChild);
+  }
   try {
     const prof = JSON.parse(localStorage.getItem("profit-gym-profile") || "null");
     const customName = prof && prof.name && prof.name.trim() && prof.name.trim().toLowerCase() !== "profit"

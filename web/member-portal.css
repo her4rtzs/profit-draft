@@ -1,5 +1,5 @@
 /* Member portal page design */
-.portal-body { min-height:100vh; margin:0; background:radial-gradient(circle at 12% 8%,color-mix(in srgb, var(--gold) 16%, transparent),transparent 32%),linear-gradient(180deg,#f8fafc 0%,#eef2f7 100%); color:var(--text); }
+.portal-body { min-height:100vh; margin:0; background:linear-gradient(180deg,#f8fafc 0%,#eef2f7 100%); color:var(--text); }
 .portal-nav { position:sticky; top:0; z-index:20; height:82px; padding:0 clamp(20px,5vw,76px); display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(229,233,239,.86); background:rgba(255,255,255,.86); backdrop-filter:blur(18px); }
 .portal-brand { display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; }
 .brand-mark { display:grid; place-items:center; width:43px; height:43px; border-radius:13px; color:#fff; background:linear-gradient(140deg,var(--gold),var(--gold-deep)); box-shadow:0 8px 18px #c99a3230; }

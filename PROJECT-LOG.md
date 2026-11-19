@@ -2226,3 +2226,96 @@ Upgrade the ProFit Member Portal (`web/member-home.html`, `web/member-shell.css`
 - Added standardized `.pf-grid-*`, `.pf-meta-grid`, `.pf-progress-track`, `.pf-status-badge`, `.pf-table-wrap`, `.pf-state-box`, and shimmer `.pf-sk-*` skeleton loaders across all member portal tabs, removing silent `demoData()` fallback on API error in favor of explicit error/retry states.
 ### Decision-log skill
 Clamp computed `remainingDays` at zero both on the API and client, and never mask live API failures with demo fallback data in authenticated portals.
+
+## 2026-11-16 11:00 (Asia/Manila): Installable web app (Phase 4.5)
+### What I asked for
+Check the edited `AGENTS.md` and `Architecture.md`, then follow the installable-app step: manifest, icons, head tags, install card, tests, no service worker, with the roadmap and current phase updated.
+### What the agent decided and why
+- Served `/manifest.webmanifest` from a public Django view in `profit/views.py` (no auth, no DB) instead of a static file, because `WHITENOISE_ROOT = web` would let a static `web/manifest.webmanifest` shadow the route; icon URLs come from `static()` so WhiteNoise's hashed names keep working.
+- Deleted `web/sw.js`, `web/pwa.js` and `web/manifest.webmanifest`: the step forbids offline caching of member and payment data on shared front-desk phones, and the old service worker was registered on every staff page.
+- Exported the four icons from the approved `web/logo.jpg` with PowerShell `System.Drawing` (no image library added), solid `#0a0e17` background, RGB with no alpha, maskable art inside the middle 80%.
+- Used one `theme-color` (`#f0f2f5`, the `--bg` variable in `web/styles.css`) because the portal theme is a per-user `localStorage` choice, not the OS setting.
+- Put the install card on three pages (staff settings, trainer settings, member home) instead of one shared partial, because no single page is open to every role.
+- Recorded the baseline and the deviations in `docs/PROGRESS.md`, added Phase 4.5 to `ROADMAP.md` with the real-phone gate unchecked, and added a "Current phase" section to `AGENTS.md`.
+### Decision-log skill
+Check what a prefixed `STATICFILES_DIRS` entry actually produces by running `collectstatic`, and remember that `finders.find` compares against `os.sep`, so prefix lookups fail on Windows — assert against the real repo path in tests instead.
+
+## 2026-11-16 12:10 (Asia/Manila): Manifest as a static file, dark chrome color, QR Ph hero
+### What I asked for
+Make the portal installable per AGENTS.md, preferring less code where the `web/` folder is already served by WhiteNoise at the site root, then (separate commit) stop the home page advertising GCash, Maya and cards.
+### What the agent decided and why
+- Moved the manifest from the Django view back to a static `web/manifest.webmanifest` and added `.webmanifest` to `WHITENOISE_MIMETYPES` as `application/manifest+json`, because `WHITENOISE_ROOT = web` already serves that folder at the site root, so the view and its route were pure extra code.
+- Switched `theme_color`, `background_color` and the `theme-color` tag to `#0a0e17` (the portal's dark chrome, `#0A0E17` x11 in the CSS), so the launch splash and phone status bar match the default staff portal and the icons.
+- Added a test that walks every `web/**/*.html` head, not just one page, because a single page missing the tags brings the browser bar back.
+- Changed only the home hero (lead sentence and its "Pay online" chip) to QR Ph and left every other public mention in place, because the user asked for a list before changing the rest.
+### Decision-log skill
+When a folder is served by `WHITENOISE_ROOT`, a static file beats a Django view for anything that does not need templating; the only thing to remember is registering the MIME type, since Python's `mimetypes` does not know `.webmanifest`.
+
+## 2026-11-19 09:10 (Asia/Manila): Distill the decorative CSS layer
+### What I asked for
+Commit the `/impeccable distill` pass that removed the repeated decorative layer from the `web/` pages.
+### What the agent decided and why
+- Verified the pass first: 13 files, +56/-392, all decoration removal (edge stripes, radial halos, sparkline and watermark SVGs, icon glows, chart swoosh, duplicate hero titles on Payments and Reports) plus the variables left orphaned by it, and nothing that JavaScript selects.
+- Committed it on `feature/installable-app` only after `python manage.py test` passed (206 tests) and a check confirmed every page still carries the manifest, theme-color and Apple tags, because the same commit range holds the installable-app work.
+- Left the palette merge, the `!important` layer, CSS bundling and the copy fixes out: they are separate commands from the audit and would have made this diff unreviewable.
+- Noted the pre-existing `styles.css` brace imbalance (one extra `}` in `HEAD`, unchanged by this pass) instead of fixing it inside a CSS-cleanup commit.
+### Decision-log skill
+Delete decoration in its own commit, with the variable list pruned in the same diff; mixing a decorative deletion with a palette or bundling change makes it impossible to tell which edit broke a page.
+
+## 2026-11-19 19:38 (Asia/Manila): Chart axis text contrast fix
+### What I asked for
+Polish the failing chart axis text contrast on the dashboard and attendance pages.
+### What the agent decided and why
+- Switched `.chart-y span` from `--faint` to the existing `--muted` token in `web/spotify.css` and `web/styles.css`, because `--faint` rendered 4.0:1 on the dark panel and 3.3:1 on white in light mode, below the 4.5:1 AA floor.
+- Removed the one-off `body:not(.dark) #revenueAxis span` colour override in `web/portal-ui.css` so both charts use the same token in both themes (now 6.63:1 dark, 5.51:1 light).
+- Verified with a rendered detector pass (axis finding gone) and computed styles; `manage.py check` passed with local dev config. `ruff check .` still reports 184 pre-existing Python findings, and the 206-test run exceeded the 5-minute cap before finishing.
+- No separate decision note was added; the parent session's [[2026-11-19 Polish chart labels and accessible names]] records this same token change.
+### Decision-log skill
+When a faint/secondary text token fails AA contrast, move that one role to the existing muted token instead of inventing a new colour; verify both themes because a rendered pass only checks the default one.
+
+## 2026-11-19 19:38 (Asia/Manila): Polish the remaining audit findings in the web portal
+### What I asked for
+Apply the small audit fixes in `web/`: cream-theme muted-text contrast, overlapping member hero buttons, missing `h1` and skip link, and chart label contrast plus accessible names. I verified the subagents' work and handled the logging.
+### What the agent decided and why
+- Set the cream `--muted` token to `#5c5f6b` and routed two hardcoded copies through it, because `#727684` was below 4.5:1 on the cream surfaces. See [[2026-11-19 Fix cream-theme muted text contrast]]
+- Made `web/member-shell.css` the single owner of `.member-hero-actions` and stacked the buttons below 400 px, deleting the competing `!important` rules; the nowrap labels could no longer collide. See [[2026-11-19 member-shell owns the hero actions]]
+- Put the skip link and `sr-only` `h1` fallback in the shared `site-footer.js`, with static topbar `h1`s on nine staff pages and KPI headings promoted to `h2`. See [[2026-11-19 One shared heading and skip-link shell]]
+- Moved chart labels to `--muted`, made donut legends real buttons, and removed bell `aria-label`s that contradicted the visible state. See [[2026-11-19 Polish chart labels and accessible names]]
+- Checked everything before recording it: `manage.py check` showed only the pre-existing `static/dist` warning, the full test suite passed, `node --check` passed on all three changed JS files, and no old hex remains.
+### Decision-log skill
+When an audit finds contrast, overlap and heading faults in the same workspace, keep each fix in its own diff and its own decision note; shared CSS has several owners, so delete the losing rules in the same change that makes one file authoritative.
+
+## 2026-11-19 19:48 (Asia/Manila): Cut dashboard blocking CSS and font requests
+### What I asked for
+Optimise 593 KB of blocking CSS and unoptimised imagery: one CSS file, one font request, srcset/WebP for the hero, and lazy-loaded gallery images.
+### What the agent decided and why
+- Folded the dashboard's 12 local stylesheets and its inline effect CSS into one generated `web/dashboard.css`, keeping the original cascade order, because all 12 blocked first paint and later files deliberately override the inline rules. See [[2026-11-19 Dashboard CSS loads as one generated bundle]]
+- Merged the two Google Fonts links and the Figtree @import into one request, because Plus Jakarta Sans was fetched twice with different weights. See [[2026-11-19 One Google Fonts request for the dashboard]]
+- Gave the landing page's above-fold hero image width/height and high fetch priority, because that reserves space and starts the LCP image sooner; WebP/srcset were skipped because no image converter is installed and the stack bans new dependencies.
+- Confirmed the gallery and program images were already lazy-loaded, so no change was needed there.
+- Checked the result: no dangling CSS references in `index.html`, three stylesheet links remain, and `manage.py check` with local `DEBUG=True` shows only the pre-existing `static/dist` warning. The default `ruff check .` still reports 184 pre-existing Python lint issues and plain `manage.py check` still fails on unset `ALLOWED_HOSTS`; neither is caused by this change.
+### Decision-log skill
+When a page loads many override CSS layers, concatenate them in their original order, including any inline block, or the cascade silently changes; record the source order in the generated file's header.
+
+
+## 2026-11-19 20:05 (Asia/Manila): Raise small label text and remove dead web assets
+### What I asked for
+Apply the remaining typeset and dead-file audit fixes in `web/`, then commit each fix separately.
+### What the agent decided and why
+- Raised all 27 `10.5px` declarations to 12px for functional labels, leaving 11px only for two decorative kickers. See [[2026-11-19 Give small labels a 12px floor]]
+- Deleted `web/ui-final.css` and `web/ui-fixes.js` and their page tags: the CSS duplicated a later token and the JS selector never matched. See [[2026-11-19 Remove dead ui-final.css and ui-fixes.js]]
+- Confirmed no `10.5px` remains and no live references to the deleted files; the full 206-test suite passed after the dashboard bundle change.
+### Decision-log skill
+Delete a file only after grepping every reference and proving its effect is duplicated or unreachable; a dead script can hide an undelivered feature, so record that separately.
+
+## 2026-11-19 20:44 (Asia/Manila): Distill to one gold palette and strip decoration
+### What I asked for
+Run an Impeccable distill: one CSS layer, one palette, delete the decorative set (stripes, glow shadows, grid backgrounds, gradient text, halos, marquee) and any empty fix files.
+### What the agent decided and why
+- Collapsed the seven selectable accents to one Gold palette and made `web/spotify.css` the single source of the `--gold*` brand tokens, because it loads on every page and is baked into the dashboard bundle. See [[2026-11-19 Distill to one gold palette]]
+- Removed the welcome-page marquee/hazard stripes, gradient text, blurred halo pseudo-elements and radial-gradient washes; kept functional chart grid lines, focus rings and selection indicators.
+- Regenerated `web/dashboard.css` from the updated sources in their original cascade order, preserving the inline `.pf-menu`/`.pf-row-in` fx block.
+- Confirmed the two empty fix files (`ui-final.css`, `ui-fixes.js`) were already deleted in an earlier commit; the remaining fix files hold real rules and were kept.
+- Checked: no non-gold accent or decorative pattern remains in `web/`; `manage.py check` with DEBUG=True shows only the pre-existing `static/dist` warning; full tests and ruff were not cleanly runnable (DB config / 184 pre-existing lint issues).
+### Decision-log skill
+A generated CSS bundle is only as current as its sources: after editing sources, re-concatenate in the recorded order and carry any inline block over, or the shipped page keeps the old cascade.

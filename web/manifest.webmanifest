@@ -1,16 +1,28 @@
 {
-  "name": "ProFit Gym",
+  "id": "/",
+  "name": "ProFit",
   "short_name": "ProFit",
-  "description": "Gym operations and member portal for ProFit Functional Fitness.",
-  "start_url": "./",
-  "scope": "./",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "orientation": "any",
-  "background_color": "#0b1220",
-  "theme_color": "#0d9488",
+  "theme_color": "#0a0e17",
+  "background_color": "#0a0e17",
   "icons": [
-    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
-    { "src": "icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "/static/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/icons/maskable-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }

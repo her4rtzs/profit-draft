@@ -71,6 +71,18 @@ Project rules live in `AGENTS.md`:
 - Append one entry to `PROJECT-LOG.md` at the end of every session; append only.
 - After changing a static asset referenced by `web/*.html`, bump its `?v=` query so the browser does not serve the cached copy (observed convention, e.g. `layout.js?v=18`).
 
+## Log backfill (facts stated in PROJECT-LOG.md, cited by entry date)
+
+- Working environment on 2026-10-10: a `.venv` exists at the repo root and `ruff==0.9.6` was installed into it **only** to run lint/format gates; it was not added to `requirements.txt`, and linting was scoped to touched files. The "no `.venv` / ruff not installed" line in the prerequisites above describes the older 2026-10-30 pass. (`PROJECT-LOG.md`, 2026-10-10 19:45.)
+- Do not commit or push until explicitly told: a 2026-10-10 session held all member-auth work in the working tree while still appending its log entry. (`PROJECT-LOG.md`, 2026-10-10 21:35.)
+- Before committing, stage by explicit path, scan the real files for secret-shaped strings, leave unrelated modifications out, and do not push to `main` without an explicit request. A staged `.env.example` with real-looking Supabase credentials was unstaged for this reason. (`PROJECT-LOG.md`, 2026-10-12 10:20.)
+- Before pulling into a tree with an append-only log, back up the files that both sides append to; a stash-and-pop of two end-of-file appends conflicts even when both sides are correct. (`PROJECT-LOG.md`, 2026-10-18 16:10.)
+- Fetch before pushing: a teammate pushed commit `4e1812c` between fetch and push. Rebase onto it to keep history linear, and resolve `PROJECT-LOG.md` conflicts by keeping both sessions' blocks whole. (`PROJECT-LOG.md`, 2026-10-18 23:40.)
+- `ROADMAP.md` lives at the repo root and `AGENTS.md` is the source of truth; plan-vs-code conflicts are recorded as owner decisions rather than silently resolved. (`PROJECT-LOG.md`, 2026-10-18 14:34.)
+- To restore a historical version, `git checkout <hash> -- .` for the codebase files while keeping `PROJECT-LOG.md` append-only; commit `1090e89` was restored this way. (`PROJECT-LOG.md`, 2026-11-12 01:52.)
+- Vercel's `buildCommand` is npm build + `collectstatic`, with no `manage.py migrate` (build containers have no database access). (`PROJECT-LOG.md`, 2026-11-14 01:05.)
+- The decorative-CSS cleanup was committed only after `python manage.py test` passed with 206 tests; palette, `!important` and bundling work stayed out of that diff. (`PROJECT-LOG.md`, 2026-11-19 09:10.)
+
 ## Not yet inspected
 
 - Exact Vercel project settings / environment variables on the deployed site — Unknown.

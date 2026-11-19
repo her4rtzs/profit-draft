@@ -19,10 +19,6 @@ html body [class*="action"] span, html body [class*="action"] small {
 /* Buttons that are links never show an underline. */
 html body a.btn, html body a.ann-btn, html body a.pp-btn { text-decoration: none !important; }
 
-/* Member hero: three actions in a tidy grid, Contact the gym takes its own row. */
-html body .member-hero-actions { display: grid !important; grid-template-columns: 1fr 1fr; gap: 10px; }
-html body .member-hero-actions > :nth-child(3):last-child { grid-column: 1 / -1; }
-
 /* Pages never scroll sideways, and chip rows wrap. */
 html body .main-content { overflow-x: hidden; }
 html body [class*="swatch"], html body [class*="palette"], html body [class*="theme-list"], html body [class*="theme-row"] {

@@ -10,7 +10,7 @@ Last reviewed: 2026-10-18, on the single root tree after the duplicate `ProFit-c
 
 ## Current status
 
-**The system is at Phase 4 (Financial Dashboard), in progress. Phases 0 to 3 have passed their exit checks, Phase 4 has not.**
+**The system is at Phase 4 (Financial Dashboard), in progress. Phases 0 to 3 have passed their exit checks, Phase 4 has not. Phase 4.5 (Installable Web App) is implemented; its real-phone gate is still open.**
 
 | Phase | State | What is actually there |
 |---|---|---|
@@ -19,6 +19,7 @@ Last reviewed: 2026-10-18, on the single root tree after the duplicate `ProFit-c
 | 2 Membership Management | Pass, with one deviation | `MemberProfile`/`Enrollment`/`Attendance`, `enroll_member`/`renew_member`/`check_in_member` in `apps/membership/services.py`, staff-assisted enrollment, attendance history, `PENDING` vs `ACTIVE`. Deviation: the member photo is a base64 data URL in `MemberProfile.photo_data`, not Supabase Storage. |
 | 3 Billing & Subscription | Pass, with deviations | PayMongo Checkout Sessions, webhook with signature verification + idempotent handling + race handling (`apps/billing/webhooks.py`), self-enrollment in one transaction (`complete_signup`), pay-first join, failed/abandoned payments stay pending, desk cash/GCash/bank payments (`finance.ManualPayment`), webhook/checkout tests. Deviations: see Conformance with AGENTS.md. |
 | 4 Financial Dashboard | **In progress** | Owner-only gate, transaction list with search/member/method filters, monthly totals (`monthly_summary`), client-side CSV and print-to-PDF export. Missing: server-side PDF stored in Supabase Storage, status reconciliation view, and a status filter over paid/pending/failed. |
+| 4.5 Installable Web App | Implemented, gate open | Static `web/manifest.webmanifest` served by WhiteNoise at the site root with `application/manifest+json` via `WHITENOISE_MIMETYPES`, `static/icons/` (192, 512, maskable 512, Apple 180) from the approved logo, manifest/theme-color/Apple tags on every page, install card on three pages, `static/js/install-help.js`, `profit/tests/test_installable.py`. No service worker, offline cache, or push. The old `web/sw.js`, `web/pwa.js` and service worker registration are deleted. Real-phone install check still to be done by the owner. |
 | 5 Member Mobile App | Not started | `mobile/` is the Expo skeleton from the scaffold: one `MembershipScreen`, no auth, no payment flow, `npm test` is a stub. |
 | 6 Hardening & Launch | Not started | No security review, no load testing, no member import, no staff guide, no monitoring. |
 | 7 After Launch | Not started | No PayMongo business registration, no extra methods, `Architecture.md` not updated for the shipped methods. |
@@ -32,7 +33,7 @@ These exist in the code but are not in the phases below and are not sanctioned b
 - Trainers: assignment and member requests — `apps/trainers/`
 - Staff portal pages: attendance, payments, reports, members, settings, profile, change-password, trainer portal
 - Member portal and pay-first join (`web/join.html`, `billing.PendingSignup`)
-- PWA shell (`web/sw.js`, `web/manifest.webmanifest`) and the portal UX/theme work (the "phase 10/11" bundles in `CHANGES-phase11.md`)
+- PWA shell (`web/sw.js`, `web/manifest.webmanifest`) and the portal UX/theme work (the "phase 10/11" bundles in `CHANGES-phase11.md`) — the service worker and static manifest are gone; the installable-app step is now Phase 4.5. The portal UX/theme work is still outside the phases.
 - Landing page, FAQ, Terms, Privacy and the shared footer
 
 ## Phase 0: Foundation
@@ -97,6 +98,22 @@ Goal: the Owner sees finances in the system instead of group chats.
 - [ ] Reconciliation view for paid, pending, and failed payments. Only paid payments are listed today.
 
 Exit check: the Owner can produce a monthly report whose totals match the payment records.
+
+## Phase 4.5: Installable Web App
+
+Goal: staff and members can put the portal on a phone's home screen and open it like an app. It is a shortcut with an icon; the site still needs internet, and login, roles and sign-out are unchanged.
+
+- [x] A static `web/manifest.webmanifest` (served by WhiteNoise at the site root, so no Django view) with the contract values (`id`, `start_url`, `scope` = `/`, name/short_name `ProFit`, `standalone`, `#0a0e17` background and theme taken from the dark portal header, no orientation lock), and `.webmanifest` registered as `application/manifest+json` in `WHITENOISE_MIMETYPES`
+- [x] Four committed PNG icons in `static/icons/` from the approved logo: 192, 512, maskable 512, Apple 180; solid background, no alpha, no image library added
+- [x] Manifest link, one `theme-color` tag and the Apple web-app tags in `templates/base.html` and every `web/` page
+- [x] Install card with iPhone and Android steps on `web/settings.html`, `web/trainer/settings.html` and `web/member-home.html`, switched by `static/js/install-help.js` (no custom button, no `beforeinstallprompt`)
+- [x] The forbidden PWA shell is gone: `web/sw.js`, `web/pwa.js` and `web/manifest.webmanifest` deleted
+- [x] Tests in `profit/tests/test_installable.py` cover the manifest, anonymous access, PNG headers, head tags, the card, and the absence of a service worker
+- [ ] **Owner gate, on real phones:** install on the deployed HTTPS site (iPhone Safari Share → Add to Home Screen; Android Chrome Install app or Add to Home screen), confirm the icon, name, standalone launch, the login/role/sign-out/deactivated-account checks, and that the card reads "You're using the installed app."
+
+Deviations: the portal has no single page every role can open, so the card is on three pages (staff settings, trainer settings, member home) instead of one shared partial. A dark-mode phone may briefly show the light launch splash, because a manifest has one background colour.
+
+Exit check: both phones pass the owner's checklist above.
 
 ## Phase 5: Member Mobile App
 

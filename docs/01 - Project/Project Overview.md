@@ -59,6 +59,17 @@ The browser-facing API maps backend roles to three shells: `OWNER`/`CASHIER` →
 - **Mobile app is a skeleton.** `mobile/package.json` `test` script is a no-op stub; `ROADMAP.md` phase 5 is "Not started".
 - **Local stylesheet build output is absent.** `static/dist/` is referenced by `profit/settings.py` `STATICFILES_DIRS` and git-ignored, so it must be generated before the Django portal renders styled pages.
 
+## Log backfill (facts stated in PROJECT-LOG.md, cited by entry date)
+
+- The product is **one portal with one login**; the user's role decides which pages they see. Staff and members use the same portal, which is installable on a phone home screen. The Expo skeleton from 2026-10-07 21:46 was built before this direction and is superseded by the installable web app. (`PROJECT-LOG.md`, 2026-10-18 17:40; 2026-11-16 11:00.)
+- The installable app has a public manifest, four icons exported from the approved logo, head tags on every page and an install card on staff settings, trainer settings and member home. There is no service worker, offline cache or push; the real-phone check is still open. (`PROJECT-LOG.md`, 2026-11-16 11:00; 2026-11-16 12:10.)
+- A `daily` plan at ₱80 / 1 day was added on 2026-11-08; plan keys must be added in four places (`apps/finance/services.py`, `apps/membership/services.py`, `web/data.js`, `web/member-pay.js`) plus the static join page. (`PROJECT-LOG.md`, 2026-11-08 12:38.)
+- Members can check in themselves through `POST /api/member/check-in/`, which goes through the shared `check_in_member` service with same-day idempotency; live state comes from the server and demo storage is used only offline. (`PROJECT-LOG.md`, 2026-11-08 12:57; 2026-11-08 13:10.)
+- `GET /api/member/me/` requires authentication and returns real subscription, enrollment and payment records with clamped remaining days; API failures show an explicit error/retry instead of demo data. (`PROJECT-LOG.md`, 2026-11-16 08:18.)
+- Trainer subpages share one stylesheet and are backed by real trainer check-in, announcements, profile, schedule and attendance endpoints; notifications are stored and synced from the server rather than seeded in the page. (`PROJECT-LOG.md`, 2026-11-15 09:13; 2026-11-15 10:02.)
+- Payments: the home hero was changed to QR Ph only because the PayMongo individual account supports QR Ph only; the other public GCash/Maya/card mentions were listed, not changed. (`PROJECT-LOG.md`, 2026-11-16 12:10.)
+- The decorative CSS layer was removed from 13 `web/` files (+56/−392) on 2026-11-19; the palette merge, `!important` reduction and bundling were deliberately left for later. (`PROJECT-LOG.md`, 2026-11-19 09:10.)
+
 ## Not yet inspected
 
 - `templates/*.html` and `components/*` were listed, not reviewed line by line.
