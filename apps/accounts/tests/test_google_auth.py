@@ -417,7 +417,7 @@ class GoogleAuthTests(TestCase):
         with override_settings(GOOGLE_CALLBACK_URL="https://www.functionalfitnessgym.site/api/auth/google/callback"):
             self.assertEqual(
                 _google_callback_url(req),
-                "https://www.functionalfitnessgym.site/api/auth/google/callback/",
+                "https://www.functionalfitnessgym.site/api/auth/google/callback",
             )
 
         with override_settings(GOOGLE_CALLBACK_URL="https://profit-draft-gdzv.vercel.app/api/auth/google/callback/"):

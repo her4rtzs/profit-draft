@@ -2451,3 +2451,13 @@ Now that the custom domain (`functionalfitnessgym.site`) is connected, allow the
 - Verified with `python manage.py check` (0 errors) and `python manage.py test` (228/228 OK).
 ### Decision-log skill
 When adding email notifications inside core service helpers (`notify` / `notify_many`), wrap each recipient send cleanly so transient mail failures log only non-PII event tags and never abort database transactions, and include a one-time sender fallback when rolling out a newly purchased domain before DNS verification propagates.
+
+## 2026-11-20 01:21 (Asia/Manila): Keep Google Identity Services primary and preserve callback URI
+### What I asked for
+Investigate and fix `Error 400: redirect_uri_mismatch` showing after deploying with `GOOGLE_CLIENT_SECRET` and a custom domain.
+### What the agent decided and why
+- Kept Google Identity Services (`window.google.accounts.id` ID-token popup flow) initialized as primary in `web/google-auth.js`, reserving the `/api/auth/google/login/` OAuth redirect strictly as a fallback when `gsiFailed && oauthRedirectEnabled`.
+- Updated `_google_callback_url` in `api/auth.py` to stop altering explicit paths/trailing slashes on `GOOGLE_CALLBACK_URL`, only filling in `/api/auth/google/callback/` when `GOOGLE_CALLBACK_URL` is blank, bare-domain, or points to a different host than the live request.
+- Verified with `python manage.py check` (0 errors) and `python manage.py test apps.accounts.tests.test_google_auth`.
+### Decision-log skill
+Never replace a working client-side ID-token flow with a server OAuth redirect automatically just because a client secret env var exists; keep redirect-URI-sensitive flows as an explicit fallback so domain/slash differences cannot break sign-in.

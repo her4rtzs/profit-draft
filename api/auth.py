@@ -323,8 +323,6 @@ def _google_callback_url(request):
     path = parsed.path or ""
     if path in ("", "/"):
         parsed = parsed._replace(path="/api/auth/google/callback/")
-    elif path.endswith("/api/auth/google/callback"):
-        parsed = parsed._replace(path=f"{path}/")
 
     request_host = request.get_host().split(":")[0].lower()
     configured_host = (parsed.hostname or "").lower()

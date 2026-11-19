@@ -306,11 +306,6 @@
 
   async function initGoogle() {
     await loadConfig();
-    if (oauthRedirectEnabled) {
-      /* Server-side OAuth redirect is active; no invisible GIS iframe overlay needed. */
-      return;
-    }
-
     try {
       await loadGsiScript();
       if (!window.google?.accounts?.id) throw new Error("gsi-missing");
@@ -334,11 +329,6 @@
     if (busy) return;
     clearMsg();
     await loadConfig();
-    if (oauthRedirectEnabled) {
-      setBusy(true, "Redirecting…");
-      location.href = `/api/auth/google/login/?source=${encodeURIComponent(sourceName)}`;
-      return;
-    }
     if (gsiReady && window.google?.accounts?.id) {
       window.google.accounts.id.prompt(notification => {
         if (notification && (notification.isNotDisplayed() || notification.isSkippedMoment())) {
@@ -348,6 +338,11 @@
       return;
     }
     if (gsiFailed) {
+      if (oauthRedirectEnabled) {
+        setBusy(true, "Redirecting…");
+        location.href = `/api/auth/google/login/?source=${encodeURIComponent(sourceName)}`;
+        return;
+      }
       showMsg("Google Sign-In could not load right now. Please allow accounts.google.com or try again.", true);
       return;
     }
