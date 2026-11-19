@@ -414,7 +414,7 @@
 (() => {
   const $ = id => document.getElementById(id);
   const form = $('signInForm'), submit = form.querySelector('[type=submit]');
-  const HOME = { admin: '/index', trainer: '/trainer/index', member: '/member-home' };
+  const HOME = { admin: '/index', cashier: '/cashier', trainer: '/trainer/index', member: '/member-home' };
 
   const pwEl = $('password'), eyeBtn = $('showPassword'), capsEl = $('capsWarn');
   eyeBtn.addEventListener('click', () => {
@@ -481,8 +481,12 @@
         const session = await window.ProFitAPI.get('/auth/session');
         const user = session.user;
         const r = String(user?.role || '').toUpperCase();
-        const isStaff = ['ADMIN', 'OWNER', 'CASHIER'].includes(r);
-        const home = isStaff ? '/index' : (r === 'TRAINER' || r === 'COACH') ? '/trainer/index' : r === 'MEMBER' ? '/member-home' : null;
+        const isOwner = ['ADMIN', 'OWNER'].includes(r);
+        const home = isOwner ? '/index'
+          : r === 'CASHIER' ? '/cashier'
+          : (r === 'TRAINER' || r === 'COACH') ? '/trainer/index'
+          : r === 'MEMBER' ? '/member-home'
+          : null;
         if (home) {
           sessionStorage.setItem('profit-verified-session', JSON.stringify(user));
           sessionStorage.setItem('pf-auth-just-logged-in', '1');

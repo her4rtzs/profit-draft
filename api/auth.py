@@ -41,8 +41,8 @@ from apps.accounts.google_auth import (
 )
 from apps.accounts.validators import validate_real_email
 
-# Backend roles -> the three shells the web app routes to.
-WEB_ROLE = {"OWNER": "ADMIN", "CASHIER": "ADMIN", "TRAINER": "TRAINER", "MEMBER": "MEMBER"}
+# Backend roles -> the four web portal shells.
+WEB_ROLE = {"OWNER": "ADMIN", "CASHIER": "CASHIER", "TRAINER": "TRAINER", "MEMBER": "MEMBER"}
 
 
 @ensure_csrf_cookie

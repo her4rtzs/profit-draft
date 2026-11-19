@@ -71,3 +71,4 @@ One note per decision, oldest first; entries with an `Unknown` date are listed l
 - [[2026-11-20 Profile settings and legal pages load one global CSS bundle]]: Five pages drop from 13-14 stylesheets and up to four font families to one generated bundle and two fonts.
 
 - [[2026-11-20 Google popup flow and real Gmail validation]]: Use `same-origin-allow-popups` COOP + OAuth2 `initTokenClient` popup instead of `gsi/transform`, and enforce real Gmail/email validation.
+- [[2026-11-20 Cashier portal reusing staff shell and RBAC]]: Map CASHIER to a distinct portal at /cashier reusing the Staff UI/UX shell, read-only overview endpoint, and server-side RBAC.

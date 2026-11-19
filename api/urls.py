@@ -50,6 +50,7 @@ from .notifications import (
 )
 from .staff import (
     StaffAttendanceView,
+    StaffCashierOverviewView,
     StaffCheckInView,
     StaffMemberViewSet,
     StaffPaymentDetailView,
@@ -88,6 +89,7 @@ urlpatterns = [
     path("member/checkout/", MemberCheckoutView.as_view(), name="member-checkout"),
     path("staff/attendance/", StaffAttendanceView.as_view(), name="staff-attendance"),
     path("staff/attendance/check-in/", StaffCheckInView.as_view(), name="staff-checkin"),
+    path("staff/cashier/overview/", StaffCashierOverviewView.as_view(), name="staff-cashier-overview"),
     path("staff/payments/", StaffPaymentView.as_view(), name="staff-payments"),
     path("staff/payments/<int:pk>/", StaffPaymentDetailView.as_view(), name="staff-payment-detail"),
     path("staff/reports/summary/", StaffSummaryView.as_view(), name="staff-summary"),

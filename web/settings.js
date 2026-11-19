@@ -205,6 +205,26 @@
     paint();
   }
 
+  const currentRole = () => {
+    const r = window.ProFitAuth?.role || window.ProFitAuth?.user?.role || (() => {
+      try { return JSON.parse(sessionStorage.getItem("profit-verified-session") || "null")?.role; } catch { return ""; }
+    })();
+    return String(r || "").toUpperCase();
+  };
+
+  function syncRoleSettingsVisibility() {
+    const isCashier = currentRole() === "CASHIER";
+    ["announce", "profile"].forEach(id => {
+      const el = $(id);
+      if (el) el.hidden = isCashier;
+    });
+    const dangerCard = document.querySelector(".pp-danger");
+    if (dangerCard) dangerCard.hidden = isCashier;
+  }
+
+  syncRoleSettingsVisibility();
+  window.addEventListener("profit-auth-ready", syncRoleSettingsVisibility);
+
   paint();
   initGymProfile();
   initAnnouncements();

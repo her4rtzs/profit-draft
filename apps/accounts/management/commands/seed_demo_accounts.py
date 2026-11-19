@@ -26,6 +26,7 @@ class Command(BaseCommand):
         User = get_user_model()
         accounts = [
             ("owner", "owner@example.com", "OWNER", "Gym Owner"),
+            ("cashier", "cashier@functionalfitnessgym.site", "CASHIER", "Front Desk Cashier"),
             ("coach", "coach@example.com", "TRAINER", "Coach Mika"),
             ("member", "member@example.com", "MEMBER", "Demo Member"),
             ("joyce", "joyce.alvarez@example.com", "MEMBER", "Joyce Alvarez"),
@@ -171,4 +172,4 @@ class Command(BaseCommand):
                 },
             )
 
-        self.stdout.write(f"Demo accounts ready: owner, coach, member, joyce, angelo. Password: {DEMO_PASSWORD}")
+        self.stdout.write(f"Demo accounts ready: owner, cashier, coach, member, joyce, angelo. Password: {DEMO_PASSWORD}")

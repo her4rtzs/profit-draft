@@ -415,6 +415,12 @@
 
         // ---- Payment history (Owner can correct method / date of desk payments) ----
         const toDay = d => { const x = new Date(d); return `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, "0")}-${String(x.getDate()).padStart(2, "0")}`; };
+        const isCashier = () => {
+            const r = window.ProFitAuth?.role || (() => {
+                try { return JSON.parse(sessionStorage.getItem("profit-verified-session") || "null")?.role; } catch { return ""; }
+            })();
+            return String(r || "").toUpperCase() === "CASHIER";
+        };
         let editing = null;
         const drawHist = () => {
             const q = ($("#histSearch")?.value || "").trim().toLowerCase();
@@ -425,15 +431,21 @@
             }) : all;
             const histCount = $("#histCount");
             if (histCount) histCount.textContent = `${list.length} of ${all.length} payment${all.length === 1 ? "" : "s"}`;
+            const cashierMode = isCashier();
             const histRows = $("#histRows");
             if (histRows) {
                 histRows.innerHTML = list.length ? list.map(p => {
                     const m = DB.member(p.memberId);
-                    const edit = p.desk ? `<div class="pay-actions"><button type="button" class="pay-edit-btn" data-edit="${esc(p.id)}" aria-label="Edit payment ${esc(p.ref)}">${svgIcon("pen")}</button><button type="button" class="pay-edit-btn pay-del-btn" data-del="${esc(p.id)}" aria-label="Delete payment ${esc(p.ref)}">${svgIcon("trash")}</button></div>` : `<span class="fn-locked-pill">${svgIcon("lock")}Locked</span>`;
+                    const edit = !p.desk
+                        ? `<span class="fn-locked-pill">${svgIcon("lock")}Locked</span>`
+                        : cashierMode
+                            ? `<span class="fn-locked-pill">${svgIcon("receipt")}Recorded</span>`
+                            : `<div class="pay-actions"><button type="button" class="pay-edit-btn" data-edit="${esc(p.id)}" aria-label="Edit payment ${esc(p.ref)}">${svgIcon("pen")}</button><button type="button" class="pay-edit-btn pay-del-btn" data-del="${esc(p.id)}" aria-label="Delete payment ${esc(p.ref)}">${svgIcon("trash")}</button></div>`;
                     return `<tr><td><span class="fn-ref">${esc(p.ref)}</span></td><td>${m ? memberCell(m) : esc(p.memberId)}</td><td class="fn-center">${planPill(p.plan)}</td><td>${esc(p.method)}</td><td>${fmtShort(p.date)}</td><td class="num"><span class="fn-amt">${peso(p.amount)}</span></td><td class="fn-right">${edit}</td></tr>`;
                 }).join("") : `<tr><td colspan="7">${empty("fa-receipt", q ? `No payment matches “${esc(q)}”.` : "No payments recorded yet.")}</td></tr>`;
             }
         };
+        window.addEventListener("profit-auth-ready", drawHist);
         const modal = $("#payEditModal");
         const closeEdit = () => { if (modal) modal.hidden = true; editing = null; };
         $("#histRows")?.addEventListener("click", e => {

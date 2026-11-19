@@ -2480,3 +2480,14 @@ Fix Google Sign-In/Sign-Up getting stuck on a blank `accounts.google.com/gsi/tra
 - Added COOP, `verify_google_access_token`, and fake/typo Gmail tests in `apps/accounts/tests/test_google_auth.py` and verified `python manage.py check` (0 errors) and `python manage.py test` (237/237 OK).
 ### Decision-log skill
 Django's default `Cross-Origin-Opener-Policy: same-origin` breaks `window.opener` for cross-origin Google popups on Django-served pages; pair `same-origin-allow-popups` with direct `initTokenClient` popups (and server-side tokeninfo/userinfo verification) instead of hidden cross-origin iframe overlays, and enforce email-domain rules symmetrically on client and server.
+
+
+## 2026-11-20 02:56 (Asia/Manila): Add role-scoped Cashier Portal reusing Staff Portal UI/UX
+### What I asked for
+Build a complete Cashier Portal for ProFit reusing the existing Staff Portal UI/UX, navigation shell, themes, components, and real backend APIs while enforcing Cashier-only RBAC on frontend and backend.
+### What the agent decided and why
+- Separated `Role.CASHIER` to `"CASHIER"` in `api/auth.py` `WEB_ROLE`, added `/cashier` home routing in `web/login.html` and `web/auth.js`, and fixed `auth.js` clean-URL pathname normalization; see [[2026-11-20 Cashier portal reusing staff shell and RBAC]].
+- Enforced server-side `403` guards on `web_page` in `profit/views.py` for `OWNER_ONLY_PAGES` and `CASHIER_OR_OWNER_PAGES`, scoped `web/layout.js` / `web/sidebar.js` menus for Cashiers, hid Owner-only settings cards in `web/settings.js`, and replaced Owner payment Edit/Delete actions with a read-only `Recorded` pill in `web/pages.js`.
+- Added `StaffCashierOverviewView` (`/api/staff/cashier/overview/`) reusing shared `_combined_payment_rows`, created `web/cashier.html` and `web/cashier.js` on shared `finance-ui.css` (`fn-kpi-grid--4`, skeletons, tabs, member preview, duplicate-submit guard, and printable receipts), and verified with `python manage.py check` (0 errors) and `python manage.py test` (239/239 OK).
+### Decision-log skill
+When separating a new portal role out of an existing staff shell under extensionless URLs, fix both client pathname matching and server-side view guards before adding role menus, and share queryset/serializer helpers rather than duplicating payment models or recording logic.

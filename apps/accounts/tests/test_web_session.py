@@ -55,3 +55,40 @@ class WebSessionTests(TestCase):
     def test_staff_without_member_profile_gets_404(self):
         self._login("owner1")
         self.assertEqual(self.client.get("/api/member/me/").status_code, 404)
+
+    def test_cashier_role_and_page_rbac(self):
+        from django.contrib.auth import get_user_model
+        from apps.accounts.models import Role
+
+        User = get_user_model()
+        User.objects.create_user(
+            username="cashier_portal_test",
+            email="cashier_portal_test@example.com",
+            password="Password123!",
+            role=Role.CASHIER,
+        )
+        User.objects.create_user(
+            username="trainer_portal_test",
+            email="trainer_portal_test@example.com",
+            password="Password123!",
+            role=Role.TRAINER,
+        )
+
+        # Cashier gets CASHIER role, 200 on /cashier, 403 on owner-only pages
+        self.assertEqual(self._login("cashier_portal_test", "Password123!").status_code, 200)
+        self.assertEqual(self.client.get("/api/auth/session/").json()["user"]["role"], "CASHIER")
+        self.assertEqual(self.client.get("/cashier").status_code, 200)
+        for path in ("/reports", "/trainers", "/announcements"):
+            self.assertEqual(self.client.get(path).status_code, 403, f"Cashier should be forbidden on {path}")
+
+        # Owner can open both /cashier and owner-only pages
+        self.assertEqual(self._login("owner1").status_code, 200)
+        for path in ("/cashier", "/reports", "/trainers", "/announcements"):
+            self.assertEqual(self.client.get(path).status_code, 200, f"Owner should access {path}")
+
+        # Member and Trainer are forbidden on /cashier
+        self.assertEqual(self._login("ana").status_code, 200)
+        self.assertEqual(self.client.get("/cashier").status_code, 403)
+
+        self.assertEqual(self._login("trainer_portal_test", "Password123!").status_code, 200)
+        self.assertEqual(self.client.get("/cashier").status_code, 403)
