@@ -25,6 +25,12 @@ class SelectBackendTests(TestCase):
     def test_no_key_debug_returns_console(self):
         self.assertEqual(select_email_backend("", True), CONSOLE)
 
+    def test_no_key_with_smtp_returns_smtp(self):
+        self.assertEqual(
+            select_email_backend("", False, smtp_user="user@gmail.com", smtp_password="app-pw"),
+            "apps.accounts.email_backends.SMTPEmailBackend",
+        )
+
     def test_no_key_no_debug_raises(self):
         with self.assertRaises(ImproperlyConfigured):
             select_email_backend("", False)
@@ -77,6 +83,7 @@ class ResendBackendTests(TestCase):
         self.assertEqual(sent, 1)
         self.assertEqual(captured["url"], "https://api.resend.com/emails")
         self.assertEqual(captured["headers"]["Authorization"], "Bearer re_live_test")
+        self.assertEqual(captured["headers"].get("User-agent"), "ProFitGym/1.0")
         self.assertEqual(captured["body"]["to"], ["member@example.com"])
         self.assertEqual(captured["body"]["html"], "<p>123456</p>")
         # No recipient/subject/body/code in logs.

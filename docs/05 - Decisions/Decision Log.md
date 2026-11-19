@@ -61,3 +61,4 @@ One note per decision, oldest first; entries with an `Unknown` date are listed l
 - [[2026-11-19 Distill to one gold palette]]: One Gold accent and one token source (spotify.css); strip leftover decoration and regenerate the dashboard bundle.
 - [[2026-11-19 Remove the mobile Expo skeleton]]: Delete the dead Expo skeleton and update config/docs to one installable web portal.
 - [[2026-11-19 Member-only Google Sign-In with verified linking]]: Member-only Google Sign-In with pure-stdlib RS256 verification and password-verified account linking.
+- [[2026-11-19 Roll back undelivered OTPs and support SMTP]]: Roll back undelivered OTPs on failure, add Resend User-Agent + SMTP fallback, and surface delivery errors.

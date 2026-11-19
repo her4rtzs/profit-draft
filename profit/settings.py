@@ -184,9 +184,21 @@ PAYMONGO_PAYMENT_METHODS = env.list("PAYMONGO_PAYMENT_METHODS", default=["gcash"
 from apps.accounts.email_backends import select_email_backend  # noqa: E402
 
 RESEND_API_KEY = env("RESEND_API_KEY", default="")
+EMAIL_HOST = env("EMAIL_HOST", default="smtp.gmail.com")
+EMAIL_PORT = env.int("EMAIL_PORT", default=587)
+EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
+EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=True)
+EMAIL_USE_SSL = env.bool("EMAIL_USE_SSL", default=False)
+EMAIL_TIMEOUT = 10
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="ProFit <onboarding@resend.dev>")
 SITE_BASE_URL = env("SITE_BASE_URL", default="http://localhost:8000")
-EMAIL_BACKEND = select_email_backend(RESEND_API_KEY, DEBUG)
+EMAIL_BACKEND = select_email_backend(
+    RESEND_API_KEY,
+    DEBUG,
+    smtp_user=EMAIL_HOST_USER,
+    smtp_password=EMAIL_HOST_PASSWORD,
+)
 
 # --- Google OAuth 2.0 (Member Sign-In) -------------------------------------
 # Client Secret MUST stay server-side in environment variables and never be logged or exposed.

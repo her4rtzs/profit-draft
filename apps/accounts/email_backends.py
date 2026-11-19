@@ -13,6 +13,7 @@ and (when available) the HTTP status code are logged on failure.
 
 import json
 import logging
+import smtplib
 import urllib.error
 import urllib.request
 
@@ -25,8 +26,14 @@ RESEND_API_URL = "https://api.resend.com/emails"
 RESEND_TIMEOUT = 10
 
 
-def select_email_backend(resend_api_key: str, debug: bool) -> str:
-    """Return the ``EMAIL_BACKEND`` dotted path for the given key presence.
+def select_email_backend(
+    resend_api_key: str,
+    debug: bool,
+    *,
+    smtp_user: str = "",
+    smtp_password: str = "",
+) -> str:
+    """Return the ``EMAIL_BACKEND`` dotted path for the configured transport.
 
     The console fallback is DEVELOPMENT-ONLY: it writes the full message
     (recipient + OTP code / invite link) to stdout, which Vercel captures as
@@ -36,12 +43,37 @@ def select_email_backend(resend_api_key: str, debug: bool) -> str:
     """
     if resend_api_key:
         return "apps.accounts.email_backends.ResendEmailBackend"
+    if smtp_user and smtp_password:
+        return "apps.accounts.email_backends.SMTPEmailBackend"
     if debug:
         return "django.core.mail.backends.console.EmailBackend"
     raise ImproperlyConfigured(
-        "RESEND_API_KEY must be set when DEBUG is False; the console email "
-        "backend would leak OTP codes and recipient addresses to logs."
+        "RESEND_API_KEY (or SMTP EMAIL_HOST_USER / EMAIL_HOST_PASSWORD) must "
+        "be set when DEBUG is False; the console email backend would leak OTP "
+        "codes and recipient addresses to logs."
     )
+
+
+class SMTPEmailBackend(BaseEmailBackend):
+    """Wrap Django's SMTP backend so transport failures raise EmailDeliveryError."""
+
+    def send_messages(self, email_messages):
+        from django.core.mail.backends.smtp import EmailBackend as DjangoSMTPBackend
+
+        from .services import EmailDeliveryError
+
+        if not email_messages:
+            return 0
+        backend = DjangoSMTPBackend(fail_silently=False)
+        try:
+            sent = backend.send_messages(email_messages)
+        except (smtplib.SMTPException, OSError, TimeoutError) as exc:
+            logger.warning("event=smtp_send_failed")
+            raise EmailDeliveryError("Could not send email via SMTP.") from exc
+        if not sent:
+            logger.warning("event=smtp_send_failed status=zero_sent")
+            raise EmailDeliveryError("SMTP backend accepted zero messages.")
+        return sent
 
 
 class ResendEmailBackend(BaseEmailBackend):
@@ -49,27 +81,35 @@ class ResendEmailBackend(BaseEmailBackend):
 
     Reads ``RESEND_API_KEY`` / ``DEFAULT_FROM_EMAIL`` from settings at send time
     (never at import time). On any transport error, timeout, non-2xx response,
-    or missing key it logs a non-PII warning and raises ``EmailDeliveryError``
-    so the service caller can surface a user-facing error instead of a 500.
+    or missing key it logs a non-PII warning and optionally falls back to SMTP
+    if configured; otherwise raises ``EmailDeliveryError`` so the service caller
+    can surface a user-facing error instead of a 500.
     """
 
     def send_messages(self, email_messages):
+        from django.conf import settings
+
         from .services import EmailDeliveryError
 
         if not email_messages:
             return 0
 
-        from django.conf import settings
-
         api_key = getattr(settings, "RESEND_API_KEY", "")
         if not api_key:
             logger.warning("event=resend_send_failed status=missing_key")
+            if getattr(settings, "EMAIL_HOST_USER", "") and getattr(settings, "EMAIL_HOST_PASSWORD", ""):
+                return SMTPEmailBackend().send_messages(email_messages)
             raise EmailDeliveryError("Resend API key is not configured.")
 
         sent = 0
-        for message in email_messages:
-            self._send_one(message, api_key)
-            sent += 1
+        try:
+            for message in email_messages:
+                self._send_one(message, api_key)
+                sent += 1
+        except EmailDeliveryError:
+            if getattr(settings, "EMAIL_HOST_USER", "") and getattr(settings, "EMAIL_HOST_PASSWORD", ""):
+                return SMTPEmailBackend().send_messages(email_messages)
+            raise
         return sent
 
     def _send_one(self, message, api_key):
@@ -93,6 +133,7 @@ class ResendEmailBackend(BaseEmailBackend):
             headers={
                 "Authorization": f"Bearer {api_key}",
                 "Content-Type": "application/json",
+                "User-Agent": "ProFitGym/1.0",
             },
             method="POST",
         )

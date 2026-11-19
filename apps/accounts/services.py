@@ -16,7 +16,7 @@ from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.validators import validate_email
-from django.db import IntegrityError, transaction
+from django.db import IntegrityError, connection, transaction
 from django.utils import timezone
 
 from .emails import send_otp_email, send_reset_email
@@ -76,6 +76,64 @@ class VerifyResult:
     reason: str
 
 
+_otp_schema_ready = False
+
+
+def ensure_otp_schema() -> None:
+    """Idempotently ensure accounts_emailotp exists on PostgreSQL deployments."""
+    global _otp_schema_ready
+    if _otp_schema_ready:
+        return
+    engine = connection.settings_dict.get("ENGINE", "")
+    if "postgresql" not in engine:
+        _otp_schema_ready = True
+        return
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "SELECT 1 FROM information_schema.tables WHERE table_name = 'accounts_emailotp';"
+            )
+            exists = cursor.fetchone()
+        if not exists:
+            from django.core.management import call_command
+
+            call_command("migrate", "accounts", interactive=False)
+        _otp_schema_ready = True
+    except Exception:
+        logger.warning("event=otp_schema_check_deferred")
+
+
+def _issue_and_send_otp(user, purpose, send_fn) -> str:
+    """Issue a new OTP and roll it back (restoring prior unexpired OTP) if delivery fails."""
+    ensure_otp_schema()
+    now = timezone.now()
+    prior_ids = list(
+        EmailOTP.objects.filter(
+            user=user,
+            purpose=purpose,
+            consumed_at__isnull=True,
+            expires_at__gt=now,
+        ).values_list("id", flat=True)
+    )
+    code = issue_otp(user, purpose)
+    created_row = (
+        EmailOTP.objects.filter(user=user, purpose=purpose)
+        .exclude(id__in=prior_ids)
+        .order_by("-created_at")
+        .first()
+    )
+    try:
+        send_fn(user, code)
+    except EmailDeliveryError:
+        with transaction.atomic():
+            if created_row is not None:
+                EmailOTP.objects.filter(id=created_row.id).delete()
+            if prior_ids:
+                EmailOTP.objects.filter(id__in=prior_ids).update(consumed_at=None)
+        raise
+    return code
+
+
 def normalize_email(email: str) -> str:
     """Single source of truth for mapping an email to the stored username."""
     return email.strip().lower()
@@ -117,24 +175,21 @@ def register_member(email: str, password: str) -> RegisterResult:
                 # Vanishingly unlikely; treat as a generic decoy.
                 return RegisterResult(pending_user_id=None, decoy=True)
         else:
-            code = issue_otp(user, OTPPurpose.SIGNUP)
             try:
-                send_otp_email(user, code)
+                _issue_and_send_otp(user, OTPPurpose.SIGNUP, send_otp_email)
             except EmailDeliveryError:
-                # The inactive user row persists; let the member resend from
-                # the verify page. Never a 500.
+                # The inactive user row persists; let the member resend immediately from
+                # the verify page without cooldown lockout. Never a 500.
                 return RegisterResult(pending_user_id=user.id, delivery_failed=True)
             return RegisterResult(pending_user_id=user.id)
 
     if not existing.is_active:
-        # Legitimate re-signup: re-issue to the same user (cooldown may suppress
-        # the mail, which is still a generic response).
+        # Legitimate re-signup: re-issue to the same user (cooldown/rate limit
+        # suppresses duplicate mail, preserving the generic response).
         try:
-            code = issue_otp(existing, OTPPurpose.SIGNUP)
-        except OTPCooldownError:
+            _issue_and_send_otp(existing, OTPPurpose.SIGNUP, send_otp_email)
+        except (OTPCooldownError, OTPRateLimitError):
             return RegisterResult(pending_user_id=existing.id)
-        try:
-            send_otp_email(existing, code)
         except EmailDeliveryError:
             return RegisterResult(pending_user_id=existing.id, delivery_failed=True)
         return RegisterResult(pending_user_id=existing.id)
@@ -210,6 +265,7 @@ def verify_otp(user, code) -> VerifyResult:
     Never raises on an ordinary outcome. On success: consume + activate. Only
     the ``capped`` outcome is logged (user id only).
     """
+    code = code.strip() if isinstance(code, str) else ""
     now = timezone.now()
     with transaction.atomic():
         row = (
@@ -247,10 +303,9 @@ def resend_otp(user):
 
     Raises ``OTPCooldownError`` when still cooling down, ``OTPRateLimitError``
     when the hourly resend cap is reached, and ``EmailDeliveryError`` when
-    the backend cannot deliver.
+    the backend cannot deliver (rolling back the undelivered OTP).
     """
-    code = issue_otp(user, OTPPurpose.SIGNUP)
-    send_otp_email(user, code)
+    _issue_and_send_otp(user, OTPPurpose.SIGNUP, send_otp_email)
 
 
 def resend_password_reset_otp(email: str) -> None:
@@ -267,36 +322,40 @@ def resend_password_reset_otp(email: str) -> None:
     user = User.objects.filter(email__iexact=norm, is_active=True).first()
     if user is None:
         return
-    code = issue_otp(user, OTPPurpose.PASSWORD_RESET)
-    send_reset_email(user, code)
+    _issue_and_send_otp(user, OTPPurpose.PASSWORD_RESET, send_reset_email)
 
 
 # --- Password reset ---------------------------------------------------------
 
 
-def request_password_reset(email):
+def request_password_reset(email) -> int:
     """Email a reset code if an active account has this address.
 
-    Returns None whether or not the account exists, so the caller can answer the
-    same way either way (no account enumeration). Cooldown and delivery problems
-    are swallowed for the same reason; nothing about the address is logged.
+    Returns the cooldown seconds for the client countdown. Anti-enumeration is
+    preserved for unknown emails (returns 60, sends no email). Cooldown hits
+    keep the existing valid code active and return remaining seconds; rate
+    limits and delivery failures propagate so callers can show real errors
+    instead of advancing to code entry with an undelivered OTP.
     """
     email = normalize_email(email or "")
     user = User.objects.filter(email__iexact=email, is_active=True).first() if email else None
     if user is None:
-        return
+        return 60
     try:
-        send_reset_email(user, issue_otp(user, OTPPurpose.PASSWORD_RESET))
-    except Exception:  # cooldown or delivery failure: stay silent to the caller
-        logger.info("event=password_reset_not_sent user_id=%s", user.id)
+        _issue_and_send_otp(user, OTPPurpose.PASSWORD_RESET, send_reset_email)
+        return 60
+    except OTPCooldownError as exc:
+        logger.info("event=password_reset_cooldown user_id=%s", user.id)
+        return exc.retry_after
 
 
 def reset_password(email, code, new_password):
     """Verify the emailed code and set a new password. Returns (ok, message)."""
     email = normalize_email(email or "")
+    code = code.strip() if isinstance(code, str) else ""
     generic = "That code is not valid. Request a new one and try again."
     user = User.objects.filter(email__iexact=email, is_active=True).first() if email else None
-    if user is None or not isinstance(code, str) or not code or not isinstance(new_password, str):
+    if user is None or not code or not isinstance(new_password, str):
         return False, generic
     now = timezone.now()
     with transaction.atomic():

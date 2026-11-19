@@ -97,9 +97,16 @@
   const codeInput = document.getElementById("id_code");
   if (!form || !btn || !statusEl) return;
 
-  let remaining = Math.max(0, parseInt(form.dataset.cooldown || "60", 10) || 0);
+  let remaining = Math.max(0, parseInt(form.dataset.cooldown || "0", 10) || 0);
   let timer = null;
   let busy = false;
+
+  if (codeInput) {
+    codeInput.addEventListener("input", () => {
+      const clean = codeInput.value.replace(/\D/g, "").slice(0, 6);
+      if (codeInput.value !== clean) codeInput.value = clean;
+    });
+  }
 
   function renderCountdown() {
     if (busy) return;

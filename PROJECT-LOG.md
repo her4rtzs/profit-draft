@@ -2352,3 +2352,14 @@ Integrate Resend OTP into the existing authentication and password-reset verific
 - Added 60-second countdown timers, disabled/loading states, and clear status alerts to both `templates/accounts/verify.html` and `web/forgot.html`.
 ### Decision-log skill
 Invalidate prior unconsumed OTP rows atomically when issuing a replacement code, and return server-computed `retry_after` seconds on `429` so client countdowns cannot drift from server enforcement.
+
+## 2026-11-19 23:01 (Asia/Manila): Fix OTP delivery, failure rollback, and forgot-password error handling
+### What I asked for
+Investigate and fix the non-working OTP system across generation, email delivery, verification, resend, frontend, and Supabase compatibility.
+### What the agent decided and why
+- Identified root causes: premature `EmailOTP` persistence + prior-code invalidation before delivery, silent error swallowing in `request_password_reset`, missing `User-Agent` header on Resend HTTP requests (Cloudflare 403), missing SMTP fallback env wiring, and unpushed `resend-otp` changes. See [[2026-11-19 Roll back undelivered OTPs and support SMTP]]
+- Added `_issue_and_send_otp` in `apps/accounts/services.py` to roll back undelivered OTPs and restore previous valid codes when sending fails, plus `ensure_otp_schema()` and whitespace stripping in verification.
+- Updated `apps/accounts/email_backends.py` and `profit/settings.py` with `User-Agent: ProFitGym/1.0`, optional SMTP settings (`EMAIL_HOST*`), and automatic SMTP fallback when configured.
+- Verified `python manage.py check` (0 errors) and `python manage.py test apps.accounts` (90/90 passed).
+### Decision-log skill
+Never commit OTP consumption or cooldown state before the external email send succeeds; roll back the failed row so transient mail errors do not lock users out or invalidate working codes.
