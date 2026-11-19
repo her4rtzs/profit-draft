@@ -39,6 +39,18 @@ class EmailDeliveryError(Exception):
 class OTPCooldownError(Exception):
     """Raised when a resend is requested within the cooldown window."""
 
+    def __init__(self, message: str = "Please wait before requesting another code.", *, retry_after: int = 60):
+        super().__init__(message)
+        self.retry_after = max(1, int(retry_after))
+
+
+class OTPRateLimitError(Exception):
+    """Raised when OTP resend requests exceed the rolling window limit."""
+
+    def __init__(self, message: str = "Too many code requests. Please wait before trying again.", *, retry_after: int = 3600):
+        super().__init__(message)
+        self.retry_after = max(1, int(retry_after))
+
 
 class InvalidInviteError(Exception):
     """Raised when a staff-invite token/link is invalid, expired, or used."""
@@ -132,7 +144,7 @@ def register_member(email: str, password: str) -> RegisterResult:
 
 
 def issue_otp(user, purpose) -> str:
-    """PERSIST ONLY: enforce cooldown, generate, hash, store, return raw code.
+    """PERSIST ONLY: enforce cooldown + rate limit, invalidate prior OTPs, store, return raw code.
 
     Never sends mail; never logs the code.
     """
@@ -142,17 +154,53 @@ def issue_otp(user, purpose) -> str:
         .order_by("-created_at")
         .first()
     )
-    if latest is not None and now - latest.created_at < EmailOTP.RESEND_COOLDOWN:
-        raise OTPCooldownError("Please wait before requesting another code.")
+    if latest is not None:
+        elapsed = now - latest.created_at
+        if elapsed < EmailOTP.RESEND_COOLDOWN:
+            remaining = (EmailOTP.RESEND_COOLDOWN - elapsed).total_seconds()
+            raise OTPCooldownError(
+                "Please wait before requesting another code.",
+                retry_after=max(1, int(remaining + 0.999)),
+            )
+
+    recent_count = EmailOTP.objects.filter(
+        user=user,
+        purpose=purpose,
+        created_at__gte=now - EmailOTP.RESEND_WINDOW,
+    ).count()
+    if recent_count >= EmailOTP.MAX_RESENDS_PER_WINDOW:
+        oldest_in_window = (
+            EmailOTP.objects.filter(
+                user=user,
+                purpose=purpose,
+                created_at__gte=now - EmailOTP.RESEND_WINDOW,
+            )
+            .order_by("created_at")
+            .values_list("created_at", flat=True)
+            .first()
+        )
+        retry_after = 60
+        if oldest_in_window is not None:
+            retry_after = max(1, int(((oldest_in_window + EmailOTP.RESEND_WINDOW) - now).total_seconds() + 0.999))
+        raise OTPRateLimitError(
+            "Too many verification code requests. Please wait before trying again.",
+            retry_after=retry_after,
+        )
 
     code = f"{secrets.randbelow(1_000_000):06d}"
-    EmailOTP.objects.create(
-        user=user,
-        code_hash=make_password(code),
-        purpose=purpose,
-        created_at=now,
-        expires_at=now + EmailOTP.TTL,
-    )
+    with transaction.atomic():
+        EmailOTP.objects.filter(
+            user=user,
+            purpose=purpose,
+            consumed_at__isnull=True,
+        ).update(consumed_at=now)
+        EmailOTP.objects.create(
+            user=user,
+            code_hash=make_password(code),
+            purpose=purpose,
+            created_at=now,
+            expires_at=now + EmailOTP.TTL,
+        )
     return code
 
 
@@ -197,11 +245,30 @@ def verify_otp(user, code) -> VerifyResult:
 def resend_otp(user):
     """Re-issue and send a SIGNUP OTP. Catches no exception; the view maps them.
 
-    Raises ``OTPCooldownError`` when still cooling down and ``EmailDeliveryError``
-    when the backend cannot deliver.
+    Raises ``OTPCooldownError`` when still cooling down, ``OTPRateLimitError``
+    when the hourly resend cap is reached, and ``EmailDeliveryError`` when
+    the backend cannot deliver.
     """
     code = issue_otp(user, OTPPurpose.SIGNUP)
     send_otp_email(user, code)
+
+
+def resend_password_reset_otp(email: str) -> None:
+    """Re-issue and send a PASSWORD_RESET OTP for an active account.
+
+    No-ops quietly when the email has no active account (anti-enumeration),
+    while letting cooldown, rate-limit, and delivery errors propagate for real
+    accounts so the verification screen can surface countdown/error state.
+    """
+    norm = normalize_email(email or "")
+    if not norm:
+        raise ValidationError("Enter a valid email address.")
+    validate_email(norm)
+    user = User.objects.filter(email__iexact=norm, is_active=True).first()
+    if user is None:
+        return
+    code = issue_otp(user, OTPPurpose.PASSWORD_RESET)
+    send_reset_email(user, code)
 
 
 # --- Password reset ---------------------------------------------------------

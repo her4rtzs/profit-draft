@@ -210,6 +210,16 @@
   .fp-btn-gold:active:not(:disabled){transform:translateY(1px);box-shadow:none}
   .fp-btn-gold:disabled{opacity:.65;cursor:not-allowed}
 
+  .fp-resend-row{margin:10px 0 0;display:flex;justify-content:center}
+  .fp-resend-btn{
+    width:100%;height:42px;padding:0 16px;border-radius:999px;
+    border:1px solid var(--field-line);background:var(--bg2);color:var(--gold);
+    font:600 13.5px/1 "Plus Jakarta Sans",sans-serif;cursor:pointer;
+    transition:border-color .16s ease,color .16s ease,opacity .16s ease;
+  }
+  .fp-resend-btn:hover:not(:disabled){border-color:var(--gold);color:var(--lime-hi)}
+  .fp-resend-btn:disabled{opacity:.58;color:var(--mu);cursor:not-allowed}
+
   .fp-links{margin:12px 0 0;text-align:center;font-size:13px;color:var(--mu)}
   .fp-links a{
     display:inline-flex;align-items:center;min-height:36px;
@@ -289,7 +299,9 @@
         </div>
         <div id="fpMsg2" class="fp-msg" role="alert" aria-live="polite" hidden></div>
         <button class="fp-btn-gold" type="submit">Reset password</button>
-        <p class="fp-links"><a href="#" id="fpResend">Send a new code</a></p>
+        <div class="fp-resend-row">
+          <button type="button" class="fp-resend-btn" id="fpResend" disabled>Resend code in 60s</button>
+        </div>
       </form>
 
       <p class="fp-links"><a href="login.html">Back to sign in</a></p>
@@ -318,18 +330,81 @@
   bindToggle("toggleFpConf", "fpConf", "confirm password");
 
   let email = "";
-  const send = async (msgEl) => {
+  let cooldownRemaining = 0;
+  let cooldownTimer = null;
+  let resendBusy = false;
+  const resendBtn = $("fpResend");
+
+  function updateResendButton() {
+    if (!resendBtn || resendBusy) return;
+    if (cooldownRemaining > 0) {
+      resendBtn.disabled = true;
+      resendBtn.textContent = `Resend code in ${cooldownRemaining}s`;
+    } else {
+      resendBtn.disabled = false;
+      resendBtn.textContent = "Resend OTP";
+    }
+  }
+
+  function startResendCountdown(seconds) {
+    if (cooldownTimer) clearInterval(cooldownTimer);
+    cooldownRemaining = Math.max(0, Math.round(seconds || 0));
+    updateResendButton();
+    if (cooldownRemaining <= 0) return;
+    cooldownTimer = setInterval(() => {
+      cooldownRemaining = Math.max(0, cooldownRemaining - 1);
+      updateResendButton();
+      if (cooldownRemaining <= 0) {
+        clearInterval(cooldownTimer);
+        cooldownTimer = null;
+      }
+    }, 1000);
+  }
+
+  const sendInitial = async (msgEl) => {
     try { await api("/auth/forgot-password", { email }); show(msgEl, "If that email has an account, a code is on its way. It expires in 10 minutes.", false); return true; }
     catch (e) { show(msgEl, e.message || "Could not send the code. Please try again.", true); return false; }
   };
+
   $("fpForm1").addEventListener("submit", async e => {
     e.preventDefault(); email = $("fpEmail").value.trim();
     if (!email || !email.includes("@")) return show($("fpMsg1"), "Enter a valid email address.", true);
     const btn = e.submitter || e.target.querySelector("button"); btn.disabled = true;
-    if (await send($("fpMsg1"))) { $("fpForm1").hidden = true; $("fpForm2").hidden = false; $("fpTitle").textContent = "Check your email"; $("fpSub").textContent = "Enter the code we sent and choose a new password."; $("fpCode").focus(); }
+    if (await sendInitial($("fpMsg1"))) {
+      $("fpForm1").hidden = true;
+      $("fpForm2").hidden = false;
+      $("fpTitle").textContent = "Check your email";
+      $("fpSub").textContent = "Enter the 6-digit code we sent and choose a new password.";
+      show($("fpMsg2"), "Verification code sent. Check your inbox (valid for 10 minutes).", false);
+      startResendCountdown(60);
+      $("fpCode").focus();
+    }
     btn.disabled = false;
   });
-  $("fpResend").addEventListener("click", async e => { e.preventDefault(); await send($("fpMsg2")); });
+
+  resendBtn.addEventListener("click", async () => {
+    if (resendBusy || cooldownRemaining > 0) return;
+    resendBusy = true;
+    resendBtn.disabled = true;
+    resendBtn.textContent = "Sending new OTP…";
+    try {
+      const res = await api("/auth/resend-otp", { email, purpose: "PASSWORD_RESET" });
+      resendBusy = false;
+      show($("fpMsg2"), res?.detail || "A new verification code has been sent to your email.", false);
+      $("fpCode").value = "";
+      $("fpCode").focus();
+      startResendCountdown(res?.cooldown_seconds || 60);
+    } catch (err) {
+      resendBusy = false;
+      show($("fpMsg2"), err?.message || "Could not resend the code. Please try again.", true);
+      if (err?.status === 429) {
+        startResendCountdown(err?.payload?.retry_after || 60);
+      } else {
+        updateResendButton();
+      }
+    }
+  });
+
   $("fpForm2").addEventListener("submit", async e => {
     e.preventDefault();
     const code = $("fpCode").value.trim(), pw = $("fpNew").value;
@@ -337,8 +412,15 @@
     if (pw.length < 8) return show($("fpMsg2"), "Use at least 8 characters for the new password.", true);
     if (pw !== $("fpConf").value) return show($("fpMsg2"), "The two passwords do not match.", true);
     const btn = e.submitter || e.target.querySelector("button[type=submit]"); btn.disabled = true;
-    try { await api("/auth/reset-password", { email, code, new_password: pw }); $("fpForm2").hidden = true; $("fpTitle").textContent = "Password updated"; $("fpSub").innerHTML = 'You can now <a href="login.html">sign in</a> with your new password.'; }
-    catch (err) { show($("fpMsg2"), err.message || "Could not reset the password.", true); }
+    try {
+      await api("/auth/reset-password", { email, code, new_password: pw });
+      if (cooldownTimer) { clearInterval(cooldownTimer); cooldownTimer = null; }
+      $("fpForm2").hidden = true;
+      $("fpTitle").textContent = "Password updated";
+      $("fpSub").innerHTML = 'You can now <a href="login.html">sign in</a> with your new password.';
+    } catch (err) {
+      show($("fpMsg2"), err.message || "Could not reset the password.", true);
+    }
     btn.disabled = false;
   });
 })();

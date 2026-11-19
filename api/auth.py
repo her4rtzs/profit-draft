@@ -199,6 +199,98 @@ def reset_password_view(request):
     return JsonResponse({"detail": message}, status=200 if ok else 400)
 
 
+@require_POST
+def resend_otp_api_view(request):
+    """POST /api/auth/resend-otp/: re-issue a fresh 6-digit OTP and invalidate prior codes."""
+    from apps.accounts.models import OTPPurpose
+    from apps.accounts.services import (
+        EmailDeliveryError,
+        OTPCooldownError,
+        OTPRateLimitError,
+        normalize_email,
+        resend_otp,
+        resend_password_reset_otp,
+    )
+
+    data = _json_body(request)
+    if data is None:
+        return JsonResponse({"detail": "Invalid request body."}, status=400)
+
+    purpose = str(data.get("purpose") or OTPPurpose.PASSWORD_RESET).strip().upper()
+    if purpose not in {OTPPurpose.PASSWORD_RESET, OTPPurpose.SIGNUP}:
+        return JsonResponse({"detail": "Unsupported OTP purpose."}, status=400)
+
+    if purpose == OTPPurpose.SIGNUP:
+        User = get_user_model()
+        pending_id = request.session.get("pending_user_id")
+        decoy = request.session.get("pending_decoy", False)
+        user = User.objects.filter(pk=pending_id, is_active=False).first() if pending_id else None
+        if user is None and isinstance(data.get("email"), str) and data["email"].strip():
+            norm = normalize_email(data["email"])
+            user = User.objects.filter(email__iexact=norm, is_active=False).first()
+            if user is None and User.objects.filter(email__iexact=norm, is_active=True).exists():
+                decoy = True
+        if user is None and not decoy:
+            return JsonResponse(
+                {"status": "expired", "detail": "Your signup session expired. Please start signup again."},
+                status=400,
+            )
+        if decoy or user is None:
+            return JsonResponse({
+                "status": "sent",
+                "detail": "A new verification code has been sent to your email.",
+                "cooldown_seconds": 60,
+            })
+        try:
+            resend_otp(user)
+        except OTPCooldownError as exc:
+            return JsonResponse(
+                {"status": "cooldown", "detail": f"Please wait {exc.retry_after}s before requesting another code.", "retry_after": exc.retry_after},
+                status=429,
+            )
+        except OTPRateLimitError as exc:
+            return JsonResponse(
+                {"status": "rate_limited", "detail": "Too many OTP requests. Please wait before trying again.", "retry_after": min(exc.retry_after, 3600)},
+                status=429,
+            )
+        except EmailDeliveryError:
+            return JsonResponse(
+                {"status": "send_failed", "detail": "We couldn't send the verification code right now. Please try again shortly."},
+                status=503,
+            )
+        return JsonResponse({
+            "status": "sent",
+            "detail": "A new verification code has been sent to your email.",
+            "cooldown_seconds": 60,
+        })
+
+    email = data.get("email") or ""
+    try:
+        resend_password_reset_otp(email)
+    except ValidationError:
+        return JsonResponse({"detail": "Enter a valid email address."}, status=400)
+    except OTPCooldownError as exc:
+        return JsonResponse(
+            {"status": "cooldown", "detail": f"Please wait {exc.retry_after}s before requesting another code.", "retry_after": exc.retry_after},
+            status=429,
+        )
+    except OTPRateLimitError as exc:
+        return JsonResponse(
+            {"status": "rate_limited", "detail": "Too many OTP requests. Please wait before trying again.", "retry_after": min(exc.retry_after, 3600)},
+            status=429,
+        )
+    except EmailDeliveryError:
+        return JsonResponse(
+            {"status": "send_failed", "detail": "We couldn't send the verification code right now. Please try again shortly."},
+            status=503,
+        )
+    return JsonResponse({
+        "status": "sent",
+        "detail": "If that email has an account, a new code is on its way. It expires in 10 minutes.",
+        "cooldown_seconds": 60,
+    })
+
+
 def _google_callback_url(request):
     configured = (getattr(settings, "GOOGLE_CALLBACK_URL", "") or "").strip()
     return configured or request.build_absolute_uri("/api/auth/google/callback/")

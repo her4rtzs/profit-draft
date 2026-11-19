@@ -55,6 +55,8 @@ class EmailOTP(models.Model):
     MAX_ATTEMPTS = 5
     TTL = timedelta(minutes=10)
     RESEND_COOLDOWN = timedelta(seconds=60)
+    MAX_RESENDS_PER_WINDOW = 5
+    RESEND_WINDOW = timedelta(hours=1)
 
     user = models.ForeignKey(
         User,

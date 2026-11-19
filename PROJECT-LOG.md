@@ -2399,3 +2399,12 @@ Document the design system, establish one token source, remove shadowed `:root` 
 - Wrote root `DESIGN.md` and `.impeccable/design.json` to document the palette; sidecar components use `var()` token references.
 ### Decision-log skill
 Before deleting duplicated CSS custom properties, compute the effective last-wins value of every token and assert the map is unchanged afterwards; treat `!important` in stacked override files as load-bearing until proven otherwise.
+## 2026-11-19 22:42 (Asia/Manila): Resend OTP with 60s countdown, invalidation, and rate limiting
+### What I asked for
+Integrate Resend OTP into the existing authentication and password-reset verification screens with a 60-second countdown, previous-OTP invalidation, and server-side rate limiting.
+### What the agent decided and why
+- Kept the existing `EmailOTP` model and email backend (`apps/accounts/emails.py`) with zero schema migrations, adding `MAX_RESENDS_PER_WINDOW = 5` per hour and marking prior unconsumed OTPs consumed inside `transaction.atomic()` whenever a new code is issued (`apps/accounts/services.py`).
+- Exposed `POST /api/auth/resend-otp/` in `api/auth.py` and enhanced `POST /accounts/resend/` in `apps/accounts/views.py` to enforce the 60s cooldown and hourly rate limit with `429` JSON `retry_after` responses (plus anti-enumeration on unknown emails) without ever returning codes.
+- Added 60-second countdown timers, disabled/loading states, and clear status alerts to both `templates/accounts/verify.html` and `web/forgot.html`.
+### Decision-log skill
+Invalidate prior unconsumed OTP rows atomically when issuing a replacement code, and return server-computed `retry_after` seconds on `429` so client countdowns cannot drift from server enforcement.

@@ -1,10 +1,15 @@
-"""Forgot password: emailed code, no account enumeration, one-time use."""
+"""Forgot password: emailed code, no account enumeration, one-time use, and Resend OTP."""
 
 import json
+from datetime import timedelta
 from unittest import mock
 
 from django.contrib.auth import get_user_model
+from django.core import mail
 from django.test import Client, TestCase
+from django.utils import timezone
+
+from apps.accounts.models import EmailOTP, OTPPurpose
 
 User = get_user_model()
 OLD, NEW = "Old-pass-123!", "Brand-new-pass-456!"
@@ -44,3 +49,58 @@ class PasswordResetTests(TestCase):
         self.assertEqual(self._post("/api/auth/reset-password/", {"email": "r@example.com", "code": code, "new_password": "123"}).status_code, 400)
         self.user.refresh_from_db()
         self.assertTrue(self.user.check_password(OLD))
+
+    def test_resend_otp_api_cooldown_invalidation_and_rate_limit(self):
+        code1 = self._request_code()
+        # Immediate resend hits 60s cooldown
+        too_soon = self._post("/api/auth/resend-otp/", {"email": "r@example.com", "purpose": "PASSWORD_RESET"})
+        self.assertEqual(too_soon.status_code, 429)
+        self.assertEqual(too_soon.json()["status"], "cooldown")
+        self.assertGreaterEqual(too_soon.json()["retry_after"], 1)
+
+        # Age past cooldown -> resend succeeds, invalidates code1, sends code2 by email, never echoes code
+        row1 = EmailOTP.objects.filter(user=self.user, purpose=OTPPurpose.PASSWORD_RESET).latest("created_at")
+        row1.created_at = timezone.now() - EmailOTP.RESEND_COOLDOWN - timedelta(seconds=1)
+        row1.save(update_fields=["created_at"])
+
+        mail.outbox.clear()
+        with mock.patch("apps.accounts.services.send_reset_email") as sent:
+            ok = self._post("/api/auth/resend-otp/", {"email": "r@example.com", "purpose": "PASSWORD_RESET"})
+        self.assertEqual(ok.status_code, 200)
+        body = ok.json()
+        self.assertEqual(body["status"], "sent")
+        self.assertEqual(body["cooldown_seconds"], 60)
+        code2 = sent.call_args[0][1]
+        self.assertNotIn(code2, json.dumps(body))
+
+        row1.refresh_from_db()
+        self.assertTrue(row1.is_consumed())
+
+        # Old code1 can no longer reset the password; new code2 succeeds once
+        old_attempt = self._post("/api/auth/reset-password/", {"email": "r@example.com", "code": code1, "new_password": NEW})
+        self.assertEqual(old_attempt.status_code, 400)
+        good_attempt = self._post("/api/auth/reset-password/", {"email": "r@example.com", "code": code2, "new_password": NEW})
+        self.assertEqual(good_attempt.status_code, 200)
+
+        # Anti-enumeration on unknown email
+        unknown = self._post("/api/auth/resend-otp/", {"email": "nobody@example.com", "purpose": "PASSWORD_RESET"})
+        self.assertEqual(unknown.status_code, 200)
+
+        # Exceeding rolling window cap returns 429 rate_limited
+        base = timezone.now() - timedelta(minutes=25)
+        existing_rows = list(EmailOTP.objects.filter(user=self.user, purpose=OTPPurpose.PASSWORD_RESET).order_by("created_at"))
+        for idx in range(EmailOTP.MAX_RESENDS_PER_WINDOW - len(existing_rows)):
+            EmailOTP.objects.create(
+                user=self.user,
+                code_hash="dummy",
+                purpose=OTPPurpose.PASSWORD_RESET,
+                created_at=base + timedelta(minutes=idx * 2),
+                expires_at=timezone.now() + timedelta(minutes=10),
+            )
+        for idx, r in enumerate(EmailOTP.objects.filter(user=self.user, purpose=OTPPurpose.PASSWORD_RESET).order_by("created_at")):
+            r.created_at = base + timedelta(minutes=idx * 2)
+            r.save(update_fields=["created_at"])
+
+        capped = self._post("/api/auth/resend-otp/", {"email": "r@example.com", "purpose": "PASSWORD_RESET"})
+        self.assertEqual(capped.status_code, 429)
+        self.assertEqual(capped.json()["status"], "rate_limited")

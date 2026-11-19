@@ -10,16 +10,19 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
+from django.utils import timezone
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_http_methods, require_POST
 
 from .forms import AcceptInviteForm, LoginForm, SignupForm, VerifyForm
-from .models import User
+from .models import EmailOTP, OTPPurpose, User
 from .services import (
     EmailDeliveryError,
     InvalidInviteError,
     OTPCooldownError,
+    OTPRateLimitError,
     accept_invite,
     normalize_email,
     register_member,
@@ -112,28 +115,60 @@ def verify_view(request):
                 messages.error(request, GENERIC_INVALID_CODE)
     else:
         form = VerifyForm()
-    return render(request, "accounts/verify.html", {"form": form})
+    cooldown_seconds = 60
+    if user is not None:
+        latest = EmailOTP.objects.filter(user=user, purpose=OTPPurpose.SIGNUP).order_by("-created_at").first()
+        if latest is not None:
+            elapsed = timezone.now() - latest.created_at
+            cooldown_seconds = max(0, int((EmailOTP.RESEND_COOLDOWN - elapsed).total_seconds() + 0.999)) if elapsed < EmailOTP.RESEND_COOLDOWN else 0
+    return render(request, "accounts/verify.html", {"form": form, "cooldown_seconds": cooldown_seconds})
 
 
 @require_POST
 def resend_otp_view(request):
     decoy = request.session.get("pending_decoy", False)
     user = _pending_user(request)
+    retry_after = 60
 
     if user is None and not decoy:
         status = "expired"
+        http_status = 400
+        detail = "Your signup session expired — start again."
     elif decoy or user is None:
         status = "sent"  # anti-enumeration: identical copy, nothing issued
+        http_status = 200
+        detail = "A new code was sent. Check your email."
     else:
         try:
             resend_otp(user)
             status = "sent"
-        except OTPCooldownError:
+            http_status = 200
+            detail = "A new code was sent. Check your email."
+        except OTPCooldownError as exc:
             status = "cooldown"
+            http_status = 429
+            retry_after = exc.retry_after
+            detail = f"Please wait {retry_after}s before requesting another code."
+        except OTPRateLimitError as exc:
+            status = "rate_limited"
+            http_status = 429
+            retry_after = min(exc.retry_after, 3600)
+            detail = "Too many code requests. Please wait before trying again."
         except EmailDeliveryError:
             status = "send_failed"
+            http_status = 503
+            detail = "We couldn't send the code right now. Try again shortly."
 
-    return render(request, "accounts/_resend_status.html", {"status": status})
+    wants_json = (
+        request.headers.get("X-Requested-With") == "XMLHttpRequest"
+        or "application/json" in request.headers.get("Accept", "")
+    )
+    if wants_json:
+        return JsonResponse(
+            {"status": status, "detail": detail, "retry_after": retry_after},
+            status=http_status,
+        )
+    return render(request, "accounts/_resend_status.html", {"status": status, "detail": detail})
 
 
 @require_http_methods(["GET", "POST"])
