@@ -805,7 +805,7 @@ body.dark .stat-icon.gold { color: var(--gold); }
 
 .chart-y span {
     font-size: 11.5px;
-    color: var(--faint);
+    color: var(--muted);
     line-height: 1;
 }
 

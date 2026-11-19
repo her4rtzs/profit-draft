@@ -82,7 +82,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
     <main class="main-content">
 
         <!-- TOPBAR -->
-        <header class="topbar" id="topbar"></header>
+        <header class="topbar" id="topbar"><h1>Dashboard</h1></header>
 
 
         <!-- QUICK ACTIONS -->
@@ -116,7 +116,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
             <div class="stat-card kpi-card kpi-gold" id="kpiTotalMembersCard">
                 <div class="stat-top">
                     <div class="stat-icon" aria-hidden="true"><i class="fa-solid fa-users"></i></div>
-                    <h3 class="kpi-title">Total Members</h3>
+                    <h2 class="kpi-title">Total Members</h2>
                 </div>
                 <div class="stat-content">
                     <p class="sr-only">Total members</p>
@@ -134,7 +134,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
             <div class="stat-card kpi-card kpi-red" id="kpiExpiredCard">
                 <div class="stat-top">
                     <div class="stat-icon" aria-hidden="true"><i class="fa-solid fa-user-xmark"></i></div>
-                    <h3 class="kpi-title">Expired Members</h3>
+                    <h2 class="kpi-title">Expired Members</h2>
                 </div>
                 <div class="stat-content">
                     <p class="sr-only">Expired members</p>
@@ -152,7 +152,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
             <div class="stat-card kpi-card kpi-cyan" id="kpiExpiringCard">
                 <div class="stat-top">
                     <div class="stat-icon" aria-hidden="true"><i class="fa-solid fa-hourglass-half"></i></div>
-                    <h3 class="kpi-title">Expiring Soon</h3>
+                    <h2 class="kpi-title">Expiring Soon</h2>
                 </div>
                 <div class="stat-content">
                     <p class="sr-only">Expiring soon</p>
@@ -170,7 +170,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
             <div class="stat-card revenue-card kpi-card kpi-violet" id="kpiRevenueCard">
                 <div class="stat-top">
                     <div class="stat-icon" aria-hidden="true"><i class="fa-solid fa-peso-sign"></i></div>
-                    <h3 class="kpi-title">Total Revenue</h3>
+                    <h2 class="kpi-title">Total Revenue</h2>
                 </div>
                 <div class="stat-content">
                     <p class="sr-only">Total revenue</p>
@@ -681,11 +681,11 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
       }
 
       const li = document.createElement("li");
-      li.className = "mt-legend-card";
-      li.setAttribute("tabindex", "0");
-      li.setAttribute("role", "button");
-      li.setAttribute("aria-label", `${item.label}: ${item.count} members (${item.pctText}). View members.`);
-      li.innerHTML =
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "mt-legend-card";
+      btn.setAttribute("aria-label", `${item.label}: ${item.count} members (${item.pctText}). View members.`);
+      btn.innerHTML =
         `<div class="mt-card-left">` +
           `<span class="mt-card-dot" style="background:${item.color};"></span>` +
           `<div class="mt-card-info">` +
@@ -696,21 +696,16 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
         `<div class="mt-card-right">` +
           `<span class="mt-card-pct">${item.pctText}</span>` +
         `</div>`;
+      li.appendChild(btn);
       legendEl.appendChild(li);
-      legEls.push(li);
+      legEls.push(btn);
 
-      [circle, li].forEach(el => {
+      [circle, btn].forEach(el => {
         el.addEventListener("mouseenter", () => setHover(idx));
         el.addEventListener("mouseleave", () => setHover(null));
         el.addEventListener("focus", () => setHover(idx));
         el.addEventListener("blur", () => setHover(null));
         el.addEventListener("click", () => goToPlan(item.key));
-        el.addEventListener("keydown", e => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            goToPlan(item.key);
-          }
-        });
       });
 
       offset += arcLen;
@@ -785,5 +780,6 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
 })();
 </script>
 <script src="notifications-live.js?v=1" defer></script>
+<script src="site-footer.js?v=2" defer></script>
 </body>
 </html>

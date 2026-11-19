@@ -885,7 +885,7 @@ body.dark .quick-action:hover, body.dark .quick-action:focus-visible {
    8 · CHART + DONUT
    ========================================================================== */
 
-.chart-y span { color: var(--faint) !important; font-size: 11px; }
+.chart-y span { color: var(--muted) !important; font-size: 11px; }
 .grid-lines { border-color: var(--border) !important; }
 
 .bar { background: color-mix(in srgb, var(--text) 8%, transparent) !important; border-radius: 4px 4px 0 0; }

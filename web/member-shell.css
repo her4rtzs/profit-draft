@@ -664,16 +664,32 @@ body.member-home .pf-app-hero p {
   opacity: 0.88;
 }
 
+/* Single owner for the member hero actions: two up, Contact on its own row, stack on small phones. */
 body.member-home .pf-app-hero .member-hero-actions {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  justify-items: center;
   align-items: center;
   gap: 10px;
-  flex-wrap: wrap;
 }
-
+body.member-home .pf-app-hero .member-hero-actions > :nth-child(3):last-child {
+  grid-column: 1 / -1;
+}
 body.member-home .pf-app-hero .member-hero-actions .btn {
   width: auto !important;
   white-space: nowrap;
+  justify-content: center;
+}
+
+/* Small phones: one per row, full width, so the two labels cannot collide. */
+@media (max-width: 400px) {
+  body.member-home .pf-app-hero .member-hero-actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  body.member-home .pf-app-hero .member-hero-actions .btn {
+    width: 100% !important;
+    white-space: normal;
+  }
 }
 
 body.member-home .pf-app-hero .btn-soft {

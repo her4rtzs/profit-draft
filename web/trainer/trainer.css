@@ -28,7 +28,7 @@ html[data-theme="light"] body[data-portal="trainer"] {
   --line-strong: #DAD1BF;
   --text: #1F2430;
   --text-2: #444A57;
-  --muted: #727684;
+  --muted: #5c5f6b;
   --green: #10B981;
   --green-soft: rgba(16, 185, 129, .12);
   --red: #EF4444;
@@ -752,7 +752,7 @@ html[data-theme="light"] .tw-period-tabs {
 }
 html:not([data-theme="dark"]) .tw-period-tab,
 html[data-theme="light"] .tw-period-tab {
-  color: #727684;
+  color: var(--muted);
 }
 html:not([data-theme="dark"]) .tw-period-tab:hover,
 html[data-theme="light"] .tw-period-tab:hover {
@@ -1302,7 +1302,7 @@ html[data-theme="light"] .tw-table-wrap {
 html:not([data-theme="dark"]) .tw-table th,
 html[data-theme="light"] .tw-table th {
   background: #F3EEE4;
-  color: #727684;
+  color: var(--muted);
   border-bottom-color: #E8E1D3;
 }
 html:not([data-theme="dark"]) .tw-table td,

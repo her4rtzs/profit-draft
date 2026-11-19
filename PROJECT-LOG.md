@@ -2261,3 +2261,15 @@ Commit the `/impeccable distill` pass that removed the repeated decorative layer
 - Noted the pre-existing `styles.css` brace imbalance (one extra `}` in `HEAD`, unchanged by this pass) instead of fixing it inside a CSS-cleanup commit.
 ### Decision-log skill
 Delete decoration in its own commit, with the variable list pruned in the same diff; mixing a decorative deletion with a palette or bundling change makes it impossible to tell which edit broke a page.
+
+## 2026-11-19 19:38 (Asia/Manila): Polish the remaining audit findings in the web portal
+### What I asked for
+Apply the small audit fixes in `web/`: cream-theme muted-text contrast, overlapping member hero buttons, missing `h1` and skip link, and chart label contrast plus accessible names. I verified the subagents' work and handled the logging.
+### What the agent decided and why
+- Set the cream `--muted` token to `#5c5f6b` and routed two hardcoded copies through it, because `#727684` was below 4.5:1 on the cream surfaces. See [[2026-11-19 Fix cream-theme muted text contrast]]
+- Made `web/member-shell.css` the single owner of `.member-hero-actions` and stacked the buttons below 400 px, deleting the competing `!important` rules; the nowrap labels could no longer collide. See [[2026-11-19 member-shell owns the hero actions]]
+- Put the skip link and `sr-only` `h1` fallback in the shared `site-footer.js`, with static topbar `h1`s on nine staff pages and KPI headings promoted to `h2`. See [[2026-11-19 One shared heading and skip-link shell]]
+- Moved chart labels to `--muted`, made donut legends real buttons, and removed bell `aria-label`s that contradicted the visible state. See [[2026-11-19 Polish chart labels and accessible names]]
+- Checked everything before recording it: `manage.py check` showed only the pre-existing `static/dist` warning, the full test suite passed, `node --check` passed on all three changed JS files, and no old hex remains.
+### Decision-log skill
+When an audit finds contrast, overlap and heading faults in the same workspace, keep each fix in its own diff and its own decision note; shared CSS has several owners, so delete the losing rules in the same change that makes one file authoritative.

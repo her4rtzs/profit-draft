@@ -50,3 +50,7 @@ One note per decision, oldest first; entries with an `Unknown` date are listed l
 - [[Unknown ALLOWED_HOSTS fails fast]]: `ALLOWED_HOSTS` fails fast when `DEBUG=False` and the value is unset
 - [[Unknown Pay-first join]]: Adopt a pay-first join flow: a joining member pays before an account is created.
 - [[Unknown Theme and layout state before first paint]]: Put theme and layout state on the `<html>` element in a script at the top of the head, before first paint, and...
+- [[2026-11-19 Fix cream-theme muted text contrast]]: Cream `--muted` goes to `#5c5f6b`; two hardcoded copies use the token.
+- [[2026-11-19 member-shell owns the hero actions]]: One owner for `.member-hero-actions`; stack the hero buttons below 400 px.
+- [[2026-11-19 One shared heading and skip-link shell]]: Skip link and h1 fallback via site-footer.js; nine staff pages get a static h1.
+- [[2026-11-19 Polish chart labels and accessible names]]: Chart labels use `--muted`, donut legends become buttons, bell labels stop contradicting the badge.

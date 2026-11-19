@@ -70,7 +70,6 @@
       badge.textContent = unread > 99 ? "99+" : String(unread);
       badge.hidden = unread === 0;
     }
-    if (toggle) toggle.setAttribute("aria-label", unread ? `Notifications, ${unread} unread` : "Notifications, you're all caught up");
     if (summary) {
       summary.innerHTML = inFlightLoad && !hasLoadedOnce
         ? '<i class="fa-solid fa-circle-notch fa-spin" aria-hidden="true" style="margin-right:5px;color:#e8b93a"></i>Checking updates...'
