@@ -2440,3 +2440,12 @@ Stop showing .html in the address bar and make the landing page load at the bare
 - Added six tests covering root, clean/grouped URLs, 404s and no leftover .html links; manage.py check clean and 230 tests OK.
 ### Decision-log skill
 When hiding file extensions behind clean routes, grep for code that reads location.pathname as well as markup links — detection logic breaks silently even when every visible link is correct.
+## 2026-11-20 (Asia/Manila): Consolidate profile/settings/legal CSS and fonts
+### What I asked for
+Optimize the 13-14 stylesheet links and 4-6 font families on profile, settings and legal pages down to one global sheet and two fonts.
+### What the agent decided and why
+- Added generated `web/global.css` concatenating the 14 source sheets in an order that preserves both page groups' shared cascade; page-specific sheets target disjoint markup. See [[2026-11-20 Profile settings and legal pages load one global CSS bundle]]
+- Stripped spotify.css's Figtree @import from the bundle and mapped its references to Plus Jakarta Sans, so only Plus Jakarta Sans + Inter load via one Google Fonts link; Caveat was unused on these pages.
+- Verified before/after screenshots at desktop and phone widths for privacy and profile - visually identical. `ruff check .` (195 pre-existing errors) and `manage.py check` (ALLOWED_HOSTS required with DEBUG=False) do not pass in this environment.
+### Decision-log skill
+When merging overlapping stylesheet sets that differ only in page-specific sheets, keep the shared sheets in the same relative order and insert the disjoint sheets around them; the cascade stays identical for both page groups.
