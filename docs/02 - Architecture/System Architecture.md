@@ -65,6 +65,19 @@ Supabase pg_cron ──► UPDATE membership_memberprofile (SQL, outside Django)
 
 Documented but **not verified in code**: "users and members are never deleted, only deactivated" (`Architecture.md` §3) — `User.is_active` exists via `AbstractUser`, but no deletion guard was found in the files read.
 
+## Log backfill (facts stated in PROJECT-LOG.md, cited by entry date)
+
+- Anonymous login/CSRF endpoints were deliberately implemented as **plain Django views**, not DRF APIViews, so `CsrfViewMiddleware` actually checks the login POST (`Client(enforce_csrf_checks=True)`: 403 without token, 200 with). (`PROJECT-LOG.md`, 2026-10-07 21:46.)
+- The webhook hashes the raw request bytes (`t.encode() + b"." + raw_body`) per the binding spec, reads `PAYMONGO_WEBHOOK_SECRET` from the environment, and makes payment mutators no-ops on terminal payments so duplicate deliveries cannot un-settle a payment. (`PROJECT-LOG.md`, 2026-10-07 21:30.)
+- `AGENTS.md` declares two surfaces: static `web/` (plain HTML/CSS/JS calling `/api` from the browser) and Django `templates/` + `components/` + `static/` (Tailwind/daisyUI, HTMX, Alpine, django-components, Lucide). `templates/` cannot be retired because `accounts/accept_invite.html` serves the emailed invite. (`PROJECT-LOG.md`, 2026-10-18 17:40.)
+- `/` is served by Django (`WHITENOISE_INDEX_FILE = False`, `views.home` → `web/welcome.html`); a synchronous auth guard in protected page heads hides the page before first paint and redirects unauthenticated visitors. (`PROJECT-LOG.md`, 2026-11-14 02:56.)
+- Vercel's `buildCommand` must **not** run `manage.py migrate`: build containers have no database access. Missing columns are handled at runtime with savepoints and an idempotent schema check (`_ensure_announcements_schema()`), returning HTTP 400 rather than 500. (`PROJECT-LOG.md`, 2026-11-14 00:24 and 01:05.)
+- Streak and weekly-visit counts are computed server-side in `GET /api/member/me/` with Manila-local dates; member check-in calls `check_in_member` through `POST /api/member/check-in/`. (`PROJECT-LOG.md`, 2026-10-29 17:09; 2026-11-08 12:57.)
+- Skeleton loaders are placed in the real HTML containers with a short minimum and a hard fallback; theme/layout state is set on `<html>` in a head script before first paint to avoid flicker. (`PROJECT-LOG.md`, 2026-10-29 17:00; undated "Session: sidebar per drawing…" entry.)
+- The PWA/service-worker files `web/sw.js` and `web/pwa.js` are deleted — offline caching of member and payment data on shared front-desk phones is out of scope. (`PROJECT-LOG.md`, 2026-11-16 11:00.)
+- The manifest is a static `web/manifest.webmanifest` served by `WHITENOISE_ROOT = web`; `.webmanifest` is registered in `WHITENOISE_MIMETYPES` as `application/manifest+json`, because Python does not know the extension. All pages use one `theme-color` (`#0a0e17`). (`PROJECT-LOG.md`, 2026-11-16 12:10.)
+- Trainer endpoints live in `api/trainers.py`, `api/notifications.py`, `api/urls.py`; the bell popover and Notifications page share one server-synced store and the `pf:notifications-updated` event. (`PROJECT-LOG.md`, 2026-11-15 09:13; 2026-11-15 10:02.)
+
 ## Not yet inspected
 
 - Row Level Security policies in the live Supabase project — Unknown.
