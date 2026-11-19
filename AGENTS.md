@@ -43,7 +43,7 @@ Run from repo root:
 Each of these exists to prevent a real, costly mistake. Do not bend them.
 1. **Never run commands that write to the production database.** There are two Supabase projects: **Dev** (what the local `.env` points to) and **Prod** (the live site). Before any `migrate`, `loaddata`, `flush`, or shell command that changes data, check that `DATABASE_URL` points to Dev. If you cannot tell, stop and ask. For Prod, create the migration file and tell the owner to apply it.
 2. Every schema change is a new tracked Django migration. Never edit tables by hand in the Supabase dashboard, and never edit applied migrations.
-3. **Never read, print, or commit `.env*` files or secrets.** Environment variable names are listed at the bottom of this file. Never paste a secret into code, a test, a log, or a chat reply.
+3. **Never read, print, or commit `.env*` files or secrets.** Environment variable names are listed at the bottom of this file. Never paste a secret into code, a test, a log, a vault note, or a chat reply.
 4. `SUPABASE_KEY` and `PAYMONGO_SECRET_KEY` are used only in server-side Django code. Never put them in templates, JavaScript, `web/` pages, or any API response.
 5. **Permissions are enforced on the server.** Hiding a button or menu item is only UX. Every role check in a page needs a matching check in the Django view or DRF endpoint (login required, correct role, and the user is active).
 6. Never trust client-supplied values for security-relevant fields (`role`, `member_id`, `amount`, `status`, `created_by`, payment status). Derive them server-side. Take payment amounts from the server-side price, never from the request.
@@ -64,7 +64,7 @@ Each of these exists to prevent a real, costly mistake. Do not bend them.
 - `web/`: static portal pages (HTML/CSS/JS), served by WhiteNoise at the site root
 - `templates/`, `static/`: Django-templated pages (HTML templates, plus CSS and JS)
 - `supabase/cron/`: `pg_cron` SQL definitions
-- `docs/`: human-facing documentation
+- `docs/`: Obsidian vault (project notes, one note per decision in `05 - Decisions/`, and the Decision Log index). Open this folder in Obsidian with "Open folder as vault".
 - `PROJECT-LOG.md`, `ROADMAP.md`, `Architecture.md`: session log, work checklist, and design plan
 
 ## Modules
@@ -94,7 +94,7 @@ Each of these exists to prevent a real, costly mistake. Do not bend them.
 - Web UI: HTML, CSS, and JavaScript only. Keep CSS in one place with colors, spacing, and font sizes as CSS variables in `:root`; never hard-code the same hex color in many places. Design phone-first (members use the portal on their phones) and keep tap targets comfortable. Keep JavaScript small, with `addEventListener` instead of inline handlers.
 - Every form field needs a matching `<label for>` and `id`. Every Django POST form includes `{% csrf_token %}`.
 - Do not add dependencies outside the Stack section. If a new package seems necessary, ask first and explain why the existing stack can't do it.
-- Keep changes small and focused. Do not refactor, rename, or reformat code unrelated to the task.
+- Keep changes small and focused. Do not refactor, rename, or reformat code unrelated to the task. (The only standing exception is the decision notes described below.)
 - Assume timezone `Asia/Manila` and currency PHP.
 - Do not edit applied migrations; add a new one.
 
@@ -107,10 +107,42 @@ Entry format:
 ### What I asked for
 <the user's request(s) this session, in one to three lines>
 ### What the agent decided and why
-<each non-obvious decision and the reason, one bullet per decision>
+<One line per decision. Add "see [[<decision note name>]]" if the decision also has a decision note. Keep the full reasoning in the decision note, not here.>
 ### Decision-log skill
 <the reusable pattern or lesson from this session that future sessions should apply>
 ```
+
+## Decision notes (Obsidian vault)
+The `docs/` folder is an Obsidian vault. Every non-obvious decision gets its **own note** (one decision = one file) in `docs/05 - Decisions/`. After creating it, add one link line to the index note `docs/05 - Decisions/Decision Log.md`. Do this before you end your reply.
+
+What counts as a decision: choosing one approach over another, adding or skipping a dependency, changing the database schema, changing a permission or security rule, or deciding something is out of scope for the current phase. Typos and small formatting fixes do not count.
+
+Rules:
+- One decision = one new file. File name: `YYYY-MM-DD Short title.md`, for example `2026-11-19 Use scroll-snap for Programs.md`. Do not use these characters in the name: `: / \ ? * " < > |`. Keep it under about 60 characters. Never rename a decision file later, because links to it would break.
+- Use this exact template for the note:
+```
+---
+date: YYYY-MM-DD
+status: accepted
+tags: [decision]
+---
+# <short title>
+- Decision: <what was decided>
+- Reason: <why, in plain language>
+- Trade-offs: <what was given up or risked>
+- Evidence: <file paths changed, test results, or commit hash if one exists>
+
+## Related
+- [[<exact name of an existing note>]]
+```
+- Under "Related", link only to notes that already exist, using their exact file name (for example `[[System Architecture]]`, `[[Testing Strategy]]`, or an earlier decision note). If nothing is related, write "None".
+- Then append one line at the bottom of `Decision Log.md`: `- [[YYYY-MM-DD Short title]]: <one-line summary>`. Newest at the bottom. Do not rewrite or reorder the rest of that file.
+- Never edit or delete an existing decision note. The only allowed change is setting `status` to `superseded` or `reversed` and adding one line `Superseded by: [[new note name]]`. A new decision that replaces an old one must link to the old one under "Related".
+- Evidence must be real. If you did not check something, write "Not yet inspected". Do not guess.
+- Never write secrets, `.env` values, PII, or payment details into the vault.
+- This is the one exception to "keep changes small": you may create and edit files inside `docs/` for this purpose. Do not edit any other docs file unless asked.
+- Do not commit. Tell the owner to review the `docs/` changes with the rest of the diff.
+- `PROJECT-LOG.md` stays as the per-session log. Decision notes hold the individual decisions that matter later.
 
 ## Payments (PayMongo)
 - Amounts are in centavos (PHP 100.00 = `10000`).
