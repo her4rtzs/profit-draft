@@ -29,11 +29,14 @@ html[data-theme="light"] body[data-portal="trainer"] {
   --text: #1F2430;
   --text-2: #444A57;
   --muted: #5c5f6b;
-  --green: #10B981;
+  /* Dark ink on these cream surfaces so every text pairing clears 4.5:1. */
+  --tw-amber: #92400E;
+  --green: #065F46;
+  --tw-green: #065F46;
+  --blue: #1E40AF;
+  --red: #B91C1C;
   --green-soft: rgba(16, 185, 129, .12);
-  --red: #EF4444;
   --red-soft: rgba(239, 68, 68, .12);
-  --blue: #2563EB;
   --blue-soft: rgba(37, 99, 235, .12);
   --purple: #7C3AED;
   --purple-soft: rgba(124, 58, 237, .12);
@@ -1769,7 +1772,7 @@ html[data-theme="light"] .tw-hero-ico {
 }
 html:not([data-theme="dark"]) .tw-hero-eyebrow,
 html[data-theme="light"] .tw-hero-eyebrow {
-  color: #B45309;
+  color: #92400E;
 }
 .tw-hero-title {
   margin: 0;
