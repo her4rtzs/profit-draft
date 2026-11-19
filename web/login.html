@@ -337,11 +337,11 @@
 <link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
 <body class="portal-body auth-page dark public-dark-theme">
 <header class="portal-nav">
-  <a class="portal-brand" href="welcome.html">
+  <a class="portal-brand" href="/">
     <img src="logo.jpg" alt="ProFit logo" width="36" height="36">
     <strong>ProFit</strong>
   </a>
-  <a class="back-link" href="welcome.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i><span>Back to home</span></a>
+  <a class="back-link" href="/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i><span>Back to home</span></a>
 </header>
 
 <main class="lg-shell">
@@ -382,13 +382,13 @@
         <button class="lg-btn-gold" type="submit">Sign in</button>
 
         <div class="lg-forgot-row">
-          <a class="lg-forgot" href="forgot.html">Forgot password?</a>
+          <a class="lg-forgot" href="/forgot">Forgot password?</a>
         </div>
       </form>
 
       <div class="lg-divider"><span>Or continue with</span></div>
       <div class="lg-sso">
-        <button type="button" class="lg-sso-btn" id="googleSignInBtn">
+        <button type="button" class="lg-sso-btn" id="googleSignInBtn" aria-label="Sign in with Google">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z"/>
             <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24Z"/>
@@ -405,7 +405,7 @@
         </button>
       </div>
 
-      <p class="lg-join-row">New to ProFit? <a href="join.html">Join and pay online</a></p>
+      <p class="lg-join-row">New to ProFit? <a href="/join">Join and pay online</a></p>
     </section>
   </div>
 </main>
@@ -414,7 +414,7 @@
 (() => {
   const $ = id => document.getElementById(id);
   const form = $('signInForm'), submit = form.querySelector('[type=submit]');
-  const HOME = { admin: 'index.html', trainer: 'trainer/index.html', member: 'member-home.html' };
+  const HOME = { admin: '/index', trainer: '/trainer/index', member: '/member-home' };
 
   const pwEl = $('password'), eyeBtn = $('showPassword'), capsEl = $('capsWarn');
   eyeBtn.addEventListener('click', () => {
@@ -478,7 +478,7 @@
         const user = session.user;
         const r = String(user?.role || '').toUpperCase();
         const isStaff = ['ADMIN', 'OWNER', 'CASHIER'].includes(r);
-        const home = isStaff ? 'index.html' : (r === 'TRAINER' || r === 'COACH') ? 'trainer/index.html' : r === 'MEMBER' ? 'member-home.html' : null;
+        const home = isStaff ? '/index' : (r === 'TRAINER' || r === 'COACH') ? '/trainer/index' : r === 'MEMBER' ? '/member-home' : null;
         if (home) {
           sessionStorage.setItem('profit-verified-session', JSON.stringify(user));
           sessionStorage.setItem('pf-auth-just-logged-in', '1');

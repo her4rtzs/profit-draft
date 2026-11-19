@@ -8,8 +8,8 @@
 (() => {
   const path = (location.pathname || "").toLowerCase();
   const file = path.split("/").pop() || "";
-  const isLandingPage = file === "" || file === "welcome.html" || path === "/" || path.endsWith("/welcome.html");
-  const isAuthPage = /(^|\/)(login|join|forgot)\.html$/.test(path);
+  const isLandingPage = file === "" || file === "/" || path === "/" || path.endsWith("/");
+  const isAuthPage = /(^|\/)(login|join|forgot)(?:\.html)?$/.test(path);
 
   if (isAuthPage) return;
 

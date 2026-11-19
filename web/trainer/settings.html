@@ -30,7 +30,7 @@
           </div>
         </div>
         <div class="tw-hero-actions">
-          <a href="profile.html" class="tw-btn"><span data-ico="user"></span> Edit Coach Profile</a>
+          <a href="/profile" class="tw-btn"><span data-ico="user"></span> Edit Coach Profile</a>
         </div>
       </section>
 
@@ -88,7 +88,7 @@
                 <strong style="display:block;font-size:14px;color:var(--text)">Notification center</strong>
                 <span style="font-size:12.5px;color:var(--muted)">Read, mark, or clear your coaching assignments and gym updates.</span>
               </div>
-              <a href="notifications.html" class="tw-btn"><span data-ico="bell"></span> Open Inbox</a>
+              <a href="/notifications" class="tw-btn"><span data-ico="bell"></span> Open Inbox</a>
             </div>
           </div>
         </article>
@@ -261,7 +261,7 @@ PF.ready(() => {
     } else if (window.ProFitAPI && window.ProFitAPI.logout) {
       await window.ProFitAPI.logout();
     } else {
-      window.location.href = '../login.html';
+      window.location.href = '/login';
     }
   });
 });

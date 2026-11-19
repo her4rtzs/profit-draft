@@ -24,7 +24,7 @@
       <section class="tw-qa-section tw-anim" style="--i:0" aria-labelledby="qaHeading">
         <div class="tw-section-label" id="qaHeading">Quick actions</div>
         <div class="tw-qa-grid">
-          <a class="tw-qa-tile is-amber" href="attendance.html#checkin" id="qaRecordCheckin">
+          <a class="tw-qa-tile is-amber" href="/attendance#checkin" id="qaRecordCheckin">
             <div class="tw-qa-top">
               <span class="tw-qa-ico" data-icon="plus"></span>
               <span class="tw-qa-arrow" data-icon="arrow-up-right"></span>
@@ -35,7 +35,7 @@
             </div>
           </a>
 
-          <a class="tw-qa-tile is-green" href="schedule.html#update" id="qaSendUpdate">
+          <a class="tw-qa-tile is-green" href="/schedule#update" id="qaSendUpdate">
             <div class="tw-qa-top">
               <span class="tw-qa-ico" data-icon="send"></span>
               <span class="tw-qa-arrow" data-icon="arrow-up-right"></span>
@@ -46,7 +46,7 @@
             </div>
           </a>
 
-          <a class="tw-qa-tile is-purple" href="members.html" id="qaMyMembers">
+          <a class="tw-qa-tile is-purple" href="/members" id="qaMyMembers">
             <div class="tw-qa-top">
               <span class="tw-qa-ico" data-icon="user"></span>
               <span class="tw-qa-arrow" data-icon="arrow-up-right"></span>
@@ -57,7 +57,7 @@
             </div>
           </a>
 
-          <a class="tw-qa-tile is-blue" href="schedule.html" id="qaWeeklySchedule">
+          <a class="tw-qa-tile is-blue" href="/schedule" id="qaWeeklySchedule">
             <div class="tw-qa-top">
               <span class="tw-qa-ico" data-icon="calendar"></span>
               <span class="tw-qa-arrow" data-icon="arrow-up-right"></span>
@@ -228,7 +228,7 @@
               <h2 class="tw-card-title" id="recentAttTitle">Recent Member Check-ins</h2>
               <p class="tw-card-sub">Latest visits from your members</p>
             </div>
-            <a class="tw-link" href="attendance.html">All attendance</a>
+            <a class="tw-link" href="/attendance">All attendance</a>
           </div>
           <div class="tw-table-wrap">
             <table class="tw-table">
@@ -255,7 +255,7 @@
               <h2 class="tw-card-title" id="rosterTitle">My Roster</h2>
               <p class="tw-card-sub" id="rosterCountSub">Assigned members</p>
             </div>
-            <a class="tw-link" href="members.html">View all</a>
+            <a class="tw-link" href="/members">View all</a>
           </div>
           <div class="tw-roster-grid" id="rosterMiniList">
             <span class="tw-skel tw-skel-row"></span>
@@ -1133,7 +1133,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <td>${T.format.date(a.check_in_date)}</td>
         <td>${T.format.time(a.check_in_at)}</td>
         <td>
-          <a class="tw-btn" href="members.html#detail=${encodeURIComponent(a.member_id)}" aria-label="View profile of ${esc(a.member_name)}">Profile</a>
+          <a class="tw-btn" href="/members#detail=${encodeURIComponent(a.member_id)}" aria-label="View profile of ${esc(a.member_name)}">Profile</a>
         </td>
       </tr>`).join('');
   }
@@ -1161,7 +1161,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <small class="${m.today_checked_in ? 'is-in' : ''}">${m.today_checked_in ? 'In gym today' : 'Not yet in today'}</small>
           </div>
         </div>
-        <a class="tw-btn" href="members.html#detail=${encodeURIComponent(m.id)}" aria-label="View profile of ${esc(m.name)}">View</a>
+        <a class="tw-btn" href="/members#detail=${encodeURIComponent(m.id)}" aria-label="View profile of ${esc(m.name)}">View</a>
       </div>`).join('');
   }
 

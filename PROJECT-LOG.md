@@ -2409,6 +2409,16 @@ Integrate Resend OTP into the existing authentication and password-reset verific
 ### Decision-log skill
 Invalidate prior unconsumed OTP rows atomically when issuing a replacement code, and return server-computed `retry_after` seconds on `429` so client countdowns cannot drift from server enforcement.
 
+## 2026-11-19 22:59 (Asia/Manila): Polish the Google Sign-In UI
+### What I asked for
+Check the new Member-only Google Sign-In surfaces for small real defects without redesigning the feature.
+### What the agent decided and why
+- Added a visually hidden `<label for="pfGlPassword">` in `web/google-auth.js` because the link dialog's password field had only a placeholder, breaking the repo's label rule.
+- Reworded the dialog copy from 'link Google Sign-In' to 'link your Google account' so the phrase no longer wraps into an orphan at 390px.
+- Added `aria-label="Sign in with Google"` to the login button so it is distinguishable from the adjacent Apple button by screen readers.
+- Verified with `node --check` and a re-rendered dialog; no other visual churn from the detector's pre-existing brand findings.
+### Decision-log skill
+When adding a third-party sign-in button, give it an explicit accessible name and keep every dialog field labeled even when a placeholder seems sufficient.
 ## 2026-11-19 23:01 (Asia/Manila): Fix OTP delivery, failure rollback, and forgot-password error handling
 ### What I asked for
 Investigate and fix the non-working OTP system across generation, email delivery, verification, resend, frontend, and Supabase compatibility.
@@ -2419,6 +2429,17 @@ Investigate and fix the non-working OTP system across generation, email delivery
 - Verified `python manage.py check` (0 errors) and `python manage.py test apps.accounts` (90/90 passed).
 ### Decision-log skill
 Never commit OTP consumption or cooldown state before the external email send succeeds; roll back the failed row so transient mail errors do not lock users out or invalidate working codes.
+
+## 2026-11-20 00:50 (Asia/Manila): Hide .html and serve clean URLs
+### What I asked for
+Stop showing .html in the address bar and make the landing page load at the bare domain instead of /welcome.html.
+### What the agent decided and why
+- Added two catch-all routes at the end of `profit/urls.py` serving web/ pages at extensionless URLs (`/login`, `/members`, `/trainer/index`); placed last so they cannot shadow the real admin/api/accounts routes. See [[2026-11-20 Clean extensionless URLs for web pages]]
+- Rewrote all 230 internal .html links across web/ so navigation never exposes a filename; landing-page links now point to `/`, which already serves welcome.html via views.home.
+- Updated the three page-detection scripts and one CSS selector that matched `.html` in the URL, so login detection, footer, splash and legal-button styling keep working.
+- Added six tests covering root, clean/grouped URLs, 404s and no leftover .html links; manage.py check clean and 230 tests OK.
+### Decision-log skill
+When hiding file extensions behind clean routes, grep for code that reads location.pathname as well as markup links — detection logic breaks silently even when every visible link is correct.
 
 ## 2026-11-20 01:02 (Asia/Manila): Enable Gmail email notifications and custom domain support
 ### What I asked for

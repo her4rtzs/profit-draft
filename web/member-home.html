@@ -8,7 +8,7 @@
     var explicitLogout = sessionStorage.getItem('profit-logged-out') === '1';
     if (!isLocal && (!hasSession || explicitLogout)) {
       document.documentElement.classList.add('auth-pending');
-      location.replace('login.html');
+      location.replace('/login');
     }
   }catch(e){}
 })();
@@ -39,7 +39,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
   <div class="member-app-shell">
     <aside class="member-sidebar" id="memberSidebar" aria-label="Member navigation">
       <div class="brand">
-        <a class="brand-link" href="member-home.html" aria-label="ProFit Member Portal">
+        <a class="brand-link" href="/member-home" aria-label="ProFit Member Portal">
           <span class="brand-logo-wrap"><img id="homeLogoImg" src="logo.jpg" alt="ProFit Functional Fitness Gym"></span>
           <span class="brand-txt"><strong id="homeGymName">ProFit</strong><small>MEMBER PORTAL</small></span>
         </a>
@@ -154,7 +154,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
           <p class="member-top-title" id="memberTopTitle">Overview</p>
         </div>
         <div class="member-top-actions">
-          <a class="member-top-chip" href="member-home.html#announcements" aria-label="Announcements and notifications"><i class="fa-solid fa-bell" aria-hidden="true"></i><span id="homeAnnounceCount">0</span></a>
+          <a class="member-top-chip" href="/member-home#announcements" aria-label="Announcements and notifications"><i class="fa-solid fa-bell" aria-hidden="true"></i><span id="homeAnnounceCount">0</span></a>
           <button class="theme-toggle" id="memberTheme" aria-label="Toggle theme"><i class="fa-solid fa-moon"></i></button>
         </div>
       </header>

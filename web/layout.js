@@ -2,17 +2,17 @@
 (() => {
   const groups = [
     { label: 'WORKSPACE', items: [
-      { id: 'dashboard', label: 'Dashboard', icon: 'fa-house', href: 'index.html' },
-      { id: 'announcements', label: 'Announcements', icon: 'fa-bullhorn', href: 'announcements.html' },
+      { id: 'dashboard', label: 'Dashboard', icon: 'fa-house', href: '/index' },
+      { id: 'announcements', label: 'Announcements', icon: 'fa-bullhorn', href: '/announcements' },
     ]},
     { label: 'MEMBERSHIP', items: [
-      { id: 'members', label: 'Member List', icon: 'fa-users', href: 'members.html' },
-      { id: 'attendance', label: 'Attendance', icon: 'fa-calendar-check', href: 'attendance.html' },
-      { id: 'trainers', label: 'Trainers', icon: 'fa-dumbbell', href: 'trainers.html' },
+      { id: 'members', label: 'Member List', icon: 'fa-users', href: '/members' },
+      { id: 'attendance', label: 'Attendance', icon: 'fa-calendar-check', href: '/attendance' },
+      { id: 'trainers', label: 'Trainers', icon: 'fa-dumbbell', href: '/trainers' },
     ]},
     { label: 'FINANCE', items: [
-      { id: 'payments', label: 'Payments & Billing', icon: 'fa-wallet', href: 'payments.html' },
-      { id: 'reports', label: 'Financial Reports', icon: 'fa-chart-column', href: 'reports.html' },
+      { id: 'payments', label: 'Payments & Billing', icon: 'fa-wallet', href: '/payments' },
+      { id: 'reports', label: 'Financial Reports', icon: 'fa-chart-column', href: '/reports' },
     ]},
   ];
   const body = document.body, current = body.dataset.page;
@@ -26,7 +26,7 @@
     nav.setAttribute('aria-label', 'Main navigation');
     nav.innerHTML = `
       <div class="sidebar-brand-row">
-        <a class="imgbrand" href="index.html" aria-label="${GYM.name} dashboard">
+        <a class="imgbrand" href="/index" aria-label="${GYM.name} dashboard">
           <span class="image"><img id="gymLogoImg" src="${GYM.logo || 'logo.jpg'}" alt="${GYM.name}" onerror="this.style.display='none'"></span>
           <span class="headertxt"><strong id="gymNameTxt">${GYM.name}</strong><small id="gymTagTxt">${GYM.tagline}</small></span>
         </a>
@@ -41,8 +41,8 @@
             <div class="sidebar-user-copy"><strong data-user-name>Administrator</strong><small data-user-role>Gym administrator</small></div>
             <button type="button" class="account-menu-toggle" id="accountMenuToggle" aria-haspopup="menu" aria-expanded="false" aria-controls="accountMenu" aria-label="Account actions" title="Account"><i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i></button>
             <div class="account-menu" id="accountMenu" role="menu" aria-label="Account actions">
-              <a href="profile.html" role="menuitem" class="${current==='profile'?'active':''}"><i class="fa-regular fa-user" aria-hidden="true"></i> My profile</a>
-              <a href="settings.html#appearance" role="menuitem" class="${current==='settings'?'active':''}"><i class="fa-solid fa-sliders" aria-hidden="true"></i> Settings</a>
+              <a href="/profile" role="menuitem" class="${current==='profile'?'active':''}"><i class="fa-regular fa-user" aria-hidden="true"></i> My profile</a>
+              <a href="/settings#appearance" role="menuitem" class="${current==='settings'?'active':''}"><i class="fa-solid fa-sliders" aria-hidden="true"></i> Settings</a>
               <button type="button" role="menuitem" data-logout><i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i> Log out</button>
             </div>
           </div>
@@ -72,7 +72,7 @@
           <div class="notification-wrap"><button class="notification" id="notificationToggle" type="button" aria-label="Notifications" aria-haspopup="true" aria-expanded="false"><i class="fa-regular fa-bell"></i><span class="notification-badge" id="notificationBadge" hidden>0</span></button>
             <section class="notification-panel" id="notificationPanel" aria-label="Notifications" hidden><div class="notification-head"><div><strong>Notifications</strong><small id="notificationSummary">You're all caught up</small></div><button type="button" id="markAllRead">Mark all read</button></div><div class="notification-list" id="notificationList"></div><div class="notification-foot"><span>Gym updates</span><button type="button" id="clearNotifications">Clear all</button></div></section>
           </div>
-          <a class="topbar-avatar" id="topbarAvatar" href="profile.html" title="My profile" aria-label="My profile"><span data-user-initials>AD</span></a>
+          <a class="topbar-avatar" id="topbarAvatar" href="/profile" title="My profile" aria-label="My profile"><span data-user-initials>AD</span></a>
         </div>
       </div>`;
 
@@ -137,7 +137,7 @@
   // When navigating from another page back to Home / Dashboard, mark the intent for a smooth transition
   if (current !== 'dashboard') {
     document.addEventListener('click', e => {
-      const a = e.target.closest('a[href*="index.html"]');
+      const a = e.target.closest('a[href*="/index"]');
       if (a) {
         try { sessionStorage.setItem('pf-nav-returning-home', '1'); } catch (_) {}
       }

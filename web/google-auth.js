@@ -24,7 +24,7 @@
   const btn = document.getElementById("googleSignInBtn") || document.getElementById("googleJoinBtn");
   if (!btn) return;
 
-  const isJoinPage = /(^|\/)join\.html$/i.test(location.pathname) || btn.id === "googleJoinBtn";
+  const isJoinPage = /(^|\/)join(?:\.html)?$/i.test(location.pathname) || btn.id === "googleJoinBtn";
   const sourceName = isJoinPage ? "join" : "login";
 
   let clientId = FALLBACK_CLIENT_ID;
@@ -87,7 +87,7 @@
     } catch (_) {}
     showMsg(msgText || "Signed in with Google. Opening your member portal…", false);
     setTimeout(() => {
-      location.replace("member-home.html");
+      location.replace("/member-home");
     }, 250);
   }
 
@@ -108,6 +108,7 @@
       #pfGoogleLinkDialog .pf-gl-eye:hover{color:var(--gold,#e8b93a)}
       #pfGoogleLinkDialog .pf-gl-err{min-height:16px;font-size:12.5px;font-weight:500;color:var(--err,#f87171)}
       #pfGoogleLinkDialog .pf-gl-err[hidden]{display:none}
+      #pfGoogleLinkDialog .pf-gl-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
       #pfGoogleLinkDialog .pf-gl-acts{display:flex;justify-content:flex-end;gap:10px;margin-top:4px}
       #pfGoogleLinkDialog .pf-gl-btn{height:42px;padding:0 18px;border-radius:999px;font:600 13.5px/1 "Plus Jakarta Sans",Inter,sans-serif;cursor:pointer;border:1px solid var(--field-line,#4A4E66);background:transparent;color:var(--tx,#f6efdc)}
       #pfGoogleLinkDialog .pf-gl-btn.primary{border:0;background:var(--gold,#e8b93a);color:var(--on,#1a1407);font-weight:700}
@@ -121,9 +122,10 @@
     dlg.innerHTML = `<form method="dialog" novalidate>
       <div>
         <h3 id="pfGoogleLinkTitle">Verify to link Google</h3>
-        <p style="margin-top:6px">An existing ProFit member account uses <span class="pf-gl-email" id="pfGlEmail"></span>. Enter your ProFit password once to verify ownership and link Google Sign-In.</p>
+        <p style="margin-top:6px">An existing ProFit member account uses <span class="pf-gl-email" id="pfGlEmail"></span>. Enter your ProFit password once to verify ownership and link your Google account.</p>
       </div>
       <div class="pf-gl-field">
+        <label class="pf-gl-sr" for="pfGlPassword">ProFit password</label>
         <input type="password" id="pfGlPassword" autocomplete="current-password" placeholder="Enter your ProFit password" required>
         <button type="button" class="pf-gl-eye" id="pfGlEye" aria-label="Show password"><i class="fa-regular fa-eye"></i></button>
       </div>

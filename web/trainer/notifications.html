@@ -205,7 +205,7 @@ PF.ready(async () => {
       const ts = n.created_at || n.time || n.at;
       const bodyText = n.body !== undefined ? n.body : (n.text || '');
       let linkTarget = String(n.link || n.href || '').trim();
-      if (linkTarget === 'trainer-portal.html') linkTarget = 'members.html';
+      if (linkTarget === '/trainer-portal') linkTarget = '/members';
       if (linkTarget.startsWith('trainer/')) linkTarget = linkTarget.slice('trainer/'.length);
       return `
         <article class="tw-notif-item ${unread ? 'is-unread' : ''}" data-notif-id="${n.id}">
@@ -226,7 +226,7 @@ PF.ready(async () => {
             </div>
           </div>
           <div style="display:flex;align-items:center;gap:8px;flex:none">
-            ${linkTarget && linkTarget !== 'notifications.html'
+            ${linkTarget && linkTarget !== '/notifications'
               ? `<a href="${PF.esc(linkTarget)}" class="tw-btn" data-open-link="${PF.esc(linkTarget)}">Open</a>`
               : ''}
             ${unread

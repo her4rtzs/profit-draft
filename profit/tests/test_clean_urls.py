@@ -1,0 +1,48 @@
+"""Clean, extensionless URLs for the static web/ pages."""
+
+from pathlib import Path
+
+from django.conf import settings
+from django.test import SimpleTestCase, override_settings
+from django.urls import reverse
+
+
+@override_settings(STORAGES={
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
+})
+class CleanUrlTests(SimpleTestCase):
+    def test_landing_page_at_root_has_no_html_in_url(self):
+        response = self.client.get("/")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"Functional Fitness Gym", response.content)
+
+    def test_top_level_pages_serve_at_extensionless_urls(self):
+        for url in ("/login", "/join", "/members", "/index", "/settings", "/member-home"):
+            with self.subTest(url=url):
+                response = self.client.get(url)
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response["Content-Type"], "text/html; charset=utf-8")
+
+    def test_grouped_pages_serve_at_extensionless_urls(self):
+        for url in ("/trainer/index", "/trainer/attendance", "/trainer/settings"):
+            with self.subTest(url=url):
+                self.assertEqual(self.client.get(url).status_code, 200)
+
+    def test_unknown_page_is_404(self):
+        self.assertEqual(self.client.get("/does-not-exist").status_code, 404)
+        self.assertEqual(self.client.get("/trainer/does-not-exist").status_code, 404)
+
+    def test_no_static_html_links_remain_in_web_pages(self):
+        import re
+        pattern = re.compile(r'["\'](?:\.\./|/)?[a-z0-9_/-]+\.html')
+        for page in Path(settings.BASE_DIR, "web").rglob("*.html"):
+            with self.subTest(page=page.name):
+                self.assertFalse(pattern.search(page.read_text(encoding="utf-8", errors="replace")))
+
+    def test_reverse_names(self):
+        self.assertEqual(reverse("web-page", kwargs={"page": "login"}), "/login")
+        self.assertEqual(
+            reverse("web-page-group", kwargs={"group": "trainer", "page": "index"}),
+            "/trainer/index",
+        )

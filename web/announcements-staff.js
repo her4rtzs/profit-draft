@@ -438,7 +438,7 @@
           </div>
           <h3>${isForbidden ? 'Owner Access Required' : 'Could not load announcements'}</h3>
           <p>${esc(isForbidden ? "Announcements are managed exclusively by gym owners. Please sign in with an owner account." : (err.message || "Please check your connection and try again."))}</p>
-          ${isForbidden ? '<a href="index.html" class="ann-btn primary"><i class="fa-solid fa-house" aria-hidden="true"></i><span>Back to dashboard</span></a>' : '<button type="button" class="ann-btn primary" data-retry-load><i class="fa-solid fa-rotate-right" aria-hidden="true"></i><span>Retry</span></button>'}
+          ${isForbidden ? '<a href="/index" class="ann-btn primary"><i class="fa-solid fa-house" aria-hidden="true"></i><span>Back to dashboard</span></a>' : '<button type="button" class="ann-btn primary" data-retry-load><i class="fa-solid fa-rotate-right" aria-hidden="true"></i><span>Retry</span></button>'}
         </div>
       `;
     }
