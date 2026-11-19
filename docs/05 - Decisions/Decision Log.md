@@ -54,3 +54,7 @@ One note per decision, oldest first; entries with an `Unknown` date are listed l
 - [[2026-11-19 member-shell owns the hero actions]]: One owner for `.member-hero-actions`; stack the hero buttons below 400 px.
 - [[2026-11-19 One shared heading and skip-link shell]]: Skip link and h1 fallback via site-footer.js; nine staff pages get a static h1.
 - [[2026-11-19 Polish chart labels and accessible names]]: Chart labels use `--muted`, donut legends become buttons, bell labels stop contradicting the badge.
+- [[2026-11-19 Dashboard CSS loads as one generated bundle]]: One bundle replaces 12 render-blocking dashboard stylesheets plus the inline effect block, in the original cascade order.
+- [[2026-11-19 One Google Fonts request for the dashboard]]: Caveat, Figtree, Inter and Plus Jakarta Sans move into one font request; the duplicate Plus Jakarta Sans request is gone.
+- [[2026-11-19 Give small labels a 12px floor]]: 27 small labels move from 10.5px to 12px; only decorative kickers stay at 11px.
+- [[2026-11-19 Remove dead ui-final.css and ui-fixes.js]]: Delete two no-op files and their page tags; no live references remain.
