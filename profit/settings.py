@@ -190,6 +190,15 @@ DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="ProFit <onboarding@resen
 SITE_BASE_URL = env("SITE_BASE_URL", default="http://localhost:8000")
 EMAIL_BACKEND = select_email_backend(RESEND_API_KEY, DEBUG)
 
+# --- Google OAuth 2.0 (Member Sign-In) -------------------------------------
+# Client Secret MUST stay server-side in environment variables and never be logged or exposed.
+GOOGLE_CLIENT_ID = env(
+    "GOOGLE_CLIENT_ID",
+    default="752296461739-tpcmop84u41b31bo3eer33uv2v6fkauq.apps.googleusercontent.com",
+)
+GOOGLE_CLIENT_SECRET = env("GOOGLE_CLIENT_SECRET", default="")
+GOOGLE_CALLBACK_URL = env("GOOGLE_CALLBACK_URL", default="")
+
 # --- Internationalization --------------------------------------------------
 
 LANGUAGE_CODE = "en-us"

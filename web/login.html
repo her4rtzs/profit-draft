@@ -441,9 +441,6 @@
     box.textContent = text;
   }
 
-  $('googleSignInBtn')?.addEventListener('click', () => {
-    message("Google sign-in isn't available yet", true);
-  });
   $('appleSignInBtn')?.addEventListener('click', () => {
     message("Apple sign-in isn't available yet", true);
   });
@@ -534,6 +531,7 @@
   });
 })();
 </script>
+<script src="google-auth.js?v=2"></script>
 <script src="portal-fx.js?v=2"></script>
 <script src="site-footer.js?v=7" defer></script>
 </body>

@@ -60,6 +60,7 @@ One note per decision, oldest first; entries with an `Unknown` date are listed l
 - [[2026-11-19 Remove dead ui-final.css and ui-fixes.js]]: Delete two no-op files and their page tags; no live references remain.
 - [[2026-11-19 Distill to one gold palette]]: One Gold accent and one token source (spotify.css); strip leftover decoration and regenerate the dashboard bundle.
 - [[2026-11-19 Remove the mobile Expo skeleton]]: Delete the dead Expo skeleton and update config/docs to one installable web portal.
+- [[2026-11-19 Member-only Google Sign-In with verified linking]]: Member-only Google Sign-In with pure-stdlib RS256 verification and password-verified account linking.
 - [[2026-11-19 Darken trainer light-mode foregrounds]]: Dark ink for trainer amber/green/blue/red on cream; 16 real low-contrast sites cleared, soft tints kept pale.
 - [[2026-11-19 Staff pages load the single dashboard bundle]]: Six staff pages drop from 15 stylesheets to one shared bundle plus their page-specific CSS; below-fold images go lazy.
 - [[2026-11-19 Fail the deploy when Tailwind CSS is missing]]: collectstatic errors (profit.E001) when the compiled app.css is absent, so a broken Tailwind build fails the deploy instead of 500ing at request time.
