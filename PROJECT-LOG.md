@@ -2451,6 +2451,15 @@ Now that the custom domain (`functionalfitnessgym.site`) is connected, allow the
 - Verified with `python manage.py check` (0 errors) and `python manage.py test` (228/228 OK).
 ### Decision-log skill
 When adding email notifications inside core service helpers (`notify` / `notify_many`), wrap each recipient send cleanly so transient mail failures log only non-PII event tags and never abort database transactions, and include a one-time sender fallback when rolling out a newly purchased domain before DNS verification propagates.
+## 2026-11-20 (Asia/Manila): Consolidate profile/settings/legal CSS and fonts
+### What I asked for
+Optimize the 13-14 stylesheet links and 4-6 font families on profile, settings and legal pages down to one global sheet and two fonts.
+### What the agent decided and why
+- Added generated `web/global.css` concatenating the 14 source sheets in an order that preserves both page groups' shared cascade; page-specific sheets target disjoint markup. See [[2026-11-20 Profile settings and legal pages load one global CSS bundle]]
+- Stripped spotify.css's Figtree @import from the bundle and mapped its references to Plus Jakarta Sans, so only Plus Jakarta Sans + Inter load via one Google Fonts link; Caveat was unused on these pages.
+- Verified before/after screenshots at desktop and phone widths for privacy and profile - visually identical. `ruff check .` (195 pre-existing errors) and `manage.py check` (ALLOWED_HOSTS required with DEBUG=False) do not pass in this environment.
+### Decision-log skill
+When merging overlapping stylesheet sets that differ only in page-specific sheets, keep the shared sheets in the same relative order and insert the disjoint sheets around them; the cascade stays identical for both page groups.
 
 ## 2026-11-20 01:21 (Asia/Manila): Keep Google Identity Services primary and preserve callback URI
 ### What I asked for
@@ -2458,6 +2467,6 @@ Investigate and fix `Error 400: redirect_uri_mismatch` showing after deploying w
 ### What the agent decided and why
 - Kept Google Identity Services (`window.google.accounts.id` ID-token popup flow) initialized as primary in `web/google-auth.js`, reserving the `/api/auth/google/login/` OAuth redirect strictly as a fallback when `gsiFailed && oauthRedirectEnabled`.
 - Updated `_google_callback_url` in `api/auth.py` to stop altering explicit paths/trailing slashes on `GOOGLE_CALLBACK_URL`, only filling in `/api/auth/google/callback/` when `GOOGLE_CALLBACK_URL` is blank, bare-domain, or points to a different host than the live request.
-- Verified with `python manage.py check` (0 errors) and `python manage.py test apps.accounts.tests.test_google_auth`.
+- Verified with `python manage.py check` (0 errors) and `python manage.py test apps.accounts.tests.test_google_auth` (8/8 OK).
 ### Decision-log skill
 Never replace a working client-side ID-token flow with a server OAuth redirect automatically just because a client secret env var exists; keep redirect-URI-sensitive flows as an explicit fallback so domain/slash differences cannot break sign-in.
