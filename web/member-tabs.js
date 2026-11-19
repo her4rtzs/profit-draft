@@ -956,12 +956,6 @@
   // choice paints the whole product the same way.
   const ACCENT_SWATCHES = [
     { id: "gold", label: "Gold", hex: "#e0b94a" },
-    { id: "spotify", label: "Spotify green", hex: "#1db954" },
-    { id: "ocean", label: "Ocean", hex: "#2dd4bf" },
-    { id: "indigo", label: "Indigo", hex: "#818cf8" },
-    { id: "coral", label: "Coral", hex: "#fb7185" },
-    { id: "emerald", label: "Emerald", hex: "#34d399" },
-    { id: "sunset", label: "Sunset", hex: "#fb923c" }
   ];
   const ACCENT_KEY = "pp-accent";
   const readAccent = () => {

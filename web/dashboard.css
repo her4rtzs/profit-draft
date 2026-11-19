@@ -1,7 +1,7 @@
 /* ProFit dashboard CSS bundle - generated, do not edit by hand.
    Sources in exact cascade order: styles.css, pro-theme.css, spotify.css,
-   ui-final.css, inline #pf-dash-fx block from index.html, hover-fx.css,
-   ui-polish.css, ui-fixes.css, pf-modern.css, sidebar-pro.css, layout-fixes.css,
+   inline #pf-dash-fx block from index.html, hover-fx.css, ui-polish.css,
+   ui-fixes.css, pf-modern.css, sidebar-pro.css, layout-fixes.css,
    staff-design.css, portal-ui.css. spotify.css's Figtree @import is stripped
    here and Figtree is loaded once in index.html's Google Fonts link.
    After editing any source, re-concatenate in this order to refresh. */
@@ -32,12 +32,6 @@
     --text: #1c1e21;
     --muted: #65676b;
     --faint: #8a8d91;
-
-    /* brand */
-    --gold: #e8b93a;
-    --gold-deep: #b8891c;
-    --gold-soft: #fbf3dc;
-    --gold-grad: linear-gradient(135deg, #f2cb5c 0%, #e8b93a 55%, #b8891c 100%);
 
     /* status */
     --green: #1f9d5b;
@@ -70,9 +64,6 @@ body.dark {
     --text: #e4e6eb;
     --muted: #b0b3b8;
     --faint: #8a8d91;
-
-    --gold: #e0b94a;
-    --gold-soft: rgba(224, 185, 74, .16);
 
     --green: #4cc38a;
     --green-soft: rgba(76, 195, 138, .15);
@@ -1618,10 +1609,6 @@ body.dark .profile { color:var(--ink); }
   --text: #20231e;
   --muted: #70746a;
   --faint: #909389;
-  --gold: #bd9234;
-  --gold-deep: #87651d;
-  --gold-soft: #f7efd9;
-  --gold-grad: linear-gradient(135deg,#d7b45d 0%,#c39a3b 58%,#a77a24 100%);
   --sidebar: #1c201a;
   --sidebar-text: #b7bdb1;
   --sidebar-line: #30362d;
@@ -1640,10 +1627,6 @@ body.dark {
   --text: #f1f0e9;
   --muted: #b0b5a9;
   --faint: #858c7e;
-  --gold: #e0bd69;
-  --gold-deep: #e0bd69;
-  --gold-soft: rgba(224,189,105,.14);
-  --gold-grad: linear-gradient(135deg,#e4c875 0%,#c9a34a 58%,#a9802e 100%);
   --sidebar: #10130f;
   --sidebar-text: #aeb5a8;
   --sidebar-line: #292e26;
@@ -1692,7 +1675,7 @@ button:disabled { opacity: .6; cursor: wait; }
 ::selection { background: var(--gold-soft); color: var(--text); }
 
 /* Auth page */
-.auth-page { background: radial-gradient(ellipse at 12% 18%,color-mix(in srgb, var(--gold) 13%, transparent),transparent 34%),var(--bg); }
+.auth-page { background: var(--bg); }
 .auth-shell { max-width: 1120px; min-height: calc(100vh - 160px); margin: auto; padding: 58px 28px; display: grid; grid-template-columns: minmax(0,1fr) minmax(340px,440px); align-items: center; gap: clamp(40px,8vw,110px); }
 .auth-story h1 { margin: 24px 0 22px; font-size: clamp(48px,6vw,78px); line-height: .99; letter-spacing: -.075em; }
 .auth-story h1 em { color: var(--gold-deep); font-style: normal; }
@@ -1723,7 +1706,7 @@ body.dark .portal-result.error { background: #3b211e; color: #ffb7ab; border-col
 .member-top-actions { display: flex; align-items: center; gap: 12px; }
 .member-content { max-width: 1160px; margin: auto; padding: 44px 24px 60px; }
 .member-welcome { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-bottom: 28px; }
-.member-hero { padding: 28px; border: 1px solid var(--border); border-radius: 24px; background: radial-gradient(circle at 85% 20%, var(--gold-soft), transparent 36%), var(--card); box-shadow: var(--shadow); }
+.member-hero { padding: 28px; border: 1px solid var(--border); border-radius: 24px; background: var(--card); box-shadow: var(--shadow); }
 .member-welcome h1 { margin: 7px 0; font-size: clamp(26px,3vw,36px); letter-spacing: -.06em; }
 .member-welcome p:not(.eyebrow) { color: var(--muted); font-size: 13px; }
 .member-hero-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
@@ -1829,7 +1812,7 @@ body.dark .btn-danger{background:rgba(190,55,66,.15)!important;color:#ff9da5!imp
   --shadow-hover:0 14px 34px rgba(53,43,20,.10);
 }
 body.dark { --bg:#141512; --card:#20211d; --hover:#2d2e27; --border:#38392f; --text:#f2f0e7; --muted:#b5b2a5; --faint:#8e8b80; --gold:#e5bf50; --gold-deep:#f0cf68; --gold-soft:rgba(229,191,80,.13); --sidebar:#0d0e0c; --sidebar-line:#272821; --shadow:0 8px 26px rgba(0,0,0,.18); --shadow-hover:0 16px 40px rgba(0,0,0,.3); }
-body { background:radial-gradient(ellipse at 88% 0%,color-mix(in srgb, var(--gold) 8%, transparent),transparent 32%),var(--bg); }
+body { background:var(--bg); }
 .sidebar { padding:20px 13px 14px; background:linear-gradient(180deg,#1a1b17 0%,#12130f 100%); border-right:1px solid #292a23; }
 .sidebar-brand-row { min-height:62px; display:flex; align-items:center; justify-content:space-between; gap:8px; padding:0 3px 18px 5px; border-bottom:1px solid rgba(255,255,255,.075); }
 .sidebar-brand-row .imgbrand { flex:1; min-width:0; }
@@ -1916,7 +1899,7 @@ body.dark .quick-action-icon { background:color-mix(in srgb, var(--gold) 13%, tr
 /* ProFit premium interaction layer — deep ink, amber glow, and responsive navigation */
 :root{--pf-ink:#0A0E17;--pf-amber:#D97706;--pf-amber-bright:#F59E0B;--pf-glow:rgba(217,119,6,.25)}
 body.dark{--bg:#0A0E17;--card:#111827;--hover:#1B2433;--border:#263246;--text:#F3F4F6;--muted:#A5B1C2;--faint:#758399;--gold:#D97706;--gold-deep:#FBBF24;--gold-soft:rgba(217,119,6,.13);--sidebar:#080B12;--sidebar-line:#1D293B;--shadow:0 18px 45px rgba(0,0,0,.26);--shadow-hover:0 22px 52px rgba(0,0,0,.42),0 0 0 1px rgba(217,119,6,.18)}
-body.dark{background:radial-gradient(ellipse at 82% -10%,rgba(217,119,6,.13),transparent 32%),radial-gradient(ellipse at 10% 60%,rgba(31,78,121,.08),transparent 35%),var(--bg)}
+body.dark{background:var(--bg)}
 body.dark .sidebar{background:linear-gradient(180deg,#0c111c 0%,#080b12 100%);border-color:#1d293b}
 body.dark .stat-card,body.dark .panel,body.dark .quick-action{background:linear-gradient(145deg,rgba(20,29,44,.97),rgba(13,19,30,.98))!important;border-color:#263246!important;backdrop-filter:blur(14px)}
 .stat-card,.panel,.quick-action,.table-container,.content-card{transition:transform .24s cubic-bezier(.2,.8,.2,1),box-shadow .24s,border-color .24s}
@@ -1944,8 +1927,8 @@ body.dark .bar.has-data{background:linear-gradient(180deg,var(--gold) 0%,#D97706
 
 /* ProFit finishing layer: warm editorial light theme + premium charcoal dark theme */
 :root{--pf-bg:#f6f1e8;--pf-surface:#fffdf8;--pf-surface-2:#f0e8da;--pf-ink:#19231e;--pf-muted:#6e776f;--pf-line:#e5dac8;--pf-gold:#d99a18;--pf-gold-hi:#f5c85b;--pf-green:#14271f;--pf-shadow:0 14px 38px rgba(47,39,22,.09)}
-body{background:radial-gradient(ellipse at 88% 0%,color-mix(in srgb, var(--gold) 20%, transparent),transparent 30%),radial-gradient(ellipse at 8% 80%,rgba(67,113,84,.08),transparent 34%),var(--pf-bg);color:var(--pf-ink)}
-body.dark{--pf-bg:#0a0e17;--pf-surface:#111827;--pf-surface-2:#1b2532;--pf-ink:#f4f3ee;--pf-muted:#a7b0bd;--pf-line:#293447;--pf-green:#0b111b;--pf-shadow:0 20px 48px rgba(0,0,0,.30);background:radial-gradient(ellipse at 85% 0%,rgba(217,119,6,.14),transparent 32%),radial-gradient(ellipse at 0% 78%,rgba(40,90,72,.09),transparent 34%),var(--pf-bg);color:var(--pf-ink)}
+body{background:var(--pf-bg);color:var(--pf-ink)}
+body.dark{--pf-bg:#0a0e17;--pf-surface:#111827;--pf-surface-2:#1b2532;--pf-ink:#f4f3ee;--pf-muted:#a7b0bd;--pf-line:#293447;--pf-green:#0b111b;--pf-shadow:0 20px 48px rgba(0,0,0,.30);background:var(--pf-bg);color:var(--pf-ink)}
 .sidebar{background:linear-gradient(180deg,#183126 0%,#10231b 60%,#0b1913 100%);border-right:1px solid rgba(255,255,255,.08);box-shadow:12px 0 38px rgba(15,35,26,.10)}
 .sidebar .title{color:#a7b9ad;letter-spacing:.13em;font-size:10px;font-weight:800}
 .sidebar .navlinks a,.sidebar-bottom a{border-radius:12px;margin:3px 0;transition:background .2s ease,transform .2s ease,box-shadow .2s ease;color:#edf2ed}
@@ -1967,7 +1950,7 @@ input,select,textarea{border-radius:10px}input:focus,select:focus,textarea:focus
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;scroll-behavior:auto!important}}
 
 /* Full dark-mode design pass — keeps light mode untouched. */
-body.dark{background:radial-gradient(ellipse at 88% -10%,rgba(217,119,6,.16),transparent 34%),radial-gradient(ellipse at 8% 78%,rgba(31,78,121,.10),transparent 38%),#0a0e17;color:#f4f3ee}
+body.dark{background:#0a0e17;color:#f4f3ee}
 body.dark .sidebar{background:linear-gradient(180deg,#0c111c 0%,#080b12 100%);border-right-color:#1d293b;box-shadow:12px 0 38px rgba(0,0,0,.35)}
 body.dark .sidebar .headertxt strong{color:#fffdf6}
 body.dark .sidebar .headertxt small{color:var(--gold)}
@@ -2201,7 +2184,6 @@ body { transition: none !important; }
 }
 .stats { gap: 16px !important; align-items: stretch !important; }
 .stat-card { min-height: 112px; }
-
 
 /* ==== pro-theme.css ==== */
 /* ProFit Pro Theme. Loaded last on every page. Overrides and additions only; base styles stay in styles.css. */
@@ -2689,21 +2671,6 @@ body.dark .member-detail-tab.active, body.dark .portal-tab.active { color: var(-
 body.dark .portal-tabs, body.dark .portal-tab-list { background: var(--hover) !important; }
 body.dark .toast { background: var(--card); color: var(--text); border: 1px solid var(--border); }
 
-/* ===== Accent palettes. Ocean is the default; the Settings page switches between them. ===== */
-:root, :root[data-accent="ocean"] { --gold: #0d9488; --gold-deep: #0f766e; --gold-soft: #ccfbf1; --gold-grad: linear-gradient(135deg, #2dd4bf 0%, #0d9488 55%, #0f766e 100%); --on-accent: #ffffff; }
-:root[data-accent="indigo"] { --gold: #6366f1; --gold-deep: #4f46e5; --gold-soft: #e0e7ff; --gold-grad: linear-gradient(135deg, #818cf8 0%, #6366f1 55%, #4f46e5 100%); --on-accent: #ffffff; }
-:root[data-accent="coral"] { --gold: #f43f5e; --gold-deep: #e11d48; --gold-soft: #ffe4e6; --gold-grad: linear-gradient(135deg, #fb7185 0%, #f43f5e 55%, #e11d48 100%); --on-accent: #ffffff; }
-:root[data-accent="emerald"] { --gold: #10b981; --gold-deep: #059669; --gold-soft: #d1fae5; --gold-grad: linear-gradient(135deg, #34d399 0%, #10b981 55%, #059669 100%); --on-accent: #03241a; }
-:root[data-accent="sunset"] { --gold: #f97316; --gold-deep: #ea580c; --gold-soft: #ffedd5; --gold-grad: linear-gradient(135deg, #fb923c 0%, #f97316 55%, #ea580c 100%); --on-accent: #ffffff; }
-:root[data-accent="gold"] { --gold: #e8b93a; --gold-deep: #b8891c; --gold-soft: #fbf3dc; --gold-grad: linear-gradient(135deg, #f2cb5c 0%, #e8b93a 55%, #b8891c 100%); --on-accent: #1a1407; }
-
-html body.dark, html[data-accent="ocean"] body.dark { --gold: #2dd4bf; --gold-deep: #5eead4; --gold-soft: rgba(45, 212, 191, .16); --gold-grad: linear-gradient(135deg, #5eead4 0%, #2dd4bf 55%, #14b8a6 100%); }
-html[data-accent="indigo"] body.dark { --gold: #818cf8; --gold-deep: #a5b4fc; --gold-soft: rgba(129, 140, 248, .18); --gold-grad: linear-gradient(135deg, #a5b4fc 0%, #818cf8 55%, #6366f1 100%); }
-html[data-accent="coral"] body.dark { --gold: #fb7185; --gold-deep: #fda4af; --gold-soft: rgba(251, 113, 133, .18); --gold-grad: linear-gradient(135deg, #fda4af 0%, #fb7185 55%, #f43f5e 100%); }
-html[data-accent="emerald"] body.dark { --gold: #34d399; --gold-deep: #6ee7b7; --gold-soft: rgba(52, 211, 153, .16); --gold-grad: linear-gradient(135deg, #6ee7b7 0%, #34d399 55%, #10b981 100%); }
-html[data-accent="sunset"] body.dark { --gold: #fb923c; --gold-deep: #fdba74; --gold-soft: rgba(251, 146, 60, .16); --gold-grad: linear-gradient(135deg, #fdba74 0%, #fb923c 55%, #f97316 100%); }
-html[data-accent="gold"] body.dark { --gold: #e0b94a; --gold-deep: #efcc6b; --gold-soft: rgba(224, 185, 74, .16); --gold-grad: linear-gradient(135deg, #efcc6b 0%, #e0b94a 55%, #c99a32 100%); }
-
 /* Text on accent surfaces follows the palette (dark text on light accents, white on strong ones) */
 .sidebar li a.active, .sidebar .menulist a.active, body.dark .sidebar li a.active { color: var(--on-accent) !important; background: var(--gold-grad) !important; box-shadow: 0 10px 24px -12px var(--gold) !important; }
 .sidebar li a.active .icon, .sidebar .menulist a.active .icon, body.dark .sidebar li a.active .icon { color: var(--on-accent) !important; }
@@ -2731,7 +2698,7 @@ html[data-accent="gold"] body.dark { --gold: #e0b94a; --gold-deep: #efcc6b; --go
 }
 
 /* ===== Polish ===== */
-body:not(.portal-body) { background-image: radial-gradient(1000px 520px at 100% -10%, color-mix(in srgb, var(--gold) 13%, transparent), transparent 70%), radial-gradient(800px 420px at -8% 110%, color-mix(in srgb, var(--gold) 9%, transparent), transparent 70%); background-repeat: no-repeat; background-attachment: fixed; }
+
 html { scrollbar-color: color-mix(in srgb, var(--gold) 55%, transparent) transparent; }
 ::selection { background: color-mix(in srgb, var(--gold) 32%, transparent); }
 .welcome { color: var(--gold-deep) !important; }
@@ -2824,7 +2791,7 @@ body.is-member .portal-shell { max-width: 1400px !important; margin-inline: auto
 
 /* ===== Member dashboard ===== */
 .pp-dash { display: grid; gap: 18px; }
-.pp-dash-hero { display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap; padding: 20px 22px; background: radial-gradient(600px 180px at 100% 0%, color-mix(in srgb, var(--gold) 18%, transparent), transparent 70%), var(--card); }
+.pp-dash-hero { display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap; padding: 20px 22px; background: var(--card); }
 .pp-dash-person { display: flex; align-items: center; gap: 18px; min-width: 0; }
 .pp-dash-copy h2 { margin: 2px 0 4px; font-size: clamp(1.35rem, 2.4vw, 1.8rem); }
 .pp-dash-copy p { margin: 0; }
@@ -2945,7 +2912,6 @@ body.dark .pp-pct { color: var(--gold); }
 /* ===== Member portal: dark background across the whole shell ===== */
 body.dark.portal-body .portal-shell, body.dark .portal-body main, body.dark .portal-body .portal-card { background: transparent !important; }
 body.dark.portal-body { background: var(--bg) !important; }
-
 
 /* ==== spotify.css ==== */
 /* ============================================================================
@@ -3081,8 +3047,8 @@ body.dark {
 }
 
 /* ==========================================================================
-   2 · ACCENT — the gym's brand gold is the default; Spotify green and the
-   rest stay available on the Settings → Color theme picker.
+   2 · ACCENT — one brand palette (gold). Defined here once and loaded on
+   every page, so this is the single source of truth for the accent tokens.
    ========================================================================== */
 
 :root {
@@ -3100,37 +3066,6 @@ body.dark {
   --gold-grad: linear-gradient(135deg, #f0d268 0%, #e0b94a 55%, #c99a32 100%);
   --on-accent: #1a1407;
 }
-
-/* Spotify green — still on the picker, just no longer the default. */
-html[data-accent="spotify"] body:not(.dark) {
-  --gold: #12a94a;
-  --gold-deep: #0d8a3c;
-  --gold-soft: rgba(29, 185, 84, .14);
-  --gold-grad: linear-gradient(135deg, #2bd968 0%, #1db954 55%, #12964a 100%);
-  --on-accent: #04220f;
-}
-html[data-accent="spotify"] body.dark {
-  --gold: #1ed760;
-  --gold-deep: #1ed760;
-  --gold-soft: rgba(30, 215, 96, .15);
-  --gold-grad: linear-gradient(135deg, #4ded88 0%, #1ed760 55%, #16a34a 100%);
-  --on-accent: #04220f;
-}
-
-/* Keep the accent switcher honest: picking another palette must still win. */
-html[data-accent="ocean"] body:not(.dark) { --gold: #0d9488; --gold-deep: #0f766e; --gold-soft: rgba(13, 148, 136, .14); --gold-grad: linear-gradient(135deg, #2dd4bf 0%, #0d9488 55%, #0f766e 100%); --on-accent: #ffffff; }
-html[data-accent="indigo"] body:not(.dark) { --gold: #4f46e5; --gold-deep: #4338ca; --gold-soft: rgba(79, 70, 229, .13); --gold-grad: linear-gradient(135deg, #818cf8 0%, #6366f1 55%, #4f46e5 100%); --on-accent: #ffffff; }
-html[data-accent="coral"]  body:not(.dark) { --gold: #e11d48; --gold-deep: #be123c; --gold-soft: rgba(225, 29, 72, .13); --gold-grad: linear-gradient(135deg, #fb7185 0%, #f43f5e 55%, #e11d48 100%); --on-accent: #ffffff; }
-html[data-accent="emerald"] body:not(.dark) { --gold: #059669; --gold-deep: #047857; --gold-soft: rgba(5, 150, 105, .14); --gold-grad: linear-gradient(135deg, #34d399 0%, #10b981 55%, #059669 100%); --on-accent: #ffffff; }
-html[data-accent="sunset"] body:not(.dark) { --gold: #ea580c; --gold-deep: #c2410c; --gold-soft: rgba(234, 88, 12, .14); --gold-grad: linear-gradient(135deg, #fb923c 0%, #f97316 55%, #ea580c 100%); --on-accent: #ffffff; }
-html[data-accent="gold"]   body:not(.dark) { --gold: #b8891c; --gold-deep: #8d6512; --gold-soft: rgba(184, 137, 28, .16); --gold-grad: linear-gradient(135deg, #f2cb5c 0%, #e8b93a 55%, #b8891c 100%); --on-accent: #1a1407; }
-
-html[data-accent="ocean"] body.dark { --gold: #2dd4bf; --gold-deep: #5eead4; --gold-soft: rgba(45, 212, 191, .16); --gold-grad: linear-gradient(135deg, #5eead4 0%, #2dd4bf 55%, #14b8a6 100%); --on-accent: #04220f; }
-html[data-accent="indigo"] body.dark { --gold: #818cf8; --gold-deep: #a5b4fc; --gold-soft: rgba(129, 140, 248, .18); --gold-grad: linear-gradient(135deg, #a5b4fc 0%, #818cf8 55%, #6366f1 100%); --on-accent: #0a0a1a; }
-html[data-accent="coral"]  body.dark { --gold: #fb7185; --gold-deep: #fda4af; --gold-soft: rgba(251, 113, 133, .18); --gold-grad: linear-gradient(135deg, #fda4af 0%, #fb7185 55%, #f43f5e 100%); --on-accent: #2a0510; }
-html[data-accent="emerald"] body.dark { --gold: #34d399; --gold-deep: #6ee7b7; --gold-soft: rgba(52, 211, 153, .16); --gold-grad: linear-gradient(135deg, #6ee7b7 0%, #34d399 55%, #10b981 100%); --on-accent: #04220f; }
-html[data-accent="sunset"] body.dark { --gold: #fb923c; --gold-deep: #fdba74; --gold-soft: rgba(251, 146, 60, .16); --gold-grad: linear-gradient(135deg, #fdba74 0%, #fb923c 55%, #f97316 100%); --on-accent: #2a1403; }
-html[data-accent="gold"]   body.dark { --gold: #e0b94a; --gold-deep: #efcc6b; --gold-soft: rgba(224, 185, 74, .16); --gold-grad: linear-gradient(135deg, #efcc6b 0%, #e0b94a 55%, #c99a32 100%); --on-accent: #1a1407; }
 
 /* ==========================================================================
    3 · BASE
@@ -3153,14 +3088,7 @@ body {
   letter-spacing: -.01em;
 }
 
-/* The green wash behind the workspace — reads like a Spotify gradient header. */
-body:not(.portal-body) {
-  background-image:
-    radial-gradient(1100px 520px at 92% -14%, color-mix(in srgb, var(--gold) 16%, transparent), transparent 68%),
-    radial-gradient(760px 420px at -6% 108%, color-mix(in srgb, var(--gold) 9%, transparent), transparent 70%) !important;
-  background-attachment: fixed !important;
-  background-repeat: no-repeat !important;
-}
+/* Workspace background is the flat surface colour — no decorative wash. */
 
 html { scrollbar-color: color-mix(in srgb, var(--gold) 60%, #555) transparent; }
 ::selection { background: color-mix(in srgb, var(--gold) 38%, transparent); color: var(--text); }
@@ -4314,9 +4242,6 @@ input[readonly] { color: var(--faint) !important; }
   position: absolute;
   inset: -140px 0 auto;
   height: 420px;
-  background:
-    radial-gradient(58% 100% at 12% 0%, color-mix(in srgb, var(--gold) 13%, transparent), transparent 70%),
-    radial-gradient(45% 90% at 88% 0%, color-mix(in srgb, var(--gold) 7%, transparent), transparent 72%);
   pointer-events: none;
   z-index: 0;
 }
@@ -4370,7 +4295,6 @@ input[readonly] { color: var(--faint) !important; }
   border: 1px solid var(--border) !important;
   border-radius: 22px !important;
   background:
-    radial-gradient(circle at 88% 18%, color-mix(in srgb, var(--gold) 16%, transparent), transparent 46%),
     linear-gradient(135deg, var(--card), color-mix(in srgb, var(--gold) 5%, var(--card))) !important;
   box-shadow: 0 1px 0 color-mix(in srgb, var(--card) 60%, transparent) inset !important;
 }
@@ -6208,14 +6132,6 @@ html.auth-checking::before { display: none !important; content: none !important;
   .portal-tab{flex:0 0 auto!important;padding:0 16px;white-space:nowrap}
 }
 
-
-/* ==== ui-final.css ==== */
-/* ProFit UI Final Safeguards */
-:root {
-  --sidebar-w: 260px;
-}
-
-
 /* ==== inline dashboard fx (from index.html) ==== */
 
 
@@ -6229,6 +6145,7 @@ html.auth-checking::before { display: none !important; content: none !important;
 .pf-menu a i{color:var(--gold);width:16px;text-align:center}
 @keyframes pfPop{from{opacity:0;transform:translateY(-4px) scale(.98)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion: reduce){.pf-skel span,.pf-row-in,.pf-menu{animation:none!important}}
+
 
 
 /* ==== hover-fx.css ==== */
@@ -6423,7 +6340,6 @@ body:not(.dark) .pp-tool-panel[data-panel="diary"] .pp-btn, body:not(.dark) .pp-
   border-radius: 999px; background: linear-gradient(110deg, #f9a8c8, #c4b5fd); color: #2d2a48; border: 0;
 }
 
-
 /* ==== ui-polish.css ==== */
 /* ProFit UI polish: one set of rules for every page, phone and desktop.
    Loaded last. It changes spacing, type, cards, buttons, fields, tables and focus.
@@ -6525,7 +6441,6 @@ html body .pp-empty, html body .member-empty, html body .notification-empty, htm
   html body .btn:active, html body .pp-btn:active, html body .ann-btn:active { transform: none !important; }
 }
 
-
 /* ==== ui-fixes.css ==== */
 /* ProFit UI fixes from the review of the live pages. Loaded after ui-polish.css. */
 
@@ -6570,22 +6485,16 @@ html body [class*="photo-actions"] button, html body [class*="avatar-actions"] b
   html body #trForm .ann-field:has(textarea), html body #trForm .ann-actions, html body #trForm .ann-check { grid-column: 1 / -1; }
 }
 
-
 /* ==== pf-modern.css ==== */
 /* ProFit modern theme. Loaded LAST on every page.
    Palette follows the gym logo: black, gold, cream.
    Flat colours only (no decorative gradients). One spacing scale for every container. */
 
-:root, :root[data-accent], body, body.dark {
+:root, body, body.dark {
   --pf-lime: #e8b93a;
   --pf-lime-hi: #f2cb5c;
   --pf-grad: linear-gradient(135deg, #f4d27a 0%, #e8b93a 50%, #b8891c 100%);
   --pf-lime-deep: #8a6200;
-  --gold: #e8b93a;
-  --gold-deep: #b8891c;
-  --gold-soft: rgba(232, 185, 58, .12);
-  --gold-grad: #e8b93a;
-  --on-accent: #1a1407;
 
   /* one scale for all containers */
   --pf-gap: 20px;
@@ -6799,35 +6708,11 @@ html body .site-footer a:hover, html body .site-footer a:focus-visible { color: 
 /* ---------- Restored look: near-black with warm gold glow, cream text, gold gradient accents ---------- */
 html:has(body.auth-page), html:has(body.pf-glow) { background: #07080c; }
 html body.auth-page, html body.pf-glow { background: transparent !important; position: relative; }
-body.auth-page::before, body.auth-page::after, body.pf-glow::before, body.pf-glow::after {
-  content: ""; position: fixed; width: 60vmax; height: 60vmax; border-radius: 50%;
-  filter: blur(110px); opacity: .26; z-index: -1; pointer-events: none;
-}
-body.auth-page::before, body.pf-glow::before { background: #b8891c; top: -30vmax; left: -20vmax; }
-body.auth-page::after, body.pf-glow::after { background: #3b2a6e; bottom: -35vmax; right: -20vmax; }
-html body .auth-story h1 em, html body .auth-story h1 em * {
-  background: none !important; background-image: var(--pf-grad) !important;
-  -webkit-background-clip: text !important; background-clip: text !important;
-  color: transparent !important; -webkit-text-fill-color: transparent !important;
-}
 html body .auth-card, html body .auth-story { background-color: rgba(17,19,32,.92) !important; }
 html body .portal-nav { background: transparent !important; border-bottom: 1px solid rgba(255,255,255,.06); }
 
 
-/* ---------- Background: warm gold glow ---------- */
-html:has(body.auth-page), html:has(body.pf-glow) {
-  background-color: #07080c;
-  background-image:
-    radial-gradient(900px 520px at 12% -8%, rgba(232,185,58,.22), transparent 65%);
-  background-attachment: fixed;
-}
-body.auth-page::before, body.auth-page::after, body.pf-glow::before, body.pf-glow::after { display: none; }
-body.dark:not(.auth-page):not(.pf-glow) {
-  background-image: radial-gradient(900px 420px at 18% -10%, rgba(232,185,58,.09), transparent 62%);
-  background-attachment: fixed;
-}
 html body.portal-body.auth-page.dark, html body.auth-page.dark.pf-ready, html body.pf-glow.dark { background: transparent !important; background-color: transparent !important; background-image: none !important; }
-
 
 /* ==== sidebar-pro.css ==== */
 /* ProFit Staff Dashboard - Hover-Expand Icon Rail & Mobile Drawer.
@@ -8651,7 +8536,6 @@ html.pf-pre * {
 }
 
 
-
 /* ==== staff-design.css ==== */
 /* ProFit staff design (scoped).
    Source: staff front end prototype, assets/css/staff.css.
@@ -8692,12 +8576,6 @@ html.pf-pre * {
   --blue-soft:rgba(59,130,246,.2); --purple-soft:rgba(139,92,246,.22);
   --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.28);
   color-scheme:dark;}
-html[data-accent="ocean"] .pf-staff {--gold:#2f8fe0;--gold-2:#62b3f5;--gold-3:#1f6fb8;--gold-ink:#0d4a82;--gold-soft:rgba(47,143,224,.14);--bg-glow:rgba(98,179,245,.25)}
-html[data-accent="emerald"] .pf-staff {--gold:#12a57f;--gold-2:#4cd1ac;--gold-3:#0b8365;--gold-ink:#06583f;--gold-soft:rgba(18,165,127,.14);--bg-glow:rgba(76,209,172,.22)}
-html[data-accent="indigo"] .pf-staff {--gold:#6a5be2;--gold-2:#9a8cf5;--gold-3:#4e40c2;--gold-ink:#33288f;--gold-soft:rgba(106,91,226,.14);--bg-glow:rgba(154,140,245,.22)}
-html[data-accent="ocean"] .pf-staff.dark {--gold-ink:#8ec8fa}
-html[data-accent="emerald"] .pf-staff.dark {--gold-ink:#7fe0c3}
-html[data-accent="indigo"] .pf-staff.dark {--gold-ink:#b9b0fa}
 .pf-staff * {box-sizing:border-box}
 .pf-staff {margin:0;font-family:var(--font);font-size:14px;line-height:1.5;color:var(--text);background:var(--bg);
   -webkit-font-smoothing:antialiased}
@@ -9215,7 +9093,6 @@ html body.pf-staff.dark .theme-toggle {color:var(--gold,#f4cc64)!important}
   html body.pf-staff .table-wrapper tfoot td.num {text-align:right}
 }
 
-
 /* ==== portal-ui.css ==== */
 /* ProFit portal polish. Loaded after spotify.css. Only restyles; no logic changes. */
 @keyframes pfpRise{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
@@ -9394,7 +9271,7 @@ body .dashboard .sidebar{
   box-shadow:12px 0 40px rgba(0,0,0,.28)!important;
   padding:18px 12px 14px!important;
 }
-body .dashboard .sidebar::before{content:"";position:absolute;inset:0 0 auto 0;height:140px;pointer-events:none;background:radial-gradient(120% 100% at 0% 0%,color-mix(in srgb,var(--gold) 20%,transparent),transparent 70%)}
+
 body .dashboard .sidebar>*{position:relative}
 .sidebar-brand-row{padding:4px 6px 16px!important;border-bottom:1px solid rgba(255,255,255,.07);margin-bottom:10px}
 .sidebar .imgbrand{display:flex!important;align-items:center;gap:12px!important;text-decoration:none}
@@ -9456,7 +9333,7 @@ body .dashboard .sidebar li a.active .icon{color:var(--gold)!important}
 /* =========================================================
    MEMBER PORTAL REDESIGN
    ========================================================= */
-body:has(.member-content){background:radial-gradient(900px 500px at 8% -5%,color-mix(in srgb,var(--gold) 14%,transparent),transparent 60%),radial-gradient(700px 480px at 100% 10%,color-mix(in srgb,var(--gold) 8%,transparent),transparent 60%),var(--bg)}
+body:has(.member-content){background:var(--bg)}
 .member-topbar,body > header:has(.member-logo){position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px clamp(14px,4vw,40px);background:color-mix(in srgb,var(--card) 82%,transparent);backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3);border-bottom:1px solid var(--border)}
 .member-logo{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text)}
 .member-logo b{font-size:20px;font-weight:800;letter-spacing:-.04em}
@@ -12150,8 +12027,7 @@ html:has(.auth-shell),
 body.auth-page,
 body.public-dark-theme {
   background-color: #08090D !important;
-  background-image:
-    radial-gradient(900px 520px at 12% -8%, rgba(244, 197, 66, 0.16), transparent 65%) !important;
+  background-image: none !important;
   background-size: auto !important;
   background-attachment: fixed !important;
   background-position: 0 0 !important;
@@ -13192,26 +13068,26 @@ body[data-page="trainers"] .tr-card:hover {
 body[data-page="trainers"] .tr-accent-gold {
   border: 1px solid rgba(245, 158, 11, 0.36);
   border-top: 2.5px solid #F59E0B;
-  background: radial-gradient(280px 180px at 78% 12%, rgba(245, 158, 11, 0.13), transparent 70%), linear-gradient(180deg, rgba(22, 31, 48, 0.92) 0%, rgba(15, 22, 35, 0.98) 100%);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25), 0 0 18px rgba(245, 158, 11, 0.08);
+  background: linear-gradient(180deg, rgba(22, 31, 48, 0.92) 0%, rgba(15, 22, 35, 0.98) 100%);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
 }
 body[data-page="trainers"] .tr-accent-cyan {
   border: 1px solid rgba(6, 182, 212, 0.36);
   border-top: 2.5px solid #06B6D4;
-  background: radial-gradient(280px 180px at 78% 12%, rgba(6, 182, 212, 0.13), transparent 70%), linear-gradient(180deg, rgba(22, 31, 48, 0.92) 0%, rgba(15, 22, 35, 0.98) 100%);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25), 0 0 18px rgba(6, 182, 212, 0.08);
+  background: linear-gradient(180deg, rgba(22, 31, 48, 0.92) 0%, rgba(15, 22, 35, 0.98) 100%);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
 }
 body[data-page="trainers"] .tr-accent-violet {
   border: 1px solid rgba(139, 92, 246, 0.36);
   border-top: 2.5px solid #8B5CF6;
-  background: radial-gradient(280px 180px at 78% 12%, rgba(139, 92, 246, 0.13), transparent 70%), linear-gradient(180deg, rgba(22, 31, 48, 0.92) 0%, rgba(15, 22, 35, 0.98) 100%);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25), 0 0 18px rgba(139, 92, 246, 0.08);
+  background: linear-gradient(180deg, rgba(22, 31, 48, 0.92) 0%, rgba(15, 22, 35, 0.98) 100%);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
 }
 body[data-page="trainers"] .tr-accent-emerald {
   border: 1px solid rgba(16, 185, 129, 0.36);
   border-top: 2.5px solid #10B981;
-  background: radial-gradient(280px 180px at 78% 12%, rgba(16, 185, 129, 0.13), transparent 70%), linear-gradient(180deg, rgba(22, 31, 48, 0.92) 0%, rgba(15, 22, 35, 0.98) 100%);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25), 0 0 18px rgba(16, 185, 129, 0.08);
+  background: linear-gradient(180deg, rgba(22, 31, 48, 0.92) 0%, rgba(15, 22, 35, 0.98) 100%);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
 }
 
 /* List View Card Layout */
@@ -13483,7 +13359,7 @@ body[data-page="trainers"] .tr-requests-panel {
 body[data-page="trainers"] .tr-assign-panel {
   overflow: visible;
   z-index: 10;
-  background-image: radial-gradient(280px 150px at 95% 15%, rgba(245, 158, 11, 0.1), transparent 70%), linear-gradient(180deg, rgba(22, 31, 48, 0.9) 0%, rgba(18, 26, 40, 0.97) 100%) !important;
+  background-image: linear-gradient(180deg, rgba(22, 31, 48, 0.9) 0%, rgba(18, 26, 40, 0.97) 100%) !important;
 }
 body[data-page="trainers"] .tr-assign-wm {
   position: absolute;

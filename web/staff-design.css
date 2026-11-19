@@ -37,12 +37,6 @@
   --blue-soft:rgba(59,130,246,.2); --purple-soft:rgba(139,92,246,.22);
   --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.28);
   color-scheme:dark;}
-html[data-accent="ocean"] .pf-staff {--gold:#2f8fe0;--gold-2:#62b3f5;--gold-3:#1f6fb8;--gold-ink:#0d4a82;--gold-soft:rgba(47,143,224,.14);--bg-glow:rgba(98,179,245,.25)}
-html[data-accent="emerald"] .pf-staff {--gold:#12a57f;--gold-2:#4cd1ac;--gold-3:#0b8365;--gold-ink:#06583f;--gold-soft:rgba(18,165,127,.14);--bg-glow:rgba(76,209,172,.22)}
-html[data-accent="indigo"] .pf-staff {--gold:#6a5be2;--gold-2:#9a8cf5;--gold-3:#4e40c2;--gold-ink:#33288f;--gold-soft:rgba(106,91,226,.14);--bg-glow:rgba(154,140,245,.22)}
-html[data-accent="ocean"] .pf-staff.dark {--gold-ink:#8ec8fa}
-html[data-accent="emerald"] .pf-staff.dark {--gold-ink:#7fe0c3}
-html[data-accent="indigo"] .pf-staff.dark {--gold-ink:#b9b0fa}
 .pf-staff * {box-sizing:border-box}
 .pf-staff {margin:0;font-family:var(--font);font-size:14px;line-height:1.5;color:var(--text);background:var(--bg);
   -webkit-font-smoothing:antialiased}

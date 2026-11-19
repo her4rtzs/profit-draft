@@ -5,7 +5,7 @@
     get: k => { try { return localStorage.getItem(k); } catch { return null; } },
     set: (k, v) => { try { localStorage.setItem(k, v); } catch { /* storage blocked */ } }
   };
-  const ACCENTS = { gold: "Gold", spotify: "Spotify green", ocean: "Ocean", indigo: "Indigo", coral: "Coral", emerald: "Emerald", sunset: "Sunset" };
+  const ACCENTS = { gold: "Gold" };
   const DEFAULT_ACCENT = "gold";
   const DEFAULTS = { prefDark: true, prefBadge: true };
   const current = {

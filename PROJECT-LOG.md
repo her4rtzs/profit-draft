@@ -2307,3 +2307,15 @@ Apply the remaining typeset and dead-file audit fixes in `web/`, then commit eac
 - Confirmed no `10.5px` remains and no live references to the deleted files; the full 206-test suite passed after the dashboard bundle change.
 ### Decision-log skill
 Delete a file only after grepping every reference and proving its effect is duplicated or unreachable; a dead script can hide an undelivered feature, so record that separately.
+
+## 2026-11-19 20:44 (Asia/Manila): Distill to one gold palette and strip decoration
+### What I asked for
+Run an Impeccable distill: one CSS layer, one palette, delete the decorative set (stripes, glow shadows, grid backgrounds, gradient text, halos, marquee) and any empty fix files.
+### What the agent decided and why
+- Collapsed the seven selectable accents to one Gold palette and made `web/spotify.css` the single source of the `--gold*` brand tokens, because it loads on every page and is baked into the dashboard bundle. See [[2026-11-19 Distill to one gold palette]]
+- Removed the welcome-page marquee/hazard stripes, gradient text, blurred halo pseudo-elements and radial-gradient washes; kept functional chart grid lines, focus rings and selection indicators.
+- Regenerated `web/dashboard.css` from the updated sources in their original cascade order, preserving the inline `.pf-menu`/`.pf-row-in` fx block.
+- Confirmed the two empty fix files (`ui-final.css`, `ui-fixes.js`) were already deleted in an earlier commit; the remaining fix files hold real rules and were kept.
+- Checked: no non-gold accent or decorative pattern remains in `web/`; `manage.py check` with DEBUG=True shows only the pre-existing `static/dist` warning; full tests and ruff were not cleanly runnable (DB config / 184 pre-existing lint issues).
+### Decision-log skill
+A generated CSS bundle is only as current as its sources: after editing sources, re-concatenate in the recorded order and carry any inline block over, or the shipped page keeps the old cascade.

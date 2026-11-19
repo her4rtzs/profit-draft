@@ -175,7 +175,7 @@ body .dashboard .sidebar{
   box-shadow:12px 0 40px rgba(0,0,0,.28)!important;
   padding:18px 12px 14px!important;
 }
-body .dashboard .sidebar::before{content:"";position:absolute;inset:0 0 auto 0;height:140px;pointer-events:none;background:radial-gradient(120% 100% at 0% 0%,color-mix(in srgb,var(--gold) 20%,transparent),transparent 70%)}
+
 body .dashboard .sidebar>*{position:relative}
 .sidebar-brand-row{padding:4px 6px 16px!important;border-bottom:1px solid rgba(255,255,255,.07);margin-bottom:10px}
 .sidebar .imgbrand{display:flex!important;align-items:center;gap:12px!important;text-decoration:none}
@@ -237,7 +237,7 @@ body .dashboard .sidebar li a.active .icon{color:var(--gold)!important}
 /* =========================================================
    MEMBER PORTAL REDESIGN
    ========================================================= */
-body:has(.member-content){background:radial-gradient(900px 500px at 8% -5%,color-mix(in srgb,var(--gold) 14%,transparent),transparent 60%),radial-gradient(700px 480px at 100% 10%,color-mix(in srgb,var(--gold) 8%,transparent),transparent 60%),var(--bg)}
+body:has(.member-content){background:var(--bg)}
 .member-topbar,body > header:has(.member-logo){position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px clamp(14px,4vw,40px);background:color-mix(in srgb,var(--card) 82%,transparent);backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3);border-bottom:1px solid var(--border)}
 .member-logo{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text)}
 .member-logo b{font-size:20px;font-weight:800;letter-spacing:-.04em}
@@ -2931,8 +2931,7 @@ html:has(.auth-shell),
 body.auth-page,
 body.public-dark-theme {
   background-color: #08090D !important;
-  background-image:
-    radial-gradient(900px 520px at 12% -8%, rgba(244, 197, 66, 0.16), transparent 65%) !important;
+  background-image: none !important;
   background-size: auto !important;
   background-attachment: fixed !important;
   background-position: 0 0 !important;
@@ -3973,26 +3972,26 @@ body[data-page="trainers"] .tr-card:hover {
 body[data-page="trainers"] .tr-accent-gold {
   border: 1px solid rgba(245, 158, 11, 0.36);
   border-top: 2.5px solid #F59E0B;
-  background: radial-gradient(280px 180px at 78% 12%, rgba(245, 158, 11, 0.13), transparent 70%), linear-gradient(180deg, rgba(22, 31, 48, 0.92) 0%, rgba(15, 22, 35, 0.98) 100%);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25), 0 0 18px rgba(245, 158, 11, 0.08);
+  background: linear-gradient(180deg, rgba(22, 31, 48, 0.92) 0%, rgba(15, 22, 35, 0.98) 100%);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
 }
 body[data-page="trainers"] .tr-accent-cyan {
   border: 1px solid rgba(6, 182, 212, 0.36);
   border-top: 2.5px solid #06B6D4;
-  background: radial-gradient(280px 180px at 78% 12%, rgba(6, 182, 212, 0.13), transparent 70%), linear-gradient(180deg, rgba(22, 31, 48, 0.92) 0%, rgba(15, 22, 35, 0.98) 100%);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25), 0 0 18px rgba(6, 182, 212, 0.08);
+  background: linear-gradient(180deg, rgba(22, 31, 48, 0.92) 0%, rgba(15, 22, 35, 0.98) 100%);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
 }
 body[data-page="trainers"] .tr-accent-violet {
   border: 1px solid rgba(139, 92, 246, 0.36);
   border-top: 2.5px solid #8B5CF6;
-  background: radial-gradient(280px 180px at 78% 12%, rgba(139, 92, 246, 0.13), transparent 70%), linear-gradient(180deg, rgba(22, 31, 48, 0.92) 0%, rgba(15, 22, 35, 0.98) 100%);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25), 0 0 18px rgba(139, 92, 246, 0.08);
+  background: linear-gradient(180deg, rgba(22, 31, 48, 0.92) 0%, rgba(15, 22, 35, 0.98) 100%);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
 }
 body[data-page="trainers"] .tr-accent-emerald {
   border: 1px solid rgba(16, 185, 129, 0.36);
   border-top: 2.5px solid #10B981;
-  background: radial-gradient(280px 180px at 78% 12%, rgba(16, 185, 129, 0.13), transparent 70%), linear-gradient(180deg, rgba(22, 31, 48, 0.92) 0%, rgba(15, 22, 35, 0.98) 100%);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25), 0 0 18px rgba(16, 185, 129, 0.08);
+  background: linear-gradient(180deg, rgba(22, 31, 48, 0.92) 0%, rgba(15, 22, 35, 0.98) 100%);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
 }
 
 /* List View Card Layout */
@@ -4264,7 +4263,7 @@ body[data-page="trainers"] .tr-requests-panel {
 body[data-page="trainers"] .tr-assign-panel {
   overflow: visible;
   z-index: 10;
-  background-image: radial-gradient(280px 150px at 95% 15%, rgba(245, 158, 11, 0.1), transparent 70%), linear-gradient(180deg, rgba(22, 31, 48, 0.9) 0%, rgba(18, 26, 40, 0.97) 100%) !important;
+  background-image: linear-gradient(180deg, rgba(22, 31, 48, 0.9) 0%, rgba(18, 26, 40, 0.97) 100%) !important;
 }
 body[data-page="trainers"] .tr-assign-wm {
   position: absolute;

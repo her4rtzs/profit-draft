@@ -132,8 +132,8 @@ body.dark {
 }
 
 /* ==========================================================================
-   2 · ACCENT — the gym's brand gold is the default; Spotify green and the
-   rest stay available on the Settings → Color theme picker.
+   2 · ACCENT — one brand palette (gold). Defined here once and loaded on
+   every page, so this is the single source of truth for the accent tokens.
    ========================================================================== */
 
 :root {
@@ -151,37 +151,6 @@ body.dark {
   --gold-grad: linear-gradient(135deg, #f0d268 0%, #e0b94a 55%, #c99a32 100%);
   --on-accent: #1a1407;
 }
-
-/* Spotify green — still on the picker, just no longer the default. */
-html[data-accent="spotify"] body:not(.dark) {
-  --gold: #12a94a;
-  --gold-deep: #0d8a3c;
-  --gold-soft: rgba(29, 185, 84, .14);
-  --gold-grad: linear-gradient(135deg, #2bd968 0%, #1db954 55%, #12964a 100%);
-  --on-accent: #04220f;
-}
-html[data-accent="spotify"] body.dark {
-  --gold: #1ed760;
-  --gold-deep: #1ed760;
-  --gold-soft: rgba(30, 215, 96, .15);
-  --gold-grad: linear-gradient(135deg, #4ded88 0%, #1ed760 55%, #16a34a 100%);
-  --on-accent: #04220f;
-}
-
-/* Keep the accent switcher honest: picking another palette must still win. */
-html[data-accent="ocean"] body:not(.dark) { --gold: #0d9488; --gold-deep: #0f766e; --gold-soft: rgba(13, 148, 136, .14); --gold-grad: linear-gradient(135deg, #2dd4bf 0%, #0d9488 55%, #0f766e 100%); --on-accent: #ffffff; }
-html[data-accent="indigo"] body:not(.dark) { --gold: #4f46e5; --gold-deep: #4338ca; --gold-soft: rgba(79, 70, 229, .13); --gold-grad: linear-gradient(135deg, #818cf8 0%, #6366f1 55%, #4f46e5 100%); --on-accent: #ffffff; }
-html[data-accent="coral"]  body:not(.dark) { --gold: #e11d48; --gold-deep: #be123c; --gold-soft: rgba(225, 29, 72, .13); --gold-grad: linear-gradient(135deg, #fb7185 0%, #f43f5e 55%, #e11d48 100%); --on-accent: #ffffff; }
-html[data-accent="emerald"] body:not(.dark) { --gold: #059669; --gold-deep: #047857; --gold-soft: rgba(5, 150, 105, .14); --gold-grad: linear-gradient(135deg, #34d399 0%, #10b981 55%, #059669 100%); --on-accent: #ffffff; }
-html[data-accent="sunset"] body:not(.dark) { --gold: #ea580c; --gold-deep: #c2410c; --gold-soft: rgba(234, 88, 12, .14); --gold-grad: linear-gradient(135deg, #fb923c 0%, #f97316 55%, #ea580c 100%); --on-accent: #ffffff; }
-html[data-accent="gold"]   body:not(.dark) { --gold: #b8891c; --gold-deep: #8d6512; --gold-soft: rgba(184, 137, 28, .16); --gold-grad: linear-gradient(135deg, #f2cb5c 0%, #e8b93a 55%, #b8891c 100%); --on-accent: #1a1407; }
-
-html[data-accent="ocean"] body.dark { --gold: #2dd4bf; --gold-deep: #5eead4; --gold-soft: rgba(45, 212, 191, .16); --gold-grad: linear-gradient(135deg, #5eead4 0%, #2dd4bf 55%, #14b8a6 100%); --on-accent: #04220f; }
-html[data-accent="indigo"] body.dark { --gold: #818cf8; --gold-deep: #a5b4fc; --gold-soft: rgba(129, 140, 248, .18); --gold-grad: linear-gradient(135deg, #a5b4fc 0%, #818cf8 55%, #6366f1 100%); --on-accent: #0a0a1a; }
-html[data-accent="coral"]  body.dark { --gold: #fb7185; --gold-deep: #fda4af; --gold-soft: rgba(251, 113, 133, .18); --gold-grad: linear-gradient(135deg, #fda4af 0%, #fb7185 55%, #f43f5e 100%); --on-accent: #2a0510; }
-html[data-accent="emerald"] body.dark { --gold: #34d399; --gold-deep: #6ee7b7; --gold-soft: rgba(52, 211, 153, .16); --gold-grad: linear-gradient(135deg, #6ee7b7 0%, #34d399 55%, #10b981 100%); --on-accent: #04220f; }
-html[data-accent="sunset"] body.dark { --gold: #fb923c; --gold-deep: #fdba74; --gold-soft: rgba(251, 146, 60, .16); --gold-grad: linear-gradient(135deg, #fdba74 0%, #fb923c 55%, #f97316 100%); --on-accent: #2a1403; }
-html[data-accent="gold"]   body.dark { --gold: #e0b94a; --gold-deep: #efcc6b; --gold-soft: rgba(224, 185, 74, .16); --gold-grad: linear-gradient(135deg, #efcc6b 0%, #e0b94a 55%, #c99a32 100%); --on-accent: #1a1407; }
 
 /* ==========================================================================
    3 · BASE
@@ -204,14 +173,7 @@ body {
   letter-spacing: -.01em;
 }
 
-/* The green wash behind the workspace — reads like a Spotify gradient header. */
-body:not(.portal-body) {
-  background-image:
-    radial-gradient(1100px 520px at 92% -14%, color-mix(in srgb, var(--gold) 16%, transparent), transparent 68%),
-    radial-gradient(760px 420px at -6% 108%, color-mix(in srgb, var(--gold) 9%, transparent), transparent 70%) !important;
-  background-attachment: fixed !important;
-  background-repeat: no-repeat !important;
-}
+/* Workspace background is the flat surface colour — no decorative wash. */
 
 html { scrollbar-color: color-mix(in srgb, var(--gold) 60%, #555) transparent; }
 ::selection { background: color-mix(in srgb, var(--gold) 38%, transparent); color: var(--text); }
@@ -1365,9 +1327,6 @@ input[readonly] { color: var(--faint) !important; }
   position: absolute;
   inset: -140px 0 auto;
   height: 420px;
-  background:
-    radial-gradient(58% 100% at 12% 0%, color-mix(in srgb, var(--gold) 13%, transparent), transparent 70%),
-    radial-gradient(45% 90% at 88% 0%, color-mix(in srgb, var(--gold) 7%, transparent), transparent 72%);
   pointer-events: none;
   z-index: 0;
 }
@@ -1421,7 +1380,6 @@ input[readonly] { color: var(--faint) !important; }
   border: 1px solid var(--border) !important;
   border-radius: 22px !important;
   background:
-    radial-gradient(circle at 88% 18%, color-mix(in srgb, var(--gold) 16%, transparent), transparent 46%),
     linear-gradient(135deg, var(--card), color-mix(in srgb, var(--gold) 5%, var(--card))) !important;
   box-shadow: 0 1px 0 color-mix(in srgb, var(--card) 60%, transparent) inset !important;
 }

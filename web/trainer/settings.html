@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ProFit — Settings (Trainer Portal)</title>
-<script>try{var t=localStorage.getItem('pf-theme')||localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);var a=localStorage.getItem('pp-accent')||localStorage.getItem('pf-accent')||localStorage.getItem('accent')||'gold';if(a==='blue')a='ocean';document.documentElement.setAttribute('data-accent',a);}catch(e){}</script>
+<script>try{var t=localStorage.getItem('pf-theme')||localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);document.documentElement.setAttribute('data-accent','gold');}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
@@ -59,12 +59,6 @@
             <span class="pp-label" id="lblTrainerAccent">Accent colour</span>
             <div class="pp-swatches" id="accentOptGroup" role="radiogroup" aria-labelledby="lblTrainerAccent">
               <button type="button" class="pp-swatch" role="radio" data-accent="gold" aria-checked="true" style="--sw:#e0b94a"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Gold</span></button>
-              <button type="button" class="pp-swatch" role="radio" data-accent="spotify" aria-checked="false" style="--sw:#1db954"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Spotify green</span></button>
-              <button type="button" class="pp-swatch" role="radio" data-accent="ocean" aria-checked="false" style="--sw:#2dd4bf"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Ocean</span></button>
-              <button type="button" class="pp-swatch" role="radio" data-accent="indigo" aria-checked="false" style="--sw:#818cf8"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Indigo</span></button>
-              <button type="button" class="pp-swatch" role="radio" data-accent="coral" aria-checked="false" style="--sw:#fb7185"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Coral</span></button>
-              <button type="button" class="pp-swatch" role="radio" data-accent="emerald" aria-checked="false" style="--sw:#34d399"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Emerald</span></button>
-              <button type="button" class="pp-swatch" role="radio" data-accent="sunset" aria-checked="false" style="--sw:#fb923c"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Sunset</span></button>
             </div>
             <p class="pp-small">Your favourite colour, everywhere in the app.</p>
           </div>

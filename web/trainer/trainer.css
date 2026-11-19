@@ -4,13 +4,13 @@
 
 /* ---------- 1. Color Tokens & Theme Definitions ---------- */
 /* Trainer accent color */
-html:not([data-accent]) body[data-portal="trainer"] {
+body[data-portal="trainer"] {
   --gold: #F59E0B;
   --gold-2: #FBBF24;
   --gold-3: #D97706;
   --gold-soft: rgba(245, 158, 11, .14);
 }
-html[data-theme="dark"]:not([data-accent]) body[data-portal="trainer"] {
+html[data-theme="dark"] body[data-portal="trainer"] {
   --gold-3: #F59E0B;
   --gold-ink: #FCD34D;
 }
@@ -1722,14 +1722,12 @@ html[data-theme="light"] body[data-portal="trainer"] .tw-qa-tile {
   border-radius: var(--tw-radius);
   border: 1px solid var(--line);
   background:
-    radial-gradient(480px 180px at 0% 0%, rgba(245, 158, 11, .12), transparent 70%),
     linear-gradient(135deg, var(--card) 0%, var(--card-2) 100%);
   box-shadow: var(--shadow);
 }
 html:not([data-theme="dark"]) .tw-page-hero,
 html[data-theme="light"] .tw-page-hero {
   background:
-    radial-gradient(480px 180px at 0% 0%, rgba(245, 158, 11, .12), transparent 70%),
     linear-gradient(135deg, #FAF8F3 0%, #F3EEE4 100%);
   border-color: #E8E1D3;
 }
@@ -2142,13 +2140,11 @@ html[data-theme="light"] .tw-ann-card {
 .tw-ann-card.is-pinned {
   border-color: rgba(245, 158, 11, .45);
   background:
-    radial-gradient(380px 140px at 100% 0%, rgba(245, 158, 11, .10), transparent 70%),
     var(--card);
 }
 html:not([data-theme="dark"]) .tw-ann-card.is-pinned,
 html[data-theme="light"] .tw-ann-card.is-pinned {
   background:
-    radial-gradient(380px 140px at 100% 0%, rgba(245, 158, 11, .14), transparent 70%),
     #FAF8F3;
   border-color: #FCD34D;
 }
@@ -2338,14 +2334,12 @@ html[data-theme="light"] .tw-modal-stat {
   border-radius: var(--tw-radius);
   border: 1px solid rgba(245, 158, 11, .32);
   background:
-    radial-gradient(450px 160px at 0% 50%, rgba(245, 158, 11, .13), transparent 70%),
     var(--card);
   box-shadow: var(--shadow);
 }
 html:not([data-theme="dark"]) .tw-checkin-panel,
 html[data-theme="light"] .tw-checkin-panel {
   background:
-    radial-gradient(450px 160px at 0% 50%, rgba(245, 158, 11, .16), transparent 70%),
     #FAF8F3;
   border-color: #FDE68A;
 }
@@ -2649,7 +2643,6 @@ html[data-theme="light"] .tw-notif-item.is-unread {
   padding: 26px 22px 22px;
   border-radius: 14px;
   background:
-    radial-gradient(320px 140px at 50% 0%, rgba(245, 158, 11, .18), transparent 75%),
     var(--card-2);
   border: 1px solid var(--line);
   margin-bottom: 16px;
@@ -2657,7 +2650,6 @@ html[data-theme="light"] .tw-notif-item.is-unread {
 html:not([data-theme="dark"]) .tw-coach-banner,
 html[data-theme="light"] .tw-coach-banner {
   background:
-    radial-gradient(320px 140px at 50% 0%, rgba(245, 158, 11, .20), transparent 75%),
     #F3EEE4;
   border-color: #E8E1D3;
 }
