@@ -15,14 +15,29 @@ the anonymous login POST as well. No business logic lives here.
 LOGGING POLICY: never log credentials or PII.
 """
 
+import hmac
 import json
+import secrets
+import urllib.parse
 
+from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model, login, logout, update_session_auth_hash
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
-from django.http import JsonResponse
+from django.db import DatabaseError
+from django.http import HttpResponseRedirect, JsonResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_GET, require_POST
+
+from apps.accounts.google_auth import (
+    GOOGLE_SCOPES,
+    GoogleAuthError,
+    authenticate_google_member,
+    ensure_google_user_columns,
+    exchange_google_code,
+    verify_and_link_google_account,
+    verify_google_id_token,
+)
 
 # Backend roles -> the three shells the web app routes to.
 WEB_ROLE = {"OWNER": "ADMIN", "CASHIER": "ADMIN", "TRAINER": "TRAINER", "MEMBER": "MEMBER"}
@@ -30,6 +45,7 @@ WEB_ROLE = {"OWNER": "ADMIN", "CASHIER": "ADMIN", "TRAINER": "TRAINER", "MEMBER"
 
 @ensure_csrf_cookie
 def csrf(request):
+    ensure_google_user_columns()
     return JsonResponse({"detail": "CSRF cookie set."})
 
 
@@ -45,6 +61,7 @@ def _username_for(identity):
 
 @require_POST
 def login_view(request):
+    ensure_google_user_columns()
     try:
         payload = json.loads(request.body.decode("utf-8"))
     except (ValueError, UnicodeDecodeError):
@@ -65,20 +82,23 @@ def login_view(request):
     })
 
 
+def _session_user_dict(user):
+    return {
+        "id": user.pk,
+        "name": user.get_full_name() or user.username,
+        "email": user.email,
+        "role": WEB_ROLE.get(user.role, "MEMBER"),
+        "must_change_password": bool(getattr(user, "must_change_password", False)),
+    }
+
+
 @require_GET
 def session_view(request):
+    ensure_google_user_columns()
     user = request.user
     if not user.is_authenticated:
         return JsonResponse({"detail": "Not signed in."}, status=401)
-    return JsonResponse({
-        "user": {
-            "id": user.pk,
-            "name": user.get_full_name() or user.username,
-            "email": user.email,
-            "role": WEB_ROLE.get(user.role, "MEMBER"),
-            "must_change_password": bool(getattr(user, "must_change_password", False)),
-        }
-    })
+    return JsonResponse({"user": _session_user_dict(user)})
 
 
 @require_POST
@@ -177,3 +197,162 @@ def reset_password_view(request):
         return JsonResponse({"detail": "Invalid request body."}, status=400)
     ok, message = reset_password(data.get("email"), data.get("code"), data.get("new_password"))
     return JsonResponse({"detail": message}, status=200 if ok else 400)
+
+
+def _google_callback_url(request):
+    configured = (getattr(settings, "GOOGLE_CALLBACK_URL", "") or "").strip()
+    return configured or request.build_absolute_uri("/api/auth/google/callback/")
+
+
+def _google_page_for_source(source):
+    return "/join.html" if source == "join" else "/login.html"
+
+
+@ensure_csrf_cookie
+@require_GET
+def google_config_view(request):
+    """Public OAuth config exposing only non-secret client_id and callback URL."""
+    ensure_google_user_columns()
+    return JsonResponse({
+        "client_id": (getattr(settings, "GOOGLE_CLIENT_ID", "") or "").strip(),
+        "oauth_redirect_enabled": bool(
+            (getattr(settings, "GOOGLE_CLIENT_ID", "") or "").strip()
+            and (getattr(settings, "GOOGLE_CLIENT_SECRET", "") or "").strip()
+        ),
+        "callback_url": _google_callback_url(request),
+        "scopes": GOOGLE_SCOPES,
+    })
+
+
+@require_POST
+def google_auth_view(request):
+    """POST /api/auth/google/ {credential}: verify Google ID token and sign in or create Member."""
+    ensure_google_user_columns()
+    data = _json_body(request)
+    if data is None:
+        return JsonResponse({"detail": "Invalid request body."}, status=400)
+    credential = data.get("credential")
+    if not isinstance(credential, str) or not credential.strip():
+        return JsonResponse({"detail": "Missing Google credential."}, status=400)
+
+    try:
+        claims = verify_google_id_token(credential.strip())
+        outcome = authenticate_google_member(claims)
+    except GoogleAuthError as exc:
+        return JsonResponse({"detail": exc.message, "code": exc.code}, status=exc.status_code)
+    except DatabaseError:
+        return JsonResponse(
+            {"detail": "A database error occurred while signing you in. Please try again.", "code": "db_error"},
+            status=503,
+        )
+
+    if outcome.status == "link_required":
+        return JsonResponse({
+            "status": "link_required",
+            "email": outcome.email,
+            "link_token": outcome.link_token,
+            "detail": "An account with this email already exists. Enter your ProFit password to verify and link your Google account.",
+        })
+
+    user = outcome.user
+    user.backend = "django.contrib.auth.backends.ModelBackend"
+    login(request, user)
+    return JsonResponse({
+        "status": "authenticated",
+        "created": outcome.created,
+        "role": "MEMBER",
+        "redirect": "member-home.html",
+        "user": _session_user_dict(user),
+    })
+
+
+@require_POST
+def google_link_view(request):
+    """POST /api/auth/google/link/ {link_token, password}: verify password then link Google."""
+    ensure_google_user_columns()
+    data = _json_body(request)
+    if data is None:
+        return JsonResponse({"detail": "Invalid request body."}, status=400)
+    try:
+        user = verify_and_link_google_account(
+            data.get("link_token") or "",
+            data.get("password") or "",
+        )
+    except GoogleAuthError as exc:
+        return JsonResponse({"detail": exc.message, "code": exc.code}, status=exc.status_code)
+    except DatabaseError:
+        return JsonResponse(
+            {"detail": "A database error occurred while linking your account. Please try again.", "code": "db_error"},
+            status=503,
+        )
+
+    user.backend = "django.contrib.auth.backends.ModelBackend"
+    login(request, user)
+    return JsonResponse({
+        "status": "authenticated",
+        "linked": True,
+        "role": "MEMBER",
+        "redirect": "member-home.html",
+        "user": _session_user_dict(user),
+    })
+
+
+@require_GET
+def google_oauth_login_view(request):
+    """GET /api/auth/google/login/: redirect to Google OAuth 2.0 consent screen (fallback flow)."""
+    ensure_google_user_columns()
+    source = "join" if request.GET.get("source") == "join" else "login"
+    client_id = (getattr(settings, "GOOGLE_CLIENT_ID", "") or "").strip()
+    client_secret = (getattr(settings, "GOOGLE_CLIENT_SECRET", "") or "").strip()
+    if not client_id or not client_secret:
+        return HttpResponseRedirect(f"{_google_page_for_source(source)}?google_error=not_configured")
+
+    state = secrets.token_urlsafe(24)
+    request.session["google_oauth_state"] = state
+    request.session["google_oauth_source"] = source
+    params = urllib.parse.urlencode({
+        "client_id": client_id,
+        "redirect_uri": _google_callback_url(request),
+        "response_type": "code",
+        "scope": GOOGLE_SCOPES,
+        "state": state,
+        "prompt": "select_account",
+    })
+    return HttpResponseRedirect(f"https://accounts.google.com/o/oauth2/v2/auth?{params}")
+
+
+@require_GET
+def google_oauth_callback_view(request):
+    """GET /api/auth/google/callback/: verify state + exchange code + log in Member."""
+    ensure_google_user_columns()
+    source = "join" if request.session.pop("google_oauth_source", "login") == "join" else "login"
+    page = _google_page_for_source(source)
+    expected_state = request.session.pop("google_oauth_state", None)
+
+    error = (request.GET.get("error") or "").strip()
+    if error:
+        code = "cancelled" if error == "access_denied" else "oauth_error"
+        return HttpResponseRedirect(f"{page}?google_error={code}")
+
+    state = (request.GET.get("state") or "").strip()
+    if not expected_state or not state or not hmac.compare_digest(str(expected_state), state):
+        return HttpResponseRedirect(f"{page}?google_error=invalid_state")
+
+    auth_code = (request.GET.get("code") or "").strip()
+    try:
+        claims = exchange_google_code(auth_code, redirect_uri=_google_callback_url(request))
+        outcome = authenticate_google_member(claims)
+    except GoogleAuthError as exc:
+        q = urllib.parse.urlencode({"google_error": exc.code, "google_msg": exc.message})
+        return HttpResponseRedirect(f"{page}?{q}")
+    except DatabaseError:
+        return HttpResponseRedirect(f"{page}?google_error=db_error")
+
+    if outcome.status == "link_required":
+        q = urllib.parse.urlencode({"google_link": outcome.link_token, "email": outcome.email})
+        return HttpResponseRedirect(f"{page}?{q}")
+
+    user = outcome.user
+    user.backend = "django.contrib.auth.backends.ModelBackend"
+    login(request, user)
+    return HttpResponseRedirect(f"{page}?google_authenticated=1")

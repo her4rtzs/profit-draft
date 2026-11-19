@@ -28,6 +28,13 @@ class User(AbstractUser):
         default=Role.MEMBER,
     )
     must_change_password = models.BooleanField(default=False)
+    google_sub = models.CharField(
+        max_length=255,
+        unique=True,
+        null=True,
+        blank=True,
+    )
+    google_linked_at = models.DateTimeField(null=True, blank=True)
 
 
 class OTPPurpose(models.TextChoices):

@@ -2330,3 +2330,15 @@ Delete `mobile/` now that the web portal is installable, after listing every ref
 - Left `PROJECT-LOG.md`, `.agents/tasks/`, existing decision notes and `profit-updated.zip` untouched as historical records.
 ### Decision-log skill
 When deleting a retired client, grep for both path references and descriptive mentions; the folder removal is small, but docs and config keep promising the old client long after the code is gone.
+
+## 2026-11-19 22:15 (Asia/Manila): Merge origin/master and integrate Member-only Google Sign-In
+### What I asked for
+Merge `origin/master` into local `master`, audit the existing authentication system, and integrate Google Sign-In (`openid email profile`) for Members only on login and registration with verified account linking and Vercel readiness.
+### What the agent decided and why
+- Fast-forward merged `origin/master` (`c1c7d51` / `bcaed0a`) cleanly before making auth changes.
+- Added `google_sub` (unique, nullable) and `google_linked_at` to `User` via migration `0005_user_google_linked_at_user_google_sub` without running migrations against production DB. See [[2026-11-19 Member-only Google Sign-In with verified linking]]
+- Implemented pure-stdlib RS256 JWKS verification + OAuth 2.0 code exchange in `apps/accounts/google_auth.py` with no new dependencies outside `requirements.txt`, rejecting any non-Member role (`OWNER`, `CASHIER`, `TRAINER`, `is_staff`, `is_superuser`) with `403`.
+- Blocked email-only auto-linking by issuing a short-lived signed `TimestampSigner` token requiring existing Member password verification (`POST /api/auth/google/link/`).
+- Wired `web/google-auth.js` into `web/login.html` (`#googleSignInBtn`) and `web/join.html` (`#googleJoinBtn`) preserving existing layout, styles, CSRF session cookies, and traditional login.
+### Decision-log skill
+Verify OIDC RS256 ID tokens server-side against issuer, audience, expiration, and email_verified=True, and never auto-link an OAuth identity to an existing account without proof of ownership of the existing credential.
