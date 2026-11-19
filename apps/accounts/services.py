@@ -17,6 +17,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.validators import validate_email
 from django.db import IntegrityError, connection, transaction
+from django.db.models import Q
 from django.utils import timezone
 
 from .emails import send_otp_email, send_reset_email
@@ -308,6 +309,16 @@ def resend_otp(user):
     _issue_and_send_otp(user, OTPPurpose.SIGNUP, send_otp_email)
 
 
+def _find_active_user_by_email(email: str):
+    norm = normalize_email(email or "")
+    if not norm:
+        return None
+    return User.objects.filter(
+        Q(email__iexact=norm) | Q(username__iexact=norm),
+        is_active=True,
+    ).first()
+
+
 def resend_password_reset_otp(email: str) -> None:
     """Re-issue and send a PASSWORD_RESET OTP for an active account.
 
@@ -319,9 +330,12 @@ def resend_password_reset_otp(email: str) -> None:
     if not norm:
         raise ValidationError("Enter a valid email address.")
     validate_email(norm)
-    user = User.objects.filter(email__iexact=norm, is_active=True).first()
+    user = _find_active_user_by_email(norm)
     if user is None:
         return
+    if not (user.email or "").strip():
+        user.email = norm
+        user.save(update_fields=["email"])
     _issue_and_send_otp(user, OTPPurpose.PASSWORD_RESET, send_reset_email)
 
 
@@ -337,10 +351,13 @@ def request_password_reset(email) -> int:
     limits and delivery failures propagate so callers can show real errors
     instead of advancing to code entry with an undelivered OTP.
     """
-    email = normalize_email(email or "")
-    user = User.objects.filter(email__iexact=email, is_active=True).first() if email else None
+    norm = normalize_email(email or "")
+    user = _find_active_user_by_email(norm) if norm else None
     if user is None:
         return 60
+    if not (user.email or "").strip():
+        user.email = norm
+        user.save(update_fields=["email"])
     try:
         _issue_and_send_otp(user, OTPPurpose.PASSWORD_RESET, send_reset_email)
         return 60
@@ -349,12 +366,44 @@ def request_password_reset(email) -> int:
         return exc.retry_after
 
 
+def verify_password_reset_otp(email, code):
+    """Verify a password-reset OTP before showing the new-password step.
+
+    Returns ``(ok, message)``. Does NOT consume the OTP on success so the next
+    step (``reset_password``) can verify and atomically consume it while saving
+    the new password. Increments ``attempts`` on wrong codes.
+    """
+    norm = normalize_email(email or "")
+    code = code.strip() if isinstance(code, str) else ""
+    generic = "That code is not valid or has expired. Request a new one and try again."
+    user = _find_active_user_by_email(norm) if norm else None
+    if user is None or not code:
+        return False, generic
+    now = timezone.now()
+    with transaction.atomic():
+        row = (
+            EmailOTP.objects.select_for_update()
+            .filter(user=user, purpose=OTPPurpose.PASSWORD_RESET)
+            .order_by("-created_at")
+            .first()
+        )
+        if row is None or row.is_consumed() or row.is_expired(now) or row.attempts >= EmailOTP.MAX_ATTEMPTS:
+            return False, generic
+        if not check_password(code, row.code_hash):
+            row.attempts += 1
+            row.save(update_fields=["attempts"])
+            if row.attempts >= EmailOTP.MAX_ATTEMPTS:
+                logger.info("event=otp_attempts_exceeded user_id=%s", user.id)
+            return False, generic
+    return True, "Code verified. You can now set a new password."
+
+
 def reset_password(email, code, new_password):
     """Verify the emailed code and set a new password. Returns (ok, message)."""
-    email = normalize_email(email or "")
+    norm = normalize_email(email or "")
     code = code.strip() if isinstance(code, str) else ""
     generic = "That code is not valid. Request a new one and try again."
-    user = User.objects.filter(email__iexact=email, is_active=True).first() if email else None
+    user = _find_active_user_by_email(norm) if norm else None
     if user is None or not code or not isinstance(new_password, str):
         return False, generic
     now = timezone.now()

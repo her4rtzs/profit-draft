@@ -134,6 +134,61 @@ class ResendBackendTests(TestCase):
             ],
         )
 
+    def test_resend_forwards_reply_to_and_transactional_headers(self):
+        captured = {}
+
+        def fake_urlopen(request, timeout=None):
+            captured["body"] = json.loads(request.data.decode("utf-8"))
+            return _FakeResponse()
+
+        msg = EmailMultiAlternatives(
+            subject="Your ProFit password reset code",
+            body="Your reset code is: 654321",
+            from_email="ProFit <noreply@functionalfitnessgym.site>",
+            to=["member@gmail.com"],
+            reply_to=["ProFit <noreply@functionalfitnessgym.site>"],
+            headers={"Auto-Submitted": "auto-generated", "X-Auto-Response-Suppress": "All"},
+        )
+        msg.attach_alternative("<p>654321</p>", "text/html")
+
+        with mock.patch("apps.accounts.email_backends.urllib.request.urlopen", fake_urlopen):
+            sent = ResendEmailBackend().send_messages([msg])
+
+        self.assertEqual(sent, 1)
+        self.assertEqual(captured["body"]["reply_to"], ["ProFit <noreply@functionalfitnessgym.site>"])
+        self.assertEqual(captured["body"]["headers"]["Auto-Submitted"], "auto-generated")
+        self.assertEqual(captured["body"]["headers"]["X-Auto-Response-Suppress"], "All")
+
+    @override_settings(
+        EMAIL_HOST_USER="profit.sender@gmail.com",
+        EMAIL_HOST_PASSWORD="app-password",
+    )
+    def test_smtp_fallback_aligns_from_email_to_authenticated_smtp_user(self):
+        from apps.accounts.email_backends import SMTPEmailBackend
+
+        seen = []
+
+        class FakeDjangoSMTP:
+            def __init__(self, fail_silently=False):
+                pass
+
+            def send_messages(self, messages):
+                seen.extend(messages)
+                return len(messages)
+
+        msg = EmailMultiAlternatives(
+            subject="Your ProFit verification code",
+            body="123456",
+            from_email="ProFit <noreply@functionalfitnessgym.site>",
+            to=["other.user@gmail.com"],
+        )
+        with mock.patch("django.core.mail.backends.smtp.EmailBackend", FakeDjangoSMTP):
+            sent = SMTPEmailBackend().send_messages([msg])
+
+        self.assertEqual(sent, 1)
+        self.assertEqual(seen[0].from_email, "ProFit <profit.sender@gmail.com>")
+        self.assertEqual(seen[0].reply_to, ["ProFit <noreply@functionalfitnessgym.site>"])
+
 
 class ConsoleBackendUnderTestRunnerTests(TestCase):
     def test_outbox_works_without_key(self):

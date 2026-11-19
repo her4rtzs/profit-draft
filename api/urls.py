@@ -74,6 +74,7 @@ urlpatterns = [
     path("auth/session/", auth.session_view, name="auth-session"),
     path("auth/verify-password/", auth.verify_password_view, name="auth-verify-password"),
     path("auth/forgot-password/", auth.forgot_password_view, name="auth-forgot-password"),
+    path("auth/verify-reset-otp/", auth.verify_reset_otp_view, name="auth-verify-reset-otp"),
     path("auth/reset-password/", auth.reset_password_view, name="auth-reset-password"),
     path("auth/resend-otp/", auth.resend_otp_api_view, name="auth-resend-otp"),
     path("auth/change-password/", auth.change_password_view, name="auth-change-password"),

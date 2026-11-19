@@ -59,12 +59,21 @@ class SMTPEmailBackend(BaseEmailBackend):
     """Wrap Django's SMTP backend so transport failures raise EmailDeliveryError."""
 
     def send_messages(self, email_messages):
+        from django.conf import settings
         from django.core.mail.backends.smtp import EmailBackend as DjangoSMTPBackend
 
         from .services import EmailDeliveryError
 
         if not email_messages:
             return 0
+        smtp_user = (getattr(settings, "EMAIL_HOST_USER", "") or "").strip()
+        if smtp_user:
+            for msg in email_messages:
+                current_from = (msg.from_email or "").strip()
+                if smtp_user.lower() not in current_from.lower():
+                    if current_from and not msg.reply_to:
+                        msg.reply_to = [current_from]
+                    msg.from_email = f"ProFit <{smtp_user}>"
         backend = DjangoSMTPBackend(fail_silently=False)
         try:
             sent = backend.send_messages(email_messages)
@@ -128,6 +137,15 @@ class ResendEmailBackend(BaseEmailBackend):
             if mimetype == "text/html":
                 payload["html"] = content
                 break
+        if getattr(message, "reply_to", None):
+            payload["reply_to"] = list(message.reply_to)
+        extra_headers = {
+            k: v
+            for k, v in (getattr(message, "extra_headers", None) or {}).items()
+            if k and v
+        }
+        if extra_headers:
+            payload["headers"] = extra_headers
 
         try:
             self._post_payload(payload, api_key)

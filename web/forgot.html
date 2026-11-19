@@ -220,6 +220,34 @@
   .fp-resend-btn:hover:not(:disabled){border-color:var(--gold);color:var(--lime-hi)}
   .fp-resend-btn:disabled{opacity:.58;color:var(--mu);cursor:not-allowed}
 
+  .fp-steps{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
+    margin:0 0 18px;padding:0;list-style:none;
+  }
+  .fp-step{
+    display:flex;align-items:center;gap:6px;
+    padding:7px 9px;border-radius:10px;
+    border:1px solid var(--line);background:var(--bg2);
+    font:600 11.5px/1.15 "Plus Jakarta Sans",sans-serif;color:var(--mu);
+    transition:border-color .18s ease,color .18s ease,background-color .18s ease;
+  }
+  .fp-step-num{
+    width:18px;height:18px;border-radius:50%;flex:none;
+    display:grid;place-items:center;font-size:11px;font-weight:700;
+    background:var(--line);color:var(--tx);
+  }
+  .fp-step.is-active{border-color:var(--gold);color:var(--tx)}
+  .fp-step.is-active .fp-step-num{background:var(--gold);color:var(--on)}
+  .fp-step.is-done{border-color:rgba(74,222,128,.45);color:var(--ok)}
+  .fp-step.is-done .fp-step-num{background:var(--ok);color:var(--on)}
+
+  .fp-text-btn{
+    margin:8px auto 0;display:block;border:0;background:transparent;padding:6px 10px;
+    color:var(--mu);font:600 12.5px/1.2 Inter,system-ui,sans-serif;cursor:pointer;
+    text-decoration:underline;text-underline-offset:3px;
+  }
+  .fp-text-btn:hover{color:var(--gold)}
+
   .fp-links{margin:12px 0 0;text-align:center;font-size:13px;color:var(--mu)}
   .fp-links a{
     display:inline-flex;align-items:center;min-height:36px;
@@ -266,13 +294,18 @@
 
     <section class="fp-card" aria-label="Password reset form">
       <p class="fp-kicker">Password reset</p>
+      <ol class="fp-steps" aria-label="Password reset steps">
+        <li class="fp-step is-active" id="fpStep1"><span class="fp-step-num">1</span><span>Email</span></li>
+        <li class="fp-step" id="fpStep2"><span class="fp-step-num">2</span><span>OTP</span></li>
+        <li class="fp-step" id="fpStep3"><span class="fp-step-num">3</span><span>Password</span></li>
+      </ol>
       <h2 id="fpTitle">Forgot your password?</h2>
-      <p class="fp-lead" id="fpSub">Enter the email on your account and we will send you a code.</p>
+      <p class="fp-lead" id="fpSub">Enter the Gmail or email on your account and we will send you a 6-digit code.</p>
 
       <form id="fpForm1" novalidate>
         <div class="fp-field">
           <label class="fp-field-label" for="fpEmail">Email</label>
-          <input class="fp-input" id="fpEmail" type="email" autocomplete="email" maxlength="254" required placeholder="you@example.com">
+          <input class="fp-input" id="fpEmail" type="email" autocomplete="email" maxlength="254" required placeholder="you@gmail.com">
         </div>
         <div id="fpMsg1" class="fp-msg" role="alert" aria-live="polite" hidden></div>
         <button class="fp-btn-gold" type="submit">Send code</button>
@@ -280,9 +313,18 @@
 
       <form id="fpForm2" novalidate hidden>
         <div class="fp-field">
-          <label class="fp-field-label" for="fpCode">6-digit code</label>
+          <label class="fp-field-label" for="fpCode">6-digit verification code</label>
           <input class="fp-input" id="fpCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required placeholder="123456">
         </div>
+        <div id="fpMsg2" class="fp-msg" role="alert" aria-live="polite" hidden></div>
+        <button class="fp-btn-gold" type="submit">Verify OTP</button>
+        <div class="fp-resend-row">
+          <button type="button" class="fp-resend-btn" id="fpResend" disabled>Resend code in 60s</button>
+        </div>
+        <button type="button" class="fp-text-btn" id="fpBackEmail">Use a different email</button>
+      </form>
+
+      <form id="fpForm3" novalidate hidden>
         <div class="fp-field">
           <label class="fp-field-label" for="fpNew">New password</label>
           <div class="fp-pw-wrap">
@@ -297,11 +339,9 @@
             <button type="button" class="fp-eye" id="toggleFpConf" aria-label="Show confirm password" aria-pressed="false"><i class="fa-regular fa-eye"></i></button>
           </div>
         </div>
-        <div id="fpMsg2" class="fp-msg" role="alert" aria-live="polite" hidden></div>
-        <button class="fp-btn-gold" type="submit">Reset password</button>
-        <div class="fp-resend-row">
-          <button type="button" class="fp-resend-btn" id="fpResend" disabled>Resend code in 60s</button>
-        </div>
+        <div id="fpMsg3" class="fp-msg" role="alert" aria-live="polite" hidden></div>
+        <button class="fp-btn-gold" type="submit">Change password</button>
+        <button type="button" class="fp-text-btn" id="fpBackOtp">Back to OTP code</button>
       </form>
 
       <p class="fp-links"><a href="/login">Back to sign in</a></p>
@@ -330,10 +370,23 @@
   bindToggle("toggleFpConf", "fpConf", "confirm password");
 
   let email = "";
+  let verifiedCode = "";
   let cooldownRemaining = 0;
   let cooldownTimer = null;
   let resendBusy = false;
   const resendBtn = $("fpResend");
+
+  function setStep(stepNum) {
+    $("fpForm1").hidden = stepNum !== 1;
+    $("fpForm2").hidden = stepNum !== 2;
+    $("fpForm3").hidden = stepNum !== 3;
+    [1, 2, 3].forEach(n => {
+      const el = $("fpStep" + n);
+      if (!el) return;
+      el.classList.toggle("is-active", n === stepNum);
+      el.classList.toggle("is-done", n < stepNum || stepNum === 4);
+    });
+  }
 
   function updateResendButton() {
     if (!resendBtn || resendBusy) return;
@@ -377,24 +430,47 @@
     if ($("fpCode").value !== clean) $("fpCode").value = clean;
   });
 
+  $("fpBackEmail").addEventListener("click", () => {
+    verifiedCode = "";
+    $("fpMsg1").hidden = true;
+    $("fpMsg2").hidden = true;
+    $("fpTitle").textContent = "Forgot your password?";
+    $("fpSub").textContent = "Enter the Gmail or email on your account and we will send you a 6-digit code.";
+    setStep(1);
+    $("fpEmail").focus();
+  });
+
+  $("fpBackOtp").addEventListener("click", () => {
+    $("fpMsg3").hidden = true;
+    $("fpTitle").textContent = "Enter verification code";
+    $("fpSub").textContent = "Enter the 6-digit code sent to your email.";
+    setStep(2);
+    $("fpCode").focus();
+  });
+
   $("fpForm1").addEventListener("submit", async e => {
     e.preventDefault(); email = $("fpEmail").value.trim();
     const emailErr = window.ProFitAPI?.validateRealEmail
       ? window.ProFitAPI.validateRealEmail(email)
       : (!email || !email.includes("@") ? "Enter a valid email address." : "");
     if (emailErr) return show($("fpMsg1"), emailErr, true);
-    const btn = e.submitter || e.target.querySelector("button"); btn.disabled = true;
-    const res = await sendInitial($("fpMsg1"));
-    if (res) {
-      $("fpForm1").hidden = true;
-      $("fpForm2").hidden = false;
-      $("fpTitle").textContent = "Check your email";
-      $("fpSub").textContent = "Enter the 6-digit code we sent and choose a new password.";
-      show($("fpMsg2"), "Verification code sent. Check your inbox (valid for 10 minutes).", false);
-      startResendCountdown(res.cooldown_seconds || 60);
-      $("fpCode").focus();
+    const btn = e.submitter || e.target.querySelector("button[type=submit]");
+    btn.disabled = true;
+    try {
+      const res = await sendInitial($("fpMsg1"));
+      if (res) {
+        verifiedCode = "";
+        $("fpCode").value = "";
+        setStep(2);
+        $("fpTitle").textContent = "Enter verification code";
+        $("fpSub").textContent = "Enter the 6-digit OTP we sent to your email.";
+        show($("fpMsg2"), "Verification code sent. Check your inbox (valid for 10 minutes).", false);
+        startResendCountdown(res.cooldown_seconds || 60);
+        $("fpCode").focus();
+      }
+    } finally {
+      btn.disabled = false;
     }
-    btn.disabled = false;
   });
 
   resendBtn.addEventListener("click", async () => {
@@ -405,6 +481,7 @@
     try {
       const res = await api("/auth/resend-otp", { email, purpose: "PASSWORD_RESET" });
       resendBusy = false;
+      verifiedCode = "";
       show($("fpMsg2"), res?.detail || "A new verification code has been sent to your email.", false);
       $("fpCode").value = "";
       $("fpCode").focus();
@@ -422,21 +499,45 @@
 
   $("fpForm2").addEventListener("submit", async e => {
     e.preventDefault();
-    const code = $("fpCode").value.trim(), pw = $("fpNew").value;
+    const code = $("fpCode").value.trim();
     if (!/^\d{6}$/.test(code)) return show($("fpMsg2"), "Enter the 6-digit code from your email.", true);
-    if (pw.length < 8) return show($("fpMsg2"), "Use at least 8 characters for the new password.", true);
-    if (pw !== $("fpConf").value) return show($("fpMsg2"), "The two passwords do not match.", true);
-    const btn = e.submitter || e.target.querySelector("button[type=submit]"); btn.disabled = true;
+    const btn = e.submitter || e.target.querySelector("button[type=submit]");
+    btn.disabled = true;
     try {
-      await api("/auth/reset-password", { email, code, new_password: pw });
+      await api("/auth/verify-reset-otp", { email, code });
+      verifiedCode = code;
+      $("fpNew").value = "";
+      $("fpConf").value = "";
+      setStep(3);
+      $("fpTitle").textContent = "Set a new password";
+      $("fpSub").textContent = "Your code is verified. Enter and confirm your new password.";
+      show($("fpMsg3"), "OTP verified. Choose a strong password (at least 8 characters).", false);
+      $("fpNew").focus();
+    } catch (err) {
+      show($("fpMsg2"), err.message || "That code is not valid or has expired.", true);
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  $("fpForm3").addEventListener("submit", async e => {
+    e.preventDefault();
+    const pw = $("fpNew").value;
+    if (pw.length < 8) return show($("fpMsg3"), "Use at least 8 characters for the new password.", true);
+    if (pw !== $("fpConf").value) return show($("fpMsg3"), "The two passwords do not match.", true);
+    const btn = e.submitter || e.target.querySelector("button[type=submit]");
+    btn.disabled = true;
+    try {
+      await api("/auth/reset-password", { email, code: verifiedCode, new_password: pw });
       if (cooldownTimer) { clearInterval(cooldownTimer); cooldownTimer = null; }
-      $("fpForm2").hidden = true;
+      setStep(4);
       $("fpTitle").textContent = "Password updated";
       $("fpSub").innerHTML = 'You can now <a href="/login">sign in</a> with your new password.';
     } catch (err) {
-      show($("fpMsg2"), err.message || "Could not reset the password.", true);
+      show($("fpMsg3"), err.message || "Could not reset the password.", true);
+    } finally {
+      btn.disabled = false;
     }
-    btn.disabled = false;
   });
 })();
 </script>

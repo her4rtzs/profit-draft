@@ -218,6 +218,17 @@ def forgot_password_view(request):
 
 
 @require_POST
+def verify_reset_otp_view(request):
+    from apps.accounts.services import verify_password_reset_otp
+
+    data = _json_body(request)
+    if data is None:
+        return JsonResponse({"detail": "Invalid request body."}, status=400)
+    ok, message = verify_password_reset_otp(data.get("email"), data.get("code"))
+    return JsonResponse({"detail": message}, status=200 if ok else 400)
+
+
+@require_POST
 def reset_password_view(request):
     from apps.accounts.services import reset_password
 

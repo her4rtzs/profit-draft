@@ -2502,3 +2502,14 @@ Provide a working demo Cashier account so I can sign in and open the Cashier Por
 - Verified with `python manage.py check` (0 errors) and `python manage.py test apps.accounts.tests.test_web_session` (7/7 OK).
 ### Decision-log skill
 Remember that `ensure_google_user_columns()` is PostgreSQL-only for Vercel cold starts; local SQLite still requires running `python manage.py migrate` before querying or seeding `accounts_user` after adding model fields.
+
+
+## 2026-11-20 03:38 (Asia/Manila): Fix multi-account OTP delivery, reduce spam, and split Forgot Password into 3 steps
+### What I asked for
+Fix OTP sending so it works for all accounts (not just one), stop OTP emails from landing in spam, and update Forgot Password to follow 3 steps: Email -> OTP -> Change Password.
+### What the agent decided and why
+- Added `verify_password_reset_otp` (`apps/accounts/services.py`) and `POST /api/auth/verify-reset-otp/` (`api/auth.py`, `api/urls.py`), and rebuilt `web/forgot.html` into 3 steps (1. Email -> 2. Verify OTP -> 3. Change Password) with a 3-step indicator; see [[2026-11-20 Three-step password reset and anti-spam OTP mail]].
+- Upgraded `apps/accounts/emails.py` to send full transactional HTML + plain-text emails with `Reply-To`, `Auto-Submitted: auto-generated`, and `X-Auto-Response-Suppress: All`, forwarded `reply_to` and `headers` in `ResendEmailBackend`, aligned `SMTPEmailBackend` `from_email` to `EMAIL_HOST_USER` for DMARC/SPF alignment, and matched active users by `email` or `username` in password-reset lookup.
+- Added tests in `apps/accounts/tests/test_email_backend.py` and `apps/accounts/tests/test_password_reset.py` and verified `python manage.py check` (0 errors) and 32/32 targeted OTP/email/URL/PWA tests OK.
+### Decision-log skill
+Resend's sandbox sender (`onboarding@resend.dev`) only delivers to the single Resend account owner; always pair verified custom-domain DNS (SPF/DKIM/DMARC) or an authenticated SMTP fallback whose `From:` matches `EMAIL_HOST_USER` with proper transactional email headers to reach every user's primary inbox.

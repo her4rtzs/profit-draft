@@ -72,3 +72,4 @@ One note per decision, oldest first; entries with an `Unknown` date are listed l
 
 - [[2026-11-20 Google popup flow and real Gmail validation]]: Use `same-origin-allow-popups` COOP + OAuth2 `initTokenClient` popup instead of `gsi/transform`, and enforce real Gmail/email validation.
 - [[2026-11-20 Cashier portal reusing staff shell and RBAC]]: Map CASHIER to a distinct portal at /cashier reusing the Staff UI/UX shell, read-only overview endpoint, and server-side RBAC.
+- [[2026-11-20 Three-step password reset and anti-spam OTP mail]]: Split forgot-password into Email -> Verify OTP -> Change Password, align SMTP fallback From headers, and send transactional HTML/headers to reduce spam.
