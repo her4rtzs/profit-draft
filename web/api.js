@@ -89,8 +89,59 @@
     return payload;
   }
 
+  const GMAIL_DOMAINS = new Set(["gmail.com", "googlemail.com"]);
+  const GMAIL_TYPO_DOMAINS = new Set([
+    "gmai.com", "gmial.com", "gamil.com", "gmail.co", "gmail.con",
+    "gmail.ph", "gmal.com", "gmail.net", "gmail.org", "gmail.c", "googlemai.com"
+  ]);
+  const DISPOSABLE_DOMAINS = new Set([
+    "mailinator.com", "tempmail.com", "temp-mail.org", "10minutemail.com",
+    "guerrillamail.com", "yopmail.com", "trashmail.com", "fakeinbox.com",
+    "sharklasers.com", "getnada.com", "dispostable.com", "maildrop.cc",
+    "throwawaymail.com", "fake.com", "invalid.com"
+  ]);
+  const FAKE_GMAIL_USERNAMES = new Set([
+    "test", "testing", "tester", "example", "sample", "fake", "fakemail",
+    "admin", "user", "username", "member", "nobody", "noemail", "noreply",
+    "none", "null", "qwerty", "asdfgh", "zxcvbn", "abcdef", "abcdefg",
+    "abcdefgh", "password", "demo"
+  ]);
+
+  function validateRealEmail(email) {
+    const norm = String(email || "").trim().toLowerCase();
+    if (!norm || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(norm)) {
+      return "Enter a valid email address.";
+    }
+    const at = norm.lastIndexOf("@");
+    const local = norm.slice(0, at);
+    const domain = norm.slice(at + 1);
+    if (GMAIL_TYPO_DOMAINS.has(domain)) {
+      return "Enter a valid Gmail address ending in @gmail.com.";
+    }
+    if (DISPOSABLE_DOMAINS.has(domain)) {
+      return "Please use a real, permanent email address.";
+    }
+    if (GMAIL_DOMAINS.has(domain)) {
+      const base = local.split("+")[0];
+      if (base.length < 6 || base.length > 30) {
+        return "Enter a real Gmail address (username must be 6 to 30 characters).";
+      }
+      if (!/^[a-z0-9]+(?:\.[a-z0-9]+)*$/.test(base)) {
+        return "Enter a valid Gmail address (letters, numbers, and single dots only).";
+      }
+      if (!/[a-z]/.test(base)) {
+        return "Enter a real Gmail address (cannot be numbers only).";
+      }
+      const dotless = base.replace(/\./g, "");
+      if (FAKE_GMAIL_USERNAMES.has(base) || FAKE_GMAIL_USERNAMES.has(dotless)) {
+        return "Please use a real, personal Gmail address.";
+      }
+    }
+    return "";
+  }
+
   window.ProFitAPI = {
-    request, busy,
+    request, busy, validateRealEmail,
     get: (path, options) => request(path, options),
     post: (path, data, options) => request(path, { ...options, method: "POST", body: JSON.stringify(data || {}) }),
     patch: (path, data, options) => request(path, { ...options, method: "PATCH", body: JSON.stringify(data || {}) }),

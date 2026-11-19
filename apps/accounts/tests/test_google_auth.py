@@ -9,15 +9,18 @@ import urllib.parse
 from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.test import Client, RequestFactory, TestCase, override_settings
 from django.utils import timezone
 
 from apps.accounts.google_auth import (
     _SHA256_DIGEST_INFO_PREFIX,
     GoogleAuthError,
+    verify_google_access_token,
     verify_google_id_token,
 )
 from apps.accounts.models import Role
+from apps.accounts.validators import validate_real_email
 from apps.membership.models import MemberProfile
 
 User = get_user_model()
@@ -242,7 +245,7 @@ class GoogleAuthTests(TestCase):
         self.member_pw.google_linked_at = timezone.now()
         self.member_pw.save(update_fields=["google_sub", "google_linked_at"])
 
-        token = self._sign_jwt(self._claims_payload(sub="google-sub-linked-1", email="changed-alias@gmail.com"))
+        token = self._sign_jwt(self._claims_payload(sub="google-sub-linked-1", email="changed.alias@gmail.com"))
         with patch("apps.accounts.google_auth._get_jwk", return_value=self.jwks["keys"][0]):
             resp = self._post_google({"credential": token})
 
@@ -425,3 +428,81 @@ class GoogleAuthTests(TestCase):
                 _google_callback_url(req),
                 "https://www.functionalfitnessgym.site/api/auth/google/callback/",
             )
+
+    @override_settings(GOOGLE_CLIENT_ID=TEST_CLIENT_ID)
+    def test_verify_google_access_token_and_endpoint(self):
+        def fake_get(url, headers=None, **_kwargs):
+            if "tokeninfo" in url:
+                return {"aud": TEST_CLIENT_ID, "azp": TEST_CLIENT_ID, "expires_in": "3600"}
+            return {
+                "sub": "google-oauth2-sub-77",
+                "email": "mariasantos99@gmail.com",
+                "email_verified": True,
+                "name": "Maria Santos",
+            }
+
+        claims = verify_google_access_token("ya29.test-access-token", http_get=fake_get)
+        self.assertEqual(claims.sub, "google-oauth2-sub-77")
+        self.assertEqual(claims.email, "mariasantos99@gmail.com")
+
+        # Expired / wrong audience rejected
+        with self.assertRaises(GoogleAuthError):
+            verify_google_access_token(
+                "ya29.bad",
+                http_get=lambda u, h: {"aud": "other.apps.googleusercontent.com", "expires_in": "3600"},
+            )
+        with self.assertRaises(GoogleAuthError):
+            verify_google_access_token(
+                "ya29.expired",
+                http_get=lambda u, h: {"aud": TEST_CLIENT_ID, "expires_in": "0"},
+            )
+
+        # POST /api/auth/google/ accepts {access_token} and logs in as MEMBER
+        with patch("apps.accounts.google_auth._google_get_json", side_effect=fake_get):
+            resp = self._post_google({"access_token": "ya29.test-access-token"})
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.json()["status"], "authenticated")
+        self.assertEqual(resp.json()["role"], "MEMBER")
+        self.assertEqual(self.client.get("/api/auth/session/").json()["user"]["role"], "MEMBER")
+
+    def test_login_page_sets_coop_allow_popups(self):
+        resp = self.client.get("/login")
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.headers.get("Cross-Origin-Opener-Policy"), "same-origin-allow-popups")
+
+    def test_validate_real_email_rejects_fake_gmails_and_typos(self):
+        self.assertEqual(validate_real_email("  MariaSantos99@gmail.com "), "mariasantos99@gmail.com")
+        for bad in (
+            "abc@gmail.com",
+            "123456@gmail.com",
+            "test@gmail.com",
+            "user@gmai.com",
+            "member123@mailinator.com",
+        ):
+            with self.subTest(bad=bad), self.assertRaises(ValidationError):
+                validate_real_email(bad)
+
+        # Login & Join endpoints refuse fake/typo Gmails with 400
+        csrf = self._csrf()
+        login_resp = self.client.post(
+            "/api/auth/login/",
+            data=json.dumps({"identity": "abc@gmail.com", "password": "SomePassword123!"}),
+            content_type="application/json",
+            HTTP_X_CSRFTOKEN=csrf,
+        )
+        self.assertEqual(login_resp.status_code, 400)
+
+        join_resp = self.client.post(
+            "/api/join/checkout/",
+            data=json.dumps({
+                "plan": "monthly",
+                "name": "Fake User",
+                "email": "test@gmail.com",
+                "phone": "09171234567",
+                "password": "StrongPassword123!",
+            }),
+            content_type="application/json",
+            HTTP_X_CSRFTOKEN=csrf,
+            REMOTE_ADDR="10.0.0.99",
+        )
+        self.assertEqual(join_resp.status_code, 400)

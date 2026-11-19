@@ -36,8 +36,10 @@ from apps.accounts.google_auth import (
     ensure_google_user_columns,
     exchange_google_code,
     verify_and_link_google_account,
+    verify_google_access_token,
     verify_google_id_token,
 )
+from apps.accounts.validators import validate_real_email
 
 # Backend roles -> the three shells the web app routes to.
 WEB_ROLE = {"OWNER": "ADMIN", "CASHIER": "ADMIN", "TRAINER": "TRAINER", "MEMBER": "MEMBER"}
@@ -70,6 +72,11 @@ def login_view(request):
         return JsonResponse({"detail": "Invalid request body."}, status=400)
 
     identity = payload.get("identity") or payload.get("username")
+    if isinstance(identity, str) and "@" in identity:
+        try:
+            identity = validate_real_email(identity)
+        except ValidationError as exc:
+            return JsonResponse({"detail": exc.messages[0]}, status=400)
     user = authenticate(request, username=_username_for(identity), password=payload.get("password"))
     if user is None:
         return JsonResponse({"detail": "Invalid credentials."}, status=401)
@@ -358,17 +365,24 @@ def google_config_view(request):
 
 @require_POST
 def google_auth_view(request):
-    """POST /api/auth/google/ {credential}: verify Google ID token and sign in or create Member."""
+    """POST /api/auth/google/: verify Google ID token or access token and sign in or create Member."""
     ensure_google_user_columns()
     data = _json_body(request)
     if data is None:
         return JsonResponse({"detail": "Invalid request body."}, status=400)
     credential = data.get("credential")
-    if not isinstance(credential, str) or not credential.strip():
+    access_token = data.get("access_token")
+    has_cred = isinstance(credential, str) and bool(credential.strip())
+    has_access = isinstance(access_token, str) and bool(access_token.strip())
+    if not has_cred and not has_access:
         return JsonResponse({"detail": "Missing Google credential."}, status=400)
 
     try:
-        claims = verify_google_id_token(credential.strip())
+        claims = (
+            verify_google_id_token(credential.strip())
+            if has_cred
+            else verify_google_access_token(access_token.strip())
+        )
         outcome = authenticate_google_member(claims)
     except GoogleAuthError as exc:
         return JsonResponse({"detail": exc.message, "code": exc.code}, status=exc.status_code)

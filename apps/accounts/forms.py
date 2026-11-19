@@ -5,12 +5,17 @@ Field-level validation only; the services own business rules and persistence.
 
 from django import forms
 
+from .validators import validate_real_email
+
 
 class SignupForm(forms.Form):
     """Public member signup: email + password."""
 
     email = forms.EmailField(max_length=254)
     password = forms.CharField(widget=forms.PasswordInput)
+
+    def clean_email(self):
+        return validate_real_email(self.cleaned_data.get("email", ""))
 
 
 class LoginForm(forms.Form):

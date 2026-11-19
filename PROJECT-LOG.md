@@ -2470,3 +2470,13 @@ Investigate and fix `Error 400: redirect_uri_mismatch` showing after deploying w
 - Verified with `python manage.py check` (0 errors) and `python manage.py test apps.accounts.tests.test_google_auth` (8/8 OK).
 ### Decision-log skill
 Never replace a working client-side ID-token flow with a server OAuth redirect automatically just because a client secret env var exists; keep redirect-URI-sensitive flows as an explicit fallback so domain/slash differences cannot break sign-in.
+
+## 2026-11-20 02:06 (Asia/Manila): Fix stuck Google popup (gsi/transform) and enforce real Gmail validation
+### What I asked for
+Fix Google Sign-In/Sign-Up getting stuck on a blank `accounts.google.com/gsi/transform` popup and ensure only real Gmail/email addresses are accepted when signing in or creating accounts.
+### What the agent decided and why
+- Set `SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"` in `profit/settings.py` and switched `web/google-auth.js` from the hidden `gsi/transform` iframe overlay to `google.accounts.oauth2.initTokenClient` with server-side `verify_google_access_token` (`apps/accounts/google_auth.py`, `api/auth.py`). See [[2026-11-20 Google popup flow and real Gmail validation]]
+- Added shared backend and frontend real-email validation (`apps/accounts/validators.py` and `ProFitAPI.validateRealEmail` in `web/api.js`) enforcing Gmail's 6–30 char alphanumeric-dot username rules, blocking typos (`gmai.com`, `gmail.co`), placeholders (`test@gmail.com`), and disposable domains across `login.html`, `join.html`, `forgot.html`, `SignupForm`, `create_join_checkout`, `create_member`, `login_view`, and `google_auth.py`, while removing the localhost demo login fallback in `web/login.html`.
+- Added COOP, `verify_google_access_token`, and fake/typo Gmail tests in `apps/accounts/tests/test_google_auth.py` and verified `python manage.py check` (0 errors) and `python manage.py test` (237/237 OK).
+### Decision-log skill
+Django's default `Cross-Origin-Opener-Policy: same-origin` breaks `window.opener` for cross-origin Google popups on Django-served pages; pair `same-origin-allow-popups` with direct `initTokenClient` popups (and server-side tokeninfo/userinfo verification) instead of hidden cross-origin iframe overlays, and enforce email-domain rules symmetrically on client and server.

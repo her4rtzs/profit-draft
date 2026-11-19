@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
-<script src="api.js?v=4"></script>
+<script src="api.js?v=5"></script>
 <style>
   :root{
     --gold:#e8b93a;
@@ -614,7 +614,9 @@
     const termsOk = $("terms").checked;
 
     const eName = name.length < 2 ? "Enter your full name (at least 2 characters)." : "";
-    const eEmail = !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) ? "Enter a valid email address." : "";
+    const eEmail = window.ProFitAPI?.validateRealEmail
+      ? window.ProFitAPI.validateRealEmail(email)
+      : (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) ? "Enter a valid email address." : "");
     const ePhone = phoneDigits.length !== 10 ? "Enter a 10-digit PH mobile number (e.g. 917 123 4567)." : "";
     const ePw = pw.length < 8 ? "Password must be at least 8 characters." : "";
     const ePw2 = pw !== pw2 ? "Passwords do not match." : "";
@@ -819,7 +821,7 @@
   });
 })();
 </script>
-<script src="google-auth.js?v=2"></script>
+<script src="google-auth.js?v=3"></script>
 <script src="portal-fx.js?v=2"></script>
 <script src="site-footer.js?v=6" defer></script>
 </body>

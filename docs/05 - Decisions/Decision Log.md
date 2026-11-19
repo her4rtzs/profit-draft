@@ -69,3 +69,5 @@ One note per decision, oldest first; entries with an `Unknown` date are listed l
 - [[2026-11-20 Clean extensionless URLs for web pages]]: Serve web/ pages at extensionless URLs and drop .html from every internal link; the landing page loads at the bare domain.
 - [[2026-11-20 Email notifications and custom domain sender]]: Send email notifications via custom domain `noreply@functionalfitnessgym.site`, add 403/422 Resend fallback, and align OAuth/CSRF hosts.
 - [[2026-11-20 Profile settings and legal pages load one global CSS bundle]]: Five pages drop from 13-14 stylesheets and up to four font families to one generated bundle and two fonts.
+
+- [[2026-11-20 Google popup flow and real Gmail validation]]: Use `same-origin-allow-popups` COOP + OAuth2 `initTokenClient` popup instead of `gsi/transform`, and enforce real Gmail/email validation.

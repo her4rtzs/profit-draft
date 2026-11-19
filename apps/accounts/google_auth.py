@@ -33,7 +33,6 @@ from dataclasses import dataclass
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.signing import BadSignature, SignatureExpired, TimestampSigner
-from django.core.validators import validate_email
 from django.db import IntegrityError, connection, transaction
 from django.db.models import Q
 from django.utils import timezone
@@ -43,11 +42,14 @@ from apps.membership.services import _split_name
 
 from .models import Role, User
 from .services import MAX_EMAIL_LENGTH, normalize_email
+from .validators import validate_real_email
 
 logger = logging.getLogger("apps.accounts.google_auth")
 
 GOOGLE_JWKS_URL = "https://www.googleapis.com/oauth2/v3/certs"
 GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
+GOOGLE_TOKENINFO_URL = "https://oauth2.googleapis.com/tokeninfo"
+GOOGLE_USERINFO_URL = "https://openidconnect.googleapis.com/v1/userinfo"
 GOOGLE_ISSUERS = frozenset({"https://accounts.google.com", "accounts.google.com"})
 GOOGLE_SCOPES = "openid email profile"
 JWKS_CACHE_TTL_SECONDS = 3600
@@ -218,6 +220,24 @@ def _verify_rs256_signature(signing_input: bytes, signature: bytes, jwk: dict) -
     return hmac.compare_digest(em, expected_em)
 
 
+def _validate_google_email(raw_email, email_verified) -> str:
+    if email_verified is not True:
+        raise GoogleAuthError(
+            "Your Google account email is not verified. Verify your email in Google first.",
+            status_code=400,
+            code="email_not_verified",
+        )
+    if not isinstance(raw_email, str):
+        raise GoogleAuthError("Google account did not provide an email address.", status_code=400, code="invalid_claims")
+    try:
+        norm_email = validate_real_email(raw_email)
+    except ValidationError as exc:
+        raise GoogleAuthError(exc.messages[0], status_code=400, code="invalid_claims") from exc
+    if len(norm_email) > MAX_EMAIL_LENGTH:
+        raise GoogleAuthError("Email address is too long for this portal.", status_code=400, code="invalid_claims")
+    return norm_email
+
+
 def verify_google_id_token(
     token: str,
     *,
@@ -291,25 +311,7 @@ def verify_google_id_token(
     if not isinstance(sub, str) or not sub.strip() or len(sub) > 255:
         raise GoogleAuthError("Google account identifier missing.", status_code=400, code="invalid_claims")
 
-    raw_email = claims.get("email")
-    email_verified = claims.get("email_verified")
-    if email_verified is not True:
-        raise GoogleAuthError(
-            "Your Google account email is not verified. Verify your email in Google first.",
-            status_code=400,
-            code="email_not_verified",
-        )
-    if not isinstance(raw_email, str):
-        raise GoogleAuthError("Google account did not provide an email address.", status_code=400, code="invalid_claims")
-
-    norm_email = normalize_email(raw_email)
-    try:
-        validate_email(norm_email)
-    except ValidationError as exc:
-        raise GoogleAuthError("Google account provided an invalid email address.", status_code=400, code="invalid_claims") from exc
-
-    if len(norm_email) > MAX_EMAIL_LENGTH:
-        raise GoogleAuthError("Email address is too long for this portal.", status_code=400, code="invalid_claims")
+    norm_email = _validate_google_email(claims.get("email"), claims.get("email_verified"))
 
     return GoogleClaims(
         sub=sub.strip(),
@@ -317,6 +319,73 @@ def verify_google_id_token(
         email_verified=True,
         name=str(claims.get("name") or "").strip()[:150],
         picture=str(claims.get("picture") or "").strip(),
+    )
+
+
+def _google_get_json(url: str, *, headers: dict[str, str] | None = None, http_get=None) -> dict:
+    if http_get is not None:
+        data = http_get(url, headers or {})
+    else:
+        req = urllib.request.Request(url, headers={"Accept": "application/json", **(headers or {})}, method="GET")
+        try:
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+        except urllib.error.HTTPError as exc:
+            logger.warning("event=google_oauth_http_error status=%s", exc.code)
+            if exc.code in (400, 401, 403):
+                raise GoogleAuthError("Google credential could not be verified. Please try again.", status_code=401, code="invalid_token") from exc
+            raise GoogleAuthError("Could not reach Google to verify sign-in. Please try again.", status_code=503, code="network_error") from exc
+        except (urllib.error.URLError, TimeoutError, ValueError) as exc:
+            logger.warning("event=google_oauth_network_error")
+            raise GoogleAuthError("Could not reach Google to verify sign-in. Please check your connection and try again.", status_code=503, code="network_error") from exc
+    if not isinstance(data, dict):
+        raise GoogleAuthError("Unable to verify Google credentials right now. Please try again.", status_code=503, code="invalid_response")
+    return data
+
+
+def verify_google_access_token(
+    access_token: str,
+    *,
+    client_id: str | None = None,
+    http_get=None,
+) -> GoogleClaims:
+    """Verify a Google OAuth 2.0 access token via tokeninfo and fetch userinfo claims."""
+    expected_client_id = (client_id if client_id is not None else getattr(settings, "GOOGLE_CLIENT_ID", "")).strip()
+    if not expected_client_id:
+        raise GoogleAuthError("Google Sign-In is not configured on this server.", status_code=503, code="not_configured")
+    if not isinstance(access_token, str) or not access_token.strip():
+        raise GoogleAuthError("Invalid Google access token.", status_code=401, code="invalid_token")
+
+    token = access_token.strip()
+    tokeninfo_url = f"{GOOGLE_TOKENINFO_URL}?{urllib.parse.urlencode({'access_token': token})}"
+    token_info = _google_get_json(tokeninfo_url, http_get=http_get)
+
+    aud = token_info.get("aud")
+    azp = token_info.get("azp")
+    aud_matches = (expected_client_id in aud) if isinstance(aud, list) else (aud == expected_client_id)
+    if not aud_matches and azp != expected_client_id:
+        raise GoogleAuthError("Google credential audience mismatch.", status_code=401, code="invalid_token")
+
+    try:
+        expires_in = int(token_info.get("expires_in", 0))
+    except (TypeError, ValueError) as exc:
+        raise GoogleAuthError("Invalid Google credential expiration.", status_code=401, code="invalid_token") from exc
+    if expires_in <= 0:
+        raise GoogleAuthError("Your Google sign-in session expired. Please try again.", status_code=401, code="token_expired")
+
+    userinfo = _google_get_json(GOOGLE_USERINFO_URL, headers={"Authorization": f"Bearer {token}"}, http_get=http_get)
+    sub = userinfo.get("sub")
+    if not isinstance(sub, str) or not sub.strip() or len(sub) > 255:
+        raise GoogleAuthError("Google account identifier missing.", status_code=400, code="invalid_claims")
+
+    norm_email = _validate_google_email(userinfo.get("email"), userinfo.get("email_verified"))
+
+    return GoogleClaims(
+        sub=sub.strip(),
+        email=norm_email,
+        email_verified=True,
+        name=str(userinfo.get("name") or "").strip()[:150],
+        picture=str(userinfo.get("picture") or "").strip(),
     )
 
 

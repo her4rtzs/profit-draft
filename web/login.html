@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
-<script src="api.js?v=4"></script>
+<script src="api.js?v=5"></script>
 <style>
   :root{
     --gold:#e8b93a;
@@ -457,6 +457,10 @@
     $('authMessage').hidden = true;
     const identity = $('identity').value.trim(), password = pwEl.value;
     if (!identity) { $('identityError').textContent = 'Enter your email or username.'; $('identity').focus(); return; }
+    if (identity.includes('@') && window.ProFitAPI?.validateRealEmail) {
+      const emailErr = window.ProFitAPI.validateRealEmail(identity);
+      if (emailErr) { $('identityError').textContent = emailErr; $('identity').focus(); return; }
+    }
     if (!password) { $('passwordError').textContent = 'Enter your password.'; pwEl.focus(); return; }
     setBusy(true);
     try {
@@ -489,19 +493,6 @@
         }
       }
     } catch (err) {
-      if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
-        try { sessionStorage.removeItem('profit-logged-out'); } catch (_) {}
-        const hint = identity.toLowerCase(), role = /coach|trainer/.test(hint) ? 'trainer' : /member/.test(hint) ? 'member' : 'admin';
-        const isTrainer = role === 'trainer', isMember = role === 'member';
-        const session = { name: isMember ? 'Demo Member' : isTrainer ? 'Coach Mika' : 'Administrator', role: isTrainer ? 'TRAINER' : isMember ? 'MEMBER' : 'ADMIN', demo: true };
-        const remember = $('rememberMe')?.checked;
-        (remember ? localStorage : sessionStorage).setItem('profit-demo-session', JSON.stringify(session));
-        sessionStorage.setItem('profit-verified-session', JSON.stringify(session));
-        sessionStorage.setItem('pf-auth-just-logged-in', '1');
-        message('Signed in (local mode). Opening workspace…', false);
-        setTimeout(() => location.replace(HOME[role]), 350);
-        return;
-      }
       message(err.status === 401 ? 'Those sign-in details were not accepted. Check them and try again.' : err.message || 'Sign-in is currently unavailable.', true);
       setBusy(false);
       pwEl.value = '';
@@ -531,7 +522,7 @@
   });
 })();
 </script>
-<script src="google-auth.js?v=2"></script>
+<script src="google-auth.js?v=3"></script>
 <script src="portal-fx.js?v=2"></script>
 <script src="site-footer.js?v=7" defer></script>
 </body>
