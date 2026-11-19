@@ -663,7 +663,6 @@ body .topbar .search kbd { border: 1px solid var(--border) !important; backgroun
   height: 7px;
   border-radius: 50%;
   background: var(--green);
-  animation: ts-pulse 2s infinite;
 }
 
 .strip-clock {
@@ -773,7 +772,6 @@ body.dark .content-card, body.dark .chart-card, body.dark .dashboard .card { bor
 
 .stat-card { padding: 20px 22px !important; }
 .stat-card:hover { transform: none !important; box-shadow: none !important; border-color: var(--border) !important; }
-.stat-card::after { opacity: .5; }
 
 .stat-icon {
   width: 40px !important; height: 40px !important;
@@ -894,9 +892,8 @@ body.dark .quick-action:hover, body.dark .quick-action:focus-visible {
 .bar.empty { background: color-mix(in srgb, var(--text) 6%, transparent) !important; opacity: .5; }
 .bar.has-data, .bar.is-top, body.dark .bar.has-data, body:not(.dark) .bar.has-data {
   background: linear-gradient(180deg, color-mix(in srgb, var(--gold) 84%, #ffffff) 0%, var(--gold) 100%) !important;
-  box-shadow: 0 0 18px -4px color-mix(in srgb, var(--gold) 55%, transparent) !important;
 }
-.bar.has-data:hover, body.dark .bar.has-data:hover { filter: brightness(1.12); box-shadow: 0 0 26px -4px color-mix(in srgb, var(--gold) 75%, transparent) !important; }
+.bar.has-data:hover, body.dark .bar.has-data:hover { filter: brightness(1.12); }
 .bar span { color: var(--text) !important; background: var(--card) !important; border: 1px solid var(--border) !important; border-radius: 8px; font-weight: 700; font-size: 12px; }
 .bar-column label { color: var(--muted) !important; font-weight: 600; font-size: 11.5px; }
 
@@ -1211,7 +1208,7 @@ input[readonly] { color: var(--faint) !important; }
 .welcome { color: var(--gold) !important; }
 
 .pp-dash-hero {
-  background: radial-gradient(600px 200px at 100% 0%, color-mix(in srgb, var(--gold) 22%, transparent), transparent 72%), var(--card) !important;
+  background: var(--card) !important;
   border: 1px solid var(--border) !important;
   border-radius: var(--radius-lg) !important;
 }
@@ -1349,7 +1346,7 @@ input[readonly] { color: var(--faint) !important; }
 .portal-heading-icon { background: var(--gold-grad) !important; color: var(--on-accent) !important; border-radius: 14px !important; }
 .portal-kicker { color: var(--gold) !important; letter-spacing: .16em; }
 .auth-points i { background: var(--green-soft) !important; color: var(--green) !important; }
-.member-hero { background: radial-gradient(circle at 85% 20%, var(--gold-soft), transparent 42%), var(--card) !important; border-color: var(--border) !important; border-radius: var(--radius-lg) !important; }
+.member-hero { background: var(--card) !important; border-color: var(--border) !important; border-radius: var(--radius-lg) !important; }
 
 /* --------------------------------------------------------------------------
    16i · Member space — canvas, hero and diary
@@ -2102,14 +2099,6 @@ input[readonly] { color: var(--faint) !important; }
   box-shadow: 0 24px 70px rgba(0, 0, 0, .30) !important;
   position: relative;
   overflow: hidden;
-}
-/* Gold hairline across the top edge, like a playlist header. */
-.portal-card::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto;
-  height: 3px;
-  background: var(--gold-grad);
 }
 .portal-card-heading {
   display: flex !important;
@@ -2938,13 +2927,6 @@ body.dark input[type="date"] { color-scheme: dark; }
   margin-bottom: 14px !important;
   overflow: hidden;
   transition: transform var(--ease), box-shadow var(--ease), border-color var(--ease);
-}
-.pp-diary-list .pp-entry::before {
-  content: "";
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
-  width: 3px;
-  background: linear-gradient(180deg, var(--gold), color-mix(in srgb, var(--gold) 25%, transparent));
 }
 .pp-diary-list .pp-entry:hover {
   transform: translateY(-2px);

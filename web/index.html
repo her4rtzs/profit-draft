@@ -88,25 +88,21 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
         <!-- QUICK ACTIONS -->
         <section class="quick-actions" aria-label="Quick actions">
           <a class="quick-action qa-gold" href="members.html#enrollment">
-            <span class="qa-glow" aria-hidden="true"></span>
             <span class="quick-action-icon" aria-hidden="true"><i class="fa-solid fa-user-plus"></i></span>
             <span class="qa-details"><strong>Enroll a member</strong><small>Add to the gym roster</small></span>
             <i class="fa-solid fa-arrow-up-right-from-square action-arrow" aria-hidden="true"></i>
           </a>
           <a class="quick-action qa-cyan" href="attendance.html">
-            <span class="qa-glow" aria-hidden="true"></span>
             <span class="quick-action-icon" aria-hidden="true"><i class="fa-solid fa-calendar-check"></i></span>
             <span class="qa-details"><strong>Record attendance</strong><small>Manage today's check-ins</small></span>
             <i class="fa-solid fa-arrow-up-right-from-square action-arrow" aria-hidden="true"></i>
           </a>
           <a class="quick-action qa-emerald" href="payments.html">
-            <span class="qa-glow" aria-hidden="true"></span>
             <span class="quick-action-icon" aria-hidden="true"><i class="fa-solid fa-credit-card"></i></span>
             <span class="qa-details"><strong>Record a payment</strong><small>Update member billing</small></span>
             <i class="fa-solid fa-arrow-up-right-from-square action-arrow" aria-hidden="true"></i>
           </a>
           <a class="quick-action qa-violet" href="reports.html">
-            <span class="qa-glow" aria-hidden="true"></span>
             <span class="quick-action-icon" aria-hidden="true"><i class="fa-solid fa-chart-line"></i></span>
             <span class="qa-details"><strong>View reports</strong><small>Review gym performance</small></span>
             <i class="fa-solid fa-arrow-up-right-from-square action-arrow" aria-hidden="true"></i>
@@ -118,8 +114,6 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
 
             <!-- 1. TOTAL MEMBERS (Gold / Amber) -->
             <div class="stat-card kpi-card kpi-gold" id="kpiTotalMembersCard">
-                <div class="kpi-glow" aria-hidden="true"></div>
-                <div class="kpi-watermark" aria-hidden="true"><i class="fa-solid fa-users"></i></div>
                 <div class="stat-top">
                     <div class="stat-icon" aria-hidden="true"><i class="fa-solid fa-users"></i></div>
                     <h3 class="kpi-title">Total Members</h3>
@@ -131,13 +125,6 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
                         <small class="kpi-sub" id="kpiTotalMembersSub">
                             <span class="kpi-trend positive"><i class="fa-solid fa-arrow-up"></i> +12%</span> from last month
                         </small>
-                        <div class="kpi-sparkline" aria-hidden="true">
-                            <span class="bar b1"></span>
-                            <span class="bar b2"></span>
-                            <span class="bar b3"></span>
-                            <span class="bar b4"></span>
-                            <span class="bar b5"></span>
-                        </div>
                     </div>
                     <div class="stat-skel" aria-hidden="true"><span class="pf-sk sk-val"></span><span class="pf-sk sk-sub"></span></div>
                 </div>
@@ -145,8 +132,6 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
 
             <!-- 2. EXPIRED MEMBERS (Coral Red) -->
             <div class="stat-card kpi-card kpi-red" id="kpiExpiredCard">
-                <div class="kpi-glow" aria-hidden="true"></div>
-                <div class="kpi-watermark" aria-hidden="true"><i class="fa-solid fa-calendar-xmark"></i></div>
                 <div class="stat-top">
                     <div class="stat-icon" aria-hidden="true"><i class="fa-solid fa-user-xmark"></i></div>
                     <h3 class="kpi-title">Expired Members</h3>
@@ -158,13 +143,6 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
                         <small class="kpi-sub" id="kpiExpiredSub">
                             <span class="kpi-trend neutral">&rarr; No change</span>
                         </small>
-                        <div class="kpi-sparkline" aria-hidden="true">
-                            <span class="bar b1"></span>
-                            <span class="bar b2"></span>
-                            <span class="bar b3"></span>
-                            <span class="bar b4"></span>
-                            <span class="bar b5"></span>
-                        </div>
                     </div>
                     <div class="stat-skel" aria-hidden="true"><span class="pf-sk sk-val"></span><span class="pf-sk sk-sub"></span></div>
                 </div>
@@ -172,8 +150,6 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
 
             <!-- 3. EXPIRING SOON (Cyan / Teal) -->
             <div class="stat-card kpi-card kpi-cyan" id="kpiExpiringCard">
-                <div class="kpi-glow" aria-hidden="true"></div>
-                <div class="kpi-watermark" aria-hidden="true"><i class="fa-regular fa-clock"></i></div>
                 <div class="stat-top">
                     <div class="stat-icon" aria-hidden="true"><i class="fa-solid fa-hourglass-half"></i></div>
                     <h3 class="kpi-title">Expiring Soon</h3>
@@ -185,13 +161,6 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
                         <small class="kpi-sub" id="kpiExpiringSub">
                             <span class="kpi-trend positive"><i class="fa-solid fa-arrow-up"></i> +2</span> this month
                         </small>
-                        <div class="kpi-sparkline" aria-hidden="true">
-                            <span class="bar b1"></span>
-                            <span class="bar b2"></span>
-                            <span class="bar b3"></span>
-                            <span class="bar b4"></span>
-                            <span class="bar b5"></span>
-                        </div>
                     </div>
                     <div class="stat-skel" aria-hidden="true"><span class="pf-sk sk-val"></span><span class="pf-sk sk-sub"></span></div>
                 </div>
@@ -199,8 +168,6 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
 
             <!-- 4. TOTAL REVENUE (Violet / Purple) -->
             <div class="stat-card revenue-card kpi-card kpi-violet" id="kpiRevenueCard">
-                <div class="kpi-glow" aria-hidden="true"></div>
-                <div class="kpi-watermark" aria-hidden="true"><i class="fa-solid fa-arrow-trend-up"></i></div>
                 <div class="stat-top">
                     <div class="stat-icon" aria-hidden="true"><i class="fa-solid fa-peso-sign"></i></div>
                     <h3 class="kpi-title">Total Revenue</h3>
@@ -212,13 +179,6 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
                         <small class="kpi-sub" id="kpiRevenueSub">
                             <span class="kpi-trend neutral">&rarr; No payments yet</span>
                         </small>
-                        <div class="kpi-sparkline" aria-hidden="true">
-                            <span class="bar b1"></span>
-                            <span class="bar b2"></span>
-                            <span class="bar b3"></span>
-                            <span class="bar b4"></span>
-                            <span class="bar b5"></span>
-                        </div>
                     </div>
                     <div class="stat-skel" aria-hidden="true"><span class="pf-sk sk-val"></span><span class="pf-sk sk-sub"></span></div>
                 </div>

@@ -2250,3 +2250,14 @@ Make the portal installable per AGENTS.md, preferring less code where the `web/`
 - Changed only the home hero (lead sentence and its "Pay online" chip) to QR Ph and left every other public mention in place, because the user asked for a list before changing the rest.
 ### Decision-log skill
 When a folder is served by `WHITENOISE_ROOT`, a static file beats a Django view for anything that does not need templating; the only thing to remember is registering the MIME type, since Python's `mimetypes` does not know `.webmanifest`.
+
+## 2026-11-19 09:10 (Asia/Manila): Distill the decorative CSS layer
+### What I asked for
+Commit the `/impeccable distill` pass that removed the repeated decorative layer from the `web/` pages.
+### What the agent decided and why
+- Verified the pass first: 13 files, +56/-392, all decoration removal (edge stripes, radial halos, sparkline and watermark SVGs, icon glows, chart swoosh, duplicate hero titles on Payments and Reports) plus the variables left orphaned by it, and nothing that JavaScript selects.
+- Committed it on `feature/installable-app` only after `python manage.py test` passed (206 tests) and a check confirmed every page still carries the manifest, theme-color and Apple tags, because the same commit range holds the installable-app work.
+- Left the palette merge, the `!important` layer, CSS bundling and the copy fixes out: they are separate commands from the audit and would have made this diff unreviewable.
+- Noted the pre-existing `styles.css` brace imbalance (one extra `}` in `HEAD`, unchanged by this pass) instead of fixing it inside a CSS-cleanup commit.
+### Decision-log skill
+Delete decoration in its own commit, with the variable list pruned in the same diff; mixing a decorative deletion with a palette or bundling change makes it impossible to tell which edit broke a page.

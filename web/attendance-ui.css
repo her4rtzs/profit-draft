@@ -3,32 +3,15 @@ body[data-page="attendance"] .stats.three {
   margin-bottom: 18px;
 }
 
-/* 2) KPI CARDS: Only the container shine */
+/* 2) KPI cards: same flat surface as the dashboard */
 body[data-page="attendance"] .stats.three .stat-card,
 body[data-page="attendance"] .checkin-panel,
 body[data-page="attendance"] .checkins-table-panel {
   position: relative;
   overflow: hidden;
   border-radius: 20px !important;
-  background: radial-gradient(circle at 0% 0%, rgba(255, 170, 0, 0.12), transparent 52%),
-              linear-gradient(160deg, #141f36, #0e1627, #0b1120) !important;
+  background: var(--card) !important;
   border: 1px solid rgba(255, 170, 0, 0.24) !important;
-  box-shadow: 0 0 24px rgba(255, 170, 0, 0.08) !important;
-}
-
-body[data-page="attendance"] .stats.three .stat-card::before,
-body[data-page="attendance"] .checkin-panel::before,
-body[data-page="attendance"] .checkins-table-panel::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 8%;
-  right: 8%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #ffb020, transparent);
-  box-shadow: 0 0 12px rgba(255, 176, 32, 0.55);
-  pointer-events: none;
-  z-index: 2;
 }
 
 body[data-page="attendance"] .stats.three .stat-card {
@@ -162,7 +145,6 @@ body[data-page="attendance"] .attendance-chart-panel .bar-column .bar {
 
 body[data-page="attendance"] .attendance-chart-panel .bar-column .bar.is-today {
   background: linear-gradient(180deg, #fde68a 0%, #fbbf24 55%, #f59e0b 100%) !important;
-  box-shadow: 0 0 22px rgba(251, 191, 36, 0.6) !important;
   filter: brightness(1.12);
 }
 
@@ -170,18 +152,6 @@ body[data-page="attendance"] .attendance-chart-panel .bar-column .bar.is-today {
   body[data-page="attendance"] .attendance-chart-panel .bar-column .bar {
     transition: none !important;
   }
-}
-
-body[data-page="attendance"] .att-wave {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 420px;
-  height: 52px;
-  pointer-events: none;
-  z-index: 0;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 35%);
-  mask-image: linear-gradient(90deg, transparent, #000 35%);
 }
 
 /* 3) TODAY'S CHECK-INS TABLE (same seamless pattern as Browse members) */

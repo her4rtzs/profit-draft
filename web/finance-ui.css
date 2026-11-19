@@ -56,8 +56,8 @@ html body.pf-staff[data-page="reports"] .main-content {
   position: relative;
   overflow: hidden;
   border-radius: 18px;
-  padding: 26px 28px;
-  min-height: 158px;
+  padding: 18px 24px;
+  min-height: 0;
   margin-bottom: 20px !important;
   border: 1px solid rgba(245, 158, 11, 0.24);
   background: linear-gradient(135deg, #0b1120 0%, #0f172a 60%, #111827 100%);
@@ -73,22 +73,6 @@ body:not(.dark) .fn-header-card {
   background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
   border-color: rgba(217, 170, 82, 0.42);
   box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
-}
-
-.fn-header-card::before,
-.fn-card::before,
-.fn-kpi-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 8%;
-  right: 8%;
-  height: 1px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, transparent 0%, rgba(245, 158, 11, 0.45) 50%, transparent 100%);
-  opacity: 0.65;
-  pointer-events: none;
-  z-index: 2;
 }
 
 .fn-header-card > * {
@@ -281,30 +265,18 @@ body:not(.dark) .fn-tab-icon {
 }
 
 .fn-card--amber {
-  --fn-top-line: rgba(245, 158, 11, 0.55);
-  --fn-top-line-2: rgba(224, 160, 32, 0.55);
-  --fn-top-glow: rgba(245, 158, 11, 0.2);
   --fn-icon-color: #fbbf24;
   --fn-icon-border: rgba(245, 158, 11, 0.28);
-  --fn-icon-glow: rgba(245, 158, 11, 0.1);
 }
 
 .fn-card--green {
-  --fn-top-line: rgba(34, 197, 94, 0.55);
-  --fn-top-line-2: rgba(74, 222, 128, 0.55);
-  --fn-top-glow: rgba(34, 197, 94, 0.2);
   --fn-icon-color: #4ade80;
   --fn-icon-border: rgba(34, 197, 94, 0.28);
-  --fn-icon-glow: rgba(34, 197, 94, 0.1);
 }
 
 .fn-card--cyan {
-  --fn-top-line: rgba(56, 189, 248, 0.55);
-  --fn-top-line-2: rgba(125, 211, 252, 0.55);
-  --fn-top-glow: rgba(56, 189, 248, 0.2);
   --fn-icon-color: #38bdf8;
   --fn-icon-border: rgba(56, 189, 248, 0.28);
-  --fn-icon-glow: rgba(56, 189, 248, 0.1);
 }
 
 .fn-card-head {
@@ -335,7 +307,6 @@ body:not(.dark) .fn-tab-icon {
   background: rgba(9, 14, 26, 0.88);
   border: 1px solid var(--fn-icon-border, rgba(255, 176, 32, 0.4));
   color: var(--fn-icon-color, #fbbf24);
-  box-shadow: 0 0 16px var(--fn-icon-glow, rgba(255, 176, 32, 0.22));
 }
 
 body:not(.dark) .fn-icon-box {
@@ -392,33 +363,19 @@ body:not(.dark) .fn-icon-box {
   background: var(--fn-bg-card);
   box-shadow: none;
 }
-.fn-kpi-watermark { display: none !important; }
-
 .fn-kpi-card--green {
   --fn-kpi-color: #22c55e;
   --fn-kpi-border: rgba(34, 197, 94, 0.38);
-  --fn-kpi-glow: rgba(34, 197, 94, 0.24);
-  --fn-top-line: #22c55e;
-  --fn-top-line-2: #4ade80;
-  --fn-top-glow: rgba(34, 197, 94, 0.65);
 }
 
 .fn-kpi-card--amber {
   --fn-kpi-color: #f59e0b;
   --fn-kpi-border: rgba(245, 158, 11, 0.4);
-  --fn-kpi-glow: rgba(245, 158, 11, 0.24);
-  --fn-top-line: #f59e0b;
-  --fn-top-line-2: #fbbf24;
-  --fn-top-glow: rgba(245, 158, 11, 0.65);
 }
 
 .fn-kpi-card--cyan {
-  --fn-kpi-color: #38bdf8;
-  --fn-kpi-border: rgba(56, 189, 248, 0.38);
-  --fn-kpi-glow: rgba(56, 189, 248, 0.24);
-  --fn-top-line: #38bdf8;
-  --fn-top-line-2: #7dd3fc;
-  --fn-top-glow: rgba(56, 189, 248, 0.65);
+  --fn-kpi-color: #f59e0b;
+  --fn-kpi-border: rgba(245, 158, 11, 0.4);
 }
 
 .fn-kpi-top {
@@ -440,7 +397,6 @@ body:not(.dark) .fn-icon-box {
   background: rgba(9, 14, 26, 0.85);
   border: 1px solid var(--fn-kpi-border);
   color: var(--fn-kpi-color);
-  box-shadow: 0 0 14px var(--fn-kpi-glow);
 }
 
 body:not(.dark) .fn-kpi-circle {
@@ -484,38 +440,6 @@ body:not(.dark) .fn-kpi-circle {
 .fn-kpi-cap {
   font-size: 12px;
   color: var(--fn-muted);
-}
-
-.fn-kpi-bars {
-  display: inline-flex;
-  align-items: flex-end;
-  gap: 3px;
-  height: 18px;
-}
-
-.fn-kpi-bars span {
-  width: 3px;
-  border-radius: 999px;
-  background: var(--fn-kpi-color);
-  opacity: 0.72;
-}
-
-.fn-kpi-bars span:nth-child(1) { height: 6px; opacity: 0.45; }
-.fn-kpi-bars span:nth-child(2) { height: 10px; opacity: 0.6; }
-.fn-kpi-bars span:nth-child(3) { height: 14px; opacity: 0.8; }
-.fn-kpi-bars span:nth-child(4) { height: 18px; opacity: 1; }
-
-.fn-kpi-watermark {
-  position: absolute;
-  right: 56px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 64px;
-  height: 64px;
-  color: var(--fn-kpi-color);
-  opacity: 0.08;
-  pointer-events: none;
-  z-index: 0;
 }
 
 /* ---------- 4. LAYOUT GRIDS ---------- */

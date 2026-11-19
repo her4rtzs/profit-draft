@@ -255,7 +255,7 @@ html body nav.sidebar .menulist a.active:hover {
   border: 1px solid rgba(244, 197, 66, 0.45) !important;
   color: #FFFFFF !important;
   font-weight: 700 !important;
-  box-shadow: inset 3px 0 0 #F4C542, 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
 }
 
 html body nav.sidebar .menulist a.active .icon,

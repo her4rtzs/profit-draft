@@ -182,18 +182,6 @@ body[data-page="members"] .pp-browse-title {
   display: flex;
   align-items: center;
   gap: 15px;
-  padding-left: 16px;
-}
-
-body[data-page="members"] .pp-browse-title::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 4px;
-  bottom: 4px;
-  width: 3.5px;
-  border-radius: 999px;
-  background: #f59e0b;
 }
 
 body[data-page="members"] .pp-browse-ico {
