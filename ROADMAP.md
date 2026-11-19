@@ -20,7 +20,7 @@ Last reviewed: 2026-10-18, on the single root tree after the duplicate `ProFit-c
 | 3 Billing & Subscription | Pass, with deviations | PayMongo Checkout Sessions, webhook with signature verification + idempotent handling + race handling (`apps/billing/webhooks.py`), self-enrollment in one transaction (`complete_signup`), pay-first join, failed/abandoned payments stay pending, desk cash/GCash/bank payments (`finance.ManualPayment`), webhook/checkout tests. Deviations: see Conformance with AGENTS.md. |
 | 4 Financial Dashboard | **In progress** | Owner-only gate, transaction list with search/member/method filters, monthly totals (`monthly_summary`), client-side CSV and print-to-PDF export. Missing: server-side PDF stored in Supabase Storage, status reconciliation view, and a status filter over paid/pending/failed. |
 | 4.5 Installable Web App | Implemented, gate open | Static `web/manifest.webmanifest` served by WhiteNoise at the site root with `application/manifest+json` via `WHITENOISE_MIMETYPES`, `static/icons/` (192, 512, maskable 512, Apple 180) from the approved logo, manifest/theme-color/Apple tags on every page, install card on three pages, `static/js/install-help.js`, `profit/tests/test_installable.py`. No service worker, offline cache, or push. The old `web/sw.js`, `web/pwa.js` and service worker registration are deleted. Real-phone install check still to be done by the owner. |
-| 5 Member Mobile App | Not started | `mobile/` is the Expo skeleton from the scaffold: one `MembershipScreen`, no auth, no payment flow, `npm test` is a stub. |
+| 5 Member Mobile App | Removed | Native app dropped; members use the installable web portal in Phase 4.5. The Expo skeleton was deleted from the repo. |
 | 6 Hardening & Launch | Not started | No security review, no load testing, no member import, no staff guide, no monitoring. |
 | 7 After Launch | Not started | No PayMongo business registration, no extra methods, `Architecture.md` not updated for the shipped methods. |
 
@@ -40,7 +40,7 @@ These exist in the code but are not in the phases below and are not sanctioned b
 
 Goal: an empty but deployable skeleton.
 
-- [x] Repo scaffold matching the layout in `AGENTS.md` (`profit/`, `apps/`, `api/`, `components/`, `mobile/`, `supabase/cron/`). Note: `docs/` from the `AGENTS.md` layout does not exist yet; the docs live at the repo root.
+- [x] Repo scaffold matching the layout in `AGENTS.md` (`profit/`, `apps/`, `api/`, `components/`, `supabase/cron/`). Note: `docs/` from the `AGENTS.md` layout is the Obsidian vault; `mobile/` was removed when the web portal became installable.
 - [x] Django project connected to Supabase PostgreSQL through the transaction-mode pooler (`DISABLE_SERVER_SIDE_CURSORS = True`, `CONN_MAX_AGE = 0`)
 - [x] Vercel deployment with `vercel.json`, WhiteNoise static files, and env vars set
 - [x] Tailwind + daisyUI compiled at build time; django-components, HTMX, Alpine.js, Lucide wired into a base template
@@ -54,7 +54,7 @@ Exit check: a "hello" page deploys to Vercel, reads from Supabase, and renders w
 Goal: secure login and the permission model everything else relies on.
 
 - [x] Custom user model and roles: Owner, Cashier, Personal Trainer, Member
-- [x] Login/logout for the staff portal; token or session auth for the DRF mobile API (session auth in `api/auth.py`)
+- [x] Login/logout for the staff portal; session auth for the DRF web API (session auth in `api/auth.py`)
 - [x] Permission checks enforced server-side on views and DRF endpoints, following the RBAC matrix in `AGENTS.md`
 - [x] Public sign-up creates the Member role only; Owner assigns staff roles
 - [x] Tests for every role/area combination in the matrix
@@ -119,7 +119,6 @@ Exit check: both phones pass the owner's checklist above.
 
 Goal: members can use their records and pay from their phones. Backend endpoints for each feature can be built in the earlier phases; this phase delivers the app.
 
-- [ ] React Native app with NativeWind, react-native-reusables, and lucide-react-native. The dependencies and one screen are in place (`mobile/`); the app is a skeleton.
 - [ ] Sign-up and login
 - [ ] Self-enrollment and payment flow (shows only the enabled payment methods, then waits for webhook-confirmed status)
 - [ ] Profile, attendance history, and subscription/expiry status screens

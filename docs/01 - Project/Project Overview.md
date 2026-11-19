@@ -30,7 +30,6 @@ The browser-facing API maps backend roles to three shells: `OWNER`/`CASHIER` →
 | Trainers | Trainer profile with capacity, member assignment, member request with approve/decline | `apps/trainers/models.py` |
 | Staff web portal | Static HTML/CSS/JS pages in `web/` (dashboard, members, attendance, payments, reports, trainers, announcements, settings, profile, login, welcome, FAQ, terms, privacy) plus Django-templated pages in `templates/` | `web/`, `templates/`, `profit/settings.py` (`WHITENOISE_ROOT = BASE_DIR / "web"`) |
 | Member portal / PWA | `web/member-home.html`, `web/join.html`, installable shell with service worker | `web/manifest.webmanifest`, `web/sw.js`, `web/pwa.js` |
-| Mobile app | Expo skeleton: one membership screen driving the session+CSRF auth sequence | `mobile/README.md`, `mobile/app.json`, `mobile/package.json` |
 
 ## Technology and dependencies
 
@@ -40,7 +39,6 @@ The browser-facing API maps backend roles to three shells: `OWNER`/`CASHIER` →
 | Database | SQLite fallback locally; Supabase PostgreSQL (transaction-mode pooler) in production | `profit/settings.py` (`DATABASES`) |
 | Staff portal (static) | Plain HTML/CSS/vanilla JS, no build step; Font Awesome and Google Fonts from CDNs; ProFit PWA shell | `web/`, `web/sw.js`, `web/config.js` |
 | Staff portal (Django) | Django templates, Tailwind + daisyUI compiled at build time, HTMX, Alpine.js, Lucide icons, django-components | `static/src/package.json`, `static/src/tailwind.config.js`, `static/vendor/`, `components/` |
-| Mobile | Expo 52, React Native 0.76.5, NativeWind 4.1.23, react-native-reusables, lucide-react-native | `mobile/package.json` |
 | Deploy | Vercel serverless function (`api/index.py` → `profit.wsgi`), WhiteNoise static files, build runs npm build then `collectstatic` | `vercel.json`, `api/index.py` |
 | Payments | PayMongo, test-mode account only, methods from `PAYMONGO_PAYMENT_METHODS` | `profit/settings.py`, `Architecture.md` §13 |
 | Scheduled jobs | Supabase `pg_cron` for membership expiry (SQL written but commented out) | `supabase/cron/membership_expiry.sql` |
@@ -56,12 +54,11 @@ The browser-facing API maps backend roles to three shells: `OWNER`/`CASHIER` →
 - **Member photo is a base64 data URL**, not Supabase Storage (`MemberProfile.photo_data`; `ROADMAP.md` phase 2 deviation).
 - **Financial reporting incomplete:** no server-side PDF, no status filter (paid/pending/failed listing), no reconciliation view (`ROADMAP.md` phase 4).
 - **Two overlapping web surfaces.** Static `web/` pages and Django `templates/` pages both exist; `ROADMAP.md` phase 6 lists "keep both or converge" as undecided.
-- **Mobile app is a skeleton.** `mobile/package.json` `test` script is a no-op stub; `ROADMAP.md` phase 5 is "Not started".
 - **Local stylesheet build output is absent.** `static/dist/` is referenced by `profit/settings.py` `STATICFILES_DIRS` and git-ignored, so it must be generated before the Django portal renders styled pages.
 
 ## Log backfill (facts stated in PROJECT-LOG.md, cited by entry date)
 
-- The product is **one portal with one login**; the user's role decides which pages they see. Staff and members use the same portal, which is installable on a phone home screen. The Expo skeleton from 2026-10-07 21:46 was built before this direction and is superseded by the installable web app. (`PROJECT-LOG.md`, 2026-10-18 17:40; 2026-11-16 11:00.)
+- The product is **one portal with one login**; the user's role decides which pages they see. Staff and members use the same portal, which is installable on a phone home screen. (`PROJECT-LOG.md`, 2026-10-18 17:40; 2026-11-16 11:00.)
 - The installable app has a public manifest, four icons exported from the approved logo, head tags on every page and an install card on staff settings, trainer settings and member home. There is no service worker, offline cache or push; the real-phone check is still open. (`PROJECT-LOG.md`, 2026-11-16 11:00; 2026-11-16 12:10.)
 - A `daily` plan at ₱80 / 1 day was added on 2026-11-08; plan keys must be added in four places (`apps/finance/services.py`, `apps/membership/services.py`, `web/data.js`, `web/member-pay.js`) plus the static join page. (`PROJECT-LOG.md`, 2026-11-08 12:38.)
 - Members can check in themselves through `POST /api/member/check-in/`, which goes through the shared `check_in_member` service with same-day idempotency; live state comes from the server and demo storage is used only offline. (`PROJECT-LOG.md`, 2026-11-08 12:57; 2026-11-08 13:10.)

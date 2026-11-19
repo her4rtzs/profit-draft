@@ -2,12 +2,11 @@
 
 ## Overview
 
-One Django project serves two client surfaces: a staff web portal and a member mobile app. Both talk to the same Django + DRF backend and the same Supabase PostgreSQL database; neither client touches Supabase or PayMongo credentials directly (`Architecture.md` §1, `README.md` lines 3–7).
+One Django project serves one web portal for staff and members. It talks to the same Django + DRF backend and the same Supabase PostgreSQL database; the browser never touches Supabase or PayMongo credentials directly (`Architecture.md` §1, `README.md` lines 3–7).
 
 ```
 Browser (web/)  ──┐
 Django pages    ──┼──►  Django + DRF  ──►  Supabase PostgreSQL (ORM only)
-Mobile (Expo)   ──┘         │
                             ├──► PayMongo Checkout Sessions (test mode)
                             └──◄── /webhooks/paymongo/ (signed events)
 
@@ -27,18 +26,16 @@ Supabase pg_cron ──► UPDATE membership_memberprofile (SQL, outside Django)
 | `apps/announcements/`, `apps/notifications/`, `apps/trainers/` | Announcement lifecycle, stored notifications, trainer assignment and requests | `apps/*/models.py` |
 | `web/` | Static staff portal, member portal, PWA shell, public pages; served at the site root | `profit/settings.py` (`WHITENOISE_ROOT`), `web/sw.js` |
 | `templates/`, `components/`, `static/` | Django-rendered portal pages, django-components, vendored HTMX/Alpine/Lucide, Tailwind source | `templates/`, `components/button/`, `static/vendor/` |
-| `mobile/` | Expo member app skeleton | `mobile/README.md`, `mobile/api/client.js` |
 | `supabase/cron/` | Membership-expiry SQL, applied by hand | `supabase/cron/membership_expiry.sql` |
 
 ## Data flow
 
 1. **Static portal (browser).** WhiteNoise serves `web/` at `/` (`WHITENOISE_ROOT`, `WHITENOISE_INDEX_FILE`). Pages call the same-origin `/api` through `web/api.js`: every non-GET request first ensures a `csrftoken` cookie (`GET /api/auth/csrf/`) and echoes it in `X-CSRFToken`; all requests use `credentials: "include"`.
 2. **Django-templated portal.** `profit/urls.py` routes `/` to `profit.views.home`, plus `accounts/`, `membership/`, `finance/` and `admin/` includes.
-3. **Mobile app.** Session + CSRF only: `GET /api/auth/csrf/` → `POST /api/auth/login/` with `X-CSRFToken` → `GET /api/membership/me/` → `GET /api/attendance/` (`mobile/README.md` lines 35–56).
-4. **Join / pay.** `api/join.py` and `api/member.py` call `apps/billing/services.py`: `create_join_checkout` (pay-first, no account yet → `PendingSignup` with hashed password) or `create_checkout` (existing member → `PENDING` `Subscription` + `Payment`). PayMongo hosts the session; `billing.services._paymongo_session` posts to the Checkout Sessions API.
-5. **Payment confirmation.** PayMongo calls `POST /webhooks/paymongo/` (`profit/urls.py` → `apps.billing.webhooks.paymongo_webhook`). The handler verifies the HMAC-SHA256 signature over the raw body, records the event in `WebhookEvent` (unique `event_id`), then inside one transaction flips the payment via `mark_payment_paid` / `mark_payment_failed` and, on a real pending→paid transition, calls `activate_paid_payment` → `renew_member`. A paid `PendingSignup` is completed by `complete_signup`.
-6. **Desk payments.** `finance.services.record_desk_payment` writes `ManualPayment`, renews the membership in the same transaction, and pushes a `Notification`.
-7. **Expiry.** `pg_cron` SQL (commented out, applied manually) flips `membership_memberprofile.membership_status` to `EXPIRED` where `expiry_date` is before the Manila date. The app also checks expiry at read time, so a skipped job does not grant access.
+3. **Join / pay.** `api/join.py` and `api/member.py` call `apps/billing/services.py`: `create_join_checkout` (pay-first, no account yet → `PendingSignup` with hashed password) or `create_checkout` (existing member → `PENDING` `Subscription` + `Payment`). PayMongo hosts the session; `billing.services._paymongo_session` posts to the Checkout Sessions API.
+4. **Payment confirmation.** PayMongo calls `POST /webhooks/paymongo/` (`profit/urls.py` → `apps.billing.webhooks.paymongo_webhook`). The handler verifies the HMAC-SHA256 signature over the raw body, records the event in `WebhookEvent` (unique `event_id`), then inside one transaction flips the payment via `mark_payment_paid` / `mark_payment_failed` and, on a real pending→paid transition, calls `activate_paid_payment` → `renew_member`. A paid `PendingSignup` is completed by `complete_signup`.
+5. **Desk payments.** `finance.services.record_desk_payment` writes `ManualPayment`, renews the membership in the same transaction, and pushes a `Notification`.
+6. **Expiry.** `pg_cron` SQL (commented out, applied manually) flips `membership_memberprofile.membership_status` to `EXPIRED` where `expiry_date` is before the Manila date. The app also checks expiry at read time, so a skipped job does not grant access.
 
 ## Boundaries
 

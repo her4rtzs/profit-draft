@@ -1,4 +1,4 @@
-"""Read-only serializers for the mobile member app.
+"""Read-only serializers for the member web portal.
 
 These expose membership data for reads only; writes are out of scope. No
 business logic lives here — services/models own that.

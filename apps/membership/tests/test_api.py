@@ -1,4 +1,4 @@
-"""DRF access-control tests for the mobile read API."""
+"""DRF access-control tests for the member read API."""
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase

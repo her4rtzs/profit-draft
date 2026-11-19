@@ -135,7 +135,7 @@ Safety rules:
 | 5 | Financial Dashboard (Module 3): transactions, reports | **In progress** (`ROADMAP.md` Phase 4): no server-side PDF in Supabase Storage and no status reconciliation view |
 | 6 | Hardening and handover: full permission review, backup run, owner guide | **Not started** (`ROADMAP.md` Phase 6) |
 
-`ROADMAP.md` carries the detailed checklist and numbers the phases differently, and this table's Phase 1 (database and security) is spread across its earlier phases. Because the native mobile app was dropped, the member-mobile-app phase in `ROADMAP.md` should be removed or replaced with the member web pages and the installable-app step, and the leftover `mobile/` skeleton should be deleted from the repo.
+`ROADMAP.md` carries the detailed checklist and numbers the phases differently, and this table's Phase 1 (database and security) is spread across its earlier phases. Because the native mobile app was dropped, the member-mobile-app phase in `ROADMAP.md` is marked removed, the member web pages and the installable-app step are tracked in Phase 4.5, and the leftover `mobile/` skeleton has been deleted from the repo.
 
 **Phase 0 gate checks:** the site loads on its Vercel URL; local runs against Dev, and the live site runs against Prod; static files and the base layout load with no errors; `ruff check .` and `python manage.py test` pass.
 **Phase 1 gate checks:** all tables exist as tracked migrations; RLS is enabled on every table (the Supabase public API returns nothing); a plan's price can only come from `plans`.

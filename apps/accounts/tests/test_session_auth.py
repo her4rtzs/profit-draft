@@ -1,6 +1,6 @@
-"""Session + CSRF auth-endpoint tests backing the mobile binding sequence.
+"""Session + CSRF auth-endpoint tests backing the web portal's binding sequence.
 
-Verifies the four-step contract the React Native client relies on:
+Verifies the four-step contract the browser client relies on:
   1. GET /api/auth/csrf/ sets the ``csrftoken`` cookie.
   2. POST /api/auth/login/ is CSRF-protected (403 without the token; 200 with
      the echoed token) — there is NO CSRF-exempt login endpoint.

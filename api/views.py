@@ -1,4 +1,4 @@
-"""DRF read viewsets for the mobile member app.
+"""DRF read viewsets for the member web portal.
 
 Routing (api/urls.py) uses a DefaultRouter:
   - GET /api/membership/me/  -> the caller's own MemberProfile (404 if absent)

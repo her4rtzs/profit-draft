@@ -1,9 +1,9 @@
 # ProFit — Gym Operations Management System
 
-Gym operations system for Functional Fitness Gym. It replaces paper logbooks and group-chat financial reports with a single backend that serves both a staff web portal and a member mobile app.
+Gym operations system for Functional Fitness Gym. It replaces paper logbooks and group-chat financial reports with a single backend that serves one installable web portal for staff and members.
 
 - **Staff** use a Django web portal (server-rendered, HTMX-driven).
-- **Members** use a React Native mobile app.
+- **Members** use the same web portal on their phone.
 - Both talk to one Django + Django REST Framework backend and one Supabase PostgreSQL database.
 
 > This repository is the **first-build scaffold**: a runnable, tested foundation with a vertical slice through each module. Some areas (full PayMongo payment flow, financial reporting, Supabase Storage, deploy automation) are intentionally documented stubs — see [Project status](#project-status).
@@ -15,7 +15,6 @@ Gym operations system for Functional Fitness Gym. It replaces paper logbooks and
 | Backend | Django + Django REST Framework, deployed as serverless functions on Vercel |
 | Database | Supabase PostgreSQL via the Django ORM |
 | Web (staff portal) | Django templates, Tailwind CSS, daisyUI, HTMX, Alpine.js, Lucide icons, django-components |
-| Mobile (member app) | React Native (Expo), NativeWind, react-native-reusables, lucide-react-native |
 | Files | Supabase Storage via `django-storages` (PDFs, profile images) — deferred |
 | Payments | PayMongo (GCash, Maya, cards) |
 | Scheduled jobs | Supabase `pg_cron` |
@@ -24,7 +23,7 @@ Timezone is `Asia/Manila`; currency is PHP (payment amounts are stored in centav
 
 ## Modules
 
-1. **Membership** — enrollment, attendance records, member profiles. Staff manage via web; members view via mobile.
+1. **Membership** — enrollment, attendance records, member profiles. Staff and members use the same web portal.
 2. **Billing & Subscription** — daily gym subscription payments through PayMongo. A `pg_cron` job expires memberships automatically.
 3. **Financial Dashboard** — transaction history and financial reports. Owner only.
 
@@ -49,9 +48,9 @@ apps/membership/   enrollment, attendance, member profiles (Module 1)
 apps/billing/      subscriptions, PayMongo integration, webhook receiver (Module 2)
 apps/finance/      transaction history and reports (Module 3)
 apps/accounts/     users, roles, RBAC permissions
-api/               DRF serializers, viewsets, and session-auth endpoints for mobile
-templates/, components/, static/   staff web portal (templates, django-components, assets)
-mobile/            React Native member app (see mobile/README.md)
+api/               DRF serializers, viewsets, and session-auth endpoints for the web portal
+templates/, components/, static/   Django-templated pages, django-components, assets
+web/               static portal pages served at the site root by WhiteNoise
 supabase/cron/     pg_cron SQL definitions (applied manually; not Django-managed)
 docs/              human-facing documentation
 ```
@@ -88,16 +87,6 @@ python manage.py makemigrations # create migrations
 python manage.py migrate        # apply migrations
 ruff check . && ruff format .   # lint and format
 ```
-
-## Getting started (mobile)
-
-```bash
-cd mobile
-npm install
-npm start
-```
-
-See [`mobile/README.md`](mobile/README.md) for the member app, including the exact CSRF/session-auth request sequence it uses against the backend.
 
 ## Configuration
 
@@ -137,7 +126,6 @@ Implemented in this first build:
 - `billing` (Module 2): models, single-writer payment mutators, and a concrete race-safe, signature-verifying, idempotent PayMongo webhook receiver.
 - `finance` (Module 3): model stub + Owner-only dashboard gate.
 - `supabase/cron/`: membership-expiry SQL stub.
-- `mobile/`: React Native skeleton that drives the session-auth sequence against the API.
 
 Deferred (documented stubs): full PayMongo payment-intent flow, financial reporting logic, Supabase Storage wiring, and deploy automation.
 

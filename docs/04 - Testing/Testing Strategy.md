@@ -27,7 +27,6 @@ There is no `pytest.ini`, `tox.ini`, `setup.cfg` or `pyproject.toml`; the runner
 | Run the suite | `python manage.py test` | `README.md` line 86, `AGENTS.md` |
 | Validate configuration | `python manage.py check` | `README.md` line 85 |
 | Lint / format | `ruff check . && ruff format .` | `README.md` line 89 (`ruff` is **not** in `requirements.txt` and not installed here) |
-| Mobile | `npm test` (in `mobile/`) | `mobile/package.json` — the script is a stub: `echo "No tests yet (skeleton pass)" && exit 0` |
 
 ## Current status
 
@@ -37,7 +36,6 @@ Not run. `python manage.py test` cannot start in this environment: `django-envir
 
 - **No CI.** No `.github/` directory; nothing runs the suite or `ruff` automatically (`ROADMAP.md` phase 0, unchecked item).
 - **No browser or end-to-end tests** in the repository. The static `web/` portal (HTML/CSS/JS) has no automated coverage; earlier UI checks in this repo's history were done manually or with ad-hoc scripts outside the repo.
-- **No mobile tests.** `mobile/` ships one screen and a stub test script (`ROADMAP.md` phase 5: "Not started").
 - **No coverage measurement** configured.
 - **Not covered by the test tree:** the `pg_cron` expiry SQL (`supabase/cron/membership_expiry.sql`, applied manually), deployment/`vercel.json` build behaviour, WhiteNoise static serving, and PWA/service-worker behaviour (`web/sw.js`).
 - **No load or timeout tests** for the serverless/Supabase pooler constraints (`ROADMAP.md` phase 6).

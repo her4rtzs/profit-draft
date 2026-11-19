@@ -2319,3 +2319,14 @@ Run an Impeccable distill: one CSS layer, one palette, delete the decorative set
 - Checked: no non-gold accent or decorative pattern remains in `web/`; `manage.py check` with DEBUG=True shows only the pre-existing `static/dist` warning; full tests and ruff were not cleanly runnable (DB config / 184 pre-existing lint issues).
 ### Decision-log skill
 A generated CSS bundle is only as current as its sources: after editing sources, re-concatenate in the recorded order and carry any inline block over, or the shipped page keeps the old cascade.
+
+## 2026-11-19 21:37 (Asia/Manila): Remove the mobile Expo skeleton
+### What I asked for
+Delete `mobile/` now that the web portal is installable, after listing every reference and proposing the exact edits.
+### What the agent decided and why
+- Used `git rm -r mobile` for the 13 tracked files; no `.env` file existed in the folder and none was touched. See [[2026-11-19 Remove the mobile Expo skeleton]]
+- Removed `mobile/**` from the Vercel `excludeFiles` list and marked ROADMAP Phase 5 removed, because the installable web portal replaced the native app.
+- Updated README, Architecture and the four vault fact files so they describe one web portal; reworded code docstrings and `templates/home.html` that still named a mobile client.
+- Left `PROJECT-LOG.md`, `.agents/tasks/`, existing decision notes and `profit-updated.zip` untouched as historical records.
+### Decision-log skill
+When deleting a retired client, grep for both path references and descriptive mentions; the folder removal is small, but docs and config keep promising the old client long after the code is gone.

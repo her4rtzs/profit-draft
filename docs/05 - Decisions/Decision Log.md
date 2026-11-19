@@ -59,3 +59,4 @@ One note per decision, oldest first; entries with an `Unknown` date are listed l
 - [[2026-11-19 Give small labels a 12px floor]]: 27 small labels move from 10.5px to 12px; only decorative kickers stay at 11px.
 - [[2026-11-19 Remove dead ui-final.css and ui-fixes.js]]: Delete two no-op files and their page tags; no live references remain.
 - [[2026-11-19 Distill to one gold palette]]: One Gold accent and one token source (spotify.css); strip leftover decoration and regenerate the dashboard bundle.
+- [[2026-11-19 Remove the mobile Expo skeleton]]: Delete the dead Expo skeleton and update config/docs to one installable web portal.

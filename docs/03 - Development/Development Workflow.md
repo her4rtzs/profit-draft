@@ -6,7 +6,7 @@
 | --- | --- | --- |
 | Python | 3.13 (repo pins `3.13`; this machine has 3.13.14) | `.python-version`, `python --version` |
 | Python deps | `requirements.txt` (Django 5.1.4, DRF, django-environ, psycopg, whitenoise, argon2-cffi, django-components) | `requirements.txt` |
-| Node + npm | Only for `static/src` (Tailwind build) and `mobile/` (Expo) | `static/src/package.json`, `mobile/package.json` |
+| Node + npm | Only for `static/src` (Tailwind build) | `static/src/package.json` |
 | Database | None required locally: `DATABASE_URL` unset falls back to SQLite | `profit/settings.py` (`DATABASES`) |
 
 Current machine state (verified, not assumed): no `.venv/`, no `db.sqlite3` (both git-ignored), global Python has **Django 5.2.1** but **`django-environ` is missing**, so `python manage.py …` fails on `import environ`. `ruff` is not installed and is not in `requirements.txt`.
@@ -32,10 +32,6 @@ python manage.py migrate
 | Backend + Django pages + `/api` | `python manage.py runserver` | `README.md` line 77 |
 | Default port | 8000 (`SITE_BASE_URL` defaults to `http://localhost:8000`) | `profit/settings.py` |
 | Static portal preview only | serve `web/` with any static server, e.g. `python -m http.server 8000 --directory web` | In production WhiteNoise serves `web/` at the site root (`WHITENOISE_ROOT`); in this mode `/api/*` returns 404, so pages fall back to demo/empty data |
-| Mobile app | `cd mobile && npm.cmd install && npm.cmd start`, then open in Expo Go or a simulator | `mobile/README.md` lines 17–26 |
-| Mobile API target | `app.json → expo.extra.apiBaseUrl` (default `http://localhost:8000`) | `mobile/app.json`, `mobile/config.js` |
-
-`mobile/README.md` notes that PowerShell blocks the `npm` shim on the dev machine; use `npm.cmd`.
 
 ## Build
 
@@ -87,4 +83,3 @@ Project rules live in `AGENTS.md`:
 
 - Exact Vercel project settings / environment variables on the deployed site — Unknown.
 - Supabase connection details and whether the project is on the transaction-mode pooler — Unknown.
-- `mobile/README.md` references `mobile/api/client.js` and `mobile/screens/MembershipScreen.js`; the files exist under `mobile/api/` and `mobile/screens/` but were not read.
