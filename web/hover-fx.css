@@ -3,13 +3,6 @@
    Mouse (hover: hover): subtle 8-12% gold tint + gold border, smooth 160ms transition, no layout jumps.
    Touch (hover: none): no sticky hover states. */
 
-:root {
-  --pf-hover-bg: rgba(232, 185, 58, 0.09);
-  --pf-hover-row: rgba(232, 185, 58, 0.08);
-  --pf-hover-border: rgba(232, 185, 58, 0.52);
-  --pf-hover-text: var(--pf-lime-hi, #f2cb5c);
-  --pf-ease-hover: 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
 
 body:not(.dark) {
   --pf-hover-bg: rgba(232, 185, 58, 0.12);

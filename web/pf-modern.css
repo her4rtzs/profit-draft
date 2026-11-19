@@ -2,23 +2,6 @@
    Palette follows the gym logo: black, gold, cream.
    Flat colours only (no decorative gradients). One spacing scale for every container. */
 
-:root, body, body.dark {
-  --pf-lime: #e8b93a;
-  --pf-lime-hi: #f2cb5c;
-  --pf-grad: linear-gradient(135deg, #f4d27a 0%, #e8b93a 50%, #b8891c 100%);
-  --pf-lime-deep: #8a6200;
-
-  /* one scale for all containers */
-  --pf-gap: 20px;
-  --pf-pad: 20px;
-  --pf-radius: 16px;
-  --pf-radius-sm: 10px;
-  --radius-lg: 16px;
-  --radius-md: 10px;
-  --pp-r: 16px;
-  --pp-r-sm: 10px;
-  --pp-ring: 0 0 0 3px rgba(232, 185, 58, .25);
-}
 
 /* Dark surfaces (default for the whole app) */
 body.dark {
