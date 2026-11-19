@@ -28,13 +28,13 @@
   window.ProFitMemberPay = { open };
   document.addEventListener("click", e => {
     if (e.target.closest("[data-renew-membership]")) { e.preventDefault(); open(); return; }
-    const a = e.target.closest('a[href="member-portal.html"],a[href="join.html"]');
+    const a = e.target.closest('a[href="/member-portal"],a[href="/join"]');
     if (a && /explore plans/i.test(a.textContent)) { e.preventDefault(); open(); }
   }, true);
   if (/[?&]paid=1/.test(location.search)) {
     const n = document.createElement("div");
     n.style.cssText = "position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:9500;background:#1f7a3d;color:#fff;padding:12px 20px;border-radius:999px;font-weight:600;box-shadow:0 8px 24px #0004";
     n.textContent = "Payment received. Your membership is updating..."; document.body.appendChild(n);
-    setTimeout(() => { n.remove(); history.replaceState(null, "", "member-home.html"); location.reload(); }, 4000);
+    setTimeout(() => { n.remove(); history.replaceState(null, "", "/member-home"); location.reload(); }, 4000);
   }
 })();

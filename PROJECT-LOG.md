@@ -2429,3 +2429,14 @@ Investigate and fix the non-working OTP system across generation, email delivery
 - Verified `python manage.py check` (0 errors) and `python manage.py test apps.accounts` (90/90 passed).
 ### Decision-log skill
 Never commit OTP consumption or cooldown state before the external email send succeeds; roll back the failed row so transient mail errors do not lock users out or invalidate working codes.
+
+## 2026-11-20 00:50 (Asia/Manila): Hide .html and serve clean URLs
+### What I asked for
+Stop showing .html in the address bar and make the landing page load at the bare domain instead of /welcome.html.
+### What the agent decided and why
+- Added two catch-all routes at the end of `profit/urls.py` serving web/ pages at extensionless URLs (`/login`, `/members`, `/trainer/index`); placed last so they cannot shadow the real admin/api/accounts routes. See [[2026-11-20 Clean extensionless URLs for web pages]]
+- Rewrote all 230 internal .html links across web/ so navigation never exposes a filename; landing-page links now point to `/`, which already serves welcome.html via views.home.
+- Updated the three page-detection scripts and one CSS selector that matched `.html` in the URL, so login detection, footer, splash and legal-button styling keep working.
+- Added six tests covering root, clean/grouped URLs, 404s and no leftover .html links; manage.py check clean and 230 tests OK.
+### Decision-log skill
+When hiding file extensions behind clean routes, grep for code that reads location.pathname as well as markup links — detection logic breaks silently even when every visible link is correct.

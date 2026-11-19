@@ -24,7 +24,7 @@
   const btn = document.getElementById("googleSignInBtn") || document.getElementById("googleJoinBtn");
   if (!btn) return;
 
-  const isJoinPage = /(^|\/)join\.html$/i.test(location.pathname) || btn.id === "googleJoinBtn";
+  const isJoinPage = /(^|\/)join(?:\.html)?$/i.test(location.pathname) || btn.id === "googleJoinBtn";
   const sourceName = isJoinPage ? "join" : "login";
 
   let clientId = FALLBACK_CLIENT_ID;
@@ -87,7 +87,7 @@
     } catch (_) {}
     showMsg(msgText || "Signed in with Google. Opening your member portal…", false);
     setTimeout(() => {
-      location.replace("member-home.html");
+      location.replace("/member-home");
     }, 250);
   }
 

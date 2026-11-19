@@ -243,11 +243,11 @@
 <link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
 <body class="portal-body auth-page dark public-dark-theme">
 <header class="portal-nav">
-  <a class="portal-brand" href="welcome.html">
+  <a class="portal-brand" href="/">
     <img src="logo.jpg" alt="ProFit logo" width="36" height="36">
     <strong>ProFit</strong>
   </a>
-  <a class="back-link" href="welcome.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i><span>Back to home</span></a>
+  <a class="back-link" href="/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i><span>Back to home</span></a>
 </header>
 
 <main class="fp-shell">
@@ -304,7 +304,7 @@
         </div>
       </form>
 
-      <p class="fp-links"><a href="login.html">Back to sign in</a></p>
+      <p class="fp-links"><a href="/login">Back to sign in</a></p>
     </section>
   </div>
 </main>
@@ -429,7 +429,7 @@
       if (cooldownTimer) { clearInterval(cooldownTimer); cooldownTimer = null; }
       $("fpForm2").hidden = true;
       $("fpTitle").textContent = "Password updated";
-      $("fpSub").innerHTML = 'You can now <a href="login.html">sign in</a> with your new password.';
+      $("fpSub").innerHTML = 'You can now <a href="/login">sign in</a> with your new password.';
     } catch (err) {
       show($("fpMsg2"), err.message || "Could not reset the password.", true);
     }

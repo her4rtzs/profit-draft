@@ -1,26 +1,26 @@
 /* UI route guard. Demo mode is clearly marked and never represents a server-authenticated session. */
 (() => {
   const cfg = window.PROFIT_CONFIG || {};
-  const file = location.pathname.split("/").pop() || "index.html";
+  const file = location.pathname.split("/").pop() || "/index";
   const path = location.pathname.toLowerCase();
-  const isTrainerSection = path.includes("/trainer/") || file === "trainer-portal.html";
+  const isTrainerSection = path.includes("/trainer/") || file === "/trainer-portal";
   const isStaffSection = path.includes("/staff/");
   const adminPages = new Set([
-    "index.html",
-    "members.html",
-    "attendance.html",
-    "payments.html",
-    "reports.html",
-    "settings.html",
-    "profile.html",
-    "subscriptions.html",
-    "transactions.html",
-    "trainers.html",
-    "announcements.html"
+    "/index",
+    "/members",
+    "/attendance",
+    "/payments",
+    "/reports",
+    "/settings",
+    "/profile",
+    "/subscriptions",
+    "/transactions",
+    "/trainers",
+    "/announcements"
   ]);
-  const memberPages = new Set(["member-home.html"]);
-  const loginPage = file === "login.html";
-  const loginTarget = isTrainerSection || isStaffSection ? "../login.html" : "login.html";
+  const memberPages = new Set(["/member-home"]);
+  const loginPage = file === "/login";
+  const loginTarget = isTrainerSection || isStaffSection ? "/login" : "/login";
 
   async function performLogout() {
     try {
@@ -162,7 +162,7 @@
   ) {
     const user = storedUser;
     if (!loginPage && (adminPages.has(file) || memberPages.has(file)) && !user) {
-      location.replace(file === "index.html" ? "welcome.html" : `${loginTarget}?reason=session`);
+      location.replace(file === "/index" ? "/" : `${loginTarget}?reason=session`);
       return;
     }
     const active = user;
@@ -216,32 +216,32 @@
       } catch {}
       if (loginPage) {
         location.replace(
-          isStaffRole(role) ? "index.html" : role === "TRAINER" ? "trainer/index.html" : "member-home.html"
+          isStaffRole(role) ? "/index" : role === "TRAINER" ? "/trainer/index" : "/member-home"
         );
         return;
       }
       if (isAdmin && !isStaffRole(role)) {
         location.replace(
           role === "TRAINER"
-            ? isStaffSection ? "../trainer/index.html" : "trainer/index.html"
-            : isStaffSection ? "../member-home.html" : "member-home.html"
+            ? isStaffSection ? "/trainer/index" : "/trainer/index"
+            : isStaffSection ? "/member-home" : "/member-home"
         );
         return;
       }
       if (isMember && role !== "MEMBER") {
-        location.replace(role === "TRAINER" ? "trainer/index.html" : "index.html");
+        location.replace(role === "TRAINER" ? "/trainer/index" : "/index");
         return;
       }
       if (isTrainer && role !== "TRAINER") {
         location.replace(
           isStaffRole(role)
-            ? isTrainerSection ? "../index.html" : "index.html"
-            : isTrainerSection ? "../member-home.html" : "member-home.html"
+            ? isTrainerSection ? "/index" : "/index"
+            : isTrainerSection ? "/member-home" : "/member-home"
         );
         return;
       }
-      if (user.must_change_password && isTrainer && file !== "settings.html") {
-        location.replace(isTrainerSection ? "settings.html?force_password_change=1" : "trainer/settings.html?force_password_change=1");
+      if (user.must_change_password && isTrainer && file !== "/settings") {
+        location.replace(isTrainerSection ? "/settings?force_password_change=1" : "/trainer/settings?force_password_change=1");
         return;
       }
       document.documentElement.classList.remove("auth-checking", "auth-pending");
@@ -267,7 +267,7 @@
         return;
       }
       if (loginPage) document.documentElement.classList.remove("auth-checking", "auth-pending");
-      else location.replace(file === "index.html" && !isTrainerSection && !isStaffSection ? "welcome.html" : `${loginTarget}?reason=session`);
+      else location.replace(file === "/index" && !isTrainerSection && !isStaffSection ? "/" : `${loginTarget}?reason=session`);
       window.dispatchEvent(new CustomEvent("profit-auth-error", { detail: error }));
     }
   });

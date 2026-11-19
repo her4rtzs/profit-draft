@@ -118,11 +118,11 @@
     const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
     const items = [];
     const add = (tag, icon, type, title, message, href) => items.push({ src: "server", tag, icon, type, title, message, href });
-    if (expiring) add("expiring", "fa-hourglass-half", "request", `${plural(expiring, "membership")} expiring this week`, "Send a renewal reminder before they lapse.", "members.html");
-    if (expired) add("expired", "fa-user-xmark", "request", `${plural(expired, "membership")} expired`, "Follow up to renew or update the status.", "members.html");
-    if (newWeek) add("new-week", "fa-user-check", "member", `${plural(newWeek, "new member")} this week`, "Check their access details and first payment.", "members.html");
-    if (checkedIn) add("att-" + todayStr, "fa-calendar-check", "attendance", `${plural(checkedIn, "member")} checked in today`, "From the attendance log.", "attendance.html");
-    if (paid.length) add("pay-" + todayStr, "fa-wallet", "payment", `₱${collected.toLocaleString("en-US")} collected today`, `${plural(paid.length, "payment")} recorded.`, "payments.html");
+    if (expiring) add("expiring", "fa-hourglass-half", "request", `${plural(expiring, "membership")} expiring this week`, "Send a renewal reminder before they lapse.", "/members");
+    if (expired) add("expired", "fa-user-xmark", "request", `${plural(expired, "membership")} expired`, "Follow up to renew or update the status.", "/members");
+    if (newWeek) add("new-week", "fa-user-check", "member", `${plural(newWeek, "new member")} this week`, "Check their access details and first payment.", "/members");
+    if (checkedIn) add("att-" + todayStr, "fa-calendar-check", "attendance", `${plural(checkedIn, "member")} checked in today`, "From the attendance log.", "/attendance");
+    if (paid.length) add("pay-" + todayStr, "fa-wallet", "payment", `₱${collected.toLocaleString("en-US")} collected today`, `${plural(paid.length, "payment")} recorded.`, "/payments");
     return items;
   }
   document.addEventListener("profit:synced", e => {

@@ -155,8 +155,8 @@
                         <h2>${esc(m.name)} ${badge(m)}</h2>
                         <p class="muted">Member ID ${m.id}</p>
                         <div class="profile-actions">
-                            <a class="btn btn-primary btn-sm" href="payments.html?member=${m.id}#daily">Renew membership</a>
-                            <a class="btn btn-soft btn-sm" href="attendance.html?member=${m.id}">Check in today</a>
+                            <a class="btn btn-primary btn-sm" href="/payments?member=${m.id}#daily">Renew membership</a>
+                            <a class="btn btn-soft btn-sm" href="/attendance?member=${m.id}">Check in today</a>
                         </div>
                         <div class="profile-stats">
                             <div><strong>${m.checkins}</strong><span>Check-ins</span></div>
@@ -386,7 +386,7 @@
                         <td>${fmtShort(m.end)}</td>
                         <td><div class="timeleft"><div class="progress ${tone}"><i style="width:${pct}%"></i></div><small>${label}</small></div></td>
                         <td class="fn-center">${badge(m)}</td>
-                        <td class="fn-right"><a class="fn-btn-dark fn-btn-sm" href="payments.html?member=${m.id}#daily">Renew</a></td>
+                        <td class="fn-right"><a class="fn-btn-dark fn-btn-sm" href="/payments?member=${m.id}#daily">Renew</a></td>
                     </tr>`;
                 }).join("") : `<tr><td colspan="5">${empty("fa-hourglass-half", q ? `No member matches “${esc(q)}”.` : "No members in this group.")}</td></tr>`;
             }

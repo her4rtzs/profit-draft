@@ -264,7 +264,7 @@
       S.members.unshift(m);
       let pay = null;
       if (d.method) pay = PF.db._pay({ memberId: m.id, plan: plan.id, method: d.method, amount: d.amount ?? plan.price, status: 'completed', note: 'Enrollment' }, true);
-      notify({ type: 'members', icon: 'user-plus', tone: 'green', title: 'New member enrolled', text: m.name + ' · ' + plan.name, href: 'members.html#detail=' + m.id });
+      notify({ type: 'members', icon: 'user-plus', tone: 'green', title: 'New member enrolled', text: m.name + ' · ' + plan.name, href: '/members#detail=' + m.id });
       emit(); return { member: m, payment: pay };
     },
     /* API: PATCH /staff/members/:id/ */
@@ -273,7 +273,7 @@
     setHold(id, hold) {
       const m = memberById(id); if (!m) return;
       m.hold = hold;
-      notify({ type: 'members', icon: hold === 'frozen' ? 'snowflake' : hold === 'cancelled' ? 'ban' : 'refresh', tone: hold ? 'amber' : 'green', title: hold ? 'Membership ' + hold : 'Membership reactivated', text: m.name, href: 'members.html#detail=' + id });
+      notify({ type: 'members', icon: hold === 'frozen' ? 'snowflake' : hold === 'cancelled' ? 'ban' : 'refresh', tone: hold ? 'amber' : 'green', title: hold ? 'Membership ' + hold : 'Membership reactivated', text: m.name, href: '/members#detail=' + id });
       emit();
     },
     /* API: POST /staff/payments/ — also the renewal path (extends expiry from today or the old expiry, whichever is later) */
@@ -288,7 +288,7 @@
         m.end = end.toISOString(); m.plan = plan.id;
         if (m.hold === 'cancelled') m.hold = null;
       }
-      if (p.status === 'completed') notify({ type: 'payments', icon: 'wallet', tone: 'gold', title: 'Payment recorded', text: peso(p.amount) + ' from ' + (m ? m.name : 'member') + ' (' + p.method + ')', href: 'transactions.html' });
+      if (p.status === 'completed') notify({ type: 'payments', icon: 'wallet', tone: 'gold', title: 'Payment recorded', text: peso(p.amount) + ' from ' + (m ? m.name : 'member') + ' (' + p.method + ')', href: '/transactions' });
       return p;
     },
     /* API: PATCH /staff/payments/:id/ {status} */
@@ -307,14 +307,14 @@
       const m = memberById(memberId); if (!m) return;
       S.attendanceManual = S.attendanceManual.filter(a => !(a.memberId === memberId && dayKey(a.at) === dayKey(new Date())));
       S.attendanceManual.push({ memberId, at: new Date().toISOString(), status: status || 'in' });
-      notify({ type: 'members', icon: 'calendar-check', tone: 'green', title: 'Attendance logged', text: m.name + ' checked in', href: 'attendance.html' });
+      notify({ type: 'members', icon: 'calendar-check', tone: 'green', title: 'Attendance logged', text: m.name + ' checked in', href: '/attendance' });
       emit();
     },
     /* API: PATCH /staff/members/:id/ {trainer} */
     assignTrainer(memberId, trainerId) {
       const m = memberById(memberId), t = trainerById(trainerId); if (!m) return;
       m.trainerId = trainerId || null;
-      if (t) notify({ type: 'members', icon: 'dumbbell', tone: 'blue', title: 'Trainer assigned', text: t.name + ' → ' + m.name, href: 'trainers.html' });
+      if (t) notify({ type: 'members', icon: 'dumbbell', tone: 'blue', title: 'Trainer assigned', text: t.name + ' → ' + m.name, href: '/trainers' });
       emit();
     },
     /* API: POST /trainer-requests/:id/approve|decline/ */
@@ -334,7 +334,7 @@
     saveAnnouncement(d) {
       if (d.id) { Object.assign(S.announcements.find(a => a.id === d.id) || {}, d); }
       else S.announcements.push({ id: uid('n'), at: new Date().toISOString(), author: S.profile.name, status: 'draft', ...d });
-      if (d.status === 'published') notify({ type: 'system', icon: 'megaphone', tone: 'purple', title: 'Announcement published', text: d.title, href: 'announcements.html' });
+      if (d.status === 'published') notify({ type: 'system', icon: 'megaphone', tone: 'purple', title: 'Announcement published', text: d.title, href: '/announcements' });
       emit();
     },
     setAnnouncementStatus(id, status) { const a = S.announcements.find(x => x.id === id); if (a) { a.status = status; if (status === 'published') a.at = new Date().toISOString(); emit(); } },

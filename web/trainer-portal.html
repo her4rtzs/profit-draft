@@ -6,15 +6,15 @@
   <title>ProFit | Trainer Portal</title>
   <script>
     (function() {
-      var dest = 'trainer/index.html';
+      var dest = '/trainer/index';
       var hash = location.hash.replace(/^#/, '');
-      if (hash === 'roster') dest = 'trainer/members.html';
-      else if (hash === 'calendar') dest = 'trainer/schedule.html';
+      if (hash === 'roster') dest = '/trainer/members';
+      else if (hash === 'calendar') dest = '/trainer/schedule';
       location.replace(dest + location.search);
     })();
   </script>
 <link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
 <body style="background:#0a1220;color:#fff;font-family:sans-serif;display:grid;place-items:center;min-height:100vh;margin:0;">
-  <p>Opening Trainer Workspace... <a href="trainer/index.html" style="color:#e3ae2b;">Click here if not redirected</a>.</p>
+  <p>Opening Trainer Workspace... <a href="/trainer/index" style="color:#e3ae2b;">Click here if not redirected</a>.</p>
 </body>
 </html>

@@ -66,3 +66,4 @@ One note per decision, oldest first; entries with an `Unknown` date are listed l
 - [[2026-11-19 Fail the deploy when Tailwind CSS is missing]]: collectstatic errors (profit.E001) when the compiled app.css is absent, so a broken Tailwind build fails the deploy instead of 500ing at request time.
 - [[2026-11-19 One token root in spotify.css]]: 14 shadowed :root blocks folded into one canonical block in spotify.css; all 138 token values preserved and dashboard.css regenerated, !important rules kept as load-bearing.
 - [[2026-11-19 Roll back undelivered OTPs and support SMTP]]: Roll back undelivered OTPs on failure, add Resend User-Agent + SMTP fallback, and surface delivery errors.
+- [[2026-11-20 Clean extensionless URLs for web pages]]: Serve web/ pages at extensionless URLs and drop .html from every internal link; the landing page loads at the bare domain.

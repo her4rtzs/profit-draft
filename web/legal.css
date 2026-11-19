@@ -63,4 +63,4 @@ dialog.legal-dialog::backdrop{background:rgba(0,0,0,.6)}
 .legal-dialog-body .legal-layout{grid-template-columns:minmax(0,1fr)}
 .legal-dialog-body .legal-card{padding:20px}
 .legal-dialog-body .legal-hero h1{font-size:26px}
-.legal-page .portal-nav a[href="login.html"]{background:var(--gold,#d4a646)!important;background-image:none!important;color:#1a1407!important;border-radius:999px;padding:9px 18px;font-weight:700;text-decoration:none;box-shadow:none!important}
+.legal-page .portal-nav a[href="/login"]{background:var(--gold,#d4a646)!important;background-image:none!important;color:#1a1407!important;border-radius:999px;padding:9px 18px;font-weight:700;text-decoration:none;box-shadow:none!important}

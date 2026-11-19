@@ -8,7 +8,7 @@
     var explicitLogout = sessionStorage.getItem('profit-logged-out') === '1';
     if (!isLocal && (!hasSession || explicitLogout)) {
       document.documentElement.classList.add('auth-pending');
-      location.replace('welcome.html');
+      location.replace('/');
     }
   }catch(e){}
 })();
@@ -70,22 +70,22 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
 
         <!-- QUICK ACTIONS -->
         <section class="quick-actions" aria-label="Quick actions">
-          <a class="quick-action qa-gold" href="members.html#enrollment">
+          <a class="quick-action qa-gold" href="/members#enrollment">
             <span class="quick-action-icon" aria-hidden="true"><i class="fa-solid fa-user-plus"></i></span>
             <span class="qa-details"><strong>Enroll a member</strong><small>Add to the gym roster</small></span>
             <i class="fa-solid fa-arrow-up-right-from-square action-arrow" aria-hidden="true"></i>
           </a>
-          <a class="quick-action qa-cyan" href="attendance.html">
+          <a class="quick-action qa-cyan" href="/attendance">
             <span class="quick-action-icon" aria-hidden="true"><i class="fa-solid fa-calendar-check"></i></span>
             <span class="qa-details"><strong>Record attendance</strong><small>Manage today's check-ins</small></span>
             <i class="fa-solid fa-arrow-up-right-from-square action-arrow" aria-hidden="true"></i>
           </a>
-          <a class="quick-action qa-emerald" href="payments.html">
+          <a class="quick-action qa-emerald" href="/payments">
             <span class="quick-action-icon" aria-hidden="true"><i class="fa-solid fa-credit-card"></i></span>
             <span class="qa-details"><strong>Record a payment</strong><small>Update member billing</small></span>
             <i class="fa-solid fa-arrow-up-right-from-square action-arrow" aria-hidden="true"></i>
           </a>
-          <a class="quick-action qa-violet" href="reports.html">
+          <a class="quick-action qa-violet" href="/reports">
             <span class="quick-action-icon" aria-hidden="true"><i class="fa-solid fa-chart-line"></i></span>
             <span class="qa-details"><strong>View reports</strong><small>Review gym performance</small></span>
             <i class="fa-solid fa-arrow-up-right-from-square action-arrow" aria-hidden="true"></i>
@@ -233,9 +233,9 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
                             <i class="fa-solid fa-ellipsis"></i>
                         </button>
                         <div class="dropdown" hidden role="menu">
-                            <a href="members.html"><i class="fa-solid fa-user-group"></i> View all members</a>
-                            <a href="payments.html#subscription"><i class="fa-solid fa-hourglass-half"></i> Subscription monitor</a>
-                            <a href="reports.html#summary"><i class="fa-solid fa-chart-column"></i> Revenue summary</a>
+                            <a href="/members"><i class="fa-solid fa-user-group"></i> View all members</a>
+                            <a href="/payments#subscription"><i class="fa-solid fa-hourglass-half"></i> Subscription monitor</a>
+                            <a href="/reports#summary"><i class="fa-solid fa-chart-column"></i> Revenue summary</a>
                         </div>
                     </div>
                 </div>
@@ -313,7 +313,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
                         <p>Latest members who joined the gym</p>
                     </div>
                 </div>
-                <a href="members.html" class="view-all">View all <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="/members" class="view-all">View all <i class="fa-solid fa-arrow-right"></i></a>
             </div>
 
             <div class="table-wrapper">
@@ -373,9 +373,9 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
       <td><div class="row-menu-wrap pf-menu-wrap">
         <button class="action-btn pf-menu-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="More actions for ${esc(m.name)}"><i class="fa-solid fa-ellipsis" aria-hidden="true"></i></button>
         <div class="pf-menu" role="menu" hidden>
-          <a role="menuitem" href="members.html?q=${encodeURIComponent(m.id)}"><i class="fa-regular fa-id-card" aria-hidden="true"></i> Member profile</a>
-          <a role="menuitem" href="payments.html"><i class="fa-solid fa-wallet" aria-hidden="true"></i> Billing</a>
-          <a role="menuitem" href="attendance.html"><i class="fa-solid fa-calendar-check" aria-hidden="true"></i> Attendance</a>
+          <a role="menuitem" href="/members?q=${encodeURIComponent(m.id)}"><i class="fa-regular fa-id-card" aria-hidden="true"></i> Member profile</a>
+          <a role="menuitem" href="/payments"><i class="fa-solid fa-wallet" aria-hidden="true"></i> Billing</a>
+          <a role="menuitem" href="/attendance"><i class="fa-solid fa-calendar-check" aria-hidden="true"></i> Attendance</a>
         </div></div></td></tr>`;
   };
 
@@ -445,7 +445,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
         })
         .slice(0, 5);
       if (!newest.length) {
-        body.innerHTML = `<tr><td colspan="5" class="pf-empty">No members registered yet. <a href="members.html" style="color:#F59E0B;font-weight:700;margin-left:6px">Go to Members →</a></td></tr>`;
+        body.innerHTML = `<tr><td colspan="5" class="pf-empty">No members registered yet. <a href="/members" style="color:#F59E0B;font-weight:700;margin-left:6px">Go to Members →</a></td></tr>`;
         delete body.dataset.sig;
         return;
       }
@@ -629,7 +629,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
     };
 
     const goToPlan = key => {
-      location.href = `members.html?plan=${encodeURIComponent(key)}`;
+      location.href = `/members?plan=${encodeURIComponent(key)}`;
     };
 
     entries.forEach((item, idx) => {

@@ -7,7 +7,7 @@
   PF.$ = $; PF.$$ = $$;
 
   PF.config = {
-    loginUrl: null,            // e.g. '../login.html' once this folder lives inside web/
+    loginUrl: null,            // e.g. '/login' once this folder lives inside web/
     logoutEndpoint: null       // e.g. '/auth/logout' (POST) via ProFitAPI when wired
   };
 
@@ -238,29 +238,29 @@
 
   const STAFF_NAV = [
     { label: 'WORKSPACE', items: [
-      { id: 'dashboard', label: 'Dashboard', icon: 'home', href: 'index.html' },
-      { id: 'announcements', label: 'Announcements', icon: 'megaphone', href: 'announcements.html', roles: ['Owner', 'Cashier'] }] },
+      { id: 'dashboard', label: 'Dashboard', icon: 'home', href: '/index' },
+      { id: 'announcements', label: 'Announcements', icon: 'megaphone', href: '/announcements', roles: ['Owner', 'Cashier'] }] },
     { label: 'MEMBERSHIP', items: [
-      { id: 'members', label: 'Member List', icon: 'users', href: 'members.html' },
-      { id: 'attendance', label: 'Attendance', icon: 'calendar-check', href: 'attendance.html' },
-      { id: 'trainers', label: 'Trainers', icon: 'dumbbell', href: 'trainers.html', roles: ['Owner', 'Cashier'] }] },
+      { id: 'members', label: 'Member List', icon: 'users', href: '/members' },
+      { id: 'attendance', label: 'Attendance', icon: 'calendar-check', href: '/attendance' },
+      { id: 'trainers', label: 'Trainers', icon: 'dumbbell', href: '/trainers', roles: ['Owner', 'Cashier'] }] },
     { label: 'FINANCE', items: [
-      { id: 'payments', label: 'Payments & Billing', icon: 'wallet', href: 'payments.html', roles: ['Owner', 'Cashier'] },
-      { id: 'reports', label: 'Financial Reports', icon: 'chart', href: 'reports.html', roles: ['Owner'] }] }
+      { id: 'payments', label: 'Payments & Billing', icon: 'wallet', href: '/payments', roles: ['Owner', 'Cashier'] },
+      { id: 'reports', label: 'Financial Reports', icon: 'chart', href: '/reports', roles: ['Owner'] }] }
   ];
 
   const TRAINER_NAV = [
     { label: 'WORKSPACE', items: [
-      { id: 'dashboard', label: 'Dashboard', icon: 'home', href: 'index.html' },
-      { id: 'announcements', label: 'Announcements', icon: 'megaphone', href: 'announcements.html' }] },
+      { id: 'dashboard', label: 'Dashboard', icon: 'home', href: '/index' },
+      { id: 'announcements', label: 'Announcements', icon: 'megaphone', href: '/announcements' }] },
     { label: 'TRAINING', items: [
-      { id: 'members', label: 'My Members', icon: 'users', href: 'members.html' },
-      { id: 'attendance', label: 'Attendance', icon: 'calendar-check', href: 'attendance.html' },
-      { id: 'schedule', label: 'My Schedule', icon: 'calendar', href: 'schedule.html' }] },
+      { id: 'members', label: 'My Members', icon: 'users', href: '/members' },
+      { id: 'attendance', label: 'Attendance', icon: 'calendar-check', href: '/attendance' },
+      { id: 'schedule', label: 'My Schedule', icon: 'calendar', href: '/schedule' }] },
     { label: 'ACCOUNT', items: [
-      { id: 'notifications', label: 'Notifications', icon: 'bell', href: 'notifications.html', badge: () => PF.db.unread() },
-      { id: 'profile', label: 'My Profile', icon: 'user', href: 'profile.html' },
-      { id: 'settings', label: 'Settings', icon: 'settings', href: 'settings.html' }] }
+      { id: 'notifications', label: 'Notifications', icon: 'bell', href: '/notifications', badge: () => PF.db.unread() },
+      { id: 'profile', label: 'My Profile', icon: 'user', href: '/profile' },
+      { id: 'settings', label: 'Settings', icon: 'settings', href: '/settings' }] }
   ];
 
   const getNav = () => (isTrainerContext() ? TRAINER_NAV : STAFF_NAV);
@@ -269,11 +269,11 @@
   const PARENT = { subscriptions: 'payments', transactions: 'payments' };
   // Pages that are not in the sidebar but still need to be searchable / linkable.
   const EXTRA_PAGES = [
-    { id: 'subscriptions', label: 'Subscription Monitor', icon: 'refresh', href: 'subscriptions.html', roles: ['Owner', 'Cashier'] },
-    { id: 'transactions', label: 'Payment History', icon: 'receipt', href: 'transactions.html', roles: ['Owner'] },
-    { id: 'notifications', label: 'Notifications', icon: 'bell', href: 'notifications.html' },
-    { id: 'profile', label: 'My Profile', icon: 'user', href: 'profile.html' },
-    { id: 'settings', label: 'Settings', icon: 'settings', href: 'settings.html', roles: ['Owner'] }
+    { id: 'subscriptions', label: 'Subscription Monitor', icon: 'refresh', href: '/subscriptions', roles: ['Owner', 'Cashier'] },
+    { id: 'transactions', label: 'Payment History', icon: 'receipt', href: '/transactions', roles: ['Owner'] },
+    { id: 'notifications', label: 'Notifications', icon: 'bell', href: '/notifications' },
+    { id: 'profile', label: 'My Profile', icon: 'user', href: '/profile' },
+    { id: 'settings', label: 'Settings', icon: 'settings', href: '/settings', roles: ['Owner'] }
   ];
   const role = () => {
     if (!isTrainerContext()) {
@@ -290,12 +290,12 @@
     const gym = PF.db.gym(), me = PF.db.profile(), cur = currentId();
     const navItems = getNav();
     const isTrainer = isTrainerContext();
-    const homeHref = 'index.html';
+    const homeHref = '/index';
     const tagline = isTrainer ? 'TRAINER WORKSPACE' : (gym.tagline || 'FUNCTIONAL FITNESS');
     const displayRole = isTrainer ? 'Personal Trainer' : (me.role || 'Staff');
     return `<div class="brand"><a href="${homeHref}" style="display:flex;align-items:center;gap:12px;min-width:0" aria-label="${esc(gym.name)} dashboard"><img class="brand-logo" src="${esc(gym.logo || PF.assetBase + 'img/logo.jpg')}" alt=""><span class="brand-txt"><strong>${esc(gym.name)}</strong><small>${esc(tagline)}</small></span></a><button class="collapse-btn" id="collapseBtn" type="button" aria-label="Collapse sidebar" title="Collapse sidebar">${PF.icon('chevrons-left')}</button></div>
       <nav class="side-scroll" aria-label="Main navigation">${navItems.map(g => { const items = g.items.filter(allowed); return items.length ? `<p class="nav-label">${g.label}</p><ul class="nav-list">${items.map(it => { const hasBadge = typeof it.badge === 'function'; const b = hasBadge ? it.badge() : 0; return `<li><a class="nav-link ${it.id === cur ? 'active' : ''}" href="${it.href}" title="${esc(it.label)}" ${it.id === cur ? 'aria-current="page"' : ''}>${PF.icon(it.icon)}<span class="nav-text">${esc(it.label)}</span>${hasBadge ? `<span class="nav-count" data-badge="${it.id}" ${b ? '' : 'hidden'}>${b || 0}</span>` : ''}</a></li>`; }).join('')}</ul>` : ''; }).join('')}</nav>
-      <div class="side-foot"><div class="side-user" id="sideUserCard" role="button" tabindex="0" aria-haspopup="menu" aria-expanded="false" aria-controls="sideAccountMenu">${PF.avatar(me.name, 'md', me.photo)}<div class="who"><strong>${esc(me.name)}</strong><small>${esc(displayRole)}</small></div><button class="icon-btn" id="accountBtn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="sideAccountMenu" aria-label="Account menu" title="Account">${PF.icon('more-v')}</button><div class="side-account-menu" id="sideAccountMenu" role="menu" aria-label="Account actions"><a href="profile.html" role="menuitem" class="${cur === 'profile' ? 'active' : ''}">${PF.icon('user')}<span>My profile</span></a><a href="settings.html" role="menuitem" class="${cur === 'settings' ? 'active' : ''}">${PF.icon('settings')}<span>Settings</span></a><hr><button type="button" role="menuitem" class="danger" id="sideLogoutBtn">${PF.icon('log-out')}<span>Log out</span></button></div></div></div>`;
+      <div class="side-foot"><div class="side-user" id="sideUserCard" role="button" tabindex="0" aria-haspopup="menu" aria-expanded="false" aria-controls="sideAccountMenu">${PF.avatar(me.name, 'md', me.photo)}<div class="who"><strong>${esc(me.name)}</strong><small>${esc(displayRole)}</small></div><button class="icon-btn" id="accountBtn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="sideAccountMenu" aria-label="Account menu" title="Account">${PF.icon('more-v')}</button><div class="side-account-menu" id="sideAccountMenu" role="menu" aria-label="Account actions"><a href="/profile" role="menuitem" class="${cur === 'profile' ? 'active' : ''}">${PF.icon('user')}<span>My profile</span></a><a href="/settings" role="menuitem" class="${cur === 'settings' ? 'active' : ''}">${PF.icon('settings')}<span>Settings</span></a><hr><button type="button" role="menuitem" class="danger" id="sideLogoutBtn">${PF.icon('log-out')}<span>Log out</span></button></div></div></div>`;
   }
 
   function topbarHTML() {
@@ -304,22 +304,22 @@
     return `<div class="t-left"><button class="icon-btn t-menu" id="menuBtn" type="button" aria-label="Open navigation">${PF.icon('menu')}</button>${back}</div><div class="t-spacer"></div>
       <button class="icon-btn" id="themeBtn" type="button" aria-label="Toggle dark mode"></button>
       <div style="position:relative"><button class="icon-btn" id="bellBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Notifications">${PF.icon('bell')}<span class="badge-dot" id="bellBadge" ${n ? '' : 'hidden'}>${n}</span></button><section class="npanel" id="npanel" hidden aria-label="Notifications"></section></div>
-      <a class="avatar-btn" href="profile.html" aria-label="My profile" title="My profile">${PF.avatar(me.name, 'md', me.photo)}</a>`;
+      <a class="avatar-btn" href="/profile" aria-label="My profile" title="My profile">${PF.avatar(me.name, 'md', me.photo)}</a>`;
   }
 
   function bottomHTML() {
     const cur = document.body.dataset.page;
     const isTrainer = isTrainerContext();
     const items = isTrainer ? [
-      ['dashboard', 'Home', 'home', 'index.html'],
-      ['members', 'Members', 'users', 'members.html'],
-      ['attendance', 'Attendance', 'calendar-check', 'attendance.html'],
-      ['schedule', 'Schedule', 'calendar', 'schedule.html']
+      ['dashboard', 'Home', 'home', '/index'],
+      ['members', 'Members', 'users', '/members'],
+      ['attendance', 'Attendance', 'calendar-check', '/attendance'],
+      ['schedule', 'Schedule', 'calendar', '/schedule']
     ] : [
-      ['dashboard', 'Home', 'home', 'index.html'],
-      ['members', 'Members', 'users', 'members.html'],
-      ['attendance', 'Attendance', 'calendar-check', 'attendance.html'],
-      ['payments', 'Payments', 'wallet', 'payments.html', ['Owner', 'Cashier']]
+      ['dashboard', 'Home', 'home', '/index'],
+      ['members', 'Members', 'users', '/members'],
+      ['attendance', 'Attendance', 'calendar-check', '/attendance'],
+      ['payments', 'Payments', 'wallet', '/payments', ['Owner', 'Cashier']]
     ].filter(i => PF.can(i[4]));
     return items.map(i => `<a href="${i[3]}" class="${i[0] === cur || (i[0] === 'payments' && ['subscriptions', 'transactions'].includes(cur)) ? 'active' : ''}">${PF.icon(i[2])}<span>${i[1]}</span></a>`).join('') + `<button type="button" id="moreBtn">${PF.icon('menu')}<span>More</span></button>`;
   }
@@ -334,15 +334,15 @@
   function resolveNotifHref(rawLink, kind) {
     const isTrainer = isTrainerContext();
     let link = String(rawLink || '').trim();
-    if (link === 'trainer-portal.html') link = 'members.html';
+    if (link === '/trainer-portal') link = '/members';
     if (isTrainer && link.startsWith('trainer/')) link = link.slice('trainer/'.length);
     if (!link) {
       const k = String(kind || '').toUpperCase();
-      if (k === 'ANNOUNCEMENT') return 'announcements.html';
-      if (k === 'TRAINER') return isTrainer ? 'members.html' : 'trainers.html';
-      if (k === 'MEMBERSHIP') return 'members.html';
-      if (k === 'PAYMENT') return isTrainer ? 'notifications.html' : 'transactions.html';
-      return 'notifications.html';
+      if (k === 'ANNOUNCEMENT') return '/announcements';
+      if (k === 'TRAINER') return isTrainer ? '/members' : '/trainers';
+      if (k === 'MEMBERSHIP') return '/members';
+      if (k === 'PAYMENT') return isTrainer ? '/notifications' : '/transactions';
+      return '/notifications';
     }
     return link;
   }
@@ -431,7 +431,7 @@
     const unreadCount = PF.db.unread();
     p.innerHTML = `<div class="npanel-head"><div><strong>Notifications</strong><div class="muted">${unreadCount ? unreadCount + ' unread' : 'You\'re all caught up'}</div></div><button class="link-btn" id="markAll" type="button" ${unreadCount ? '' : 'disabled'}>Mark all read</button></div>
       <div class="nlist">${list.length ? list.map(PF.notifItem).join('') : '<div class="empty compact">' + PF.icon('bell') + '<span>No notifications yet</span></div>'}</div>
-      <div class="npanel-foot"><a class="link-btn" href="notifications.html">View all notifications</a></div>`;
+      <div class="npanel-foot"><a class="link-btn" href="/notifications">View all notifications</a></div>`;
     const markAllBtn = $('#markAll', p);
     if (markAllBtn) {
       markAllBtn.onclick = async e => {
@@ -443,12 +443,12 @@
       b.onclick = async e => {
         e.stopPropagation();
         await PF.markNotificationRead(b.dataset.id);
-        const target = b.dataset.href || 'notifications.html';
+        const target = b.dataset.href || '/notifications';
         location.href = target;
       };
     });
   }
-  PF.notifItem = n => `<button class="nitem ${n.read ? '' : 'unread'}" type="button" data-id="${esc(n.id)}" data-href="${esc(n.href || 'notifications.html')}"><span class="ni tone-${n.tone || 'gold'}">${PF.icon(n.icon || 'bell')}</span><span><strong>${esc(n.title)}</strong><small>${esc(n.text ? n.text + ' · ' : '')}${timeAgo(n.at)}</small></span></button>`;
+  PF.notifItem = n => `<button class="nitem ${n.read ? '' : 'unread'}" type="button" data-id="${esc(n.id)}" data-href="${esc(n.href || '/notifications')}"><span class="ni tone-${n.tone || 'gold'}">${PF.icon(n.icon || 'bell')}</span><span><strong>${esc(n.title)}</strong><small>${esc(n.text ? n.text + ' · ' : '')}${timeAgo(n.at)}</small></span></button>`;
 
   function syncBadges() {
     const n = PF.db.unread(), b = $('#bellBadge');
@@ -516,9 +516,9 @@
       const ts = !isTrainer ? PF.db.trainers().filter(t => t.name.toLowerCase().includes(q)).slice(0, 3) : [];
       const pg = pages.filter(p => p.label.toLowerCase().includes(q)).slice(0, 4);
       let h = '';
-      if (ms.length) h += '<div class="grp">MEMBERS</div>' + ms.map(m => `<a href="members.html#detail=${m.id}">${PF.avatar(m.name, 'sm')}<span><b>${esc(m.name)}</b><small>#${m.id} · ${esc(m.email || '')}</small></span></a>`).join('');
-      if (ps.length) h += '<div class="grp">PAYMENTS</div>' + ps.map(p => `<a href="transactions.html?q=${encodeURIComponent(p.id)}"><span class="stat-ico tone-gold" style="width:30px;height:30px;border-radius:9px">${PF.icon('receipt')}</span><span><b>${p.id} · ${peso(p.amount)}</b><small>${esc((PF.db.member(p.memberId) || {}).name || '')} · ${esc(p.method)}</small></span></a>`).join('');
-      if (ts.length) h += '<div class="grp">TRAINERS</div>' + ts.map(t => `<a href="trainers.html">${PF.avatar(t.name, 'sm')}<span><b>${esc(t.name)}</b><small>${esc(t.tags.join(' · '))}</small></span></a>`).join('');
+      if (ms.length) h += '<div class="grp">MEMBERS</div>' + ms.map(m => `<a href="/members#detail=${m.id}">${PF.avatar(m.name, 'sm')}<span><b>${esc(m.name)}</b><small>#${m.id} · ${esc(m.email || '')}</small></span></a>`).join('');
+      if (ps.length) h += '<div class="grp">PAYMENTS</div>' + ps.map(p => `<a href="/transactions?q=${encodeURIComponent(p.id)}"><span class="stat-ico tone-gold" style="width:30px;height:30px;border-radius:9px">${PF.icon('receipt')}</span><span><b>${p.id} · ${peso(p.amount)}</b><small>${esc((PF.db.member(p.memberId) || {}).name || '')} · ${esc(p.method)}</small></span></a>`).join('');
+      if (ts.length) h += '<div class="grp">TRAINERS</div>' + ts.map(t => `<a href="/trainers">${PF.avatar(t.name, 'sm')}<span><b>${esc(t.name)}</b><small>${esc(t.tags.join(' · '))}</small></span></a>`).join('');
       if (pg.length) h += '<div class="grp">PAGES</div>' + pg.map(p => `<a href="${p.href}"><span class="stat-ico tone-blue" style="width:30px;height:30px;border-radius:9px">${PF.icon(p.icon)}</span><b>${esc(p.label)}</b></a>`).join('');
       box.innerHTML = h || '<div class="empty compact"><span>No matches for “' + esc(input.value) + '”</span></div>'; box.hidden = false;
     };
@@ -536,7 +536,7 @@
     $('#bottomNav').innerHTML = bottomHTML();
     const content = $('#content');
     if (body.dataset.roles && !PF.can(body.dataset.roles.split(','))) {
-      content.innerHTML = pageHead() + `<div class="card"><div class="empty">${PF.icon('lock', '')}<h3>This area is limited to the ${esc(body.dataset.roles.split(',').join(' / '))}</h3><p>You're signed in as ${esc(role())}. Ask the owner if you need access.</p><a class="btn btn-gold" href="index.html">Back to dashboard</a></div></div>`;
+      content.innerHTML = pageHead() + `<div class="card"><div class="empty">${PF.icon('lock', '')}<h3>This area is limited to the ${esc(body.dataset.roles.split(',').join(' / '))}</h3><p>You're signed in as ${esc(role())}. Ask the owner if you need access.</p><a class="btn btn-gold" href="/index">Back to dashboard</a></div></div>`;
       PF._blocked = true;
     } else content.insertAdjacentHTML('afterbegin', pageHead());
     themeIcon();
@@ -545,7 +545,7 @@
     $('#menuBtn').onclick = () => setDrawer(true); $('#moreBtn') && ($('#moreBtn').onclick = () => setDrawer(true)); scrim.onclick = () => setDrawer(false);
     $$('.nav-link').forEach(a => a.addEventListener('click', () => setDrawer(false)));
     $('#collapseBtn').onclick = () => { const on = body.classList.toggle('mini'); try { localStorage.setItem('pf-mini', on ? '1' : '0'); } catch (e) { /* ignore */ } document.dispatchEvent(new CustomEvent('pf:resize')); setTimeout(() => window.dispatchEvent(new Event('resize')), 260); };
-    const bb = $('#backBtn'); if (bb) bb.onclick = () => (history.length > 1 ? history.back() : (location.href = 'index.html'));
+    const bb = $('#backBtn'); if (bb) bb.onclick = () => (history.length > 1 ? history.back() : (location.href = '/index'));
     $('#themeBtn').onclick = () => PF.setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
     const bell = $('#bellBtn'), panel = $('#npanel');
     bell.onclick = e => {
@@ -623,7 +623,7 @@
       if (window.ProFitAPI) await window.ProFitAPI.post("/auth/logout", {});
     } catch (e) { /* ignore */ }
     const isSub = location.pathname.includes('/staff/') || location.pathname.includes('/trainer/');
-    const target = PF.config.loginUrl || (isSub ? '../login.html' : 'login.html');
+    const target = PF.config.loginUrl || (isSub ? '/login' : '/login');
     location.replace(target);
   };
 
