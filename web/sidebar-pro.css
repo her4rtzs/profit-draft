@@ -3,14 +3,6 @@
    while the pointer hovers it or the keyboard focus is inside it.
    The mobile sidebar acts strictly as a sliding drawer on screens <= 768px. */
 
-:root {
-  --sidebar-w: 260px;
-  --pf-sb-w: 260px;
-  --sb-rail: 80px;              /* collapsed icon rail width */
-  --sb-gold: #e8b93a;
-  --sb-gold-2: #f2cb5c;
-  --sb-ink: #1a1407;
-}
 
 /* ==========================================================================
    DESKTOP SIDEBAR (Permanent, stable, fixed on the left)

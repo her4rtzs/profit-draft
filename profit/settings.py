@@ -17,6 +17,8 @@ from pathlib import Path
 import environ
 from django.core.exceptions import ImproperlyConfigured
 
+from . import checks as _deploy_checks  # noqa: F401 - register the static-build gate
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # --- Environment ----------------------------------------------------------

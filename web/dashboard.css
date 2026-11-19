@@ -21,40 +21,6 @@
     box-sizing: border-box;
 }
 
-:root {
-    /* surfaces */
-    --bg: #f0f2f5;
-    --card: #ffffff;
-    --hover: #f2f3f5;
-    --border: #e4e6eb;
-
-    /* text */
-    --text: #1c1e21;
-    --muted: #65676b;
-    --faint: #8a8d91;
-
-    /* status */
-    --green: #1f9d5b;
-    --green-soft: #e4f6ec;
-    --red: #d6455d;
-    --red-soft: #fde8ec;
-    --amber: #d39e00;
-    --amber-soft: #fff3d1;
-
-    /* sidebar */
-    --sidebar: #14161a;
-    --sidebar-text: #aab0b8;
-    --sidebar-line: #262a30;
-
-    --radius-lg: 18px;
-    --radius-md: 12px;
-    --shadow: 0 1px 2px rgba(0, 0, 0, .06), 0 2px 10px rgba(0, 0, 0, .04);
-    --shadow-hover: 0 4px 18px rgba(0, 0, 0, .09);
-    --ease: .2s ease;
-    --sidebar-w: 264px;
-    --sidebar-w-closed: 84px;
-}
-
 body.dark {
     --bg: #18191a;
     --card: #242526;
@@ -1215,8 +1181,29 @@ body.dark .mini-avatar { color: var(--gold); }
     .stories-title { display: none; }
 }
 
+/* Reduced motion: stop decorative animation only. Loading spinners and
+   skeleton shimmer are functional feedback, so they keep running. */
 @media (prefers-reduced-motion: reduce) {
-    * { transition: none !important; }
+  html { scroll-behavior: auto; }
+  .strip-dot, .member-menu, .member-panel.is-highlight, #pf-nav-line,
+  .pf-home-transition .main-content, .main-content > *, .stats > *, .bar,
+  html.auth-checking::before, #pf-topbar, #pfProgress, .pf-ripple,
+  .pf-row-in, .pf-menu, .pay-modal, .pay-modal-card, .pp-modal,
+  .pp-modal-backdrop, .pp-tool-panel, .notification-panel,
+  .member-logo > span, .member-status-card::before { animation: none !important; }
+}
+
+/* Touch: a 44px floor for every control on coarse pointers. */
+@media (pointer: coarse) {
+  button, input, select, textarea,
+  .btn, .tab, .pp-tab, .pp-btn, .quick-action, .portal-tab, .portal-submit,
+  .auth-role-btn, .pp-chip-btn, .pp-swatch, .chip, .ann-btn,
+  .member-menu button, .member-menu a, .sidebar .navlinks a, .sidebar-bottom a,
+  .bottom-nav a, .notification, .profile-logout, .mobile-nav-toggle,
+  .auth-theme-toggle, .portal-theme, .toggle {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }
 
 
@@ -1510,19 +1497,6 @@ body.dark .toast { background: #e4e6eb; color: #1c1e21; }
    ProFit Professional UI refresh — appended design layer
    Deep charcoal + warm gold, refined surfaces, responsive UI
    ========================================================= */
-:root {
-  --brand: #c99a32;
-  --brand-strong: #a87916;
-  --brand-soft: #fbf3df;
-  --ink: #17202c;
-  --muted: #738092;
-  --surface: #ffffff;
-  --canvas: #f4f6f9;
-  --line: #e5e9ef;
-  --shadow-soft: 0 12px 34px rgba(23,32,44,.065);
-  --shadow-card: 0 4px 18px rgba(23,32,44,.045);
-  --radius-lg: 18px;
-}
 body { background: var(--canvas); color: var(--ink); font-family: Inter, ui-sans-serif, system-ui, sans-serif; letter-spacing: -.012em; }
 .dashboard { min-height: 100vh; }
 .sidebar { background: #151b24 !important; box-shadow: 10px 0 32px rgba(12,17,24,.08); border-right: 1px solid rgba(255,255,255,.06); }
@@ -1600,24 +1574,6 @@ body.dark .profile { color:var(--ink); }
    ProFit 2026 design system — premium light + dark modes
    Layered over the original styles to preserve page behavior.
 ===================================================== */
-:root {
-  color-scheme: light;
-  --bg: #f3f4f0;
-  --card: #fffefa;
-  --hover: #f1f0e9;
-  --border: #e2e2d9;
-  --text: #20231e;
-  --muted: #70746a;
-  --faint: #909389;
-  --sidebar: #1c201a;
-  --sidebar-text: #b7bdb1;
-  --sidebar-line: #30362d;
-  --radius-lg: 20px;
-  --radius-md: 14px;
-  --shadow: 0 2px 4px rgba(35,39,29,.025), 0 8px 24px rgba(35,39,29,.045);
-  --shadow-hover: 0 12px 32px rgba(35,39,29,.10);
-  --ease: .22s cubic-bezier(.2,.7,.2,1);
-}
 body.dark {
   color-scheme: dark;
   --bg: #141713;
@@ -1751,7 +1707,6 @@ body.dark .member-status-card p { color: var(--muted); }
 body.dark .member-status-label { color: var(--gold); }
 @media(max-width:850px) { .auth-shell { grid-template-columns: 1fr; max-width: 560px; gap: 28px; padding-top: 35px; } .auth-story h1 { font-size: 54px; } .member-grid,.member-metrics { grid-template-columns: 1fr; } }
 @media(max-width:560px) { .auth-shell { padding: 28px 15px; } .auth-card { padding: 24px 19px; } .auth-story h1 { font-size: 47px; } .member-content { padding: 28px 14px 40px; } .member-welcome { align-items: flex-start; flex-direction: column; } .member-hero { padding: 21px 17px; } .member-hero-actions,.member-hero-actions .btn { width: 100%; } .member-status-card { padding: 22px 18px; align-items: flex-start; flex-direction: column; } .member-top { padding: 0 14px; } .member-top-actions { gap: 7px; } }
-@media(prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto !important; animation-duration:.01ms !important; transition-duration:.01ms !important; } }
 
 .environment-note { display:inline-flex; align-items:center; gap:7px; padding:7px 10px; border:1px solid var(--border); border-radius:9px; background:var(--gold-soft); color:var(--gold-deep); font-size:10px; font-weight:750; white-space:nowrap; }
 .profile-logout { width:30px; height:30px; margin-left:4px; border:0; border-radius:9px; background:transparent; color:var(--muted); cursor:pointer; }
@@ -1801,16 +1756,6 @@ body.dark .btn-danger{background:rgba(190,55,66,.15)!important;color:#ff9da5!imp
 
 
 /* ── ProFit visual refresh: warm light surfaces, strong hierarchy, grouped navigation ── */
-:root {
-  --bg:#f5f3ed; --card:#fffdf8; --hover:#f4eddb; --border:#e7dfce;
-  --text:#22231f; --muted:#777568; --faint:#9a9587;
-  --gold:#d6ad3c; --gold-deep:#8d6810; --gold-soft:#fbf2d7;
-  --gold-grad:linear-gradient(135deg,#f0d36e 0%,#d6ad3c 52%,#b88a20 100%);
-  --sidebar:#171815; --sidebar-text:#b9b7ad; --sidebar-line:#2b2d27;
-  --radius-lg:20px; --radius-md:14px;
-  --shadow:0 5px 18px rgba(53,43,20,.045),0 1px 2px rgba(53,43,20,.04);
-  --shadow-hover:0 14px 34px rgba(53,43,20,.10);
-}
 body.dark { --bg:#141512; --card:#20211d; --hover:#2d2e27; --border:#38392f; --text:#f2f0e7; --muted:#b5b2a5; --faint:#8e8b80; --gold:#e5bf50; --gold-deep:#f0cf68; --gold-soft:rgba(229,191,80,.13); --sidebar:#0d0e0c; --sidebar-line:#272821; --shadow:0 8px 26px rgba(0,0,0,.18); --shadow-hover:0 16px 40px rgba(0,0,0,.3); }
 body { background:var(--bg); }
 .sidebar { padding:20px 13px 14px; background:linear-gradient(180deg,#1a1b17 0%,#12130f 100%); border-right:1px solid #292a23; }
@@ -1897,7 +1842,6 @@ body.dark .quick-action-icon { background:color-mix(in srgb, var(--gold) 13%, tr
 
 
 /* ProFit premium interaction layer — deep ink, amber glow, and responsive navigation */
-:root{--pf-ink:#0A0E17;--pf-amber:#D97706;--pf-amber-bright:#F59E0B;--pf-glow:rgba(217,119,6,.25)}
 body.dark{--bg:#0A0E17;--card:#111827;--hover:#1B2433;--border:#263246;--text:#F3F4F6;--muted:#A5B1C2;--faint:#758399;--gold:#D97706;--gold-deep:#FBBF24;--gold-soft:rgba(217,119,6,.13);--sidebar:#080B12;--sidebar-line:#1D293B;--shadow:0 18px 45px rgba(0,0,0,.26);--shadow-hover:0 22px 52px rgba(0,0,0,.42),0 0 0 1px rgba(217,119,6,.18)}
 body.dark{background:var(--bg)}
 body.dark .sidebar{background:linear-gradient(180deg,#0c111c 0%,#080b12 100%);border-color:#1d293b}
@@ -1911,7 +1855,6 @@ body.dark .bar.has-data{background:linear-gradient(180deg,var(--gold) 0%,#D97706
 .sidebar-shade{display:none}.auth-options{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:5px 0 18px;font-size:12px}.auth-options a{color:var(--gold-deep);font-weight:750;text-decoration:none}.remember-option{display:flex;align-items:center;gap:8px;color:var(--muted);cursor:pointer}.remember-option input{accent-color:#D97706;width:15px;height:15px}
 .social-divider{display:flex;align-items:center;gap:12px;margin:22px 0 14px;color:var(--muted);font-size:11px}.social-divider:before,.social-divider:after{content:"";height:1px;background:var(--border);flex:1}.sso-buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px}.sso-button{min-height:45px;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid var(--border);border-radius:12px;background:var(--card);color:var(--text);font-size:12px;font-weight:750}.sso-button i{font-size:16px}.sso-button:disabled{opacity:.78;cursor:not-allowed}.sso-caption{margin:10px 0 0;text-align:center;color:var(--faint);font-size:10px;line-height:1.5}.auth-card{background:linear-gradient(145deg,rgba(255,253,247,.97),rgba(244,239,225,.94));border-color:rgba(217,119,6,.24);box-shadow:0 30px 80px rgba(43,34,13,.17)}body.dark .auth-card{background:linear-gradient(145deg,rgba(17,24,39,.97),rgba(10,14,23,.98));border-color:rgba(217,119,6,.3);box-shadow:0 30px 90px rgba(0,0,0,.45),0 0 35px rgba(217,119,6,.06)}
 @media(max-width:760px){.mobile-nav-toggle{display:grid;place-items:center}.sidebar{position:fixed!important;left:0;top:0;bottom:0;height:100dvh!important;width:min(290px,86vw)!important;z-index:1001;transform:translateX(-105%);transition:transform .24s cubic-bezier(.2,.8,.2,1);box-shadow:24px 0 65px rgba(0,0,0,.35)}.sidebar.mobile-open{transform:translateX(0)}.sidebar.close{width:min(290px,86vw)!important}.sidebar.close .headertxt,.sidebar.close .nav-group-label,.sidebar.close .sidebar-user-copy,.sidebar.close .account-menu-toggle{display:initial}.sidebar.close .nav-group-label{display:block}.sidebar.close .sidebar-brand-row{flex-direction:row;justify-content:space-between}.sidebar.close .sidebar-account{display:block}.sidebar.close .sidebar-settings{width:auto;justify-content:flex-start;padding:0 12px}.sidebar.close .sidebar-user{justify-content:flex-start;padding:10px 7px}.sidebar-shade.visible{display:block;position:fixed;inset:0;z-index:1000;border:0;background:rgba(2,6,14,.65);backdrop-filter:blur(3px)}body.drawer-open{overflow:hidden}.topbar-heading{width:100%;align-items:center}.topbar-heading>div{min-width:0}.topbar h1{font-size:23px}}
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 
 .auth-theme-toggle{position:fixed;z-index:10;top:18px;right:20px;width:42px;height:42px;display:grid;place-items:center;border:1px solid rgba(217,119,6,.28);border-radius:13px;background:rgba(255,253,248,.82);color:var(--gold-deep);font-size:20px;font-weight:800;box-shadow:0 8px 24px rgba(10,14,23,.10);backdrop-filter:blur(12px);cursor:pointer;transition:transform .2s,box-shadow .2s}.auth-theme-toggle:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(217,119,6,.16)}body.dark .auth-theme-toggle{background:rgba(17,24,39,.9);color:var(--gold);border-color:#344256}
 
@@ -1926,7 +1869,6 @@ body.dark .bar.has-data{background:linear-gradient(180deg,var(--gold) 0%,#D97706
 
 
 /* ProFit finishing layer: warm editorial light theme + premium charcoal dark theme */
-:root{--pf-bg:#f6f1e8;--pf-surface:#fffdf8;--pf-surface-2:#f0e8da;--pf-ink:#19231e;--pf-muted:#6e776f;--pf-line:#e5dac8;--pf-gold:#d99a18;--pf-gold-hi:#f5c85b;--pf-green:#14271f;--pf-shadow:0 14px 38px rgba(47,39,22,.09)}
 body{background:var(--pf-bg);color:var(--pf-ink)}
 body.dark{--pf-bg:#0a0e17;--pf-surface:#111827;--pf-surface-2:#1b2532;--pf-ink:#f4f3ee;--pf-muted:#a7b0bd;--pf-line:#293447;--pf-green:#0b111b;--pf-shadow:0 20px 48px rgba(0,0,0,.30);background:var(--pf-bg);color:var(--pf-ink)}
 .sidebar{background:linear-gradient(180deg,#183126 0%,#10231b 60%,#0b1913 100%);border-right:1px solid rgba(255,255,255,.08);box-shadow:12px 0 38px rgba(15,35,26,.10)}
@@ -1947,7 +1889,6 @@ button,input,select,textarea{font:inherit}button{transition:filter .18s ease,tra
 input,select,textarea{border-radius:10px}input:focus,select:focus,textarea:focus{border-color:var(--pf-gold)!important;box-shadow:0 0 0 3px color-mix(in srgb, var(--gold) 14%, transparent)}
 @media(max-width:760px){.sidebar{z-index:1000}.main-content{width:100%;max-width:100%;min-width:0;box-sizing:border-box;margin-left:0}.topbar{flex-wrap:wrap}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:520px){.stats{grid-template-columns:1fr}.topbar-right{width:100%;flex-wrap:wrap}.search{min-width:0;flex:1}}
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;scroll-behavior:auto!important}}
 
 /* Full dark-mode design pass — keeps light mode untouched. */
 body.dark{background:#0a0e17;color:#f4f3ee}
@@ -2139,14 +2080,6 @@ body.dark input::placeholder,body.dark textarea::placeholder{color:#758399}
   }
 }
 
-/* Animation on smaller devices (reduce motion) */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
 
 
 /* Smooth page-to-page transitions for the portal (browsers that support cross-document view transitions).
@@ -2187,71 +2120,6 @@ body { transition: none !important; }
 
 /* ==== pro-theme.css ==== */
 /* ProFit Pro Theme. Loaded last on every page. Overrides and additions only; base styles stay in styles.css. */
-:root {
-  --pp-head: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
-  --pp-body: "Inter", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
-  --pp-r: 14px;
-  --pp-r-sm: 10px;
-  --pp-ring: 0 0 0 3px rgba(232, 185, 58, .28);
-
-  /* Centralized Table & Badge Color System (Dark Mode default) */
-  --pf-gold: #F2BD32;
-  --pf-tbl-head: #94A3B8;
-  --pf-tbl-text: #F8FAFC;
-  --pf-tbl-muted: #94A3B8;
-  --pf-tbl-date: #E2E8F0;
-  --pf-tbl-disabled: #64748B;
-  --pf-tbl-divider: #263244;
-  --pf-tbl-hover: rgba(242, 189, 50, 0.07);
-  --pf-tbl-selected: rgba(242, 189, 50, 0.10);
-
-  /* Status Badges (Pill + Dot Style) */
-  --pf-st-active-bg: rgba(22, 163, 74, 0.14);
-  --pf-st-active-fg: #4ADE80;
-  --pf-st-active-dot: #16A34A;
-  --pf-st-active-bd: rgba(22, 163, 74, 0.42);
-  --pf-st-expiring-bg: rgba(220, 38, 38, 0.16);
-  --pf-st-expiring-fg: #F87171;
-  --pf-st-expiring-dot: #DC2626;
-  --pf-st-expiring-bd: rgba(220, 38, 38, 0.48);
-  --pf-st-expired-bg: rgba(153, 27, 27, 0.24);
-  --pf-st-expired-fg: #FCA5A5;
-  --pf-st-expired-dot: #991B1B;
-  --pf-st-expired-bd: rgba(153, 27, 27, 0.58);
-  --pf-st-inactive-bg: rgba(71, 85, 105, 0.22);
-  --pf-st-inactive-fg: #CBD5E1;
-  --pf-st-inactive-dot: #475569;
-  --pf-st-inactive-bd: rgba(71, 85, 105, 0.48);
-  --pf-st-unassigned-bg: rgba(100, 116, 139, 0.18);
-  --pf-st-unassigned-fg: #CBD5E1;
-  --pf-st-unassigned-dot: #64748B;
-  --pf-st-unassigned-bd: rgba(100, 116, 139, 0.42);
-  --pf-st-pending-bg: rgba(37, 99, 235, 0.16);
-  --pf-st-pending-fg: #93C5FD;
-  --pf-st-pending-dot: #2563EB;
-  --pf-st-pending-bd: rgba(37, 99, 235, 0.42);
-  --pf-st-processing-bg: rgba(124, 58, 237, 0.16);
-  --pf-st-processing-fg: #C4B5FD;
-  --pf-st-processing-dot: #7C3AED;
-  --pf-st-processing-bd: rgba(124, 58, 237, 0.42);
-
-  /* Plan Badges (Independent of Status) */
-  --pf-plan-monthly-bg: rgba(242, 189, 50, 0.16);
-  --pf-plan-monthly-fg: #F2BD32;
-  --pf-plan-monthly-bd: rgba(242, 189, 50, 0.38);
-  --pf-plan-quarterly-bg: rgba(34, 184, 207, 0.16);
-  --pf-plan-quarterly-fg: #22B8CF;
-  --pf-plan-quarterly-bd: rgba(34, 184, 207, 0.38);
-  --pf-plan-annual-bg: rgba(100, 116, 139, 0.22);
-  --pf-plan-annual-fg: #CBD5E1;
-  --pf-plan-annual-bd: rgba(100, 116, 139, 0.45);
-  --pf-plan-daily-bg: rgba(56, 189, 248, 0.16);
-  --pf-plan-daily-fg: #38BDF8;
-  --pf-plan-daily-bd: rgba(56, 189, 248, 0.38);
-  --pf-plan-unassigned-bg: rgba(100, 116, 139, 0.16);
-  --pf-plan-unassigned-fg: #94A3B8;
-  --pf-plan-unassigned-bd: rgba(100, 116, 139, 0.35);
-}
 
 body:not(.dark) {
   --pf-tbl-head: #64748B;
@@ -2724,7 +2592,6 @@ body.dark .portal-brand strong, body.dark #memberGreeting { color: var(--text) !
 body.dark .portal-brand small, body.dark .secure-label, body.dark .admin-link { color: var(--muted) !important; }
 
 /* ===== Semantic status colors: fixed, they do not change with the accent palette ===== */
-:root { --ok: #10b981; --warn: #fbbf24; --bad: #ef4444; --info: #06b6d4; }
 .pp-status.active, .pp-status.approved { background: color-mix(in srgb, var(--ok) 16%, transparent); color: var(--ok); }
 .pp-status.pending, .pp-status.expiring, .pp-status.frozen { background: color-mix(in srgb, var(--warn) 18%, transparent); color: var(--warn); }
 .pp-status.expired, .pp-status.cancelled, .pp-status.declined { background: color-mix(in srgb, var(--bad) 16%, transparent); color: var(--bad); }
@@ -2930,68 +2797,165 @@ body.dark.portal-body { background: var(--bg) !important; }
    ========================================================================== */
 
 :root {
-  color-scheme: light;
+    color-scheme: light;
 
-  /* surfaces — cool, slightly greyed canvas so light mode is not glaring
-     white, with white cards doing the lifting. */
-  --bg: #eceff4;
-  --card: #ffffff;
-  --hover: #e4e8ee;
-  --border: #dcdfe6;
-  --line: #e2e5ea;
-  --surface: #ffffff;
-  --canvas: #eceff4;
-  --ink: #0d0d0d;
+    /* Surfaces */
+    --bg: #eceff4;
+    --card: #ffffff;
+    --hover: #e4e8ee;
+    --border: #dcdfe6;
+    --line: #e2e5ea;
+    --surface: #ffffff;
+    --canvas: #eceff4;
+    --chrome: #eceff4;
 
-  /* type */
-  --text: #0d0d0d;
-  --muted: #545a66;
-  --faint: #868d9b;
+    /* Text */
+    --text: #0d0d0d;
+    --muted: #545a66;
+    --faint: #868d9b;
+    --ink: #0d0d0d;
 
-  /* Sidebar stays a dark rail even in light mode, exactly like Spotify —
-     it is what stops the whole app reading as a wall of white. */
-  --sidebar: #131822;
-  --sidebar-text: #b4bac7;
-  --sidebar-line: #242b38;
-  /* Hover stays a quiet lift; the GOLD pill belongs to the current page only.
-     (Making hover gold too flattened the rail into one blob.) */
-  --sidebar-hover: rgba(255, 255, 255, .07);
-  --sidebar-hover-text: #f1f3f7;
-  --sidebar-faint: #7d8697;
-  --chrome: #eceff4;
-  --sidebar-w: 268px;
-  --sidebar-w-closed: 104px;
+    /* Brand & accent */
+    --brand: #c99a32;
+    --brand-strong: #a87916;
+    --brand-soft: #fbf3df;
+    --gold: #b8891c;
+    --gold-deep: #8d6512;
+    --gold-soft: rgba(184, 137, 28, .16);
+    --gold-grad: linear-gradient(135deg, #f2cb5c 0%, #e8b93a 55%, #b8891c 100%);
+    --on-accent: #1a1407;
+    --pf-gold: #F2BD32;
+    --pf-gold-hi: #f5c85b;
+    --pf-lime: #e8b93a;
+    --pf-lime-hi: #f2cb5c;
+    --pf-lime-deep: #8a6200;
+    --pf-grad: linear-gradient(135deg, #f4d27a 0%, #e8b93a 50%, #b8891c 100%);
+    --ui-gold: #e8b93a;
+    --ui-ring: rgba(232, 185, 58, .45);
+    --sb-gold: #e8b93a;
+    --sb-gold-2: #f2cb5c;
+    --sb-ink: #1a1407;
 
-  /* One gutter drives BOTH the page padding and the sticky header's negative
-     margin, so the header contents line up exactly with the content below.
-     (They were a fixed -32px against a breakpoint-changing padding.) */
-  --gutter: clamp(18px, 3vw, 38px);
+    /* Status */
+    --green: #1db954;
+    --green-soft: rgba(29, 185, 84, .16);
+    --red: #e04357;
+    --red-soft: rgba(224, 67, 87, .14);
+    --amber: #d98a06;
+    --amber-soft: rgba(217, 138, 6, .16);
+    --ok: #1db954;
+    --warn: #d98a06;
+    --bad: #e04357;
+    --info: #0b8fd6;
+    --notif: #e5093c;
+    --notif-ring: #eceff4;
 
-  /* radius + elevation (Spotify leans on colour, not shadow) */
-  --radius-lg: 14px;
-  --radius-md: 10px;
-  --shadow: 0 1px 3px rgba(0, 0, 0, .07);
-  --shadow-hover: 0 8px 26px rgba(0, 0, 0, .13);
-  --ease: .2s cubic-bezier(.2, .7, .2, 1);
+    /* Sidebar */
+    --sidebar: #131822;
+    --sidebar-text: #b4bac7;
+    --sidebar-line: #242b38;
+    --sidebar-hover: rgba(255, 255, 255, .07);
+    --sidebar-hover-text: #f1f3f7;
+    --sidebar-faint: #7d8697;
+    --sidebar-w: 260px;
+    --sidebar-w-closed: 104px;
+    --pf-sb-w: 260px;
+    --sb-rail: 80px;
 
-  /* status */
-  --green: #1db954;
-  --green-soft: rgba(29, 185, 84, .16);
-  --red: #e04357;
-  --red-soft: rgba(224, 67, 87, .14);
-  /* The unread-count pill gets its own token: --red is tuned for tinted
-     text/icons, and it read as a muddy brick dot on the bell. */
-  --notif: #e5093c;
-  --notif-ring: #eceff4;
-  --amber: #d98a06;
-  --amber-soft: rgba(217, 138, 6, .16);
-  --ok: #1db954;
-  --warn: #d98a06;
-  --bad: #e04357;
-  --info: #0b8fd6;
+    /* Shape, depth & motion */
+    --radius-lg: 16px;
+    --radius-md: 10px;
+    --pf-radius: 16px;
+    --pf-radius-sm: 10px;
+    --pp-r: 16px;
+    --pp-r-sm: 10px;
+    --ui-radius: 14px;
+    --ui-radius-lg: 20px;
+    --shadow: 0 1px 3px rgba(0, 0, 0, .07);
+    --shadow-hover: 0 8px 26px rgba(0, 0, 0, .13);
+    --shadow-soft: 0 12px 34px rgba(23,32,44,.065);
+    --shadow-card: 0 4px 18px rgba(23,32,44,.045);
+    --ui-shadow: 0 14px 34px rgba(0, 0, 0, .18);
+    --ease: .2s cubic-bezier(.2, .7, .2, 1);
+    --pf-ease-hover: 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    --pp-ring: 0 0 0 3px rgba(232, 185, 58, .25);
+    --gutter: clamp(18px, 3vw, 38px);
 
-  /* now-playing bar */
+    /* Typography */
+    --pp-head: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+    --pp-body: "Inter", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+
+    /* ProFit surface tokens */
+    --pf-ink: #19231e;
+    --pf-amber: #D97706;
+    --pf-amber-bright: #F59E0B;
+    --pf-bg: #f6f1e8;
+    --pf-surface: #fffdf8;
+    --pf-surface-2: #f0e8da;
+    --pf-muted: #6e776f;
+    --pf-line: #e5dac8;
+    --pf-green: #14271f;
+    --pf-hover-bg: rgba(232, 185, 58, 0.09);
+    --pf-hover-row: rgba(232, 185, 58, 0.08);
+    --pf-hover-border: rgba(232, 185, 58, 0.52);
+    --pf-hover-text: var(--pf-lime-hi, #f2cb5c);
+    --pf-gap: 20px;
+    --pf-pad: 20px;
+
+    /* ProFit table & badge tokens */
+    --pf-tbl-head: #94A3B8;
+    --pf-tbl-text: #F8FAFC;
+    --pf-tbl-muted: #94A3B8;
+    --pf-tbl-date: #E2E8F0;
+    --pf-tbl-disabled: #64748B;
+    --pf-tbl-divider: #263244;
+    --pf-tbl-hover: rgba(242, 189, 50, 0.07);
+    --pf-tbl-selected: rgba(242, 189, 50, 0.10);
+    --pf-st-active-bg: rgba(22, 163, 74, 0.14);
+    --pf-st-active-fg: #4ADE80;
+    --pf-st-active-dot: #16A34A;
+    --pf-st-active-bd: rgba(22, 163, 74, 0.42);
+    --pf-st-expiring-bg: rgba(220, 38, 38, 0.16);
+    --pf-st-expiring-fg: #F87171;
+    --pf-st-expiring-dot: #DC2626;
+    --pf-st-expiring-bd: rgba(220, 38, 38, 0.48);
+    --pf-st-expired-bg: rgba(153, 27, 27, 0.24);
+    --pf-st-expired-fg: #FCA5A5;
+    --pf-st-expired-dot: #991B1B;
+    --pf-st-expired-bd: rgba(153, 27, 27, 0.58);
+    --pf-st-inactive-bg: rgba(71, 85, 105, 0.22);
+    --pf-st-inactive-fg: #CBD5E1;
+    --pf-st-inactive-dot: #475569;
+    --pf-st-inactive-bd: rgba(71, 85, 105, 0.48);
+    --pf-st-unassigned-bg: rgba(100, 116, 139, 0.18);
+    --pf-st-unassigned-fg: #CBD5E1;
+    --pf-st-unassigned-dot: #64748B;
+    --pf-st-unassigned-bd: rgba(100, 116, 139, 0.42);
+    --pf-st-pending-bg: rgba(37, 99, 235, 0.16);
+    --pf-st-pending-fg: #93C5FD;
+    --pf-st-pending-dot: #2563EB;
+    --pf-st-pending-bd: rgba(37, 99, 235, 0.42);
+    --pf-st-processing-bg: rgba(124, 58, 237, 0.16);
+    --pf-st-processing-fg: #C4B5FD;
+    --pf-st-processing-dot: #7C3AED;
+    --pf-st-processing-bd: rgba(124, 58, 237, 0.42);
+    --pf-plan-monthly-bg: rgba(242, 189, 50, 0.16);
+    --pf-plan-monthly-fg: #F2BD32;
+    --pf-plan-monthly-bd: rgba(242, 189, 50, 0.38);
+    --pf-plan-quarterly-bg: rgba(34, 184, 207, 0.16);
+    --pf-plan-quarterly-fg: #22B8CF;
+    --pf-plan-quarterly-bd: rgba(34, 184, 207, 0.38);
+    --pf-plan-annual-bg: rgba(100, 116, 139, 0.22);
+    --pf-plan-annual-fg: #CBD5E1;
+    --pf-plan-annual-bd: rgba(100, 116, 139, 0.45);
+    --pf-plan-daily-bg: rgba(56, 189, 248, 0.16);
+    --pf-plan-daily-fg: #38BDF8;
+    --pf-plan-daily-bd: rgba(56, 189, 248, 0.38);
+    --pf-plan-unassigned-bg: rgba(100, 116, 139, 0.16);
+    --pf-plan-unassigned-fg: #94A3B8;
+    --pf-plan-unassigned-bd: rgba(100, 116, 139, 0.35);
 }
+
 
 body.dark {
   color-scheme: dark;
@@ -3051,13 +3015,6 @@ body.dark {
    every page, so this is the single source of truth for the accent tokens.
    ========================================================================== */
 
-:root {
-  --gold: #b8891c;
-  --gold-deep: #8d6512;
-  --gold-soft: rgba(184, 137, 28, .16);
-  --gold-grad: linear-gradient(135deg, #f2cb5c 0%, #e8b93a 55%, #b8891c 100%);
-  --on-accent: #1a1407;
-}
 
 body.dark {
   --gold: #e0b94a;
@@ -3129,14 +3086,6 @@ html { scrollbar-color: color-mix(in srgb, var(--gold) 60%, #555) transparent; }
    cards breathe on hover, which reads as jitter — kill them outright. */
 .table-container tr, tbody tr, .panel, .pp-card { transition: none !important; }
 
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: .01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: .01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
 
 .sidebar {
   background: var(--sidebar) !important;
@@ -5691,14 +5640,6 @@ body.dark input[type="date"] { color-scheme: dark; }
    18 · MOTION
    ========================================================================== */
 
-@media (prefers-reduced-motion: reduce) {
-  .strip-dot { animation: none !important; }
-  *, *::before, *::after {
-    transition-duration: .01ms !important;
-    animation-duration: .01ms !important;
-    animation-iteration-count: 1 !important;
-  }
-}
 
 /* ==========================================================================
    19 · MEMBER HOME EXTRAS
@@ -6133,8 +6074,6 @@ html.auth-checking::before { display: none !important; content: none !important;
 }
 
 /* ==== inline dashboard fx (from index.html) ==== */
-
-
 .pf-row-in{animation:pfRowIn .42s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0) * 55ms)}
 @keyframes pfRowIn{from{opacity:0}to{opacity:1}}
 .pf-empty{text-align:center;padding:28px 16px;color:var(--muted)}
@@ -6145,22 +6084,12 @@ html.auth-checking::before { display: none !important; content: none !important;
 .pf-menu a i{color:var(--gold);width:16px;text-align:center}
 @keyframes pfPop{from{opacity:0;transform:translateY(-4px) scale(.98)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion: reduce){.pf-skel span,.pf-row-in,.pf-menu{animation:none!important}}
-
-
-
 /* ==== hover-fx.css ==== */
 /* ProFit Global Hover & Interaction System
    Uses the Dashboard gold tokens (--gold, --gold-soft, --pf-lime-hi, --on-accent).
    Mouse (hover: hover): subtle 8-12% gold tint + gold border, smooth 160ms transition, no layout jumps.
    Touch (hover: none): no sticky hover states. */
 
-:root {
-  --pf-hover-bg: rgba(232, 185, 58, 0.09);
-  --pf-hover-row: rgba(232, 185, 58, 0.08);
-  --pf-hover-border: rgba(232, 185, 58, 0.52);
-  --pf-hover-text: var(--pf-lime-hi, #f2cb5c);
-  --pf-ease-hover: 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
 
 body:not(.dark) {
   --pf-hover-bg: rgba(232, 185, 58, 0.12);
@@ -6345,13 +6274,6 @@ body:not(.dark) .pp-tool-panel[data-panel="diary"] .pp-btn, body:not(.dark) .pp-
    Loaded last. It changes spacing, type, cards, buttons, fields, tables and focus.
    It does not move layout (no transforms in the page itself) and it leaves the sidebar alone. */
 
-:root {
-  --ui-radius-lg: 20px;
-  --ui-radius: 14px;
-  --ui-gold: #e8b93a;
-  --ui-ring: rgba(232, 185, 58, .45);
-  --ui-shadow: 0 14px 34px rgba(0, 0, 0, .18);
-}
 
 /* Type */
 html body { font-feature-settings: "kern" 1, "liga" 1; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
@@ -6490,23 +6412,6 @@ html body [class*="photo-actions"] button, html body [class*="avatar-actions"] b
    Palette follows the gym logo: black, gold, cream.
    Flat colours only (no decorative gradients). One spacing scale for every container. */
 
-:root, body, body.dark {
-  --pf-lime: #e8b93a;
-  --pf-lime-hi: #f2cb5c;
-  --pf-grad: linear-gradient(135deg, #f4d27a 0%, #e8b93a 50%, #b8891c 100%);
-  --pf-lime-deep: #8a6200;
-
-  /* one scale for all containers */
-  --pf-gap: 20px;
-  --pf-pad: 20px;
-  --pf-radius: 16px;
-  --pf-radius-sm: 10px;
-  --radius-lg: 16px;
-  --radius-md: 10px;
-  --pp-r: 16px;
-  --pp-r-sm: 10px;
-  --pp-ring: 0 0 0 3px rgba(232, 185, 58, .25);
-}
 
 /* Dark surfaces (default for the whole app) */
 body.dark {
@@ -6720,14 +6625,6 @@ html body.portal-body.auth-page.dark, html body.auth-page.dark.pf-ready, html bo
    while the pointer hovers it or the keyboard focus is inside it.
    The mobile sidebar acts strictly as a sliding drawer on screens <= 768px. */
 
-:root {
-  --sidebar-w: 260px;
-  --pf-sb-w: 260px;
-  --sb-rail: 80px;              /* collapsed icon rail width */
-  --sb-gold: #e8b93a;
-  --sb-gold-2: #f2cb5c;
-  --sb-ink: #1a1407;
-}
 
 /* ==========================================================================
    DESKTOP SIDEBAR (Permanent, stable, fixed on the left)
@@ -7349,7 +7246,6 @@ html body nav.sidebar .account-menu button[data-logout]:hover {
     animation: none !important;
   }
 }
-
 /* ==== layout-fixes.css ==== */
 /* ==========================================================================
    PROFiT STAFF DASHBOARD - UNIFIED LAYOUT SYSTEM & CONTAINER POSITIONING
@@ -8964,9 +8860,6 @@ html.pf-pre * {
   .pf-staff {background:#fff!important;color:#000}
   .pf-staff .card {box-shadow:none;border:1px solid #ddd;backdrop-filter:none}
 }
-@media (prefers-reduced-motion:reduce) {
-  .pf-staff * {animation:none!important;transition:none!important}
-}
 
 
 /* ProFit fix: the active period chip is solid gold, so its label uses the dark ink from the prototype. */
@@ -10071,7 +9964,8 @@ body:not(.dark) .chart-stepper .stepper-input {
   display: flex !important;
   flex-direction: column !important;
   position: relative !important;
-  overflow: hidden !important;
+  /* Keep the "..." menu from being clipped by this panel. */
+  overflow: visible !important;
   border-radius: 20px !important;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
@@ -11792,14 +11686,57 @@ body:not(.dark) .registrations-panel .member-id {
   border-radius: 12px !important;
   display: grid !important;
   place-items: center !important;
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.22) 0%, rgba(245, 158, 11, 0.06) 100%) !important;
-  border: 1px solid rgba(245, 158, 11, 0.35) !important;
-  color: #FBBF24 !important;
-  font-weight: 750 !important;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.28) 0%, rgba(245, 158, 11, 0.12) 100%) !important;
+  border: 1px solid rgba(245, 158, 11, 0.50) !important;
+  color: #FCD34D !important;
+  font-weight: 800 !important;
   font-size: 13px !important;
-  box-shadow: 0 0 10px rgba(245, 158, 11, 0.15) !important;
   flex: none !important;
 }
+
+.registrations-panel tbody tr:nth-child(6n+2) .mini-avatar,
+table tbody tr:nth-child(6n+2) .mini-avatar {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.28) 0%, rgba(6, 182, 212, 0.12) 100%) !important;
+  border-color: rgba(6, 182, 212, 0.50) !important;
+  color: #67E8F9 !important;
+}
+.registrations-panel tbody tr:nth-child(6n+3) .mini-avatar,
+table tbody tr:nth-child(6n+3) .mini-avatar {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.28) 0%, rgba(16, 185, 129, 0.12) 100%) !important;
+  border-color: rgba(16, 185, 129, 0.50) !important;
+  color: #6EE7B7 !important;
+}
+.registrations-panel tbody tr:nth-child(6n+4) .mini-avatar,
+table tbody tr:nth-child(6n+4) .mini-avatar {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.28) 0%, rgba(139, 92, 246, 0.12) 100%) !important;
+  border-color: rgba(139, 92, 246, 0.50) !important;
+  color: #C4B5FD !important;
+}
+.registrations-panel tbody tr:nth-child(6n+5) .mini-avatar,
+table tbody tr:nth-child(6n+5) .mini-avatar {
+  background: linear-gradient(135deg, rgba(244, 63, 94, 0.28) 0%, rgba(244, 63, 94, 0.12) 100%) !important;
+  border-color: rgba(244, 63, 94, 0.50) !important;
+  color: #FDA4AF !important;
+}
+.registrations-panel tbody tr:nth-child(6n+6) .mini-avatar,
+table tbody tr:nth-child(6n+6) .mini-avatar {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.28) 0%, rgba(59, 130, 246, 0.12) 100%) !important;
+  border-color: rgba(59, 130, 246, 0.50) !important;
+  color: #93C5FD !important;
+}
+
+body:not(.dark) .registrations-panel tbody tr:nth-child(6n+1) .mini-avatar,
+body:not(.dark) table tbody tr:nth-child(6n+1) .mini-avatar { color: #92400E !important; }
+body:not(.dark) .registrations-panel tbody tr:nth-child(6n+2) .mini-avatar,
+body:not(.dark) table tbody tr:nth-child(6n+2) .mini-avatar { color: #155E75 !important; }
+body:not(.dark) .registrations-panel tbody tr:nth-child(6n+3) .mini-avatar,
+body:not(.dark) table tbody tr:nth-child(6n+3) .mini-avatar { color: #065F46 !important; }
+body:not(.dark) .registrations-panel tbody tr:nth-child(6n+4) .mini-avatar,
+body:not(.dark) table tbody tr:nth-child(6n+4) .mini-avatar { color: #5B21B6 !important; }
+body:not(.dark) .registrations-panel tbody tr:nth-child(6n+5) .mini-avatar,
+body:not(.dark) table tbody tr:nth-child(6n+5) .mini-avatar { color: #9F1239 !important; }
+body:not(.dark) .registrations-panel tbody tr:nth-child(6n+6) .mini-avatar,
+body:not(.dark) table tbody tr:nth-child(6n+6) .mini-avatar { color: #1E40AF !important; }
 
 .registrations-panel .member {
   display: flex !important;
@@ -12715,6 +12652,8 @@ body[data-page="trainers"] .tr-toolbar-panel {
   width: 100%;
   padding: 14px 18px !important;
   margin-bottom: 18px;
+  /* Let the specialization combo menu escape the panel. */
+  overflow: visible !important;
 }
 
 /* Directory Panel */

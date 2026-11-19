@@ -32,8 +32,7 @@ header.top{position:sticky;top:0;z-index:50;background:#0b0c10;border-bottom:1px
 /* hero */
 .hero{padding:72px 0 56px}
 .hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
-.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.16em;color:var(--lime);text-transform:uppercase}
-.eyebrow::before{content:"";width:24px;height:2px;background:var(--lime)}
+.eyebrow{display:inline-block;font-family:"Permanent Marker",cursive;font-size:18px;font-weight:400;letter-spacing:.01em;color:var(--gold);text-transform:none;line-height:1.2}
 .hero h1{font-size:clamp(40px,6vw,72px);line-height:1.02;font-weight:800;margin:16px 0 18px}
 .hero h1 em{font-style:normal}
 .hero p.lead{color:var(--mu);font-size:18px;max-width:520px}
@@ -58,10 +57,11 @@ header.top{position:sticky;top:0;z-index:50;background:#0b0c10;border-bottom:1px
 @media(max-width:860px){.hero .wrap{grid-template-columns:1fr}.hero{padding-top:40px}.hero-media{aspect-ratio:16/10}}
 @media(max-width:480px){.chip.a small,.chip.b{display:none}.chip{padding:8px 11px;font-size:12px}.chip.a{max-width:calc(100% - 126px)}.carousel-ctrls{bottom:12px;right:12px;padding:4px 6px}}
 /* ticker strip */
-.strip{border-block:1px solid var(--line);background:var(--bg2)}
+.strip{border-top:2px solid var(--gold);border-bottom:1px solid var(--line);background:var(--bg2)}
 .strip .wrap{display:grid;grid-template-columns:repeat(4,1fr)}
-.strip div{padding:22px 20px;border-right:1px solid var(--line);display:flex;align-items:center;gap:12px;font-weight:600;font-size:14px}
-.strip div:last-child{border-right:0}.strip i{color:var(--lime);font-size:18px}
+.strip div{padding:20px;border-right:1px solid var(--line);display:flex;align-items:center;gap:12px;font:700 14px "Plus Jakarta Sans",sans-serif;color:var(--tx)}
+.strip div:last-child{border-right:0}
+.strip i{width:34px;height:34px;flex:none;border-radius:9px;display:grid;place-items:center;background:rgba(232,185,58,.1);border:1px solid rgba(232,185,58,.22);color:var(--gold);font-size:15px}
 @media(max-width:720px){.strip .wrap{grid-template-columns:1fr 1fr}.strip div:nth-child(2){border-right:0}.strip div:nth-child(-n+2){border-bottom:1px solid var(--line)}}
 /* sections */
 section.s{padding:84px 0}
@@ -168,9 +168,7 @@ header.top{background:#0b0c10;backdrop-filter:none;-webkit-backdrop-filter:none}
    Clean, Non-Overlapping Section Scroll Animations
    ========================================================= */
 .anim-header{opacity:0;transform:translateY(14px);transition:opacity .55s cubic-bezier(.2,.8,.2,1),transform .55s cubic-bezier(.2,.8,.2,1)}
-.anim-header .eyebrow::before{width:0;transition:width .45s cubic-bezier(.2,.8,.2,1) .12s}
 .anim-header.is-visible{opacity:1;transform:none}
-.anim-header.is-visible .eyebrow::before{width:24px}
 
 .anim-ticker > *{opacity:0;transform:translateY(10px);transition:opacity .45s ease,transform .45s ease}
 .anim-ticker.is-visible > *:nth-child(1){transition-delay:.04s}
@@ -199,7 +197,7 @@ header.top{background:#0b0c10;backdrop-filter:none;-webkit-backdrop-filter:none}
 
 /* Accessibility override */
 @media(prefers-reduced-motion:reduce){
-  .anim-header,.anim-header.is-visible,.anim-header .eyebrow::before,
+  .anim-header,.anim-header.is-visible,
   .anim-ticker > *,
   .anim-features > *,
   .anim-diff-trad,.anim-diff-profit,
@@ -220,8 +218,8 @@ header.top{background:#0b0c10;backdrop-filter:none;-webkit-backdrop-filter:none}
 .diff-card.profit-card{border:2px solid var(--lime);background:linear-gradient(180deg,rgba(232,185,58,.04) 0%,rgba(17,19,32,.95) 100%)}
 .diff-badge{position:absolute;top:-12px;left:24px;background:var(--lime);color:var(--on);font-size:11px;font-weight:800;letter-spacing:.08em;padding:4px 12px;border-radius:99px}
 .diff-head{margin-bottom:24px}
-.diff-tag{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);margin-bottom:8px}
-.diff-tag.hl{color:var(--lime)}
+.diff-tag{font-family:"Permanent Marker",cursive;font-size:17px;font-weight:400;letter-spacing:.01em;text-transform:none;color:var(--mu);margin-bottom:8px}
+.diff-tag.hl{color:var(--gold)}
 .diff-head h3{font-size:22px;margin-bottom:8px}
 .diff-head p{color:var(--mu);font-size:14.5px;line-height:1.5}
 .diff-list{list-style:none;padding:0;margin:0 0 28px;display:grid;gap:16px;flex:1}
@@ -266,7 +264,7 @@ header.top{background:#0b0c10;backdrop-filter:none;-webkit-backdrop-filter:none}
 .wl-lightbox-x{position:absolute;top:-14px;right:-14px;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:#131C2E;color:#fff;font-size:20px;cursor:pointer;display:grid;place-items:center}
 @media(prefers-reduced-motion:reduce){.gal-grid figure img{animation:none !important;transition:none !important}}
 </style><script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script><link rel="preload" as="image" href="img/hero.jpg" fetchpriority="high"><link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
-<body class="dark pf-glow">
+<body class="dark">
 <input id="navt" type="checkbox" hidden><header class="top"><div class="wrap"><a class="brand" href="welcome.html"><img src="logo.jpg" alt="ProFit logo" width="40" height="40"><span class="brand-copy"><strong>ProFit</strong><small data-gym-name>FUNCTIONAL FITNESS GYM</small></span></a>
 <nav aria-label="Primary"><a href="#home">Home</a><a href="#why">Features</a><a href="#difference">Difference</a><a href="#programs">Programs</a><a href="#plans">Membership</a><a href="#about">About</a><a href="#visit">Contact</a><a href="faq.html">FAQs</a></nav><label class="menu-btn" for="navt" aria-label="Open menu"><i class="fa-solid fa-bars"></i></label>
 <div class="cta"><a class="btn" href="login.html">Sign in</a><a class="btn p" href="join.html">Join now</a></div></div></header>
@@ -344,7 +342,7 @@ header.top{background:#0b0c10;backdrop-filter:none;-webkit-backdrop-filter:none}
 <div class="box plan hot"><span class="badge">MOST POPULAR</span><h3>Quarterly</h3><div class="price">₱2,100<small> / 90 days</small></div><ul><li><i class="fa-solid fa-check"></i>Gym access</li><li><i class="fa-solid fa-check"></i>Member portal</li><li><i class="fa-solid fa-check"></i>Attendance tracking</li></ul><a class="btn p" href="join.html?plan=quarterly">Choose plan</a></div>
 <div class="box plan"><h3>Annual</h3><div class="price">₱7,500<small> / 365 days</small></div><ul><li><i class="fa-solid fa-check"></i>Gym access</li><li><i class="fa-solid fa-check"></i>Member portal</li><li><i class="fa-solid fa-check"></i>Attendance tracking</li></ul><a class="btn" href="join.html?plan=annual">Choose plan</a></div></div></div></section>
 
-<section class="s" id="about"><div class="wrap story"><div class="pic anim-story-pic"><img src="img/hero.jpg" alt="ProFit members posing together in the gym" onerror="this.remove()"><span class="wl-crew-pill">Alfonso crew</span></div>
+<section class="s" id="about"><div class="wrap story"><div class="pic anim-story-pic"><img src="img/hero.jpg" alt="ProFit members posing together in the gym" loading="lazy" onerror="this.remove()"><span class="wl-crew-pill">Alfonso crew</span></div>
 <div class="anim-story-text"><span class="eyebrow">Our story</span><h2>A neighborhood gym built on community</h2><p>Functional Fitness Gym is a local gym in Alfonso, Calabarzon. We focus on practical strength, steady habits and a friendly floor where everyone belongs.</p><p>ProFit is the system behind it: join online, check in, and follow your progress without paperwork.</p>
 <ul><li><i class="fa-solid fa-circle-check"></i>Friendly, beginner-welcome environment</li><li><i class="fa-solid fa-circle-check"></i>Coaches who track your progress</li><li><i class="fa-solid fa-circle-check"></i>Clear pricing, paid online</li></ul></div></div></section>
 

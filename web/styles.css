@@ -12,40 +12,6 @@
     box-sizing: border-box;
 }
 
-:root {
-    /* surfaces */
-    --bg: #f0f2f5;
-    --card: #ffffff;
-    --hover: #f2f3f5;
-    --border: #e4e6eb;
-
-    /* text */
-    --text: #1c1e21;
-    --muted: #65676b;
-    --faint: #8a8d91;
-
-    /* status */
-    --green: #1f9d5b;
-    --green-soft: #e4f6ec;
-    --red: #d6455d;
-    --red-soft: #fde8ec;
-    --amber: #d39e00;
-    --amber-soft: #fff3d1;
-
-    /* sidebar */
-    --sidebar: #14161a;
-    --sidebar-text: #aab0b8;
-    --sidebar-line: #262a30;
-
-    --radius-lg: 18px;
-    --radius-md: 12px;
-    --shadow: 0 1px 2px rgba(0, 0, 0, .06), 0 2px 10px rgba(0, 0, 0, .04);
-    --shadow-hover: 0 4px 18px rgba(0, 0, 0, .09);
-    --ease: .2s ease;
-    --sidebar-w: 264px;
-    --sidebar-w-closed: 84px;
-}
-
 body.dark {
     --bg: #18191a;
     --card: #242526;
@@ -1206,8 +1172,29 @@ body.dark .mini-avatar { color: var(--gold); }
     .stories-title { display: none; }
 }
 
+/* Reduced motion: stop decorative animation only. Loading spinners and
+   skeleton shimmer are functional feedback, so they keep running. */
 @media (prefers-reduced-motion: reduce) {
-    * { transition: none !important; }
+  html { scroll-behavior: auto; }
+  .strip-dot, .member-menu, .member-panel.is-highlight, #pf-nav-line,
+  .pf-home-transition .main-content, .main-content > *, .stats > *, .bar,
+  html.auth-checking::before, #pf-topbar, #pfProgress, .pf-ripple,
+  .pf-row-in, .pf-menu, .pay-modal, .pay-modal-card, .pp-modal,
+  .pp-modal-backdrop, .pp-tool-panel, .notification-panel,
+  .member-logo > span, .member-status-card::before { animation: none !important; }
+}
+
+/* Touch: a 44px floor for every control on coarse pointers. */
+@media (pointer: coarse) {
+  button, input, select, textarea,
+  .btn, .tab, .pp-tab, .pp-btn, .quick-action, .portal-tab, .portal-submit,
+  .auth-role-btn, .pp-chip-btn, .pp-swatch, .chip, .ann-btn,
+  .member-menu button, .member-menu a, .sidebar .navlinks a, .sidebar-bottom a,
+  .bottom-nav a, .notification, .profile-logout, .mobile-nav-toggle,
+  .auth-theme-toggle, .portal-theme, .toggle {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }
 
 
@@ -1501,19 +1488,6 @@ body.dark .toast { background: #e4e6eb; color: #1c1e21; }
    ProFit Professional UI refresh — appended design layer
    Deep charcoal + warm gold, refined surfaces, responsive UI
    ========================================================= */
-:root {
-  --brand: #c99a32;
-  --brand-strong: #a87916;
-  --brand-soft: #fbf3df;
-  --ink: #17202c;
-  --muted: #738092;
-  --surface: #ffffff;
-  --canvas: #f4f6f9;
-  --line: #e5e9ef;
-  --shadow-soft: 0 12px 34px rgba(23,32,44,.065);
-  --shadow-card: 0 4px 18px rgba(23,32,44,.045);
-  --radius-lg: 18px;
-}
 body { background: var(--canvas); color: var(--ink); font-family: Inter, ui-sans-serif, system-ui, sans-serif; letter-spacing: -.012em; }
 .dashboard { min-height: 100vh; }
 .sidebar { background: #151b24 !important; box-shadow: 10px 0 32px rgba(12,17,24,.08); border-right: 1px solid rgba(255,255,255,.06); }
@@ -1591,24 +1565,6 @@ body.dark .profile { color:var(--ink); }
    ProFit 2026 design system — premium light + dark modes
    Layered over the original styles to preserve page behavior.
 ===================================================== */
-:root {
-  color-scheme: light;
-  --bg: #f3f4f0;
-  --card: #fffefa;
-  --hover: #f1f0e9;
-  --border: #e2e2d9;
-  --text: #20231e;
-  --muted: #70746a;
-  --faint: #909389;
-  --sidebar: #1c201a;
-  --sidebar-text: #b7bdb1;
-  --sidebar-line: #30362d;
-  --radius-lg: 20px;
-  --radius-md: 14px;
-  --shadow: 0 2px 4px rgba(35,39,29,.025), 0 8px 24px rgba(35,39,29,.045);
-  --shadow-hover: 0 12px 32px rgba(35,39,29,.10);
-  --ease: .22s cubic-bezier(.2,.7,.2,1);
-}
 body.dark {
   color-scheme: dark;
   --bg: #141713;
@@ -1742,7 +1698,6 @@ body.dark .member-status-card p { color: var(--muted); }
 body.dark .member-status-label { color: var(--gold); }
 @media(max-width:850px) { .auth-shell { grid-template-columns: 1fr; max-width: 560px; gap: 28px; padding-top: 35px; } .auth-story h1 { font-size: 54px; } .member-grid,.member-metrics { grid-template-columns: 1fr; } }
 @media(max-width:560px) { .auth-shell { padding: 28px 15px; } .auth-card { padding: 24px 19px; } .auth-story h1 { font-size: 47px; } .member-content { padding: 28px 14px 40px; } .member-welcome { align-items: flex-start; flex-direction: column; } .member-hero { padding: 21px 17px; } .member-hero-actions,.member-hero-actions .btn { width: 100%; } .member-status-card { padding: 22px 18px; align-items: flex-start; flex-direction: column; } .member-top { padding: 0 14px; } .member-top-actions { gap: 7px; } }
-@media(prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto !important; animation-duration:.01ms !important; transition-duration:.01ms !important; } }
 
 .environment-note { display:inline-flex; align-items:center; gap:7px; padding:7px 10px; border:1px solid var(--border); border-radius:9px; background:var(--gold-soft); color:var(--gold-deep); font-size:10px; font-weight:750; white-space:nowrap; }
 .profile-logout { width:30px; height:30px; margin-left:4px; border:0; border-radius:9px; background:transparent; color:var(--muted); cursor:pointer; }
@@ -1792,16 +1747,6 @@ body.dark .btn-danger{background:rgba(190,55,66,.15)!important;color:#ff9da5!imp
 
 
 /* ── ProFit visual refresh: warm light surfaces, strong hierarchy, grouped navigation ── */
-:root {
-  --bg:#f5f3ed; --card:#fffdf8; --hover:#f4eddb; --border:#e7dfce;
-  --text:#22231f; --muted:#777568; --faint:#9a9587;
-  --gold:#d6ad3c; --gold-deep:#8d6810; --gold-soft:#fbf2d7;
-  --gold-grad:linear-gradient(135deg,#f0d36e 0%,#d6ad3c 52%,#b88a20 100%);
-  --sidebar:#171815; --sidebar-text:#b9b7ad; --sidebar-line:#2b2d27;
-  --radius-lg:20px; --radius-md:14px;
-  --shadow:0 5px 18px rgba(53,43,20,.045),0 1px 2px rgba(53,43,20,.04);
-  --shadow-hover:0 14px 34px rgba(53,43,20,.10);
-}
 body.dark { --bg:#141512; --card:#20211d; --hover:#2d2e27; --border:#38392f; --text:#f2f0e7; --muted:#b5b2a5; --faint:#8e8b80; --gold:#e5bf50; --gold-deep:#f0cf68; --gold-soft:rgba(229,191,80,.13); --sidebar:#0d0e0c; --sidebar-line:#272821; --shadow:0 8px 26px rgba(0,0,0,.18); --shadow-hover:0 16px 40px rgba(0,0,0,.3); }
 body { background:var(--bg); }
 .sidebar { padding:20px 13px 14px; background:linear-gradient(180deg,#1a1b17 0%,#12130f 100%); border-right:1px solid #292a23; }
@@ -1888,7 +1833,6 @@ body.dark .quick-action-icon { background:color-mix(in srgb, var(--gold) 13%, tr
 
 
 /* ProFit premium interaction layer — deep ink, amber glow, and responsive navigation */
-:root{--pf-ink:#0A0E17;--pf-amber:#D97706;--pf-amber-bright:#F59E0B;--pf-glow:rgba(217,119,6,.25)}
 body.dark{--bg:#0A0E17;--card:#111827;--hover:#1B2433;--border:#263246;--text:#F3F4F6;--muted:#A5B1C2;--faint:#758399;--gold:#D97706;--gold-deep:#FBBF24;--gold-soft:rgba(217,119,6,.13);--sidebar:#080B12;--sidebar-line:#1D293B;--shadow:0 18px 45px rgba(0,0,0,.26);--shadow-hover:0 22px 52px rgba(0,0,0,.42),0 0 0 1px rgba(217,119,6,.18)}
 body.dark{background:var(--bg)}
 body.dark .sidebar{background:linear-gradient(180deg,#0c111c 0%,#080b12 100%);border-color:#1d293b}
@@ -1902,7 +1846,6 @@ body.dark .bar.has-data{background:linear-gradient(180deg,var(--gold) 0%,#D97706
 .sidebar-shade{display:none}.auth-options{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:5px 0 18px;font-size:12px}.auth-options a{color:var(--gold-deep);font-weight:750;text-decoration:none}.remember-option{display:flex;align-items:center;gap:8px;color:var(--muted);cursor:pointer}.remember-option input{accent-color:#D97706;width:15px;height:15px}
 .social-divider{display:flex;align-items:center;gap:12px;margin:22px 0 14px;color:var(--muted);font-size:11px}.social-divider:before,.social-divider:after{content:"";height:1px;background:var(--border);flex:1}.sso-buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px}.sso-button{min-height:45px;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid var(--border);border-radius:12px;background:var(--card);color:var(--text);font-size:12px;font-weight:750}.sso-button i{font-size:16px}.sso-button:disabled{opacity:.78;cursor:not-allowed}.sso-caption{margin:10px 0 0;text-align:center;color:var(--faint);font-size:10px;line-height:1.5}.auth-card{background:linear-gradient(145deg,rgba(255,253,247,.97),rgba(244,239,225,.94));border-color:rgba(217,119,6,.24);box-shadow:0 30px 80px rgba(43,34,13,.17)}body.dark .auth-card{background:linear-gradient(145deg,rgba(17,24,39,.97),rgba(10,14,23,.98));border-color:rgba(217,119,6,.3);box-shadow:0 30px 90px rgba(0,0,0,.45),0 0 35px rgba(217,119,6,.06)}
 @media(max-width:760px){.mobile-nav-toggle{display:grid;place-items:center}.sidebar{position:fixed!important;left:0;top:0;bottom:0;height:100dvh!important;width:min(290px,86vw)!important;z-index:1001;transform:translateX(-105%);transition:transform .24s cubic-bezier(.2,.8,.2,1);box-shadow:24px 0 65px rgba(0,0,0,.35)}.sidebar.mobile-open{transform:translateX(0)}.sidebar.close{width:min(290px,86vw)!important}.sidebar.close .headertxt,.sidebar.close .nav-group-label,.sidebar.close .sidebar-user-copy,.sidebar.close .account-menu-toggle{display:initial}.sidebar.close .nav-group-label{display:block}.sidebar.close .sidebar-brand-row{flex-direction:row;justify-content:space-between}.sidebar.close .sidebar-account{display:block}.sidebar.close .sidebar-settings{width:auto;justify-content:flex-start;padding:0 12px}.sidebar.close .sidebar-user{justify-content:flex-start;padding:10px 7px}.sidebar-shade.visible{display:block;position:fixed;inset:0;z-index:1000;border:0;background:rgba(2,6,14,.65);backdrop-filter:blur(3px)}body.drawer-open{overflow:hidden}.topbar-heading{width:100%;align-items:center}.topbar-heading>div{min-width:0}.topbar h1{font-size:23px}}
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 
 .auth-theme-toggle{position:fixed;z-index:10;top:18px;right:20px;width:42px;height:42px;display:grid;place-items:center;border:1px solid rgba(217,119,6,.28);border-radius:13px;background:rgba(255,253,248,.82);color:var(--gold-deep);font-size:20px;font-weight:800;box-shadow:0 8px 24px rgba(10,14,23,.10);backdrop-filter:blur(12px);cursor:pointer;transition:transform .2s,box-shadow .2s}.auth-theme-toggle:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(217,119,6,.16)}body.dark .auth-theme-toggle{background:rgba(17,24,39,.9);color:var(--gold);border-color:#344256}
 
@@ -1917,7 +1860,6 @@ body.dark .bar.has-data{background:linear-gradient(180deg,var(--gold) 0%,#D97706
 
 
 /* ProFit finishing layer: warm editorial light theme + premium charcoal dark theme */
-:root{--pf-bg:#f6f1e8;--pf-surface:#fffdf8;--pf-surface-2:#f0e8da;--pf-ink:#19231e;--pf-muted:#6e776f;--pf-line:#e5dac8;--pf-gold:#d99a18;--pf-gold-hi:#f5c85b;--pf-green:#14271f;--pf-shadow:0 14px 38px rgba(47,39,22,.09)}
 body{background:var(--pf-bg);color:var(--pf-ink)}
 body.dark{--pf-bg:#0a0e17;--pf-surface:#111827;--pf-surface-2:#1b2532;--pf-ink:#f4f3ee;--pf-muted:#a7b0bd;--pf-line:#293447;--pf-green:#0b111b;--pf-shadow:0 20px 48px rgba(0,0,0,.30);background:var(--pf-bg);color:var(--pf-ink)}
 .sidebar{background:linear-gradient(180deg,#183126 0%,#10231b 60%,#0b1913 100%);border-right:1px solid rgba(255,255,255,.08);box-shadow:12px 0 38px rgba(15,35,26,.10)}
@@ -1938,7 +1880,6 @@ button,input,select,textarea{font:inherit}button{transition:filter .18s ease,tra
 input,select,textarea{border-radius:10px}input:focus,select:focus,textarea:focus{border-color:var(--pf-gold)!important;box-shadow:0 0 0 3px color-mix(in srgb, var(--gold) 14%, transparent)}
 @media(max-width:760px){.sidebar{z-index:1000}.main-content{width:100%;max-width:100%;min-width:0;box-sizing:border-box;margin-left:0}.topbar{flex-wrap:wrap}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:520px){.stats{grid-template-columns:1fr}.topbar-right{width:100%;flex-wrap:wrap}.search{min-width:0;flex:1}}
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;scroll-behavior:auto!important}}
 
 /* Full dark-mode design pass — keeps light mode untouched. */
 body.dark{background:#0a0e17;color:#f4f3ee}
@@ -2130,14 +2071,6 @@ body.dark input::placeholder,body.dark textarea::placeholder{color:#758399}
   }
 }
 
-/* Animation on smaller devices (reduce motion) */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
 
 
 /* Smooth page-to-page transitions for the portal (browsers that support cross-document view transitions).

@@ -504,4 +504,27 @@ html[data-theme="dark"] .pill.amber{color:#ffb347}
   body{background:#fff!important;color:#000}
   .card{box-shadow:none;border:1px solid #ddd;backdrop-filter:none}
 }
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* Reduced motion: stop decorative animation only. Loading spinners and
+   skeleton shimmer are functional feedback, so they keep running. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .strip-dot, .member-menu, .member-panel.is-highlight, #pf-nav-line,
+  .pf-home-transition .main-content, .main-content > *, .stats > *, .bar,
+  html.auth-checking::before, #pf-topbar, #pfProgress, .pf-ripple,
+  .pf-row-in, .pf-menu, .pay-modal, .pay-modal-card, .pp-modal,
+  .pp-modal-backdrop, .pp-tool-panel, .notification-panel,
+  .member-logo > span, .member-status-card::before { animation: none !important; }
+}
+
+/* Touch: a 44px floor for every control on coarse pointers. */
+@media (pointer: coarse) {
+  button, input, select, textarea,
+  .btn, .tab, .pp-tab, .pp-btn, .quick-action, .portal-tab, .portal-submit,
+  .auth-role-btn, .pp-chip-btn, .pp-swatch, .chip, .ann-btn,
+  .member-menu button, .member-menu a, .sidebar .navlinks a, .sidebar-bottom a,
+  .bottom-nav a, .notification, .profile-logout, .mobile-nav-toggle,
+  .auth-theme-toggle, .portal-theme, .toggle {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}

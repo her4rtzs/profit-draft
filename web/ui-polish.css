@@ -2,13 +2,6 @@
    Loaded last. It changes spacing, type, cards, buttons, fields, tables and focus.
    It does not move layout (no transforms in the page itself) and it leaves the sidebar alone. */
 
-:root {
-  --ui-radius-lg: 20px;
-  --ui-radius: 14px;
-  --ui-gold: #e8b93a;
-  --ui-ring: rgba(232, 185, 58, .45);
-  --ui-shadow: 0 14px 34px rgba(0, 0, 0, .18);
-}
 
 /* Type */
 html body { font-feature-settings: "kern" 1, "liga" 1; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
