@@ -2330,3 +2330,61 @@ Delete `mobile/` now that the web portal is installable, after listing every ref
 - Left `PROJECT-LOG.md`, `.agents/tasks/`, existing decision notes and `profit-updated.zip` untouched as historical records.
 ### Decision-log skill
 When deleting a retired client, grep for both path references and descriptive mentions; the folder removal is small, but docs and config keep promising the old client long after the code is gone.
+
+## 2026-11-19 22:19 (Asia/Manila): Clear trainer low-contrast text pairings
+### What I asked for
+Run Impeccable colorize: darken the faint/muted and amber/red/gold-deep foregrounds and their soft backgrounds until every pairing clears 4.5:1, and verify the 18 detector low-contrast sites.
+### What the agent decided and why
+- Darkened only the light-theme semantic foregrounds in `web/trainer/trainer.css` (amber #92400E, green #065F46, blue #1E40AF, red #B91C1C) and the hero eyebrow, because those are what the 16 real failing sites resolve to on the cream surfaces. See [[2026-11-19 Darken trainer light-mode foregrounds]]
+- Routed two hardcoded chart-tooltip colors in `web/trainer/index.html` through `var(--green)` / `var(--red)` so they darken in light mode and stay bright on navy in dark mode.
+- Left the soft tints pale on purpose: darkening them would reduce contrast against the dark text; dark mode is unchanged.
+- Detector low-contrast findings went 18 -> 2. The 2 leftover `welcome.html` hits are detector false positives on non-rendered `title`/`style`/`script` nodes, confirmed in Chromium; no visible text is below 4.5:1 there.
+### Decision-log skill
+Contrast is a property of the pair, not the swatch: to clear a light-on-light failure, darken the foreground (or lighten the background) — darkening both keeps the ratio the same.
+
+## 2026-11-19 22:19 (Asia/Manila): Collapse staff-page CSS and lazy-load below-fold images
+### What I asked for
+Apply the audit's `/impeccable optimize` item: collapse the 15 per-page stylesheets to the single bundle and add lazy loading to below-the-fold images.
+### What the agent decided and why
+- Reused the existing `dashboard.css` bundle on the six named staff pages instead of generating a new bundle; 15 stylesheet links drop to 4 (fonts, Font Awesome, bundle, page CSS). See [[2026-11-19 Staff pages load the single dashboard bundle]]
+- Merged each page's duplicate Google Fonts links into the dashboard's single four-family request and dropped the redundant preconnects.
+- Added `loading="lazy"` only to genuinely below-fold images (story hero, footer logos); left header logos and the LCP hero eager.
+- Noted the bundle's different cascade order as a trade-off; no browser screenshot or Django checks in this environment (deps absent, concurrent edits in the tree).
+### Decision-log skill
+When many pages each load the same stacked CSS files, point them at the existing generated bundle and keep only the page-specific layer; reusing the shipped bundle beats generating a second one, but record any cascade-order change as a trade-off.
+
+## 2026-11-19 22:26 (Asia/Manila): Fail the deploy when Tailwind CSS is missing
+### What I asked for
+Impeccable harden: verify the Tailwind build emits static/app.css on deploy and fail loudly when it is missing.
+### What the agent decided and why
+- Verified the real deploy chain: `npm --prefix static/src run build` emits `static/dist/app.css` (39 KB), and `collectstatic` copies it to `staticfiles/app.css` with a manifest entry. See [[2026-11-19 Fail the deploy when Tailwind CSS is missing]]
+- Added a `staticfiles`-tagged system check (`profit.E001`) that only fires during `collectstatic`, so a blank build exits 1 at deploy time instead of 500ing on the first page request.
+- Gated it on `sys.argv` so local `manage.py check`/`test`/`runserver` stay green without the git-ignored build artifact.
+- Added four tests for the gate; `manage.py check` = 0 issues, `ruff` clean on the new files (two pre-existing settings.py lint findings left untouched).
+### Decision-log skill
+A build step that "succeeds" without its output is worse than one that fails: make the deploy command assert its own artifact (via a tagged system check gated to that command) rather than trusting a later runtime lookup to surface the error.
+
+## 2026-11-19 22:26 (Asia/Manila): Finish the audit pass and add a deploy CSS gate
+### What I asked for
+Apply the remaining auth typeset, motion, tap-target, clipped-panel and landing-page fixes, and fail the Vercel build when the compiled stylesheet is missing.
+### What the agent decided and why
+- Raised 9-11px auth labels to 12px in the three Django auth templates and the static forgot/join pages, leaving colors and spacing alone.
+- Replaced global reduced-motion wildcards with a curated decorative-only rule in the shared CSS and the bundle; loading spinners and skeleton shimmer keep running as functional feedback.
+- Added a 44px min-height/min-width floor for controls on coarse pointers across the shared stylesheets and the bundle.
+- Set `overflow: visible` on the two clipped panel rules in `portal-ui.css` and `dashboard.css` so their dropdown menus can escape the rounded panel.
+- Rewrote the landing page's generic kicker/stripe/glow into the page's own gold marker-and-tape vocabulary without changing copy or behavior.
+- Added `profit/checks.py` (`profit.E001`) and wired it from `settings.py`: during `collectstatic` only, it fails the build when `app.css` is missing or empty, with four unit tests in `profit/tests/test_static_build.py`.
+- Verified with `manage.py check` (clean) and the full suite: 210 tests, OK. All 27 web pages still carry the manifest, theme-color and Apple tags.
+### Decision-log skill
+A build artifact that collectstatic silently accepts is not a gate; register a check that runs only during the deploy step so local checks stay green while a broken deploy fails loudly.
+
+## 2026-11-19 22:38 (Asia/Manila): One token source and regenerated dashboard bundle
+### What I asked for
+Document the design system, establish one token source, remove shadowed `:root` blocks and accumulated `!important` overrides, then regenerate `dashboard.css`. Scope confirmed with the requester as tokens + `:root` only — leave `!important` intact.
+### What the agent decided and why
+- Folded 14 shadowed global `:root` blocks across 7 stylesheets into one canonical block in `web/spotify.css`, keeping `body.dark` and media-query variants; all 138 effective token values verified identical before and after. See [[2026-11-19 One token root in spotify.css]]
+- Left the ~3,345 `!important` declarations alone: they are the deliberate override mechanism for the stacked fix files, not removable cruft.
+- Regenerated `web/dashboard.css` from the 12 ordered sources with the inline fx block preserved; 12 sections and one global `:root` verified.
+- Wrote root `DESIGN.md` and `.impeccable/design.json` to document the palette; sidecar components use `var()` token references.
+### Decision-log skill
+Before deleting duplicated CSS custom properties, compute the effective last-wins value of every token and assert the map is unchanged afterwards; treat `!important` in stacked override files as load-bearing until proven otherwise.
