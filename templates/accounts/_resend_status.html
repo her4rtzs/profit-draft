@@ -1,7 +1,9 @@
 {% if status == "sent" %}
   <div class="alert alert-success text-sm">A new code was sent. Check your email.</div>
 {% elif status == "cooldown" %}
-  <div class="alert alert-warning text-sm">Please wait a moment before requesting another code.</div>
+  <div class="alert alert-warning text-sm">{{ detail|default:"Please wait a moment before requesting another code." }}</div>
+{% elif status == "rate_limited" %}
+  <div class="alert alert-error text-sm">{{ detail|default:"Too many code requests. Please wait before trying again." }}</div>
 {% elif status == "send_failed" %}
   <div class="alert alert-error text-sm">We couldn't send the code right now. Try again shortly.</div>
 {% elif status == "expired" %}

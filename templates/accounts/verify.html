@@ -38,8 +38,13 @@
   .pf-divider{margin:22px 0 10px;text-align:center;font-size:11px;color:var(--muted);
     text-transform:uppercase;letter-spacing:.1em}
   .pf-resend{width:100%;padding:11px;border:1px solid var(--border);border-radius:9px;
-    background:#fff;color:var(--gold-deep);font-size:12px;font-weight:700;cursor:pointer}
-  .pf-resend:hover{background:var(--gold-soft)}
+    background:#fff;color:var(--gold-deep);font-size:12px;font-weight:700;cursor:pointer;
+    transition:background-color .15s ease,opacity .15s ease}
+  .pf-resend:hover:not(:disabled){background:var(--gold-soft)}
+  .pf-resend:disabled{opacity:.62;cursor:not-allowed;color:var(--muted);background:#f8f9fb}
+  .pf-resend-msg{margin-top:10px;padding:10px 12px;border-radius:10px;font-size:13px;border:1px solid var(--border);background:#fff8e6;color:var(--gold-deep)}
+  .pf-resend-msg.ok{border-color:#bbf7d0;background:#f0fdf4;color:#166534}
+  .pf-resend-msg.err{border-color:#f0c9c5;background:#fde7e9;color:#9b2c2c}
   .pf-alert{padding:12px 14px;border-radius:10px;font-size:13px;margin-bottom:12px;
     border:1px solid var(--border);background:#fff8e6;color:var(--gold-deep)}
   .pf-alert.error{border-color:#f0c9c5;background:#fde7e9;color:#9b2c2c}
@@ -75,11 +80,99 @@
     </form>
 
     <div class="pf-divider">Didn't get it?</div>
-    <form hx-post="{% url 'accounts:resend_otp' %}" hx-target="#resend-status" hx-swap="innerHTML">
+    <form id="resendForm" method="post" action="{% url 'accounts:resend_otp' %}" hx-post="{% url 'accounts:resend_otp' %}" hx-target="#resend-status" hx-swap="innerHTML" data-cooldown="{{ cooldown_seconds|default:60 }}">
       {% csrf_token %}
-      <button type="submit" class="pf-resend">Resend code</button>
+      <button type="submit" id="resendOtpBtn" class="pf-resend" {% if cooldown_seconds|default:60 > 0 %}disabled{% endif %}>
+        {% if cooldown_seconds|default:60 > 0 %}Resend code in {{ cooldown_seconds|default:60 }}s{% else %}Resend OTP{% endif %}
+      </button>
     </form>
-    <div id="resend-status" style="margin-top:10px;font-size:13px"></div>
+    <div id="resend-status" role="status" aria-live="polite" style="margin-top:10px;font-size:13px"></div>
   </div>
 </section>
+<script>
+(() => {
+  const form = document.getElementById("resendForm");
+  const btn = document.getElementById("resendOtpBtn");
+  const statusEl = document.getElementById("resend-status");
+  const codeInput = document.getElementById("id_code");
+  if (!form || !btn || !statusEl) return;
+
+  let remaining = Math.max(0, parseInt(form.dataset.cooldown || "60", 10) || 0);
+  let timer = null;
+  let busy = false;
+
+  function renderCountdown() {
+    if (busy) return;
+    if (remaining > 0) {
+      btn.disabled = true;
+      btn.textContent = `Resend code in ${remaining}s`;
+    } else {
+      btn.disabled = false;
+      btn.textContent = "Resend OTP";
+    }
+  }
+
+  function startCountdown(seconds) {
+    if (timer) clearInterval(timer);
+    remaining = Math.max(0, Math.round(seconds || 0));
+    renderCountdown();
+    if (remaining <= 0) return;
+    timer = setInterval(() => {
+      remaining = Math.max(0, remaining - 1);
+      renderCountdown();
+      if (remaining <= 0) {
+        clearInterval(timer);
+        timer = null;
+      }
+    }, 1000);
+  }
+
+  function setStatus(text, kind) {
+    statusEl.innerHTML = "";
+    const box = document.createElement("div");
+    box.className = `pf-resend-msg ${kind || ""}`.trim();
+    box.textContent = text;
+    statusEl.appendChild(box);
+  }
+
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
+    if (busy || remaining > 0) return;
+    busy = true;
+    btn.disabled = true;
+    btn.textContent = "Sending new OTP…";
+    try {
+      const csrf = form.querySelector('input[name="csrfmiddlewaretoken"]')?.value || "";
+      const res = await fetch(form.getAttribute("action") || "/accounts/resend/", {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+          "X-CSRFToken": csrf
+        },
+        credentials: "same-origin"
+      });
+      const data = await res.json().catch(() => ({}));
+      busy = false;
+      if (res.ok && data.status === "sent") {
+        setStatus(data.detail || "A new verification code was sent to your email.", "ok");
+        if (codeInput) { codeInput.value = ""; codeInput.focus(); }
+        startCountdown(data.retry_after || 60);
+      } else if (res.status === 429) {
+        setStatus(data.detail || "Please wait before requesting another code.", "err");
+        startCountdown(data.retry_after || 60);
+      } else {
+        setStatus(data.detail || "We couldn't send a new code right now. Please try again.", "err");
+        renderCountdown();
+      }
+    } catch (_) {
+      busy = false;
+      setStatus("Network error while requesting a new code. Please check your connection.", "err");
+      renderCountdown();
+    }
+  });
+
+  startCountdown(remaining);
+})();
+</script>
 {% endblock %}

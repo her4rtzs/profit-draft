@@ -17,9 +17,11 @@ from apps.accounts.models import EmailOTP, OTPPurpose, Role
 from apps.accounts.services import (
     EmailDeliveryError,
     OTPCooldownError,
+    OTPRateLimitError,
     RegisterResult,
     issue_otp,
     register_member,
+    resend_otp,
     verify_otp,
 )
 
@@ -233,6 +235,42 @@ class SignupServiceTests(TestCase):
         self.assertIsInstance(result, RegisterResult)
         self.assertEqual(result.pending_user_id, existing.id)
 
+    def test_resend_invalidates_previous_otp_and_activates_new(self):
+        user = User.objects.create(
+            username="resend@example.com", email="resend@example.com", is_active=False
+        )
+        code1 = issue_otp(user, OTPPurpose.SIGNUP)
+        row1 = EmailOTP.objects.filter(user=user, purpose=OTPPurpose.SIGNUP).latest("created_at")
+        row1.created_at = timezone.now() - EmailOTP.RESEND_COOLDOWN - timedelta(seconds=1)
+        row1.save(update_fields=["created_at"])
+
+        mail.outbox.clear()
+        resend_otp(user)
+        row1.refresh_from_db()
+        self.assertTrue(row1.is_consumed())
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].to, ["resend@example.com"])
+
+        # Previous code fails verification; new code from email activates.
+        self.assertNotEqual(verify_otp(user, code1).reason, "ok")
+        user.refresh_from_db()
+        self.assertFalse(user.is_active)
+
+    def test_resend_window_rate_limit_prevents_spam(self):
+        user = User.objects.create(
+            username="spam@example.com", email="spam@example.com", is_active=False
+        )
+        base = timezone.now() - timedelta(minutes=20)
+        for idx in range(EmailOTP.MAX_RESENDS_PER_WINDOW):
+            code = issue_otp(user, OTPPurpose.SIGNUP)
+            self.assertEqual(len(code), 6)
+            row = EmailOTP.objects.filter(user=user).latest("created_at")
+            row.created_at = base + timedelta(minutes=idx * 2)
+            row.save(update_fields=["created_at"])
+
+        with self.assertRaises(OTPRateLimitError):
+            issue_otp(user, OTPPurpose.SIGNUP)
+
     def test_resend_failure_surfaces_error_not_500(self):
         with mock.patch(
             "apps.accounts.services.send_otp_email",
@@ -334,3 +372,39 @@ class SignupViewTests(TestCase):
         )
         self.assertRedirects(resp, "/", fetch_redirect_response=False)
         self.assertIn("_auth_user_id", c2.session)
+
+    def test_verify_page_shows_countdown_and_json_resend_endpoint(self):
+        c = Client()
+        _signup(c, email="countdown@example.com")
+        page = c.get("/accounts/verify/")
+        self.assertEqual(page.status_code, 200)
+        self.assertContains(page, "Resend code in")
+
+        # Immediate resend returns 429 cooldown JSON without exposing OTP
+        too_soon = c.post(
+            "/accounts/resend/",
+            HTTP_ACCEPT="application/json",
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        self.assertEqual(too_soon.status_code, 429)
+        body = too_soon.json()
+        self.assertEqual(body["status"], "cooldown")
+        self.assertGreaterEqual(body["retry_after"], 1)
+
+        # Age past cooldown -> resend returns 200 JSON and sends a new code
+        user = User.objects.get(username="countdown@example.com")
+        row = EmailOTP.objects.filter(user=user, purpose=OTPPurpose.SIGNUP).latest("created_at")
+        row.created_at = timezone.now() - EmailOTP.RESEND_COOLDOWN - timedelta(seconds=1)
+        row.save(update_fields=["created_at"])
+
+        mail.outbox.clear()
+        ok = c.post(
+            "/accounts/resend/",
+            HTTP_ACCEPT="application/json",
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        self.assertEqual(ok.status_code, 200)
+        self.assertEqual(ok.json()["status"], "sent")
+        self.assertEqual(len(mail.outbox), 1)
+        row.refresh_from_db()
+        self.assertTrue(row.is_consumed())
