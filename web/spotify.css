@@ -15,68 +15,165 @@
    ========================================================================== */
 
 :root {
-  color-scheme: light;
+    color-scheme: light;
 
-  /* surfaces — cool, slightly greyed canvas so light mode is not glaring
-     white, with white cards doing the lifting. */
-  --bg: #eceff4;
-  --card: #ffffff;
-  --hover: #e4e8ee;
-  --border: #dcdfe6;
-  --line: #e2e5ea;
-  --surface: #ffffff;
-  --canvas: #eceff4;
-  --ink: #0d0d0d;
+    /* Surfaces */
+    --bg: #eceff4;
+    --card: #ffffff;
+    --hover: #e4e8ee;
+    --border: #dcdfe6;
+    --line: #e2e5ea;
+    --surface: #ffffff;
+    --canvas: #eceff4;
+    --chrome: #eceff4;
 
-  /* type */
-  --text: #0d0d0d;
-  --muted: #545a66;
-  --faint: #868d9b;
+    /* Text */
+    --text: #0d0d0d;
+    --muted: #545a66;
+    --faint: #868d9b;
+    --ink: #0d0d0d;
 
-  /* Sidebar stays a dark rail even in light mode, exactly like Spotify —
-     it is what stops the whole app reading as a wall of white. */
-  --sidebar: #131822;
-  --sidebar-text: #b4bac7;
-  --sidebar-line: #242b38;
-  /* Hover stays a quiet lift; the GOLD pill belongs to the current page only.
-     (Making hover gold too flattened the rail into one blob.) */
-  --sidebar-hover: rgba(255, 255, 255, .07);
-  --sidebar-hover-text: #f1f3f7;
-  --sidebar-faint: #7d8697;
-  --chrome: #eceff4;
-  --sidebar-w: 268px;
-  --sidebar-w-closed: 104px;
+    /* Brand & accent */
+    --brand: #c99a32;
+    --brand-strong: #a87916;
+    --brand-soft: #fbf3df;
+    --gold: #b8891c;
+    --gold-deep: #8d6512;
+    --gold-soft: rgba(184, 137, 28, .16);
+    --gold-grad: linear-gradient(135deg, #f2cb5c 0%, #e8b93a 55%, #b8891c 100%);
+    --on-accent: #1a1407;
+    --pf-gold: #F2BD32;
+    --pf-gold-hi: #f5c85b;
+    --pf-lime: #e8b93a;
+    --pf-lime-hi: #f2cb5c;
+    --pf-lime-deep: #8a6200;
+    --pf-grad: linear-gradient(135deg, #f4d27a 0%, #e8b93a 50%, #b8891c 100%);
+    --ui-gold: #e8b93a;
+    --ui-ring: rgba(232, 185, 58, .45);
+    --sb-gold: #e8b93a;
+    --sb-gold-2: #f2cb5c;
+    --sb-ink: #1a1407;
 
-  /* One gutter drives BOTH the page padding and the sticky header's negative
-     margin, so the header contents line up exactly with the content below.
-     (They were a fixed -32px against a breakpoint-changing padding.) */
-  --gutter: clamp(18px, 3vw, 38px);
+    /* Status */
+    --green: #1db954;
+    --green-soft: rgba(29, 185, 84, .16);
+    --red: #e04357;
+    --red-soft: rgba(224, 67, 87, .14);
+    --amber: #d98a06;
+    --amber-soft: rgba(217, 138, 6, .16);
+    --ok: #1db954;
+    --warn: #d98a06;
+    --bad: #e04357;
+    --info: #0b8fd6;
+    --notif: #e5093c;
+    --notif-ring: #eceff4;
 
-  /* radius + elevation (Spotify leans on colour, not shadow) */
-  --radius-lg: 14px;
-  --radius-md: 10px;
-  --shadow: 0 1px 3px rgba(0, 0, 0, .07);
-  --shadow-hover: 0 8px 26px rgba(0, 0, 0, .13);
-  --ease: .2s cubic-bezier(.2, .7, .2, 1);
+    /* Sidebar */
+    --sidebar: #131822;
+    --sidebar-text: #b4bac7;
+    --sidebar-line: #242b38;
+    --sidebar-hover: rgba(255, 255, 255, .07);
+    --sidebar-hover-text: #f1f3f7;
+    --sidebar-faint: #7d8697;
+    --sidebar-w: 260px;
+    --sidebar-w-closed: 104px;
+    --pf-sb-w: 260px;
+    --sb-rail: 80px;
 
-  /* status */
-  --green: #1db954;
-  --green-soft: rgba(29, 185, 84, .16);
-  --red: #e04357;
-  --red-soft: rgba(224, 67, 87, .14);
-  /* The unread-count pill gets its own token: --red is tuned for tinted
-     text/icons, and it read as a muddy brick dot on the bell. */
-  --notif: #e5093c;
-  --notif-ring: #eceff4;
-  --amber: #d98a06;
-  --amber-soft: rgba(217, 138, 6, .16);
-  --ok: #1db954;
-  --warn: #d98a06;
-  --bad: #e04357;
-  --info: #0b8fd6;
+    /* Shape, depth & motion */
+    --radius-lg: 16px;
+    --radius-md: 10px;
+    --pf-radius: 16px;
+    --pf-radius-sm: 10px;
+    --pp-r: 16px;
+    --pp-r-sm: 10px;
+    --ui-radius: 14px;
+    --ui-radius-lg: 20px;
+    --shadow: 0 1px 3px rgba(0, 0, 0, .07);
+    --shadow-hover: 0 8px 26px rgba(0, 0, 0, .13);
+    --shadow-soft: 0 12px 34px rgba(23,32,44,.065);
+    --shadow-card: 0 4px 18px rgba(23,32,44,.045);
+    --ui-shadow: 0 14px 34px rgba(0, 0, 0, .18);
+    --ease: .2s cubic-bezier(.2, .7, .2, 1);
+    --pf-ease-hover: 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    --pp-ring: 0 0 0 3px rgba(232, 185, 58, .25);
+    --gutter: clamp(18px, 3vw, 38px);
 
-  /* now-playing bar */
+    /* Typography */
+    --pp-head: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+    --pp-body: "Inter", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+
+    /* ProFit surface tokens */
+    --pf-ink: #19231e;
+    --pf-amber: #D97706;
+    --pf-amber-bright: #F59E0B;
+    --pf-bg: #f6f1e8;
+    --pf-surface: #fffdf8;
+    --pf-surface-2: #f0e8da;
+    --pf-muted: #6e776f;
+    --pf-line: #e5dac8;
+    --pf-green: #14271f;
+    --pf-hover-bg: rgba(232, 185, 58, 0.09);
+    --pf-hover-row: rgba(232, 185, 58, 0.08);
+    --pf-hover-border: rgba(232, 185, 58, 0.52);
+    --pf-hover-text: var(--pf-lime-hi, #f2cb5c);
+    --pf-gap: 20px;
+    --pf-pad: 20px;
+
+    /* ProFit table & badge tokens */
+    --pf-tbl-head: #94A3B8;
+    --pf-tbl-text: #F8FAFC;
+    --pf-tbl-muted: #94A3B8;
+    --pf-tbl-date: #E2E8F0;
+    --pf-tbl-disabled: #64748B;
+    --pf-tbl-divider: #263244;
+    --pf-tbl-hover: rgba(242, 189, 50, 0.07);
+    --pf-tbl-selected: rgba(242, 189, 50, 0.10);
+    --pf-st-active-bg: rgba(22, 163, 74, 0.14);
+    --pf-st-active-fg: #4ADE80;
+    --pf-st-active-dot: #16A34A;
+    --pf-st-active-bd: rgba(22, 163, 74, 0.42);
+    --pf-st-expiring-bg: rgba(220, 38, 38, 0.16);
+    --pf-st-expiring-fg: #F87171;
+    --pf-st-expiring-dot: #DC2626;
+    --pf-st-expiring-bd: rgba(220, 38, 38, 0.48);
+    --pf-st-expired-bg: rgba(153, 27, 27, 0.24);
+    --pf-st-expired-fg: #FCA5A5;
+    --pf-st-expired-dot: #991B1B;
+    --pf-st-expired-bd: rgba(153, 27, 27, 0.58);
+    --pf-st-inactive-bg: rgba(71, 85, 105, 0.22);
+    --pf-st-inactive-fg: #CBD5E1;
+    --pf-st-inactive-dot: #475569;
+    --pf-st-inactive-bd: rgba(71, 85, 105, 0.48);
+    --pf-st-unassigned-bg: rgba(100, 116, 139, 0.18);
+    --pf-st-unassigned-fg: #CBD5E1;
+    --pf-st-unassigned-dot: #64748B;
+    --pf-st-unassigned-bd: rgba(100, 116, 139, 0.42);
+    --pf-st-pending-bg: rgba(37, 99, 235, 0.16);
+    --pf-st-pending-fg: #93C5FD;
+    --pf-st-pending-dot: #2563EB;
+    --pf-st-pending-bd: rgba(37, 99, 235, 0.42);
+    --pf-st-processing-bg: rgba(124, 58, 237, 0.16);
+    --pf-st-processing-fg: #C4B5FD;
+    --pf-st-processing-dot: #7C3AED;
+    --pf-st-processing-bd: rgba(124, 58, 237, 0.42);
+    --pf-plan-monthly-bg: rgba(242, 189, 50, 0.16);
+    --pf-plan-monthly-fg: #F2BD32;
+    --pf-plan-monthly-bd: rgba(242, 189, 50, 0.38);
+    --pf-plan-quarterly-bg: rgba(34, 184, 207, 0.16);
+    --pf-plan-quarterly-fg: #22B8CF;
+    --pf-plan-quarterly-bd: rgba(34, 184, 207, 0.38);
+    --pf-plan-annual-bg: rgba(100, 116, 139, 0.22);
+    --pf-plan-annual-fg: #CBD5E1;
+    --pf-plan-annual-bd: rgba(100, 116, 139, 0.45);
+    --pf-plan-daily-bg: rgba(56, 189, 248, 0.16);
+    --pf-plan-daily-fg: #38BDF8;
+    --pf-plan-daily-bd: rgba(56, 189, 248, 0.38);
+    --pf-plan-unassigned-bg: rgba(100, 116, 139, 0.16);
+    --pf-plan-unassigned-fg: #94A3B8;
+    --pf-plan-unassigned-bd: rgba(100, 116, 139, 0.35);
 }
+
 
 body.dark {
   color-scheme: dark;
@@ -136,13 +233,6 @@ body.dark {
    every page, so this is the single source of truth for the accent tokens.
    ========================================================================== */
 
-:root {
-  --gold: #b8891c;
-  --gold-deep: #8d6512;
-  --gold-soft: rgba(184, 137, 28, .16);
-  --gold-grad: linear-gradient(135deg, #f2cb5c 0%, #e8b93a 55%, #b8891c 100%);
-  --on-accent: #1a1407;
-}
 
 body.dark {
   --gold: #e0b94a;
@@ -214,14 +304,6 @@ html { scrollbar-color: color-mix(in srgb, var(--gold) 60%, #555) transparent; }
    cards breathe on hover, which reads as jitter — kill them outright. */
 .table-container tr, tbody tr, .panel, .pp-card { transition: none !important; }
 
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: .01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: .01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
 
 .sidebar {
   background: var(--sidebar) !important;
@@ -2776,14 +2858,6 @@ body.dark input[type="date"] { color-scheme: dark; }
    18 · MOTION
    ========================================================================== */
 
-@media (prefers-reduced-motion: reduce) {
-  .strip-dot { animation: none !important; }
-  *, *::before, *::after {
-    transition-duration: .01ms !important;
-    animation-duration: .01ms !important;
-    animation-iteration-count: 1 !important;
-  }
-}
 
 /* ==========================================================================
    19 · MEMBER HOME EXTRAS

@@ -425,9 +425,6 @@
   .pf-staff {background:#fff!important;color:#000}
   .pf-staff .card {box-shadow:none;border:1px solid #ddd;backdrop-filter:none}
 }
-@media (prefers-reduced-motion:reduce) {
-  .pf-staff * {animation:none!important;transition:none!important}
-}
 
 
 /* ProFit fix: the active period chip is solid gold, so its label uses the dark ink from the prototype. */
