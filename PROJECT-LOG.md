@@ -2419,3 +2419,14 @@ Investigate and fix the non-working OTP system across generation, email delivery
 - Verified `python manage.py check` (0 errors) and `python manage.py test apps.accounts` (90/90 passed).
 ### Decision-log skill
 Never commit OTP consumption or cooldown state before the external email send succeeds; roll back the failed row so transient mail errors do not lock users out or invalidate working codes.
+
+## 2026-11-20 01:02 (Asia/Manila): Enable Gmail email notifications and custom domain support
+### What I asked for
+Now that the custom domain (`functionalfitnessgym.site`) is connected, allow the app to send notifications to Gmail via Resend/email and keep everything working cleanly on the custom domain.
+### What the agent decided and why
+- Updated `profit/settings.py` with `functionalfitnessgym.site` / `www.functionalfitnessgym.site` / `.vercel.app` in production `ALLOWED_HOSTS` and `CSRF_TRUSTED_ORIGINS`, changed `DEFAULT_FROM_EMAIL` default to `ProFit <noreply@functionalfitnessgym.site>`, and updated production `SITE_BASE_URL` default to `https://www.functionalfitnessgym.site`. See [[2026-11-20 Email notifications and custom domain sender]]
+- Added best-effort `_send_notification_emails` in `apps/notifications/services.py` so `notify` and `notify_many` send branded HTML + plain-text emails with portal links to active recipients without failing DB writes on mail errors, and triggered a membership-active notification in `activate_paid_payment` (`apps/billing/services.py`).
+- Added a one-time fallback to `ProFit <onboarding@resend.dev>` on Resend HTTP 403/422 in `apps/accounts/email_backends.py` (while keeping `SMTPEmailBackend` fallback) and normalized `_google_callback_url` in `api/auth.py` to stay on the active request host.
+- Verified with `python manage.py check` (0 errors) and `python manage.py test` (228/228 OK).
+### Decision-log skill
+When adding email notifications inside core service helpers (`notify` / `notify_many`), wrap each recipient send cleanly so transient mail failures log only non-PII event tags and never abort database transactions, and include a one-time sender fallback when rolling out a newly purchased domain before DNS verification propagates.

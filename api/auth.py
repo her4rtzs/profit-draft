@@ -314,8 +314,28 @@ def resend_otp_api_view(request):
 
 
 def _google_callback_url(request):
+    dynamic_url = request.build_absolute_uri("/api/auth/google/callback/")
     configured = (getattr(settings, "GOOGLE_CALLBACK_URL", "") or "").strip()
-    return configured or request.build_absolute_uri("/api/auth/google/callback/")
+    if not configured:
+        return dynamic_url
+
+    parsed = urllib.parse.urlparse(configured)
+    path = parsed.path or ""
+    if path in ("", "/"):
+        parsed = parsed._replace(path="/api/auth/google/callback/")
+    elif path.endswith("/api/auth/google/callback"):
+        parsed = parsed._replace(path=f"{path}/")
+
+    request_host = request.get_host().split(":")[0].lower()
+    configured_host = (parsed.hostname or "").lower()
+    if (
+        request_host
+        and request_host not in {"localhost", "127.0.0.1", "testserver"}
+        and configured_host != request_host
+    ):
+        return dynamic_url
+
+    return urllib.parse.urlunparse(parsed)
 
 
 def _google_page_for_source(source):

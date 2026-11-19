@@ -1,13 +1,16 @@
 """Notifications: database-backed list, unread count, mark read, and renewal alerts."""
 
+from unittest import mock
+
 from django.contrib.auth import get_user_model
-from django.test import TestCase
+from django.core import mail
+from django.test import TestCase, override_settings
 from rest_framework.test import APIClient
 
 from apps.finance.services import record_desk_payment
 from apps.membership.models import MemberProfile
 from apps.notifications.models import Notification
-from apps.notifications.services import notify, unread_count
+from apps.notifications.services import notify, notify_many, unread_count
 
 User = get_user_model()
 PASSWORD = "Sup3r-secret-pass"
@@ -88,4 +91,40 @@ class NotificationApiTests(TestCase):
         self.assertEqual(clear_res.status_code, 200)
         self.assertEqual(clear_res.json()["unread"], 0)
         self.assertEqual(Notification.objects.filter(recipient=self.member).count(), 0)
+
+    @override_settings(
+        SITE_BASE_URL="https://www.functionalfitnessgym.site",
+        DEFAULT_FROM_EMAIL="ProFit <noreply@functionalfitnessgym.site>",
+    )
+    def test_notify_and_notify_many_send_email_to_active_recipients(self):
+        mail.outbox.clear()
+        notify(
+            self.member,
+            "Gym update",
+            kind=Notification.Kind.GENERAL,
+            body="New equipment has arrived.",
+            link="member-home.html#announcements",
+        )
+        notify_many(
+            [self.member, self.other],
+            "Schedule notice",
+            kind=Notification.Kind.ANNOUNCEMENT,
+            body="Weekend hours start at 6 AM.",
+            link="/member-home.html",
+        )
+        self.assertEqual(len(mail.outbox), 3)
+        first = mail.outbox[0]
+        self.assertEqual(first.from_email, "ProFit <noreply@functionalfitnessgym.site>")
+        self.assertEqual(first.to, ["m@gym.test"])
+        self.assertIn("Gym update", first.subject)
+        self.assertIn("New equipment has arrived.", first.body)
+        self.assertIn("https://www.functionalfitnessgym.site/member-home.html#announcements", first.body)
+        self.assertEqual(mail.outbox[1].to, ["m@gym.test"])
+        self.assertEqual(mail.outbox[2].to, ["o@gym.test"])
+
+    def test_email_delivery_error_does_not_break_in_app_notification(self):
+        with mock.patch("apps.notifications.services.send_mail", side_effect=RuntimeError("smtp down")):
+            note = notify(self.member, "Still saved", body="DB write survives email failure.")
+        self.assertIsNotNone(note)
+        self.assertTrue(Notification.objects.filter(pk=note.pk).exists())
 

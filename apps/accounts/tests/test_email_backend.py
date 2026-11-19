@@ -102,6 +102,38 @@ class ResendBackendTests(TestCase):
             with self.assertRaises(EmailDeliveryError):
                 ResendEmailBackend().send_messages([self._message()])
 
+    def test_custom_domain_403_retries_with_resend_sandbox_sender(self):
+        import urllib.error
+
+        attempts = []
+
+        def fake_urlopen(request, timeout=None):
+            body = json.loads(request.data.decode("utf-8"))
+            attempts.append(body["from"])
+            if len(attempts) == 1:
+                raise urllib.error.HTTPError(
+                    request.full_url, 403, "Domain not verified", hdrs=None, fp=None
+                )
+            return _FakeResponse()
+
+        msg = EmailMultiAlternatives(
+            subject="Notification",
+            body="Hello",
+            from_email="ProFit <noreply@functionalfitnessgym.site>",
+            to=["member@gmail.com"],
+        )
+        with mock.patch("apps.accounts.email_backends.urllib.request.urlopen", fake_urlopen):
+            sent = ResendEmailBackend().send_messages([msg])
+
+        self.assertEqual(sent, 1)
+        self.assertEqual(
+            attempts,
+            [
+                "ProFit <noreply@functionalfitnessgym.site>",
+                "ProFit <onboarding@resend.dev>",
+            ],
+        )
+
 
 class ConsoleBackendUnderTestRunnerTests(TestCase):
     def test_outbox_works_without_key(self):

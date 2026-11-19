@@ -51,6 +51,25 @@ VERCEL_URL = env("VERCEL_URL", default="")
 if VERCEL_URL and VERCEL_URL not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append(VERCEL_URL)
 
+if not DEBUG:
+    for _domain in (
+        "functionalfitnessgym.site",
+        "www.functionalfitnessgym.site",
+        ".functionalfitnessgym.site",
+        ".vercel.app",
+    ):
+        if _domain not in ALLOWED_HOSTS:
+            ALLOWED_HOSTS.append(_domain)
+
+CSRF_TRUSTED_ORIGINS = env.list(
+    "CSRF_TRUSTED_ORIGINS",
+    default=[
+        "https://www.functionalfitnessgym.site",
+        "https://functionalfitnessgym.site",
+        "https://*.vercel.app",
+    ],
+)
+
 # --- Applications ----------------------------------------------------------
 
 INSTALLED_APPS = [
@@ -193,8 +212,11 @@ EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
 EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=True)
 EMAIL_USE_SSL = env.bool("EMAIL_USE_SSL", default=False)
 EMAIL_TIMEOUT = 10
-DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="ProFit <onboarding@resend.dev>")
-SITE_BASE_URL = env("SITE_BASE_URL", default="http://localhost:8000")
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="ProFit <noreply@functionalfitnessgym.site>")
+SITE_BASE_URL = env(
+    "SITE_BASE_URL",
+    default="http://localhost:8000" if DEBUG else "https://www.functionalfitnessgym.site",
+)
 EMAIL_BACKEND = select_email_backend(
     RESEND_API_KEY,
     DEBUG,

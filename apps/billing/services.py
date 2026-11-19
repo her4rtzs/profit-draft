@@ -27,6 +27,8 @@ from django.utils import timezone
 from apps.finance.services import PLAN_PRICE_CENTAVOS
 from apps.membership.models import MemberProfile
 from apps.membership.services import renew_member
+from apps.notifications.models import Notification
+from apps.notifications.services import notify
 
 from .models import Payment, PendingSignup, Subscription
 
@@ -141,6 +143,20 @@ def activate_paid_payment(payment):
         renew_member(member, sub.plan, created_by=member.user, start_date=start)
     sub.status = Subscription.Status.ACTIVE
     sub.save(update_fields=["status", "updated_at"])
+    member.refresh_from_db()
+    if member.user_id:
+        body = (
+            f"Your {sub.plan} plan is active until {member.expiry_date:%b %d, %Y}."
+            if sub.plan and member.expiry_date
+            else "Your ProFit membership is now active."
+        )
+        notify(
+            member.user,
+            "Membership active",
+            kind=Notification.Kind.MEMBERSHIP,
+            body=body,
+            link="member-home.html",
+        )
 
 
 def _paymongo_session(plan, *, success_url, cancel_url):

@@ -9,7 +9,7 @@ import urllib.parse
 from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
-from django.test import Client, TestCase, override_settings
+from django.test import Client, RequestFactory, TestCase, override_settings
 from django.utils import timezone
 
 from apps.accounts.google_auth import (
@@ -394,3 +394,34 @@ class GoogleAuthTests(TestCase):
         self.assertEqual(cb.status_code, 302)
         self.assertIn("/login.html?google_authenticated=1", cb["Location"])
         self.assertEqual(self.client.get("/api/auth/session/").json()["user"]["role"], "MEMBER")
+
+    @override_settings(ALLOWED_HOSTS=["www.functionalfitnessgym.site", "testserver"])
+    def test_google_callback_url_normalizes_custom_domain(self):
+        from api.auth import _google_callback_url
+
+        rf = RequestFactory()
+        req = rf.get("/api/auth/google/login/", HTTP_HOST="www.functionalfitnessgym.site", secure=True)
+
+        with override_settings(GOOGLE_CALLBACK_URL=""):
+            self.assertEqual(
+                _google_callback_url(req),
+                "https://www.functionalfitnessgym.site/api/auth/google/callback/",
+            )
+
+        with override_settings(GOOGLE_CALLBACK_URL="https://www.functionalfitnessgym.site"):
+            self.assertEqual(
+                _google_callback_url(req),
+                "https://www.functionalfitnessgym.site/api/auth/google/callback/",
+            )
+
+        with override_settings(GOOGLE_CALLBACK_URL="https://www.functionalfitnessgym.site/api/auth/google/callback"):
+            self.assertEqual(
+                _google_callback_url(req),
+                "https://www.functionalfitnessgym.site/api/auth/google/callback/",
+            )
+
+        with override_settings(GOOGLE_CALLBACK_URL="https://profit-draft-gdzv.vercel.app/api/auth/google/callback/"):
+            self.assertEqual(
+                _google_callback_url(req),
+                "https://www.functionalfitnessgym.site/api/auth/google/callback/",
+            )
