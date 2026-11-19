@@ -2408,3 +2408,14 @@ Integrate Resend OTP into the existing authentication and password-reset verific
 - Added 60-second countdown timers, disabled/loading states, and clear status alerts to both `templates/accounts/verify.html` and `web/forgot.html`.
 ### Decision-log skill
 Invalidate prior unconsumed OTP rows atomically when issuing a replacement code, and return server-computed `retry_after` seconds on `429` so client countdowns cannot drift from server enforcement.
+
+## 2026-11-19 22:59 (Asia/Manila): Polish the Google Sign-In UI
+### What I asked for
+Check the new Member-only Google Sign-In surfaces for small real defects without redesigning the feature.
+### What the agent decided and why
+- Added a visually hidden `<label for="pfGlPassword">` in `web/google-auth.js` because the link dialog's password field had only a placeholder, breaking the repo's label rule.
+- Reworded the dialog copy from 'link Google Sign-In' to 'link your Google account' so the phrase no longer wraps into an orphan at 390px.
+- Added `aria-label="Sign in with Google"` to the login button so it is distinguishable from the adjacent Apple button by screen readers.
+- Verified with `node --check` and a re-rendered dialog; no other visual churn from the detector's pre-existing brand findings.
+### Decision-log skill
+When adding a third-party sign-in button, give it an explicit accessible name and keep every dialog field labeled even when a placeholder seems sufficient.
