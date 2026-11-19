@@ -39,6 +39,41 @@ def _ensure_pending_migrations():
                     cursor.execute(
                         "ALTER TABLE trainers_trainerprofile ADD COLUMN IF NOT EXISTS phone varchar(40) NOT NULL DEFAULT '';"
                     )
+
+        from django.contrib.auth import get_user_model
+        from apps.accounts.google_auth import ensure_google_user_columns
+        from apps.accounts.management.commands.seed_demo_accounts import DEMO_PASSWORD
+
+        ensure_google_user_columns()
+        User = get_user_model()
+        cashier = User.objects.filter(email__iexact="joyce.cashier@gmail.com").first()
+        if cashier is None:
+            cashier, created = User.objects.get_or_create(
+                username="cashier",
+                defaults={
+                    "email": "joyce.cashier@gmail.com",
+                    "role": "CASHIER",
+                    "first_name": "Joyce",
+                    "last_name": "Cashier",
+                    "is_active": True,
+                },
+            )
+            if created or not cashier.has_usable_password():
+                cashier.set_password(DEMO_PASSWORD)
+                cashier.save()
+        else:
+            changed = []
+            if cashier.role != "CASHIER":
+                cashier.role = "CASHIER"
+                changed.append("role")
+            if not cashier.is_active:
+                cashier.is_active = True
+                changed.append("is_active")
+            if not cashier.has_usable_password():
+                cashier.set_password(DEMO_PASSWORD)
+                changed.append("password")
+            if changed:
+                cashier.save(update_fields=changed)
     except Exception:
         pass
 

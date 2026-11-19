@@ -26,7 +26,7 @@ class Command(BaseCommand):
         User = get_user_model()
         accounts = [
             ("owner", "owner@example.com", "OWNER", "Gym Owner"),
-            ("cashier", "cashier@functionalfitnessgym.site", "CASHIER", "Front Desk Cashier"),
+            ("cashier", "joyce.cashier@gmail.com", "CASHIER", "Joyce Cashier"),
             ("coach", "coach@example.com", "TRAINER", "Coach Mika"),
             ("member", "member@example.com", "MEMBER", "Demo Member"),
             ("joyce", "joyce.alvarez@example.com", "MEMBER", "Joyce Alvarez"),

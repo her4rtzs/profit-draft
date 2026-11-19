@@ -2491,3 +2491,14 @@ Build a complete Cashier Portal for ProFit reusing the existing Staff Portal UI/
 - Added `StaffCashierOverviewView` (`/api/staff/cashier/overview/`) reusing shared `_combined_payment_rows`, created `web/cashier.html` and `web/cashier.js` on shared `finance-ui.css` (`fn-kpi-grid--4`, skeletons, tabs, member preview, duplicate-submit guard, and printable receipts), and verified with `python manage.py check` (0 errors) and `python manage.py test` (239/239 OK).
 ### Decision-log skill
 When separating a new portal role out of an existing staff shell under extensionless URLs, fix both client pathname matching and server-side view guards before adding role menus, and share queryset/serializer helpers rather than duplicating payment models or recording logic.
+
+
+## 2026-11-20 03:16 (Asia/Manila): Configure demo Cashier account for local and cold-start sign-in
+### What I asked for
+Provide a working demo Cashier account so I can sign in and open the Cashier Portal.
+### What the agent decided and why
+- Updated `apps/accounts/management/commands/seed_demo_accounts.py` so the demo Cashier account uses the requested owner-supplied test Gmail address with `role="CASHIER"`.
+- Added idempotent demo Cashier provisioning to `_ensure_pending_migrations` in `api/index.py` (using `ensure_google_user_columns` and `DEMO_PASSWORD`) so deployed PostgreSQL cold starts ensure the demo Cashier account is created/promoted to `CASHIER` automatically, while leaving local `db.sqlite3` migrations untouched for the owner to run `python manage.py migrate && python manage.py seed_demo_accounts`.
+- Verified with `python manage.py check` (0 errors) and `python manage.py test apps.accounts.tests.test_web_session` (7/7 OK).
+### Decision-log skill
+Remember that `ensure_google_user_columns()` is PostgreSQL-only for Vercel cold starts; local SQLite still requires running `python manage.py migrate` before querying or seeding `accounts_user` after adding model fields.
