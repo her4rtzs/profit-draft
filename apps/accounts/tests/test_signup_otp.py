@@ -280,8 +280,31 @@ class SignupServiceTests(TestCase):
         user = User.objects.get(username="member@example.com")
         self.assertTrue(result.delivery_failed)
         self.assertEqual(result.pending_user_id, user.id)
-        # The pending user persists and can be resent to.
+        # The pending user persists and no undelivered OTP locks out immediate resend.
         self.assertFalse(user.is_active)
+        self.assertEqual(EmailOTP.objects.filter(user=user, purpose=OTPPurpose.SIGNUP).count(), 0)
+        mail.outbox.clear()
+        resend_otp(user)
+        self.assertEqual(len(mail.outbox), 1)
+
+    def test_delivery_failure_during_resend_preserves_previous_valid_otp_and_whitespace_verify(self):
+        user = User.objects.create(
+            username="retry@example.com", email="retry@example.com", is_active=False
+        )
+        code1 = issue_otp(user, OTPPurpose.SIGNUP)
+        row1 = EmailOTP.objects.filter(user=user, purpose=OTPPurpose.SIGNUP).latest("created_at")
+        row1.created_at = timezone.now() - EmailOTP.RESEND_COOLDOWN - timedelta(seconds=1)
+        row1.save(update_fields=["created_at"])
+
+        with mock.patch("apps.accounts.services.send_otp_email", side_effect=EmailDeliveryError("down")):
+            with self.assertRaises(EmailDeliveryError):
+                resend_otp(user)
+
+        # Undelivered OTP removed; previous code1 restored and still verifiable even with whitespace!
+        self.assertEqual(EmailOTP.objects.filter(user=user, purpose=OTPPurpose.SIGNUP).count(), 1)
+        row1.refresh_from_db()
+        self.assertFalse(row1.is_consumed())
+        self.assertTrue(verify_otp(user, f"  {code1} \n").ok)
 
 
 @override_settings(STORAGES=_PLAIN_STATIC)

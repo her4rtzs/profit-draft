@@ -115,7 +115,7 @@ def verify_view(request):
                 messages.error(request, GENERIC_INVALID_CODE)
     else:
         form = VerifyForm()
-    cooldown_seconds = 60
+    cooldown_seconds = 0
     if user is not None:
         latest = EmailOTP.objects.filter(user=user, purpose=OTPPurpose.SIGNUP).order_by("-created_at").first()
         if latest is not None:

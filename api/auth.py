@@ -178,14 +178,36 @@ def _json_body(request):
 
 @require_POST
 def forgot_password_view(request):
-    """Email a reset code. Always answers 200 so it cannot reveal which emails exist."""
-    from apps.accounts.services import request_password_reset
+    """Email a reset code. Preserves anti-enumeration while surfacing real delivery errors."""
+    from apps.accounts.services import EmailDeliveryError, OTPRateLimitError, request_password_reset
 
     data = _json_body(request)
     if data is None:
         return JsonResponse({"detail": "Invalid request body."}, status=400)
-    request_password_reset(data.get("email"))
-    return JsonResponse({"detail": "If that email has an account, a code is on its way."})
+    try:
+        cooldown_seconds = request_password_reset(data.get("email"))
+    except OTPRateLimitError as exc:
+        return JsonResponse(
+            {
+                "status": "rate_limited",
+                "detail": "Too many OTP requests. Please wait before trying again.",
+                "retry_after": min(exc.retry_after, 3600),
+            },
+            status=429,
+        )
+    except EmailDeliveryError:
+        return JsonResponse(
+            {
+                "status": "send_failed",
+                "detail": "We couldn't send the verification code right now. Please try again shortly.",
+            },
+            status=503,
+        )
+    return JsonResponse({
+        "status": "sent",
+        "detail": "If that email has an account, a code is on its way.",
+        "cooldown_seconds": cooldown_seconds,
+    })
 
 
 @require_POST

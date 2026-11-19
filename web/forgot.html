@@ -362,21 +362,33 @@
   }
 
   const sendInitial = async (msgEl) => {
-    try { await api("/auth/forgot-password", { email }); show(msgEl, "If that email has an account, a code is on its way. It expires in 10 minutes.", false); return true; }
-    catch (e) { show(msgEl, e.message || "Could not send the code. Please try again.", true); return false; }
+    try {
+      const res = await api("/auth/forgot-password", { email });
+      show(msgEl, "If that email has an account, a code is on its way. It expires in 10 minutes.", false);
+      return res || { cooldown_seconds: 60 };
+    } catch (e) {
+      show(msgEl, e.message || "Could not send the code. Please try again.", true);
+      return null;
+    }
   };
+
+  $("fpCode").addEventListener("input", () => {
+    const clean = $("fpCode").value.replace(/\D/g, "").slice(0, 6);
+    if ($("fpCode").value !== clean) $("fpCode").value = clean;
+  });
 
   $("fpForm1").addEventListener("submit", async e => {
     e.preventDefault(); email = $("fpEmail").value.trim();
     if (!email || !email.includes("@")) return show($("fpMsg1"), "Enter a valid email address.", true);
     const btn = e.submitter || e.target.querySelector("button"); btn.disabled = true;
-    if (await sendInitial($("fpMsg1"))) {
+    const res = await sendInitial($("fpMsg1"));
+    if (res) {
       $("fpForm1").hidden = true;
       $("fpForm2").hidden = false;
       $("fpTitle").textContent = "Check your email";
       $("fpSub").textContent = "Enter the 6-digit code we sent and choose a new password.";
       show($("fpMsg2"), "Verification code sent. Check your inbox (valid for 10 minutes).", false);
-      startResendCountdown(60);
+      startResendCountdown(res.cooldown_seconds || 60);
       $("fpCode").focus();
     }
     btn.disabled = false;

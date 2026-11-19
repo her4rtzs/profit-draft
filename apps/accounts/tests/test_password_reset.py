@@ -104,3 +104,20 @@ class PasswordResetTests(TestCase):
         capped = self._post("/api/auth/resend-otp/", {"email": "r@example.com", "purpose": "PASSWORD_RESET"})
         self.assertEqual(capped.status_code, 429)
         self.assertEqual(capped.json()["status"], "rate_limited")
+
+    def test_forgot_password_surfaces_503_on_delivery_failure_and_allows_retry(self):
+        from apps.accounts.services import EmailDeliveryError
+
+        with mock.patch("apps.accounts.services.send_reset_email", side_effect=EmailDeliveryError("down")):
+            err_resp = self._post("/api/auth/forgot-password/", {"email": "r@example.com"})
+        self.assertEqual(err_resp.status_code, 503)
+        self.assertEqual(err_resp.json()["status"], "send_failed")
+        self.assertEqual(EmailOTP.objects.filter(user=self.user, purpose=OTPPurpose.PASSWORD_RESET).count(), 0)
+
+        # Immediate retry once email service recovers succeeds without cooldown lockout
+        code = self._request_code()
+        self.assertIsNotNone(code)
+        self.assertEqual(
+            self._post("/api/auth/reset-password/", {"email": "r@example.com", "code": f" {code} ", "new_password": NEW}).status_code,
+            200,
+        )
