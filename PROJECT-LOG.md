@@ -2603,3 +2603,15 @@ Add data for GCash payment claims: server-set member and amount, normalised refe
 - RLS reminder: after applying the migration, open Supabase Table Editor -> `public.billing_paymentclaim`, enable Row Level Security and leave it with NO policies. Django is the only writer.
 ### Decision-log skill
 Put a conditional unique constraint on the table that owns the new workflow; adding it to a history table also constrains rows written before the feature existed.
+
+## 2026-11-21 17:40 (Asia/Manila): Member GCash claim submission
+### What I asked for
+Add a page and endpoint for a logged-in Member to submit a GCash claim with only a reference number and a Google Drive link, with strict validation, a 3-pending-claim limit, own-claims-only reads, privacy instructions on the page, and tests for forged status/amount/member fields.
+### What the agent decided and why
+- The endpoint accepts exactly two fields and rejects any extra key with a 400; the server sets member, amount, method and status. See [[2026-11-21 Member GCash claim submission]]
+- The screenshot link is checked by scheme and host and stored as text; the server never opens it.
+- The amount comes from the member's latest subscription plan price, defaulting to monthly, because no plan is in the request.
+- Kept the earlier trial rule: a trial-only member is refused, so for now only active members can submit a claim. Say the word if trial members should be allowed to pay this way.
+- Full suite: 270 tests pass.
+### Decision-log skill
+When a form has only two allowed fields, reject unknown keys outright; silently ignoring a forged `status` or `amount` hides an attack instead of stopping it.

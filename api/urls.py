@@ -4,6 +4,7 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from . import auth
+from .claims import MemberClaimView
 from .join import JoinCheckoutView, JoinConfirmView
 from .member import MemberCheckInView, MemberCheckoutView, MemberMeView
 from rest_framework.routers import SimpleRouter
@@ -88,6 +89,7 @@ urlpatterns = [
     path("member/me/", MemberMeView.as_view(), name="member-me"),
     path("member/check-in/", MemberCheckInView.as_view(), name="member-checkin"),
     path("member/checkout/", MemberCheckoutView.as_view(), name="member-checkout"),
+    path("member/claims/", MemberClaimView.as_view(), name="member-claims"),
     path("staff/attendance/", StaffAttendanceView.as_view(), name="staff-attendance"),
     path("staff/attendance/check-in/", StaffCheckInView.as_view(), name="staff-checkin"),
     path("staff/cashier/overview/", StaffCashierOverviewView.as_view(), name="staff-cashier-overview"),
