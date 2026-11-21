@@ -3001,3 +3001,11 @@ Fix the disappearing sticky header on Settings (and keep headers consistent acro
 - Centered `.pp-members-table tbody td:nth-child(4)` vertically in `web/members-ui.css` so the `ENDS` column sits dead-even with the other columns.
 ### Decision-log skill
 Never put `overflow-x: hidden` on ancestors of `position: sticky` headers — always use `overflow-x: clip`, and always set `min-width: 0` on CSS Grid children containing `<input>` elements to prevent intrinsic-width overflow.
+
+## 2026-11-22 07:16 (Asia/Manila): Restored original plain Staff header
+### What I asked for
+Restore the original plain header with no extra designs at all.
+### What the agent decided and why
+- Removed all custom `.topbar` full-bleed background/margin/artwork overrides from `web/portal-ui.css` and synced `web/dashboard.css` and `web/global.css`, keeping only the Font Size scaling, sidebar menu cleanup, `overflow-x: clip` sticky fix, and Trainers layout fixes.
+### Decision-log skill
+Keep unrelated layout fixes cleanly separated from header theme overrides so reverting visual experiments is instant and risk-free.

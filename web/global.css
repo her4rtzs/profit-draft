@@ -15132,3 +15132,86 @@ body[data-page="trainers"] .tr-modal-form select {
     grid-template-columns: 1fr !important;
   }
 }
+
+
+/* Functional Font Size + Sidebar Menu Cleanup (OG plain header restored) */
+html[data-font-size="sm"] body.pf-staff .main-content {
+  zoom: 0.93;
+}
+html[data-font-size="md"] body.pf-staff .main-content {
+  zoom: 1;
+}
+html[data-font-size="lg"] body.pf-staff .main-content {
+  zoom: 1.07;
+}
+/* Hide Change password from the Sidebar Account Popover (now inside Settings & My Profile) */
+.sidebar .account-menu .pf-cp-item,
+.sidebar .account-menu [data-change-password] {
+  display: none !important;
+}
+body.pf-staff .topbar::before,
+body.pf-staff .topbar::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Consistent Sticky Topbar across ALL Staff pages (overflow-x: clip never breaks position: sticky) */
+html,
+body.pf-staff,
+html body.pf-staff .dashboard,
+html body.pf-staff .main-content {
+  overflow-x: clip !important;
+}
+
+/* Trainers Toolbar Stacking (prevent dropdowns from hiding behind directory panel) & Add Trainer Modal Fix */
+body[data-page="trainers"] .tr-toolbar-panel {
+  position: relative !important;
+  z-index: 30 !important;
+  overflow: visible !important;
+}
+body[data-page="trainers"] .tr-dir-panel {
+  position: relative !important;
+  z-index: 1 !important;
+}
+body[data-page="trainers"] .tr-spec-menu {
+  z-index: 60 !important;
+}
+body[data-page="trainers"] .tr-dir-toolbar .tr-search-wrap {
+  flex: 1 1 240px !important;
+  min-width: 180px !important;
+}
+body[data-page="trainers"] .tr-modal-wide {
+  width: min(860px, 94vw) !important;
+  max-width: 860px !important;
+}
+body[data-page="trainers"] .tr-modal-form {
+  align-items: stretch !important;
+}
+body[data-page="trainers"] .tr-modal-section {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+body[data-page="trainers"] .tr-modal-grid-2,
+body[data-page="trainers"] .tr-modal-row {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+}
+body[data-page="trainers"] .tr-modal-form .tr-field {
+  min-width: 0 !important;
+  width: 100% !important;
+}
+body[data-page="trainers"] .tr-modal-form input:not([type="radio"]):not([type="checkbox"]),
+body[data-page="trainers"] .tr-modal-form textarea,
+body[data-page="trainers"] .tr-modal-form select {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+@media (max-width: 760px) {
+  body[data-page="trainers"] .tr-modal-grid-2,
+  body[data-page="trainers"] .tr-modal-row {
+    grid-template-columns: 1fr !important;
+  }
+}
