@@ -12,7 +12,9 @@ statuses are the only ones the webhook ever records — there is no
 and no ``DEFERRED`` status.
 """
 
+from django.conf import settings
 from django.db import models
+from django.db.models import Q
 
 
 class Subscription(models.Model):
@@ -75,6 +77,68 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"Payment<{self.pk} {self.status}>"
+
+
+class PaymentClaim(models.Model):
+    """A GCash payment claim submitted by a member and reviewed by staff.
+
+    Separate from ``Payment`` so the old PayMongo rows keep their required
+    subscription and reference fields. ``member`` and ``amount_centavos`` are
+    supplied by the server, never by the member's form.
+    """
+
+    class Status(models.TextChoices):
+        PENDING_REVIEW = "pending_review", "Pending review"
+        APPROVED = "approved", "Approved"
+        REJECTED = "rejected", "Rejected"
+
+    METHOD_GCASH = "GCASH"
+
+    member = models.ForeignKey(
+        "membership.MemberProfile",
+        on_delete=models.PROTECT,
+        related_name="payment_claims",
+    )
+    amount_centavos = models.PositiveIntegerField()
+    method = models.CharField(
+        max_length=10,
+        choices=[(METHOD_GCASH, "GCash")],
+        default=METHOD_GCASH,
+    )
+    reference_number = models.CharField(max_length=64)
+    proof_link = models.URLField(max_length=500)
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.PENDING_REVIEW,
+    )
+    reviewed_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="reviewed_payment_claims",
+    )
+    reviewed_at = models.DateTimeField(null=True, blank=True)
+    reject_reason = models.TextField(blank=True, default="")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["reference_number"],
+                condition=Q(status__in=("pending_review", "approved")),
+                name="unique_active_claim_reference",
+            ),
+        ]
+
+    def __str__(self):
+        return f"PaymentClaim<{self.pk} {self.status}>"
+
+    def save(self, *args, **kwargs):
+        # A reference is the same number whether or not the member typed spaces.
+        self.reference_number = (self.reference_number or "").replace(" ", "")
+        super().save(*args, **kwargs)
 
 
 class WebhookEvent(models.Model):

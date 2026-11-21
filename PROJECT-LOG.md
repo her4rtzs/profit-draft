@@ -2591,3 +2591,15 @@ Enforce the trial on the server: an active trial may log in and see only its own
 - Full suite: 257 tests pass. `api` suite: 15 tests pass.
 ### Decision-log skill
 Gate at the server boundary with one pure state helper and one permission class; menus are a hint, and request-time evaluation avoids a scheduler that free-tier hosting may not run.
+
+## 2026-11-21 17:27 (Asia/Manila): Payment claim data model
+### What I asked for
+Add data for GCash payment claims: server-set member and amount, normalised reference, proof link, review fields, and a conditional unique constraint that allows resubmission after rejection. Migration and tests only, no views; tell me first if a new model is cleaner.
+### What the agent decided and why
+- Created a separate `billing.PaymentClaim` instead of changing `Payment`, which needs a subscription and a PayMongo id and holds real payment history. See [[2026-11-21 Payment claims get their own model]]
+- Marked the earlier payments-row decision superseded and linked it to the new note.
+- Migration `billing.0005_paymentclaim` is created but NOT applied. It depends on `membership.0005`, which is also still unapplied.
+- Added 5 model tests for defaults, space normalisation and the conditional constraint; full suite: 262 tests pass.
+- RLS reminder: after applying the migration, open Supabase Table Editor -> `public.billing_paymentclaim`, enable Row Level Security and leave it with NO policies. Django is the only writer.
+### Decision-log skill
+Put a conditional unique constraint on the table that owns the new workflow; adding it to a history table also constrains rows written before the feature existed.
