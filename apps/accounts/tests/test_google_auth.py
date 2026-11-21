@@ -254,7 +254,9 @@ class GoogleAuthTests(TestCase):
         self.assertIsNotNone(user.google_linked_at)
         self.assertEqual(user.first_name, "Maria")
         self.assertEqual(user.last_name, "Santos")
-        self.assertEqual(user.member_profile.membership_status, MemberProfile.MembershipStatus.PENDING)
+        self.assertEqual(user.member_profile.membership_status, MemberProfile.MembershipStatus.TRIAL)
+        self.assertIsNotNone(user.member_profile.trial_ends_at)
+        self.assertEqual(self.client.get("/member-home").status_code, 200)
 
         # Session endpoint reflects authenticated MEMBER
         sess = self.client.get("/api/auth/session/")

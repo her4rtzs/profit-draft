@@ -103,9 +103,13 @@ def login_view(request):
 
 
 def _session_user_dict(user):
+    first = (user.first_name or "").strip()
+    last = (user.last_name or "").strip()
+    full_name = f"{first} {last}".strip()
     return {
         "id": user.pk,
-        "name": user.get_full_name() or user.username,
+        "name": full_name,
+        "name_missing": not (first and last),
         "email": user.email,
         "role": WEB_ROLE.get(user.role, "MEMBER"),
         "must_change_password": bool(getattr(user, "must_change_password", False)),
@@ -119,6 +123,28 @@ def session_view(request):
     if not user.is_authenticated:
         return JsonResponse({"detail": "Not signed in."}, status=401)
     return JsonResponse({"user": _session_user_dict(user)})
+
+
+def update_profile_view(request):
+    """PATCH/POST /api/auth/profile/ — let any signed-in active user set their full name."""
+    from apps.membership.services import validate_full_name
+
+    if request.method not in ("PATCH", "POST"):
+        return JsonResponse({"detail": "Method not allowed."}, status=405)
+    user = request.user
+    if not user.is_authenticated or not user.is_active:
+        return JsonResponse({"detail": "Not signed in."}, status=401)
+    data = _json_body(request)
+    if data is None:
+        return JsonResponse({"detail": "Invalid request body."}, status=400)
+    try:
+        first, last = validate_full_name(data.get("name"))
+    except ValidationError as exc:
+        return JsonResponse({"detail": exc.messages[0]}, status=400)
+    user.first_name = first
+    user.last_name = last
+    user.save(update_fields=["first_name", "last_name"])
+    return JsonResponse({"detail": "Profile updated.", "user": _session_user_dict(user)})
 
 
 @require_POST

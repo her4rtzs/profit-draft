@@ -112,12 +112,33 @@ class StaffMemberCreateSerializer(serializers.Serializer):
     address = serializers.CharField(max_length=255, required=False, allow_blank=True)
     plan = serializers.ChoiceField(choices=PLAN_CHOICES, required=False)
     start_date = serializers.DateField(required=False)
+    confirm_duplicate_phone = serializers.BooleanField(required=False, default=False)
+
+    def validate_name(self, value):
+        from django.core.exceptions import ValidationError as DjangoValidationError
+        from apps.membership.services import validate_full_name
+
+        try:
+            validate_full_name(value)
+        except DjangoValidationError as exc:
+            raise serializers.ValidationError(exc.messages[0])
+        return value.strip()
 
 
 class StaffMemberUpdateSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=120, required=False)
     phone = serializers.CharField(max_length=30, required=False, allow_blank=True)
     address = serializers.CharField(max_length=255, required=False, allow_blank=True)
+
+    def validate_name(self, value):
+        from django.core.exceptions import ValidationError as DjangoValidationError
+        from apps.membership.services import validate_full_name
+
+        try:
+            validate_full_name(value)
+        except DjangoValidationError as exc:
+            raise serializers.ValidationError(exc.messages[0])
+        return value.strip()
 
 
 class RenewSerializer(serializers.Serializer):

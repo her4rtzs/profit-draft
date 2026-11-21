@@ -588,7 +588,9 @@
     const pw2 = pw2El.value;
     const termsOk = $("terms").checked;
 
-    const eName = name.length < 2 ? "Enter your full name (at least 2 characters)." : "";
+    const nameParts = name.split(/\s+/).filter(Boolean);
+    const hasFirstLast = nameParts.length >= 2 && /[A-Za-z]/.test(nameParts[0]) && /[A-Za-z]/.test(nameParts[nameParts.length - 1]);
+    const eName = !hasFirstLast ? "Enter your first and last name." : "";
     const eEmail = window.ProFitAPI?.validateRealEmail
       ? window.ProFitAPI.validateRealEmail(email)
       : (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) ? "Enter a valid email address." : "");

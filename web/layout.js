@@ -8,7 +8,10 @@
     { label: 'MEMBERSHIP', items: [
       { id: 'members', label: 'Member List', icon: 'fa-users', href: '/members' },
       { id: 'attendance', label: 'Attendance', icon: 'fa-calendar-check', href: '/attendance' },
+    ]},
+    { label: 'STAFF', items: [
       { id: 'trainers', label: 'Trainers', icon: 'fa-dumbbell', href: '/trainers' },
+      { id: 'cashiers', label: 'Cashiers', icon: 'fa-cash-register', href: '/cashiers' },
     ]},
     { label: 'FINANCE', items: [
       { id: 'payments', label: 'Payments & Billing', icon: 'fa-wallet', href: '/payments' },

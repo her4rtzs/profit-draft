@@ -13,12 +13,23 @@
 
   const auth = window.ProFitAuth && window.ProFitAuth.user;
   let profile = window.ProFitProfile.get();
-  if (!profile.name && (auth?.name || auth?.email)) {
-    profile = { ...profile, name: auth.name || "", email: auth.email || "", role: auth.role === "MEMBER" ? "Gym member" : "Gym administrator" };
+  if ((!profile.name || profile.name.includes("@")) && auth) {
+    const cleanName = (auth.name || "").trim();
+    profile = {
+      ...profile,
+      name: cleanName.includes("@") ? "" : cleanName,
+      email: auth.email || profile.email || "",
+      role: auth.role === "MEMBER" ? "Gym member" : auth.role === "CASHIER" ? "Cashier" : "Gym administrator"
+    };
+  }
+
+  function validFullName(raw) {
+    const parts = String(raw || "").trim().split(/\s+/).filter(Boolean);
+    return parts.length >= 2 && /[A-Za-z]/.test(parts[0]) && /[A-Za-z]/.test(parts[parts.length - 1]);
   }
 
   function paint() {
-    $("identityName").textContent = profile.name || "Administrator";
+    $("identityName").textContent = profile.name || "Name not set";
     $("identityRole").textContent = profile.role || "Gym administrator";
     $("profileName").value = profile.name || "";
     $("profileRole").value = profile.role || "";
@@ -67,17 +78,32 @@
 
   $("profilePhotoClear")?.addEventListener("click", () => commit({ photo: "" }, "Photo removed."));
 
-  $("profileForm")?.addEventListener("submit", e => {
+  $("profileForm")?.addEventListener("submit", async e => {
     e.preventDefault();
     const name = $("profileName").value.trim();
-    if (!name) return flash("Your name cannot be empty.", true);
-    commit({
-      name,
-      role: $("profileRole").value.trim() || "Gym administrator",
-      email: $("profileEmail").value.trim(),
-      phone: $("profilePhone").value.trim(),
-      bio: $("profileBio").value.trim()
-    }, "Profile saved.");
+    if (!validFullName(name)) return flash("Enter your first and last name.", true);
+    const submitBtn = e.currentTarget.querySelector('button[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
+    try {
+      if (window.ProFitAPI) {
+        const res = await window.ProFitAPI.patch("/auth/profile", { name });
+        if (res && res.user) {
+          if (window.ProFitAuth) window.ProFitAuth.user = res.user;
+          try { sessionStorage.setItem("profit-verified-session", JSON.stringify(res.user)); } catch (_) {}
+        }
+      }
+      commit({
+        name,
+        role: $("profileRole").value.trim() || "Gym administrator",
+        email: $("profileEmail").value.trim(),
+        phone: $("profilePhone").value.trim(),
+        bio: $("profileBio").value.trim()
+      }, "Profile saved.");
+    } catch (err) {
+      flash(err.message || "Could not save your profile.", true);
+    } finally {
+      if (submitBtn) submitBtn.disabled = false;
+    }
   });
 
   // Two steps: verify the current password on the server, then set a new one.

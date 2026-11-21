@@ -4,6 +4,11 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from . import auth
+from .cashiers import (
+    StaffCashierDeactivateView,
+    StaffCashierListView,
+    StaffCashierResendInviteView,
+)
 from .claims import MemberClaimView
 from .join import JoinCheckoutView
 from .member import MemberCheckInView, MemberMeView
@@ -74,6 +79,7 @@ urlpatterns = [
     path("auth/login/", auth.login_view, name="auth-login"),
     path("auth/logout/", auth.logout_view, name="auth-logout"),
     path("auth/session/", auth.session_view, name="auth-session"),
+    path("auth/profile/", auth.update_profile_view, name="auth-profile"),
     path("auth/verify-password/", auth.verify_password_view, name="auth-verify-password"),
     path("auth/forgot-password/", auth.forgot_password_view, name="auth-forgot-password"),
     path("auth/verify-reset-otp/", auth.verify_reset_otp_view, name="auth-verify-reset-otp"),
@@ -113,6 +119,9 @@ urlpatterns = [
     path("staff/trainers/candidates/", StaffTrainerCandidatesView.as_view(), name="staff-trainer-candidates"),
     path("staff/trainers/<int:pk>/", StaffTrainerDetailView.as_view(), name="staff-trainer-detail"),
     path("staff/trainers/<int:pk>/resend-invite/", StaffTrainerResendInviteView.as_view(), name="staff-trainer-resend-invite"),
+    path("staff/cashiers/", StaffCashierListView.as_view(), name="staff-cashiers"),
+    path("staff/cashiers/<int:pk>/resend-invite/", StaffCashierResendInviteView.as_view(), name="staff-cashier-resend-invite"),
+    path("staff/cashiers/<int:pk>/deactivate/", StaffCashierDeactivateView.as_view(), name="staff-cashier-deactivate"),
     path("staff/members/<int:pk>/trainer/", StaffMemberTrainerView.as_view(), name="staff-member-trainer"),
     path("staff/members/<int:pk>/trainer/remove/", StaffMemberTrainerRemoveView.as_view(), name="staff-member-trainer-remove"),
     path("staff/trainer-requests/", StaffTrainerRequestListView.as_view(), name="staff-trainer-requests"),
