@@ -47,9 +47,6 @@
   const METHODS = [
     { id: 'Cash', icon: 'banknote', source: 'desk' },
     { id: 'GCash', icon: 'smartphone', source: 'desk' },
-    { id: 'Maya', icon: 'smartphone', source: 'desk' },
-    { id: 'Bank Transfer', icon: 'landmark', source: 'desk' },
-    { id: 'Credit Card', icon: 'credit-card', source: 'online' },
     { id: 'paymongo', icon: 'smartphone', source: 'online' }
   ];
   PF.PLANS_DEFAULT = PLANS; PF.METHODS = METHODS;
@@ -100,21 +97,21 @@
       [0, 10, 5, 'Mara Villanueva', 'monthly', 'GCash', 'completed'],
       [0, 11, 20, 'Paolo Reyes', 'daily', 'Cash', 'completed'],
       [-1, 9, 17, 'Angela Melillo', 'quarterly', 'GCash', 'completed'],
-      [-1, 14, 8, 'Liza Cortez', 'monthly', 'Maya', 'completed'],
-      [-2, 16, 32, 'James Lim', 'monthly', 'Bank Transfer', 'completed'],
+      [-1, 14, 8, 'Liza Cortez', 'monthly', 'GCash', 'completed'],
+      [-2, 16, 32, 'James Lim', 'monthly', 'Cash', 'completed'],
       [-2, 11, 3, 'Sophia Ramirez', 'monthly', 'Cash', 'pending'],
-      [-3, 15, 12, 'Daniel Wong', 'quarterly', 'Credit Card', 'completed'],
+      [-3, 15, 12, 'Daniel Wong', 'quarterly', 'paymongo', 'completed'],
       [-3, 10, 40, 'Isabella Santos', 'quarterly', 'paymongo', 'completed'],
       [-4, 13, 25, 'Chloe Rivera', 'monthly', 'GCash', 'failed'],
       [-5, 17, 50, 'Ryan Garcia', 'monthly', 'Cash', 'completed'],
-      [-6, 9, 30, 'Matthew Cruz', 'annual', 'Credit Card', 'completed'],
+      [-6, 9, 30, 'Matthew Cruz', 'annual', 'paymongo', 'completed'],
       [-8, 18, 10, 'Isabella Santos', 'monthly', 'Cash', 'completed'],
       [-9, 12, 45, 'Mara Villanueva', 'monthly', 'paymongo', 'completed'],
       [-7, 10, 15, 'Paolo Reyes', 'monthly', 'Cash', 'completed'],
       [-10, 15, 30, 'Alex Thompson', 'monthly', 'GCash', 'completed'],
       [-11, 9, 5, 'Liza Cortez', 'monthly', 'Cash', 'completed'],
-      [-12, 17, 20, 'Daniel Wong', 'quarterly', 'Bank Transfer', 'completed'],
-      [-13, 11, 45, 'Ryan Garcia', 'monthly', 'Maya', 'completed']
+      [-12, 17, 20, 'Daniel Wong', 'quarterly', 'Cash', 'completed'],
+      [-13, 11, 45, 'Ryan Garcia', 'monthly', 'GCash', 'completed']
     ];
     const pays = manual.map(m => ({ memberId: mid(m[3]), plan: m[4], method: m[5], status: m[6], at: at(m[0], m[1], m[2]) }));
 

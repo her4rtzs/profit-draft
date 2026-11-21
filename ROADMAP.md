@@ -124,13 +124,13 @@ Goal: remove the payment gateway. Sign-up is free with a 7-day trial, GCash paym
 
 - [x] Remove PayMongo: delete checkout creation, the webhook receiver and its route, `PAYMONGO_SECRET_KEY` and `PAYMONGO_WEBHOOK_SECRET`. Keep every existing payment row and PayMongo reference as history.
 - [x] Free sign-up creates a Member with status `trial` for 7 days: app access only, no gym membership and no attendance.
-- [ ] GCash claim form: GCash reference number and an https Google Drive screenshot link, saved as `pending_review`. The amount comes from the server-side plan price, never from the form.
-- [ ] Owner/Cashier review queue: approve or reject a claim; the member sees only their own claims. Enforced on the server.
-- [ ] Approval marks the claim `approved` and enrolls through the one membership service in a single transaction; a repeated approval changes nothing.
-- [ ] Cash desk payments recorded by staff through the same service, with `recorded_by` set.
-- [ ] Financial Dashboard counts `paid` cash rows and `approved` GCash claims only; `pending_review` and `rejected` claims are excluded and old PayMongo rows stay as history.
-- [ ] Tests: a submitted claim grants no access; only Owner/Cashier can review; approval enrolls exactly once; a duplicate approval does not extend the expiry; a client-sent amount is ignored; a member cannot see another member's claims.
-- [ ] Update the public landing page, join page and FAQ copy: cash and GCash only, free sign-up with a 7-day trial, no online checkout.
+- [x] GCash claim form: GCash reference number and an https Google Drive screenshot link, saved as `pending_review`. The amount comes from the server-side plan price, never from the form.
+- [x] Owner/Cashier review queue: approve or reject a claim; the member sees only their own claims. Enforced on the server.
+- [x] Approval marks the claim `approved` and enrolls through the one membership service in a single transaction; a repeated approval changes nothing.
+- [x] Cash desk payments recorded by staff through the same service, with `recorded_by` set.
+- [x] Financial Dashboard counts `paid` cash rows and `approved` GCash claims only; `pending_review` and `rejected` claims are excluded and old PayMongo rows stay as history.
+- [x] Tests: a submitted claim grants no access; only Owner/Cashier can review; approval enrolls exactly once; a duplicate approval does not extend the expiry; a client-sent amount is ignored; a member cannot see another member's claims.
+- [x] Update the public landing page, join page and FAQ copy: cash and GCash only, free sign-up with a 7-day trial, no online checkout.
 
 Exit check: a new member signs up free, stays `trial`, submits a GCash claim that grants nothing, and becomes `active` only after a Cashier approves it, with the dashboard counting that payment once.
 

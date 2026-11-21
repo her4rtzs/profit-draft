@@ -20,7 +20,6 @@
     CASH: 'Cash (Desk)',
     GCASH: 'GCash (Desk)',
     ONLINE: 'paymongo (old)',
-    QRPH: 'paymongo (old)',
   };
 
   var RECEIPT_ICON =
@@ -290,7 +289,7 @@
 
     var today = (overview && overview.today) || state.today || '';
     if (shiftDate) {
-      shiftDate.textContent = today ? 'Shift date: ' + today : 'Live desk and online receipts for today.';
+      shiftDate.textContent = today ? 'Shift date: ' + today : 'Desk payments and approved claims for today.';
     }
 
     var todays = state.payments.filter(function (p) {
