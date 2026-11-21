@@ -2460,3 +2460,14 @@ Optimize the 13-14 stylesheet links and 4-6 font families on profile, settings a
 - Verified before/after screenshots at desktop and phone widths for privacy and profile - visually identical. `ruff check .` (195 pre-existing errors) and `manage.py check` (ALLOWED_HOSTS required with DEBUG=False) do not pass in this environment.
 ### Decision-log skill
 When merging overlapping stylesheet sets that differ only in page-specific sheets, keep the shared sheets in the same relative order and insert the disjoint sheets around them; the cascade stays identical for both page groups.
+
+## 2026-11-21 16:10 (Asia/Manila): Payment redesign docs: free trial and GCash claims
+### What I asked for
+Replace PayMongo with cash and GCash, make sign-up free with a 7-day trial, and make GCash payments staff-reviewed claims. Docs only; no code.
+### What the agent decided and why
+- Removed PayMongo from `AGENTS.md`, `Architecture.md` and `ROADMAP.md` and documented cash plus a staff-reviewed GCash claim; the code still runs PayMongo until Phase 4.6 lands. See [[2026-11-21 Free sign-up with a seven-day trial]] and [[2026-11-21 GCash claims reviewed by staff]]
+- Stored a claim as a `payments` row (`pending_review` / `approved` / `rejected`) instead of a new table, so the Financial Dashboard still reads one source of truth.
+- Added Phase 4.6 with every item open, left all existing roadmap check states untouched, and recorded the Phase 4.6 gate checks in `Architecture.md`.
+- Left two gaps as questions rather than inventing answers: end-of-trial access (`Architecture.md` 14.7) and what happens to members already in `pending` when Phase 4.6 lands.
+### Decision-log skill
+When a payment provider is removed, update the env var list, the golden rules that name its keys, and the phase and conformance tables in the same pass; a stale env list is how a decommissioned secret outlives its service.
