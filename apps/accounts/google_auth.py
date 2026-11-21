@@ -81,15 +81,30 @@ def ensure_google_user_columns() -> None:
         return
     try:
         with connection.cursor() as cursor:
-            cursor.execute(
-                "ALTER TABLE accounts_user ADD COLUMN IF NOT EXISTS google_sub varchar(255) UNIQUE NULL;"
-            )
-            cursor.execute(
-                "ALTER TABLE accounts_user ADD COLUMN IF NOT EXISTS google_linked_at timestamp with time zone NULL;"
-            )
+            cols = {
+                c.name
+                for c in connection.introspection.get_table_description(cursor, "accounts_user")
+            }
+            if "google_sub" not in cols:
+                cursor.execute(
+                    "ALTER TABLE accounts_user ADD COLUMN IF NOT EXISTS google_sub varchar(255) NULL;"
+                )
+                cursor.execute(
+                    "CREATE UNIQUE INDEX IF NOT EXISTS accounts_user_google_sub_uniq "
+                    "ON accounts_user (google_sub) WHERE google_sub IS NOT NULL;"
+                )
+            if "google_linked_at" not in cols:
+                cursor.execute(
+                    "ALTER TABLE accounts_user ADD COLUMN IF NOT EXISTS google_linked_at timestamp with time zone NULL;"
+                )
+            if "must_change_password" not in cols:
+                cursor.execute(
+                    "ALTER TABLE accounts_user ADD COLUMN IF NOT EXISTS must_change_password boolean NOT NULL DEFAULT false;"
+                )
         _schema_checked = True
-    except Exception:
-        logger.warning("event=google_schema_check_deferred")
+    except Exception as exc:
+        pgcode = getattr(getattr(exc, "__cause__", None), "pgcode", "") or ""
+        logger.warning("event=google_schema_check_deferred err=%s pgcode=%s", type(exc).__name__, pgcode)
 
 
 class GoogleAuthError(Exception):

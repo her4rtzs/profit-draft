@@ -2546,3 +2546,14 @@ Keep the previous full-bleed Sign In / Sign Up / Forgot Password layout (retaini
 - Verified with `python manage.py check` (0 errors) and `python manage.py test profit.tests.test_clean_urls profit.tests.test_installable` (15/15 OK). Automated browser DevTools verification was unavailable in this session; local server left running at `http://127.0.0.1:8000` for manual device-emulation review.
 ### Decision-log skill
 When hiding header buttons (like `Sign in`) on narrow mobile viewports, always add a matching `.m-only` link inside the mobile navigation drawer so phone users never lose access to the route.
+
+
+## 2026-11-21 20:48 (Asia/Manila): Harden PostgreSQL Google column check and non-PII DB error logging
+### What I asked for
+Fix `"A database error occurred while signing you in. Please try again."` when logging in with Google on the live Vercel + Supabase site.
+### What the agent decided and why
+- Updated `ensure_google_user_columns()` in `apps/accounts/google_auth.py` to inspect `accounts_user` columns first before running `ALTER TABLE`, split `google_sub` column creation from partial unique index creation (`accounts_user_google_sub_uniq`), and also ensure `must_change_password` exists.
+- Added non-PII error-class and PostgreSQL error-code (`pgcode`) logging in `api/auth.py` (`google_auth_view`) and `apps/accounts/google_auth.py` so any Supabase schema or connection failure is visible in Vercel Logs without exposing PII.
+- Verified with `python manage.py check` and `python manage.py test apps.accounts.tests.test_google_auth`.
+### Decision-log skill
+Always inspect existing table columns before executing `ALTER TABLE ... ADD COLUMN IF NOT EXISTS` on Supabase transaction-pooled PostgreSQL, and log non-PII exception types + `pgcode` on caught `DatabaseError` responses so production DB issues are immediately diagnosable.

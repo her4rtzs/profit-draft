@@ -397,7 +397,13 @@ def google_auth_view(request):
         outcome = authenticate_google_member(claims)
     except GoogleAuthError as exc:
         return JsonResponse({"detail": exc.message, "code": exc.code}, status=exc.status_code)
-    except DatabaseError:
+    except DatabaseError as exc:
+        import logging
+
+        pgcode = getattr(getattr(exc, "__cause__", None), "pgcode", "") or ""
+        logging.getLogger("apps.accounts.google_auth").warning(
+            "event=google_auth_db_error err=%s pgcode=%s", type(exc).__name__, pgcode
+        )
         return JsonResponse(
             {"detail": "A database error occurred while signing you in. Please try again.", "code": "db_error"},
             status=503,
