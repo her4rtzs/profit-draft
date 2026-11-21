@@ -9299,92 +9299,24 @@ body:not(.dark) .pp-check input[type="checkbox"] {
   transform: translateX(20px) !important;
 }
 
-/* Full Edge-to-Edge FIXED Staff Header (Always Stays Pinned on Scroll) + Functional Font Size + Sidebar Menu Cleanup */
-html[data-font-size="sm"] body.pf-staff .main-content> :not(.topbar) {
+/* Functional Font Size + Sidebar Menu Cleanup (OG plain header restored) */
+html[data-font-size="sm"] body.pf-staff .main-content {
   zoom: 0.93;
 }
-
-html[data-font-size="md"] body.pf-staff .main-content> :not(.topbar) {
+html[data-font-size="md"] body.pf-staff .main-content {
   zoom: 1;
 }
-
-html[data-font-size="lg"] body.pf-staff .main-content> :not(.topbar) {
+html[data-font-size="lg"] body.pf-staff .main-content {
   zoom: 1.07;
 }
-
-/* Hide Change password from the Sidebar Account Popover (now inside Settings & My Profile) */
 .sidebar .account-menu .pf-cp-item,
 .sidebar .account-menu [data-change-password] {
   display: none !important;
 }
-
-body.pf-staff {
-  --pf-edge: 28px;
-}
-
-body.pf-staff .main-content {
-  padding: 96px var(--pf-edge) 42px var(--pf-edge) !important;
-}
-
-body.pf-staff .topbar {
-  position: fixed !important;
-  top: 0 !important;
-  left: var(--sidebar-w, 260px) !important;
-  right: 0 !important;
-  width: auto !important;
-  max-width: none !important;
-  margin: 0 !important;
-  z-index: 60 !important;
-  border-radius: 0 !important;
-  padding: 16px var(--pf-edge) !important;
-  min-height: 72px;
-  background: #0c111b !important;
-  border-bottom: 1px solid rgba(255, 255, 255, .08) !important;
-  box-sizing: border-box !important;
-  transition: left .22s ease;
-}
-
-body.pf-staff .sidebar.close~.main-content .topbar {
-  left: var(--sidebar-w-closed, 104px) !important;
-}
-
 body.pf-staff .topbar::before,
 body.pf-staff .topbar::after {
   display: none !important;
   content: none !important;
-}
-
-body.pf-staff:not(.dark) .topbar {
-  background: #fbf6ee !important;
-  border-bottom: 1px solid #eadfc8 !important;
-}
-
-body.pf-staff .topbar>* {
-  position: relative;
-  z-index: 1;
-}
-
-body.pf-staff .topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-@media (max-width: 980px) {
-  body.pf-staff {
-    --pf-edge: 16px;
-  }
-
-  body.pf-staff .main-content {
-    padding: 80px var(--pf-edge) calc(88px + env(safe-area-inset-bottom, 0px)) var(--pf-edge) !important;
-  }
-
-  body.pf-staff .topbar,
-  body.pf-staff .sidebar.close~.main-content .topbar {
-    left: 0 !important;
-    padding: 12px var(--pf-edge) !important;
-    min-height: 62px;
-  }
 }
 
 /* Consistent Sticky Topbar across ALL Staff pages (overflow-x: clip never breaks position: sticky) */

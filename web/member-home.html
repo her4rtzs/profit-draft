@@ -646,17 +646,6 @@
               </button>
             </li>
             <li>
-              <button class="nav-link" type="button" role="tab" data-tab="payments" aria-selected="false"
-                title="Payment History">
-                <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1z" />
-                  <path d="M8 7h8M8 11h8M8 15h5" />
-                </svg>
-                <span class="nav-text">Payment History</span>
-              </button>
-            </li>
-            <li>
               <button class="nav-link" type="button" role="tab" data-tab="announcements" aria-selected="false"
                 title="Announcements &amp; Notifications">
                 <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
@@ -1218,6 +1207,31 @@
             </div>
             <div id="membershipTabBody" hidden></div>
           </section>
+
+          <section class="panel member-panel" style="margin-top:18px">
+            <div class="pf-panel-head">
+              <div>
+                <h2><i class="fa-solid fa-receipt"></i> Payment History</h2>
+                <p>Membership payments, GCash claims, and receipts.</p>
+              </div>
+              <a class="btn btn-soft" href="/claim"><i class="fa-solid fa-mobile-screen"></i> Submit GCash claim</a>
+            </div>
+            <div class="pf-sk-wrap" data-skeleton="payments" style="display:grid;gap:8px">
+              <div class="pf-sk-row">
+                <div class="pf-sk-line md"></div>
+                <div class="pf-sk-line sm"></div>
+              </div>
+              <div class="pf-sk-row">
+                <div class="pf-sk-line md"></div>
+                <div class="pf-sk-line sm"></div>
+              </div>
+              <div class="pf-sk-row">
+                <div class="pf-sk-line md"></div>
+                <div class="pf-sk-line sm"></div>
+              </div>
+            </div>
+            <div id="paymentsHistoryRoot" hidden></div>
+          </section>
         </div>
 
         <div class="pp-tool-panel" data-panel="attendance" hidden>
@@ -1253,35 +1267,6 @@
               </div>
             </div>
             <div id="attendanceHistoryRoot" hidden></div>
-          </section>
-        </div>
-
-        <div class="pp-tool-panel" data-panel="payments" hidden>
-          <section class="panel member-panel">
-            <div class="pf-panel-head">
-              <div>
-                <h2><i class="fa-solid fa-receipt"></i> Payment History</h2>
-                <p>Membership payments, GCash claims, and receipts.</p>
-              </div>
-              <button type="button" class="btn btn-soft" data-renew-membership><i class="fa-solid fa-plus"></i> Pay /
-                Renew online</button>
-              <a class="btn btn-soft" href="/claim"><i class="fa-solid fa-mobile-screen"></i> Submit GCash claim</a>
-            </div>
-            <div class="pf-sk-wrap" data-skeleton="payments" style="display:grid;gap:8px">
-              <div class="pf-sk-row">
-                <div class="pf-sk-line md"></div>
-                <div class="pf-sk-line sm"></div>
-              </div>
-              <div class="pf-sk-row">
-                <div class="pf-sk-line md"></div>
-                <div class="pf-sk-line sm"></div>
-              </div>
-              <div class="pf-sk-row">
-                <div class="pf-sk-line md"></div>
-                <div class="pf-sk-line sm"></div>
-              </div>
-            </div>
-            <div id="paymentsHistoryRoot" hidden></div>
           </section>
         </div>
 
@@ -1387,7 +1372,7 @@
             user: window.ProFitAuth?.user || { name: "Demo Member", email: "member@profit.test", phone: "0917 000 0000" },
             membership: { planName: "Monthly Plan", plan: "Monthly", status: "Active", expiresAt: new Date(Date.now() + 18 * 86400000).toISOString(), daysRemaining: 18 },
             attendance: generated,
-            payments: [{ reference: "P-0008", date: new Date(Date.now() - 3 * 86400000).toISOString(), method: "GCash", amountFormatted: "Ã¢â€šÂ±800" }]
+            payments: [{ reference: "P-0008", date: new Date(Date.now() - 3 * 86400000).toISOString(), method: "GCash", amountFormatted: "₱800" }]
           };
         };
         const list = (id, items, empty, render) => {
@@ -1540,8 +1525,8 @@
           $("membershipName").textContent = safe(raw.planName || raw.plan || "No active plan");
           $("membershipDetail").textContent = endIso
             ? (effStatus === "EXPIRED"
-              ? `Membership expired on ${date(endIso)} Ã‚· 0 days remaining`
-              : `Expires ${date(endIso)} Ã‚· ${remainingDays} day${remainingDays === 1 ? "" : "s"} remaining`)
+              ? `Membership expired on ${date(endIso)} · 0 days remaining`
+              : `Expires ${date(endIso)} · ${remainingDays} day${remainingDays === 1 ? "" : "s"} remaining`)
             : "No active membership period yet. Choose a plan to get started.";
           const badgeEl = $("membershipStatus");
           badgeEl.textContent = formatStatusLabel(effStatus);
@@ -1572,7 +1557,7 @@
         </div>`;
           }
 
-          if (data.user && data.user.memberId) {
+          if (data.user && (data.user.memberId || data.user.email)) {
             window.__pfMemberMe = data;
             // Real member session: clear any leftover demo check-ins from previous sessions or accounts
             try { localStorage.removeItem(demoCheckinsKey); } catch (e) { }
@@ -1600,7 +1585,7 @@
           const payRoot = $("paymentsHistoryRoot");
           if (payRoot) {
             if (!paymentItems.length) {
-              payRoot.innerHTML = `<div class="pf-state-box"><i class="fa-solid fa-receipt" style="font-size:22px"></i><strong>No payment history yet</strong><span>Completed and pending online payments will appear here.</span></div>`;
+              payRoot.innerHTML = `<div class="pf-state-box"><i class="fa-solid fa-receipt" style="font-size:22px"></i><strong>No payment history yet</strong><span>Completed cash payments and approved GCash claims will appear here.</span></div>`;
             } else {
               payRoot.innerHTML = `<div class="pf-table-wrap"><table class="pf-table"><thead><tr><th>Reference</th><th>Plan</th><th>Date</th><th>Method</th><th>Amount</th><th>Status</th><th>Receipt</th></tr></thead><tbody>${paymentItems.map(x => `<tr><td><strong>${eh(x.reference || "Payment")}</strong></td><td>${eh(x.plan || "Membership")}</td><td>${eh(date(x.date))}</td><td>${eh(x.method || "Online")}</td><td><strong>${eh(x.amountFormatted || x.amount)}</strong></td><td><span class="pf-status-badge ${statusBadgeClass(x.status || "PAID")}">${eh(formatStatusLabel(x.status || "PAID"))}</span></td><td><button type="button" class="member-receipt" data-receipt="${eh(x.reference || "Payment")}" data-when="${eh(x.date)}" data-method="${eh(x.method || "Online")}" data-amount="${eh(x.amountFormatted || x.amount || "")}"><i class="fa-solid fa-receipt" aria-hidden="true"></i> Receipt</button></td></tr>`).join("")}</tbody></table></div>`;
             }
@@ -1609,7 +1594,7 @@
           // Attendance dates from the API are already "YYYY-MM-DD" strings; use date()
           // which calls localDateStr() internally to avoid the UTC midnight shift.
           list("attendanceList", attendanceItems, "No attendance records yet.", x => `<span><b>${date(localDateStr(x.date))}</b><small>${safe(x.location || "Gym check-in")}</small></span><i class="fa-solid fa-arrow-right"></i>`);
-          list("paymentList", paymentItems, "No payment records yet.", x => `<span><b>${safe(x.reference || "Payment")}</b><small>${date(x.date)} Ã‚· ${safe(x.method)}</small></span><strong>${safe(x.amountFormatted || x.amount)}</strong><button type="button" class="member-receipt" data-receipt="${safe(x.reference || "Payment")}" data-when="${safe(x.date)}" data-method="${safe(x.method)}" data-amount="${safe(x.amountFormatted || x.amount || "")}"><i class="fa-solid fa-receipt" aria-hidden="true"></i> Receipt</button>`);
+          list("paymentList", paymentItems, "No payment records yet.", x => `<span><b>${safe(x.reference || "Payment")}</b><small>${date(x.date)} · ${safe(x.method)}</small></span><strong>${safe(x.amountFormatted || x.amount)}</strong><button type="button" class="member-receipt" data-receipt="${safe(x.reference || "Payment")}" data-when="${safe(x.date)}" data-method="${safe(x.method)}" data-amount="${safe(x.amountFormatted || x.amount || "")}"><i class="fa-solid fa-receipt" aria-hidden="true"></i> Receipt</button>`);
           // Store attendance days as local YYYY-MM-DD strings so the calendar and
           // syncMemberChrome todayKey comparison are timezone-consistent.
           window.__pfAttendanceDays = attendanceItems.map(x => localDateStr(x.date));
@@ -1625,17 +1610,42 @@
             if (window.PROFIT_CONFIG?.DEMO_MODE && !window.PROFIT_CONFIG?.API_BASE_URL) render(demoData());
             else render(await ProFitAPI.get("/member/me"));
           } catch (e) {
+            const isAuthErr = e?.status === 401 || e?.status === 403 || /authentication credentials/i.test(String(e?.message || ""));
+            const isLocalPreview = location.hostname === "localhost" || location.hostname === "127.0.0.1" || location.protocol === "file:";
+            if (isAuthErr && !isLocalPreview) {
+              location.replace("/login");
+              return;
+            }
+            if (isAuthErr && isLocalPreview) {
+              render(demoData());
+              if (notice) {
+                notice.hidden = false;
+                notice.classList.remove("error");
+                notice.style.cssText = "padding:12px 16px;border-radius:12px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap";
+                notice.innerHTML = `<span>Previewing locally without a member login. <a href="/login" style="color:#e8b93a;font-weight:700;text-decoration:underline">Sign in as a member</a> to load live records.</span><button type="button" class="btn btn-soft" id="dismissPreviewNotice" style="padding:4px 12px;min-height:32px">Dismiss</button>`;
+                $("dismissPreviewNotice")?.addEventListener("click", () => { notice.hidden = true; });
+              }
+              return;
+            }
             setLoadingState(false);
             if (notice) {
               notice.hidden = false;
               notice.classList.add("error");
+              notice.style.cssText = "padding:12px 16px;border-radius:12px;margin-bottom:14px";
               notice.innerHTML = `Could not load your member data (${String(e?.message || "network error").replace(/</g, "&lt;")}). <button type="button" class="btn btn-soft" id="retryMemberLoad" style="margin-left:10px;padding:4px 12px">Retry</button>`;
               $("retryMemberLoad")?.addEventListener("click", load);
             }
-            const errHtml = `<div class="pf-state-box is-error"><i class="fa-solid fa-triangle-exclamation" style="font-size:20px"></i><strong>Unable to load records</strong><span>Please check your connection and try again.</span></div>`;
+            const errHtml = `<div class="pf-state-box is-error"><i class="fa-solid fa-triangle-exclamation" style="font-size:20px"></i><strong>Unable to load records</strong><span>Please check your connection or sign in as a member, then try again.</span></div>`;
             if ($("membershipTabBody")) $("membershipTabBody").innerHTML = errHtml;
             if ($("attendanceHistoryRoot")) $("attendanceHistoryRoot").innerHTML = errHtml;
             if ($("paymentsHistoryRoot")) $("paymentsHistoryRoot").innerHTML = errHtml;
+            const emptyMsg = `<p class="pp-muted" style="margin:4px 0">Could not load records right now. Click Retry above.</p>`;
+            if ($("attendanceList")) $("attendanceList").innerHTML = emptyMsg;
+            if ($("paymentList")) $("paymentList").innerHTML = emptyMsg;
+            if ($("profileDetails")) $("profileDetails").innerHTML = emptyMsg;
+            if ($("challengeList")) $("challengeList").innerHTML = emptyMsg;
+            if ($("upNextList")) $("upNextList").innerHTML = `<p class="pp-muted" style="margin:4px 0">No upcoming classes loaded.</p>`;
+            if ($("annPreview")) $("annPreview").innerHTML = `<p class="pp-muted" style="margin:4px 0">No announcements loaded.</p>`;
           }
         }
         // Gym contact details for signed-in members. Same ProFitGym store the public
@@ -1678,7 +1688,7 @@
           setTimeout(() => panel.classList.remove("is-highlight"), 1600);
         });
 
-        $("checkInButton").addEventListener("click", async () => {
+        $("checkInButton")?.addEventListener("click", async () => {
           const btn = $("checkInButton");
           btn.disabled = true;
           const notice = $("memberNotice");
@@ -1905,11 +1915,16 @@
             else localStorage.removeItem("pf-staff-explicit-light");
           } catch (e) { }
         });
+        document.addEventListener("click", e => {
+          if (e.target.closest("[data-renew-membership]")) {
+            window.location.href = "/claim";
+          }
+        });
         load();
       })();
   </script>
   <script src="pf-common.js"></script>
-  <script src="member-tabs.js?v=5"></script>
+  <script src="member-tabs.js?v=6"></script>
   <script src="member-shell.js?v=3"></script>
   <script src="change-password.js?v=1"></script>
   <script src="portal-fx.js?v=2"></script>

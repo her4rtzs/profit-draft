@@ -735,17 +735,45 @@
   const PROFILE_KEY = "profit-member-profile-v1";
   // Members signed in through the server: their photo, phone and address live in the database.
   const EMG_KEY = id => `profit-member-emergency-v1:${id}`;
+  function verifiedAuthUser() {
+    if (window.ProFitAuth?.user && window.ProFitAuth.user.email) return window.ProFitAuth.user;
+    try {
+      const raw = sessionStorage.getItem("profit-verified-session");
+      const parsed = raw ? JSON.parse(raw) : null;
+      if (parsed && parsed.email) return parsed;
+    } catch { /* ignore */ }
+    return null;
+  }
   function serverMember() {
     const me = window.__pfMemberMe;
-    if (!me || !me.user || !me.user.memberId) return null;
-    let emg = {};
-    try { emg = JSON.parse(localStorage.getItem(EMG_KEY(me.user.memberId)) || "{}") || {}; } catch { /* ignore */ }
-    return {
-      id: me.user.memberId, name: me.user.name || "Member", email: me.user.email || "", phone: me.user.phone || "",
-      address: me.user.address || "", emergencyName: emg.emergencyName || "", emergencyPhone: emg.emergencyPhone || "",
-      plan: me.membership?.planName || "Membership", start: null, end: me.membership?.expiry || null,
-      photoId: null, photoData: me.user.photo || "", __server: true
-    };
+    if (me && me.user) {
+      const mid = me.user.memberId || me.user.id || "";
+      let emg = {};
+      if (mid) {
+        try { emg = JSON.parse(localStorage.getItem(EMG_KEY(mid)) || "{}") || {}; } catch { /* ignore */ }
+      }
+      return {
+        id: mid || "MEMBER", name: me.user.name || "Member", email: me.user.email || "", phone: me.user.phone || "",
+        address: me.user.address || "", emergencyName: emg.emergencyName || "", emergencyPhone: emg.emergencyPhone || "",
+        plan: me.membership?.planName || "Membership", start: null, end: me.membership?.expiry || null,
+        photoId: null, photoData: me.user.photo || "", __server: true
+      };
+    }
+    const authUser = verifiedAuthUser();
+    if (authUser) {
+      const mid = authUser.memberId || authUser.id || "";
+      let emg = {};
+      if (mid) {
+        try { emg = JSON.parse(localStorage.getItem(EMG_KEY(mid)) || "{}") || {}; } catch { /* ignore */ }
+      }
+      return {
+        id: mid || "MEMBER", name: authUser.name || "Member", email: authUser.email || "", phone: authUser.phone || "",
+        address: authUser.address || "", emergencyName: emg.emergencyName || "", emergencyPhone: emg.emergencyPhone || "",
+        plan: "Membership", start: null, end: null,
+        photoId: null, photoData: authUser.photo || "", __server: true
+      };
+    }
+    return null;
   }
   function profileMember() {
     const srv = serverMember();

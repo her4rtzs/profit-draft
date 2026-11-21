@@ -14848,9 +14848,11 @@ body.pf-staff .fn-tabs .tab.active {
   box-shadow: none !important;
   cursor: pointer;
 }
+
 body:not(.dark) .pp-check input[type="checkbox"] {
   background: #dcd3c1 !important;
 }
+
 .pp-check input[type="checkbox"]::after {
   content: "" !important;
   position: absolute !important;
@@ -14863,148 +14865,14 @@ body:not(.dark) .pp-check input[type="checkbox"] {
   box-shadow: 0 1px 3px rgba(0, 0, 0, .25) !important;
   transition: transform .2s ease !important;
 }
+
 .pp-check input[type="checkbox"]:checked {
   background: #22c55e !important;
 }
+
 .pp-check input[type="checkbox"]:checked::after {
   transform: translateX(20px) !important;
 }
-
-/* Full Edge-to-Edge FIXED Staff Header (Always Stays Pinned on Scroll) + Functional Font Size + Sidebar Menu Cleanup */
-html[data-font-size="sm"] body.pf-staff .main-content > :not(.topbar) {
-  zoom: 0.93;
-}
-html[data-font-size="md"] body.pf-staff .main-content > :not(.topbar) {
-  zoom: 1;
-}
-html[data-font-size="lg"] body.pf-staff .main-content > :not(.topbar) {
-  zoom: 1.07;
-}
-/* Hide Change password from the Sidebar Account Popover (now inside Settings & My Profile) */
-.sidebar .account-menu .pf-cp-item,
-.sidebar .account-menu [data-change-password] {
-  display: none !important;
-}
-body.pf-staff {
-  --pf-edge: 28px;
-}
-body.pf-staff .main-content {
-  padding: 96px var(--pf-edge) 42px var(--pf-edge) !important;
-}
-body.pf-staff .topbar {
-  position: fixed !important;
-  top: 0 !important;
-  left: var(--sidebar-w, 260px) !important;
-  right: 0 !important;
-  width: auto !important;
-  max-width: none !important;
-  margin: 0 !important;
-  z-index: 60 !important;
-  border-radius: 0 !important;
-  padding: 16px var(--pf-edge) !important;
-  min-height: 72px;
-  background: #0c111b !important;
-  border-bottom: 1px solid rgba(255, 255, 255, .08) !important;
-  box-sizing: border-box !important;
-  transition: left .22s ease;
-}
-body.pf-staff .sidebar.close ~ .main-content .topbar {
-  left: var(--sidebar-w-closed, 104px) !important;
-}
-body.pf-staff .topbar::before,
-body.pf-staff .topbar::after {
-  display: none !important;
-  content: none !important;
-}
-body.pf-staff:not(.dark) .topbar {
-  background: #fbf6ee !important;
-  border-bottom: 1px solid #eadfc8 !important;
-}
-body.pf-staff .topbar > * {
-  position: relative;
-  z-index: 1;
-}
-body.pf-staff .topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-@media (max-width: 980px) {
-  body.pf-staff {
-    --pf-edge: 16px;
-  }
-  body.pf-staff .main-content {
-    padding: 80px var(--pf-edge) calc(88px + env(safe-area-inset-bottom, 0px)) var(--pf-edge) !important;
-  }
-  body.pf-staff .topbar,
-  body.pf-staff .sidebar.close ~ .main-content .topbar {
-    left: 0 !important;
-    padding: 12px var(--pf-edge) !important;
-    min-height: 62px;
-  }
-}
-
-/* Consistent Sticky Topbar across ALL Staff pages (overflow-x: clip never breaks position: sticky) */
-html,
-body.pf-staff,
-html body.pf-staff .dashboard,
-html body.pf-staff .main-content {
-  overflow-x: clip !important;
-}
-
-/* Trainers Toolbar Stacking (prevent dropdowns from hiding behind directory panel) & Add Trainer Modal Fix */
-body[data-page="trainers"] .tr-toolbar-panel {
-  position: relative !important;
-  z-index: 30 !important;
-  overflow: visible !important;
-}
-body[data-page="trainers"] .tr-dir-panel {
-  position: relative !important;
-  z-index: 1 !important;
-}
-body[data-page="trainers"] .tr-spec-menu {
-  z-index: 60 !important;
-}
-body[data-page="trainers"] .tr-dir-toolbar .tr-search-wrap {
-  flex: 1 1 240px !important;
-  min-width: 180px !important;
-}
-body[data-page="trainers"] .tr-modal-wide {
-  width: min(860px, 94vw) !important;
-  max-width: 860px !important;
-}
-body[data-page="trainers"] .tr-modal-form {
-  align-items: stretch !important;
-}
-body[data-page="trainers"] .tr-modal-section {
-  min-width: 0 !important;
-  overflow: hidden !important;
-  box-sizing: border-box !important;
-}
-body[data-page="trainers"] .tr-modal-grid-2,
-body[data-page="trainers"] .tr-modal-row {
-  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  gap: 12px !important;
-}
-body[data-page="trainers"] .tr-modal-form .tr-field {
-  min-width: 0 !important;
-  width: 100% !important;
-}
-body[data-page="trainers"] .tr-modal-form input:not([type="radio"]):not([type="checkbox"]),
-body[data-page="trainers"] .tr-modal-form textarea,
-body[data-page="trainers"] .tr-modal-form select {
-  width: 100% !important;
-  min-width: 0 !important;
-  max-width: 100% !important;
-  box-sizing: border-box !important;
-}
-@media (max-width: 760px) {
-  body[data-page="trainers"] .tr-modal-grid-2,
-  body[data-page="trainers"] .tr-modal-row {
-    grid-template-columns: 1fr !important;
-  }
-}
-
 
 /* Functional Font Size + Sidebar Menu Cleanup (OG plain header restored) */
 html[data-font-size="sm"] body.pf-staff .main-content {
@@ -15016,7 +14884,6 @@ html[data-font-size="md"] body.pf-staff .main-content {
 html[data-font-size="lg"] body.pf-staff .main-content {
   zoom: 1.07;
 }
-/* Hide Change password from the Sidebar Account Popover (now inside Settings & My Profile) */
 .sidebar .account-menu .pf-cp-item,
 .sidebar .account-menu [data-change-password] {
   display: none !important;
@@ -15041,38 +14908,47 @@ body[data-page="trainers"] .tr-toolbar-panel {
   z-index: 30 !important;
   overflow: visible !important;
 }
+
 body[data-page="trainers"] .tr-dir-panel {
   position: relative !important;
   z-index: 1 !important;
 }
+
 body[data-page="trainers"] .tr-spec-menu {
   z-index: 60 !important;
 }
+
 body[data-page="trainers"] .tr-dir-toolbar .tr-search-wrap {
   flex: 1 1 240px !important;
   min-width: 180px !important;
 }
+
 body[data-page="trainers"] .tr-modal-wide {
   width: min(860px, 94vw) !important;
   max-width: 860px !important;
 }
+
 body[data-page="trainers"] .tr-modal-form {
   align-items: stretch !important;
 }
+
 body[data-page="trainers"] .tr-modal-section {
   min-width: 0 !important;
   overflow: hidden !important;
   box-sizing: border-box !important;
 }
+
 body[data-page="trainers"] .tr-modal-grid-2,
 body[data-page="trainers"] .tr-modal-row {
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   gap: 12px !important;
 }
+
 body[data-page="trainers"] .tr-modal-form .tr-field {
   min-width: 0 !important;
   width: 100% !important;
 }
+
 body[data-page="trainers"] .tr-modal-form input:not([type="radio"]):not([type="checkbox"]),
 body[data-page="trainers"] .tr-modal-form textarea,
 body[data-page="trainers"] .tr-modal-form select {
@@ -15081,7 +14957,9 @@ body[data-page="trainers"] .tr-modal-form select {
   max-width: 100% !important;
   box-sizing: border-box !important;
 }
+
 @media (max-width: 760px) {
+
   body[data-page="trainers"] .tr-modal-grid-2,
   body[data-page="trainers"] .tr-modal-row {
     grid-template-columns: 1fr !important;

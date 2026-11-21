@@ -3009,3 +3009,71 @@ Restore the original plain header with no extra designs at all.
 - Removed all custom `.topbar` full-bleed background/margin/artwork overrides from `web/portal-ui.css` and synced `web/dashboard.css` and `web/global.css`, keeping only the Font Size scaling, sidebar menu cleanup, `overflow-x: clip` sticky fix, and Trainers layout fixes.
 ### Decision-log skill
 Keep unrelated layout fixes cleanly separated from header theme overrides so reverting visual experiments is instant and risk-free.
+
+## 2026-11-22 07:28 (Asia/Manila): Fixed Member Portal crash blocking Dark Mode, data loading, and real member name
+### What I asked for
+Fix Member Portal Dark Mode not toggling, blank skeleton containers across Member tabs, and "Demo Member" showing instead of the logged-in member's real name.
+### What the agent decided and why
+- Changed `$("checkInButton").addEventListener(...)` to optional chaining `$("checkInButton")?.addEventListener(...)` in `web/member-home.html` because `#checkInButton` no longer exists in the DOM and the uncaught `TypeError` was halting the script before `#memberTheme` (Dark Mode) and `load()` (`/api/member/me` + hiding `[data-skeleton]` cards) could execute.
+- Updated `serverMember()` in `web/member-tabs.js` to also read `window.ProFitAuth?.user` and `sessionStorage` (`profit-verified-session`) even before `/api/member/me` resolves or when `memberId` is not set yet, so logged-in members always see their real name instead of `"Demo Member"`.
+### Decision-log skill
+Always use optional chaining (`$("id")?.addEventListener`) when binding handlers in large inline page scripts so removing a single UI button can never abort theme toggles or data fetches below it.
+
+## 2026-11-22 07:31 (Asia/Manila): Removed stale fixed-topbar CSS from dashboard.css and global.css
+### What I asked for
+Fix the shifted/broken Staff header and restore the original Staff header cleanly.
+### What the agent decided and why
+- Removed a leftover `position: fixed; left: 260px` topbar block that had remained in `web/dashboard.css` and `web/global.css` after an earlier sync, resyncing both bundles cleanly from `web/portal-ui.css` so the original Staff header renders cleanly across all pages.
+### Decision-log skill
+When syncing `web/portal-ui.css` tails into `web/dashboard.css` and `web/global.css`, always slice from a stable upstream anchor marker so stale intermediate CSS blocks can never linger.
+
+## 2026-11-22 07:28 (Asia/Manila): Fixed Member Portal crash blocking Dark Mode, data loading, and real member name
+### What I asked for
+Fix Member Portal Dark Mode not toggling, blank skeleton containers across Member tabs, and "Demo Member" showing instead of the logged-in member's real name.
+### What the agent decided and why
+- Changed `$("checkInButton").addEventListener(...)` to optional chaining `$("checkInButton")?.addEventListener(...)` in `web/member-home.html` because `#checkInButton` no longer exists in the DOM and the uncaught `TypeError` was halting the script before `#memberTheme` (Dark Mode) and `load()` (`/api/member/me` + hiding `[data-skeleton]` cards) could execute.
+- Updated `serverMember()` in `web/member-tabs.js` to also read `window.ProFitAuth?.user` and `sessionStorage` (`profit-verified-session`) even before `/api/member/me` resolves or when `memberId` is not set yet, so logged-in members always see their real name instead of `"Demo Member"`.
+### Decision-log skill
+Always use optional chaining (`$("id")?.addEventListener`) when binding handlers in large inline page scripts so removing a single UI button can never abort theme toggles or data fetches below it.
+
+## 2026-11-22 07:31 (Asia/Manila): Removed stale fixed-topbar CSS from dashboard.css and global.css
+### What I asked for
+Fix the shifted/broken Staff header and restore the original Staff header cleanly.
+### What the agent decided and why
+- Removed a leftover `position: fixed; left: 260px` topbar block that had remained in `web/dashboard.css` and `web/global.css` after an earlier sync, resyncing both bundles cleanly from `web/portal-ui.css` so the original Staff header renders cleanly across all pages.
+### Decision-log skill
+When syncing `web/portal-ui.css` tails into `web/dashboard.css` and `web/global.css`, always slice from a stable upstream anchor marker so stale intermediate CSS blocks can never linger.
+
+## 2026-11-22 07:37 (Asia/Manila): Member Portal functional audit and Renew membership wiring
+### What I asked for
+Fix all remaining functional errors in the Member Portal so every button and tab works cleanly.
+### What the agent decided and why
+- Audited all static DOM IDs and API calls across `web/member-home.html`, `web/member-shell.js`, `web/member-tabs.js`, and `web/members.js`.
+- Wired all five `[data-renew-membership]` buttons in `web/member-home.html` to navigate to `/claim` (GCash payment claim submission, since PayMongo was removed in Phase 4.6), cleaned up stray `Ã‚·` mojibake and outdated "online payment" text, and widened `window.__pfMemberMe` detection to accept `data.user.email` as well as `data.user.memberId`.
+### Decision-log skill
+After removing a legacy payment gateway, grep for every old `data-renew-*` trigger button across the portal so none are left without a click handler.
+
+## 2026-11-22 07:40 (Asia/Manila): Stripped leftover fixed-topbar block from dashboard.css and global.css
+### What I asked for
+Restore the original Owner/Staff header and fix the 260px horizontal shift.
+### What the agent decided and why
+- Removed the leftover `/* Full Edge-to-Edge FIXED Staff Header ... */` block (`position: fixed; left: var(--sidebar-w, 260px)`) from `web/dashboard.css` and `web/global.css` and bumped both to `?v=13`, restoring the original OG Staff header completely.
+### Decision-log skill
+Verify with a post-write grep that zero occurrences of removed CSS blocks remain across all concatenated bundles (`dashboard.css`, `global.css`, `portal-ui.css`).
+
+## 2026-11-22 07:47 (Asia/Manila): Merged Member Payment History into My Membership and cleared stuck overview skeletons on error
+### What I asked for
+Combine My Membership and Payment History into one tab in the Member Portal, and fix Recent attendance and Payment history staying stuck on loading shimmer bars.
+### What the agent decided and why
+- Moved the `Payment History` panel inside `data-panel="membership"` right below `My Membership` and removed the redundant `Payment History` sidebar tab in `web/member-home.html`.
+- Cleared `#attendanceList`, `#paymentList`, `#profileDetails`, `#challengeList`, `#upNextList`, and `#annPreview` inside the `load()` `catch` handler so failed requests show a clean retry message instead of infinite skeleton shimmer bars.
+### Decision-log skill
+Every container that starts with a skeleton shimmer in HTML must be cleared in BOTH the success path and the `catch` error path of `load()`, otherwise failed fetches leave shimmer bars spinning forever.
+
+## 2026-11-22 07:51 (Asia/Manila): Graceful local preview fallback and login redirect on 401/403 in Member Portal
+### What I asked for
+Fix the "Authentication credentials were not provided" error banner showing across all Member Portal tabs.
+### What the agent decided and why
+- Updated `load()` in `web/member-home.html` so a `401`/`403` redirects unauthenticated visitors to `/login` in production, while locally on `127.0.0.1` / `localhost` it renders the local preview cleanly with a dismissible notice linking to `/login` instead of showing a red error banner on every tab.
+### Decision-log skill
+Distinguish unauthenticated `401`/`403` responses from network errors in portal loaders: redirect to `/login` in production and provide a clean local preview banner on `localhost`.
