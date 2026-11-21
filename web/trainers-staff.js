@@ -109,8 +109,11 @@
     const pct = t.max_members ? Math.min(100, Math.round((t.load / t.max_members) * 100)) : 0;
     const capCls = pct >= 90 ? "is-cap-full" : pct >= 70 ? "is-cap-high" : pct >= 40 ? "is-cap-med" : "is-cap-low";
     const st = trainerStatus(t);
-    const avatarHtml = t.avatar_url
-      ? `<img src="${esc(t.avatar_url)}" alt="${esc(t.name)}">`
+    const avatarSrc = window.ProFitAvatar
+      ? window.ProFitAvatar.resolve(t.avatar_url, t.email || t.name || t.id)
+      : (t.avatar_url || "");
+    const avatarHtml = avatarSrc
+      ? `<img src="${esc(avatarSrc)}" alt="${esc(t.name)}">`
       : `<span>${esc(initials(t.name))}</span>`;
 
     return `<article class="tr-card tr-accent-${accent}" data-trainer-id="${t.id}">

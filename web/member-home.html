@@ -19,15 +19,15 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
 <script src="splash.js?v=3"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>My membership · ProFit</title>
+  <title>My membership Â· ProFit</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="styles.css">
-  <script src="config.js"></script>
+  <script src="config.js?v=3"></script>
   <script src="api.js"></script>
-  <script src="auth.js"></script>
+  <script src="auth.js?v=3"></script>
 <link rel="stylesheet" href="pro-theme.css"><link rel="stylesheet" href="spotify.css?v=14"><link rel="stylesheet" href="portal-ui.css?v=6"><script>document.documentElement.dataset.accent='gold'</script><link rel="stylesheet" href="hover-fx.css?v=1">
 <link rel="stylesheet" href="announcements.css?v=2">
 <link rel="stylesheet" href="ui-polish.css?v=2">
@@ -192,17 +192,17 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
         <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap">
           <div>
             <span class="member-status-label"><i class="fa-solid fa-circle-check"></i> MEMBERSHIP SUMMARY</span>
-            <h2 id="membershipName">—</h2>
+            <h2 id="membershipName">â€”</h2>
             <p id="membershipDetail">Checking your current account details.</p>
           </div>
           <div class="pf-status-actions">
-            <span class="pf-status-badge" id="membershipStatus">—</span>
+            <span class="pf-status-badge" id="membershipStatus">â€”</span>
             <button type="button" class="btn btn-primary" data-renew-membership><i class="fa-solid fa-rotate"></i> Renew membership</button>
           </div>
         </div>
         <div class="pf-progress-wrap">
           <div class="pf-progress-labels">
-            <span id="overviewMembershipRemaining">—</span>
+            <span id="overviewMembershipRemaining">â€”</span>
             <span id="overviewMembershipPct">0%</span>
           </div>
           <div class="pf-progress-track"><div class="pf-progress-fill" id="overviewMembershipBar"></div></div>
@@ -320,10 +320,10 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
       </div>
       <div id="healthRootWrap">
 <div class="pp-stats">
-  <div class="pp-stat"><span>BMI</span><strong id="statBmi">—</strong><small id="statBmiCat">Add height and a weight entry</small></div>
-  <div class="pp-stat"><span>Current weight</span><strong id="statWeight">—</strong><small id="statWeightChange">Log weight to see your change</small></div>
-  <div class="pp-stat"><span>Goal progress</span><strong id="statGoal">—</strong><div class="pp-bar"><span id="statGoalBar" style="width:0%"></span></div></div>
-  <div class="pp-stat"><span>Target date</span><strong id="statDays">—</strong><small id="statTarget">Set a target date</small></div>
+  <div class="pp-stat"><span>BMI</span><strong id="statBmi">â€”</strong><small id="statBmiCat">Add height and a weight entry</small></div>
+  <div class="pp-stat"><span>Current weight</span><strong id="statWeight">â€”</strong><small id="statWeightChange">Log weight to see your change</small></div>
+  <div class="pp-stat"><span>Goal progress</span><strong id="statGoal">â€”</strong><div class="pp-bar"><span id="statGoalBar" style="width:0%"></span></div></div>
+  <div class="pp-stat"><span>Target date</span><strong id="statDays">â€”</strong><small id="statTarget">Set a target date</small></div>
 </div>
 <div class="pp-two">
   <div class="pp-card">
@@ -341,7 +341,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
               <option value="in">in</option>
             </select>
           </div>
-          <small class="pp-hint" id="heightHint">100 – 250 cm</small>
+          <small class="pp-hint" id="heightHint">100 â€“ 250 cm</small>
         </div>
         <div class="pp-field">
           <label for="healthGoalWeight">Goal weight</label>
@@ -352,7 +352,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
               <option value="lb">lb</option>
             </select>
           </div>
-          <small class="pp-hint" id="goalWeightHint">20 – 300 kg</small>
+          <small class="pp-hint" id="goalWeightHint">20 â€“ 300 kg</small>
         </div>
       </div>
       <div class="pp-field"><label for="healthTarget">Target date</label><input type="date" id="healthTarget"></div>
@@ -497,12 +497,12 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
 <script>
 (() => {
   const $ = id => document.getElementById(id);
-  const safe = value => String(value ?? "—");
+  const safe = value => String(value ?? "â€”");
 
-  // ── Date helpers ────────────────────────────────────────────────────────────
+  // â”€â”€ Date helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // localDateStr: converts any date value to a Manila-local YYYY-MM-DD string,
   // avoiding the UTC-shift bug that occurs when you pass an ISO date string
-  // (e.g. "2026-10-29") to `new Date()` — that parses as midnight UTC, which
+  // (e.g. "2026-10-29") to `new Date()` â€” that parses as midnight UTC, which
   // is 8 hours behind Manila and rolls back to the previous local day.
   const localDateStr = value => {
     if (!value) return "";
@@ -514,20 +514,20 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
   };
   const date = value => {
-    if (!value) return "—";
+    if (!value) return "â€”";
     // Parse YYYY-MM-DD without UTC shift: treat it as local midnight
     const s = localDateStr(value);
-    if (!s) return "—";
+    if (!s) return "â€”";
     const [y, mo, d] = s.split("-").map(Number);
     const obj = new Date(y, mo - 1, d);
-    return Number.isNaN(obj.getTime()) ? "—" : obj.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+    return Number.isNaN(obj.getTime()) ? "â€”" : obj.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
   };
   // todayKey: local YYYY-MM-DD (not UTC)
   const todayKey = () => localDateStr(new Date());
   // weekMondayKey: ISO date string of the most recent Monday (or today if Monday)
   const weekMondayKey = () => {
     const d = new Date();
-    const dow = d.getDay(); // 0=Sun … 6=Sat
+    const dow = d.getDay(); // 0=Sun â€¦ 6=Sat
     const diffToMon = dow === 0 ? 6 : dow - 1; // days since last Monday
     d.setDate(d.getDate() - diffToMon);
     return localDateStr(d);
@@ -547,7 +547,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
       user: window.ProFitAuth?.user || { name: "Demo Member", email: "member@profit.test", phone: "0917 000 0000" },
       membership: { planName: "Monthly Plan", plan: "Monthly", status: "Active", expiresAt: new Date(Date.now() + 18 * 86400000).toISOString(), daysRemaining: 18 },
       attendance: generated,
-      payments: [{ reference: "P-0008", date: new Date(Date.now() - 3 * 86400000).toISOString(), method: "GCash", amountFormatted: "₱800" }]
+      payments: [{ reference: "P-0008", date: new Date(Date.now() - 3 * 86400000).toISOString(), method: "GCash", amountFormatted: "â‚±800" }]
     };
   };
   const list = (id, items, empty, render) => {
@@ -561,7 +561,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
     });
   };
 
-  // ── Streak ──────────────────────────────────────────────────────────────────
+  // â”€â”€ Streak â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // Uses localDateStr() so UTC-midnight ISO timestamps don't shift the date.
   // If not checked in today, streak stays alive from yesterday until the day ends.
   function calcStreak(attendance) {
@@ -577,7 +577,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
     return streak;
   }
 
-  // ── Weekly goal ─────────────────────────────────────────────────────────────
+  // â”€â”€ Weekly goal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // Counts distinct check-in dates from the start of the current ISO week
   // (Monday 00:00 local time), NOT a rolling 7-day window. This means 1 visit
   // on Monday of a new week resets the count to 1, exactly as expected.
@@ -675,7 +675,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
 
   function render(data) {
     setLoadingState(false);
-    const eh = v => String(v ?? "—").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    const eh = v => String(v ?? "â€”").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
     const raw = data.membership || {};
     const endIso = raw.endDate || raw.expiry || (raw.expiresAt ? localDateStr(raw.expiresAt) : null);
     const startIso = raw.startDate || null;
@@ -700,8 +700,8 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
     $("membershipName").textContent = safe(raw.planName || raw.plan || "No active plan");
     $("membershipDetail").textContent = endIso
       ? (effStatus === "EXPIRED"
-          ? `Membership expired on ${date(endIso)} · 0 days remaining`
-          : `Expires ${date(endIso)} · ${remainingDays} day${remainingDays === 1 ? "" : "s"} remaining`)
+          ? `Membership expired on ${date(endIso)} Â· 0 days remaining`
+          : `Expires ${date(endIso)} Â· ${remainingDays} day${remainingDays === 1 ? "" : "s"} remaining`)
       : "No active membership period yet. Choose a plan to get started.";
     const badgeEl = $("membershipStatus");
     badgeEl.textContent = formatStatusLabel(effStatus);
@@ -717,9 +717,9 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
       mBody.innerHTML = `
         <div class="pf-meta-grid">
           <div class="pf-meta-cell"><span class="k">Plan</span><span class="v">${eh(raw.planName || raw.plan || "No active plan")}</span></div>
-          <div class="pf-meta-cell"><span class="k">Start Date</span><span class="v">${startIso ? eh(date(startIso)) : "—"}</span></div>
-          <div class="pf-meta-cell"><span class="k">Expiration Date</span><span class="v">${endIso ? eh(date(endIso)) : "—"}</span></div>
-          <div class="pf-meta-cell"><span class="k">Duration</span><span class="v">${durationDays ? `${durationDays} day${durationDays === 1 ? "" : "s"}` : "—"}</span></div>
+          <div class="pf-meta-cell"><span class="k">Start Date</span><span class="v">${startIso ? eh(date(startIso)) : "â€”"}</span></div>
+          <div class="pf-meta-cell"><span class="k">Expiration Date</span><span class="v">${endIso ? eh(date(endIso)) : "â€”"}</span></div>
+          <div class="pf-meta-cell"><span class="k">Duration</span><span class="v">${durationDays ? `${durationDays} day${durationDays === 1 ? "" : "s"}` : "â€”"}</span></div>
           <div class="pf-meta-cell"><span class="k">Remaining Days</span><span class="v">${endIso ? `${remainingDays} day${remainingDays === 1 ? "" : "s"}` : "0 days"}</span></div>
           <div class="pf-meta-cell"><span class="k">Status &amp; Payment</span><span class="v" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px"><span class="pf-status-badge ${statusBadgeClass(effStatus)}">${eh(formatStatusLabel(effStatus))}</span><span class="pf-status-badge ${statusBadgeClass(raw.paymentStatus)}">${eh(formatStatusLabel(raw.paymentStatus))}</span></span></div>
         </div>
@@ -739,7 +739,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
     }
     const paintProfileCard = () => {
       const u = (window.__pfMemberMe || data).user || {};
-      $("profileDetails").innerHTML = `<dl class="profile-grid"><div><dt>Name</dt><dd>${eh(u.name)}</dd></div><div><dt>Email</dt><dd>${eh(u.email)}</dd></div><div><dt>Phone</dt><dd>${eh(u.phone || "—")}</dd></div><div><dt>Address</dt><dd>${eh(u.address || "—")}</dd></div></dl>`;
+      $("profileDetails").innerHTML = `<dl class="profile-grid"><div><dt>Name</dt><dd>${eh(u.name)}</dd></div><div><dt>Email</dt><dd>${eh(u.email)}</dd></div><div><dt>Phone</dt><dd>${eh(u.phone || "â€”")}</dd></div><div><dt>Address</dt><dd>${eh(u.address || "â€”")}</dd></div></dl>`;
     };
     paintProfileCard();
     window.__pfRefreshProfileCard = paintProfileCard;
@@ -769,7 +769,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
     // Attendance dates from the API are already "YYYY-MM-DD" strings; use date()
     // which calls localDateStr() internally to avoid the UTC midnight shift.
     list("attendanceList", attendanceItems, "No attendance records yet.", x => `<span><b>${date(localDateStr(x.date))}</b><small>${safe(x.location || "Gym check-in")}</small></span><i class="fa-solid fa-arrow-right"></i>`);
-    list("paymentList", paymentItems, "No payment records yet.", x => `<span><b>${safe(x.reference || "Payment")}</b><small>${date(x.date)} · ${safe(x.method)}</small></span><strong>${safe(x.amountFormatted || x.amount)}</strong><button type="button" class="member-receipt" data-receipt="${safe(x.reference || "Payment")}" data-when="${safe(x.date)}" data-method="${safe(x.method)}" data-amount="${safe(x.amountFormatted || x.amount || "")}"><i class="fa-solid fa-receipt" aria-hidden="true"></i> Receipt</button>`);
+    list("paymentList", paymentItems, "No payment records yet.", x => `<span><b>${safe(x.reference || "Payment")}</b><small>${date(x.date)} Â· ${safe(x.method)}</small></span><strong>${safe(x.amountFormatted || x.amount)}</strong><button type="button" class="member-receipt" data-receipt="${safe(x.reference || "Payment")}" data-when="${safe(x.date)}" data-method="${safe(x.method)}" data-amount="${safe(x.amountFormatted || x.amount || "")}"><i class="fa-solid fa-receipt" aria-hidden="true"></i> Receipt</button>`);
     // Store attendance days as local YYYY-MM-DD strings so the calendar and
     // syncMemberChrome todayKey comparison are timezone-consistent.
     window.__pfAttendanceDays = attendanceItems.map(x => localDateStr(x.date));
@@ -801,7 +801,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
   // Gym contact details for signed-in members. Same ProFitGym store the public
   // portal and footer read, so the number here can never drift from those.
   $("gymContactBtn")?.addEventListener("click", () => {
-    // `esc` is not global — it lives on PF, which pf-common.js declares as a
+    // `esc` is not global â€” it lives on PF, which pf-common.js declares as a
     // lexical const after this script. Resolve it the same way the receipt
     // handler does, with a plain fallback if the helper is not up yet.
     const p = (typeof PF === "object" && PF) ? PF : null;
@@ -813,9 +813,9 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
     const body = `
       <div class="member-contact">
         <dl>
-          <dt>Phone</dt><dd><a href="tel:${esc(String(g.phone || "").replace(/\s+/g, ""))}">${esc(g.phone || "—")}</a></dd>
-          <dt>Email</dt><dd><a href="mailto:${esc(g.email || "")}">${esc(g.email || "—")}</a></dd>
-          <dt>Address</dt><dd>${esc(g.address || "—")}</dd>
+          <dt>Phone</dt><dd><a href="tel:${esc(String(g.phone || "").replace(/\s+/g, ""))}">${esc(g.phone || "â€”")}</a></dd>
+          <dt>Email</dt><dd><a href="mailto:${esc(g.email || "")}">${esc(g.email || "â€”")}</a></dd>
+          <dt>Address</dt><dd>${esc(g.address || "â€”")}</dd>
           ${hours}
         </dl>
       </div>`;
@@ -827,7 +827,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
   });
 
   // "Add a receipt" lives under the month calendar, but the payments the gym
-  // records are what it actually opens — jump there rather than dead-ending.
+  // records are what it actually opens â€” jump there rather than dead-ending.
   $("addReceiptBtn")?.addEventListener("click", () => {
     const panel = $("paymentList")?.closest(".member-panel");
     if (!panel) return;
@@ -910,11 +910,9 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
     set("menuInitials", initials);
     window.__pfPaintAvatars = photo => {
       const seed = user.email || user.name || "member";
-      const fallback = window.ProFitAvatar ? window.ProFitAvatar.dataUrl(seed) : "";
+      const src = window.ProFitAvatar ? window.ProFitAvatar.resolve(photo, seed) : "";
       ["memberInitials", "menuInitials"].forEach(id => {
         const el = $(id); if (!el) return;
-        const ok = typeof photo === "string" && photo.startsWith("data:image/");
-        const src = ok ? photo : fallback;
         el.classList.toggle("has-photo", !!src);
         el.style.backgroundImage = src ? `url("${src}")` : "";
         el.style.backgroundSize = src ? "cover" : "";
@@ -930,7 +928,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
     const datePill = $("heroDatePill");
     if (datePill) {
       const now = new Date();
-      datePill.textContent = `${now.toLocaleDateString(undefined, { weekday: "short" }).toUpperCase()} · ${now.toLocaleDateString(undefined, { month: "short", day: "numeric" }).toUpperCase()}`;
+      datePill.textContent = `${now.toLocaleDateString(undefined, { weekday: "short" }).toUpperCase()} Â· ${now.toLocaleDateString(undefined, { month: "short", day: "numeric" }).toUpperCase()}`;
     }
     const greeting = $("memberGreeting");
     if (greeting) greeting.innerHTML = `HI, <span style="color:var(--m-gold,#e8b93a)">${first.toUpperCase()}</span>.`;
@@ -958,13 +956,13 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
     const esc = p ? p.esc : s => String(s ?? "");
     const ref = btn.dataset.receipt || "Payment";
     const when = btn.dataset.when || "";
-    const method = btn.dataset.method || "—";
-    const amount = btn.dataset.amount || "—";
+    const method = btn.dataset.method || "â€”";
+    const amount = btn.dataset.amount || "â€”";
     const paid = when ? new Date(when) : null;
     const gym = window.ProFitGym || {};
     const whenText = paid && !isNaN(paid)
       ? paid.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
-      : "—";
+      : "â€”";
     const raw = String(amount).replace(/[^\d.]/g, "");
     const money = p ? p.money(raw || 0) : amount;
     const who = $("menuName")?.textContent || "Member";

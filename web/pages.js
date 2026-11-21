@@ -67,11 +67,14 @@
         .map(([k, p]) => `<option value="${k}">${p.label} - ${peso(p.price)}</option>`).join("") : "");
     const methodOptions = () => METHODS.map(m => `<option>${m}</option>`).join("");
 
-    const memberCell = m => `
+    const memberCell = m => {
+        const avaSrc = window.ProFitAvatar ? window.ProFitAvatar.dataUrl(m.email || m.name || m.id) : "";
+        return `
         <div class="member">
-            <div class="mini-avatar">${initials(m.name)}</div>
+            <div class="mini-avatar">${avaSrc ? `<img src="${avaSrc}" alt="">` : initials(m.name)}</div>
             <div><strong>${esc(m.name)}</strong><small>${esc(planLabel(m.plan))}</small></div>
         </div>`;
+    };
 
     const badge = m => { const s = statusOf(m); return `<span class="badge ${s.cls}">${s.label}</span>`; };
     const todays = () => DB.checkins.filter(c => toISO(c.date) === toISO(TODAY));

@@ -308,9 +308,10 @@
     feed.innerHTML = todays.slice(0, 12).map(function (p, idx) {
       var key = paymentKey(p, idx);
       var memberName = p.name || 'Member';
+      var avaSrc = window.ProFitAvatar ? window.ProFitAvatar.dataUrl(p.email || memberName) : '';
       return (
         '<li>' +
-          '<div class="mini-avatar">' + esc(initials(memberName)) + '</div>' +
+          '<div class="mini-avatar">' + (avaSrc ? '<img src="' + avaSrc + '" alt="">' : esc(initials(memberName))) + '</div>' +
           '<div class="grow">' +
             '<strong>' + esc(memberName) + '</strong>' +
             '<small>' + esc(planLabel(p.plan)) + ', ' + esc(methodLabel(p.method, p.desk)) + '</small>' +
@@ -368,12 +369,13 @@
     tbody.innerHTML = rows.map(function (p, idx) {
       var key = paymentKey(p, idx);
       var memberName = p.name || 'Member';
+      var avaSrc = window.ProFitAvatar ? window.ProFitAvatar.dataUrl(p.email || memberName) : '';
       return (
         '<tr>' +
           '<td><span class="fn-ref">' + esc(p.ref || '—') + '</span></td>' +
           '<td>' +
             '<div class="member">' +
-              '<div class="mini-avatar">' + esc(initials(memberName)) + '</div>' +
+              '<div class="mini-avatar">' + (avaSrc ? '<img src="' + avaSrc + '" alt="">' : esc(initials(memberName))) + '</div>' +
               '<div><strong>' + esc(memberName) + '</strong><small>' + esc(p.member_code || '') + '</small></div>' +
             '</div>' +
           '</td>' +
@@ -441,11 +443,12 @@
         ? '<span class="fn-locked-pill">Inactive</span>'
         : '<button type="button" class="fn-btn-dark fn-btn-sm fn-feed-action" data-select-member="' + esc(m.id) + '">Take payment</button>';
 
+      var avaSrc = window.ProFitAvatar ? window.ProFitAvatar.dataUrl(m.email || memberName) : '';
       return (
         '<tr>' +
           '<td>' +
             '<div class="member">' +
-              '<div class="mini-avatar">' + esc(initials(memberName)) + '</div>' +
+              '<div class="mini-avatar">' + (avaSrc ? '<img src="' + avaSrc + '" alt="">' : esc(initials(memberName))) + '</div>' +
               '<div><strong>' + esc(memberName) + '</strong><small>' + esc(planLabel(m.plan)) + '</small></div>' +
             '</div>' +
           '</td>' +

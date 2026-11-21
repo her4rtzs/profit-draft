@@ -779,9 +779,10 @@
     const planLabel = (typeof PLANS !== "undefined" && PLANS[m.plan]?.label) || m.plan || "Membership";
     const plan = String(planLabel).replace(/\b[a-z]/g, c => c.toUpperCase());
     profileDraft = null;
+    const fallbackAva = window.ProFitAvatar ? window.ProFitAvatar.resolve(m.photoData, m.email || m.name || m.id) : "";
     root.innerHTML = `<div class="pp-profile">
       <aside class="pp-card pp-profile-card">
-        <div class="pp-avatar xl gold-frame ${m.photoId || m.photoData ? "has-photo" : ""}" aria-hidden="true">${esc(initialsOf(m.name))}${m.photoData ? `<img src="${esc(m.photoData)}" alt="">` : m.photoId ? `<img data-photo-id="${esc(m.photoId)}" alt="" hidden>` : ""}</div>
+        <div class="pp-avatar xl has-photo" aria-hidden="true">${fallbackAva ? `<img src="${esc(fallbackAva)}" alt="">` : esc(initialsOf(m.name))}${m.photoId && !m.photoData ? `<img data-photo-id="${esc(m.photoId)}" alt="" hidden>` : ""}</div>
         <h3>${esc(m.name)}</h3>
         <p class="pp-muted">${esc(m.id)}</p>
         <div class="pp-chips pp-center"><span class="pp-chip">${esc(plan)}</span><span class="pp-status ${status[0]}">${status[1]}</span></div>

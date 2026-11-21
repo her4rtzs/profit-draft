@@ -47,7 +47,7 @@ def web_page(request, page):
                     TRIAL_ENDED_MESSAGE if has_trial else NO_MEMBERSHIP_MESSAGE
                 )
             if state == "TRIAL":
-                if page in ("member-home", "profile"):
+                if page in ("member-home", "profile", "onboarding"):
                     return _serve_web_page(page)
                 return HttpResponseForbidden(TRIAL_PROFILE_ONLY_MESSAGE)
         if page in OWNER_ONLY_PAGES:

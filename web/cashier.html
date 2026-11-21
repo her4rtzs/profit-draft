@@ -1,14 +1,14 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head><script>(function(){try{var t=localStorage.getItem('theme');if(t==='light'&&!localStorage.getItem('pf-staff-explicit-light')){t='dark';try{localStorage.setItem('theme','dark');}catch(_){}}var d=t!=='light';var h=document.documentElement;h.style.background=d?'#0a0e16':'#F7F4EE';h.style.colorScheme=d?'dark':'light';if(d){h.classList.add('dark');}else{h.classList.remove('dark');}}catch(e){}})();</script><script src="splash.js?v=3"></script>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cashier Portal · ProFit</title>
+<title>Cashier Portal Â· ProFit</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Figtree:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <link rel="stylesheet" href="dashboard.css?v=1">
 <link rel="stylesheet" href="finance-ui.css?v=12">
-<script src="config.js"></script><script src="api.js?v=5"></script><script src="auth.js"></script>
+<script src="config.js?v=3"></script><script src="api.js?v=5"></script><script src="auth.js?v=3"></script>
 <script>document.documentElement.dataset.accent='gold'</script>
 <link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
 <body class="pf-staff" data-page="cashier" data-title="Cashier Portal" data-welcome="Front desk billing &amp; payments">
@@ -27,7 +27,7 @@
         <span class="pf-sk sk-val"></span>
         <span class="pf-sk sk-sub"></span>
       </div>
-      <h2 class="fn-kpi-val" id="kpiCollectedVal">₱0</h2>
+      <h2 class="fn-kpi-val" id="kpiCollectedVal">â‚±0</h2>
       <div class="fn-kpi-foot">
         <span class="fn-kpi-cap" id="kpiCollectedSub">0 payments recorded today</span>
       </div>
@@ -42,7 +42,7 @@
         <span class="pf-sk sk-val"></span>
         <span class="pf-sk sk-sub"></span>
       </div>
-      <h2 class="fn-kpi-val" id="kpiCashVal">₱0</h2>
+      <h2 class="fn-kpi-val" id="kpiCashVal">â‚±0</h2>
       <div class="fn-kpi-foot">
         <span class="fn-kpi-cap" id="kpiCashSub">Cash drawer at desk</span>
       </div>
@@ -57,7 +57,7 @@
         <span class="pf-sk sk-val"></span>
         <span class="pf-sk sk-sub"></span>
       </div>
-      <h2 class="fn-kpi-val" id="kpiDigitalVal">₱0</h2>
+      <h2 class="fn-kpi-val" id="kpiDigitalVal">â‚±0</h2>
       <div class="fn-kpi-foot">
         <span class="fn-kpi-cap" id="kpiDigitalSub">GCash and old online payments</span>
       </div>
@@ -148,10 +148,10 @@
             <div class="fn-field">
               <label for="cashierPlan">Subscription plan</label>
               <select class="fn-input" id="cashierPlan" name="plan" required>
-                <option value="daily">Daily Pass - ₱80</option>
-                <option value="monthly" selected>Monthly Membership - ₱800</option>
-                <option value="quarterly">Quarterly Membership - ₱2,100</option>
-                <option value="annual">Annual Membership - ₱7,500</option>
+                <option value="daily">Daily Pass - â‚±80</option>
+                <option value="monthly" selected>Monthly Membership - â‚±800</option>
+                <option value="quarterly">Quarterly Membership - â‚±2,100</option>
+                <option value="annual">Annual Membership - â‚±7,500</option>
               </select>
             </div>
             <div class="fn-field">
@@ -171,7 +171,7 @@
 
           <div class="fn-field">
             <label for="cashierAmount">Official amount (PHP)</label>
-            <input class="fn-input" id="cashierAmount" type="text" value="₱800.00" readonly>
+            <input class="fn-input" id="cashierAmount" type="text" value="â‚±800.00" readonly>
           </div>
 
           <p class="fn-status-msg" id="cashierFormStatus" role="status" aria-live="polite" hidden></p>
@@ -333,19 +333,19 @@
     </div>
 
     <dl class="fn-receipt-rows">
-      <div class="fn-receipt-row"><dt>Reference No.</dt><dd id="recRef">—</dd></div>
-      <div class="fn-receipt-row"><dt>Payment Date</dt><dd id="recDate">—</dd></div>
-      <div class="fn-receipt-row"><dt>Member</dt><dd id="recMember">—</dd></div>
-      <div class="fn-receipt-row"><dt>Member Code</dt><dd id="recMemberCode">—</dd></div>
-      <div class="fn-receipt-row"><dt>Plan</dt><dd id="recPlan">—</dd></div>
-      <div class="fn-receipt-row"><dt>Method</dt><dd id="recMethod">—</dd></div>
-      <div class="fn-receipt-row"><dt>Recorded By</dt><dd id="recCashier">—</dd></div>
-      <div class="fn-receipt-row"><dt>New Expiry</dt><dd id="recExpiry">—</dd></div>
+      <div class="fn-receipt-row"><dt>Reference No.</dt><dd id="recRef">â€”</dd></div>
+      <div class="fn-receipt-row"><dt>Payment Date</dt><dd id="recDate">â€”</dd></div>
+      <div class="fn-receipt-row"><dt>Member</dt><dd id="recMember">â€”</dd></div>
+      <div class="fn-receipt-row"><dt>Member Code</dt><dd id="recMemberCode">â€”</dd></div>
+      <div class="fn-receipt-row"><dt>Plan</dt><dd id="recPlan">â€”</dd></div>
+      <div class="fn-receipt-row"><dt>Method</dt><dd id="recMethod">â€”</dd></div>
+      <div class="fn-receipt-row"><dt>Recorded By</dt><dd id="recCashier">â€”</dd></div>
+      <div class="fn-receipt-row"><dt>New Expiry</dt><dd id="recExpiry">â€”</dd></div>
     </dl>
 
     <div class="fn-receipt-total">
       <span>Total Paid</span>
-      <strong id="recAmount">₱0.00</strong>
+      <strong id="recAmount">â‚±0.00</strong>
     </div>
 
     <div class="pay-modal-actions">
@@ -358,7 +358,7 @@
   </div>
 </div>
 
-<script src="layout.js?v=19"></script><script src="sidebar.js?v=18"></script><script src="data.js"></script>
+<script src="layout.js?v=21"></script><script src="sidebar.js?v=20"></script><script src="data.js"></script>
 <script src="portal-fx.js?v=2"></script>
 <script src="change-password.js?v=2" defer></script>
 <script src="notifications-live.js?v=1" defer></script>

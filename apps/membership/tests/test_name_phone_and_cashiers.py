@@ -202,6 +202,48 @@ class FullNameAndPhoneDuplicateTests(TestCase):
         self.assertEqual(clear_res.status_code, 200)
         self.assertEqual(clear_res.json()["user"]["photo"], "")
 
+        # Faceless preset avatar ID is accepted
+        preset_res = self.client.patch("/api/auth/profile/", {"photo": "av-4"}, format="json")
+        self.assertEqual(preset_res.status_code, 200)
+        self.assertEqual(preset_res.json()["user"]["photo"], "av-4")
+
+    def test_trial_member_can_open_onboarding_and_save_setup(self):
+        profile = register_trial_member(
+            name="Ana Reyes",
+            email="ana.onboard@gmail.com",
+            password="StrongPassword123!",
+            phone="09172223333",
+        )
+        self.client.force_login(profile.user)
+        self.assertEqual(self.client.get("/onboarding").status_code, 200)
+
+        save_res = self.client.patch(
+            "/api/member/me/",
+            {
+                "name": "Ana Marie Reyes",
+                "phone": "09172223334",
+                "photo": "av-2",
+                "onboarding": {
+                    "goals": ["Build strength", "Stay active"],
+                    "experience_level": "Beginner",
+                    "best_time": "Morning",
+                    "height_cm": "162",
+                    "weight_kg": "58",
+                    "health_notes": "Mild knee soreness",
+                    "emergency_name": "Juan Reyes",
+                    "emergency_phone": "09179998888",
+                    "completed": True,
+                },
+            },
+            format="json",
+        )
+        self.assertEqual(save_res.status_code, 200)
+        me = self.client.get("/api/member/me/").json()
+        self.assertEqual(me["user"]["name"], "Ana Marie Reyes")
+        self.assertEqual(me["user"]["photo"], "av-2")
+        self.assertTrue(me["user"]["onboardingCompleted"])
+        self.assertEqual(me["user"]["onboarding"]["best_time"], "Morning")
+
 
 class OwnerCashierManagementTests(TestCase):
     def setUp(self):

@@ -20,13 +20,18 @@ from .permissions import MemberAccess, TrialAllowedMemberAccess
 
 PHOTO_PREFIX = "data:image/jpeg;base64,"
 MAX_PHOTO_CHARS = 260_000  # about 190 KB of image
+AVATAR_PRESET_IDS = frozenset({"av-1", "av-2", "av-3", "av-4", "av-5", "av-6"})
 
 
 def _clean_photo(value):
-    """Return a safe JPEG data URL, "" to clear it, or None when invalid."""
+    """Return a safe JPEG data URL, preset avatar ID, "" to clear it, or None when invalid."""
     if value == "":
         return ""
-    if not isinstance(value, str) or not value.startswith(PHOTO_PREFIX) or len(value) > MAX_PHOTO_CHARS:
+    if not isinstance(value, str):
+        return None
+    if value in AVATAR_PRESET_IDS:
+        return value
+    if not value.startswith(PHOTO_PREFIX) or len(value) > MAX_PHOTO_CHARS:
         return None
     try:
         raw = base64.b64decode(value[len(PHOTO_PREFIX):], validate=True)
@@ -35,32 +40,91 @@ def _clean_photo(value):
     return value if raw[:3] == b"\xff\xd8\xff" else None  # JPEG magic bytes
 
 
+def _sanitize_onboarding(raw):
+    """Sanitize member onboarding fields into a bounded dict."""
+    if not isinstance(raw, dict):
+        return None
+    goals = raw.get("goals")
+    if isinstance(goals, list):
+        clean_goals = [str(g).strip()[:60] for g in goals if str(g).strip()][:10]
+    else:
+        clean_goals = []
+    return {
+        "goals": clean_goals,
+        "experience_level": str(raw.get("experience_level") or "").strip()[:40],
+        "best_time": str(raw.get("best_time") or "").strip()[:40],
+        "height_cm": str(raw.get("height_cm") or "").strip()[:20],
+        "weight_kg": str(raw.get("weight_kg") or "").strip()[:20],
+        "health_notes": str(raw.get("health_notes") or "").strip()[:500],
+        "emergency_name": str(raw.get("emergency_name") or "").strip()[:120],
+        "emergency_phone": str(raw.get("emergency_phone") or "").strip()[:30],
+        "completed": bool(raw.get("completed", True)),
+    }
+
+
 class MemberMeView(APIView):
     permission_classes = [TrialAllowedMemberAccess]
 
     def patch(self, request):
-        """Members may update their own photo, phone and address."""
+        """Members may update their own name, avatar/photo, phone, address, and onboarding info."""
+        import re
+        from django.core.exceptions import ValidationError as DjangoValidationError
+        from apps.membership.services import validate_full_name
+
         profile = MemberProfile.objects.filter(user=request.user).first()
         if profile is None:
             raise NotFound("No member profile.")
         fields = []
+        user_fields = []
+        if "name" in request.data:
+            try:
+                first, last = validate_full_name(request.data.get("name"))
+            except DjangoValidationError as exc:
+                return Response({"detail": exc.messages[0]}, status=status.HTTP_400_BAD_REQUEST)
+            request.user.first_name = first
+            request.user.last_name = last
+            user_fields.extend(["first_name", "last_name"])
         if "photo" in request.data:
             photo = _clean_photo(request.data.get("photo"))
             if photo is None:
                 return Response({"detail": "Send a JPEG photo under 190 KB."}, status=status.HTTP_400_BAD_REQUEST)
             profile.photo_data = photo
             fields.append("photo_data")
+            request.user.avatar_data = photo
+            user_fields.append("avatar_data")
         for key, limit in (("phone", 30), ("address", 255)):
             if key in request.data:
                 value = str(request.data.get(key) or "").strip()
                 if len(value) > limit:
                     return Response({"detail": f"{key} is too long."}, status=status.HTTP_400_BAD_REQUEST)
+                if key == "phone" and value:
+                    digits = re.sub(r"\D", "", value)
+                    if not (10 <= len(digits) <= 13):
+                        return Response(
+                            {"detail": "Enter a valid mobile number (10 to 13 digits)."},
+                            status=status.HTTP_400_BAD_REQUEST,
+                        )
                 setattr(profile, key, value)
                 fields.append(key)
-        if not fields:
+        if "onboarding" in request.data:
+            cleaned = _sanitize_onboarding(request.data.get("onboarding"))
+            if cleaned is None:
+                return Response({"detail": "Invalid onboarding payload."}, status=status.HTTP_400_BAD_REQUEST)
+            profile.onboarding_data = cleaned
+            fields.append("onboarding_data")
+        if not fields and not user_fields:
             return Response({"detail": "Nothing to update."}, status=status.HTTP_400_BAD_REQUEST)
-        profile.save(update_fields=fields)
-        return Response({"photo": profile.photo_data, "phone": profile.phone, "address": profile.address})
+        if user_fields:
+            request.user.save(update_fields=list(dict.fromkeys(user_fields)))
+        if fields:
+            profile.save(update_fields=list(dict.fromkeys(fields)))
+        return Response({
+            "name": f"{request.user.first_name} {request.user.last_name}".strip(),
+            "photo": profile.photo_data or getattr(request.user, "avatar_data", "") or "",
+            "phone": profile.phone,
+            "address": profile.address,
+            "onboarding": profile.onboarding_data or {},
+        })
 
     def get(self, request):
         profile = MemberProfile.objects.filter(user=request.user).first()
@@ -137,17 +201,23 @@ class MemberMeView(APIView):
             effective_status = "ACTIVE"
 
         user = request.user
+        full_name = f"{user.first_name} {user.last_name}".strip()
+        onboarding = profile.onboarding_data or {}
         return Response({
             "user": {
-                "name": user.get_full_name() or user.username, "email": user.email,
-                "phone": profile.phone, "address": profile.address, "photo": profile.photo_data,
+                "name": full_name, "email": user.email,
+                "phone": profile.phone, "address": profile.address,
+                "photo": profile.photo_data or getattr(user, "avatar_data", "") or "",
                 "memberId": f"M{202600 + profile.pk}",
+                "onboarding": onboarding,
+                "onboardingCompleted": bool(onboarding.get("completed")),
             },
             "membership": {
                 "plan": plan_key,
                 "planName": plan_name,
                 "status": effective_status,
                 "rawStatus": raw_status,
+                "trialEndsAt": profile.trial_ends_at.isoformat() if profile.trial_ends_at else None,
                 "expiringSoon": effective_status == "EXPIRING_SOON",
                 "startDate": start_date.isoformat() if start_date else None,
                 "endDate": end_date.isoformat() if end_date else None,

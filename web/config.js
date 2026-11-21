@@ -47,26 +47,17 @@ window.PROFIT_CONFIG = window.PROFIT_CONFIG || { API_BASE_URL: "/api", DEMO_MODE
     remove(id) { write(KEYS.announce, this.all().filter(item => item.id !== id)); }
   };
 
-  /* Deterministic flat-vector human cartoon avatars used across all portals
-     whenever a user has not uploaded a custom profile photo. */
+  /* Six deterministic flat-vector faceless human avatars used consistently across
+     every portal and tab whenever a user has not uploaded a custom profile photo. */
   const AVATAR_PRESETS = [
-    // 1. Curly puffs, deep brown skin, warm amber shirt
-    { bg: "#2b2113", skin: "#8d5524", shirt: "#f59e0b", hair: "#1a1412", style: "puffs" },
-    // 2. Smooth cap hair, warm tan skin, bright gold shirt
-    { bg: "#262014", skin: "#e0ac69", shirt: "#fbbf24", hair: "#1f1916", style: "cap" },
-    // 3. Smooth cap hair, medium tan skin, orange-amber shirt, slate bg
-    { bg: "#1f2636", skin: "#d9a066", shirt: "#f97316", hair: "#1c1816", style: "cap" },
-    // 4. Athletic headband, rich brown skin, terracotta shirt
-    { bg: "#2a1f14", skin: "#6f4222", shirt: "#b45309", hair: "#2b1d14", style: "headband", band: "#fbbf24" },
-    // 5. Short side-part, light peach skin, teal-slate shirt
-    { bg: "#17252d", skin: "#f1c27d", shirt: "#0ea5e9", hair: "#29201b", style: "part" },
-    // 6. Bob cut, warm olive skin, sage emerald shirt
-    { bg: "#17261f", skin: "#c68642", shirt: "#10b981", hair: "#1a1614", style: "bob" },
-    // 7. Athletic headband, light tan skin, crimson-rust shirt
-    { bg: "#281b1c", skin: "#e0ac69", shirt: "#dc2626", hair: "#241c18", style: "headband", band: "#f59e0b" },
-    // 8. Curly puffs, medium brown skin, indigo-slate shirt
-    { bg: "#1d2033", skin: "#a96b38", shirt: "#6366f1", hair: "#181412", style: "puffs" }
+    { id: "av-1", label: "Amber", bg: "#2b2113", skin: "#8d5524", shirt: "#f59e0b", hair: "#1a1412", style: "puffs" },
+    { id: "av-2", label: "Gold", bg: "#262014", skin: "#e0ac69", shirt: "#fbbf24", hair: "#1f1916", style: "cap" },
+    { id: "av-3", label: "Slate", bg: "#1f2636", skin: "#d9a066", shirt: "#f97316", hair: "#1c1816", style: "cap" },
+    { id: "av-4", label: "Runner", bg: "#2a1f14", skin: "#6f4222", shirt: "#b45309", hair: "#2b1d14", style: "headband", band: "#fbbf24" },
+    { id: "av-5", label: "Sky", bg: "#17252d", skin: "#f1c27d", shirt: "#0ea5e9", hair: "#29201b", style: "part" },
+    { id: "av-6", label: "Emerald", bg: "#17261f", skin: "#c68642", shirt: "#10b981", hair: "#1a1614", style: "bob" }
   ];
+  const AVATAR_BY_ID = Object.fromEntries(AVATAR_PRESETS.map(p => [p.id, p]));
 
   function hashSeed(seed) {
     const str = String(seed || "profit-user").trim().toLowerCase();
@@ -78,8 +69,7 @@ window.PROFIT_CONFIG = window.PROFIT_CONFIG || { API_BASE_URL: "/api", DEMO_MODE
     return Math.abs(h);
   }
 
-  function buildAvatarSvg(seed) {
-    const p = AVATAR_PRESETS[hashSeed(seed) % AVATAR_PRESETS.length];
+  function svgForPreset(p) {
     let hairSvg = "";
     if (p.style === "puffs") {
       hairSvg =
@@ -111,15 +101,47 @@ window.PROFIT_CONFIG = window.PROFIT_CONFIG || { API_BASE_URL: "/api", DEMO_MODE
     );
   }
 
+  function buildAvatarSvg(seed) {
+    const p = AVATAR_BY_ID[seed] || AVATAR_PRESETS[hashSeed(seed) % AVATAR_PRESETS.length];
+    return svgForPreset(p);
+  }
+
+  function dataUrlFromSvg(svg) {
+    return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
+  }
+
+  // Enforce one flat, consistent circular avatar look across every portal (no glowing rings).
+  if (typeof document !== "undefined" && !document.getElementById("pf-avatar-uniform")) {
+    const st = document.createElement("style");
+    st.id = "pf-avatar-uniform";
+    st.textContent = [
+      ".sidebar-avatar,.topbar-avatar,.pp-avatar,.pp-avatar.gold-frame,.mini-avatar,.csh-avatar,.member-avatar-face,.tr-avatar,.tr-req-ava,.tw-coach-avatar,.pp-avatar-photo{",
+      "  box-shadow:none!important;outline:none!important;filter:none!important;",
+      "  border:1px solid rgba(255,255,255,.12)!important;overflow:hidden!important;background:#1b2230!important;",
+      "}",
+      ".sidebar-avatar::before,.sidebar-avatar::after,.topbar-avatar::before,.topbar-avatar::after,.pp-avatar::before,.pp-avatar::after,.pp-avatar.gold-frame::before,.pp-avatar.gold-frame::after,.member-avatar-face::before,.member-avatar-face::after{",
+      "  display:none!important;content:none!important;box-shadow:none!important;",
+      "}",
+      ".sidebar-avatar img,.topbar-avatar img,.pp-avatar img,.mini-avatar img,.csh-avatar img,.tr-avatar img,.tr-req-ava img,.tw-coach-avatar img,.pp-avatar-photo img{",
+      "  width:100%!important;height:100%!important;object-fit:cover!important;border-radius:50%!important;display:block!important;",
+      "}"
+    ].join("\n");
+    (document.head || document.documentElement).appendChild(st);
+  }
+
   window.ProFitAvatar = {
+    presets() {
+      return AVATAR_PRESETS.map(p => ({ id: p.id, label: p.label, dataUrl: dataUrlFromSvg(svgForPreset(p)) }));
+    },
     svg(seed) {
       return buildAvatarSvg(seed);
     },
     dataUrl(seed) {
-      return "data:image/svg+xml;utf8," + encodeURIComponent(buildAvatarSvg(seed));
+      return dataUrlFromSvg(buildAvatarSvg(seed));
     },
     resolve(photo, seed) {
       const clean = String(photo || "").trim();
+      if (clean && AVATAR_BY_ID[clean]) return dataUrlFromSvg(svgForPreset(AVATAR_BY_ID[clean]));
       return clean || this.dataUrl(seed);
     },
     paint(box, { photo = "", seed = "", alt = "" } = {}) {

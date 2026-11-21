@@ -39,6 +39,7 @@ def _ensure_pending_migrations():
             or "avatar_data" not in user_cols
             or "phone" not in trainer_cols
             or ("membership_memberprofile" in tables and "trial_ends_at" not in member_cols)
+            or ("membership_memberprofile" in tables and "onboarding_data" not in member_cols)
             or "billing_paymentclaim" not in tables
             or ("finance_manualpayment" in tables and "reference_number" not in manual_pay_cols)
         )

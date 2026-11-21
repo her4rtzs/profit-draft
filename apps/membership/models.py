@@ -37,6 +37,7 @@ class MemberProfile(models.Model):
     phone = models.CharField(max_length=30, blank=True, default="")
     address = models.CharField(max_length=255, blank=True, default="")
     photo_data = models.TextField(blank=True, default="")  # small JPEG data URL, set by the member
+    onboarding_data = models.JSONField(default=dict, blank=True)
 
     def __str__(self):
         return f"MemberProfile<{self.user_id}>"

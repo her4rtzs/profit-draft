@@ -2716,3 +2716,13 @@ Fix broken sidebar logout, stop cashier invite emails from going to Gmail spam, 
 - Upgraded `/cashiers` (`web/cashiers.html`, `web/cashiers.js`) with cashier avatars, understated tactile card styling, and a `...` row Actions dropdown; rewrote `send_invite_email` (`apps/accounts/emails.py`) with a specific gym/role subject, greeting, and plain fallback URL to reduce Gmail spam filtering.
 ### Decision-log skill
 Never store user-specific profile fields (name, avatar) in a single unscoped `localStorage` key shared across logins; always persist identity data on the server, scope any browser cache by user ID, and keep one UI painter for shared chrome (sidebar + topbar).
+
+## 2026-11-21 23:36 (Asia/Manila): Uniform faceless avatars across all portals and 8-step member onboarding wizard
+### What I asked for
+Apply the flat human avatar design consistently across every tab and portal with no glowing or mismatched avatar styles, and add the 8-step member onboarding flow (Welcome with progress bar and 7-day trial notice, 6 faceless avatars, About you with first+last name and 10-13 digit mobile, Goals/experience/time, optional Body stats with staff-only health notes, optional Emergency contact, Review with Edit buttons, Done linking to `/member-home`).
+### What the agent decided and why
+- Unified all avatars across staff, cashier, trainer, and member portals onto six faceless flat-vector human SVG presets (`av-1`..`av-6`) in `web/config.js`, stripped glowing rings/box-shadows globally, replaced remaining initials renderers (`web/cashier.js`, `web/pages.js`, `web/trainers-staff.js`, `web/member-tabs.js`), and cache-busted script versions across `web/*.html`, see [[2026-11-21 Uniform faceless avatars and member onboarding wizard]].
+- Built the 8-step member onboarding wizard at `/onboarding` (`web/onboarding.html`, `web/onboarding.js`) with progress bar, Back/Skip buttons, inline field errors, per-section Edit buttons on Review, and "Open my dashboard" linked to `/member-home`, see [[2026-11-21 Uniform faceless avatars and member onboarding wizard]].
+- Persisted onboarding details in `MemberProfile.onboarding_data` (`apps/membership/migrations/0006_memberprofile_onboarding_data.py`), accepted preset avatar IDs `av-1`..`av-6` in `PATCH /api/auth/profile/` and `PATCH /api/member/me/`, and allowed `TRIAL` members to open `/onboarding` in `profit/views.py`.
+### Decision-log skill
+When unifying a visual component like avatars across a multi-page static portal, update every renderer, inject a shared base style rule to neutralize page-specific overrides (such as glow frames), and bump script cache-busting query versions on every HTML page so no tab serves a stale version.

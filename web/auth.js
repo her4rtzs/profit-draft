@@ -24,7 +24,7 @@
     "/profile"
   ]);
   const adminPages = new Set([...ownerOnlyPages, ...cashierPages]);
-  const memberPages = new Set(["/member-home"]);
+  const memberPages = new Set(["/member-home", "/onboarding"]);
   const loginPage = file === "/login";
   const loginTarget = isTrainerSection || isStaffSection ? "/login" : "/login";
 

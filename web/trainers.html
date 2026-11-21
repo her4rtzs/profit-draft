@@ -1,14 +1,14 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head><script>(function(){try{var t=localStorage.getItem('theme');if(t==='light'&&!localStorage.getItem('pf-staff-explicit-light')){t='dark';try{localStorage.setItem('theme','dark');}catch(_){}}var d=t!=='light';var h=document.documentElement;h.style.background=d?'#0a0e16':'#F7F4EE';h.style.colorScheme=d?'dark':'light';if(d){h.classList.add('dark');}else{h.classList.remove('dark');}}catch(e){}})();</script><script src="splash.js?v=3"></script>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trainers · ProFit</title>
+<title>Trainers Â· ProFit</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Figtree:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <link rel="stylesheet" href="dashboard.css?v=1">
 <link rel="stylesheet" href="announcements.css?v=1">
-<script src="config.js"></script><script src="api.js"></script><script src="auth.js"></script>
+<script src="config.js?v=3"></script><script src="api.js"></script><script src="auth.js?v=3"></script>
 <script>document.documentElement.dataset.accent='gold'</script>
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script><link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
 <body class="pf-staff" data-page="trainers" data-title="Trainers Management" data-welcome="Manage gym trainers and assignments">
@@ -22,7 +22,7 @@
     <article class="tr-kpi tr-kpi-gold">
       <div class="tr-kpi-ico"><i class="fa-solid fa-users" aria-hidden="true"></i></div>
       <div class="tr-kpi-info">
-        <strong id="kpiTotalTrainers">—</strong>
+        <strong id="kpiTotalTrainers">â€”</strong>
         <span>Total Trainers</span>
       </div>
       <i class="fa-solid fa-dumbbell tr-kpi-wm" aria-hidden="true"></i>
@@ -30,7 +30,7 @@
     <article class="tr-kpi tr-kpi-cyan">
       <div class="tr-kpi-ico"><i class="fa-solid fa-user-check" aria-hidden="true"></i></div>
       <div class="tr-kpi-info">
-        <strong id="kpiAvailableTrainers">—</strong>
+        <strong id="kpiAvailableTrainers">â€”</strong>
         <span>Available Trainers</span>
       </div>
       <i class="fa-solid fa-users tr-kpi-wm" aria-hidden="true"></i>
@@ -38,7 +38,7 @@
     <article class="tr-kpi tr-kpi-emerald">
       <div class="tr-kpi-ico"><i class="fa-solid fa-dumbbell" aria-hidden="true"></i></div>
       <div class="tr-kpi-info">
-        <strong id="kpiOnAssignment">—</strong>
+        <strong id="kpiOnAssignment">â€”</strong>
         <span>On Assignment</span>
       </div>
       <i class="fa-solid fa-calendar-check tr-kpi-wm" aria-hidden="true"></i>
@@ -46,7 +46,7 @@
     <article class="tr-kpi tr-kpi-violet">
       <div class="tr-kpi-ico"><i class="fa-solid fa-chart-pie" aria-hidden="true"></i></div>
       <div class="tr-kpi-info">
-        <strong id="kpiCapacityUsage">—</strong>
+        <strong id="kpiCapacityUsage">â€”</strong>
         <span>Capacity Usage</span>
       </div>
       <i class="fa-solid fa-arrow-trend-up tr-kpi-wm" aria-hidden="true"></i>
@@ -86,7 +86,7 @@
   <!-- Trainer Directory -->
   <section class="panel tr-dir-panel">
     <div class="tr-dir-summary">
-      <div class="tr-dir-count" id="trCountLabel">Trainers (—)</div>
+      <div class="tr-dir-count" id="trCountLabel">Trainers (â€”)</div>
       <p class="tr-dir-sub">Browse and manage all trainers in your gym.</p>
     </div>
 
@@ -274,9 +274,9 @@
       <p class="tr-success-sub" id="trSuccSub">The trainer profile and account access have been created.</p>
 
       <div class="tr-succ-card">
-        <div class="tr-succ-row"><span>Trainer Name</span><strong id="trSuccName">—</strong></div>
-        <div class="tr-succ-row"><span>Specializations</span><strong id="trSuccSpec">—</strong></div>
-        <div class="tr-succ-row"><span>Member Capacity</span><strong id="trSuccCap">—</strong></div>
+        <div class="tr-succ-row"><span>Trainer Name</span><strong id="trSuccName">â€”</strong></div>
+        <div class="tr-succ-row"><span>Specializations</span><strong id="trSuccSpec">â€”</strong></div>
+        <div class="tr-succ-row"><span>Member Capacity</span><strong id="trSuccCap">â€”</strong></div>
         <div class="tr-succ-row"><span>Account Status</span><span class="tr-status is-pending" id="trSuccStatus">Invite Pending</span></div>
       </div>
 
@@ -327,10 +327,10 @@
 
     <div class="tr-prof-body">
       <div class="tr-prof-card">
-        <div class="tr-prof-row"><span>Email</span><strong id="trProfEmail">—</strong></div>
-        <div class="tr-prof-row"><span>Phone</span><strong id="trProfPhone">—</strong></div>
+        <div class="tr-prof-row"><span>Email</span><strong id="trProfEmail">â€”</strong></div>
+        <div class="tr-prof-row"><span>Phone</span><strong id="trProfPhone">â€”</strong></div>
         <div class="tr-prof-row"><span>Capacity</span><strong id="trProfLoad">0 / 20 members</strong></div>
-        <div class="tr-prof-row"><span>Schedule</span><strong id="trProfAvail">—</strong></div>
+        <div class="tr-prof-row"><span>Schedule</span><strong id="trProfAvail">â€”</strong></div>
         <div class="tr-prof-row">
           <span>Account Access</span>
           <div class="tr-prof-acc-actions">
@@ -361,7 +361,7 @@
   </div>
 </div>
 
-<script src="layout.js?v=18"></script><script src="sidebar.js?v=17"></script><script src="data.js"></script><script src="settings.js?v=13"></script>
+<script src="layout.js?v=21"></script><script src="sidebar.js?v=20"></script><script src="data.js"></script><script src="settings.js?v=13"></script>
 <script src="portal-fx.js?v=2"></script>
 <script src="change-password.js?v=2" defer></script>
 <script src="notifications-live.js?v=1" defer></script>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome Setup · ProFit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<script src="config.js?v=3"></script><script src="api.js"></script><script src="auth.js?v=3"></script>
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0a0e17">
+<link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ProFit">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<style>
+  :root{
+    --bg:#0a0e16;
+    --card:#121722;
+    --card-2:#171d2b;
+    --border:rgba(255,255,255,.1);
+    --text:#f5f6fa;
+    --muted:#9aa4b8;
+    --accent:#f5b942;
+    --accent-ink:#0b0f17;
+    --danger:#fca5a5;
+    --ok:#4ade80;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;min-height:100dvh;background:var(--bg);color:var(--text);
+    font-family:Inter,system-ui,-apple-system,sans-serif;
+    display:flex;flex-direction:column;align-items:center;padding:20px 16px 40px;
+  }
+  .ob-shell{width:min(540px,100%);display:flex;flex-direction:column;gap:18px}
+  .ob-top{display:flex;align-items:center;gap:12px}
+  .ob-back{
+    width:40px;height:40px;border-radius:10px;border:1px solid var(--border);
+    background:var(--card);color:var(--text);display:inline-grid;place-items:center;
+    cursor:pointer;flex-shrink:0;
+  }
+  .ob-back[hidden]{visibility:hidden;display:inline-grid}
+  .ob-prog-wrap{flex:1;display:flex;flex-direction:column;gap:6px}
+  .ob-prog-track{height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
+  .ob-prog-fill{height:100%;width:12.5%;background:var(--accent);border-radius:999px;transition:width .25s ease}
+  .ob-step-meta{display:flex;justify-content:space-between;font-size:.76rem;color:var(--muted);font-weight:600}
+  .ob-card{
+    background:var(--card);border:1px solid var(--border);border-radius:16px;
+    padding:24px 22px;display:flex;flex-direction:column;gap:18px;
+  }
+  .ob-head h1{margin:0 0 6px;font:800 1.45rem/1.2 "Plus Jakarta Sans",Inter,sans-serif}
+  .ob-head p{margin:0;color:var(--muted);font-size:.92rem;line-height:1.55}
+  .ob-trial-banner{
+    display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-radius:12px;
+    background:rgba(245,185,66,.09);border:1px solid rgba(245,185,66,.28);
+  }
+  .ob-trial-banner i{color:var(--accent);margin-top:2px}
+  .ob-trial-banner strong{display:block;font-size:.9rem;margin-bottom:2px}
+  .ob-trial-banner span{font-size:.83rem;color:var(--muted);line-height:1.45}
+  .ob-avatar-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+  .ob-ava-btn{
+    display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 10px;
+    border-radius:14px;border:1px solid var(--border);background:var(--card-2);
+    color:var(--text);cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:600;
+    transition:border-color .15s ease,background .15s ease;
+  }
+  .ob-ava-btn img{width:64px;height:64px;border-radius:50%;display:block;border:1px solid rgba(255,255,255,.12)}
+  .ob-ava-btn.is-selected{border-color:var(--accent);background:rgba(245,185,66,.12)}
+  .ob-field{display:flex;flex-direction:column;gap:6px}
+  .ob-field label{font-size:.84rem;font-weight:600;color:var(--text)}
+  .ob-field input,.ob-field textarea{
+    width:100%;min-height:44px;padding:10px 12px;border-radius:10px;
+    border:1px solid var(--border);background:rgba(0,0,0,.22);color:var(--text);
+    font:500 .93rem/1.4 Inter,sans-serif;
+  }
+  .ob-field textarea{min-height:84px;resize:vertical}
+  .ob-field input.is-invalid,.ob-field textarea.is-invalid{border-color:#f87171}
+  .ob-field-hint{font-size:.78rem;color:var(--muted)}
+  .ob-field-err{font-size:.8rem;color:var(--danger);min-height:16px}
+  .ob-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .ob-chips{display:flex;flex-wrap:wrap;gap:8px}
+  .ob-chip{
+    min-height:38px;padding:0 14px;border-radius:999px;border:1px solid var(--border);
+    background:var(--card-2);color:var(--text);font:600 .84rem/1 Inter,sans-serif;
+    cursor:pointer;
+  }
+  .ob-chip.is-on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  .ob-staff-note{
+    display:inline-flex;align-items:center;gap:6px;font-size:.78rem;color:var(--accent);
+    font-weight:600;
+  }
+  .ob-review-list{display:flex;flex-direction:column;gap:12px}
+  .ob-review-item{
+    padding:14px 16px;border-radius:12px;background:var(--card-2);border:1px solid var(--border);
+    display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+  }
+  .ob-review-item h3{margin:0 0 4px;font-size:.86rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+  .ob-review-item p{margin:0;font-size:.9rem;line-height:1.5}
+  .ob-edit-btn{
+    padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:transparent;
+    color:var(--accent);font:600 .8rem/1 Inter,sans-serif;cursor:pointer;flex-shrink:0;
+  }
+  .ob-done{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;padding:12px 0}
+  .ob-done img{width:84px;height:84px;border-radius:50%;border:1px solid var(--border)}
+  .ob-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:4px}
+  .ob-btn{
+    min-height:44px;padding:0 20px;border-radius:10px;border:1px solid transparent;
+    font:700 .92rem/1 Inter,sans-serif;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    text-decoration:none;
+  }
+  .ob-btn-primary{background:var(--accent);color:var(--accent-ink);flex:1}
+  .ob-btn-ghost{background:transparent;border-color:var(--border);color:var(--muted)}
+  .ob-btn:disabled{opacity:.55;cursor:not-allowed}
+  .ob-global-err{margin:0;font-size:.85rem;color:var(--danger);min-height:18px}
+  @media (max-width:480px){.ob-avatar-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ob-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main class="ob-shell" id="main">
+  <div class="ob-top">
+    <button type="button" class="ob-back" id="obBackBtn" aria-label="Previous step" hidden>
+      <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+    </button>
+    <div class="ob-prog-wrap">
+      <div class="ob-prog-track" role="progressbar" aria-valuemin="1" aria-valuemax="8" aria-valuenow="1" id="obProgBar">
+        <div class="ob-prog-fill" id="obProgFill"></div>
+      </div>
+      <div class="ob-step-meta">
+        <span id="obStepLabel">Welcome</span>
+        <span id="obStepCount">Step 1 of 8</span>
+      </div>
+    </div>
+  </div>
+
+  <section class="ob-card" id="obCard" aria-live="polite"></section>
+  <p class="ob-global-err" id="obGlobalErr" role="alert"></p>
+</main>
+
+<script src="onboarding.js?v=1" defer></script>
+</body>
+</html>

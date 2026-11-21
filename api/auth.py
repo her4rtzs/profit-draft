@@ -156,7 +156,8 @@ def update_profile_view(request):
         if not isinstance(photo, str):
             return JsonResponse({"detail": "Invalid profile photo format."}, status=400)
         photo = photo.strip()
-        if photo:
+        allowed_presets = {"av-1", "av-2", "av-3", "av-4", "av-5", "av-6"}
+        if photo and photo not in allowed_presets:
             if not photo.startswith("data:image/"):
                 return JsonResponse({"detail": "Profile photo must be an image."}, status=400)
             if len(photo) > 1_350_000:
