@@ -192,27 +192,22 @@
   toggle?.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); setOpen(!menu.classList.contains('is-open')); });
 
   railAvatar?.addEventListener('click', e => {
-    if (sidebar?.classList.contains('close')) {
-      e.preventDefault();
-      e.stopPropagation();
-      setOpen(!menu.classList.contains('is-open'));
-    }
+    e.preventDefault();
+    e.stopPropagation();
+    setOpen(!menu.classList.contains('is-open'));
   });
 
   userBox?.addEventListener('click', e => {
-    if (sidebar?.classList.contains('close') && !e.target.closest('#accountMenu')) {
-      e.preventDefault();
-      e.stopPropagation();
-      setOpen(!menu.classList.contains('is-open'));
-    }
+    if (e.target.closest('#accountMenu') || e.target.closest('a[href="/profile"]')) return;
+    e.preventDefault();
+    e.stopPropagation();
+    setOpen(!menu.classList.contains('is-open'));
   });
 
-  // NOTE: this menu used to call stopPropagation on every click inside it, which
-  // kept the document-level dismiss handler happy but also swallowed the click
-  // before it could bubble to auth.js's [data-logout] listener — so "Log out"
-  // did nothing. Close the menu explicitly instead of blocking the event.
+  // Close the menu on item click without blocking [data-logout] in auth.js.
   menu?.addEventListener('click', e => {
-    if (e.target.closest('[role="menuitem"]')) setOpen(false);
+    const item = e.target.closest('[role="menuitem"]');
+    if (item && !item.hasAttribute('data-logout')) setOpen(false);
   });
   document.addEventListener('click', e => { if (menu && !menu.contains(e.target) && !toggle?.contains(e.target) && !railAvatar?.contains(e.target) && !userBox?.contains(e.target)) setOpen(false); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') setOpen(false); });
@@ -249,25 +244,9 @@
     document.addEventListener('keydown', e => { if (e.key === 'Escape') setDropdown(false); });
   });
 
-  const user = window.ProFitAuth?.user;
-  // The staff profile page owns this record; fall back to the signed-in user's real name (never email).
-  const profile = window.ProFitProfile?.get?.() || {};
-  const rawName = (profile.name || user?.name || '').trim();
-  const hasName = Boolean(rawName) && !rawName.includes('@');
-  document.querySelectorAll('[data-user-name]').forEach(el => {
-    if (hasName) {
-      el.textContent = rawName;
-    } else {
-      el.innerHTML = '<a href="/profile" style="color:inherit;text-decoration:underline">Name not set</a>';
-    }
-  });
-  const parts = hasName ? rawName.split(/\s+/).slice(0, 2).map(part => part[0] || '').join('').toUpperCase() : '';
-  const initials = (hasName && window.ProFitProfile?.initials?.()) || parts || 'PF';
-  document.querySelectorAll('[data-user-initials]').forEach(el => el.textContent = initials);
-  document.querySelectorAll('[data-user-role]').forEach(el => {
-    const roleCode = String(user?.role || '').toUpperCase();
-    el.textContent = profile.role || (roleCode === 'MEMBER' ? 'Gym member' : roleCode === 'CASHIER' ? 'Cashier' : 'Gym administrator');
-  });
+  if (typeof window.ProFitPaintAccount === 'function') {
+    window.ProFitPaintAccount();
+  }
 })();
 
 // Top bar condenses once the page scrolls — Spotify's header solidifies on scroll.

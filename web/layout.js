@@ -112,33 +112,43 @@
         </div>
       </div>`;
 
-    // Staff profile: photo or initials, shared with the rail below.
+    // Single source of truth for sidebar + topbar account name, role and avatar.
     const paintAccount = () => {
       const profile = (window.ProFitProfile && window.ProFitProfile.get()) || {};
       const authUser = window.ProFitAuth && window.ProFitAuth.user;
       const roleCode = String((authUser && authUser.role) || detectWebRole() || '').toUpperCase();
       const isCashier = roleCode === 'CASHIER';
-      const authName = (authUser && authUser.name) || (isCashier ? 'Cashier' : 'Administrator');
-      const name = profile.name || authName;
-      document.querySelectorAll('[data-user-name]').forEach(el => { el.textContent = name; });
+      const rawName = String((authUser && typeof authUser.name === 'string' ? authUser.name : profile.name) || '').trim();
+      const hasName = Boolean(rawName) && !rawName.includes('@');
+      document.querySelectorAll('[data-user-name]').forEach(el => {
+        if (hasName) {
+          el.textContent = rawName;
+        } else {
+          el.innerHTML = '<a href="/profile" style="color:inherit;text-decoration:underline">Name not set</a>';
+        }
+      });
       const fallbackRoleLabel = roleCode === 'MEMBER' ? 'Gym member' : isCashier ? 'Cashier' : 'Gym administrator';
       document.querySelectorAll('[data-user-role]').forEach(el => { el.textContent = profile.role || fallbackRoleLabel; });
-      const initials = (window.ProFitProfile && window.ProFitProfile.initials()) || name.trim().split(/\s+/).slice(0, 2).map(p => p[0] || '').join('').toUpperCase() || 'PF';
+      const initials = hasName
+        ? rawName.split(/\s+/).slice(0, 2).map(p => p[0] || '').join('').toUpperCase()
+        : 'PF';
       document.querySelectorAll('[data-user-initials]').forEach(el => { el.textContent = initials; });
+
+      const photo = (authUser && authUser.photo) || profile.photo || '';
+      const seed = (authUser && (authUser.email || authUser.id || authUser.name)) || profile.email || rawName || roleCode || 'profit-staff';
       document.querySelectorAll('.sidebar-avatar, .topbar-avatar, .pp-avatar-photo').forEach(box => {
         if (!box) return;
-        const existing = box.querySelector('img');
-        if (profile.photo) {
-          if (!existing) { const img = document.createElement('img'); img.alt = ''; box.prepend(img); }
-          const img = box.querySelector('img');
-          img.src = profile.photo;
+        if (window.ProFitAvatar) {
+          window.ProFitAvatar.paint(box, { photo, seed, alt: rawName || 'Profile avatar' });
+        } else if (photo) {
+          let img = box.querySelector('img');
+          if (!img) { img = document.createElement('img'); img.alt = ''; box.prepend(img); }
+          img.src = photo;
           box.classList.add('has-photo');
-        } else if (existing) {
-          existing.remove();
-          box.classList.remove('has-photo');
         }
       });
     };
+    window.ProFitPaintAccount = paintAccount;
     paintAccount();
     window.addEventListener('profit-account-changed', paintAccount);
     window.addEventListener('profit-auth-ready', e => {

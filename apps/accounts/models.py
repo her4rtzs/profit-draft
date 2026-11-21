@@ -35,6 +35,7 @@ class User(AbstractUser):
         blank=True,
     )
     google_linked_at = models.DateTimeField(null=True, blank=True)
+    avatar_data = models.TextField(blank=True, default="")
 
 
 class OTPPurpose(models.TextChoices):

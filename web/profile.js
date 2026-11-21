@@ -11,27 +11,24 @@
     if (!bad) notice.scrollIntoView({ behavior: "smooth", block: "nearest" });
   };
 
-  const auth = window.ProFitAuth && window.ProFitAuth.user;
   let profile = window.ProFitProfile.get();
-  if ((!profile.name || profile.name.includes("@")) && auth) {
-    const cleanName = (auth.name || "").trim();
-    profile = {
-      ...profile,
-      name: cleanName.includes("@") ? "" : cleanName,
-      email: auth.email || profile.email || "",
-      role: auth.role === "MEMBER" ? "Gym member" : auth.role === "CASHIER" ? "Cashier" : "Gym administrator"
-    };
-  }
 
   function validFullName(raw) {
     const parts = String(raw || "").trim().split(/\s+/).filter(Boolean);
     return parts.length >= 2 && /[A-Za-z]/.test(parts[0]) && /[A-Za-z]/.test(parts[parts.length - 1]);
   }
 
+  function syncFromAuth() {
+    profile = window.ProFitProfile.get();
+    paint();
+  }
+
   function paint() {
-    $("identityName").textContent = profile.name || "Name not set";
+    const cleanName = (profile.name || "").trim();
+    const hasName = Boolean(cleanName) && !cleanName.includes("@");
+    $("identityName").textContent = hasName ? cleanName : "Name not set";
     $("identityRole").textContent = profile.role || "Gym administrator";
-    $("profileName").value = profile.name || "";
+    $("profileName").value = hasName ? cleanName : "";
     $("profileRole").value = profile.role || "";
     $("profileEmail").value = profile.email || "";
     $("profilePhone").value = profile.phone || "";
@@ -39,17 +36,29 @@
 
     const box = $("profilePhotoBox");
     if (!box) return;
-    const img = box.querySelector("img");
-    if (profile.photo) {
-      if (!img) { const el = document.createElement("img"); el.alt = ""; box.prepend(el); }
-      box.querySelector("img").src = profile.photo;
-      box.classList.add("has-photo");
+    const authUser = window.ProFitAuth && window.ProFitAuth.user;
+    const seed = (authUser && (authUser.email || authUser.id || authUser.name)) || profile.email || cleanName || "profit-staff";
+    if (window.ProFitAvatar) {
+      window.ProFitAvatar.paint(box, { photo: profile.photo || "", seed, alt: hasName ? cleanName : "Profile avatar" });
     } else {
-      if (img) img.remove();
-      box.classList.remove("has-photo");
+      const img = box.querySelector("img");
+      if (profile.photo) {
+        if (!img) { const el = document.createElement("img"); el.alt = ""; box.prepend(el); }
+        box.querySelector("img").src = profile.photo;
+        box.classList.add("has-photo");
+      } else {
+        if (img) img.remove();
+        box.classList.remove("has-photo");
+      }
     }
     const clear = $("profilePhotoClear");
     if (clear) clear.disabled = !profile.photo;
+  }
+
+  function updateSessionUser(user) {
+    if (!user) return;
+    if (window.ProFitAuth) window.ProFitAuth.user = user;
+    try { sessionStorage.setItem("profit-verified-session", JSON.stringify(user)); } catch (_) {}
   }
 
   function commit(patch, message) {
@@ -64,6 +73,18 @@
     return saved;
   }
 
+  async function savePhotoToServer(photoData, successMsg) {
+    try {
+      if (window.ProFitAPI) {
+        const res = await window.ProFitAPI.patch("/auth/profile", { photo: photoData });
+        if (res && res.user) updateSessionUser(res.user);
+      }
+      commit({ photo: photoData }, successMsg);
+    } catch (err) {
+      flash(err.message || "Could not save your photo.", true);
+    }
+  }
+
   $("profilePhoto")?.addEventListener("change", e => {
     const file = e.target.files && e.target.files[0];
     e.target.value = "";
@@ -71,12 +92,16 @@
     if (!/^image\//.test(file.type)) return flash("Choose an image file for your photo.", true);
     if (file.size > 900 * 1024) return flash("That photo is over 900 KB. Please pick a smaller one.", true);
     const reader = new FileReader();
-    reader.onload = () => commit({ photo: String(reader.result) }, "Photo updated.");
+    reader.onload = () => { savePhotoToServer(String(reader.result), "Photo updated."); };
     reader.onerror = () => flash("That photo could not be read. Try another one.", true);
     reader.readAsDataURL(file);
   });
 
-  $("profilePhotoClear")?.addEventListener("click", () => commit({ photo: "" }, "Photo removed."));
+  $("profilePhotoClear")?.addEventListener("click", () => {
+    savePhotoToServer("", "Photo removed.");
+  });
+
+  window.addEventListener("profit-auth-ready", syncFromAuth);
 
   $("profileForm")?.addEventListener("submit", async e => {
     e.preventDefault();

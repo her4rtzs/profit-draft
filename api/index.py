@@ -36,6 +36,7 @@ def _ensure_pending_migrations():
         needs_migrate = (
             "must_change_password" not in user_cols
             or "google_sub" not in user_cols
+            or "avatar_data" not in user_cols
             or "phone" not in trainer_cols
             or ("membership_memberprofile" in tables and "trial_ends_at" not in member_cols)
             or "billing_paymentclaim" not in tables
@@ -49,6 +50,10 @@ def _ensure_pending_migrations():
                     if "must_change_password" not in user_cols:
                         cursor.execute(
                             "ALTER TABLE accounts_user ADD COLUMN IF NOT EXISTS must_change_password boolean NOT NULL DEFAULT false;"
+                        )
+                    if "avatar_data" not in user_cols:
+                        cursor.execute(
+                            "ALTER TABLE accounts_user ADD COLUMN IF NOT EXISTS avatar_data text NOT NULL DEFAULT '';"
                         )
                     if "phone" not in trainer_cols:
                         cursor.execute(

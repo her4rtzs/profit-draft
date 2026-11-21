@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <link rel="stylesheet" href="dashboard.css?v=1">
 <link rel="stylesheet" href="announcements.css?v=1">
-<script src="config.js"></script><script src="api.js"></script><script src="auth.js"></script>
+<script src="config.js?v=2"></script><script src="api.js"></script><script src="auth.js?v=2"></script>
 <script>document.documentElement.dataset.accent='gold'</script>
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#0a0e17">
@@ -18,45 +18,73 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <style>
   .csh-kpi-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-bottom:20px}
-  .csh-kpi{background:var(--panel,#141824);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:16px;padding:20px 22px;display:flex;flex-direction:column;gap:8px}
-  .csh-kpi-label{font-size:.86rem;color:var(--muted,#9aa4b8);font-weight:500}
-  .csh-kpi-val{font-size:2rem;line-height:1.1;font-weight:800;color:var(--text,#f6f7fb)}
-  .csh-panel{background:var(--panel,#141824);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:16px;padding:22px}
-  .csh-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
-  .csh-toolbar h2{margin:0;font-size:1.05rem;font-weight:700}
-  .csh-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:48px 20px;gap:12px}
-  .csh-empty-ico{width:56px;height:56px;border-radius:999px;background:rgba(255,255,255,.06);display:grid;place-items:center;font-size:1.25rem;color:var(--muted,#9aa4b8)}
-  .csh-empty h3{margin:4px 0 0;font-size:1.15rem;font-weight:700}
-  .csh-empty p{margin:0;max-width:420px;color:var(--muted,#9aa4b8);font-size:.92rem}
-  .csh-table-wrap{overflow-x:auto}
-  .csh-table{width:100%;border-collapse:collapse;font-size:.92rem}
-  .csh-table th{text-align:left;padding:12px 14px;font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted,#9aa4b8);border-bottom:1px solid var(--border,rgba(255,255,255,.08))}
-  .csh-table td{padding:14px;border-bottom:1px solid var(--border,rgba(255,255,255,.06));vertical-align:middle}
-  .csh-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:.78rem;font-weight:600}
-  .csh-badge.is-active{background:rgba(34,197,94,.16);color:#4ade80}
-  .csh-badge.is-pending{background:rgba(245,158,11,.16);color:#fbbf24}
-  .csh-badge.is-deactivated{background:rgba(148,163,184,.16);color:#cbd5e1}
-  .csh-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-  .csh-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:0 16px;border-radius:10px;font-weight:600;font-size:.88rem;cursor:pointer;border:1px solid transparent;transition:opacity .15s ease,transform .15s ease}
+  .csh-kpi{position:relative;background:var(--card,#121722);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:14px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+  .csh-kpi::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:0 3px 3px 0;background:var(--csh-accent,#f5b942)}
+  .csh-kpi.is-active-kpi{--csh-accent:#22c55e}
+  .csh-kpi.is-pending-kpi{--csh-accent:#f59e0b}
+  .csh-kpi-copy{display:flex;flex-direction:column;gap:4px}
+  .csh-kpi-label{font-size:.82rem;color:var(--muted,#9aa4b8);font-weight:600;letter-spacing:.01em}
+  .csh-kpi-val{font-size:1.9rem;line-height:1.1;font-weight:800;color:var(--text,#f6f7fb);font-variant-numeric:tabular-nums}
+  .csh-kpi-sub{font-size:.76rem;color:var(--muted,#9aa4b8)}
+  .csh-kpi-ico{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;font-size:1rem;background:rgba(255,255,255,.04);border:1px solid var(--border,rgba(255,255,255,.08));color:var(--csh-accent)}
+  .csh-panel{background:var(--card,#121722);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:14px;overflow:visible}
+  .csh-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:18px 20px;border-bottom:1px solid var(--border,rgba(255,255,255,.07))}
+  .csh-toolbar-title{display:flex;flex-direction:column;gap:2px}
+  .csh-toolbar h2{margin:0;font-size:1rem;font-weight:700;color:var(--text,#f6f7fb)}
+  .csh-toolbar small{font-size:.8rem;color:var(--muted,#9aa4b8)}
+  .csh-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:52px 20px;gap:10px}
+  .csh-empty-ico{width:52px;height:52px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid var(--border,rgba(255,255,255,.08));display:grid;place-items:center;font-size:1.2rem;color:var(--muted,#9aa4b8)}
+  .csh-empty h3{margin:6px 0 0;font-size:1.08rem;font-weight:700}
+  .csh-empty p{margin:0 0 6px;max-width:400px;color:var(--muted,#9aa4b8);font-size:.9rem}
+  .csh-table-wrap{overflow-x:auto;overflow-y:visible}
+  .csh-table{width:100%;border-collapse:collapse;font-size:.9rem}
+  .csh-table thead th{text-align:left;padding:11px 20px;font-size:.73rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted,#9aa4b8);background:rgba(255,255,255,.02);border-bottom:1px solid var(--border,rgba(255,255,255,.07));font-weight:700}
+  .csh-table thead th.is-right{text-align:right}
+  .csh-table tbody td{padding:14px 20px;border-bottom:1px solid var(--border,rgba(255,255,255,.05));vertical-align:middle}
+  .csh-table tbody tr:last-child td{border-bottom:0}
+  .csh-table tbody tr:hover{background:rgba(255,255,255,.02)}
+  .csh-person{display:flex;align-items:center;gap:12px}
+  .csh-avatar{width:38px;height:38px;border-radius:50%;overflow:hidden;flex-shrink:0;border:1px solid var(--border,rgba(255,255,255,.1));background:#1b2230}
+  .csh-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+  .csh-person-copy{display:flex;flex-direction:column;min-width:0}
+  .csh-person-copy strong{font-size:.92rem;font-weight:600;color:var(--text,#f6f7fb)}
+  .csh-person-copy small{font-size:.78rem;color:var(--muted,#9aa4b8)}
+  .csh-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:.77rem;font-weight:600}
+  .csh-badge::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+  .csh-badge.is-active{background:rgba(34,197,94,.14);color:#4ade80}
+  .csh-badge.is-pending{background:rgba(245,158,11,.14);color:#fbbf24}
+  .csh-badge.is-deactivated{background:rgba(148,163,184,.14);color:#cbd5e1}
+  .csh-actions-cell{text-align:right;position:relative;width:64px}
+  .csh-menu-wrap{position:relative;display:inline-block}
+  .csh-menu-trigger{width:34px;height:34px;border-radius:9px;border:1px solid var(--border,rgba(255,255,255,.1));background:transparent;color:var(--muted,#9aa4b8);display:inline-grid;place-items:center;cursor:pointer;transition:background .15s ease,color .15s ease,border-color .15s ease}
+  .csh-menu-trigger:hover,.csh-menu-trigger[aria-expanded="true"]{background:rgba(255,255,255,.06);color:var(--text,#f6f7fb);border-color:rgba(255,255,255,.2)}
+  .csh-menu-pop{position:fixed;min-width:176px;padding:6px;border-radius:12px;background:#141b27;border:1px solid rgba(255,255,255,.12);box-shadow:0 18px 44px rgba(0,0,0,.55);z-index:1100;display:flex;flex-direction:column;gap:2px}
+  .csh-menu-pop[hidden]{display:none}
+  .csh-menu-item{width:100%;display:flex;align-items:center;gap:10px;padding:9px 11px;border:0;border-radius:8px;background:transparent;color:#e2e8f0;font-size:.84rem;font-weight:600;text-align:left;cursor:pointer;font-family:inherit}
+  .csh-menu-item:hover{background:rgba(255,255,255,.08);color:#fff}
+  .csh-menu-item i{width:15px;text-align:center;color:#94a3b8}
+  .csh-menu-item.is-danger{color:#fca5a5}
+  .csh-menu-item.is-danger i{color:#fca5a5}
+  .csh-menu-item.is-danger:hover{background:rgba(239,68,68,.14);color:#fecaca}
+  .csh-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:38px;padding:0 15px;border-radius:10px;font-weight:600;font-size:.86rem;cursor:pointer;border:1px solid transparent;transition:opacity .15s ease,background .15s ease}
   .csh-btn:disabled{opacity:.55;cursor:not-allowed}
-  .csh-btn-primary{background:var(--accent,#f5b942);color:#0b0f17}
+  .csh-btn-primary{background:var(--gold,#f5b942);color:#0b0f17}
   .csh-btn-secondary{background:transparent;border-color:var(--border,rgba(255,255,255,.16));color:var(--text,#f6f7fb)}
-  .csh-btn-danger{background:rgba(239,68,68,.14);border-color:rgba(239,68,68,.35);color:#fca5a5}
   .csh-btn-sm{min-height:34px;padding:0 12px;font-size:.82rem}
-  .csh-invite-box{margin-top:14px;padding:14px;border-radius:12px;background:rgba(245,185,66,.08);border:1px solid rgba(245,185,66,.28);display:flex;flex-direction:column;gap:8px}
+  .csh-invite-box{margin:16px 20px 0;padding:14px 16px;border-radius:12px;background:rgba(245,185,66,.08);border:1px solid rgba(245,185,66,.26);display:flex;flex-direction:column;gap:8px}
   .csh-invite-row{display:flex;gap:8px;flex-wrap:wrap}
   .csh-invite-row input{flex:1;min-width:200px;padding:8px 10px;border-radius:8px;border:1px solid var(--border,rgba(255,255,255,.14));background:rgba(0,0,0,.22);color:var(--text,#f6f7fb);font-size:.84rem}
   .csh-backdrop{position:fixed;inset:0;background:rgba(6,8,14,.72);display:grid;place-items:center;padding:16px;z-index:1200}
   .csh-backdrop[hidden]{display:none}
-  .csh-modal{width:min(460px,100%);background:var(--panel,#141824);border:1px solid var(--border,rgba(255,255,255,.12));border-radius:16px;padding:22px;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+  .csh-modal{width:min(450px,100%);background:var(--card,#141824);border:1px solid var(--border,rgba(255,255,255,.12));border-radius:16px;padding:22px;box-shadow:0 24px 60px rgba(0,0,0,.55)}
   .csh-modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-  .csh-modal-head h2{margin:0;font-size:1.15rem}
+  .csh-modal-head h2{margin:0;font-size:1.1rem}
   .csh-field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
-  .csh-field label{font-size:.85rem;font-weight:600}
-  .csh-field input{min-height:42px;padding:8px 12px;border-radius:10px;border:1px solid var(--border,rgba(255,255,255,.16));background:rgba(0,0,0,.2);color:var(--text,#f6f7fb);font-size:.94rem}
-  .csh-modal-err{color:#fca5a5;font-size:.85rem;min-height:18px;margin:0 0 10px}
+  .csh-field label{font-size:.84rem;font-weight:600}
+  .csh-field input{min-height:42px;padding:8px 12px;border-radius:10px;border:1px solid var(--border,rgba(255,255,255,.16));background:rgba(0,0,0,.2);color:var(--text,#f6f7fb);font-size:.93rem}
+  .csh-modal-err{color:#fca5a5;font-size:.84rem;min-height:18px;margin:0 0 10px}
   .csh-modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:8px}
-  @media (max-width:640px){.csh-kpi-grid{grid-template-columns:1fr}}
+  @media (max-width:640px){.csh-kpi-grid{grid-template-columns:1fr}.csh-table thead th,.csh-table tbody td{padding:12px 14px}}
 </style>
 </head>
 <body class="pf-staff" data-page="cashiers" data-title="Cashiers" data-welcome="Front desk staff accounts">
@@ -66,19 +94,30 @@
   <p class="ann-msg" id="cshMsg" role="status" aria-live="polite" style="margin-bottom:14px"></p>
 
   <section class="csh-kpi-grid" aria-label="Cashier summary">
-    <article class="csh-kpi">
-      <span class="csh-kpi-label">Active cashiers</span>
-      <strong class="csh-kpi-val" id="kpiActiveCashiers">—</strong>
+    <article class="csh-kpi is-active-kpi">
+      <div class="csh-kpi-copy">
+        <span class="csh-kpi-label">Active cashiers</span>
+        <strong class="csh-kpi-val" id="kpiActiveCashiers">—</strong>
+        <span class="csh-kpi-sub">Signed in and able to record payments</span>
+      </div>
+      <div class="csh-kpi-ico" aria-hidden="true"><i class="fa-solid fa-user-check"></i></div>
     </article>
-    <article class="csh-kpi">
-      <span class="csh-kpi-label">Pending invites</span>
-      <strong class="csh-kpi-val" id="kpiPendingInvites">—</strong>
+    <article class="csh-kpi is-pending-kpi">
+      <div class="csh-kpi-copy">
+        <span class="csh-kpi-label">Pending invites</span>
+        <strong class="csh-kpi-val" id="kpiPendingInvites">—</strong>
+        <span class="csh-kpi-sub">Waiting to set their password</span>
+      </div>
+      <div class="csh-kpi-ico" aria-hidden="true"><i class="fa-regular fa-envelope"></i></div>
     </article>
   </section>
 
   <section class="csh-panel" aria-label="Cashier accounts">
     <div class="csh-toolbar" id="cshToolbar" hidden>
-      <h2>Cashier accounts</h2>
+      <div class="csh-toolbar-title">
+        <h2>Cashier accounts</h2>
+        <small>Front desk accounts invited by the gym owner</small>
+      </div>
       <button type="button" class="csh-btn csh-btn-primary" id="openInviteCashierTop">
         <i class="fa-solid fa-user-plus" aria-hidden="true"></i> Invite cashier
       </button>
@@ -108,10 +147,10 @@
       <table class="csh-table">
         <thead>
           <tr>
-            <th scope="col">Name</th>
+            <th scope="col">Cashier</th>
             <th scope="col">Email</th>
             <th scope="col">Status</th>
-            <th scope="col">Actions</th>
+            <th scope="col" class="is-right">Actions</th>
           </tr>
         </thead>
         <tbody id="cshTableBody"></tbody>
@@ -119,6 +158,8 @@
     </div>
   </section>
 </main></div>
+
+<div class="csh-menu-pop" id="cshRowMenu" role="menu" hidden></div>
 
 <div class="csh-backdrop" id="inviteModalBackdrop" hidden role="dialog" aria-modal="true" aria-labelledby="inviteModalTitle">
   <div class="csh-modal">
@@ -146,11 +187,11 @@
   </div>
 </div>
 
-<script src="layout.js?v=19"></script><script src="sidebar.js?v=18"></script><script src="data.js"></script><script src="settings.js?v=13"></script>
+<script src="layout.js?v=20"></script><script src="sidebar.js?v=19"></script><script src="data.js"></script><script src="settings.js?v=13"></script>
 <script src="portal-fx.js?v=2"></script>
 <script src="change-password.js?v=2" defer></script>
 <script src="notifications-live.js?v=1" defer></script>
-<script src="cashiers.js?v=1" defer></script>
+<script src="cashiers.js?v=2" defer></script>
 <script src="site-footer.js?v=2" defer></script>
 </body>
 </html>

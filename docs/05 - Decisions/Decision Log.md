@@ -86,3 +86,4 @@ One note per decision, oldest first; entries with an `Unknown` date are listed l
 - [[2026-11-21 Online gateway code removed]]: Webhook, checkout client, settings and tests deleted; payment history tables and columns kept and shown as paymongo in reports.
 
 - [[2026-11-21 Staff cashiers full names and phone duplicate warning]]: Add Owner-only Cashiers page under Staff, enforce first+last names with "Name not set" fallback, and add normalized PH phone duplicate warnings.
+- [[2026-11-21 Persistent avatars cartoon defaults and sidebar logout]]: Store user avatars in DB, scope profile cache per user, add flat human cartoon default avatars across portals, fix sidebar logout, add Cashiers dropdown actions, and improve invite email deliverability.

@@ -108,43 +108,75 @@ def send_otp_email(user, code):
 
 def send_invite_email(invite, raw_token, accept_url):
     """Email the staff-invite accept link. Never logs the token or address."""
+    from django.contrib.auth import get_user_model
+
     role_label = invite.get_role_display()
     safe_role = escape(role_label)
     safe_url = escape(accept_url)
+
+    User = get_user_model()
+    invited_user = User.objects.filter(email__iexact=invite.email).only("first_name").first()
+    first_name = (getattr(invited_user, "first_name", "") or "").strip()
+    greeting = f"Hi {first_name}," if first_name else "Hello,"
+    inviter = getattr(invite, "invited_by", None)
+    inviter_name = (inviter.get_full_name().strip() if inviter else "") or "the Functional Fitness Gym team"
+
+    subject = f"Functional Fitness Gym: Activate your ProFit {role_label} account"
     body = (
-        f"You've been invited to join ProFit as a {role_label}.\n\n"
-        f"Set up your account here: {accept_url}\n\n"
-        "This link expires in 72 hours and can be used once."
+        f"{greeting}\n\n"
+        f"{inviter_name} created a ProFit {role_label} account for you at Functional Fitness Gym.\n\n"
+        "Use the link below to choose your password and finish setting up your account:\n"
+        f"{accept_url}\n\n"
+        "This link is valid for 72 hours and can only be used once. "
+        "If you were not expecting this email, you can ignore it safely.\n\n"
+        "Functional Fitness Gym\n"
+        "Alfonso, Calabarzon"
     )
     html = (
         "<!doctype html>"
         '<html lang="en"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width,initial-scale=1">'
-        f"<title>{escape(INVITE_SUBJECT)}</title></head>"
+        f"<title>{escape(subject)}</title></head>"
         '<body style="margin:0;padding:24px 12px;background-color:#f4f5f8;'
         'font-family:Inter,Segoe UI,Arial,sans-serif;color:#111318;">'
         '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" '
-        'style="max-width:520px;margin:0 auto;background:#ffffff;'
+        'style="max-width:540px;margin:0 auto;background:#ffffff;'
         'border:1px solid #e2e6ef;border-radius:12px;overflow:hidden;">'
-        '<tr><td style="padding:20px 24px;background:#0b0c10;color:#f6efdc;'
-        'font-size:18px;font-weight:700;">ProFit '
+        '<tr><td style="padding:18px 24px;background:#0b0c10;color:#f6efdc;'
+        'font-size:17px;font-weight:700;">ProFit '
         '<span style="color:#e8b93a;font-weight:600;font-size:13px;">'
         "&middot; Functional Fitness Gym</span></td></tr>"
         '<tr><td style="padding:24px;">'
-        f'<p style="margin:0 0 14px;font-size:15px;line-height:1.6;">You\'ve been invited to join ProFit as a <strong>{safe_role}</strong>.</p>'
-        f'<p style="margin:0 0 18px;"><a href="{safe_url}" style="display:inline-block;padding:12px 20px;background:#e8b93a;color:#1a1407;text-decoration:none;font-weight:700;border-radius:999px;">Set up your account</a></p>'
-        '<p style="margin:0;font-size:13px;color:#5b6070;">This link expires in 72 hours and can be used once.</p>'
+        f'<p style="margin:0 0 12px;font-size:15px;line-height:1.6;color:#111318;">{escape(greeting)}</p>'
+        f'<p style="margin:0 0 14px;font-size:14px;line-height:1.65;color:#3d4352;">'
+        f"{escape(inviter_name)} created a ProFit <strong>{safe_role}</strong> account for you at Functional Fitness Gym. "
+        "Click the button below to set your password and sign in to the staff portal.</p>"
+        f'<p style="margin:18px 0;"><a href="{safe_url}" '
+        'style="display:inline-block;padding:11px 20px;background:#111318;color:#ffffff;'
+        'text-decoration:none;font-weight:600;font-size:14px;border-radius:8px;">'
+        "Set up your password</a></p>"
+        '<p style="margin:0 0 10px;font-size:13px;line-height:1.6;color:#5b6070;">'
+        "If the button does not open, copy and paste this link into your browser:</p>"
+        f'<p style="margin:0 0 16px;font-size:12px;line-height:1.5;word-break:break-all;color:#3d4352;">{safe_url}</p>'
+        '<p style="margin:0;font-size:13px;line-height:1.6;color:#5b6070;">'
+        "This link expires in 72 hours and can be used once. "
+        "If you were not expecting this email, you can safely ignore it.</p>"
         "</td></tr>"
         '<tr><td style="padding:14px 24px;border-top:1px solid #eceff5;font-size:12px;color:#6b7280;">'
-        "Functional Fitness Gym &middot; Alfonso, Calabarzon"
+        "Functional Fitness Gym &middot; Alfonso, Calabarzon<br>"
+        "Sent on behalf of your gym administrator via ProFit."
         "</td></tr></table></body></html>"
     )
-    _send_transactional(
-        subject=INVITE_SUBJECT,
+    msg = EmailMultiAlternatives(
+        subject=subject,
         body=body,
-        html=html,
-        recipient=invite.email,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=[invite.email],
+        reply_to=_reply_to_list(),
+        headers={"X-Auto-Response-Suppress": "All"},
     )
+    msg.attach_alternative(html, "text/html")
+    msg.send(fail_silently=False)
 
 
 def send_reset_email(user, code):

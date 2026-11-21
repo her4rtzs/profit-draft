@@ -185,7 +185,12 @@ PF.ready(async () => {
   inpBio.addEventListener('input', updateBioCount);
 
   function renderProfile(p) {
-    document.getElementById('profAvatar').textContent = PF.initials(p.name || 'Coach');
+    const profAvatarEl = document.getElementById('profAvatar');
+    if (profAvatarEl && window.ProFitAvatar) {
+      window.ProFitAvatar.paint(profAvatarEl, { photo: p.photo || '', seed: p.email || p.name || 'Coach', alt: p.name || 'Coach' });
+    } else if (profAvatarEl) {
+      profAvatarEl.textContent = PF.initials(p.name || 'Coach');
+    }
     document.getElementById('profName').textContent = p.name || 'Coach';
     document.getElementById('profEmail').textContent = p.email || '';
     document.getElementById('profSpecPill').textContent = p.specialization || 'General Fitness';

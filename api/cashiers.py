@@ -86,6 +86,7 @@ def _cashier_json(user, pending_emails):
         "id": user.pk,
         "name": full_name,
         "email": email,
+        "photo": getattr(user, "avatar_data", "") or "",
         "status": status_label,
         "status_key": status_key,
         "is_active": bool(user.is_active),

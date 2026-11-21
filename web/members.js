@@ -91,9 +91,16 @@
 
   // ---------- Shared UI pieces ----------
   const emptyBlock = (icon, title, text) => `<div class="pp-empty"><i class="fa-solid ${icon}" aria-hidden="true"></i><strong>${esc(title)}</strong><p>${esc(text)}</p></div>`;
-  const avatar = (m, cls = "") => m.photoId
-    ? `<span class="pp-avatar ${cls} has-photo" aria-hidden="true">${esc(initialsOf(m.name))}<img data-photo-id="${esc(m.photoId)}" alt="" hidden></span>`
-    : `<span class="pp-avatar ${cls}" aria-hidden="true">${esc(initialsOf(m.name))}</span>`;
+  const avatar = (m, cls = "") => {
+    const fallbackSrc = window.ProFitAvatar ? window.ProFitAvatar.dataUrl(m.email || m.name || m.id) : "";
+    if (m.photoId) {
+      return `<span class="pp-avatar ${cls} has-photo" aria-hidden="true">${fallbackSrc ? `<img src="${fallbackSrc}" alt="">` : esc(initialsOf(m.name))}<img data-photo-id="${esc(m.photoId)}" alt="" hidden></span>`;
+    }
+    if (fallbackSrc) {
+      return `<span class="pp-avatar ${cls} has-photo" aria-hidden="true"><img src="${fallbackSrc}" alt=""></span>`;
+    }
+    return `<span class="pp-avatar ${cls}" aria-hidden="true">${esc(initialsOf(m.name))}</span>`;
+  };
   function hydratePhotos() {
     document.querySelectorAll("img[data-photo-id]").forEach(img => {
       media.url(img.dataset.photoId).then(u => { if (u) { img.src = u; img.hidden = false; } }).catch(() => {});

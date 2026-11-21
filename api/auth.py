@@ -112,6 +112,7 @@ def _session_user_dict(user):
         "name_missing": not (first and last),
         "email": user.email,
         "role": WEB_ROLE.get(user.role, "MEMBER"),
+        "photo": getattr(user, "avatar_data", "") or "",
         "must_change_password": bool(getattr(user, "must_change_password", False)),
     }
 
@@ -126,7 +127,7 @@ def session_view(request):
 
 
 def update_profile_view(request):
-    """PATCH/POST /api/auth/profile/ — let any signed-in active user set their full name."""
+    """PATCH/POST /api/auth/profile/ — let any signed-in active user update their name and/or avatar."""
     from apps.membership.services import validate_full_name
 
     if request.method not in ("PATCH", "POST"):
@@ -137,13 +138,36 @@ def update_profile_view(request):
     data = _json_body(request)
     if data is None:
         return JsonResponse({"detail": "Invalid request body."}, status=400)
-    try:
-        first, last = validate_full_name(data.get("name"))
-    except ValidationError as exc:
-        return JsonResponse({"detail": exc.messages[0]}, status=400)
-    user.first_name = first
-    user.last_name = last
-    user.save(update_fields=["first_name", "last_name"])
+
+    update_fields = []
+    if "name" in data:
+        try:
+            first, last = validate_full_name(data.get("name"))
+        except ValidationError as exc:
+            return JsonResponse({"detail": exc.messages[0]}, status=400)
+        user.first_name = first
+        user.last_name = last
+        update_fields.extend(["first_name", "last_name"])
+
+    if "photo" in data:
+        photo = data.get("photo")
+        if photo is None:
+            photo = ""
+        if not isinstance(photo, str):
+            return JsonResponse({"detail": "Invalid profile photo format."}, status=400)
+        photo = photo.strip()
+        if photo:
+            if not photo.startswith("data:image/"):
+                return JsonResponse({"detail": "Profile photo must be an image."}, status=400)
+            if len(photo) > 1_350_000:
+                return JsonResponse({"detail": "That photo is too large. Please pick one under 900 KB."}, status=400)
+        user.avatar_data = photo
+        update_fields.append("avatar_data")
+
+    if not update_fields:
+        return JsonResponse({"detail": "Nothing to update."}, status=400)
+
+    user.save(update_fields=update_fields)
     return JsonResponse({"detail": "Profile updated.", "user": _session_user_dict(user)})
 
 

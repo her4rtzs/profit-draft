@@ -2704,3 +2704,15 @@ Group Trainers and Cashiers under one "Staff" sidebar section, add a simple Owne
 - Updated `ROADMAP.md` to reflect Phase 4.6 progress (Cashiers management, full-name enforcement, phone duplicate warning) and Phase 5 cash/GCash status.
 ### Decision-log skill
 Enforce real identity fields (first and last name) before building duplicate-detection warnings, so staff warnings display meaningful names while public endpoints stay generic to prevent account enumeration.
+
+## 2026-11-21 23:08 (Asia/Manila): Fix sidebar logout, persistent avatars & names, cartoon defaults, Cashiers UI, and invite email spam
+### What I asked for
+Fix broken sidebar logout, stop cashier invite emails from going to Gmail spam, keep user names and uploaded avatars consistent and persisted across logins/sidebar/topbar/profile, add clean flat human cartoon default avatars across portals, and upgrade `/cashiers` with avatars, refined containers, and a `...` Actions dropdown.
+### What the agent decided and why
+- Added `User.avatar_data` (`apps/accounts/migrations/0006_user_avatar_data.py`) and extended `PATCH /api/auth/profile/` + `/api/auth/session/` + `/api/staff/cashiers/` so uploaded photos and full names persist in the database, see [[2026-11-21 Persistent avatars cartoon defaults and sidebar logout]].
+- Scoped `ProFitProfile` in `web/config.js` per signed-in user ID (clearing legacy `profit-account-v1` on logout) and unified sidebar + topbar painting in `window.ProFitPaintAccount` (`web/layout.js`) so names and avatars never drift across logins, see [[2026-11-21 Persistent avatars cartoon defaults and sidebar logout]].
+- Added `window.ProFitAvatar` in `web/config.js` with 8 deterministic flat-vector human cartoon SVG avatars used across staff sidebar/topbar/profile, members list, cashiers table, member home, and trainer profile when no custom photo is set.
+- Fixed sidebar logout by toggling `#accountMenu` on `#railAvatar` / `.sidebar-user` click regardless of `.close` state (`web/sidebar.js`) and handling `[data-logout]` in capture phase (`web/auth.js`).
+- Upgraded `/cashiers` (`web/cashiers.html`, `web/cashiers.js`) with cashier avatars, understated tactile card styling, and a `...` row Actions dropdown; rewrote `send_invite_email` (`apps/accounts/emails.py`) with a specific gym/role subject, greeting, and plain fallback URL to reduce Gmail spam filtering.
+### Decision-log skill
+Never store user-specific profile fields (name, avatar) in a single unscoped `localStorage` key shared across logins; always persist identity data on the server, scope any browser cache by user ID, and keep one UI painter for shared chrome (sidebar + topbar).

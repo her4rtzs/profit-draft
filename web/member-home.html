@@ -909,12 +909,17 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
     set("memberInitials", initials);
     set("menuInitials", initials);
     window.__pfPaintAvatars = photo => {
+      const seed = user.email || user.name || "member";
+      const fallback = window.ProFitAvatar ? window.ProFitAvatar.dataUrl(seed) : "";
       ["memberInitials", "menuInitials"].forEach(id => {
         const el = $(id); if (!el) return;
-        const ok = typeof photo === "string" && photo.startsWith("data:image/jpeg;base64,");
-        el.classList.toggle("has-photo", ok);
-        el.style.backgroundImage = ok ? `url("${photo}")` : "";
-        el.textContent = ok ? "" : initials;
+        const ok = typeof photo === "string" && photo.startsWith("data:image/");
+        const src = ok ? photo : fallback;
+        el.classList.toggle("has-photo", !!src);
+        el.style.backgroundImage = src ? `url("${src}")` : "";
+        el.style.backgroundSize = src ? "cover" : "";
+        el.style.backgroundPosition = src ? "center" : "";
+        el.textContent = src ? "" : initials;
       });
     };
     window.__pfPaintAvatars(user.photo || "");

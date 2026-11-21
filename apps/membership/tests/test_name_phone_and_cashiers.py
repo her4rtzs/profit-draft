@@ -185,6 +185,23 @@ class FullNameAndPhoneDuplicateTests(TestCase):
         self.assertEqual(good.json()["user"]["name"], "Joyce Reyes")
         self.assertFalse(good.json()["user"]["name_missing"])
 
+        # Avatar photo persists to DB and is returned by /api/auth/session/
+        sample_photo = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="
+        photo_res = self.client.patch("/api/auth/profile/", {"photo": sample_photo}, format="json")
+        self.assertEqual(photo_res.status_code, 200)
+        self.assertEqual(photo_res.json()["user"]["photo"], sample_photo)
+        session_after = self.client.get("/api/auth/session/").json()["user"]
+        self.assertEqual(session_after["photo"], sample_photo)
+
+        # Non-image photo is rejected
+        bad_photo = self.client.patch("/api/auth/profile/", {"photo": "https://evil.test/x.png"}, format="json")
+        self.assertEqual(bad_photo.status_code, 400)
+
+        # Clearing photo removes it from DB
+        clear_res = self.client.patch("/api/auth/profile/", {"photo": ""}, format="json")
+        self.assertEqual(clear_res.status_code, 200)
+        self.assertEqual(clear_res.json()["user"]["photo"], "")
+
 
 class OwnerCashierManagementTests(TestCase):
     def setUp(self):

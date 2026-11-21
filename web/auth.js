@@ -33,6 +33,7 @@
       localStorage.removeItem("pp-accent");
       localStorage.removeItem("profit-member-demo-checkins");
       localStorage.removeItem("profit-demo-session");
+      localStorage.removeItem("profit-account-v1");
       sessionStorage.removeItem("profit-demo-session");
       sessionStorage.removeItem("profit-verified-session");
       sessionStorage.removeItem("pf-auth-just-logged-in");
@@ -106,6 +107,9 @@
       const button = event.target.closest("[data-logout]");
       if (!button) return;
       event.preventDefault();
+      event.stopPropagation();
+      const menu = document.getElementById("accountMenu");
+      if (menu) menu.classList.remove("is-open");
       const confirmed = await confirmLogoutDialog();
       if (!confirmed) return;
       button.disabled = true;
@@ -119,7 +123,7 @@
         button.disabled = false;
         alert(error.message || "Unable to sign out. Please retry.");
       }
-    });
+    }, true);
   }
 
   bindLogoutOnce();

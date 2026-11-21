@@ -47,22 +47,155 @@ window.PROFIT_CONFIG = window.PROFIT_CONFIG || { API_BASE_URL: "/api", DEMO_MODE
     remove(id) { write(KEYS.announce, this.all().filter(item => item.id !== id)); }
   };
 
-  /* Staff profile — name, contact and avatar shown in the rail, the top bar and
-     on the dedicated My profile page. */
+  /* Deterministic flat-vector human cartoon avatars used across all portals
+     whenever a user has not uploaded a custom profile photo. */
+  const AVATAR_PRESETS = [
+    // 1. Curly puffs, deep brown skin, warm amber shirt
+    { bg: "#2b2113", skin: "#8d5524", shirt: "#f59e0b", hair: "#1a1412", style: "puffs" },
+    // 2. Smooth cap hair, warm tan skin, bright gold shirt
+    { bg: "#262014", skin: "#e0ac69", shirt: "#fbbf24", hair: "#1f1916", style: "cap" },
+    // 3. Smooth cap hair, medium tan skin, orange-amber shirt, slate bg
+    { bg: "#1f2636", skin: "#d9a066", shirt: "#f97316", hair: "#1c1816", style: "cap" },
+    // 4. Athletic headband, rich brown skin, terracotta shirt
+    { bg: "#2a1f14", skin: "#6f4222", shirt: "#b45309", hair: "#2b1d14", style: "headband", band: "#fbbf24" },
+    // 5. Short side-part, light peach skin, teal-slate shirt
+    { bg: "#17252d", skin: "#f1c27d", shirt: "#0ea5e9", hair: "#29201b", style: "part" },
+    // 6. Bob cut, warm olive skin, sage emerald shirt
+    { bg: "#17261f", skin: "#c68642", shirt: "#10b981", hair: "#1a1614", style: "bob" },
+    // 7. Athletic headband, light tan skin, crimson-rust shirt
+    { bg: "#281b1c", skin: "#e0ac69", shirt: "#dc2626", hair: "#241c18", style: "headband", band: "#f59e0b" },
+    // 8. Curly puffs, medium brown skin, indigo-slate shirt
+    { bg: "#1d2033", skin: "#a96b38", shirt: "#6366f1", hair: "#181412", style: "puffs" }
+  ];
+
+  function hashSeed(seed) {
+    const str = String(seed || "profit-user").trim().toLowerCase();
+    let h = 2166136261;
+    for (let i = 0; i < str.length; i++) {
+      h ^= str.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return Math.abs(h);
+  }
+
+  function buildAvatarSvg(seed) {
+    const p = AVATAR_PRESETS[hashSeed(seed) % AVATAR_PRESETS.length];
+    let hairSvg = "";
+    if (p.style === "puffs") {
+      hairSvg =
+        `<circle cx="32" cy="18" r="6.5" fill="${p.hair}"/>` +
+        `<circle cx="22.5" cy="21" r="5" fill="${p.hair}"/>` +
+        `<circle cx="41.5" cy="21" r="5" fill="${p.hair}"/>`;
+    } else if (p.style === "headband") {
+      hairSvg =
+        `<path d="M20 28c0-7.5 5.2-13 12-13s12 5.5 12 13v1H20v-1z" fill="${p.hair}"/>` +
+        `<rect x="19.5" y="22.5" width="25" height="3.6" rx="1.8" fill="${p.band || "#fbbf24"}"/>`;
+    } else if (p.style === "bob") {
+      hairSvg =
+        `<path d="M18.5 32c0-9.5 5.6-16 13.5-16s13.5 6.5 13.5 16v6.5c0 1.4-1.1 2.5-2.5 2.5h-2.5v-8c0-6-3.8-10-8.5-10s-8.5 4-8.5 10v8H21c-1.4 0-2.5-1.1-2.5-2.5V32z" fill="${p.hair}"/>`;
+    } else if (p.style === "part") {
+      hairSvg =
+        `<path d="M20 26.5c0-6.8 5.2-11.8 12.2-11.8 6.4 0 11.8 4.4 11.8 11.2-2.2-3.2-6.2-4.6-12.4-4.2-4.8.3-8.6 1.8-11.6 4.8z" fill="${p.hair}"/>`;
+    } else {
+      hairSvg =
+        `<path d="M21 25.5c1.5-5.8 5.7-9.5 11-9.5s9.5 3.7 11 9.5c-3.1-2.2-6.8-3.2-11-3.2s-7.9 1-11 3.2z" fill="${p.hair}"/>`;
+    }
+    return (
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-hidden="true">` +
+      `<circle cx="32" cy="32" r="32" fill="${p.bg}"/>` +
+      `<path d="M12 61c1.8-11.8 9.6-18.5 20-18.5S50.2 49.2 52 61v3H12v-3z" fill="${p.shirt}"/>` +
+      `<rect x="27.5" y="36.5" width="9" height="8" rx="4.5" fill="${p.skin}"/>` +
+      `<ellipse cx="32" cy="29.5" rx="11.2" ry="12.2" fill="${p.skin}"/>` +
+      hairSvg +
+      `</svg>`
+    );
+  }
+
+  window.ProFitAvatar = {
+    svg(seed) {
+      return buildAvatarSvg(seed);
+    },
+    dataUrl(seed) {
+      return "data:image/svg+xml;utf8," + encodeURIComponent(buildAvatarSvg(seed));
+    },
+    resolve(photo, seed) {
+      const clean = String(photo || "").trim();
+      return clean || this.dataUrl(seed);
+    },
+    paint(box, { photo = "", seed = "", alt = "" } = {}) {
+      if (!box) return;
+      const src = this.resolve(photo, seed);
+      let img = box.querySelector("img.pf-avatar-img");
+      if (!img) {
+        const legacy = box.querySelector("img");
+        if (legacy) {
+          img = legacy;
+          img.classList.add("pf-avatar-img");
+        } else {
+          img = document.createElement("img");
+          img.className = "pf-avatar-img";
+          img.alt = alt;
+          img.style.width = "100%";
+          img.style.height = "100%";
+          img.style.objectFit = "cover";
+          img.style.borderRadius = "50%";
+          img.style.display = "block";
+          box.prepend(img);
+        }
+      }
+      img.src = src;
+      box.classList.add("has-photo");
+      const textSpan = box.querySelector("[data-user-initials]");
+      if (textSpan) textSpan.style.display = "none";
+    }
+  };
+
+  /* Staff profile — scoped per signed-in user so switching accounts never leaks
+     another user's name or avatar, with server-verified auth data taking priority. */
+  const readSessionUser = () => {
+    if (window.ProFitAuth && window.ProFitAuth.user) return window.ProFitAuth.user;
+    try {
+      return JSON.parse(sessionStorage.getItem("profit-verified-session") || "null");
+    } catch {
+      return null;
+    }
+  };
+  const profileKeyForUser = () => {
+    const u = readSessionUser();
+    const uid = u && (u.id || u.email);
+    return uid ? `${KEYS.profile}:${uid}` : KEYS.profile;
+  };
   window.ProFitProfile = {
     KEY: KEYS.profile,
     get() {
-      const base = { name: "", email: "", phone: "", role: "Gym administrator", photo: "", bio: "", joined: "" };
-      return { ...base, ...(read(KEYS.profile) || {}) };
+      const u = readSessionUser();
+      const roleCode = String((u && u.role) || "").toUpperCase();
+      const defaultRole = roleCode === "MEMBER" ? "Gym member" : roleCode === "CASHIER" ? "Cashier" : roleCode === "TRAINER" ? "Personal trainer" : "Gym administrator";
+      const base = { name: "", email: "", phone: "", role: defaultRole, photo: "", bio: "", joined: "" };
+      const stored = read(profileKeyForUser()) || {};
+      const merged = { ...base, ...stored };
+      if (u) {
+        if (typeof u.name === "string") merged.name = u.name.trim();
+        if (u.email) merged.email = u.email;
+        if (typeof u.photo === "string" && u.photo) merged.photo = u.photo;
+        else if (typeof u.photo === "string" && u.photo === "" && u.id) merged.photo = "";
+      }
+      return merged;
     },
     save(patch) {
+      const key = profileKeyForUser();
       const next = { ...this.get(), ...patch };
-      if (!write(KEYS.profile, next)) return null;
+      if (!write(key, next)) return null;
       return next;
     },
+    clear() {
+      try { localStorage.removeItem(KEYS.profile); } catch { /* ignore */ }
+    },
     initials() {
-      const name = this.get().name || (window.ProFitAuth && window.ProFitAuth.user && window.ProFitAuth.user.name) || "Administrator";
-      const parts = String(name).trim().split(/\s+/).slice(0, 2).map(part => part[0] || "").join("").toUpperCase();
+      const p = this.get();
+      const name = (p.name || "").trim();
+      if (!name || name.includes("@")) return "PF";
+      const parts = name.split(/\s+/).slice(0, 2).map(part => part[0] || "").join("").toUpperCase();
       return parts || "PF";
     }
   };
