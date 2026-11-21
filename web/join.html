@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Join online — ProFit · Functional Fitness Gym</title>
-<meta name="description" content="Sign up and pay online via GCash, Maya, card, or QR Ph. Your Functional Fitness Gym member account activates automatically.">
+<meta name="description" content="Create a free ProFit account and start a seven-day trial. Add a gym membership with cash or a reviewed GCash payment.">
 <link rel="icon" type="image/jpeg" href="logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -665,30 +665,6 @@
   });
   $("terms").addEventListener("change", () => updateFormState(false));
   updateFormState(false);
-
-  if (q.get("cancelled")) $("cancel").hidden = false;
-  if (q.get("paid")) {
-    $("f").hidden = true; $("ok").hidden = false; $("alt").hidden = true; $("paynote").hidden = true;
-    if ($("joinGoogleWrap")) $("joinGoogleWrap").hidden = true;
-    const token = q.get("t") || "";
-    let tries = 0;
-    const check = async () => {
-      tries++;
-      try {
-        const r = await window.ProFitAPI.post("/join/confirm", { token });
-        if (r.status === "active") {
-          $("okmsg").textContent = "Your account is ready. Sign in with the email and password you set.";
-          $("okgo").hidden = false; return;
-        }
-      } catch (ex) {
-        if (ex.status === 400) { $("okmsg").textContent = "We could not find this signup. Please call 0912 261 7663."; return; }
-      }
-      if (tries < 12) setTimeout(check, 3000);
-      else $("okmsg").textContent = "We have not received the payment confirmation yet. Wait a minute and refresh this page, or call 0912 261 7663.";
-    };
-    $("okgo").hidden = true;
-    check();
-  }
 
   $("f").addEventListener("submit", async e => {
     e.preventDefault();

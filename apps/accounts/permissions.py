@@ -39,8 +39,7 @@ def can_initiate_payment(user, member=None) -> bool:
     """Initiate a payment intent (intent only; NEVER writes payment status).
 
     Owner/Cashier may initiate for anyone; a Member may initiate only for their
-    own profile. Status transitions (paid/failed) are webhook-only and are not
-    gated by this helper.
+    own profile. Status transitions on historical payments are not granted here.
 
     ``member`` is the target MemberProfile (or ``None`` when not applicable).
     """

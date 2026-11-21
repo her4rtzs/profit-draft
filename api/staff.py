@@ -240,7 +240,7 @@ def _combined_payment_rows(*, member_id=None, limit=200, include_meta=False):
         if include_meta:
             row["member_code"] = f"M{202600 + member.pk}"
             row["desk"] = False
-            row["recorded_by"] = "PayMongo"
+            row["recorded_by"] = "paymongo"
         data.append(row)
     data.sort(key=lambda r: str(r["created_at"]), reverse=True)
     return data[:limit]
@@ -293,7 +293,7 @@ class StaffPaymentDetailView(APIView):
     """PATCH or DELETE /api/staff/payments/<id>/ — Owner only. PATCH corrects the method or date of a desk payment; DELETE removes the record.
 
     Plan and amount stay fixed because the membership was extended from them.
-    Online (PayMongo) payments are written only by the webhook and cannot be edited here.
+    Historical online (paymongo) rows are read-only here and cannot be edited.
     """
 
     permission_classes = [CanViewFinancials]

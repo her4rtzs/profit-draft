@@ -278,7 +278,7 @@ let _inFlightSync = null;
 DB.sync = async function (reload = false) {
     if (_inFlightSync) return _inFlightSync;
     _inFlightSync = (async () => {
-        const METHOD_LABEL = { CASH: "Cash", GCASH: "GCash", ONLINE: "Online (PayMongo)" };
+        const METHOD_LABEL = { CASH: "Cash", GCASH: "GCash", ONLINE: "paymongo (old)" };
         const idFor = pk => "M" + (202600 + pk);
         const SIG_KEY = "profit-server-sig";
         const controller = new AbortController();

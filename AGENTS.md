@@ -16,7 +16,7 @@ The owner is a student who is still learning and is building this as they go. As
 - When you finish a roadmap item, check it off in `ROADMAP.md` in the same change. Do not mark a phase complete until its gate checks (in `Architecture.md`) pass; tell the owner and stop.
 
 ## Current phase
-Phase 4 (Financial Dashboard) is in progress. Phase 4.5 (Installable Web App) is implemented and its code is done, but its real-phone gate has not been run, so it is **not** complete. Phase 4.6 (Free Trial and GCash Claim Review) is **not started**: this file and `Architecture.md` describe that target design, but the code still runs the old PayMongo flow until Phase 4.6 lands. Do not start Phase 5 or later until the current phase's exit check passes. `ROADMAP.md` holds the item lists; record what was checked in `docs/PROGRESS.md`.
+Phase 4 (Financial Dashboard) is in progress. Phase 4.5 (Installable Web App) is implemented and its code is done, but its real-phone gate has not been run, so it is **not** complete. Phase 4.6 (Free Trial and GCash Claim Review) is **in progress**: the PayMongo code is removed and the trial, claim and cash flows are built, but its gate checks have not been run. Do not start Phase 5 or later until the current phase's exit check passes. `ROADMAP.md` holds the item lists; record what was checked in `docs/PROGRESS.md`.
 
 ## Stack
 - Web portal (staff and members), static pages (`web/`): HTML, CSS and JavaScript; Font Awesome and Google Fonts via CDN; calls the Django API from the browser

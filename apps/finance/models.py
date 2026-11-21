@@ -27,9 +27,9 @@ class TransactionRecord(models.Model):
 class ManualPayment(models.Model):
     """A payment staff recorded at the desk: cash or GCash.
 
-    Kept separate from ``billing.Payment`` on purpose. That model's status is
-    written only by the PayMongo webhook, and a desk payment is settled the
-    moment staff record it, so it lives here instead.
+    Kept separate from ``billing.Payment`` on purpose: that table holds
+    read-only history from the retired online gateway, while a desk payment is
+    settled the moment staff record it.
     """
 
     class Plan(models.TextChoices):

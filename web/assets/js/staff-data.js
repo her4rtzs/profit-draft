@@ -50,7 +50,7 @@
     { id: 'Maya', icon: 'smartphone', source: 'desk' },
     { id: 'Bank Transfer', icon: 'landmark', source: 'desk' },
     { id: 'Credit Card', icon: 'credit-card', source: 'online' },
-    { id: 'QR Ph', icon: 'smartphone', source: 'online' }
+    { id: 'paymongo', icon: 'smartphone', source: 'online' }
   ];
   PF.PLANS_DEFAULT = PLANS; PF.METHODS = METHODS;
 
@@ -104,12 +104,12 @@
       [-2, 16, 32, 'James Lim', 'monthly', 'Bank Transfer', 'completed'],
       [-2, 11, 3, 'Sophia Ramirez', 'monthly', 'Cash', 'pending'],
       [-3, 15, 12, 'Daniel Wong', 'quarterly', 'Credit Card', 'completed'],
-      [-3, 10, 40, 'Isabella Santos', 'quarterly', 'QR Ph', 'completed'],
+      [-3, 10, 40, 'Isabella Santos', 'quarterly', 'paymongo', 'completed'],
       [-4, 13, 25, 'Chloe Rivera', 'monthly', 'GCash', 'failed'],
       [-5, 17, 50, 'Ryan Garcia', 'monthly', 'Cash', 'completed'],
       [-6, 9, 30, 'Matthew Cruz', 'annual', 'Credit Card', 'completed'],
       [-8, 18, 10, 'Isabella Santos', 'monthly', 'Cash', 'completed'],
-      [-9, 12, 45, 'Mara Villanueva', 'monthly', 'QR Ph', 'completed'],
+      [-9, 12, 45, 'Mara Villanueva', 'monthly', 'paymongo', 'completed'],
       [-7, 10, 15, 'Paolo Reyes', 'monthly', 'Cash', 'completed'],
       [-10, 15, 30, 'Alex Thompson', 'monthly', 'GCash', 'completed'],
       [-11, 9, 5, 'Liza Cortez', 'monthly', 'Cash', 'completed'],
@@ -135,7 +135,7 @@
     const payments = pays.map((p, i) => {
       const pl = PLANS.find(x => x.id === p.plan);
       const meth = METHODS.find(x => x.id === p.method);
-      return { id: 'P-' + String(i + 1).padStart(5, '0'), memberId: p.memberId, plan: p.plan, method: p.method, source: meth.source, amount: pl.price, status: p.status, at: p.at, note: '', by: meth.source === 'online' ? 'PayMongo' : 'Joyce Alvarez' };
+      return { id: 'P-' + String(i + 1).padStart(5, '0'), memberId: p.memberId, plan: p.plan, method: p.method, source: meth.source, amount: pl.price, status: p.status, at: p.at, note: '', by: meth.source === 'online' ? 'paymongo' : 'Joyce Alvarez' };
     });
 
     const announcements = [

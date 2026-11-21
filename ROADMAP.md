@@ -6,11 +6,11 @@ Phases are ordered by dependency, not by date. Each phase has an exit check: do 
 
 Convention: `[x]` means verified against the code, `[ ]` means not done. Where part of an item already exists, a note says what is there.
 
-Last reviewed: 2026-11-21, docs-only review of the free-trial and GCash-claim redesign (no runtime test run; code still runs the PayMongo flow until Phase 4.6 lands).
+Last reviewed: 2026-11-21, PayMongo removed from the code and the trial/claim flows built; Phase 4.6 gate checks still pending.
 
 ## Current status
 
-**The system is at Phase 4 (Financial Dashboard), in progress. Phases 0 to 3 have passed their exit checks, Phase 4 has not. Phase 4.5 (Installable Web App) is implemented; its real-phone gate is still open. Phase 4.6 (Free Trial and GCash Claim Review) is planned and not started; the code still runs PayMongo until it lands.**
+**The system is at Phase 4 (Financial Dashboard), in progress. Phases 0 to 3 have passed their exit checks, Phase 4 has not. Phase 4.5 (Installable Web App) is implemented; its real-phone gate is still open. Phase 4.6 (Free Trial and GCash Claim Review) is implemented in code; its gate checks are still pending.**
 
 | Phase | State | What is actually there |
 |---|---|---|
@@ -20,7 +20,7 @@ Last reviewed: 2026-11-21, docs-only review of the free-trial and GCash-claim re
 | 3 Billing & Subscription | Pass, with deviations | PayMongo Checkout Sessions, webhook with signature verification + idempotent handling + race handling (`apps/billing/webhooks.py`), self-enrollment in one transaction (`complete_signup`), pay-first join, failed/abandoned payments stay pending, desk cash/GCash/bank payments (`finance.ManualPayment`), webhook/checkout tests. Deviations: see Conformance with AGENTS.md. |
 | 4 Financial Dashboard | **In progress** | Owner-only gate, transaction list with search/member/method filters, monthly totals (`monthly_summary`), client-side CSV and print-to-PDF export. Missing: server-side PDF stored in Supabase Storage, status reconciliation view, and a status filter over paid/pending/failed. |
 | 4.5 Installable Web App | Implemented, gate open | Static `web/manifest.webmanifest` served by WhiteNoise at the site root with `application/manifest+json` via `WHITENOISE_MIMETYPES`, `static/icons/` (192, 512, maskable 512, Apple 180) from the approved logo, manifest/theme-color/Apple tags on every page, install card on three pages, `static/js/install-help.js`, `profit/tests/test_installable.py`. No service worker, offline cache, or push. The old `web/sw.js`, `web/pwa.js` and service worker registration are deleted. Real-phone install check still to be done by the owner. |
-| 4.6 Free Trial & GCash Claims | Not started | `AGENTS.md` and `Architecture.md` describe the target: free 7-day `trial`, GCash claims with a reference and a Drive screenshot link, Owner/Cashier approval enrolling through the shared service, cash at the desk, PayMongo removed. No code changed yet. |
+| 4.6 Free Trial & GCash Claims | In progress | PayMongo removed, free 7-day `trial`, GCash claims with a reference and a Drive screenshot link, Owner/Cashier approval enrolling through the shared service, cash at the desk, cash/GCash-only dashboard totals. Gate checks pending. |
 | 5 Member Mobile App | Removed | Native app dropped; members use the installable web portal in Phase 4.5. The Expo skeleton was deleted from the repo. |
 | 6 Hardening & Launch | Not started | No security review, no load testing, no member import, no staff guide, no monitoring. |
 | 7 After Launch | Not started | No payment-gateway registration (cash and GCash only), no extra payment methods; the payment docs are rewritten in Phase 4.6. |
@@ -122,7 +122,7 @@ Exit check: both phones pass the owner's checklist above.
 
 Goal: remove the payment gateway. Sign-up is free with a 7-day trial, GCash payments are claims reviewed by staff, and cash is recorded at the desk.
 
-- [ ] Remove PayMongo: delete checkout creation, the webhook receiver and its route, `PAYMONGO_SECRET_KEY` and `PAYMONGO_WEBHOOK_SECRET`. Keep every existing payment row and PayMongo reference as history.
+- [x] Remove PayMongo: delete checkout creation, the webhook receiver and its route, `PAYMONGO_SECRET_KEY` and `PAYMONGO_WEBHOOK_SECRET`. Keep every existing payment row and PayMongo reference as history.
 - [x] Free sign-up creates a Member with status `trial` for 7 days: app access only, no gym membership and no attendance.
 - [ ] GCash claim form: GCash reference number and an https Google Drive screenshot link, saved as `pending_review`. The amount comes from the server-side plan price, never from the form.
 - [ ] Owner/Cashier review queue: approve or reject a claim; the member sees only their own claims. Enforced on the server.

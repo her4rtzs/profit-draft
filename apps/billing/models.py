@@ -1,15 +1,8 @@
-"""Billing domain models (Module 2) — stubs for the first build.
+"""Billing domain models (Module 2).
 
-Only model definitions ship this pass; real PayMongo payment-intent creation
-and reporting are deferred. Monetary amounts are ALWAYS integer centavos
-(PHP 100.00 = 10000), never floats (per AGENTS.md).
-
-Payment status is written in exactly one place: the PayMongo webhook, via the
-single-writer mutators in ``services.py`` (``mark_payment_paid`` /
-``mark_payment_failed``). ``WebhookEvent`` is the idempotency ledger; its three
-statuses are the only ones the webhook ever records — there is no
-``signature_valid`` field (a row is only written for an already-valid signature)
-and no ``DEFERRED`` status.
+The payment gateway is retired. ``Payment``, ``Subscription``, ``WebhookEvent``
+and ``PendingSignup`` remain as read-only history and must never be dropped.
+Monetary amounts are ALWAYS integer centavos (PHP 100.00 = 10000), never floats.
 """
 
 from django.conf import settings
@@ -45,11 +38,7 @@ class Subscription(models.Model):
 
 
 class Payment(models.Model):
-    """A single payment against a subscription (stub).
-
-    ``status`` transitions to PAID/FAILED are written ONLY by the webhook via
-    ``services.mark_payment_paid`` / ``services.mark_payment_failed``.
-    """
+    """A historical payment row from the retired online gateway (read-only)."""
 
     class Status(models.TextChoices):
         PENDING = "PENDING", "Pending"
@@ -142,7 +131,7 @@ class PaymentClaim(models.Model):
 
 
 class WebhookEvent(models.Model):
-    """Idempotency ledger for inbound PayMongo webhook events.
+    """Historical ledger of inbound PayMongo webhook events (read-only).
 
     A row exists only for an event whose signature already passed. ``status``
     separates "seen" from "applied":
@@ -170,11 +159,9 @@ class WebhookEvent(models.Model):
 
 
 class PendingSignup(models.Model):
-    """A person who started paying to join but has no account yet.
+    """Legacy pay-first signup from the retired gateway (no longer created).
 
-    The account is created ONLY by the PayMongo webhook after the payment is
-    confirmed (``services.complete_signup``). The password is stored hashed,
-    never as plain text, and is copied to the new login on success.
+    The password is stored hashed, never as plain text.
     """
 
     checkout_session_id = models.CharField(max_length=255, unique=True, db_index=True)

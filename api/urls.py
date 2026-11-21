@@ -5,8 +5,8 @@ from rest_framework.routers import DefaultRouter
 
 from . import auth
 from .claims import MemberClaimView
-from .join import JoinCheckoutView, JoinConfirmView
-from .member import MemberCheckInView, MemberCheckoutView, MemberMeView
+from .join import JoinCheckoutView
+from .member import MemberCheckInView, MemberMeView
 from .staff_claims import ClaimApproveView, ClaimRejectView, StaffClaimListView
 from rest_framework.routers import SimpleRouter
 
@@ -86,10 +86,8 @@ urlpatterns = [
     path("auth/google/login/", auth.google_oauth_login_view, name="auth-google-login"),
     path("auth/google/callback/", auth.google_oauth_callback_view, name="auth-google-callback"),
     path("join/checkout/", JoinCheckoutView.as_view(), name="join-checkout"),
-    path("join/confirm/", JoinConfirmView.as_view(), name="join-confirm"),
     path("member/me/", MemberMeView.as_view(), name="member-me"),
     path("member/check-in/", MemberCheckInView.as_view(), name="member-checkin"),
-    path("member/checkout/", MemberCheckoutView.as_view(), name="member-checkout"),
     path("member/claims/", MemberClaimView.as_view(), name="member-claims"),
     path("staff/attendance/", StaffAttendanceView.as_view(), name="staff-attendance"),
     path("staff/attendance/check-in/", StaffCheckInView.as_view(), name="staff-checkin"),

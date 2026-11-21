@@ -2650,3 +2650,15 @@ Limit staff-recorded payments to cash and GCash, remove bank, require a GCash re
 - Full suite: 286 tests pass.
 ### Decision-log skill
 When the same business identifier lives in two tables, enforce uniqueness inside each table with a database constraint and check across tables in the write services; a single-table constraint cannot cover a workflow split across two models.
+
+## 2026-11-21 19:03 (Asia/Manila): Online gateway code removed
+### What I asked for
+Remove PayMongo: the webhook endpoint and route, client and service code, checkout creation, PAYMONGO_* settings, any package in requirements.txt and the related tests. Keep every model and column holding payment history, keep old payments readable as paymongo in reports, drop no table or column, list the environment variables and external settings the owner must remove, and do not touch any .env file.
+### What the agent decided and why
+- Deleted the webhook module, its route, the HTTP client/checkout functions, the member checkout endpoint, the legacy join-confirm endpoint and their tests. See [[2026-11-21 Online gateway code removed]]
+- Kept `Payment`, `Subscription`, `WebhookEvent`, `PendingSignup` and `paymongo_payment_id`; old online rows are labelled "paymongo (old)" in staff reports. No migration was created.
+- Updated public copy, the README and the phase status so nothing still claims the gateway runs.
+- Owner must remove, by hand: `PAYMONGO_SECRET_KEY`, `PAYMONGO_WEBHOOK_SECRET` and `PAYMONGO_PAYMENT_METHODS` from the local `.env` and Vercel environment variables, plus the webhook URL and API keys configured in the PayMongo dashboard. There was no PayMongo package in `requirements.txt`.
+- Full suite: 261 tests pass.
+### Decision-log skill
+When retiring an external service, delete its client, routes and settings in one pass but leave history tables and their reference columns intact; then hand the owner an explicit checklist for secrets that live outside the repository.

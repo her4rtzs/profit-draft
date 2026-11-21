@@ -19,8 +19,8 @@
   var METHOD_LABELS = {
     CASH: 'Cash (Desk)',
     GCASH: 'GCash (Desk)',
-    ONLINE: 'PayMongo QR Ph',
-    QRPH: 'PayMongo QR Ph',
+    ONLINE: 'paymongo (old)',
+    QRPH: 'paymongo (old)',
   };
 
   var RECEIPT_ICON =
@@ -91,7 +91,7 @@
 
   function isOnlinePayment(p) {
     var m = String((p && p.method) || '').toUpperCase();
-    return p && (p.desk === false || m === 'ONLINE' || m === 'QRPH');
+    return p && (p.desk === false || m === 'ONLINE');
   }
 
   function paymentKey(p, fallbackIndex) {
@@ -466,7 +466,7 @@
     var memberObj = findMemberById(payment.member_id);
     var memberCode = payment.member_code || (payment.member_id ? 'MEM-' + String(payment.member_id).padStart(4, '0') : '—');
     var expiry = payment.expiry_date || (memberObj && memberObj.expiry_date) || 'Updated on account';
-    var recordedBy = payment.recorded_by || (payment.desk === false ? 'Online Self-Checkout' : state.cashierName);
+    var recordedBy = payment.recorded_by || (payment.desk === false ? 'paymongo (old)' : state.cashierName);
 
     var fields = {
       recRef: payment.ref || '—',

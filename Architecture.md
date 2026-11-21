@@ -140,7 +140,7 @@ Safety rules:
 | 2 | Accounts and roles: login, member sign-up, staff accounts, RBAC, deactivation | **Done, one gap** (`ROADMAP.md` Phase 1): login rate limiting is still missing |
 | 3 | Membership (Module 1): profiles, staff-assisted enrollment, attendance, member pages for own profile and attendance | **Done, one deviation** (`ROADMAP.md` Phase 2): the member photo is a data URL in the database, not Supabase Storage |
 | 4 | Billing (Module 2): PayMongo checkout, webhook, self-enrollment, desk payments, expiry job | **Done, with deviations** (`ROADMAP.md` Phase 3): PayMongo Checkout Sessions rather than payment intents, and the `pg_cron` SQL is written but not applied |
-| 4.6 | Free trial and GCash claim review: remove PayMongo, 7-day trial, staff-approved GCash claims | **Not started** (`ROADMAP.md` Phase 4.6): the code still runs the PayMongo flow |
+| 4.6 | Free trial and GCash claim review: remove PayMongo, 7-day trial, staff-approved GCash claims | **In progress** (`ROADMAP.md` Phase 4.6): PayMongo removed, trial and claim flows built; gate checks pending |
 | 5 | Financial Dashboard (Module 3): transactions, reports | **In progress** (`ROADMAP.md` Phase 4): no server-side PDF in Supabase Storage and no status reconciliation view |
 | 6 | Hardening and handover: full permission review, backup run, owner guide | **Not started** (`ROADMAP.md` Phase 6) |
 

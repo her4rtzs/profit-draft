@@ -1,8 +1,6 @@
 """POST /api/join/checkout/: public self sign-up.
 
-Creates a MEMBER login with a 7-day trial. It no longer starts a PayMongo
-checkout or redirects to payment; the PayMongo code stays in ``apps.billing``
-until it is removed in a later pass.
+Creates a MEMBER login with a 7-day trial. No payment gateway is involved.
 """
 
 from django.conf import settings
@@ -13,7 +11,6 @@ from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
 
-from apps.billing.services import confirm_join
 from apps.membership.services import register_trial_member
 
 
@@ -40,16 +37,3 @@ class JoinCheckoutView(APIView):
         except ValidationError as exc:
             raise DRFValidationError({"detail": " ".join(exc.messages)})
         return Response({"status": "trial", "login_url": f"{base}/login"})
-
-
-class JoinConfirmView(APIView):
-    """POST /api/join/confirm/ {token}: legacy PayMongo return check, kept for now."""
-
-    permission_classes = [AllowAny]
-    authentication_classes = []
-
-    def post(self, request):
-        try:
-            return Response({"status": confirm_join(request.data.get("token"))})
-        except ValidationError as exc:
-            raise DRFValidationError({"detail": " ".join(exc.messages)})
