@@ -84,3 +84,5 @@ One note per decision, oldest first; entries with an `Unknown` date are listed l
 - [[2026-11-21 Approval notifies the member]]: Approval creates one in-app notification and its email mirror with the plan and expiry only; mail failure cannot roll it back.
 - [[2026-11-21 Cash and GCash only at the desk]]: Desk payments are cash or GCash only; GCash needs a unique normalised reference and dashboards count approved claims too.
 - [[2026-11-21 Online gateway code removed]]: Webhook, checkout client, settings and tests deleted; payment history tables and columns kept and shown as paymongo in reports.
+
+- [[2026-11-21 Staff cashiers full names and phone duplicate warning]]: Add Owner-only Cashiers page under Staff, enforce first+last names with "Name not set" fallback, and add normalized PH phone duplicate warnings.

@@ -69,7 +69,7 @@ class StaffApiTests(TestCase):
         self.as_(self.owner)
         res = self.api.post(
             MEMBERS,
-            {"name": "Dup", "email": "mem@gym.test", "password": PASSWORD},
+            {"name": "Dup User", "email": "mem@gym.test", "password": PASSWORD},
             format="json",
         )
         self.assertEqual(res.status_code, 400)
@@ -79,14 +79,14 @@ class StaffApiTests(TestCase):
         self.as_(self.owner)
         res = self.api.post(
             MEMBERS,
-            {"name": "Weak", "email": "weak@example.com", "password": "123"},
+            {"name": "Weak User", "email": "weak@example.com", "password": "123"},
             format="json",
         )
         self.assertEqual(res.status_code, 400)
         self.assertFalse(User.objects.filter(username="weak@example.com").exists())
 
     def test_cashier_can_create_but_trainer_cannot(self):
-        body = {"name": "C", "email": "c1@example.com", "password": PASSWORD}
+        body = {"name": "Cashier Member", "email": "c1@example.com", "password": PASSWORD}
         self.as_(self.cashier)
         self.assertEqual(self.api.post(MEMBERS, body, format="json").status_code, 201)
         self.as_(self.trainer)

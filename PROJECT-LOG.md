@@ -2693,3 +2693,14 @@ Fix `"You have no active membership"` lock screen immediately after signing in a
 - Verified with `python manage.py check` and `python manage.py test apps.accounts.tests.test_google_auth apps.membership.tests.test_access`.
 ### Decision-log skill
 When adding a new onboarding status like `TRIAL` to public sign-up, update every registration entry point (including Google Sign-In) to call the same shared `start_trial` service so OAuth users are not left in legacy `PENDING` lockouts.
+
+## 2026-11-21 22:28 (Asia/Manila): Staff Cashiers page, real full names, phone duplicate warning, and roadmap update
+### What I asked for
+Group Trainers and Cashiers under one "Staff" sidebar section, add a simple Owner-only Cashiers page reusing the trainer invite flow (Resend invite and Deactivate only), enforce real first + last names (never showing email as name) and add `/profile` name saving, add normalized Philippine phone duplicate warnings (generic on public signup, confirmable warning with name/status for staff walk-in), and update `ROADMAP.md` in English.
+### What the agent decided and why
+- Grouped `Trainers` and `Cashiers` under one `STAFF` section in `web/layout.js` and added Owner-only `/cashiers` (`web/cashiers.html`, `web/cashiers.js`, `api/cashiers.py`) reusing `create_staff_invite` + `send_invite_email` with `role=CASHIER` and Deactivate (never Delete), see [[2026-11-21 Staff cashiers full names and phone duplicate warning]].
+- Enforced first and last name in `validate_full_name` (`apps/membership/services.py`), `StaffMemberCreateSerializer`, `StaffMemberUpdateSerializer`, `web/join.html`, `web/members.js`, and `PATCH /api/auth/profile/` (`api/auth.py` + `web/profile.js`), and stopped falling back to email in `_session_user_dict`, `web/auth.js`, and `web/sidebar.js` (showing "Name not set" linked to `/profile`), see [[2026-11-21 Staff cashiers full names and phone duplicate warning]].
+- Added `normalize_ph_phone` and `find_members_by_phone` in `apps/membership/services.py`: public signup blocks duplicate phones with a generic English message (no name leaked), while staff walk-in returns HTTP 409 with existing member name/status and a "Continue anyway" confirmation modal for shared family numbers, see [[2026-11-21 Staff cashiers full names and phone duplicate warning]].
+- Updated `ROADMAP.md` to reflect Phase 4.6 progress (Cashiers management, full-name enforcement, phone duplicate warning) and Phase 5 cash/GCash status.
+### Decision-log skill
+Enforce real identity fields (first and last name) before building duplicate-detection warnings, so staff warnings display meaningful names while public endpoints stay generic to prevent account enumeration.
