@@ -31,6 +31,102 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
 
     <!-- CSS -->
     <link rel="stylesheet" href="dashboard.css?v=1">
+    <style>
+      /* Editorial Owner Dashboard Hero + Staggered Motion (UI polish only) */
+      @keyframes pfDashRise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+      @keyframes pfLivePulse{0%,100%{box-shadow:0 0 0 0 rgba(61,220,132,.55)}60%{box-shadow:0 0 0 7px rgba(61,220,132,0)}}
+      .ow-hero{
+        position:relative;border-radius:20px;overflow:hidden;margin-bottom:22px;
+        border:1px solid rgba(255,255,255,.09);background:#0c111b;
+        display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,360px);gap:24px;
+        align-items:center;padding:30px 32px;
+        animation:pfDashRise .45s cubic-bezier(.2,.8,.2,1) both;
+      }
+      .ow-hero::before{
+        content:"";position:absolute;inset:0;
+        background:url("img/hero.jpg") center/cover no-repeat;
+        opacity:.34;transform:scale(1.02);pointer-events:none;
+      }
+      .ow-hero::after{
+        content:"";position:absolute;inset:0;
+        background:linear-gradient(95deg,rgba(10,14,23,.95) 0%,rgba(10,14,23,.82) 52%,rgba(10,14,23,.58) 100%);
+        pointer-events:none;
+      }
+      .ow-hero-left,.ow-hero-card{position:relative;z-index:1}
+      .ow-eyebrow{
+        display:inline-block;font:800 11.5px/1 "Figtree",Inter,sans-serif;
+        letter-spacing:.12em;text-transform:uppercase;color:#e8b93a;margin-bottom:10px;
+      }
+      .ow-hero-left h2{
+        margin:0 0 10px;font:900 clamp(2rem,3.6vw,3.1rem)/1.02 "Figtree","Plus Jakarta Sans",Inter,sans-serif;
+        letter-spacing:-.03em;color:#f8fafc;
+      }
+      .ow-hero-left p{
+        margin:0 0 22px;max-width:460px;font-size:14.5px;line-height:1.58;color:#cbd5e1;
+      }
+      .ow-hero-btns{display:flex;flex-wrap:wrap;gap:12px}
+      .ow-btn-gold,.ow-btn-dark{
+        display:inline-flex;align-items:center;gap:9px;min-height:42px;padding:0 18px;
+        border-radius:12px;font:700 13.5px/1 "Plus Jakarta Sans",Inter,sans-serif;
+        text-decoration:none;transition:transform .16s ease,background .16s ease,border-color .16s ease;
+      }
+      .ow-btn-gold{background:#e8b93a;color:#141006}
+      .ow-btn-gold:hover{transform:translateY(-2px);background:#f1c856}
+      .ow-btn-dark{background:rgba(15,23,42,.72);color:#f1f5f9;border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(8px)}
+      .ow-btn-dark:hover{transform:translateY(-2px);background:rgba(30,41,59,.88);border-color:rgba(232,185,58,.45)}
+
+      .ow-hero-card{
+        background:rgba(15,21,34,.84);border:1px solid rgba(255,255,255,.11);
+        border-radius:16px;padding:18px 20px;backdrop-filter:blur(12px);
+        display:flex;flex-direction:column;gap:16px;
+      }
+      .ow-card-top{display:flex;align-items:center;justify-content:space-between;gap:14px}
+      .ow-open-pill{
+        display:inline-flex;align-items:center;gap:7px;padding:5px 10px;border-radius:999px;
+        background:rgba(61,220,132,.14);color:#4ade80;font:700 11.5px/1 Inter,sans-serif;
+        margin-bottom:8px;
+      }
+      .ow-open-dot{width:7px;height:7px;border-radius:50%;background:#4ade80;animation:pfLivePulse 2.2s infinite}
+      .ow-card-top h3{margin:0 0 4px;font:800 18px/1.2 "Figtree",Inter,sans-serif;color:#f8fafc}
+      .ow-card-date{font-size:12.5px;color:#94a3b8}
+      .ow-ring-wrap{position:relative;width:76px;height:76px;flex:none;display:grid;place-items:center}
+      .ow-ring-svg{width:76px;height:76px;transform:rotate(-90deg)}
+      .ow-ring-track{fill:none;stroke:rgba(255,255,255,.1);stroke-width:6}
+      .ow-ring-arc{fill:none;stroke:#e8b93a;stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset .85s cubic-bezier(.2,.8,.2,1)}
+      .ow-ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+      .ow-ring-center strong{font:800 19px/1 "Figtree",Inter,sans-serif;color:#f8fafc;font-variant-numeric:tabular-nums}
+      .ow-ring-center small{font-size:10px;color:#94a3b8;margin-top:2px}
+      .ow-card-foot{
+        display:flex;align-items:center;justify-content:space-between;gap:12px;
+        padding-top:14px;border-top:1px dashed rgba(255,255,255,.12);
+      }
+      .ow-card-foot span{display:block;font-size:11.5px;color:#94a3b8;margin-bottom:2px}
+      .ow-card-foot strong{font:800 15px/1.2 "Figtree",Inter,sans-serif;color:#f8fafc}
+      .ow-mini-btn{
+        padding:8px 14px;border-radius:10px;background:#e8b93a;color:#141006;
+        font:700 12.5px/1 "Plus Jakarta Sans",Inter,sans-serif;text-decoration:none;
+        transition:transform .15s ease,background .15s ease;
+      }
+      .ow-mini-btn:hover{transform:translateY(-1px);background:#f1c856}
+
+      /* Staggered card entrance & subtle hover elevation */
+      #dashStats .stat-card{animation:pfDashRise .45s cubic-bezier(.2,.8,.2,1) both}
+      #dashStats .stat-card:nth-child(2){animation-delay:.06s}
+      #dashStats .stat-card:nth-child(3){animation-delay:.12s}
+      #dashStats .stat-card:nth-child(4){animation-delay:.18s}
+      #dashStats .stat-card:hover{transform:translateY(-2px)}
+      .quick-actions{animation:pfDashRise .45s cubic-bezier(.2,.8,.2,1) .08s both}
+      .content-grid .panel{animation:pfDashRise .5s cubic-bezier(.2,.8,.2,1) .16s both}
+      .registrations-panel{animation:pfDashRise .55s cubic-bezier(.2,.8,.2,1) .22s both}
+
+      @media (max-width:960px){
+        .ow-hero{grid-template-columns:1fr;padding:24px 20px}
+      }
+      @media (prefers-reduced-motion:reduce){
+        .ow-hero,#dashStats .stat-card,.quick-actions,.content-grid .panel,.registrations-panel,.ow-open-dot{animation:none!important}
+        .ow-ring-arc{transition:none!important}
+      }
+    </style>
     <script src="config.js?v=4"></script>
     <script src="api.js"></script>
     <script src="auth.js?v=4"></script>
@@ -67,28 +163,66 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
         <!-- TOPBAR -->
         <header class="topbar" id="topbar"><h1>Dashboard</h1></header>
 
+        <!-- EDITORIAL OWNER HERO BANNER -->
+        <section class="ow-hero" aria-label="Gym live overview">
+          <div class="ow-hero-left">
+            <span class="ow-eyebrow" id="owHeroEyebrow">GOOD DAY, GYM OWNER</span>
+            <h2>Your gym,<br>live.</h2>
+            <p>Members, check-ins and money in one place. Every check-in your team logs shows up here as it happens.</p>
+            <div class="ow-hero-btns">
+              <a class="ow-btn-gold" href="/reports"><i class="fa-solid fa-chart-column" aria-hidden="true"></i> View reports</a>
+              <a class="ow-btn-dark" href="/attendance"><i class="fa-solid fa-calendar-check" aria-hidden="true"></i> Record attendance</a>
+            </div>
+          </div>
+          <aside class="ow-hero-card" aria-label="Today at the gym">
+            <div class="ow-card-top">
+              <div>
+                <span class="ow-open-pill"><span class="ow-open-dot" aria-hidden="true"></span> Gym open</span>
+                <h3>Today at<br>the gym</h3>
+                <span class="ow-card-date" id="owHeroDate">&mdash;</span>
+              </div>
+              <div class="ow-ring-wrap" aria-label="Today's check-ins">
+                <svg class="ow-ring-svg" viewBox="0 0 80 80" aria-hidden="true">
+                  <circle class="ow-ring-track" cx="40" cy="40" r="32"></circle>
+                  <circle class="ow-ring-arc" id="owArrivedArc" cx="40" cy="40" r="32" stroke-dasharray="201.06" stroke-dashoffset="201.06"></circle>
+                </svg>
+                <div class="ow-ring-center">
+                  <strong id="owArrivedVal">0</strong>
+                  <small>arrived</small>
+                </div>
+              </div>
+            </div>
+            <div class="ow-card-foot">
+              <div>
+                <span>Total members</span>
+                <strong id="owHeroTotalMembers">&mdash;</strong>
+              </div>
+              <a class="ow-mini-btn" href="/members">Members</a>
+            </div>
+          </aside>
+        </section>
 
         <!-- QUICK ACTIONS -->
         <section class="quick-actions" aria-label="Quick actions">
-          <a class="quick-action qa-gold" href="/members#enrollment">
+          <a class="quick-action qa-gold" href="/members#enroll">
             <span class="quick-action-icon" aria-hidden="true"><i class="fa-solid fa-user-plus"></i></span>
-            <span class="qa-details"><strong>Enroll a member</strong><small>Add to the gym roster</small></span>
-            <i class="fa-solid fa-arrow-up-right-from-square action-arrow" aria-hidden="true"></i>
+            <span class="qa-details"><strong>Add a member</strong><small>Walk-in at the desk</small></span>
+            <i class="fa-solid fa-chevron-right action-arrow" aria-hidden="true"></i>
           </a>
-          <a class="quick-action qa-cyan" href="/attendance">
-            <span class="quick-action-icon" aria-hidden="true"><i class="fa-solid fa-calendar-check"></i></span>
-            <span class="qa-details"><strong>Record attendance</strong><small>Manage today's check-ins</small></span>
-            <i class="fa-solid fa-arrow-up-right-from-square action-arrow" aria-hidden="true"></i>
+          <a class="quick-action qa-cyan" href="/payments">
+            <span class="quick-action-icon" aria-hidden="true"><i class="fa-solid fa-peso-sign"></i></span>
+            <span class="qa-details"><strong>Record payment</strong><small>Cash at the desk</small></span>
+            <i class="fa-solid fa-chevron-right action-arrow" aria-hidden="true"></i>
           </a>
-          <a class="quick-action qa-emerald" href="/payments">
-            <span class="quick-action-icon" aria-hidden="true"><i class="fa-solid fa-credit-card"></i></span>
-            <span class="qa-details"><strong>Record a payment</strong><small>Update member billing</small></span>
-            <i class="fa-solid fa-arrow-up-right-from-square action-arrow" aria-hidden="true"></i>
+          <a class="quick-action qa-emerald" href="/payments#claims">
+            <span class="quick-action-icon" aria-hidden="true"><i class="fa-solid fa-clipboard-check"></i></span>
+            <span class="qa-details"><strong>Review claims</strong><small>GCash waiting for you</small></span>
+            <i class="fa-solid fa-chevron-right action-arrow" aria-hidden="true"></i>
           </a>
-          <a class="quick-action qa-violet" href="/reports">
-            <span class="quick-action-icon" aria-hidden="true"><i class="fa-solid fa-chart-line"></i></span>
-            <span class="qa-details"><strong>View reports</strong><small>Review gym performance</small></span>
-            <i class="fa-solid fa-arrow-up-right-from-square action-arrow" aria-hidden="true"></i>
+          <a class="quick-action qa-violet" href="/announcements">
+            <span class="quick-action-icon" aria-hidden="true"><i class="fa-solid fa-bullhorn"></i></span>
+            <span class="qa-details"><strong>Post announcement</strong><small>Tell your members</small></span>
+            <i class="fa-solid fa-chevron-right action-arrow" aria-hidden="true"></i>
           </a>
         </section>
 
@@ -157,7 +291,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
                 </div>
                 <div class="stat-content">
                     <p class="sr-only">Total revenue</p>
-                    <h2 id="kpiRevenueVal">Ã¢â€šÂ±0.00</h2>
+                    <h2 id="kpiRevenueVal">&#8369;0.00</h2>
                     <div class="kpi-bottom">
                         <small class="kpi-sub" id="kpiRevenueSub">
                             <span class="kpi-trend neutral">&rarr; No payments yet</span>
@@ -200,13 +334,13 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
                     </div>
 
                     <div class="chart-y" id="revenueAxis">
-                        <span>Ã¢â€šÂ±12k</span>
-                        <span>Ã¢â€šÂ±10k</span>
-                        <span>Ã¢â€šÂ±8k</span>
-                        <span>Ã¢â€šÂ±6k</span>
-                        <span>Ã¢â€šÂ±4k</span>
-                        <span>Ã¢â€šÂ±2k</span>
-                        <span>Ã¢â€šÂ±0</span>
+                        <span>&#8369;12k</span>
+                        <span>&#8369;10k</span>
+                        <span>&#8369;8k</span>
+                        <span>&#8369;6k</span>
+                        <span>&#8369;4k</span>
+                        <span>&#8369;2k</span>
+                        <span>&#8369;0</span>
                     </div>
 
                     <div class="chart">
@@ -715,6 +849,71 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
     animateValue(totalEl, total);
     animateValue(expEl, expired);
     animateValue(soonEl, expiring);
+
+    // Paint the live editorial hero card ("Today at the gym" + animated ring)
+    const nowDate = new Date();
+    const hr = nowDate.getHours();
+    const greetWord = hr < 12 ? "GOOD MORNING" : hr < 18 ? "GOOD AFTERNOON" : "GOOD EVENING";
+    const eyebrowEl = document.getElementById("owHeroEyebrow");
+    if (eyebrowEl) eyebrowEl.textContent = `${greetWord}, GYM OWNER`;
+    const dateEl = document.getElementById("owHeroDate");
+    if (dateEl) {
+      dateEl.textContent = nowDate.toLocaleDateString("en-US", {
+        weekday: "short", month: "short", day: "numeric", year: "numeric"
+      });
+    }
+    const heroTotalEl = document.getElementById("owHeroTotalMembers");
+    if (heroTotalEl) heroTotalEl.textContent = `${total} member${total === 1 ? "" : "s"}`;
+
+    const checkins = (typeof DB !== "undefined" && DB && Array.isArray(DB.checkins)) ? DB.checkins : [];
+    const todayIso = (typeof toISO === "function")
+      ? toISO(nowDate)
+      : `${nowDate.getFullYear()}-${String(nowDate.getMonth() + 1).padStart(2, "0")}-${String(nowDate.getDate()).padStart(2, "0")}`;
+    const arrivedToday = checkins.filter(c => {
+      const iso = typeof toISO === "function" ? toISO(c.date) : String(c.date || "").slice(0, 10);
+      return iso === todayIso;
+    }).length;
+    const arrivedEl = document.getElementById("owArrivedVal");
+    animateValue(arrivedEl, arrivedToday, 700);
+    const arcEl = document.getElementById("owArrivedArc");
+    if (arcEl) {
+      const circ = 201.06;
+      const denom = Math.max(total, 1);
+      const frac = arrivedToday > 0 ? Math.max(0.08, Math.min(1, arrivedToday / denom)) : 0;
+      arcEl.style.strokeDashoffset = (circ * (1 - frac)).toFixed(2);
+    }
+
+    // Smooth count-up animation for Total Revenue whenever chart-periods.js updates #kpiRevenueVal
+    const revValEl = document.getElementById("kpiRevenueVal");
+    if (revValEl && !revValEl.dataset.animBound) {
+      revValEl.dataset.animBound = "1";
+      let animatingRev = false;
+      let lastRevTarget = 0;
+      const obs = new MutationObserver(() => {
+        if (animatingRev) return;
+        const raw = revValEl.textContent || "";
+        const num = parseFloat(raw.replace(/[^0-9.]/g, ""));
+        if (!Number.isFinite(num) || num <= 0 || num === lastRevTarget) return;
+        const from = lastRevTarget;
+        lastRevTarget = num;
+        animatingRev = true;
+        const t0 = performance.now();
+        const dur = 750;
+        const step = t => {
+          const p = Math.min((t - t0) / dur, 1);
+          const ease = 1 - Math.pow(1 - p, 3);
+          const cur = from + (num - from) * ease;
+          revValEl.textContent = "\u20B1" + cur.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          if (p < 1) requestAnimationFrame(step);
+          else {
+            revValEl.textContent = "\u20B1" + num.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            animatingRev = false;
+          }
+        };
+        requestAnimationFrame(step);
+      });
+      obs.observe(revValEl, { childList: true, characterData: true, subtree: true });
+    }
 
     const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
     const newThisMonth = members.filter(m => m.joined && m.joined >= monthStart).length;

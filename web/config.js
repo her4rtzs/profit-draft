@@ -133,6 +133,89 @@ window.PROFIT_CONFIG = window.PROFIT_CONFIG || { API_BASE_URL: "/api", DEMO_MODE
     (document.head || document.documentElement).appendChild(st);
   }
 
+  // Universal smooth KPI count-up animation across all portals (Owner, Cashier, Trainer, Member).
+  if (typeof document !== "undefined" && !window.__pfCountUpInit) {
+    window.__pfCountUpInit = true;
+    const reduceMotion = () => window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const KPI_SELECTOR = [
+      ".tr-kpi strong",
+      ".csh-kpi-val",
+      ".fn-kpi-val",
+      ".kpi-val",
+      ".kpi-value",
+      ".tw-kpi-val",
+      ".pp-cal-stat strong",
+      "#streakDays",
+      "#weeklyVisits",
+      "#achievementsCount"
+    ].join(",");
+
+    function parseMetric(raw) {
+      const txt = String(raw || "").trim();
+      const m = txt.match(/^([^\d-]*?)(\d[\d,]*(?:\.\d+)?)(.*)$/);
+      if (!m) return null;
+      const num = parseFloat(m[2].replace(/,/g, ""));
+      if (!Number.isFinite(num)) return null;
+      const decimals = (m[2].split(".")[1] || "").length;
+      return { prefix: m[1], num, decimals, suffix: m[3], hasComma: m[2].includes(",") || num >= 1000 };
+    }
+
+    function formatMetric(meta, val) {
+      const fixed = meta.decimals > 0
+        ? val.toLocaleString("en-US", { minimumFractionDigits: meta.decimals, maximumFractionDigits: meta.decimals })
+        : (meta.hasComma ? Math.round(val).toLocaleString("en-US") : String(Math.round(val)));
+      return `${meta.prefix}${fixed}${meta.suffix}`;
+    }
+
+    function animateEl(el) {
+      if (!el || reduceMotion() || el.dataset.pfCounting === "1") return;
+      const txt = (el.textContent || "").trim();
+      if (!txt || txt === el.dataset.pfLastVal) return;
+      const meta = parseMetric(txt);
+      if (!meta || meta.num === 0) {
+        el.dataset.pfLastVal = txt;
+        return;
+      }
+      const prev = parseMetric(el.dataset.pfLastVal || "");
+      const from = prev ? prev.num : 0;
+      if (from === meta.num) {
+        el.dataset.pfLastVal = txt;
+        return;
+      }
+      el.dataset.pfCounting = "1";
+      el.dataset.pfLastVal = txt;
+      const t0 = performance.now();
+      const dur = 680;
+      const step = now => {
+        const p = Math.min((now - t0) / dur, 1);
+        const ease = 1 - Math.pow(1 - p, 3);
+        el.textContent = formatMetric(meta, from + (meta.num - from) * ease);
+        if (p < 1) requestAnimationFrame(step);
+        else {
+          el.textContent = txt;
+          el.dataset.pfCounting = "0";
+        }
+      };
+      requestAnimationFrame(step);
+    }
+
+    const bindAll = () => {
+      document.querySelectorAll(KPI_SELECTOR).forEach(el => {
+        if (el.dataset.pfObsBound) return;
+        el.dataset.pfObsBound = "1";
+        animateEl(el);
+        new MutationObserver(() => animateEl(el)).observe(el, { childList: true, characterData: true, subtree: true });
+      });
+    };
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", bindAll, { once: true });
+    } else {
+      bindAll();
+    }
+    new MutationObserver(bindAll).observe(document.documentElement, { childList: true, subtree: true });
+  }
+
   window.ProFitAvatar = {
     presets() {
       return AVATAR_PRESETS.map(p => ({ id: p.id, label: p.label, dataUrl: dataUrlFromSvg(svgForPreset(p)) }));

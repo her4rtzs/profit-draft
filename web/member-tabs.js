@@ -60,6 +60,20 @@
     if (!tabs.length) return;
     const names = tabs.map(t => t.dataset.tab);
     const hero = document.querySelector(".member-hero");
+    const tabBanner = document.getElementById("mbTabBanner");
+    const tabEyebrow = document.getElementById("mbTabEyebrow");
+    const tabTitle = document.getElementById("mbTabTitle");
+    const TAB_META = {
+      schedule: ["Pick your sessions", "Schedule"],
+      announcements: ["Latest from the gym", "Announcements"],
+      diary: ["Your training log", "Workout diary"],
+      health: ["Track your progress", "Health & goals"],
+      attendance: ["Your gym visits", "Attendance History"],
+      payments: ["Billing & GCash claims", "Payment History"],
+      membership: ["Your gym plan", "My Membership"],
+      profile: ["Your account details", "My Profile"],
+      settings: ["App preferences", "Settings"]
+    };
     const select = (name, updateHash = true) => {
       tabs.forEach(t => {
         const on = t.dataset.tab === name;
@@ -73,6 +87,14 @@
       if (!names.includes(name)) tabs[0].tabIndex = 0;
       document.querySelectorAll("[data-panel]").forEach(p => { p.hidden = p.dataset.panel !== name; });
       if (hero) hero.hidden = name !== "overview";
+      if (tabBanner) {
+        const showBanner = name !== "overview";
+        tabBanner.hidden = !showBanner;
+        if (showBanner && TAB_META[name]) {
+          if (tabEyebrow) tabEyebrow.textContent = TAB_META[name][0];
+          if (tabTitle) tabTitle.textContent = TAB_META[name][1];
+        }
+      }
       if (updateHash) history.replaceState(null, "", "#" + name);
     };
     tabs.forEach((t, i) => {
@@ -1031,16 +1053,33 @@
   }
   function calendarHTML(anchor, selectedISO) {
     const today = todayISO();
+    const checkins = checkinDays();
     const marks = d => {
       const f = [];
-      if (checkinDays().has(d)) f.push("checkin");
+      if (checkins.has(d)) f.push("checkin");
       if (state.bookings.some(b => b.date === d)) f.push("booked");
       if (state.diary.some(x => x.date === d)) f.push("diary");
       return f;
     };
+    const y = anchor.getFullYear(), m = anchor.getMonth();
+    const daysInMonth = new Date(y, m + 1, 0).getDate();
+    let monthVisits = 0, bestStreak = 0, curStreak = 0;
+    for (let dayNum = 1; dayNum <= daysInMonth; dayNum++) {
+      const dIso = iso(new Date(y, m, dayNum));
+      if (checkins.has(dIso)) {
+        monthVisits++;
+        curStreak++;
+        if (curStreak > bestStreak) bestStreak = curStreak;
+      } else {
+        curStreak = 0;
+      }
+    }
+    const pctDays = Math.round((monthVisits / Math.max(daysInMonth, 1)) * 100);
+
     const cells = monthCells(anchor).map(d => {
       if (!d) return `<span class="pp-cal-pad" aria-hidden="true"></span>`;
       const cls = ["pp-cal-day"];
+      if (checkins.has(d)) cls.push("is-checkin");
       if (d === today) cls.push("is-today");
       if (d === selectedISO) cls.push("is-selected");
       const dots = marks(d).map(f => `<i class="pp-cal-dot ${f}"></i>`).join("");
@@ -1052,8 +1091,13 @@
         <button type="button" class="pp-icon-btn" data-cal-move="1" aria-label="Next month"><i class="fa-solid fa-chevron-right"></i></button>
       </div>
       <div class="pp-cal-grid" role="group" aria-label="Calendar">
-        ${["S", "M", "T", "W", "T", "F", "S"].map((d, i) => `<span class="pp-cal-dow" aria-hidden="true">${d}</span>`).join("")}
+        ${["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(d => `<span class="pp-cal-dow" aria-hidden="true">${d}</span>`).join("")}
         ${cells}
+      </div>
+      <div class="pp-cal-stats">
+        <div class="pp-cal-stat"><strong>${monthVisits}</strong><span>Visits</span></div>
+        <div class="pp-cal-stat"><strong>${bestStreak}</strong><span>Best streak</span></div>
+        <div class="pp-cal-stat"><strong>${pctDays}%</strong><span>Days in</span></div>
       </div>`;
   }
   function daySummaryHTML(d) {

@@ -24,7 +24,8 @@
     "/profile"
   ]);
   const adminPages = new Set([...ownerOnlyPages, ...cashierPages]);
-  const memberPages = new Set(["/member-home", "/onboarding"]);
+  const memberPages = new Set(["/member-home"]);
+  const onboardingPage = file === "/onboarding";
   const loginPage = file === "/login";
   const loginTarget = isTrainerSection || isStaffSection ? "/login" : "/login";
 
@@ -197,7 +198,7 @@
   const isAdmin = (adminPages.has(file) || isStaffSection) && !isTrainerSection;
   const isMember = memberPages.has(file);
   const isTrainer = isTrainerSection;
-  if (!loginPage && !isAdmin && !isMember && !isTrainer) return;
+  if (!loginPage && !onboardingPage && !isAdmin && !isMember && !isTrainer) return;
 
   const isCashierRole = r => String(r || "").toUpperCase() === "CASHIER";
   const isOwnerRole = r => ["ADMIN", "OWNER"].includes(String(r || "").toUpperCase());
@@ -235,11 +236,15 @@
         sessionStorage.setItem("profit-verified-session", JSON.stringify(user));
       } catch {}
       if (loginPage) {
-        if (role === "MEMBER" && user.onboarding_completed === false) {
+        if ((role === "MEMBER" || role === "CASHIER" || role === "TRAINER") && user.onboarding_completed === false) {
           location.replace("/onboarding");
           return;
         }
         location.replace(homeForRole(role));
+        return;
+      }
+      if (onboardingPage && isOwnerRole(role)) {
+        location.replace("/index");
         return;
       }
       if (isAdmin && !isStaffRole(role)) {

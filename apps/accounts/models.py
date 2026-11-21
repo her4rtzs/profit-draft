@@ -36,6 +36,7 @@ class User(AbstractUser):
     )
     google_linked_at = models.DateTimeField(null=True, blank=True)
     avatar_data = models.TextField(blank=True, default="")
+    onboarding_data = models.JSONField(default=dict, blank=True)
 
 
 class OTPPurpose(models.TextChoices):

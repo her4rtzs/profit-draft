@@ -105,6 +105,10 @@ def ensure_google_user_columns() -> None:
                 cursor.execute(
                     "ALTER TABLE accounts_user ADD COLUMN IF NOT EXISTS avatar_data text NOT NULL DEFAULT '';"
                 )
+            if "onboarding_data" not in cols:
+                cursor.execute(
+                    "ALTER TABLE accounts_user ADD COLUMN IF NOT EXISTS onboarding_data jsonb NOT NULL DEFAULT '{}'::jsonb;"
+                )
             tables = set(connection.introspection.table_names(cursor))
             if "membership_memberprofile" in tables:
                 member_cols = {

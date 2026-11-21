@@ -228,6 +228,10 @@ def accept_invite_view(request, invite_id, token):
                 form.add_error("password", exc)
             else:
                 login(request, user)
+                if getattr(user, "role", "") in ("CASHIER", "TRAINER") and not (
+                    getattr(user, "onboarding_data", None) or {}
+                ).get("completed"):
+                    return redirect("/onboarding")
                 return redirect(settings.LOGIN_REDIRECT_URL)
     else:
         form = AcceptInviteForm()

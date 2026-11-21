@@ -330,3 +330,99 @@ class OwnerCashierManagementTests(TestCase):
         self.cashier.refresh_from_db()
         self.assertFalse(self.cashier.is_active)
         self.assertTrue(User.objects.filter(pk=self.cashier.pk).exists())
+
+    def test_cashier_and_trainer_can_complete_onboarding(self):
+        trainer = User.objects.create_user(
+            username="coach.dan@gmail.com",
+            email="coach.dan@gmail.com",
+            password="TrainerPassword123!",
+            first_name="Dan",
+            last_name="Coach",
+            role=Role.TRAINER,
+            is_active=True,
+        )
+        # Cashier onboarding
+        self.client.force_login(self.cashier)
+        self.assertEqual(self.client.get("/onboarding").status_code, 200)
+        s1 = self.client.get("/api/auth/session/").json()["user"]
+        self.assertFalse(s1["onboarding_completed"])
+        res_c = self.client.patch(
+            "/api/auth/profile/",
+            {
+                "name": "Desk Cashier",
+                "photo": "av-3",
+                "onboarding": {"shift": "Morning", "ack": True, "completed": True},
+            },
+            format="json",
+        )
+        self.assertEqual(res_c.status_code, 200)
+        self.assertTrue(res_c.json()["user"]["onboarding_completed"])
+
+        # Trainer onboarding
+        self.client.force_login(trainer)
+        self.assertEqual(self.client.get("/onboarding").status_code, 200)
+        s2 = self.client.get("/api/auth/session/").json()["user"]
+        self.assertFalse(s2["onboarding_completed"])
+        res_t = self.client.patch(
+            "/api/auth/profile/",
+            {
+                "name": "Coach Dan",
+                "photo": "av-4",
+                "onboarding": {
+                    "specialties": ["Strength", "Boxing"],
+                    "years_experience": "3",
+                    "days": ["Mon", "Wed", "Fri"],
+                    "slot": "Evening",
+                    "completed": True,
+                },
+            },
+            format="json",
+        )
+        self.assertEqual(res_t.status_code, 200)
+        self.assertTrue(res_t.json()["user"]["onboarding_completed"])
+
+    def test_cashier_invite_link_accept_redirects_to_onboarding_then_cashier_desk(self):
+        from urllib.parse import urlparse
+        from django.test import Client, override_settings
+
+        # 1. Owner invites a new cashier (same link sent to Gmail)
+        self.client.force_authenticate(user=self.owner)
+        invite_res = self.client.post(
+            "/api/staff/cashiers/",
+            {"full_name": "Liza Cruz", "email": "liza.cashier@gmail.com"},
+            format="json",
+        )
+        self.assertEqual(invite_res.status_code, 201)
+        invite_path = urlparse(invite_res.json()["invite_url"]).path
+
+        # 2. Cashier clicks the invite link from email and sets their password
+        web = Client()
+        with override_settings(
+            STORAGES={
+                "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+                "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
+            }
+        ):
+            self.assertEqual(web.get(invite_path).status_code, 200)
+            accept_res = web.post(
+                invite_path,
+                {"password": "CashierStrong123!", "confirm_password": "CashierStrong123!"},
+            )
+        self.assertEqual(accept_res.status_code, 302)
+        self.assertEqual(accept_res["Location"], "/onboarding")
+
+        # 3. Cashier is now signed in, sees /onboarding, and completes onboarding
+        self.assertEqual(web.get("/onboarding").status_code, 200)
+        sess = web.get("/api/auth/session/").json()["user"]
+        self.assertEqual(sess["role"], "CASHIER")
+        self.assertFalse(sess["onboarding_completed"])
+
+        # 4. Finish onboarding -> /cashier desk opens cleanly
+        finish = web.patch(
+            "/api/auth/profile/",
+            data='{"name":"Liza Cruz","photo":"av-2","onboarding":{"shift":"Afternoon","ack":true,"completed":true}}',
+            content_type="application/json",
+        )
+        self.assertEqual(finish.status_code, 200)
+        self.assertTrue(finish.json()["user"]["onboarding_completed"])
+        self.assertEqual(web.get("/cashier").status_code, 200)

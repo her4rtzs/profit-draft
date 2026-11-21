@@ -482,10 +482,12 @@
         const user = session.user;
         const r = String(user?.role || '').toUpperCase();
         const isOwner = ['ADMIN', 'OWNER'].includes(r);
-        const home = isOwner ? '/index'
+        const needsOnboarding = (r === 'MEMBER' || r === 'CASHIER' || r === 'TRAINER') && user?.onboarding_completed === false;
+        const home = needsOnboarding ? '/onboarding'
+          : isOwner ? '/index'
           : r === 'CASHIER' ? '/cashier'
           : (r === 'TRAINER' || r === 'COACH') ? '/trainer/index'
-          : r === 'MEMBER' ? (user?.onboarding_completed === false ? '/onboarding' : '/member-home')
+          : r === 'MEMBER' ? '/member-home'
           : null;
         if (home) {
           sessionStorage.setItem('profit-verified-session', JSON.stringify(user));

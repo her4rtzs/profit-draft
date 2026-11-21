@@ -37,6 +37,7 @@ def _ensure_pending_migrations():
             "must_change_password" not in user_cols
             or "google_sub" not in user_cols
             or "avatar_data" not in user_cols
+            or "onboarding_data" not in user_cols
             or "phone" not in trainer_cols
             or ("membership_memberprofile" in tables and "trial_ends_at" not in member_cols)
             or ("membership_memberprofile" in tables and "onboarding_data" not in member_cols)

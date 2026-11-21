@@ -106,21 +106,47 @@ def _session_user_dict(user):
     first = (user.first_name or "").strip()
     last = (user.last_name or "").strip()
     full_name = f"{first} {last}".strip()
+    role = getattr(user, "role", "")
+    user_ob = getattr(user, "onboarding_data", None) or {}
     onboarding_completed = True
-    if getattr(user, "role", "") == "MEMBER":
+    if role == "MEMBER":
         from apps.membership.models import MemberProfile
 
         profile = MemberProfile.objects.filter(user=user).only("onboarding_data").first()
-        onboarding_completed = bool((getattr(profile, "onboarding_data", None) or {}).get("completed")) if profile else True
+        member_ob = (getattr(profile, "onboarding_data", None) or {}) if profile else {}
+        onboarding_completed = bool(member_ob.get("completed") or user_ob.get("completed")) if profile else True
+    elif role in ("CASHIER", "TRAINER"):
+        onboarding_completed = bool(user_ob.get("completed"))
     return {
         "id": user.pk,
         "name": full_name,
         "name_missing": not (first and last),
         "email": user.email,
-        "role": WEB_ROLE.get(user.role, "MEMBER"),
+        "role": WEB_ROLE.get(role, "MEMBER"),
         "photo": getattr(user, "avatar_data", "") or "",
         "onboarding_completed": onboarding_completed,
+        "onboarding": user_ob,
         "must_change_password": bool(getattr(user, "must_change_password", False)),
+    }
+
+
+def _sanitize_staff_onboarding(raw):
+    if not isinstance(raw, dict):
+        return None
+    def clean_list(val, max_items=10, max_len=50):
+        if not isinstance(val, list):
+            return []
+        return [str(x).strip()[:max_len] for x in val if str(x).strip()][:max_items]
+    return {
+        "phone": str(raw.get("phone") or "").strip()[:30],
+        "shift": str(raw.get("shift") or "").strip()[:40],
+        "ack": bool(raw.get("ack", False)),
+        "specialties": clean_list(raw.get("specialties"), 12, 50),
+        "years_experience": str(raw.get("years_experience") or "").strip()[:20],
+        "certifications": str(raw.get("certifications") or "").strip()[:500],
+        "days": clean_list(raw.get("days"), 7, 15),
+        "slot": str(raw.get("slot") or "").strip()[:40],
+        "completed": bool(raw.get("completed", True)),
     }
 
 
@@ -172,10 +198,35 @@ def update_profile_view(request):
         user.avatar_data = photo
         update_fields.append("avatar_data")
 
+    if "onboarding" in data:
+        cleaned_ob = _sanitize_staff_onboarding(data.get("onboarding"))
+        if cleaned_ob is None:
+            return JsonResponse({"detail": "Invalid onboarding payload."}, status=400)
+        user.onboarding_data = cleaned_ob
+        update_fields.append("onboarding_data")
+
     if not update_fields:
         return JsonResponse({"detail": "Nothing to update."}, status=400)
 
-    user.save(update_fields=update_fields)
+    user.save(update_fields=list(dict.fromkeys(update_fields)))
+
+    # Keep TrainerProfile contact/specialization in sync if the user is a Trainer.
+    if getattr(user, "role", "") == "TRAINER" and "onboarding" in data:
+        from apps.trainers.models import TrainerProfile
+
+        tp = TrainerProfile.objects.filter(user=user).first()
+        if tp is not None:
+            ob = user.onboarding_data or {}
+            tp_fields = []
+            if ob.get("phone"):
+                tp.phone = ob["phone"][:40]
+                tp_fields.append("phone")
+            if ob.get("specialties"):
+                tp.specialization = ", ".join(ob["specialties"])[:120]
+                tp_fields.append("specialization")
+            if tp_fields:
+                tp.save(update_fields=tp_fields)
+
     return JsonResponse({"detail": "Profile updated.", "user": _session_user_dict(user)})
 
 

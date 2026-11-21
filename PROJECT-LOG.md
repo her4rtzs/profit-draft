@@ -2736,3 +2736,14 @@ Fix the live login database error and `/member-home` 500, let expired/locked mem
 - Updated Dashboard `Recent registrations` (`web/index.html`) to always show its 4-row skeleton loader until live backend `/api/staff/members/` sync completes, render `ProFitAvatar` flat faceless avatars instead of initials, and fix UTF-8 mojibake (`—`, `→`) and `₱0` (`&#8369;0`) in `web/payments.html`.
 ### Decision-log skill
 Whenever adding a new Django model column on a serverless Vercel deployment that does not run `migrate` during build, guard the column in the runtime PostgreSQL schema helper as well as the tracked migration so live auth and portal routes never 500 between deploy and manual migration.
+
+## 2026-11-22 03:48 (Asia/Manila): Staff Dashboard editorial hero UI and multi-role onboarding wizard (Member, Cashier, Trainer)
+### What I asked for
+Upgrade the Staff/Owner Dashboard UI with the editorial hero banner, animated check-in ring, and number count-up animations without changing any live data; fix the post-onboarding redirect back to `/login`; upgrade `/onboarding` to the Kettle mascot responsive design (no Role/View switcher); and extend `/onboarding` to Cashier and Trainer roles automatically.
+### What the agent decided and why
+- Upgraded `web/index.html` with the editorial "Your gym, live." hero banner (`img/hero.jpg`), live "Today at the gym" glass card with animated SVG progress ring, staggered card entrance, and smooth count-up animations for all 4 KPI values including Total Revenue, keeping all existing backend bindings untouched.
+- Fixed the post-onboarding `/login` bounce by clearing `sessionStorage["profit-logged-out"]` and syncing `profit-verified-session` on signup (`web/join.html`), session verification (`web/auth.js`), and onboarding completion (`web/onboarding.js`).
+- Added `User.onboarding_data` (`apps/accounts/migrations/0007_user_onboarding_data.py` + PostgreSQL cold-start guard in `apps/accounts/google_auth.py` and `api/index.py`) and extended `PATCH /api/auth/profile/` and `/api/auth/session/` so Cashier and Trainer onboarding state persists across devices and syncs trainer phone/specialties to `TrainerProfile`.
+- Extended `web/onboarding.html` + `web/onboarding.js` (Kettle mascot responsive design, no Role/View switcher) to automatically run the Member (8 steps), Cashier (5 steps: Welcome, Profile/Avatar, Desk shift + acknowledgement, Review, Finish -> `/cashier`), or Trainer (6 steps: Welcome, Profile/Avatar, Specialties, Availability, Review, Finish -> `/trainer/index`) flow based on the signed-in user's server role.
+### Decision-log skill
+Store multi-role onboarding completion on the shared `User` model (with role-specific profiles synced on save) so one responsive `/onboarding` wizard can serve Member, Cashier, and Trainer automatically across every device with no client-side role switcher.
