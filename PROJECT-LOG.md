@@ -2672,3 +2672,14 @@ Fix `"A database error occurred while signing you in. Please try again."` when l
 - Verified with `python manage.py check` and `python manage.py test apps.accounts.tests.test_google_auth`.
 ### Decision-log skill
 Always inspect existing table columns before executing `ALTER TABLE ... ADD COLUMN IF NOT EXISTS` on Supabase transaction-pooled PostgreSQL, and log non-PII exception types + `pgcode` on caught `DatabaseError` responses so production DB issues are immediately diagnosable.
+
+
+## 2026-11-21 21:07 (Asia/Manila): Fix 500 on public pages and cold-start pending migrations
+### What I asked for
+Fix `Server Error (500)` on `https://functionalfitnessgym.site/join` after merging Phase 4.6 trial/claim migrations.
+### What the agent decided and why
+- Bypassed member-profile database queries on `PUBLIC_PAGES` (`welcome`, `login`, `join`, `forgot`, `faq`, `terms`, `privacy`) in `profit/views.py` (`web_page`) so public auth/join pages never fail or lock out users when a browser holds an existing session cookie.
+- Extended `_ensure_pending_migrations()` in `api/index.py` to detect missing Phase 4.6 columns/tables (`google_sub`, `trial_ends_at`, `billing_paymentclaim`, `reference_number`) on PostgreSQL cold start and run `call_command("migrate", interactive=False, verbosity=0)` (with safe `ALTER TABLE ... ADD COLUMN IF NOT EXISTS` fallbacks).
+- Verified with `python manage.py check` and `python manage.py test apps.membership.tests.test_access profit.tests.test_clean_urls apps.accounts.tests.test_web_session`.
+### Decision-log skill
+Never run member-profile DB queries on public pages like `/join` or `/login` inside a generic `web_page` view; keep public routes database-free so unapplied migrations or stale session cookies cannot 500 the sign-up or login screen.
