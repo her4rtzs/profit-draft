@@ -47,6 +47,13 @@
                 <span class="fn-tab-full">Payment history</span>
                 <span class="fn-tab-short">History</span>
             </button>
+            <button class="tab" type="button" role="tab" id="tab-claims" aria-selected="false" aria-controls="pane-claims" data-tab="claims">
+                <span class="fn-tab-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                </span>
+                <span class="fn-tab-full">GCash claims</span>
+                <span class="fn-tab-short">Claims</span>
+            </button>
         </div>
     </section>
 
@@ -213,6 +220,38 @@
         </article>
     </section>
 
+    <section class="pane" id="pane-claims" role="tabpanel" aria-labelledby="tab-claims" data-pane="claims">
+        <article class="fn-card fn-card--amber">
+            <header class="fn-card-head">
+                <div class="fn-card-head-left">
+                    <span class="fn-icon-box" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                    </span>
+                    <div>
+                        <h2 class="fn-card-title">GCash claims for review</h2>
+                        <p class="fn-card-sub">Open the proof in a new tab, check it against the reference, then approve or reject.</p>
+                    </div>
+                </div>
+                <span class="fn-card-meta" id="claimsCount">0 claims</span>
+            </header>
+            <div class="fn-table-scroll">
+                <table class="fn-table">
+                    <thead>
+                        <tr>
+                            <th>Member</th>
+                            <th class="num">Amount</th>
+                            <th>Reference</th>
+                            <th>Proof</th>
+                            <th>Date</th>
+                            <th class="fn-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="claimsRows"></tbody>
+                </table>
+            </div>
+        </article>
+    </section>
+
 </main>
 </div>
 
@@ -244,10 +283,23 @@
     </div>
 </div>
 
+<div class="pay-modal" id="claimRejectModal" hidden role="dialog" aria-modal="true" aria-labelledby="claimRejectTitle">
+    <form class="pay-modal-card" id="claimRejectForm">
+        <h3 id="claimRejectTitle">Reject this claim?</h3>
+        <p class="pay-note" id="claimRejectInfo">The member can see the reason and submit a new claim.</p>
+        <div class="fn-field"><label for="claimRejectReason">Reason for rejection</label><textarea class="fn-input" id="claimRejectReason" rows="3" maxlength="500" required></textarea></div>
+        <div class="pay-modal-actions">
+            <button class="fn-btn-dark" type="button" id="claimRejectCancel">Cancel</button>
+            <button class="fn-danger" type="submit">Reject claim</button>
+        </div>
+    </form>
+</div>
+
 <script src="layout.js?v=18"></script>
 <script src="sidebar.js?v=17"></script>
 <script src="data.js"></script>
 <script src="pages.js"></script>
+<script src="claims-review.js?v=1"></script>
 <script src="portal-fx.js?v=2"></script>
 <script src="change-password.js?v=2" defer></script>
 <script src="notifications-live.js?v=1" defer></script>

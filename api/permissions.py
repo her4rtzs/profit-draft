@@ -49,3 +49,16 @@ class TrialAllowedMemberAccess(MemberAccess):
     """Own profile reads and edits are allowed while the trial is running."""
 
     allow_trial = True
+
+
+class CanReviewClaims(BasePermission):
+    """Owner or Cashier only, and the account must be active."""
+
+    def has_permission(self, request, view):
+        user = request.user
+        return bool(
+            user
+            and user.is_authenticated
+            and getattr(user, "is_active", False)
+            and getattr(user, "role", "") in ("OWNER", "CASHIER")
+        )

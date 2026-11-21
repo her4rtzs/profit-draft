@@ -7,6 +7,7 @@ from . import auth
 from .claims import MemberClaimView
 from .join import JoinCheckoutView, JoinConfirmView
 from .member import MemberCheckInView, MemberCheckoutView, MemberMeView
+from .staff_claims import ClaimApproveView, ClaimRejectView, StaffClaimListView
 from rest_framework.routers import SimpleRouter
 
 from .trainers import (
@@ -95,6 +96,9 @@ urlpatterns = [
     path("staff/cashier/overview/", StaffCashierOverviewView.as_view(), name="staff-cashier-overview"),
     path("staff/payments/", StaffPaymentView.as_view(), name="staff-payments"),
     path("staff/payments/<int:pk>/", StaffPaymentDetailView.as_view(), name="staff-payment-detail"),
+    path("staff/claims/", StaffClaimListView.as_view(), name="staff-claims"),
+    path("staff/claims/<int:pk>/approve/", ClaimApproveView.as_view(), name="staff-claim-approve"),
+    path("staff/claims/<int:pk>/reject/", ClaimRejectView.as_view(), name="staff-claim-reject"),
     path("staff/reports/summary/", StaffSummaryView.as_view(), name="staff-summary"),
     path("staff/reports/revenue/", StaffRevenueAnalyticsView.as_view(), name="staff-revenue-analytics"),
     path("notifications/", NotificationListView.as_view(), name="notifications"),

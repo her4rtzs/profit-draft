@@ -2615,3 +2615,26 @@ Add a page and endpoint for a logged-in Member to submit a GCash claim with only
 - Full suite: 270 tests pass.
 ### Decision-log skill
 When a form has only two allowed fields, reject unknown keys outright; silently ignoring a forged `status` or `amount` hides an attack instead of stopping it.
+
+## 2026-11-21 18:09 (Asia/Manila): Staff review of GCash claims
+### What I asked for
+Add a review tab on the payment and billing page for Owner and Cashier, with pending claims, proof links opening safely in a new tab, Approve and Reject buttons, server-side role and active checks, one-transaction approval through the existing enrollment service, idempotent approval, and tests for wrong role, duplicate approval, rejection and a member trying to approve.
+### What the agent decided and why
+- Added staff claim endpoints with an explicit active + Owner/Cashier permission; members, trainers and inactive staff get a 403. See [[2026-11-21 Staff review of GCash claims]]
+- Approval locks the claim and member, calls `enroll_member` once, and a repeated approval returns without writing another enrollment or extending the expiry.
+- Rejection needs a reason and records the reviewer and time; nothing is enrolled.
+- The proof link uses `target="_blank"` with `rel="noopener noreferrer"`; no name, reference or link is logged.
+- Full suite: 276 tests pass.
+### Decision-log skill
+When a staff action both changes a status and enrolls a member, put both in one transaction guarded by a locked row and a status check; a button double-click is a normal event, not an edge case.
+
+## 2026-11-21 18:19 (Asia/Manila): Approval notifies the member
+### What I asked for
+Create an email and a website notification when a GCash claim is approved.
+### What the agent decided and why
+- Reused `notifications.services.notify` to write the in-app notification and its email mirror in one call; no new mail code. See [[2026-11-21 Approval notifies the member]]
+- The message names only the plan and expiry date — no reference number or Drive link — and uses the existing MEMBERSHIP kind and member-home link.
+- Email remains best-effort: a mail failure logs only the kind code and still leaves the approval and in-app notice in place.
+- Added 3 tests for the notification/email, mail failure, and duplicate approval; full suite: 279 tests pass.
+### Decision-log skill
+Prefer the existing notification service for "email plus in-app" requests; it already has the failure policy, and duplicating it in a new endpoint would give the two channels different behaviour.
