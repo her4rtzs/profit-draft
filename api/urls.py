@@ -12,6 +12,7 @@ from .cashiers import (
 from .claims import MemberClaimView
 from .join import JoinCheckoutView
 from .member import MemberCheckInView, MemberMeView
+from .plans import PublicPlanPricesView, StaffPlanPricesView
 from .staff_claims import ClaimApproveView, ClaimRejectView, StaffClaimListView
 from rest_framework.routers import SimpleRouter
 
@@ -91,6 +92,8 @@ urlpatterns = [
     path("auth/google/link/", auth.google_link_view, name="auth-google-link"),
     path("auth/google/login/", auth.google_oauth_login_view, name="auth-google-login"),
     path("auth/google/callback/", auth.google_oauth_callback_view, name="auth-google-callback"),
+    path("plans/", PublicPlanPricesView.as_view(), name="public-plans"),
+    path("staff/plans/", StaffPlanPricesView.as_view(), name="staff-plans"),
     path("join/checkout/", JoinCheckoutView.as_view(), name="join-checkout"),
     path("member/me/", MemberMeView.as_view(), name="member-me"),
     path("member/check-in/", MemberCheckInView.as_view(), name="member-checkin"),

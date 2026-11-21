@@ -2747,3 +2747,257 @@ Upgrade the Staff/Owner Dashboard UI with the editorial hero banner, animated ch
 - Extended `web/onboarding.html` + `web/onboarding.js` (Kettle mascot responsive design, no Role/View switcher) to automatically run the Member (8 steps), Cashier (5 steps: Welcome, Profile/Avatar, Desk shift + acknowledgement, Review, Finish -> `/cashier`), or Trainer (6 steps: Welcome, Profile/Avatar, Specialties, Availability, Review, Finish -> `/trainer/index`) flow based on the signed-in user's server role.
 ### Decision-log skill
 Store multi-role onboarding completion on the shared `User` model (with role-specific profiles synced on save) so one responsive `/onboarding` wizard can serve Member, Cashier, and Trainer automatically across every device with no client-side role switcher.
+
+
+## 2026-11-22 04:45 (Asia/Manila): Device-friendly staff shell, warm light mode, and prototype notification popover
+### What I asked for
+Apply the UI/UX from the uploaded owner portal prototype (`profit-owner_(2).html`) so the portal is device-friendly across phones/tablets/desktops, light mode works cleanly everywhere, and the notification popover matches the prototype, while keeping the original ProFit fonts, RBAC rules, and live data.
+### What the agent decided and why
+- Updated the shared staff notification popover (`web/layout.js`, `web/notifications-live.js`, `web/sidebar.js`, `web/portal-ui.css`, `web/dashboard.css`, `web/global.css`) to match the prototype layout (numeric red unread badge on the bell, sky-blue unread count + clean gold "Mark all read" header, category-labeled rows with circular icons and right chevrons, and "All notifications →" footer) while keeping live `/api/notifications/` API wiring; see [[2026-11-22 Warm light mode notification popover and mobile tabs]].
+- Applied the warm cream-and-gold light mode (`#fbf6ee` / `#f7ecd7` canvas, `#f3e7cf` sidebar with white active pill, translucent cream topbar, white cards with warm shadow, and dark hero card) across staff pages, and fixed legacy dark-mode locks in `web/payments.html`, `web/reports.html`, and `web/announcements.html`; see [[2026-11-22 Warm light mode notification popover and mobile tabs]].
+- Added a role-aware mobile bottom tab bar and slide-up "More" sheet (`<= 980px`) in `web/layout.js` + CSS with safe-area padding, mobile-fixed notification popover (`<= 540px`), and responsive dashboard grids, while keeping ProFit's original Google Fonts (`Figtree`, `Plus Jakarta Sans`, `Inter`, `Caveat`), RBAC rules, and live data intact.
+- Fixed UTF-8 mojibake placeholders in `web/index.html` and `web/members.html` and bumped cache-busting query versions across 12 HTML pages; verified `python manage.py check` (0 errors) and `python manage.py test` (274/274 OK; `ruff` not installed on PATH, no Python app files changed).
+### Decision-log skill
+When aligning a multi-page static portal with a single-file prototype, put the shared chrome (notification popover, light-mode tokens, mobile bottom tabs + More sheet) into the shared layout script and CSS bundles, and fix per-page head theme-init scripts so no individual route gets stuck in dark mode.
+
+
+## 2026-11-22 04:53 (Asia/Manila): Remove AI glow effects, unify dark sidebar across light/dark modes, and sync Member & Trainer portals
+### What I asked for
+Remove glowing effects that make the system look AI-generated, keep the sidebar identical (dark) in both Dark and Light mode, fix the white hero card in Light Mode, and keep UI colors consistent across Staff, Member, and Trainer portals.
+### What the agent decided and why
+- Removed all colored/neon glow `box-shadow` halos and pulsing dot animations (`pfLivePulse`, `mbLivePulse`, `--qa-glow`, `--bg-glow`) across Staff (`web/portal-ui.css`, `web/dashboard.css`, `web/global.css`, `web/index.html`), Member (`web/member-shell.css`, `web/member-home.html`), and Trainer (`web/trainer/trainer.css`), replacing them with crisp 1px borders and subtle neutral elevation.
+- Kept the dark obsidian sidebar (`#141b27` -> `#0c1119`) identical in both Dark Mode and Light Mode across all three portals (Staff/Owner/Cashier, Member, and Trainer), and unified the Light Mode surface tokens (`#fbf6ee` warm cream canvas, `#ffffff` crisp cards, `#eadfc8` borders, `#2a2418` text, `#6f6450` muted text) across every portal.
+- Locked `.ow-hero-card` ("Today at the gym"), `.ow-btn-dark` ("Record attendance"), and `.mb-hero-card` to dark glass with white text in Light Mode so they never turn white with invisible text.
+- Bumped CSS cache-busting query versions across all staff HTML pages and `web/member-home.html`.
+### Decision-log skill
+Never change a shared shell color (like the sidebar or light-mode canvas) on only one portal; keep the sidebar and surface tokens synchronized across Staff, Member, and Trainer, and avoid colored outer-glow box-shadows so the interface stays crisp and grounded.
+
+
+## 2026-11-22 05:00 (Asia/Manila): Fix Member sidebar avatar sync, stretched status dot, Light Mode plan cards & attendance chart, and Announcements toolbar
+### What I asked for
+Fix the mismatched Member sidebar avatar, stretched Active pill dot, dark Light Mode plan cards on Members enrollment, harsh gray empty attendance chart, remaining button glows, and remove the shortcut tiles in Announcements so adding an announcement is in the table header.
+### What the agent decided and why
+- Synced `#memberInitials` and `#menuInitials` to use `window.ProFitAvatar.paint()` with the exact same `photo`/`seed` in `web/member-home.html` and `web/member-tabs.js` so the Member sidebar avatar always matches the My Profile avatar.
+- Locked `.mb-status-dot` to `7px x 7px` (`flex: 0 0 7px; padding: 0`) in `web/member-home.html` so the Active status dot never stretches into an oval.
+- Removed the 4-tile `.ann-action-grid` shortcut row from `web/announcements.html` and unhid the `+ New announcement` button (`#annNewBtn`) directly inside the All Announcements toolbar.
+- Fixed Light Mode `.pp-plan-card` contrast in `web/members-ui.css`, softened `.chart-empty-state` in `web/attendance-ui.css`, and removed remaining colored `box-shadow` glows on primary buttons across `members-ui.css`, `attendance-ui.css`, `finance-ui.css`, and `announcements.css`.
+- Diagnosed the local `/api/staff/announcements/` 500 error in `task-90.log` as an unapplied local SQLite migration (`no such column: accounts_user.avatar_data`) and instructed the owner to run `python manage.py migrate` locally.
+### Decision-log skill
+Always paint every avatar slot for a user (sidebar, topbar, profile card) through the same `ProFitAvatar.paint()` helper and seed, and never leave `!important` dark-mode backgrounds on form cards without matching `!important` light-mode overrides.
+
+
+## 2026-11-22 05:14 (Asia/Manila): Fix mojibake, single-year chart stepper, mobile hamburger, light-mode header photos, Welcome back, Announcements header, and dedicated Notifications page
+### What I asked for
+Clean up garbled characters (`â‚±`, `â€"`), remove the 4-year range lock on chart year selection and fix mobile chart controls, remove the mobile hamburger button when the bottom bar has More, make Light Mode header photos visible on Members/Payments/Reports, remove "Welcome back" labels, remove the duplicate Announcements banner header, and make "All notifications" open its own dedicated Notifications tab/page instead of Announcements.
+### What the agent decided and why
+- Cleaned UTF-8 mojibake (`â‚±`, `â€”`, `â€“`, `Â·`, `â†’`, smart quotes) across all affected `web/` HTML/JS files (`cashier.html`, `cashiers.html`, `claim.html`, `forgot.html`, `member-home.html`, `reports.html`, `settings.html`, `trainers.html`).
+- Updated `web/chart-periods.js` so `Year` view displays a single selected year (`2026`, Q1–Q4) instead of a 4-year `2022 – 2026` range, and wrapped `.panel-header .chip-row` / `.rev-controls` on mobile (`<= 980px`) so `Days`/`Week`/`Month`/`Year` never clip off-screen.
+- Hid `#mobileNavToggle` (hamburger button) at `<= 980px` in `web/portal-ui.css`, `web/dashboard.css`, and `web/global.css` since the mobile bottom tab bar already provides **More**.
+- Raised Light Mode `.pp-header-bg` (`web/members-ui.css`) and `.fn-header-bg` (`web/finance-ui.css`) opacity to `0.56` with a smooth left-to-right scrim so the gym photos are clearly visible on Members, Payments, and Reports.
+- Removed `"Welcome back"` from `web/index.html`, `web/member-home.html`, and `web/layout.js` topbar rendering, and removed the duplicate `.ann-hero` banner from `web/announcements.html`.
+- Added a dedicated `/notifications` page (`web/notifications.html`, registered in `CASHIER_OR_OWNER_PAGES` in `profit/views.py`) with segmented category filter tabs (`All`, `Payments`, `Membership`, `Announcements`, `Attendance`), unread gold dots, and Mark all read, and pointed `All notifications →` in `web/layout.js` to `/notifications`.
+### Decision-log skill
+Keep Announcements (staff publishing) and Notifications (personal inbox) as separate routes, and never render both a top-left mobile hamburger button and a bottom tab bar with a More sheet at the same breakpoint.
+
+
+## 2026-11-22 05:20 (Asia/Manila): Fix Light Mode across all Member Portal tabs (tab banners, training calendar, cards, and topbar)
+### What I asked for
+Check all tabs in the Member Portal and fix the blank/invisible white-on-white sections in Light Mode (such as the Training Calendar and tab header banners).
+### What the agent decided and why
+- Added complete Light Mode overrides in `web/member-home.html` and `web/member-shell.css` for `.mb-tab-banner` (visible gym photo with warm light scrim + dark `#2a2418` heading and `#8a6212` eyebrow across all tabs), `.pp-cal-*` (month heading, day numbers, today ring, 3-stat strip, and selected-day summary bar), `.member-top` (warm cream topbar matching Staff), and all tab cards/lists/inputs (`#overview`, `#profile`, `#membership`, `#attendance`, `#payments`, `#announcements`, `#schedule`, `#diary`, `#health`, `#settings`).
+- Cleaned remaining double-encoded em-dash mojibake in `web/member-home.html` and bumped `member-shell.css?v=9`.
+### Decision-log skill
+Never hardcode `#f8fafc` or dark translucent backgrounds with `!important` on shared calendar or tab-banner components without pairing them with matching `body:not(.dark)` light-mode rules; otherwise switching to Light Mode turns headings and calendar dates invisible.
+
+
+## 2026-11-22 05:25 (Asia/Manila): Merge Member tab banner into unified topbar with Dark/Light mode, Notification popover, and Profile avatar
+### What I asked for
+Remove the repetitive tab banner below the Member header by merging that gym-photo/eyebrow design into the Member topbar itself, and add the same Theme toggle, Notification bell + popover, and Profile avatar to the Member header just like Staff.
+### What the agent decided and why
+- Hid the duplicate `#mbTabBanner` and merged its eyebrow (`#mbTabEyebrow`) + gym-photo background fade directly into `.member-top` (`web/member-home.html`, `web/member-shell.css`, `web/member-shell.js`) so each tab displays its subtitle + title once in the sticky header.
+- Added Staff-parity right-side header controls to `.member-top-actions`: Dark/Light mode toggle (`#memberTheme`), Notification bell (`#notificationToggle` + `#notificationBadge` + `#notificationPanel.np` wired to `notifications-live.js`), and Profile avatar button (`#memberTopAvatar` synced with `ProFitAvatar.paint()` in `member-home.html` and `member-tabs.js`).
+- Hid the redundant mobile hamburger button (`.member-top-menu`) on phones (`<= 760px`) since the Member portal already has a bottom navigation bar.
+### Decision-log skill
+Keep top-level navigation chrome (theme toggle, notification popover, profile avatar, and single-source page title) identical across Staff and Member portals so users learn one interface once.
+
+
+## 2026-11-22 05:31 (Asia/Manila): Member Body Check BMI gauge, 6-Avatar Picker + Custom Photo, and 12-Week Attendance Heatmap
+### What I asked for
+Add the Body Check card (BMI semi-circle gauge, quick Log today's weight, and staff-only health notes) in Member Health, add the 6-avatar picker alongside uploading your own photo in Member My Profile, and add the Last 12 weeks attendance heatmap in Member Attendance History.
+### What the agent decided and why
+- Added the `Body check` card (`#bodyCheckCard`) in `web/member-home.html` with a live 4-segment BMI semi-circle SVG gauge + rotating needle synced to `#statBmi`/`#healthHeight`, a quick `Log today's weight (kg)` input + button wired into the existing `#weightForm`, and a `Health notes · visible to gym staff only` textarea.
+- Added a 3×2 preset avatar picker (`av-1`..`av-6` via `window.ProFitAvatar.resolve`) inside My Profile (`web/member-tabs.js`) alongside the existing **Upload own photo** button; clicking a preset saves via `PATCH /api/member/me/` (`photo: presetId`) and immediately updates Profile, Sidebar, and Topbar avatars.
+- Added the `Last 12 weeks` 12×7 attendance heatmap (`#attHeatmapCard`, `#attHeatmapGrid`) in `web/member-home.html` driven by live `window.__pfAttendanceDays` check-ins with full Dark and Light Mode styling in `web/member-shell.css`.
+### Decision-log skill
+Wire new visual widgets (like a BMI gauge or quick-log bar) directly into the page's existing form/data pipeline rather than duplicating storage logic, so all charts, KPIs, and server persistence stay in sync automatically.
+
+
+## 2026-11-22 05:38 (Asia/Manila): Clean grouped Settings UI and Owner-editable live Membership Plan Prices
+### What I asked for
+Redesign Settings to match the clean grouped card layout (Account, Notifications, Appearance with Dark Mode + Font Size, General, Logout), and let the Owner edit membership plan prices in Settings so the new prices update automatically across the landing page and every portal.
+### What the agent decided and why
+- Added `finance.PlanPrice` (`apps/finance/models.py` + migration `finance.0004`) storing prices in integer centavos, with `get_plan_prices_centavos()` / `update_plan_prices()` in `apps/finance/services.py` used by desk payments and GCash claims (`api/claims.py`, `api/staff_claims.py`); see [[2026-11-22 Owner-editable membership plan prices in Settings]].
+- Added `GET /api/plans/` (public read) and `PATCH /api/staff/plans/` (`IsActiveOwner`, server-side Owner + active check) in `api/plans.py` and `api/urls.py`, and wired `web/data.js` and `web/welcome.html` to hydrate live plan prices on every page.
+- Redesigned `web/settings.html` and `web/settings.js` into the clean grouped Settings layout (Account, Owner-only Membership Prices, Notifications, Appearance with Dark Mode switch + Small/Medium/Large font size pills, General, and Logout) with full Dark & Light Mode parity.
+- RLS reminder: after applying migration `finance.0004`, enable Row Level Security on `public.finance_planprice` in Supabase Table Editor with NO policies (Django is the only writer).
+### Decision-log skill
+Keep business pricing in one server-side table exposed via a public read endpoint and an Owner-only write endpoint, so the landing page, portals, desk payments, and GCash claims never drift out of sync.
+
+
+## 2026-11-22 05:31 (Asia/Manila): Member Body Check BMI gauge, 6-Avatar Picker + Custom Photo, and 12-Week Attendance Heatmap
+### What I asked for
+Add the Body Check card (BMI semi-circle gauge, quick Log today's weight, and staff-only health notes) in Member Health, add the 6-avatar picker alongside uploading your own photo in Member My Profile, and add the Last 12 weeks attendance heatmap in Member Attendance History.
+### What the agent decided and why
+- Added the `Body check` card (`#bodyCheckCard`) in `web/member-home.html` with a live 4-segment BMI semi-circle SVG gauge + rotating needle synced to `#statBmi`/`#healthHeight`, a quick `Log today's weight (kg)` input + button wired into the existing `#weightForm`, and a `Health notes · visible to gym staff only` textarea.
+- Added a 3×2 preset avatar picker (`av-1`..`av-6` via `window.ProFitAvatar.resolve`) inside My Profile (`web/member-tabs.js`) alongside the existing **Upload own photo** button; clicking a preset saves via `PATCH /api/member/me/` (`photo: presetId`) and immediately updates Profile, Sidebar, and Topbar avatars.
+- Added the `Last 12 weeks` 12×7 attendance heatmap (`#attHeatmapCard`, `#attHeatmapGrid`) in `web/member-home.html` driven by live `window.__pfAttendanceDays` check-ins with full Dark and Light Mode styling in `web/member-shell.css`.
+### Decision-log skill
+Wire new visual widgets (like a BMI gauge or quick-log bar) directly into the page's existing form/data pipeline rather than duplicating storage logic, so all charts, KPIs, and server persistence stay in sync automatically.
+
+
+## 2026-11-22 05:38 (Asia/Manila): Clean grouped Settings UI and Owner-editable live Membership Plan Prices
+### What I asked for
+Redesign Settings to match the clean grouped card layout (Account, Notifications, Appearance with Dark Mode + Font Size, General, Logout), and let the Owner edit membership plan prices in Settings so the new prices update automatically across the landing page and every portal.
+### What the agent decided and why
+- Added `finance.PlanPrice` (`apps/finance/models.py` + migration `finance.0004`) storing prices in integer centavos, with `get_plan_prices_centavos()` / `update_plan_prices()` in `apps/finance/services.py` used by desk payments and GCash claims (`api/claims.py`, `api/staff_claims.py`); see [[2026-11-22 Owner-editable membership plan prices in Settings]].
+- Added `GET /api/plans/` (public read) and `PATCH /api/staff/plans/` (`IsActiveOwner`, server-side Owner + active check) in `api/plans.py` and `api/urls.py`, and wired `web/data.js` and `web/welcome.html` to hydrate live plan prices on every page.
+- Redesigned `web/settings.html` and `web/settings.js` into the clean grouped Settings layout (Account, Owner-only Membership Prices, Notifications, Appearance with Dark Mode switch + Small/Medium/Large font size pills, General, and Logout) with full Dark & Light Mode parity.
+- RLS reminder: after applying migration `finance.0004`, enable Row Level Security on `public.finance_planprice` in Supabase Table Editor with NO policies (Django is the only writer).
+### Decision-log skill
+Keep business pricing in one server-side table exposed via a public read endpoint and an Owner-only write endpoint, so the landing page, portals, desk payments, and GCash claims never drift out of sync.
+
+
+## 2026-11-22 05:43 (Asia/Manila): Member Portal Dark Mode fix, flush header/sidebar, compact heatmap, Body check replacement, and remove hardcoded demo classes
+### What I asked for
+Shrink the oversized 12-week heatmap squares, fix the broken Dark Mode toggle on the Member Portal, remove the top corner gap between the Member sidebar and header, remove hardcoded demo classes from Book a Class so only trainer/staff-set classes show, and replace the old Log Weight card with the Body Check card.
+### What the agent decided and why
+- Fixed `#memberTheme` in `web/member-home.html` to toggle both `document.body.classList` and `document.documentElement.classList` + `dataset.theme` + sun/moon icon + `pf-staff-explicit-light`, resolving the stuck Light Mode toggle.
+- Removed the sidebar top-right border-radius in `web/member-shell.css` so the Member sidebar and sticky header sit completely flush with zero corner gap, and capped `.mb-heat-grid` to `max-width: 440px` for compact squares.
+- Replaced the old `Log weight` card in the right column of `.pp-two` in `web/member-home.html` with the `Body check` card (retaining hidden `#weightForm` + `#weightList` so logging weight still updates BMI and Weight Trend).
+- Removed the hardcoded demo `TIMETABLE` (`Coach Bea`, `Coach Mika`, etc.) in `web/member-tabs.js` so Schedule only displays classes configured by a trainer or gym staff.
+### Decision-log skill
+When CSS uses `html[data-theme="light"]` alongside `body.dark`, every theme toggle button must update both `<html>` (`classList` + `dataset.theme`) and `<body>` in lockstep; otherwise switching back to dark mode leaves stale `data-theme="light"` overrides active.
+
+
+## 2026-11-22 05:46 (Asia/Manila): Restore Install the app card and keep Logout-only bottom card in Settings
+### What I asked for
+Keep only the Logout button in the bottom Settings card (removing the duplicate auto-injected Change Password button) and bring back the Install the app instructions card.
+### What the agent decided and why
+- Restored the Phase 4.5 **Install the app** card (`#install` + `/static/js/install-help.js`) inside `web/settings.html` in the same clean grouped card style.
+- Added `.st-logout-card` to hide the duplicate Change Password button auto-injected by `change-password.js` above `[data-logout]`, keeping Change Password only in the top Account card and Logout alone at the bottom.
+### Decision-log skill
+Remember that `change-password.js` injects a Change Password item next to `[data-logout]` elements; scope a hide rule on standalone Logout cards when Change Password already has its own Account row.
+
+
+## 2026-11-22 05:55 (Asia/Manila): Mobile dashboard polish, consistent gold pill tabs, landing Sign-In fix, Owner Plan Prices auto-reveal, and Qclinic-inspired Member Detail
+### What I asked for
+Fix mobile Membership Type dropdown overlap and Recent Registrations card spacing, remove the duplicate Change Password chip from the mobile More sheet, apply the crisp gold pill hover/active style consistently across tabs, remove the double Sign in button on the desktop landing page, make sure Owner Plan Prices always appears in Settings, and redesign Member Detail after the 2-column profile reference.
+### What the agent decided and why
+- Fixed mobile Dashboard `.membership-type-panel` header alignment and dropdown `z-index` (above `.mt-tooltip`), and tightened mobile `.registrations-panel` card rows (`web/portal-ui.css`, `web/dashboard.css`).
+- Hid auto-injected `Change password` items inside `.pf-mob-sheet` across `portal-ui.css`, `dashboard.css`, and `global.css` since Change Password lives inside Settings → Account.
+- Standardized the crisp gold gradient active pill (`#141006` text) and soft gold hover across `.pp-subtabs`, `.fn-tabs .tab`, and `.chip` controls.
+- Fixed the desktop double `Sign in` link in `web/welcome.html` by enforcing `.m-only{display:none!important}` above `560px`.
+- Updated `initPlanPrices()` in `web/settings.js` to unhide `#planPricesCard` whenever `GET /api/staff/plans/` succeeds (`200 OK`, server-enforced Owner-only) so Owner always sees Plan Prices in Settings.
+- Redesigned `renderDetail()` and `overviewHTML()` in `web/members.js` + `web/members-ui.css` into the 2-column editorial layout (left avatar/status/member-since/stats sidebar + right identity, membership info, emergency contact, and billing cards).
+### Decision-log skill
+Let server-side RBAC endpoints (`GET /api/staff/plans/`) confirm visibility of Owner-only Settings cards rather than relying solely on client-side `sessionStorage`, and always hide `.m-only` nav items with `!important` on desktop breakpoints so duplicate CTAs never appear.
+
+## 2026-11-22 06:06 (Asia/Manila): Toggle switches, equal-height Member Detail, and editorial header fade
+### What I asked for
+Fix the distorted toggle switches in Settings/Member Portal, align container heights and add tasteful color accents in Member Detail, and add subtle non-AI photo header design.
+### What the agent decided and why
+- Excluded checkboxes/radios from `min-height: 44px` in `web/pf-modern.css` and enforced explicit `46px x 26px` pill switch rules in `web/member-shell.css`, `web/portal-ui.css`, `web/dashboard.css`, and `web/global.css` so every toggle renders as a clean horizontal pill (emerald ON, muted OFF) instead of a distorted circle.
+- Stretched `.md-layout` (`align-items: stretch`) with a flex `.md-side` pushing `.md-side-btn` to the bottom so left and right Member Detail columns align evenly, and added subtle flat color accents (tinted avatar band, gold/emerald quick-stat tiles, gold/emerald/sky section icon badges, and a right-side gym photo fade on `.md-id-card`) with zero AI glow.
+- Applied the same understated right-aligned gym photo fade (`img/hero.jpg` with Light/Dark scrims) to Staff `.topbar` to match the Member Portal header consistently without clipping dropdowns.
+### Decision-log skill
+Global form-input rules like `input { min-height: 44px }` must always exclude `[type="checkbox"]` and `[type="radio"]`, otherwise custom CSS pill toggles stretch into distorted circles.
+
+## 2026-11-22 06:12 (Asia/Manila): Account settings rows for Subscription Prices and Edit Gym Profile + site-wide live price sync
+### What I asked for
+Put Edit Profile, Change Password, Subscription Prices, and Edit Gym Profile inside the Account section of Settings, and ensure saving new subscription prices updates every page across the portal.
+### What the agent decided and why
+- Moved Owner-only Subscription Prices and added Edit Gym Profile as clean expandable rows right inside the Account card in `web/settings.html` and fixed `isOwnerRole()` in `web/settings.js` to accept both `OWNER` and `ADMIN` roles so Owners always see both rows.
+- Wired live `/api/plans/` hydration and `profit:plans-updated` listeners into `web/cashier.js`, `web/members.js`, and `web/pages.js` (joining `web/welcome.html`, `web/data.js`, and server-side billing/claims) so updating a plan price updates the landing page, enrollment cards, renewal modal, cashier desk, and payments page automatically.
+- Wired Edit Gym Profile in `web/settings.js` to `profit-gym-profile` so updating the gym name, tagline, phone, or address immediately updates the sidebar, footer, and member portal brand.
+### Decision-log skill
+Check both `OWNER` and `ADMIN` in client-side UI visibility helpers (while keeping server-side DRF permissions strictly `OWNER`) so local demo/admin sessions never hide Owner settings rows.
+
+## 2026-11-22 06:06 (Asia/Manila): Toggle switches, equal-height Member Detail, and editorial header fade
+### What I asked for
+Fix the distorted toggle switches in Settings/Member Portal, align container heights and add tasteful color accents in Member Detail, and add subtle non-AI photo header design.
+### What the agent decided and why
+- Excluded checkboxes/radios from `min-height: 44px` in `web/pf-modern.css` and enforced explicit `46px x 26px` pill switch rules in `web/member-shell.css`, `web/portal-ui.css`, `web/dashboard.css`, and `web/global.css` so every toggle renders as a clean horizontal pill (emerald ON, muted OFF) instead of a distorted circle.
+- Stretched `.md-layout` (`align-items: stretch`) with a flex `.md-side` pushing `.md-side-btn` to the bottom so left and right Member Detail columns align evenly, and added subtle flat color accents (tinted avatar band, gold/emerald quick-stat tiles, gold/emerald/sky section icon badges, and a right-side gym photo fade on `.md-id-card`) with zero AI glow.
+- Applied the same understated right-aligned gym photo fade (`img/hero.jpg` with Light/Dark scrims) to Staff `.topbar` to match the Member Portal header consistently without clipping dropdowns.
+### Decision-log skill
+Global form-input rules like `input { min-height: 44px }` must always exclude `[type="checkbox"]` and `[type="radio"]`, otherwise custom CSS pill toggles stretch into distorted circles.
+
+## 2026-11-22 06:12 (Asia/Manila): Account settings rows for Subscription Prices and Edit Gym Profile + site-wide live price sync
+### What I asked for
+Put Edit Profile, Change Password, Subscription Prices, and Edit Gym Profile inside the Account section of Settings, and ensure saving new subscription prices updates every page across the portal.
+### What the agent decided and why
+- Moved Owner-only Subscription Prices and added Edit Gym Profile as clean expandable rows right inside the Account card in `web/settings.html` and fixed `isOwnerRole()` in `web/settings.js` to accept both `OWNER` and `ADMIN` roles so Owners always see both rows.
+- Wired live `/api/plans/` hydration and `profit:plans-updated` listeners into `web/cashier.js`, `web/members.js`, and `web/pages.js` (joining `web/welcome.html`, `web/data.js`, and server-side billing/claims) so updating a plan price updates the landing page, enrollment cards, renewal modal, cashier desk, and payments page automatically.
+- Wired Edit Gym Profile in `web/settings.js` to `profit-gym-profile` so updating the gym name, tagline, phone, or address immediately updates the sidebar, footer, and member portal brand.
+### Decision-log skill
+Check both `OWNER` and `ADMIN` in client-side UI visibility helpers (while keeping server-side DRF permissions strictly `OWNER`) so local demo/admin sessions never hide Owner settings rows.
+
+## 2026-11-22 06:14 (Asia/Manila): Consolidated Member Detail tabs into top action bar
+### What I asked for
+Move Overview and Payments up beside Edit details in Member Detail and remove the repeated middle tab bar since Check-ins is already accessible from the profile card.
+### What the agent decided and why
+- Moved the segmented tab strip (`Overview`, `Payments`, `Edit details`) into `.md-top-acts` beside `Record renewal` and removed both the duplicate standalone `Edit details` button and the middle `.pp-subtabs` bar in `web/members.js`.
+- Made the left profile card's `View all check-ins` button toggle cleanly to `Back to overview` (highlighted active) while viewing check-ins.
+### Decision-log skill
+Avoid duplicating section triggers in both a header action bar and a subtab strip; consolidate navigation into one clean control bar.
+
+## 2026-11-22 06:18 (Asia/Manila): Edge-to-edge cartoonized gym header artwork across Staff and Member portals
+### What I asked for
+Replace the header image with a cartoonized gym illustration and expand the Staff header all the way edge-to-edge with zero top or side gaps.
+### What the agent decided and why
+- Generated a custom warm flat-vector cartoonized gym banner (`web/img/header-gym-art.jpg`) matched to the ProFit cream/gold/navy/emerald palette with zero text or AI glow, and applied it to both Staff `.topbar` and Member `.member-top`.
+- Removed top padding on `body.pf-staff .main-content` and set `body.pf-staff .topbar` to full-bleed negative horizontal margins (`--pf-edge`) with `width: calc(100% + var(--pf-edge) * 2)` across desktop and mobile so the header sits 100% flush against the top edge, sidebar, and right edge with zero gaps.
+### Decision-log skill
+Use a single shared CSS variable (`--pf-edge`) for both `.main-content` horizontal padding and `.topbar` negative horizontal margin + width expansion so full-bleed headers stay gap-free across all breakpoints.
+
+## 2026-11-22 06:35 (Asia/Manila): Help popup, functional Font Size, aligned Member Detail bar, Profile/Sidebar cleanup, and Barbell header art
+### What I asked for
+Open Help & Support as a modal popup, make Font Size functional with hover/active states, align the Member Detail top tabs with Record renewal, remove Change password from the sidebar menu, move Change password into the My Profile hero card while removing the repetitive Sign-in card, and use a clean minimal barbell header graphic with no search bar.
+### What the agent decided and why
+- Converted `Help & Support` in `web/settings.html` / `web/settings.js` into an accessible modal popup (`#stHelpModal`) with gym contact details and a link to `/faq`.
+- Fixed Light Mode specificity on `.st-pills button.active`, added warm gold hover states, and applied `html[data-font-size="sm|md|lg"]` scaling across all Staff pages via `web/layout.js` and `web/portal-ui.css` so Font Size visibly resizes text everywhere.
+- Locked `.md-top-acts .pp-btn` and `.md-subtabs` to a matching `44px` height in `web/members-ui.css` so tabs and `Record renewal` align evenly.
+- Hid Change password in `.sidebar .account-menu`, added a `Change password` button inside the `#identity` hero card in `web/profile.html`, and removed the redundant Sign-in password card.
+- Replaced the rectangular header JPG on Staff `.topbar` with a clean subtle diagonal-striped full-bleed header and a transparent inline SVG barbell illustration (no search button) in `web/layout.js` and `web/portal-ui.css`.
+### Decision-log skill
+Prefer transparent inline SVG illustrations in headers that switch between Light and Dark Mode so there is never a mismatched rectangular image box on dark surfaces.
+
+## 2026-11-22 06:44 (Asia/Manila): Plain edge-to-edge header and My Profile hero redesign with clickable avatar
+### What I asked for
+Remove the barbell/striped header graphic and keep the header plain and edge-to-edge; redesign the My Profile hero card with a clickable gold-ringed avatar (showing camera/change photo), role badge, Change password button, and live profile completeness ring + checklist.
+### What the agent decided and why
+- Removed the barbell SVG from `web/layout.js` and restored a clean plain solid edge-to-edge `.topbar` and `.member-top` surface (`#0c111b` dark / `#fbf6ee` light) in `web/portal-ui.css`, `web/dashboard.css`, `web/global.css`, and `web/member-shell.css`.
+- Redesigned `#identity` in `web/profile.html` and `web/profile.js` with a clickable gold-ringed avatar (`Upload photo` / `Remove photo` popover + hover camera overlay), role badge, meta dates, `Change password` button, and a live SVG completeness ring + 4-item checklist.
+### Decision-log skill
+Keep global headers plain and clean when cards already carry the visual hierarchy; interactive avatar overlays (`Change photo`) remove button clutter from profile headers.
+
+## 2026-11-22 06:52 (Asia/Manila): My Profile live preview + unsaved bar, Settings jump-nav, subtle animations, and skeleton loading
+### What I asked for
+Incorporate the design vision from the My Profile and Settings prototypes — keeping everything clean and non-AI, adding subtle animations and skeleton loading where helpful without unnecessary changes.
+### What the agent decided and why
+- Added a 2-column `Your details` + live `How you appear` preview card (sidebar, header, and serrated receipt preview), live `0 / 140` note counter, smooth avatar hover tilt, animated completeness ring, staggered entrance animations (`.pf-rv`), and a floating unsaved-changes bar (`Discard` / `Save`) to `web/profile.html` and `web/profile.js`.
+- Added a sticky section jump-nav with scrollspy (`Account`, `Notifications`, `Appearance`, `General`, `Install the app`), icon badges + live subtitles (including skeleton shimmer while live prices load, live quarterly savings note, and live `Open now / Closed now` gym hours pill), live Font Size preview box, and staggered entrance animations (`.st-rv`) to `web/settings.html` and `web/settings.js`, while preserving all existing API hooks, RBAC, and PWA install tests.
+### Decision-log skill
+Always pair staggered entrance animations and skeleton shimmer with `@media (prefers-reduced-motion: reduce)` so motion stays comfortable and accessible.
+
+## 2026-11-22 07:03 (Asia/Manila): Sticky header fix, Dashboard deduplication, Trainers toolbar/dropdown/modal fixes, and Members ENDS alignment
+### What I asked for
+Fix the disappearing sticky header on Settings (and keep headers consistent across all tabs), remove repetitive data on Dashboard, fix hidden Trainers dropdowns, convert Trainers status tabs into a dropdown with Search on the far left, fix overlapping Add Trainer modal fields, and vertically align the ENDS column in Members.
+### What the agent decided and why
+- Overrode `overflow-x: hidden` with `overflow-x: clip !important` on `html`, `body.pf-staff`, `.dashboard`, and `.main-content` in `web/portal-ui.css`, `web/dashboard.css`, and `web/global.css` so `position: sticky` keeps `.topbar` visible on scroll across every Staff page.
+- Removed the duplicate `Total members` counter from the Dashboard hero card in `web/index.html` (replacing it with a live check-ins link) since Total Members already has its own KPI card directly below.
+- Raised `.tr-toolbar-panel` to `z-index: 30` above `.tr-dir-panel` so Trainers dropdown menus never clip/hide behind the directory card, moved Search to the far left, and replaced the 4 status buttons with an `All Trainers` dropdown in `web/trainers.html` and `web/trainers-staff.js`.
+- Bounded all Add Trainer modal sections and inputs (`min-width: 0; width: 100%; box-sizing: border-box;`) in `web/portal-ui.css` so left-column fields never overlap `Account Access for Trainer`.
+- Centered `.pp-members-table tbody td:nth-child(4)` vertically in `web/members-ui.css` so the `ENDS` column sits dead-even with the other columns.
+### Decision-log skill
+Never put `overflow-x: hidden` on ancestors of `position: sticky` headers — always use `overflow-x: clip`, and always set `min-width: 0` on CSS Grid children containing `<input>` elements to prevent intrinsic-width overflow.

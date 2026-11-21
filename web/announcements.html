@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head><script>(function(){try{var d=localStorage.getItem('theme')!=='light';var h=document.documentElement;h.style.background=d?'#0a0e16':'#f0f2f5';h.style.colorScheme=d?'dark':'light';}catch(e){}})();</script><script src="splash.js?v=2"></script>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -6,32 +6,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Figtree:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link rel="stylesheet" href="dashboard.css?v=1">
-<link rel="stylesheet" href="announcements.css?v=4">
+<link rel="stylesheet" href="dashboard.css?v=11">
+<link rel="stylesheet" href="announcements.css?v=5">
 <script src="config.js?v=4"></script><script src="api.js"></script><script src="auth.js?v=4"></script>
 <script>document.documentElement.dataset.accent='gold'</script>
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script><link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
-<body class="pf-staff dark" data-page="announcements" data-title="Announcements" data-welcome="Notices for members and trainers" data-roles="Owner">
+<body class="pf-staff" data-page="announcements" data-title="Announcements" data-welcome="Notices for members and trainers" data-roles="Owner">
 <div class="dashboard"><nav class="sidebar" id="sidebar"></nav><main class="main-content" id="main" tabindex="-1">
   <header class="topbar" id="topbar"><h1>Announcements</h1></header>
-
-  <!-- Breadcrumb & Hero Header -->
-  <section class="ann-hero" aria-label="Announcements header">
-    <nav class="ann-breadcrumb" aria-label="Breadcrumb">
-      <a href="/index">Dashboard</a>
-      <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
-      <span aria-current="page">Announcements</span>
-    </nav>
-    <div class="ann-hero-row">
-      <div class="ann-hero-icon" aria-hidden="true">
-        <i class="fa-solid fa-bullhorn"></i>
-      </div>
-      <div class="ann-hero-copy">
-        <h2>Announcements</h2>
-        <p>Stay updated with the latest announcements from your gym management team.</p>
-      </div>
-    </div>
-  </section>
 
   <!-- 4 Announcement KPI Cards -->
   <section class="ann-kpi-grid" aria-label="Announcement statistics">
@@ -63,45 +45,6 @@
         <span>Archived Announcements</span>
       </div>
     </article>
-  </section>
-
-  <!-- 4 Simplified Quick Action Cards -->
-  <section class="ann-action-grid" aria-label="Announcement actions">
-    <button type="button" class="ann-action-tile tone-amber" id="annTileCreate">
-      <span class="ann-tile-ico" aria-hidden="true"><i class="fa-solid fa-file-circle-plus"></i></span>
-      <span class="ann-tile-body">
-        <strong>Create Announcement</strong>
-        <small>Post a new announcement</small>
-      </span>
-      <span class="ann-tile-arrow" aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></span>
-    </button>
-
-    <button type="button" class="ann-action-tile tone-teal" id="annTileManage">
-      <span class="ann-tile-ico" aria-hidden="true"><i class="fa-solid fa-bullhorn"></i></span>
-      <span class="ann-tile-body">
-        <strong>Manage Announcements</strong>
-        <small id="annTileManageSub">View and edit posts</small>
-      </span>
-      <span class="ann-tile-arrow" aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></span>
-    </button>
-
-    <button type="button" class="ann-action-tile tone-blue" id="annTileArchive">
-      <span class="ann-tile-ico" aria-hidden="true"><i class="fa-solid fa-folder-open"></i></span>
-      <span class="ann-tile-body">
-        <strong>Announcement Archive</strong>
-        <small id="annTileArchiveSub">View past announcements</small>
-      </span>
-      <span class="ann-tile-arrow" aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></span>
-    </button>
-
-    <a href="/settings" class="ann-action-tile tone-purple" id="annTileSettings">
-      <span class="ann-tile-ico" aria-hidden="true"><i class="fa-solid fa-gear"></i></span>
-      <span class="ann-tile-body">
-        <strong>Settings</strong>
-        <small id="annTileReachSub">Manage preferences</small>
-      </span>
-      <span class="ann-tile-arrow" aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></span>
-    </a>
   </section>
 
   <!-- Main All Announcements Panel -->
@@ -148,7 +91,7 @@
           </select>
         </div>
 
-        <button type="button" class="ann-btn primary" id="annNewBtn" style="display:none;">
+        <button type="button" class="ann-btn primary" id="annNewBtn">
           <i class="fa-solid fa-plus" aria-hidden="true"></i>
           <span>New announcement</span>
         </button>
@@ -279,10 +222,10 @@
   </div>
 
 </main></div>
-<script src="layout.js?v=21"></script><script src="sidebar.js?v=20"></script><script src="data.js"></script><script src="settings.js?v=13"></script>
+<script src="layout.js?v=25"></script><script src="sidebar.js?v=21"></script><script src="data.js"></script><script src="settings.js?v=17"></script>
 <script src="portal-fx.js?v=2"></script>
 <script src="change-password.js?v=2" defer></script>
-<script src="notifications-live.js?v=1" defer></script>
+<script src="notifications-live.js?v=2" defer></script>
 <script src="announcements-staff.js?v=5" defer></script>
 <script src="site-footer.js?v=2" defer></script>
 </body>

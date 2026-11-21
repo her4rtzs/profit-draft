@@ -153,20 +153,25 @@ window.PFChart = (function () {
       rangeLabel = "Jan to Dec " + year;
       stepperLabel = String(year);
     } else {
-      // 5-year block ending at `year`
-      var startYear = year - 4;
-      for (i = startYear; i <= year; i++) {
-        d = new Date(i, 0, 1);
+      // Single-year view (Q1-Q4 of selected year, no 4-year range lock)
+      var quarters = [
+        { k: "Q1", m0: 0, m1: 3, name: "Q1 (Jan \u2013 Mar) " + year },
+        { k: "Q2", m0: 3, m1: 6, name: "Q2 (Apr \u2013 Jun) " + year },
+        { k: "Q3", m0: 6, m1: 9, name: "Q3 (Jul \u2013 Sep) " + year },
+        { k: "Q4", m0: 9, m1: 12, name: "Q4 (Oct \u2013 Dec) " + year }
+      ];
+      for (i = 0; i < quarters.length; i++) {
+        var q = quarters[i];
         out.push({
-          key: String(i),
-          from: d,
-          to: new Date(i + 1, 0, 1),
-          label: String(i),
-          title: "Year " + i
+          key: year + "-" + q.k,
+          from: new Date(year, q.m0, 1),
+          to: new Date(year, q.m1, 1),
+          label: q.k,
+          title: q.name
         });
       }
-      rangeLabel = startYear + " to " + year;
-      stepperLabel = startYear + " \u2013 " + year;
+      rangeLabel = "Year " + year;
+      stepperLabel = String(year);
     }
 
     return { buckets: out, rangeLabel: rangeLabel, stepperLabel: stepperLabel };

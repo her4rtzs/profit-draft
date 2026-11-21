@@ -88,3 +88,9 @@ One note per decision, oldest first; entries with an `Unknown` date are listed l
 - [[2026-11-21 Staff cashiers full names and phone duplicate warning]]: Add Owner-only Cashiers page under Staff, enforce first+last names with "Name not set" fallback, and add normalized PH phone duplicate warnings.
 - [[2026-11-21 Persistent avatars cartoon defaults and sidebar logout]]: Store user avatars in DB, scope profile cache per user, add flat human cartoon default avatars across portals, fix sidebar logout, add Cashiers dropdown actions, and improve invite email deliverability.
 - [[2026-11-21 Uniform faceless avatars and member onboarding wizard]]: Standardize six flat faceless human avatars with zero glow across all portals and add 8-step `/onboarding` wizard persisted in `MemberProfile.onboarding_data`.
+
+- [[2026-11-22 Warm light mode notification popover and mobile tabs]]: Apply warm cream/gold light mode, prototype notification popover, and role-aware mobile bottom tabs across staff pages while keeping original fonts, RBAC rules, and live data.
+
+- [[2026-11-22 Warm light mode notification popover and mobile tabs]]: Apply warm cream/gold light mode, prototype notification popover, and role-aware mobile bottom tabs across staff pages while keeping original fonts, RBAC rules, and live data.
+
+- [[2026-11-22 Owner-editable membership plan prices in Settings]]: Store live plan prices in `finance.PlanPrice` (integer centavos) with public `GET /api/plans/` and Owner-only `PATCH /api/staff/plans/`, and redesign Settings into clean grouped cards.

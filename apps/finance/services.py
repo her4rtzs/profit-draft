@@ -7,7 +7,7 @@ Prices match the plan list the staff UI shows.
 import re
 
 from django.core.exceptions import ValidationError
-from django.db import transaction
+from django.db import DatabaseError, transaction
 from django.db.models import Sum
 from django.utils import timezone
 
@@ -16,7 +16,7 @@ from apps.membership.services import renew_member
 
 from apps.notifications.models import Notification
 from apps.notifications.services import notify
-from .models import ManualPayment
+from .models import ManualPayment, PlanPrice
 
 PLAN_PRICE_CENTAVOS = {
     "daily": 8_000,
@@ -24,6 +24,59 @@ PLAN_PRICE_CENTAVOS = {
     "quarterly": 210_000,
     "annual": 750_000,
 }
+
+PLAN_DAYS = {
+    "daily": 1,
+    "monthly": 30,
+    "quarterly": 90,
+    "annual": 365,
+}
+
+
+def get_plan_prices_centavos():
+    """Return live plan prices in centavos, falling back to defaults if unset."""
+    prices = dict(PLAN_PRICE_CENTAVOS)
+    try:
+        for row in PlanPrice.objects.all():
+            if row.plan in prices and row.price_centavos > 0:
+                prices[row.plan] = int(row.price_centavos)
+    except DatabaseError:
+        pass
+    return prices
+
+
+def get_plan_price_centavos(plan):
+    """Return the live server-side price in centavos for one plan."""
+    prices = get_plan_prices_centavos()
+    if plan not in prices:
+        raise ValidationError("Unknown plan.")
+    return prices[plan]
+
+
+def update_plan_prices(prices_pesos, *, updated_by=None):
+    """Persist Owner-updated plan prices (input in whole pesos, stored in centavos)."""
+    if not isinstance(prices_pesos, dict) or not prices_pesos:
+        raise ValidationError("Provide at least one plan price to update.")
+    cleaned = {}
+    for key, raw_val in prices_pesos.items():
+        plan = str(key or "").strip().lower()
+        if plan not in PLAN_PRICE_CENTAVOS:
+            raise ValidationError(f"Unknown plan: {plan}")
+        try:
+            pesos = int(raw_val)
+        except (TypeError, ValueError) as exc:
+            raise ValidationError(f"Enter a whole peso amount for {plan}.") from exc
+        if pesos < 1 or pesos > 500_000:
+            raise ValidationError(f"Price for {plan} must be between 1 and 500,000 pesos.")
+        cleaned[plan] = pesos * 100
+
+    with transaction.atomic():
+        for plan, centavos in cleaned.items():
+            PlanPrice.objects.update_or_create(
+                plan=plan,
+                defaults={"price_centavos": centavos, "updated_by": updated_by},
+            )
+    return get_plan_prices_centavos()
 
 
 def _approved_claims():
@@ -78,7 +131,7 @@ def record_desk_payment(*, member, plan, method, recorded_by, paid_on=None, refe
             member=profile,
             plan=plan,
             method=method,
-            amount_centavos=PLAN_PRICE_CENTAVOS[plan],
+            amount_centavos=get_plan_price_centavos(plan),
             reference_number=reference if method == ManualPayment.Method.GCASH else None,
             paid_on=paid_on or today,
             recorded_by=recorded_by,

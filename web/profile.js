@@ -53,7 +53,90 @@
     }
     const clear = $("profilePhotoClear");
     if (clear) clear.disabled = !profile.photo;
+
+    // Live completeness ring & checklist
+    const checks = {
+      name: hasName,
+      photo: Boolean(profile.photo),
+      phone: Boolean((profile.phone || "").trim()),
+      bio: Boolean((profile.bio || "").trim()),
+    };
+    const doneCount = Object.values(checks).filter(Boolean).length;
+    const pct = Math.round((doneCount / 4) * 100);
+    const pctEl = $("pfCompPct");
+    if (pctEl) pctEl.textContent = pct + "%";
+    const arc = $("pfCompArc");
+    if (arc) {
+      const circ = 219.91;
+      arc.setAttribute("stroke-dashoffset", String(circ - (circ * pct) / 100));
+    }
+    document.querySelectorAll("#pfCompList li[data-chk]").forEach(li => {
+      const ok = !!checks[li.dataset.chk];
+      li.classList.toggle("done", ok);
+      const ico = li.querySelector("i");
+      if (ico) ico.className = ok ? "fa-solid fa-check" : "fa-regular fa-clock";
+    });
+    const joinedEl = $("identityJoined");
+    if (joinedEl && authUser && authUser.date_joined) {
+      const dt = new Date(authUser.date_joined);
+      if (!isNaN(dt.getTime())) {
+        joinedEl.textContent = "Joined " + dt.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+      }
+    }
+    const lastEl = $("identityLastSign");
+    if (lastEl) {
+      const now = new Date();
+      lastEl.textContent = "Last sign-in today, " + now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+    }
+
+    // Live "How you appear" preview + character count
+    const updatePreview = (liveName, liveRole) => {
+      const n = (liveName || "").trim() || (hasName ? cleanName : "Administrator");
+      const r = (liveRole || "").trim() || profile.role || "Gym administrator";
+      if ($("pvSideName")) $("pvSideName").textContent = n;
+      if ($("pvSideRole")) $("pvSideRole").textContent = r;
+      if ($("pvReceiptName")) $("pvReceiptName").textContent = n;
+      if ($("pvReceiptPrice") && window.PLANS?.monthly) {
+        $("pvReceiptPrice").textContent = "₱" + Number(window.PLANS.monthly.price).toLocaleString("en-PH");
+      }
+      ["pvSideAva", "pvHeadAva"].forEach(id => {
+        const el = $(id);
+        if (el && window.ProFitAvatar) {
+          window.ProFitAvatar.paint(el, { photo: profile.photo || "", seed, alt: n });
+        }
+      });
+      if ($("profileBioCount")) {
+        const bioVal = ($("profileBio")?.value || "");
+        $("profileBioCount").textContent = `${bioVal.length} / 140`;
+      }
+    };
+    updatePreview($("profileName")?.value, $("profileRole")?.value);
+    $("pfDirtyBar")?.classList.remove("on");
   }
+
+  // Live preview + floating unsaved-changes bar while editing
+  const checkDirty = () => {
+    const dirty = ($("profileName")?.value.trim() || "") !== ((profile.name || "").trim())
+      || ($("profileRole")?.value.trim() || "") !== ((profile.role || "").trim())
+      || ($("profileEmail")?.value.trim() || "") !== ((profile.email || "").trim())
+      || ($("profilePhone")?.value.trim() || "") !== ((profile.phone || "").trim())
+      || ($("profileBio")?.value.trim() || "") !== ((profile.bio || "").trim());
+    $("pfDirtyBar")?.classList.toggle("on", dirty);
+    if ($("pvSideName")) $("pvSideName").textContent = $("profileName")?.value.trim() || "Administrator";
+    if ($("pvSideRole")) $("pvSideRole").textContent = $("profileRole")?.value.trim() || "Gym administrator";
+    if ($("pvReceiptName")) $("pvReceiptName").textContent = $("profileName")?.value.trim() || "Administrator";
+    if ($("profileBioCount")) $("profileBioCount").textContent = `${($("profileBio")?.value || "").length} / 140`;
+  };
+  ["profileName", "profileRole", "profileEmail", "profilePhone", "profileBio"].forEach(id => {
+    $(id)?.addEventListener("input", checkDirty);
+  });
+  $("pfDiscardBtn")?.addEventListener("click", () => paint());
+  $("pfQuickSaveBtn")?.addEventListener("click", () => $("profileForm")?.requestSubmit());
+  window.addEventListener("profit:plans-updated", () => {
+    if ($("pvReceiptPrice") && window.PLANS?.monthly) {
+      $("pvReceiptPrice").textContent = "₱" + Number(window.PLANS.monthly.price).toLocaleString("en-PH");
+    }
+  });
 
   function updateSessionUser(user) {
     if (!user) return;
@@ -97,7 +180,31 @@
     reader.readAsDataURL(file);
   });
 
+  // Clickable avatar menu (Upload photo / Remove photo)
+  const avaTrigger = $("profileAvaTrigger");
+  const avaMenu = $("profileAvaMenu");
+  const closeAvaMenu = () => {
+    if (avaMenu) avaMenu.hidden = true;
+    avaTrigger?.setAttribute("aria-expanded", "false");
+  };
+  avaTrigger?.addEventListener("click", e => {
+    e.stopPropagation();
+    if (!avaMenu) return $("profilePhoto")?.click();
+    const open = avaMenu.hidden;
+    avaMenu.hidden = !open;
+    avaTrigger.setAttribute("aria-expanded", String(open));
+  });
+  $("profilePhotoPick")?.addEventListener("click", () => {
+    closeAvaMenu();
+    $("profilePhoto")?.click();
+  });
+  document.addEventListener("click", e => {
+    if (avaMenu && !avaMenu.hidden && !e.target.closest(".pf-ava-trigger-wrap")) closeAvaMenu();
+  });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeAvaMenu(); });
+
   $("profilePhotoClear")?.addEventListener("click", () => {
+    closeAvaMenu();
     savePhotoToServer("", "Photo removed.");
   });
 

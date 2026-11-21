@@ -801,7 +801,22 @@
     const planLabel = (typeof PLANS !== "undefined" && PLANS[m.plan]?.label) || m.plan || "Membership";
     const plan = String(planLabel).replace(/\b[a-z]/g, c => c.toUpperCase());
     profileDraft = null;
-    const fallbackAva = window.ProFitAvatar ? window.ProFitAvatar.resolve(m.photoData, m.email || m.name || m.id) : "";
+    const avaSeed = m.email || m.name || m.id || "member";
+    const fallbackAva = window.ProFitAvatar ? window.ProFitAvatar.resolve(m.photoData, avaSeed) : "";
+    if (window.ProFitAvatar) {
+      ["memberInitials", "menuInitials", "memberTopInitials"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) window.ProFitAvatar.paint(el, { photo: m.photoData || "", seed: avaSeed, alt: m.name || "Member" });
+      });
+    }
+    const sideNameEl = document.getElementById("memberName");
+    if (sideNameEl && m.name && (!sideNameEl.textContent || sideNameEl.textContent.trim() === "Member")) {
+      sideNameEl.textContent = String(m.name).split(" ")[0];
+    }
+    const sidePlanEl = document.getElementById("memberPlan");
+    if (sidePlanEl && plan && (!sidePlanEl.textContent || sidePlanEl.textContent.trim() === "Membership")) {
+      sidePlanEl.textContent = plan;
+    }
     root.innerHTML = `<div class="pp-profile">
       <aside class="pp-card pp-profile-card">
         <div class="pp-avatar xl has-photo" aria-hidden="true">${fallbackAva ? `<img src="${esc(fallbackAva)}" alt="">` : esc(initialsOf(m.name))}${m.photoId && !m.photoData ? `<img data-photo-id="${esc(m.photoId)}" alt="" hidden>` : ""}</div>
@@ -812,10 +827,20 @@
           <dt>Membership ends</dt><dd>${hasEnd ? esc(fmt(m.end)) : "—"}</dd>
           <dt>Member since</dt><dd>${m.start && !Number.isNaN(new Date(m.start).getTime()) ? esc(fmt(m.start)) : "—"}</dd>
         </dl>
+        <div class="mb-ava-picker">
+          <div class="mb-ava-head"><strong>Avatar</strong><span>Change anytime</span></div>
+          <div class="mb-ava-grid" role="radiogroup" aria-label="Choose an avatar">
+            ${["av-1", "av-2", "av-3", "av-4", "av-5", "av-6"].map(pid => {
+              const pSrc = window.ProFitAvatar ? window.ProFitAvatar.resolve(pid, pid) : "";
+              const isSel = String(m.photoData || "") === pid;
+              return `<button type="button" class="mb-ava-opt${isSel ? " sel" : ""}" data-pick-avatar="${pid}" aria-pressed="${isSel}" title="Use avatar ${pid.slice(-1)}">${pSrc ? `<img src="${esc(pSrc)}" alt="Avatar ${pid.slice(-1)}">` : pid}</button>`;
+            }).join("")}
+          </div>
+        </div>
         <div class="pp-actions pp-center">
-          <label class="pp-btn" for="profilePhotoInput" tabindex="0"><i class="fa-solid fa-camera" aria-hidden="true"></i> ${m.photoId || m.photoData ? "Change photo" : "Add photo"}</label>
+          <label class="pp-btn" for="profilePhotoInput" tabindex="0"><i class="fa-solid fa-camera" aria-hidden="true"></i> ${m.photoId || (m.photoData && !String(m.photoData).startsWith("av-")) ? "Change own photo" : "Upload own photo"}</label>
           <input type="file" id="profilePhotoInput" accept="image/*" hidden>
-          ${m.photoId || m.photoData ? `<button class="pp-btn" type="button" id="profilePhotoRemove"><i class="fa-solid fa-trash-can" aria-hidden="true"></i> Remove</button>` : ""}
+          ${m.photoId || m.photoData ? `<button type="button" class="pp-btn" id="profilePhotoRemove"><i class="fa-solid fa-trash-can" aria-hidden="true"></i> Remove</button>` : ""}
         </div>
         <p class="pp-small pp-muted">Plan and payment changes are handled by the gym team.</p>
       </aside>
@@ -880,6 +905,28 @@
       const head = $("memberName"); if (head) head.textContent = v.name.split(" ")[0];
       toast("Profile updated.");
       renderProfile();
+    });
+    root.querySelectorAll("[data-pick-avatar]").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const presetId = btn.dataset.pickAvatar;
+        const m = profileMember();
+        if (!m || !presetId) return;
+        if (m.__server) {
+          try {
+            const r = await window.ProFitAPI.patch("/member/me/", { photo: presetId });
+            if (window.__pfMemberMe?.user) window.__pfMemberMe.user.photo = r.photo || presetId;
+          } catch (err) {
+            toast(err.message || "Could not save avatar.", true);
+            return;
+          }
+        }
+        m.photoData = presetId;
+        m.photoId = "";
+        persistProfileMember(m);
+        window.__pfPaintAvatars?.(presetId);
+        toast("Avatar updated.");
+        renderProfile();
+      });
     });
     const photoInput = root.querySelector("#profilePhotoInput");
     photoInput.addEventListener("change", async e => {
@@ -996,24 +1043,17 @@
     document.documentElement.dataset.accent = v;
   };
 
-  // Weekly class timetable. Each entry repeats every week on its weekday, and
-  // lives in config.js so the trainer portal runs off the very same week.
-  const TIMETABLE = window.ProFitTimetable || [
-    { dow: 0, time: "09:00", name: "Recovery & Stretch", coach: "Coach Bea", mins: 45, cap: 18, emoji: "🧘" },
-    { dow: 1, time: "06:00", name: "Sunrise HIIT", coach: "Coach Mika", mins: 45, cap: 12, emoji: "🔥" },
-    { dow: 1, time: "18:30", name: "Strength Basics", coach: "Coach Jun", mins: 60, cap: 10, emoji: "💪" },
-    { dow: 2, time: "07:00", name: "Cardio Club", coach: "Coach Rei", mins: 40, cap: 16, emoji: "🏃" },
-    { dow: 2, time: "19:00", name: "Boxing Fitness", coach: "Coach Dan", mins: 50, cap: 12, emoji: "🥊" },
-    { dow: 3, time: "06:00", name: "Sunrise HIIT", coach: "Coach Mika", mins: 45, cap: 12, emoji: "🔥" },
-    { dow: 3, time: "19:00", name: "Mobility Flow", coach: "Coach Bea", mins: 50, cap: 14, emoji: "🧘" },
-    { dow: 4, time: "18:00", name: "Barbell Club", coach: "Coach Jun", mins: 60, cap: 8, emoji: "🏋️" },
-    { dow: 5, time: "07:00", name: "Cardio Club", coach: "Coach Rei", mins: 40, cap: 16, emoji: "🏃" },
-    { dow: 5, time: "17:30", name: "Friday Finisher", coach: "Coach Mika", mins: 45, cap: 12, emoji: "⚡" },
-    { dow: 6, time: "08:00", name: "Team Sweat", coach: "Coaches", mins: 75, cap: 20, emoji: "⚽" }
-  ];
+  // Only show classes actually configured by a trainer or gym staff (no hardcoded demo coaches).
+  const getTimetable = () => {
+    try {
+      const saved = JSON.parse(localStorage.getItem("profit-trainer-classes-v1") || "null");
+      if (Array.isArray(saved) && saved.length) return saved;
+    } catch { /* ignore */ }
+    return Array.isArray(window.ProFitLiveTimetable) ? window.ProFitLiveTimetable : [];
+  };
   const DOW_LABEL = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-  const classesOn = dateISO => TIMETABLE.filter(c => c.dow === parseISO(dateISO).getDay()).sort((a, b) => a.time.localeCompare(b.time));
+  const classesOn = dateISO => getTimetable().filter(c => c.dow === parseISO(dateISO).getDay()).sort((a, b) => a.time.localeCompare(b.time));
   const bookedOn = dateISO => state.bookings.filter(b => b.date === dateISO).sort((a, b) => a.time.localeCompare(b.time));
   // A member's own sessions sit alongside the gym timetable.
   const plansOn = dateISO => (state.plans || []).filter(p => p.date === dateISO).sort((a, b) => a.time.localeCompare(b.time));

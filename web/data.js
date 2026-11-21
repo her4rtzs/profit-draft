@@ -27,6 +27,36 @@ const PLANS = {
 };
 if (typeof window !== "undefined") {
     window.PLANS = PLANS;
+    // Hydrate cached owner-edited plan prices immediately, then refresh from /api/plans/
+    const applyPlanMap = map => {
+        if (!map || typeof map !== "object") return;
+        let changed = false;
+        ["daily", "monthly", "quarterly", "annual"].forEach(k => {
+            const p = map[k];
+            const price = Number(p && typeof p === "object" ? p.price : p);
+            if (Number.isFinite(price) && price > 0 && PLANS[k] && PLANS[k].price !== price) {
+                PLANS[k].price = price;
+                changed = true;
+            }
+        });
+        if (changed) {
+            window.dispatchEvent(new CustomEvent("profit:plans-updated", { detail: PLANS }));
+        }
+    };
+    try {
+        const cached = JSON.parse(localStorage.getItem("profit-plan-prices-v1") || "null");
+        if (cached) applyPlanMap(cached);
+    } catch (_) {}
+    if (typeof fetch === "function" && location.protocol !== "file:") {
+        fetch("/api/plans/", { credentials: "same-origin" })
+            .then(r => (r.ok ? r.json() : null))
+            .then(d => {
+                if (!d || !d.plans) return;
+                applyPlanMap(d.plans);
+                try { localStorage.setItem("profit-plan-prices-v1", JSON.stringify(d.plans)); } catch (_) {}
+            })
+            .catch(() => {});
+    }
 }
 
 const METHODS = ["Cash", "GCash"];

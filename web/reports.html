@@ -11,9 +11,9 @@
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23f8e08c'/%3E%3Cstop offset='1' stop-color='%23e8c45a'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='%230c0e13'/%3E%3Ctext x='32' y='44' text-anchor='middle' font-family='Georgia,serif' font-style='italic' font-weight='700' font-size='32' fill='url(%23g)'%3EPf%3C/text%3E%3C/svg%3E">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Figtree:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="dashboard.css?v=1">
-    <link rel="stylesheet" href="finance-ui.css?v=11">
-<script>(function(){try{if(localStorage.getItem("profit-dark")!=="0")document.documentElement.classList.add("dark");}catch(e){}})();</script>
+    <link rel="stylesheet" href="dashboard.css?v=11">
+    <link rel="stylesheet" href="finance-ui.css?v=13">
+<script>(function(){try{var t=localStorage.getItem('theme');if(t==='light'&&!localStorage.getItem('pf-staff-explicit-light')){t='dark';try{localStorage.setItem('theme','dark');}catch(_){}}var d=t!=='light';var h=document.documentElement;h.style.background=d?'#0a0e16':'#fbf6ee';h.style.colorScheme=d?'dark':'light';h.dataset.theme=d?'dark':'light';if(d){h.classList.add('dark');}else{h.classList.remove('dark');}}catch(e){}})();</script>
 <style>html.dark,html.dark body{background:#0b1020;color:#e2e8f0;}</style>
 <script>(function(){try{var p=localStorage.getItem("profit-sidebar-collapsed")==="1";document.documentElement.classList.toggle("sidebar-collapsed",p);}catch(e){}})();</script>
 <script>document.documentElement.dataset.accent='gold'</script>
@@ -65,7 +65,7 @@
                 <div class="fn-toolbar-left">
                     <div class="fn-search-pill">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                        <input id="txSearch" type="search" placeholder="Search member or referenceâ€¦" aria-label="Search transactions">
+                        <input id="txSearch" type="search" placeholder="Search member or reference..." aria-label="Search transactions">
                     </div>
                     <select class="fn-input fn-toolbar-select" id="txMethod" aria-label="Filter by payment method"></select>
                 </div>
@@ -99,7 +99,7 @@
 
             <div class="fn-tx-foot">
                 <span>Filtered total</span>
-                <strong id="txTotal">â‚±0</strong>
+                <strong id="txTotal">₱0</strong>
             </div>
         </article>
     </section>
@@ -113,7 +113,7 @@
                     </span>
                     <span class="fn-kpi-label">Total collected</span>
                 </div>
-                <h2 class="fn-kpi-val" id="sumTotal">â‚±0</h2>
+                <h2 class="fn-kpi-val" id="sumTotal">₱0</h2>
                 <div class="fn-kpi-foot">
                     <span class="fn-kpi-cap">All recorded payments</span>
                 </div>
@@ -139,7 +139,7 @@
                     </span>
                     <span class="fn-kpi-label">Average payment</span>
                 </div>
-                <h2 class="fn-kpi-val" id="sumAvg">â‚±0</h2>
+                <h2 class="fn-kpi-val" id="sumAvg">₱0</h2>
                 <div class="fn-kpi-foot">
                     <span class="fn-kpi-cap">Per transaction</span>
                 </div>
@@ -182,13 +182,13 @@
 </main>
 </div>
 
-<script src="layout.js?v=21"></script>
-<script src="sidebar.js?v=20"></script>
+<script src="layout.js?v=25"></script>
+<script src="sidebar.js?v=21"></script>
 <script src="data.js"></script>
 <script src="pages.js"></script>
 <script src="portal-fx.js?v=2"></script>
 <script src="change-password.js?v=2" defer></script>
-<script src="notifications-live.js?v=1" defer></script>
+<script src="notifications-live.js?v=2" defer></script>
 <script src="site-footer.js?v=2" defer></script>
 </body>
 </html>

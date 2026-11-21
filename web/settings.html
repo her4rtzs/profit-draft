@@ -1,131 +1,901 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
-<head><script>(function(){try{var d=localStorage.getItem('theme')!=='light';var h=document.documentElement;h.style.background=d?'#0a0e16':'#f0f2f5';h.style.colorScheme=d?'dark':'light';}catch(e){}})();</script><script src="splash.js?v=2"></script>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+<script>(function(){try{var t=localStorage.getItem('theme');if(t==='light'&&!localStorage.getItem('pf-staff-explicit-light')){t='dark';try{localStorage.setItem('theme','dark');}catch(_){}}var d=t!=='light';var h=document.documentElement;h.style.background=d?'#0a0e16':'#fbf6ee';h.style.colorScheme=d?'dark':'light';h.dataset.theme=d?'dark':'light';if(d){h.classList.add('dark');}else{h.classList.remove('dark');}}catch(e){}})();</script>
+<script src="splash.js?v=3"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>ProFit | Settings</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <script>document.documentElement.dataset.accent='gold'</script>
-<link rel="stylesheet" href="global.css?v=1">
-<script src="config.js?v=4"></script><script src="api.js"></script><script src="auth.js?v=4"></script>
-<script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script><link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
-<body class="pf-staff" data-page="settings" data-title="Settings" data-welcome="Preferences and workspace">
-<div class="dashboard"><nav class="sidebar" id="sidebar"></nav><main class="main-content"><header class="topbar" id="topbar"><h1>Settings</h1></header>
-<section class="pp-settings" aria-label="Settings">
-<div class="portal-result" id="settingsNotice" role="status" hidden></div>
+<link rel="stylesheet" href="global.css?v=11">
+<script src="config.js?v=4"></script>
+<script src="api.js"></script>
+<script src="auth.js?v=4"></script>
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0a0e17">
+<link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ProFit">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<style>
+  .st-shell {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 8px 0 48px;
+    display: grid;
+    grid-template-columns: 190px minmax(0, 1fr);
+    gap: 26px;
+    align-items: start;
+  }
+  .st-sidenav {
+    position: sticky;
+    top: 94px;
+    display: grid;
+    gap: 4px;
+  }
+  .st-sidenav a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    color: var(--muted, #94a3b8);
+    font-size: 13.5px;
+    font-weight: 700;
+    text-decoration: none;
+    position: relative;
+    transition: background .16s ease, color .16s ease;
+  }
+  .st-sidenav a:hover {
+    background: rgba(255, 255, 255, .05);
+    color: var(--text, #f3f4f6);
+  }
+  body:not(.dark) .st-sidenav a {
+    color: #6f6450;
+  }
+  body:not(.dark) .st-sidenav a:hover {
+    background: #f5ecdc;
+    color: #2a2418;
+  }
+  .st-sidenav a.on {
+    background: rgba(232, 185, 58, .16);
+    color: #e8b93a;
+  }
+  body:not(.dark) .st-sidenav a.on {
+    background: #fef6df;
+    color: #8a6212;
+  }
+  .st-sidenav a.on::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 8px;
+    bottom: 8px;
+    width: 3px;
+    border-radius: 4px;
+    background: #e8b93a;
+  }
+  .st-stack {
+    display: grid;
+    gap: 18px;
+    min-width: 0;
+  }
+  @media (max-width: 860px) {
+    .st-shell {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    .st-sidenav {
+      position: static;
+      display: flex;
+      overflow-x: auto;
+      gap: 8px;
+      padding-bottom: 4px;
+    }
+    .st-sidenav a {
+      white-space: nowrap;
+      border: 1px solid var(--border, #263246);
+    }
+    body:not(.dark) .st-sidenav a {
+      border-color: #eadfc8;
+      background: #ffffff;
+    }
+    .st-sidenav a.on::before {
+      display: none;
+    }
+  }
+  @keyframes stRise {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes stShimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+  .st-rv {
+    animation: stRise .45s cubic-bezier(.2, .8, .2, 1) both;
+    animation-delay: calc(var(--i, 0) * 65ms);
+  }
+  .st-skel {
+    background: linear-gradient(90deg, rgba(255,255,255,.06) 25%, rgba(255,255,255,.14) 50%, rgba(255,255,255,.06) 75%) !important;
+    background-size: 200% 100% !important;
+    animation: stShimmer 1.2s ease-in-out infinite;
+    color: transparent !important;
+    border-radius: 6px;
+  }
+  body:not(.dark) .st-skel {
+    background: linear-gradient(90deg, #f3ebdb 25%, #faf5e9 50%, #f3ebdb 75%) !important;
+    background-size: 200% 100% !important;
+  }
+  .st-row-ico {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: rgba(232, 185, 58, .12);
+    color: #e8b93a;
+    display: grid;
+    place-items: center;
+    flex: none;
+    font-size: 14px;
+  }
+  body:not(.dark) .st-row-ico {
+    background: #fdf4da;
+    color: #9a6b0d;
+  }
+  .st-row-lead {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    min-width: 0;
+  }
+  .st-open-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 8px;
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 700;
+    background: rgba(34, 197, 94, .16);
+    color: #4ade80;
+    margin-right: 6px;
+  }
+  body:not(.dark) .st-open-pill {
+    background: #e3f8ec;
+    color: #15803d;
+  }
+  .st-open-pill.is-closed {
+    background: rgba(245, 158, 11, .16);
+    color: #fbbf24;
+  }
+  body:not(.dark) .st-open-pill.is-closed {
+    background: #fef3c7;
+    color: #b45309;
+  }
+  .st-font-prev {
+    margin: 0 18px 16px;
+    padding: 13px 15px;
+    border-radius: 12px;
+    border: 1px dashed var(--border, #263246);
+    font-size: 13.5px;
+    color: var(--muted, #94a3b8);
+  }
+  body:not(.dark) .st-font-prev {
+    border-color: #dfd2b6;
+    background: #fdfaf3;
+    color: #6f6450;
+  }
+  .st-font-prev strong {
+    display: block;
+    color: var(--text, #f3f4f6);
+    margin-bottom: 2px;
+  }
+  body:not(.dark) .st-font-prev strong {
+    color: #2a2418;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .st-rv, .st-skel { animation: none !important; }
+  }
+  .st-notice {
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    font-weight: 600;
+    background: rgba(61, 220, 132, .12);
+    border: 1px solid rgba(61, 220, 132, .35);
+    color: #3ddc84;
+  }
+  .st-notice.error {
+    background: rgba(255, 123, 138, .12);
+    border-color: rgba(255, 123, 138, .35);
+    color: #ff7b8a;
+  }
+  body:not(.dark) .st-notice {
+    background: #eefaf2;
+    border-color: #b7e6c8;
+    color: #166534;
+  }
+  body:not(.dark) .st-notice.error {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #b91c1c;
+  }
+  .st-card {
+    background: var(--card, #111827);
+    border: 1px solid var(--border, #263246);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  body:not(.dark) .st-card {
+    background: #ffffff;
+    border-color: #eadfc8;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, .04);
+  }
+  .st-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 18px 10px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--muted, #94a3b8);
+    border-bottom: 1px solid var(--border, rgba(255, 255, 255, .07));
+  }
+  body:not(.dark) .st-head {
+    color: #6f6450;
+    border-bottom-color: #f1e8d6;
+  }
+  .st-head i {
+    width: 16px;
+    text-align: center;
+    color: #e8b93a;
+  }
+  body:not(.dark) .st-head i {
+    color: #8a6212;
+  }
+  .st-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    width: 100%;
+    padding: 15px 18px;
+    border: 0;
+    border-top: 1px solid var(--border, rgba(255, 255, 255, .07));
+    background: transparent;
+    color: var(--text, #f3f4f6);
+    text-decoration: none;
+    text-align: left;
+    font-size: 14.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s ease;
+  }
+  .st-head + .st-row,
+  .st-row:first-child {
+    border-top: 0;
+  }
+  a.st-row:hover,
+  button.st-row:hover {
+    background: rgba(255, 255, 255, .04);
+  }
+  body:not(.dark) .st-row {
+    color: #2a2418;
+    border-top-color: #f1e8d6;
+  }
+  body:not(.dark) a.st-row:hover,
+  body:not(.dark) button.st-row:hover {
+    background: #faf6ee;
+  }
+  .st-row-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+  .st-row-copy small {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted, #94a3b8);
+  }
+  body:not(.dark) .st-row-copy small {
+    color: #6f6450;
+  }
+  .st-row-end {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted, #94a3b8);
+    font-size: 13px;
+    font-weight: 600;
+    flex: none;
+  }
+  /* Clean pill toggle switch */
+  .st-switch {
+    position: relative;
+    display: inline-block;
+    width: 46px;
+    height: 26px;
+    flex: none;
+  }
+  .st-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+  }
+  .st-switch span {
+    position: absolute;
+    inset: 0;
+    border-radius: 99px;
+    background: #334155;
+    cursor: pointer;
+    transition: background .18s ease;
+  }
+  body:not(.dark) .st-switch span {
+    background: #e2d9c8;
+  }
+  .st-switch span::after {
+    content: "";
+    position: absolute;
+    left: 3px;
+    top: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ffffff;
+    transition: transform .18s ease;
+  }
+  .st-switch input:checked + span {
+    background: #e8b93a;
+  }
+  .st-switch input:checked + span::after {
+    transform: translateX(20px);
+  }
+  /* Font Size 3-pill selector */
+  .st-font-row {
+    padding: 14px 18px 16px;
+    border-top: 1px solid var(--border, rgba(255, 255, 255, .07));
+  }
+  body:not(.dark) .st-font-row {
+    border-top-color: #f1e8d6;
+  }
+  .st-font-row > span {
+    display: block;
+    font-size: 13.5px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .st-pills {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .st-pills button {
+    height: 38px;
+    border-radius: 99px;
+    border: 1px solid var(--border, #263246);
+    background: transparent;
+    color: var(--muted, #94a3b8);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .16s ease, border-color .16s ease, color .16s ease, transform .14s ease;
+  }
+  .st-pills button:hover:not(.active) {
+    background: rgba(232, 185, 58, .12);
+    border-color: rgba(232, 185, 58, .48);
+    color: var(--text, #f3f4f6);
+  }
+  body:not(.dark) .st-pills button {
+    background: #f6ecd9;
+    border-color: #eadfc8;
+    color: #6f6450;
+  }
+  body:not(.dark) .st-pills button:hover:not(.active) {
+    background: #efe1c2;
+    border-color: #d6b25e;
+    color: #2a2418;
+  }
+  .st-pills button.active,
+  body:not(.dark) .st-pills button.active {
+    background: linear-gradient(135deg, #f2cb5c, #d9a425) !important;
+    border-color: transparent !important;
+    color: #141006 !important;
+  }
+  /* Help & Support Modal Popup */
+  .st-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 9500;
+    background: rgba(6, 10, 18, .66);
+    backdrop-filter: blur(4px);
+    display: grid;
+    place-items: center;
+    padding: 18px;
+  }
+  .st-modal-backdrop[hidden] {
+    display: none !important;
+  }
+  .st-modal {
+    width: min(460px, 100%);
+    background: var(--card, #111827);
+    border: 1px solid var(--border, #263246);
+    border-radius: 18px;
+    padding: 22px;
+    color: var(--text, #f3f4f6);
+  }
+  body:not(.dark) .st-modal {
+    background: #ffffff;
+    border-color: #eadfc8;
+    color: #2a2418;
+  }
+  .st-modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .st-modal-head h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .st-modal-close {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    border: 1px solid var(--border, #263246);
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+  }
+  body:not(.dark) .st-modal-close {
+    border-color: #eadfc8;
+  }
+  .st-help-list {
+    display: grid;
+    gap: 10px;
+    margin: 0 0 16px;
+  }
+  .st-help-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border, #263246);
+    background: var(--bg, #0a0e17);
+    text-decoration: none;
+    color: inherit;
+  }
+  body:not(.dark) .st-help-item {
+    background: #fdfaf3;
+    border-color: #eadfc8;
+  }
+  .st-help-item i {
+    color: #e8b93a;
+    width: 18px;
+    text-align: center;
+  }
+  body:not(.dark) .st-help-item i {
+    color: #b8860b;
+  }
+  .st-help-item strong {
+    display: block;
+    font-size: 13.5px;
+    font-weight: 700;
+  }
+  .st-help-item small {
+    display: block;
+    font-size: 12px;
+    color: var(--muted, #94a3b8);
+  }
+  .st-modal-foot {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  /* Owner Plan Prices Editor */
+  .st-price-list {
+    padding: 4px 18px 16px;
+    display: grid;
+    gap: 10px;
+  }
+  .st-price-row {
+    display: grid;
+    grid-template-columns: 1fr 140px;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border, rgba(255, 255, 255, .07));
+  }
+  body:not(.dark) .st-price-row {
+    border-bottom-color: #f1e8d6;
+  }
+  .st-price-row:last-of-type {
+    border-bottom: 0;
+  }
+  .st-price-row label {
+    font-size: 14px;
+    font-weight: 700;
+    display: block;
+  }
+  .st-price-row small {
+    display: block;
+    font-size: 12px;
+    color: var(--muted, #94a3b8);
+  }
+  body:not(.dark) .st-price-row small {
+    color: #6f6450;
+  }
+  .st-peso-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .st-peso-wrap span {
+    position: absolute;
+    left: 12px;
+    font-weight: 700;
+    color: var(--muted, #94a3b8);
+    pointer-events: none;
+  }
+  .st-peso-wrap input {
+    width: 100%;
+    height: 40px;
+    padding: 0 12px 0 28px;
+    border-radius: 10px;
+    border: 1px solid var(--border, #263246);
+    background: var(--bg, #0a0e17);
+    color: var(--text, #f3f4f6);
+    font-size: 14px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  body:not(.dark) .st-peso-wrap input {
+    background: #faf6ee;
+    border-color: #eadfc8;
+    color: #2a2418;
+  }
+  .st-save-btn {
+    width: 100%;
+    height: 42px;
+    margin-top: 6px;
+    border: 0;
+    border-radius: 12px;
+    background: #e8b93a;
+    color: #141006;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  .st-save-btn:disabled {
+    opacity: .6;
+    cursor: default;
+  }
+  /* Logout card (keep only Logout, hide auto-injected Change password row) */
+  .st-logout-card .pf-cp-item,
+  .st-logout-card [data-change-password] {
+    display: none !important;
+  }
+  .st-logout-btn {
+    width: 100%;
+    padding: 15px 18px;
+    border: 0;
+    background: transparent;
+    color: #ef4444;
+    font-size: 14.5px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+  .st-logout-btn:hover {
+    background: rgba(239, 68, 68, .08);
+  }
+  .st-foot {
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted, #94a3b8);
+    padding-top: 4px;
+  }
+  .st-row[aria-expanded="true"] .st-row-end i {
+    transform: rotate(90deg);
+  }
+  .st-row-end i {
+    transition: transform .18s ease;
+  }
+  .st-drawer {
+    padding: 16px 18px 18px;
+    border-top: 1px solid var(--border, rgba(255, 255, 255, .07));
+    background: rgba(255, 255, 255, .02);
+  }
+  body:not(.dark) .st-drawer {
+    border-top-color: #f1e8d6;
+    background: #fdfaf3;
+  }
+  .st-drawer[hidden] {
+    display: none !important;
+  }
+  .st-drawer-note {
+    margin: 0 0 12px;
+    font-size: 12.5px;
+    color: var(--muted, #94a3b8);
+    line-height: 1.45;
+  }
+  .st-field-grid {
+    display: grid;
+    gap: 12px;
+  }
+  .st-field {
+    display: grid;
+    gap: 6px;
+  }
+  .st-field label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted, #94a3b8);
+  }
+  .st-field input {
+    height: 40px;
+    padding: 0 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border, #263246);
+    background: var(--bg, #0a0e17);
+    color: var(--text, #f3f4f6);
+    font-size: 14px;
+    font-weight: 600;
+  }
+  body:not(.dark) .st-field input {
+    background: #ffffff;
+    border-color: #eadfc8;
+    color: #2a2418;
+  }
+</style>
+</head>
+<body class="pf-staff" data-page="settings" data-title="Settings" data-welcome="Manage your account and preferences">
+<div class="dashboard">
+  <nav class="sidebar" id="sidebar"></nav>
+  <main class="main-content">
+    <header class="topbar" id="topbar"><h1>Settings</h1></header>
 
-  <article id="appearance" class="pp-section-card">
-    <div class="pp-card-head"><div><h2>Appearance</h2><p class="pp-muted">Pick how ProFit looks on this device.</p></div></div>
-    <div class="pp-segment" role="radiogroup" aria-label="Theme" style="display:flex;width:100%;margin-top:8px">
-      <button type="button" role="radio" class="active" data-theme-pick="dark" aria-checked="true"><i class="fa-solid fa-moon"></i> Dark</button>
-      <button type="button" role="radio" data-theme-pick="light" aria-checked="false"><i class="fa-regular fa-sun"></i> Light</button>
-    </div>
-    <div class="pp-field" style="margin-top:18px">
-      <span class="pp-label" id="lblAccent" style="display:block;font-size:13.5px;font-weight:700;color:var(--muted);margin-bottom:10px">Accent colour</span>
-      <div class="pp-swatches" role="radiogroup" aria-labelledby="lblAccent">
-        <button type="button" class="pp-swatch" role="radio" aria-checked="true" data-accent-pick="gold" style="--sw:#e0b94a"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">Gold</span></button>
+    <section class="st-shell" aria-label="Settings">
+      <nav class="st-sidenav" id="stSideNav" aria-label="Settings sections">
+        <a href="#account" data-sec="account" class="on"><i class="fa-regular fa-user" aria-hidden="true"></i> Account</a>
+        <a href="#notifications" data-sec="notifications"><i class="fa-regular fa-bell" aria-hidden="true"></i> Notifications</a>
+        <a href="#appearance" data-sec="appearance"><i class="fa-regular fa-sun" aria-hidden="true"></i> Appearance</a>
+        <a href="#general" data-sec="general"><i class="fa-solid fa-globe" aria-hidden="true"></i> General</a>
+        <a href="#install" data-sec="install"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i> Install the app</a>
+      </nav>
+
+      <div class="st-stack">
+      <div class="st-notice" id="settingsNotice" role="status" hidden></div>
+
+      <!-- Account -->
+      <article class="st-card st-rv" id="account" style="--i:0">
+        <div class="st-head"><i class="fa-regular fa-user" aria-hidden="true"></i> Account</div>
+        <a class="st-row" href="/profile">
+          <div class="st-row-lead">
+            <span class="st-row-ico" aria-hidden="true"><i class="fa-regular fa-user"></i></span>
+            <div class="st-row-copy"><span>Edit Profile</span><small id="stProfSub">Manage your name, photo, and contact info</small></div>
+          </div>
+          <span class="st-row-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
+        </a>
+        <button class="st-row" type="button" id="stChangePwBtn">
+          <div class="st-row-lead">
+            <span class="st-row-ico" aria-hidden="true"><i class="fa-solid fa-lock"></i></span>
+            <div class="st-row-copy"><span>Change Password</span><small>Update your account sign-in password</small></div>
+          </div>
+          <span class="st-row-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
+        </button>
+
+        <!-- Owner-only: Subscription Prices -->
+        <button class="st-row" type="button" id="stPricesToggle" aria-expanded="false" aria-controls="planPricesDrawer" hidden>
+          <div class="st-row-lead">
+            <span class="st-row-ico" aria-hidden="true"><i class="fa-solid fa-tag"></i></span>
+            <div class="st-row-copy"><span>Subscription Prices</span><small id="stPricesSub" class="st-skel">Loading live plan prices...</small></div>
+          </div>
+          <span class="st-row-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
+        </button>
+        <div class="st-drawer" id="planPricesDrawer" hidden>
+          <p class="st-drawer-note" id="stPriceSavings">Saving updates membership prices across the landing page, enrollment, cashier desk, and payments.</p>
+          <form class="st-price-list" id="planPricesForm" style="padding:0" novalidate>
+            <div class="st-price-row">
+              <div><label for="priceDaily">Daily</label><small>1 day pass</small></div>
+              <div class="st-peso-wrap"><span>&#8369;</span><input type="number" id="priceDaily" min="1" max="500000" step="1" required></div>
+            </div>
+            <div class="st-price-row">
+              <div><label for="priceMonthly">Monthly</label><small>30 days</small></div>
+              <div class="st-peso-wrap"><span>&#8369;</span><input type="number" id="priceMonthly" min="1" max="500000" step="1" required></div>
+            </div>
+            <div class="st-price-row">
+              <div><label for="priceQuarterly">Quarterly</label><small>90 days</small></div>
+              <div class="st-peso-wrap"><span>&#8369;</span><input type="number" id="priceQuarterly" min="1" max="500000" step="1" required></div>
+            </div>
+            <div class="st-price-row">
+              <div><label for="priceAnnual">Annual</label><small>365 days</small></div>
+              <div class="st-peso-wrap"><span>&#8369;</span><input type="number" id="priceAnnual" min="1" max="500000" step="1" required></div>
+            </div>
+            <button type="submit" class="st-save-btn" id="savePlanPricesBtn">Save subscription prices</button>
+          </form>
+        </div>
+
+        <!-- Owner-only: Edit Gym Profile -->
+        <button class="st-row" type="button" id="stGymToggle" aria-expanded="false" aria-controls="gymProfileDrawer" hidden>
+          <div class="st-row-lead">
+            <span class="st-row-ico" aria-hidden="true"><i class="fa-solid fa-building"></i></span>
+            <div class="st-row-copy"><span>Edit Gym Profile</span><small><span class="st-open-pill" id="stGymOpenPill">Open now</span><span id="stGymSub">Functional Fitness Gym</span></small></div>
+          </div>
+          <span class="st-row-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
+        </button>
+        <div class="st-drawer" id="gymProfileDrawer" hidden>
+          <p class="st-drawer-note">Updates your gym name, tagline, hours, and contact details shown in the portal.</p>
+          <form class="st-field-grid" id="gymProfileForm" novalidate>
+            <div class="st-field">
+              <label for="gymNameInput">Gym name</label>
+              <input type="text" id="gymNameInput" maxlength="80" placeholder="Functional Fitness Gym" required>
+            </div>
+            <div class="st-field">
+              <label for="gymTaglineInput">Tagline</label>
+              <input type="text" id="gymTaglineInput" maxlength="80" placeholder="FUNCTIONAL FITNESS">
+            </div>
+            <div class="st-field">
+              <label for="gymPhoneInput">Contact number</label>
+              <input type="tel" id="gymPhoneInput" maxlength="30" placeholder="0912 261 7663">
+            </div>
+            <div class="st-field">
+              <label for="gymAddressInput">Address</label>
+              <input type="text" id="gymAddressInput" maxlength="160" placeholder="Alfonso, Calabarzon · Luksuhin-Mangas Road">
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div class="st-field">
+                <label for="gymOpensInput">Opens</label>
+                <input type="time" id="gymOpensInput" value="07:00">
+              </div>
+              <div class="st-field">
+                <label for="gymClosesInput">Closes</label>
+                <input type="time" id="gymClosesInput" value="21:00">
+              </div>
+            </div>
+            <button type="submit" class="st-save-btn" id="saveGymProfileBtn">Save gym profile</button>
+          </form>
+        </div>
+      </article>
+
+      <!-- Notifications -->
+      <article class="st-card st-rv" id="notifications" style="--i:1">
+        <div class="st-head"><i class="fa-regular fa-bell" aria-hidden="true"></i> Notifications</div>
+        <div class="st-row">
+          <div class="st-row-copy">
+            <label for="prefBadge">Unread Badge</label>
+            <small>Show unread count on the bell icon</small>
+          </div>
+          <label class="st-switch"><input type="checkbox" id="prefBadge" aria-label="Show unread badge"><span></span></label>
+        </div>
+        <a class="st-row" href="/notifications">
+          <span>All Notifications</span>
+          <span class="st-row-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
+        </a>
+      </article>
+
+      <!-- Appearance -->
+      <article class="st-card st-rv" id="appearance" style="--i:2">
+        <div class="st-head"><i class="fa-regular fa-sun" aria-hidden="true"></i> Appearance</div>
+        <div class="st-row">
+          <label for="prefDark">Dark Mode</label>
+          <label class="st-switch"><input type="checkbox" id="prefDark" aria-label="Toggle dark mode"><span></span></label>
+        </div>
+        <div class="st-font-row">
+          <span>Font Size</span>
+          <div class="st-pills" role="radiogroup" aria-label="Font size">
+            <button type="button" role="radio" data-font-size="sm" aria-checked="false">Small</button>
+            <button type="button" role="radio" data-font-size="md" class="active" aria-checked="true">Medium</button>
+            <button type="button" role="radio" data-font-size="lg" aria-checked="false">Large</button>
+          </div>
+        </div>
+        <div class="st-font-prev">
+          <strong>Preview</strong>
+          Cashier recorded a &#8369;800 monthly payment for Angelo Metillo.
+        </div>
+      </article>
+
+      <!-- General -->
+      <article class="st-card st-rv" id="general" style="--i:3">
+        <div class="st-head"><i class="fa-solid fa-globe" aria-hidden="true"></i> General</div>
+        <div class="st-row">
+          <span>Language</span>
+          <span class="st-row-end">English</span>
+        </div>
+        <button class="st-row" type="button" id="stHelpBtn">
+          <span>Help &amp; Support</span>
+          <span class="st-row-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
+        </button>
+      </article>
+
+      <!-- Help & Support Popup Modal -->
+      <div class="st-modal-backdrop" id="stHelpModal" role="dialog" aria-modal="true" aria-labelledby="stHelpTitle" hidden>
+        <div class="st-modal">
+          <div class="st-modal-head">
+            <h2 id="stHelpTitle"><i class="fa-regular fa-circle-question" style="color:#e8b93a" aria-hidden="true"></i> Help &amp; Support</h2>
+            <button type="button" class="st-modal-close" id="stHelpClose" aria-label="Close help popup"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+          <div class="st-help-list">
+            <a class="st-help-item" href="tel:+639122617663">
+              <i class="fa-solid fa-phone" aria-hidden="true"></i>
+              <div><strong>Call gym front desk</strong><small>0912 261 7663 · Opens at 7:00 AM</small></div>
+            </a>
+            <div class="st-help-item">
+              <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+              <div><strong>Visit Functional Fitness Gym</strong><small>Alfonso, Calabarzon · Luksuhin-Mangas Road</small></div>
+            </div>
+            <div class="st-help-item">
+              <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+              <div><strong>Need help with billing or accounts?</strong><small>Contact the gym owner or check the full FAQ guide below.</small></div>
+            </div>
+          </div>
+          <div class="st-modal-foot">
+            <a class="pp-btn" href="/faq" style="height:38px;padding:0 14px;font-size:13px;text-decoration:none;display:inline-flex;align-items:center">Open full FAQ</a>
+            <button type="button" class="st-save-btn" id="stHelpDone" style="width:auto;height:38px;padding:0 18px;margin:0">Close</button>
+          </div>
+        </div>
       </div>
-      <p class="pp-small pp-muted" style="margin-top:14px">Your favourite colour, everywhere in the app.</p>
-    </div>
-  </article>
 
-  <article class="pp-section-card">
-    <div class="pp-card-head"><div><h2><i class="fa-regular fa-bell"></i> Notifications</h2><p>Control how gym updates appear in the header.</p></div></div>
-    <div class="pp-setting">
-      <div class="pp-setting-copy"><strong id="lblBadge">Unread badge</strong><p>Show the unread count on the bell icon in the header.</p></div>
-      <div class="pp-setting-controls">
-        <span class="pp-default" data-default-for="prefBadge">Default: On</span>
-        <button class="pp-reset" type="button" data-reset="prefBadge">Reset</button>
-        <label class="pp-switch"><input type="checkbox" id="prefBadge" aria-labelledby="lblBadge"><span></span></label>
+      <!-- Install the app (Phase 4.5 PWA) -->
+      <article class="st-card st-rv" id="install" style="--i:4">
+        <div class="st-head"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i> Install the app</div>
+        <div style="padding:14px 18px 16px;font-size:13.5px;line-height:1.55">
+          <p id="installHelpStatus" role="status" style="margin:0 0 10px;font-weight:600">Checking...</p>
+          <div data-install-steps>
+            <p style="margin:0 0 4px;font-weight:700">iPhone (Safari)</p>
+            <ol style="margin:0 0 10px 18px;padding:0">
+              <li>Open ProFit in Safari.</li>
+              <li>Tap the Share button.</li>
+              <li>Tap Add to Home Screen, then Add.</li>
+            </ol>
+            <p style="margin:0 0 4px;font-weight:700">Android (Chrome)</p>
+            <ol style="margin:0 0 0 18px;padding:0">
+              <li>Open ProFit in Chrome.</li>
+              <li>Tap the three-dot menu.</li>
+              <li>Tap Install app (or Add to Home screen), then Install.</li>
+            </ol>
+          </div>
+        </div>
+      </article>
+
+      <!-- Logout -->
+      <article class="st-card st-logout-card">
+        <button class="st-logout-btn" type="button" data-logout>
+          <i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i> Logout
+        </button>
+      </article>
+
+      <p class="st-foot">ProFit &middot; Functional Fitness Gym</p>
       </div>
-    </div>
-    <div class="pp-setting">
-      <div class="pp-setting-copy"><strong>Notification center</strong><p>Read, mark, or clear your gym updates.</p></div>
-      <div class="pp-setting-controls"><button class="pp-btn" id="openNotifications" type="button"><i class="fa-regular fa-bell"></i> Open</button></div>
-    </div>
-  </article>
+    </section>
+  </main>
+</div>
 
-  <article id="account" class="pp-section-card">
-    <div class="pp-card-head"><div><h2><i class="fa-regular fa-user"></i> Account</h2><p>Signed in as <span data-user-name>Administrator</span>.</p></div></div>
-    <div class="pp-setting">
-      <div class="pp-setting-copy"><strong>Sign out</strong><p>End this session on this device.</p></div>
-      <div class="pp-setting-controls"><button class="pp-btn" type="button" data-logout><i class="fa-solid fa-arrow-right-from-bracket"></i> Log out</button></div>
-    </div>
-  </article>
-
-  <article id="announce" class="pp-section-card">
-    <div class="pp-card-head"><div><h2><i class="fa-solid fa-bullhorn"></i> Announcements</h2><p>Publish once â€” staff, members and trainers are notified straight away.</p></div></div>
-    <form id="announceForm" class="pp-form-grid" novalidate>
-      <div class="pp-field"><label for="annTitle">Title</label><input id="annTitle" maxlength="120" placeholder="Schedule change this Saturday"></div>
-      <div class="pp-field"><label for="annAudience">Who sees it</label>
-        <select id="annAudience">
-          <option>Everyone</option>
-          <option>Members</option>
-          <option>Trainers</option>
-        </select>
-      </div>
-      <div class="pp-field" style="grid-column:1/-1"><label for="annMessage">Message</label><textarea id="annMessage" rows="3" maxlength="600" placeholder="Write it the way you would say it on the floor."></textarea></div>
-      <div class="pp-field pp-actions" style="grid-column:1/-1"><button class="pp-btn pp-btn-primary" type="submit"><i class="fa-solid fa-paper-plane"></i> Publish announcement</button></div>
-    </form>
-    <div id="announceList" class="pp-announce-list"></div>
-  </article>
-
-  <article id="profile" class="pp-section-card">
-    <div class="pp-card-head"><div><h2><i class="fa-solid fa-dumbbell"></i> Gym profile</h2><p>Your branding, shown on the sidebar, the ribbon under the header, and the member portal.</p></div></div>
-    <div class="pp-setting">
-      <div class="pp-setting-copy"><strong>Logo</strong><p>Swap this when your gym changes its logo. A square JPG or PNG under 900 KB works best.</p></div>
-      <div class="pp-setting-controls">
-        <span class="pp-gym-logo" id="gymLogoPreview"><img src="logo.jpg" alt="Current gym logo"></span>
-        <label class="pp-btn" for="gymLogo" tabindex="0"><i class="fa-solid fa-camera"></i> Change logo</label>
-        <input type="file" id="gymLogo" accept="image/*" hidden>
-        <button class="pp-btn" type="button" id="gymLogoClear">Restore default</button>
-      </div>
-    </div>
-    <form id="gymProfileForm" class="pp-form-grid" novalidate>
-      <div class="pp-field"><label for="gymName">Gym name</label><input id="gymName" maxlength="60" placeholder="Functional Fitness"></div>
-      <div class="pp-field"><label for="gymTagline">Tagline</label><input id="gymTagline" maxlength="40" placeholder="FUNCTIONAL FITNESS"></div>
-      <div class="pp-field"><label for="gymHours">Opening hours</label><input id="gymHours" maxlength="80" placeholder="Monâ€“Sat Â· 5:00 AM â€“ 10:00 PM"></div>
-      <div class="pp-field"><label for="gymAddress">Address</label><input id="gymAddress" maxlength="120" placeholder="Street, city"></div>
-      <div class="pp-field"><label for="gymPhone">Contact number</label><input id="gymPhone" maxlength="30" placeholder="09XX XXX XXXX"></div>
-      <div class="pp-field pp-actions pp-actions-end"><button class="pp-btn pp-btn-primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save gym profile</button></div>
-    </form>
-  </article>
-
-  <article class="pp-section-card" id="install">
-    <div class="pp-card-head"><div><h2><i class="fa-solid fa-mobile-screen"></i> Install the app</h2><p>Add ProFit to this phone's home screen. It opens like an app and still needs internet.</p></div></div>
-    <p id="installHelpStatus" role="status">Checking...</p>
-    <div data-install-steps>
-      <h3>iPhone (Safari)</h3>
-      <ol>
-        <li>Open ProFit in Safari.</li>
-        <li>Tap the Share button.</li>
-        <li>Tap Add to Home Screen, then Add.</li>
-      </ol>
-      <h3>Android (Chrome)</h3>
-      <ol>
-        <li>Open ProFit in Chrome.</li>
-        <li>Tap the three-dot menu.</li>
-        <li>Tap Install app (or Add to Home screen), then Install.</li>
-      </ol>
-    </div>
-  </article>
-
-  <article class="pp-section-card pp-danger">
-    <div class="pp-card-head"><div><h2><i class="fa-solid fa-rotate-left"></i> Workspace data</h2><p>Restore the original demo records in this browser.</p></div></div>
-    <div class="pp-setting">
-      <div class="pp-setting-copy"><strong>Reset workspace records</strong><p>Removes changes made to members, payments, and check-ins on this browser.</p></div>
-      <div class="pp-setting-controls"><button class="pp-btn pp-btn-danger" id="resetDemo" type="button"><i class="fa-solid fa-trash-can"></i> Reset records</button></div>
-    </div>
-  </article>
-
-</section>
-</main></div>
-<script src="layout.js?v=21"></script><script src="sidebar.js?v=20"></script><script src="data.js"></script><script src="settings.js?v=13"></script>
+<script src="layout.js?v=25"></script>
+<script src="sidebar.js?v=21"></script>
+<script src="data.js?v=3"></script>
+<script src="settings.js?v=18"></script>
 <script src="portal-fx.js?v=2"></script>
 <script src="/static/js/install-help.js" defer></script>
 <script src="change-password.js?v=2" defer></script>
-<script src="notifications-live.js?v=1" defer></script>
+<script src="notifications-live.js?v=2" defer></script>
 <script src="site-footer.js?v=2" defer></script>
 </body>
 </html>

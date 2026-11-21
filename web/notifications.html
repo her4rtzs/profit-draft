@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>(function(){try{var t=localStorage.getItem('theme');if(t==='light'&&!localStorage.getItem('pf-staff-explicit-light')){t='dark';try{localStorage.setItem('theme','dark');}catch(_){}}var d=t!=='light';var h=document.documentElement;h.style.background=d?'#0a0e16':'#fbf6ee';h.style.colorScheme=d?'dark':'light';h.dataset.theme=d?'dark':'light';if(d){h.classList.add('dark');}else{h.classList.remove('dark');}}catch(e){}})();</script>
+<script src="splash.js?v=3"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>ProFit | Notifications</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Figtree:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="dashboard.css?v=11">
+<script src="config.js?v=4"></script>
+<script src="api.js"></script>
+<script src="auth.js?v=4"></script>
+<script>document.documentElement.dataset.accent='gold'</script>
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0a0e17">
+<link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ProFit">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<style>
+  .ntf-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .ntf-seg {
+    display: inline-grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(76px, 1fr);
+    gap: 4px;
+    padding: 4px;
+    background: var(--card, #111827);
+    border: 1px solid var(--border, #263246);
+    border-radius: 12px;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  .ntf-seg button {
+    border: 0;
+    background: transparent;
+    border-radius: 9px;
+    padding: 8px 14px;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--muted, #9aa4b6);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background .15s ease, color .15s ease;
+  }
+  .ntf-seg button:hover {
+    color: var(--text, #f3f4f6);
+  }
+  .ntf-seg button.on {
+    background: var(--hover, #1b2433);
+    color: var(--text, #f3f4f6);
+  }
+  body:not(.dark) .ntf-seg {
+    background: #ffffff;
+    border-color: #eadfc8;
+  }
+  body:not(.dark) .ntf-seg button {
+    color: #6f6450;
+  }
+  body:not(.dark) .ntf-seg button.on {
+    background: #f6ecd9;
+    color: #2a2418;
+  }
+  .ntf-read-all {
+    border: 1px solid var(--border, #263246);
+    background: var(--card, #111827);
+    color: #e8b93a;
+    border-radius: 10px;
+    padding: 9px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .ntf-read-all:hover:not(:disabled) {
+    border-color: #e8b93a;
+  }
+  .ntf-read-all:disabled {
+    opacity: .45;
+    cursor: default;
+  }
+  body:not(.dark) .ntf-read-all {
+    background: #ffffff;
+    border-color: #eadfc8;
+    color: #8a6212;
+  }
+  .ntf-card {
+    background: var(--card, #111827);
+    border: 1px solid var(--border, #263246);
+    border-radius: 18px;
+    padding: 6px 20px;
+  }
+  body:not(.dark) .ntf-card {
+    background: #ffffff;
+    border-color: #eadfc8;
+  }
+  .ntf-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    width: 100%;
+    padding: 16px 0;
+    border: 0;
+    border-top: 1px solid var(--border, #263246);
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+  .ntf-row:first-child {
+    border-top: 0;
+  }
+  body:not(.dark) .ntf-row {
+    border-top-color: #eadfc8;
+  }
+  .ntf-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex: 0 0 8px;
+    margin-top: 7px;
+    background: transparent;
+  }
+  .ntf-row.is-unread .ntf-dot {
+    background: #e8b93a;
+  }
+  .ntf-body {
+    flex: 1;
+    min-width: 0;
+  }
+  .ntf-body strong {
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text, #f3f4f6);
+  }
+  .ntf-row.is-unread .ntf-body strong {
+    font-weight: 800;
+  }
+  body:not(.dark) .ntf-body strong {
+    color: #2a2418;
+  }
+  .ntf-body p {
+    margin: 4px 0 6px;
+    font-size: 13.5px;
+    line-height: 1.48;
+    color: var(--muted, #9aa4b6);
+  }
+  body:not(.dark) .ntf-body p {
+    color: #6f6450;
+  }
+  .ntf-body small {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--faint, #758399);
+  }
+  .ntf-date {
+    flex: none;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--faint, #758399);
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+  .ntf-empty {
+    text-align: center;
+    padding: 44px 16px;
+    color: var(--muted, #9aa4b6);
+  }
+  .ntf-empty i {
+    font-size: 28px;
+    color: #e8b93a;
+    margin-bottom: 10px;
+    display: block;
+  }
+</style>
+</head>
+<body class="pf-staff" data-page="notifications" data-title="Notifications" data-welcome="">
+<div class="dashboard">
+  <nav class="sidebar" id="sidebar"></nav>
+  <main class="main-content">
+    <header class="topbar" id="topbar"><h1>Notifications</h1></header>
+
+    <div class="ntf-head">
+      <div class="ntf-seg" id="ntfFilterTabs" role="tablist" aria-label="Filter notifications">
+        <button type="button" role="tab" class="on" aria-selected="true" data-kind="ALL">All</button>
+        <button type="button" role="tab" aria-selected="false" data-kind="PAYMENT">Payments</button>
+        <button type="button" role="tab" aria-selected="false" data-kind="MEMBERSHIP">Membership</button>
+        <button type="button" role="tab" aria-selected="false" data-kind="ANNOUNCEMENT">Announcements</button>
+        <button type="button" role="tab" aria-selected="false" data-kind="ATTENDANCE">Attendance</button>
+      </div>
+      <button type="button" class="ntf-read-all" id="ntfMarkAllBtn" disabled>Mark all read</button>
+    </div>
+
+    <section class="ntf-card" id="ntfList" aria-live="polite">
+      <div class="ntf-empty"><i class="fa-solid fa-circle-notch fa-spin" aria-hidden="true"></i><strong>Loading notifications...</strong></div>
+    </section>
+  </main>
+</div>
+
+<script src="data.js?v=2"></script>
+<script src="layout.js?v=25"></script>
+<script src="sidebar.js?v=21"></script>
+<script src="notifications-live.js?v=2" defer></script>
+<script src="portal-fx.js?v=2"></script>
+<script src="site-footer.js?v=2" defer></script>
+<script>
+(() => {
+  const listEl = document.getElementById("ntfList");
+  const tabsEl = document.getElementById("ntfFilterTabs");
+  const markAllBtn = document.getElementById("ntfMarkAllBtn");
+  const LABELS = {
+    PAYMENT: "Payments",
+    MEMBERSHIP: "Membership",
+    ANNOUNCEMENT: "Announcements",
+    ATTENDANCE: "Attendance",
+    TRAINER: "Trainers",
+    GENERAL: "General"
+  };
+  const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const fmtDate = iso => {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return "";
+    return d.toLocaleDateString("en-PH", { month: "short", day: "numeric" });
+  };
+
+  let allItems = [];
+  let activeKind = "ALL";
+
+  function render() {
+    const unreadCount = allItems.filter(x => !x.read).length;
+    if (markAllBtn) markAllBtn.disabled = unreadCount === 0;
+    const rows = activeKind === "ALL"
+      ? allItems
+      : allItems.filter(x => String(x.kind || "GENERAL").toUpperCase() === activeKind);
+    if (!rows.length) {
+      listEl.innerHTML = `<div class="ntf-empty"><i class="fa-regular fa-bell-slash" aria-hidden="true"></i><strong>No notifications here</strong><p>Updates in this category will appear here automatically.</p></div>`;
+      return;
+    }
+    listEl.innerHTML = rows.map(n => {
+      const k = String(n.kind || "GENERAL").toUpperCase();
+      return `<button type="button" class="ntf-row ${n.read ? "is-read" : "is-unread"}" data-id="${esc(n.id)}">
+        <span class="ntf-dot" aria-hidden="true"></span>
+        <span class="ntf-body">
+          <strong>${esc(n.title)}</strong>
+          ${n.body ? `<p>${esc(n.body)}</p>` : ""}
+          <small>${esc(LABELS[k] || "Update")}</small>
+        </span>
+        <span class="ntf-date">${esc(fmtDate(n.time))}</span>
+      </button>`;
+    }).join("");
+  }
+
+  async function load() {
+    try {
+      const res = await window.ProFitAPI.get("/notifications/?limit=60", { silent: true });
+      allItems = Array.isArray(res?.items) ? res.items : [];
+    } catch {
+      allItems = [];
+    } finally {
+      render();
+    }
+  }
+
+  tabsEl?.addEventListener("click", e => {
+    const btn = e.target.closest("button[data-kind]");
+    if (!btn) return;
+    activeKind = btn.dataset.kind;
+    tabsEl.querySelectorAll("button").forEach(b => {
+      const on = b === btn;
+      b.classList.toggle("on", on);
+      b.setAttribute("aria-selected", String(on));
+    });
+    render();
+  });
+
+  listEl?.addEventListener("click", async e => {
+    const row = e.target.closest(".ntf-row");
+    if (!row) return;
+    const item = allItems.find(n => String(n.id) === row.dataset.id);
+    if (!item) return;
+    try {
+      if (!item.read) {
+        await window.ProFitAPI.post(`/notifications/${item.id}/read/`, {}, { silent: true });
+        item.read = true;
+        render();
+      }
+    } catch { /* continue */ }
+    if (item.link) window.location.href = item.link;
+  });
+
+  markAllBtn?.addEventListener("click", async () => {
+    markAllBtn.disabled = true;
+    try {
+      await window.ProFitAPI.post("/notifications/read-all/", {}, { silent: true });
+      allItems = allItems.map(n => ({ ...n, read: true }));
+    } catch { /* keep state */ } finally {
+      render();
+    }
+  });
+
+  load();
+})();
+</script>
+</body>
+</html>

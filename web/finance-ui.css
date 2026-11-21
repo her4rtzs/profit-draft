@@ -113,12 +113,12 @@ body[data-page="reports"] .fn-header-bg {
 }
 
 body:not(.dark) .fn-header-bg {
-  opacity: 0.14;
-  filter: grayscale(40%) contrast(1.05);
+  opacity: 0.56;
+  filter: contrast(1.06);
 }
 
 body:not(.dark) .fn-header-bg::after {
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.6) 55%, rgba(255, 255, 255, 0.4) 100%);
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.72) 42%, rgba(255, 255, 255, 0.14) 100%);
 }
 
 .fn-header-title-wrap {
@@ -1779,4 +1779,17 @@ body:not(.dark) .fn-tx-foot strong {
     flex-direction: column;
     align-items: flex-start;
   }
+}
+
+
+/* Zero AI Glow on Finance & Payment Buttons/Tabs */
+body[data-page="payments"] .fn-btn-primary,
+body[data-page="payments"] .fn-btn-primary:hover,
+body[data-page="payments"] .fn-tabs .tab.active,
+body[data-page="payments"] .fn-card,
+body[data-page="reports"] .fn-btn-primary,
+body[data-page="reports"] .fn-btn-primary:hover,
+body[data-page="reports"] .fn-tabs .tab.active,
+body[data-page="reports"] .fn-card {
+  box-shadow: none !important;
 }

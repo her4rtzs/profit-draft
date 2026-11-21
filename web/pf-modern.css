@@ -65,8 +65,8 @@ body.dark { background: #07080c; }
 }
 
 /* ---------- Controls ---------- */
-button, .btn, input, select, textarea { border-radius: var(--pf-radius-sm); }
-input, select, textarea {
+button, .btn, input:not([type="checkbox"]):not([type="radio"]), select, textarea { border-radius: var(--pf-radius-sm); }
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]), select, textarea {
   background: var(--hover);
   border: 1px solid var(--border);
   color: var(--text);

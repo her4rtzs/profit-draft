@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Reset password â€” ProFit</title>
+<title>Reset password — ProFit</title>
 <meta name="description" content="Reset your ProFit account password.">
 <link rel="icon" type="image/jpeg" href="logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -319,7 +319,7 @@
         <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Code expires after 10 minutes</span></li>
         <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Your account stays protected</span></li>
       </ul>
-      <p class="fp-gym-foot"><span data-gym-name>Functional Fitness Gym</span> Â· Alfonso, Calabarzon</p>
+      <p class="fp-gym-foot"><span data-gym-name>Functional Fitness Gym</span> · Alfonso, Calabarzon</p>
     </section>
 
     <section class="fp-card" aria-label="Password reset form">
@@ -560,7 +560,7 @@
     if (resendBusy || cooldownRemaining > 0) return;
     resendBusy = true;
     resendBtn.disabled = true;
-    resendBtn.textContent = "Sending new OTPâ€¦";
+    resendBtn.textContent = "Sending new OTP...";
     try {
       const res = await api("/auth/resend-otp", { email, purpose: "PASSWORD_RESET" });
       resendBusy = false;

@@ -1219,3 +1219,10 @@ body:not(.dark) .ann-modal {
     animation: none !important;
   }
 }
+
+
+/* Zero AI glow on primary buttons */
+.ann-btn.primary,
+.ann-btn.primary:hover {
+  box-shadow: none !important;
+}

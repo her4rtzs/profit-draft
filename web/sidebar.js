@@ -23,9 +23,10 @@
   const applyTheme = dark => {
     document.body.classList.toggle("dark", !!dark);
     document.documentElement.classList.toggle("dark", !!dark);
+    document.documentElement.dataset.theme = dark ? "dark" : "light";
     try {
       const h = document.documentElement;
-      h.style.background = dark ? '#0a0e16' : '#F7F4EE';
+      h.style.background = dark ? '#0a0e16' : '#fbf6ee';
       h.style.colorScheme = dark ? 'dark' : 'light';
     } catch(e) {}
     if (themeToggle) {
@@ -79,18 +80,20 @@
     if(window.PF_LIVE_NOTIFICATIONS)return;
     if(!list||!badge)return;
     const unread=notifications.filter(n=>!n.read).length;
-    // Keep the bell's accessible name equal to its visible label; the count lives in the badge and panel header.
-    badge.hidden=unread===0;badge.textContent="";
-    badge.setAttribute("aria-hidden","true");
-    const summary=$("#notificationSummary");if(summary)summary.textContent=unread?`${unread} unread update${unread===1?"":"s"}`:"You're all caught up";
-    // A notification that knows where it came from becomes a real link, so the
-    // bell actually takes you to the record instead of being a dead end.
+    badge.hidden=unread===0;
+    badge.textContent=unread>99?"99+":String(unread);
+    const summary=$("#notificationSummary");
+    if(summary){summary.textContent=unread?`${unread} unread`:"";summary.hidden=unread===0;}
+    const markAllBtn=$("#markAllRead");
+    if(markAllBtn){markAllBtn.hidden=unread===0;markAllBtn.disabled=unread===0;}
+    const kindMeta={payment:{lbl:"Payment",cls:"k2"},request:{lbl:"Membership",cls:"k4"},member:{lbl:"Member",cls:"k4"},attendance:{lbl:"Attendance",cls:"k3"},general:{lbl:"Update",cls:"k3"}};
     list.innerHTML=notifications.length?notifications.map(n=>{
+      const km=kindMeta[n.type]||kindMeta.general;
       const tag=n.href?"a":"article";
       const hrefAttr=n.href?` href="${escapeHTML(n.href)}"`:"";
       const goAttr=n.href?` data-go="${escapeHTML(n.id)}"`:"";
-      return `<${tag} class="notification-item ${n.read?"is-read":"is-unread"}${n.href?" is-link":""}"${hrefAttr}${goAttr}><span class="notif-icon ${n.type}"><i class="fa-solid ${n.icon}"></i></span><div class="notif-copy"><strong>${escapeHTML(n.title)}</strong><p>${escapeHTML(n.message)}</p><small>${escapeHTML(n.time)}${n.href?'<i class="fa-solid fa-arrow-right notif-go" aria-hidden="true"></i>':""}</small></div><button type="button" class="notif-read" data-read="${escapeHTML(n.id)}" aria-label="${n.read?"Mark unread":"Mark as read"}" title="${n.read?"Mark unread":"Mark as read"}"><i class="fa-solid ${n.read?"fa-envelope-open":"fa-envelope"}"></i></button></${tag}>`;
-    }).join(""):'<div class="notification-empty"><i class="fa-regular fa-bell-slash"></i><strong>No notifications</strong><p>Membership requests, check-ins and trainer updates land here.</p></div>';
+      return `<${tag} class="notification-item nr ${n.read?"is-read":"is-unread u"}${n.href?" is-link":""}"${hrefAttr}${goAttr}><span class="notif-icon ei ${km.cls}"><i class="fa-solid ${n.icon}"></i></span><div class="notif-copy at"><span class="notif-meta"><span class="cl ${km.cls}">${km.lbl}</span><small>${escapeHTML(n.time||"")}</small></span><strong>${escapeHTML(n.title)}</strong>${n.message?`<p>${escapeHTML(n.message)}</p>`:""}</div><i class="fa-solid fa-chevron-right notif-chev" aria-hidden="true"></i></${tag}>`;
+    }).join(""):'<div class="notification-empty"><i class="fa-regular fa-bell-slash"></i><strong>No notifications</strong><p>Membership requests, check-ins and payment updates land here.</p></div>';
   }
   function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
   function setPanel(open){if(!panel||!button)return;panel.hidden=!open;button.setAttribute("aria-expanded",String(open));if(open)renderNotifications()}

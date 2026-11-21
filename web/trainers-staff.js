@@ -646,15 +646,36 @@
     }
   });
 
-  // Status Tabs, Search, Specialization Dropdown & Grid/List Toggle
+  // Status Dropdown, Search, Specialization Dropdown & Grid/List Toggle
+  const statusBtn = document.getElementById("trStatusBtn");
+  const statusMenu = document.getElementById("trStatusMenu");
+  const statusLabel = document.getElementById("trStatusLabel");
+  statusBtn?.addEventListener("click", e => {
+    e.stopPropagation();
+    if (!statusMenu) return;
+    if (specMenu && !specMenu.hidden) {
+      specMenu.hidden = true;
+      specBtn?.setAttribute("aria-expanded", "false");
+    }
+    const willOpen = statusMenu.hidden;
+    statusMenu.hidden = !willOpen;
+    statusBtn.setAttribute("aria-expanded", willOpen ? "true" : "false");
+  });
   document.querySelectorAll("[data-status-tab]").forEach(btn => {
     btn.addEventListener("click", () => {
       statusFilter = btn.dataset.statusTab || "all";
+      if (statusLabel) statusLabel.textContent = btn.textContent.trim();
       document.querySelectorAll("[data-status-tab]").forEach(b => {
         const on = b === btn;
         b.classList.toggle("is-on", on);
+        b.classList.toggle("is-selected", on);
         b.setAttribute("aria-pressed", on ? "true" : "false");
+        b.setAttribute("aria-selected", on ? "true" : "false");
       });
+      if (statusMenu) {
+        statusMenu.hidden = true;
+        statusBtn?.setAttribute("aria-expanded", "false");
+      }
       renderDirectory();
     });
   });
@@ -664,6 +685,10 @@
   specBtn?.addEventListener("click", e => {
     e.stopPropagation();
     if (!specMenu) return;
+    if (statusMenu && !statusMenu.hidden) {
+      statusMenu.hidden = true;
+      statusBtn?.setAttribute("aria-expanded", "false");
+    }
     const willOpen = specMenu.hidden;
     specMenu.hidden = !willOpen;
     specBtn.setAttribute("aria-expanded", willOpen ? "true" : "false");
@@ -678,6 +703,10 @@
     renderDirectory();
   });
   document.addEventListener("click", e => {
+    if (statusMenu && !statusMenu.hidden && !e.target.closest("#trStatusWrap")) {
+      statusMenu.hidden = true;
+      statusBtn?.setAttribute("aria-expanded", "false");
+    }
     if (specMenu && !specMenu.hidden && !e.target.closest("#trSpecWrap")) {
       specMenu.hidden = true;
       specBtn?.setAttribute("aria-expanded", "false");

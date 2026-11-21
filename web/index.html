@@ -18,7 +18,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
 </style>
 <script>(function(){try{var t=localStorage.getItem('theme');if(t==='light'&&!localStorage.getItem('pf-staff-explicit-light')){t='dark';try{localStorage.setItem('theme','dark');}catch(_){}}var d=t!=='light';var h=document.documentElement;h.style.background=d?'#0a0e16':'#F7F4EE';h.style.colorScheme=d?'dark':'light';if(d){h.classList.add('dark');}else{h.classList.remove('dark');}}catch(e){}})();</script><script src="splash.js?v=3"></script>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>ProFit | Dashboard</title>
 
     <!-- Font -->
@@ -30,14 +30,13 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="dashboard.css?v=1">
+    <link rel="stylesheet" href="dashboard.css?v=11">
     <style>
       /* Editorial Owner Dashboard Hero + Staggered Motion (UI polish only) */
       @keyframes pfDashRise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-      @keyframes pfLivePulse{0%,100%{box-shadow:0 0 0 0 rgba(61,220,132,.55)}60%{box-shadow:0 0 0 7px rgba(61,220,132,0)}}
       .ow-hero{
         position:relative;border-radius:20px;overflow:hidden;margin-bottom:22px;
-        border:1px solid rgba(255,255,255,.09);background:#0c111b;
+        border:1px solid rgba(255,255,255,.09);background:#0c111b !important;
         display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,360px);gap:24px;
         align-items:center;padding:30px 32px;
         animation:pfDashRise .45s cubic-bezier(.2,.8,.2,1) both;
@@ -55,14 +54,14 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
       .ow-hero-left,.ow-hero-card{position:relative;z-index:1}
       .ow-eyebrow{
         display:inline-block;font:800 11.5px/1 "Figtree",Inter,sans-serif;
-        letter-spacing:.12em;text-transform:uppercase;color:#e8b93a;margin-bottom:10px;
+        letter-spacing:.12em;text-transform:uppercase;color:#e8b93a !important;margin-bottom:10px;
       }
       .ow-hero-left h2{
         margin:0 0 10px;font:900 clamp(2rem,3.6vw,3.1rem)/1.02 "Figtree","Plus Jakarta Sans",Inter,sans-serif;
-        letter-spacing:-.03em;color:#f8fafc;
+        letter-spacing:-.03em;color:#f8fafc !important;
       }
       .ow-hero-left p{
-        margin:0 0 22px;max-width:460px;font-size:14.5px;line-height:1.58;color:#cbd5e1;
+        margin:0 0 22px;max-width:460px;font-size:14.5px;line-height:1.58;color:#cbd5e1 !important;
       }
       .ow-hero-btns{display:flex;flex-wrap:wrap;gap:12px}
       .ow-btn-gold,.ow-btn-dark{
@@ -70,44 +69,44 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
         border-radius:12px;font:700 13.5px/1 "Plus Jakarta Sans",Inter,sans-serif;
         text-decoration:none;transition:transform .16s ease,background .16s ease,border-color .16s ease;
       }
-      .ow-btn-gold{background:#e8b93a;color:#141006}
-      .ow-btn-gold:hover{transform:translateY(-2px);background:#f1c856}
-      .ow-btn-dark{background:rgba(15,23,42,.72);color:#f1f5f9;border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(8px)}
-      .ow-btn-dark:hover{transform:translateY(-2px);background:rgba(30,41,59,.88);border-color:rgba(232,185,58,.45)}
+      .ow-btn-gold{background:#e8b93a !important;color:#141006 !important}
+      .ow-btn-gold:hover{transform:translateY(-1px);background:#f1c856 !important}
+      .ow-btn-dark{background:rgba(15,23,42,.78) !important;color:#f1f5f9 !important;border:1px solid rgba(255,255,255,.2) !important;backdrop-filter:blur(8px)}
+      .ow-btn-dark:hover{transform:translateY(-1px);background:rgba(30,41,59,.9) !important;border-color:rgba(232,185,58,.5) !important}
 
       .ow-hero-card{
-        background:rgba(15,21,34,.84);border:1px solid rgba(255,255,255,.11);
+        background:rgba(15,21,34,.88) !important;border:1px solid rgba(255,255,255,.14) !important;
         border-radius:16px;padding:18px 20px;backdrop-filter:blur(12px);
-        display:flex;flex-direction:column;gap:16px;
+        display:flex;flex-direction:column;gap:16px;color:#f8fafc !important;
       }
       .ow-card-top{display:flex;align-items:center;justify-content:space-between;gap:14px}
       .ow-open-pill{
         display:inline-flex;align-items:center;gap:7px;padding:5px 10px;border-radius:999px;
-        background:rgba(61,220,132,.14);color:#4ade80;font:700 11.5px/1 Inter,sans-serif;
+        background:rgba(61,220,132,.14) !important;color:#4ade80 !important;font:700 11.5px/1 Inter,sans-serif;
         margin-bottom:8px;
       }
-      .ow-open-dot{width:7px;height:7px;border-radius:50%;background:#4ade80;animation:pfLivePulse 2.2s infinite}
-      .ow-card-top h3{margin:0 0 4px;font:800 18px/1.2 "Figtree",Inter,sans-serif;color:#f8fafc}
-      .ow-card-date{font-size:12.5px;color:#94a3b8}
+      .ow-open-dot{width:7px;height:7px;border-radius:50%;background:#4ade80}
+      .ow-card-top h3{margin:0 0 4px;font:800 18px/1.2 "Figtree",Inter,sans-serif;color:#f8fafc !important}
+      .ow-card-date{font-size:12.5px;color:#94a3b8 !important}
       .ow-ring-wrap{position:relative;width:76px;height:76px;flex:none;display:grid;place-items:center}
       .ow-ring-svg{width:76px;height:76px;transform:rotate(-90deg)}
-      .ow-ring-track{fill:none;stroke:rgba(255,255,255,.1);stroke-width:6}
+      .ow-ring-track{fill:none;stroke:rgba(255,255,255,.12);stroke-width:6}
       .ow-ring-arc{fill:none;stroke:#e8b93a;stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset .85s cubic-bezier(.2,.8,.2,1)}
       .ow-ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
-      .ow-ring-center strong{font:800 19px/1 "Figtree",Inter,sans-serif;color:#f8fafc;font-variant-numeric:tabular-nums}
-      .ow-ring-center small{font-size:10px;color:#94a3b8;margin-top:2px}
+      .ow-ring-center strong{font:800 19px/1 "Figtree",Inter,sans-serif;color:#f8fafc !important;font-variant-numeric:tabular-nums}
+      .ow-ring-center small{font-size:10px;color:#94a3b8 !important;margin-top:2px}
       .ow-card-foot{
         display:flex;align-items:center;justify-content:space-between;gap:12px;
-        padding-top:14px;border-top:1px dashed rgba(255,255,255,.12);
+        padding-top:14px;border-top:1px dashed rgba(255,255,255,.14);
       }
-      .ow-card-foot span{display:block;font-size:11.5px;color:#94a3b8;margin-bottom:2px}
-      .ow-card-foot strong{font:800 15px/1.2 "Figtree",Inter,sans-serif;color:#f8fafc}
+      .ow-card-foot span{display:block;font-size:11.5px;color:#94a3b8 !important;margin-bottom:2px}
+      .ow-card-foot strong{font:800 15px/1.2 "Figtree",Inter,sans-serif;color:#f8fafc !important}
       .ow-mini-btn{
-        padding:8px 14px;border-radius:10px;background:#e8b93a;color:#141006;
+        padding:8px 14px;border-radius:10px;background:#e8b93a !important;color:#141006 !important;
         font:700 12.5px/1 "Plus Jakarta Sans",Inter,sans-serif;text-decoration:none;
         transition:transform .15s ease,background .15s ease;
       }
-      .ow-mini-btn:hover{transform:translateY(-1px);background:#f1c856}
+      .ow-mini-btn:hover{transform:translateY(-1px);background:#f1c856 !important}
 
       /* Staggered card entrance & subtle hover elevation */
       #dashStats .stat-card{animation:pfDashRise .45s cubic-bezier(.2,.8,.2,1) both}
@@ -134,7 +133,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
 
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script><link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
 
-<body class="pf-staff" data-page="dashboard" data-title="Dashboard" data-welcome="Welcome back "><script>(function(){try{var t=localStorage.getItem('theme');if(t==='light'&&!localStorage.getItem('pf-staff-explicit-light')){t='dark';try{localStorage.setItem('theme','dark');}catch(_){}}var d=t!=='light';if(d){document.body.classList.add('dark');}else{document.body.classList.remove('dark');}}catch(e){}})();</script><script>
+<body class="pf-staff" data-page="dashboard" data-title="Dashboard" data-welcome=""><script>(function(){try{var t=localStorage.getItem('theme');if(t==='light'&&!localStorage.getItem('pf-staff-explicit-light')){t='dark';try{localStorage.setItem('theme','dark');}catch(_){}}var d=t!=='light';if(d){document.body.classList.add('dark');}else{document.body.classList.remove('dark');}}catch(e){}})();</script><script>
 (function(){
   try {
     var returning = sessionStorage.getItem('pf-nav-returning-home') || (document.referrer && /(members|attendance|payments|reports|announcements|trainers|settings|profile)\.html/.test(document.referrer));
@@ -194,10 +193,10 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
             </div>
             <div class="ow-card-foot">
               <div>
-                <span>Total members</span>
-                <strong id="owHeroTotalMembers">&mdash;</strong>
+                <span>Today&apos;s attendance</span>
+                <strong style="font-size:13px;font-weight:600;opacity:.85">Live front-desk log</strong>
               </div>
-              <a class="ow-mini-btn" href="/members">Members</a>
+              <a class="ow-mini-btn" href="/attendance">Check-ins</a>
             </div>
           </aside>
         </section>
@@ -237,7 +236,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
                 </div>
                 <div class="stat-content">
                     <p class="sr-only">Total members</p>
-                    <h2 id="kpiTotalMembersVal">Ã¢â‚¬â€</h2>
+                    <h2 id="kpiTotalMembersVal">&mdash;</h2>
                     <div class="kpi-bottom">
                         <small class="kpi-sub" id="kpiTotalMembersSub">
                             <span class="kpi-trend positive"><i class="fa-solid fa-arrow-up"></i> +12%</span> from last month
@@ -255,7 +254,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
                 </div>
                 <div class="stat-content">
                     <p class="sr-only">Expired members</p>
-                    <h2 id="kpiExpiredVal">Ã¢â‚¬â€</h2>
+                    <h2 id="kpiExpiredVal">&mdash;</h2>
                     <div class="kpi-bottom">
                         <small class="kpi-sub" id="kpiExpiredSub">
                             <span class="kpi-trend neutral">&rarr; No change</span>
@@ -273,7 +272,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
                 </div>
                 <div class="stat-content">
                     <p class="sr-only">Expiring soon</p>
-                    <h2 id="kpiExpiringVal">Ã¢â‚¬â€</h2>
+                    <h2 id="kpiExpiringVal">&mdash;</h2>
                     <div class="kpi-bottom">
                         <small class="kpi-sub" id="kpiExpiringSub">
                             <span class="kpi-trend positive"><i class="fa-solid fa-arrow-up"></i> +2</span> this month
@@ -392,7 +391,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
                             <g id="mtDonutLabels"></g>
                         </svg>
                         <div class="mt-donut-center">
-                            <strong id="mtTotalCount">Ã¢â‚¬â€</strong>
+                            <strong id="mtTotalCount">&mdash;</strong>
                             <span id="mtTotalLabel">Total Members</span>
                             <i class="fa-solid fa-users mt-center-ico" aria-hidden="true"></i>
                         </div>
@@ -473,9 +472,9 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
 </div>
 
 <script src="data.js?v=2"></script>
-<script src="layout.js?v=21"></script>
-<script src="sidebar.js?v=20"></script>
-<script src="chart-periods.js?v=917"></script>
+<script src="layout.js?v=25"></script>
+<script src="sidebar.js?v=21"></script>
+<script src="chart-periods.js?v=918"></script>
 <script src="portal-fx.js?v=2"></script>
 <script src="change-password.js?v=2" defer></script>
 <script>
@@ -759,7 +758,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
       const item = entries[activeIdx];
       if (totalEl) totalEl.textContent = item.count;
       if (totalLabelEl) totalLabelEl.textContent = item.label;
-      tooltip.innerHTML = `<strong>${esc(item.label)}</strong><small>${item.count} member${item.count === 1 ? "" : "s"} (${item.pctText}) Ã‚Â· Click to view</small>`;
+      tooltip.innerHTML = `<strong>${esc(item.label)}</strong><small>${item.count} member${item.count === 1 ? "" : "s"} (${item.pctText}) &middot; Click to view</small>`;
       tooltip.hidden = false;
     };
 
@@ -883,7 +882,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
       arcEl.style.strokeDashoffset = (circ * (1 - frac)).toFixed(2);
     }
 
-    // Smooth count-up animation for Total Revenue whenever chart-periods.js updates #kpiRevenueVal
+    // Smooth count-up animation for Total Revenue whenever chart-periods.js?v=918 updates #kpiRevenueVal
     const revValEl = document.getElementById("kpiRevenueVal");
     if (revValEl && !revValEl.dataset.animBound) {
       revValEl.dataset.animBound = "1";
@@ -962,7 +961,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
   window.addEventListener("storage", paint);
 })();
 </script>
-<script src="notifications-live.js?v=1" defer></script>
+<script src="notifications-live.js?v=2" defer></script>
 <script src="site-footer.js?v=2" defer></script>
 </body>
 </html>

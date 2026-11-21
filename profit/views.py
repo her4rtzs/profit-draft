@@ -20,7 +20,7 @@ from apps.membership.services import (
 
 PUBLIC_PAGES = frozenset({"welcome", "login", "join", "forgot", "faq", "terms", "privacy"})
 OWNER_ONLY_PAGES = frozenset({"reports", "trainers", "cashiers", "announcements"})
-CASHIER_OR_OWNER_PAGES = frozenset({"cashier", "payments", "members", "attendance", "index", "profile", "settings"})
+CASHIER_OR_OWNER_PAGES = frozenset({"cashier", "payments", "members", "attendance", "index", "profile", "settings", "notifications"})
 
 
 def _serve_web_page(relative):

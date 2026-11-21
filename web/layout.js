@@ -88,8 +88,18 @@
   }
 
   const top = document.getElementById('topbar');
+  // Apply saved Font Size preference site-wide (Small / Medium / Large)
+  try {
+    const savedFs = localStorage.getItem('pf-font-size');
+    if (savedFs === 'sm' || savedFs === 'md' || savedFs === 'lg') {
+      document.documentElement.dataset.fontSize = savedFs;
+    }
+  } catch { /* ignore */ }
   if (top) {
-    const title = body.dataset.title || 'Dashboard', welcome = body.dataset.welcome || 'Welcome back';
+    const title = body.dataset.title || 'Dashboard';
+    const rawWelcome = String(body.dataset.welcome || '').trim();
+    const welcome = /^welcome\s+back\b/i.test(rawWelcome) ? '' : rawWelcome;
+    const allNotifHref = '/notifications';
     top.innerHTML = `
       <div class="topbar-heading">
         <div class="topbar-nav">
@@ -98,15 +108,22 @@
         </div>
         <button class="mobile-nav-toggle" id="mobileNavToggle" type="button" aria-label="Open navigation" aria-expanded="false"><i class="fa-solid fa-bars"></i></button>
         <div class="topbar-title">
-          <p class="welcome">${welcome}</p>
+          ${welcome ? `<p class="welcome">${welcome}</p>` : ''}
           <h1>${title}</h1>
         </div>
       </div>
       <div class="topbar-right">
         <div class="topbar-actions">
           <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode" title="Toggle theme"><i class="fa-solid fa-moon"></i></button>
-          <div class="notification-wrap"><button class="notification" id="notificationToggle" type="button" aria-label="Notifications" aria-haspopup="true" aria-expanded="false"><i class="fa-regular fa-bell"></i><span class="notification-badge" id="notificationBadge" hidden>0</span></button>
-            <section class="notification-panel" id="notificationPanel" aria-label="Notifications" hidden><div class="notification-head"><div><strong>Notifications</strong><small id="notificationSummary">You're all caught up</small></div><button type="button" id="markAllRead">Mark all read</button></div><div class="notification-list" id="notificationList"></div><div class="notification-foot"><span>Gym updates</span><button type="button" id="clearNotifications">Clear all</button></div></section>
+          <div class="notification-wrap"><button class="notification" id="notificationToggle" type="button" aria-label="Notifications" aria-haspopup="dialog" aria-expanded="false"><i class="fa-regular fa-bell"></i><span class="notification-badge" id="notificationBadge" hidden>0</span></button>
+            <section class="notification-panel np" id="notificationPanel" role="dialog" aria-label="Notifications" hidden>
+              <div class="notification-head nph">
+                <div class="nph-title"><strong>Notifications</strong><em id="notificationSummary"></em></div>
+                <button type="button" id="markAllRead">Mark all read</button>
+              </div>
+              <div class="notification-list npl" id="notificationList"></div>
+              <a class="notification-foot npf" id="allNotificationsLink" href="${allNotifHref}">All notifications &rarr;</a>
+            </section>
           </div>
           <a class="topbar-avatar" id="topbarAvatar" href="/profile" title="My profile" aria-label="My profile"><span data-user-initials>AD</span></a>
         </div>
@@ -160,9 +177,108 @@
         if (scrollEl) scrollEl.innerHTML = renderSidebarGroups(isCashier ? cashierGroups : ownerGroups);
         const brandLink = nav.querySelector('.imgbrand');
         if (brandLink) brandLink.setAttribute('href', isCashier ? '/cashier' : '/index');
+        const allNotif = document.getElementById('allNotificationsLink');
+        if (allNotif) allNotif.setAttribute('href', '/notifications');
+        renderMobileBar(isCashier);
       }
       paintAccount();
     });
+
+    // ---- Mobile bottom tab bar + "More" sheet (<= 980px) ----
+    const renderMobileBar = isCashier => {
+      if (!nav) return;
+      const primary = isCashier
+        ? [
+            { id: 'cashier', label: 'Cashier', icon: 'fa-cash-register', href: '/cashier' },
+            { id: 'payments', label: 'Payments', icon: 'fa-wallet', href: '/payments' },
+            { id: 'members', label: 'Members', icon: 'fa-users', href: '/members' },
+            { id: 'attendance', label: 'Check-ins', icon: 'fa-calendar-check', href: '/attendance' },
+          ]
+        : [
+            { id: 'dashboard', label: 'Home', icon: 'fa-house', href: '/index' },
+            { id: 'members', label: 'Members', icon: 'fa-users', href: '/members' },
+            { id: 'payments', label: 'Payments', icon: 'fa-wallet', href: '/payments' },
+            { id: 'reports', label: 'Reports', icon: 'fa-chart-column', href: '/reports' },
+          ];
+      const moreItems = isCashier
+        ? [
+            { id: 'profile', label: 'My profile', icon: 'fa-regular fa-user', href: '/profile' },
+            { id: 'settings', label: 'Settings', icon: 'fa-solid fa-sliders', href: '/settings#appearance' },
+          ]
+        : [
+            { id: 'attendance', label: 'Attendance', icon: 'fa-solid fa-calendar-check', href: '/attendance' },
+            { id: 'announcements', label: 'Announcements', icon: 'fa-solid fa-bullhorn', href: '/announcements' },
+            { id: 'trainers', label: 'Trainers', icon: 'fa-solid fa-dumbbell', href: '/trainers' },
+            { id: 'cashiers', label: 'Cashiers', icon: 'fa-solid fa-cash-register', href: '/cashiers' },
+            { id: 'profile', label: 'My profile', icon: 'fa-regular fa-user', href: '/profile' },
+            { id: 'settings', label: 'Settings', icon: 'fa-solid fa-sliders', href: '/settings#appearance' },
+          ];
+      const inMore = moreItems.some(x => x.id === current);
+
+      let tabs = document.getElementById('pfMobTabs');
+      if (!tabs) {
+        tabs = document.createElement('nav');
+        tabs.id = 'pfMobTabs';
+        tabs.className = 'pf-mob-tabs';
+        tabs.setAttribute('aria-label', 'Mobile navigation');
+        document.body.appendChild(tabs);
+      }
+      tabs.innerHTML = primary.map(item =>
+        `<a class="pf-mob-tab${item.id === current ? ' on' : ''}" href="${item.href}"${item.id === current ? ' aria-current="page"' : ''}><i class="fa-solid ${item.icon}" aria-hidden="true"></i><span>${item.label}</span></a>`
+      ).join('') +
+        `<button type="button" class="pf-mob-tab${inMore ? ' on' : ''}" id="pfMobMoreBtn" aria-expanded="false" aria-controls="pfMobSheet"><i class="fa-solid fa-ellipsis" aria-hidden="true"></i><span>More</span></button>`;
+
+      let backdrop = document.getElementById('pfMobBackdrop');
+      if (!backdrop) {
+        backdrop = document.createElement('div');
+        backdrop.id = 'pfMobBackdrop';
+        backdrop.className = 'pf-mob-backdrop';
+        backdrop.hidden = true;
+        document.body.appendChild(backdrop);
+      }
+
+      let sheet = document.getElementById('pfMobSheet');
+      if (!sheet) {
+        sheet = document.createElement('div');
+        sheet.id = 'pfMobSheet';
+        sheet.className = 'pf-mob-sheet';
+        sheet.setAttribute('role', 'dialog');
+        sheet.setAttribute('aria-label', 'More pages');
+        document.body.appendChild(sheet);
+      }
+      sheet.innerHTML = `<div class="pf-mob-sheet-bar" aria-hidden="true"></div><div class="pf-mob-sheet-chips">${moreItems.map(item =>
+        `<a class="pf-mob-chip${item.id === current ? ' sel' : ''}" href="${item.href}"><i class="${item.icon}" aria-hidden="true"></i><span>${item.label}</span></a>`
+      ).join('')}<button type="button" class="pf-mob-chip is-danger" data-logout><i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i><span>Log out</span></button></div>`;
+
+      const moreBtn = document.getElementById('pfMobMoreBtn');
+      const setSheet = open => {
+        sheet.classList.toggle('on', open);
+        backdrop.hidden = !open;
+        backdrop.classList.toggle('on', open);
+        moreBtn?.setAttribute('aria-expanded', String(open));
+      };
+      moreBtn?.addEventListener('click', e => {
+        e.stopPropagation();
+        setSheet(!sheet.classList.contains('on'));
+      });
+      backdrop.onclick = () => setSheet(false);
+      if (!window.__pfMobEscBound) {
+        window.__pfMobEscBound = true;
+        document.addEventListener('keydown', ev => {
+          if (ev.key === 'Escape') {
+            const s = document.getElementById('pfMobSheet');
+            const b = document.getElementById('pfMobBackdrop');
+            const m = document.getElementById('pfMobMoreBtn');
+            if (s?.classList.contains('on')) {
+              s.classList.remove('on');
+              if (b) { b.hidden = true; b.classList.remove('on'); }
+              m?.setAttribute('aria-expanded', 'false');
+            }
+          }
+        });
+      }
+    };
+    renderMobileBar(renderedRole === 'CASHIER');
 
     // Back / forward mirror the browser history stack.
     const back = top.querySelector('#navBack'), fwd = top.querySelector('#navFwd');

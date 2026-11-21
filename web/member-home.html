@@ -38,14 +38,14 @@
   <script src="auth.js?v=4"></script>
   <link rel="stylesheet" href="pro-theme.css">
   <link rel="stylesheet" href="spotify.css?v=14">
-  <link rel="stylesheet" href="portal-ui.css?v=6">
+  <link rel="stylesheet" href="portal-ui.css?v=13">
   <script>document.documentElement.dataset.accent = 'gold'</script>
   <link rel="stylesheet" href="hover-fx.css?v=1">
   <link rel="stylesheet" href="announcements.css?v=2">
   <link rel="stylesheet" href="ui-polish.css?v=2">
   <link rel="stylesheet" href="ui-fixes.css?v=1">
-  <link rel="stylesheet" href="pf-modern.css?v=1">
-  <link rel="stylesheet" href="member-shell.css?v=7">
+  <link rel="stylesheet" href="pf-modern.css?v=2">
+  <link rel="stylesheet" href="member-shell.css?v=16">
   <style>
     @keyframes mbDashRise {
       from {
@@ -142,14 +142,15 @@
     }
 
     .mb-hero-card {
-      background: rgba(15, 21, 34, .86);
-      border: 1px solid rgba(255, 255, 255, .12);
+      background: rgba(15, 21, 34, .88) !important;
+      border: 1px solid rgba(255, 255, 255, .14) !important;
       border-radius: 16px;
       padding: 18px 20px;
       backdrop-filter: blur(12px);
       display: flex;
       flex-direction: column;
       gap: 16px;
+      color: #f8fafc !important;
     }
 
     .mb-card-top {
@@ -182,22 +183,26 @@
     }
 
     .mb-status-dot {
-      width: 7px;
-      height: 7px;
+      display: inline-block;
+      flex: 0 0 7px;
+      width: 7px !important;
+      min-width: 7px !important;
+      height: 7px !important;
+      min-height: 7px !important;
+      padding: 0 !important;
       border-radius: 50%;
       background: currentColor;
-      animation: mbLivePulse 2.2s infinite
     }
 
     .mb-card-top h3 {
       margin: 0 0 4px;
       font: 800 18px/1.2 "Plus Jakarta Sans", Inter, sans-serif;
-      color: #f8fafc
+      color: #f8fafc !important
     }
 
     .mb-card-sub {
       font-size: 12.5px;
-      color: #94a3b8
+      color: #94a3b8 !important
     }
 
     .mb-ring-wrap {
@@ -478,6 +483,70 @@
       gap: 8px !important;
     }
 
+    /* Light Mode parity for Member Portal hero, tab banners, calendar, and all tabs */
+    body.member-home:not(.dark) .mb-tab-banner {
+      background: #ffffff !important;
+      border: 1px solid #eadfc8 !important;
+      color: #2a2418 !important;
+    }
+    body.member-home:not(.dark) .mb-tab-banner::before {
+      opacity: .42 !important;
+    }
+    body.member-home:not(.dark) .mb-tab-banner::after {
+      background: linear-gradient(90deg, rgba(255, 250, 240, .96) 0%, rgba(255, 250, 240, .78) 52%, rgba(255, 250, 240, .18) 100%) !important;
+    }
+    body.member-home:not(.dark) .mb-tab-eyebrow {
+      color: #8a6212 !important;
+    }
+    body.member-home:not(.dark) .mb-tab-banner h2 {
+      color: #2a2418 !important;
+    }
+    body.member-home:not(.dark) .pp-cal-head strong {
+      color: #2a2418 !important;
+    }
+    body.member-home:not(.dark) .pp-cal-dow {
+      color: #6f6450 !important;
+    }
+    body.member-home:not(.dark) .pp-cal-day {
+      color: #2a2418 !important;
+    }
+    body.member-home:not(.dark) .pp-cal-day:hover {
+      background: #f6ecd9 !important;
+    }
+    body.member-home:not(.dark) .pp-cal-day.is-today {
+      border-color: #b8860b !important;
+      color: #8a6212 !important;
+    }
+    body.member-home:not(.dark) .pp-cal-day.is-today.is-checkin {
+      border-color: #8a6212 !important;
+      color: #2a1d04 !important;
+    }
+    body.member-home:not(.dark) .pp-cal-day.is-checkin {
+      background: #f0b92a !important;
+      color: #2a1d04 !important;
+    }
+    body.member-home:not(.dark) .pp-cal-stats {
+      border-top-color: #eadfc8 !important;
+    }
+    body.member-home:not(.dark) .pp-cal-stat:not(:first-child)::before {
+      background: #eadfc8 !important;
+    }
+    body.member-home:not(.dark) .pp-cal-stat strong {
+      color: #2a2418 !important;
+    }
+    body.member-home:not(.dark) .pp-cal-stat span {
+      color: #6f6450 !important;
+    }
+    body.member-home:not(.dark) .pp-cal-summary {
+      background: #faf6ee !important;
+      border: 1px solid #eadfc8 !important;
+      color: #2a2418 !important;
+    }
+    body.member-home:not(.dark) .pp-cal-summary strong,
+    body.member-home:not(.dark) .pp-cal-summary span {
+      color: #2a2418 !important;
+    }
+
     .member-stats .stat-card,
     .member-status-card,
     .ann-overview {
@@ -702,13 +771,32 @@
               <path d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
-          <p class="member-top-title" id="memberTopTitle">Overview</p>
+          <div class="member-top-copy">
+            <span class="member-top-eyebrow" id="mbTabEyebrow">Your gym overview</span>
+            <p class="member-top-title" id="memberTopTitle">Dashboard</p>
+          </div>
         </div>
         <div class="member-top-actions">
-          <a class="member-top-chip" href="/member-home#announcements" aria-label="Announcements and notifications"><i
-              class="fa-solid fa-bell" aria-hidden="true"></i><span id="homeAnnounceCount">0</span></a>
-          <button class="theme-toggle" id="memberTheme" aria-label="Toggle theme"><i
+          <span id="homeAnnounceCount" hidden>0</span>
+          <button class="theme-toggle" id="memberTheme" type="button" aria-label="Toggle theme" title="Toggle theme"><i
               class="fa-solid fa-moon"></i></button>
+          <div class="notification-wrap">
+            <button class="notification" id="notificationToggle" type="button" aria-label="Notifications" aria-haspopup="dialog" aria-expanded="false">
+              <i class="fa-regular fa-bell"></i>
+              <span class="notification-badge" id="notificationBadge" hidden>0</span>
+            </button>
+            <section class="notification-panel np" id="notificationPanel" role="dialog" aria-label="Notifications" hidden>
+              <div class="notification-head nph">
+                <div class="nph-title"><strong>Notifications</strong><em id="notificationSummary"></em></div>
+                <button type="button" id="markAllRead">Mark all read</button>
+              </div>
+              <div class="notification-list npl" id="notificationList"></div>
+              <a class="notification-foot npf" id="allNotificationsLink" href="#announcements">All notifications &rarr;</a>
+            </section>
+          </div>
+          <button class="member-top-avatar" id="memberTopAvatar" type="button" data-member-goto="profile" title="My profile" aria-label="My profile">
+            <span class="member-avatar-face" id="memberTopInitials" aria-hidden="true">M</span>
+          </button>
         </div>
       </header>
 
@@ -716,7 +804,6 @@
         <section class="member-welcome member-hero pf-app-hero">
           <div class="pf-app-hero-copy">
             <div class="mb-hero-eyebrow">
-              <span>Welcome back,</span>
               <span class="pf-date-pill" id="heroDatePill">TODAY</span>
             </div>
             <h1 id="memberGreeting"><span id="heroFirstName">Member</span>,<br>let's get to work.</h1>
@@ -795,18 +882,18 @@
               <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap">
                 <div>
                   <span class="member-status-label"><i class="fa-solid fa-circle-check"></i> MEMBERSHIP SUMMARY</span>
-                  <h2 id="membershipName">Ã¢â‚¬â€</h2>
+                  <h2 id="membershipName">&mdash;</h2>
                   <p id="membershipDetail">Checking your current account details.</p>
                 </div>
                 <div class="pf-status-actions">
-                  <span class="pf-status-badge" id="membershipStatus">Ã¢â‚¬â€</span>
+                  <span class="pf-status-badge" id="membershipStatus">&mdash;</span>
                   <button type="button" class="btn btn-primary" data-renew-membership><i class="fa-solid fa-rotate"></i>
                     Renew membership</button>
                 </div>
               </div>
               <div class="pf-progress-wrap">
                 <div class="pf-progress-labels">
-                  <span id="overviewMembershipRemaining">Ã¢â‚¬â€</span>
+                  <span id="overviewMembershipRemaining">&mdash;</span>
                   <span id="overviewMembershipPct">0%</span>
                 </div>
                 <div class="pf-progress-track">
@@ -989,14 +1076,14 @@
           </div>
           <div id="healthRootWrap">
             <div class="pp-stats">
-              <div class="pp-stat"><span>BMI</span><strong id="statBmi">Ã¢â‚¬â€</strong><small id="statBmiCat">Add
+              <div class="pp-stat"><span>BMI</span><strong id="statBmi">&mdash;</strong><small id="statBmiCat">Add
                   height and a weight entry</small></div>
-              <div class="pp-stat"><span>Current weight</span><strong id="statWeight">Ã¢â‚¬â€</strong><small
+              <div class="pp-stat"><span>Current weight</span><strong id="statWeight">&mdash;</strong><small
                   id="statWeightChange">Log weight to see your change</small></div>
-              <div class="pp-stat"><span>Goal progress</span><strong id="statGoal">Ã¢â‚¬â€</strong>
+              <div class="pp-stat"><span>Goal progress</span><strong id="statGoal">&mdash;</strong>
                 <div class="pp-bar"><span id="statGoalBar" style="width:0%"></span></div>
               </div>
-              <div class="pp-stat"><span>Target date</span><strong id="statDays">Ã¢â‚¬â€</strong><small
+              <div class="pp-stat"><span>Target date</span><strong id="statDays">&mdash;</strong><small
                   id="statTarget">Set a target date</small></div>
             </div>
             <div class="pp-two">
@@ -1019,7 +1106,7 @@
                           <option value="in">in</option>
                         </select>
                       </div>
-                      <small class="pp-hint" id="heightHint">100 Ã¢â‚¬â€œ 250 cm</small>
+                      <small class="pp-hint" id="heightHint">100 &ndash; 250 cm</small>
                     </div>
                     <div class="pp-field">
                       <label for="healthGoalWeight">Goal weight</label>
@@ -1030,7 +1117,7 @@
                           <option value="lb">lb</option>
                         </select>
                       </div>
-                      <small class="pp-hint" id="goalWeightHint">20 Ã¢â‚¬â€œ 300 kg</small>
+                      <small class="pp-hint" id="goalWeightHint">20 &ndash; 300 kg</small>
                     </div>
                   </div>
                   <div class="pp-field"><label for="healthTarget">Target date</label><input type="date"
@@ -1039,23 +1126,41 @@
                     profile</button>
                 </form>
               </div>
-              <div class="pp-card">
+              <div class="pp-card mb-bodycheck-card" id="bodyCheckCard">
                 <div class="pp-card-head">
-                  <h3>Log weight</h3><span class="pp-muted">One entry per day</span>
+                  <h3>Body check</h3>
+                  <span class="pp-muted" id="bcHeightLabel">Height &mdash;</span>
                 </div>
-                <form id="weightForm" class="pp-inline-form" novalidate>
-                  <input type="date" id="weightDate" aria-label="Weight date">
-                  <div class="pp-unit-row">
-                    <input type="number" id="weightKg" min="44" max="660" step="0.1" placeholder="Weight"
-                      aria-label="Weight">
-                    <select id="weightUnit" class="pp-unit-select" aria-label="Weight unit">
-                      <option value="kg">kg</option>
-                      <option value="lb">lb</option>
-                    </select>
+                <div class="mb-gauge-wrap" aria-label="BMI gauge">
+                  <svg class="mb-gauge-svg" viewBox="0 0 220 124" role="img" aria-label="BMI gauge">
+                    <path d="M 24 106 A 86 86 0 0 1 56 38" class="mb-g-seg mb-g-s1"></path>
+                    <path d="M 60 35 A 86 86 0 0 1 110 20" class="mb-g-seg mb-g-s2"></path>
+                    <path d="M 114 20 A 86 86 0 0 1 164 38" class="mb-g-seg mb-g-s3"></path>
+                    <path d="M 168 42 A 86 86 0 0 1 196 106" class="mb-g-seg mb-g-s4"></path>
+                    <g id="bcNeedle" transform="rotate(-35 110 106)">
+                      <line x1="110" y1="106" x2="110" y2="34" class="mb-g-needle"></line>
+                      <circle cx="110" cy="106" r="7" class="mb-g-hub"></circle>
+                    </g>
+                  </svg>
+                  <div class="mb-gauge-meta"><strong id="bcBmiNum">&mdash;</strong><small id="bcBmiLbl">Log height &amp; weight</small></div>
+                </div>
+                <div class="mb-bc-form">
+                  <label for="bcWeightInput">Log today's weight (kg)</label>
+                  <div class="mb-bc-row">
+                    <input type="number" id="bcWeightInput" min="20" max="300" step="0.1" placeholder="e.g. 57.0">
+                    <button type="button" class="pp-btn pp-btn-primary mb-bc-btn" id="bcLogBtn">Log weight</button>
                   </div>
-                  <button class="pp-btn pp-btn-primary" type="submit">Add</button>
+                </div>
+                <div class="mb-bc-notes">
+                  <label for="bcHealthNotes">Health notes <span class="mb-bc-staff-note">&middot; visible to gym staff only</span></label>
+                  <textarea id="bcHealthNotes" rows="3" maxlength="400" placeholder="Allergies, past injuries, or conditions your trainer should know about..."></textarea>
+                </div>
+                <form id="weightForm" hidden novalidate>
+                  <input type="date" id="weightDate" aria-label="Weight date">
+                  <input type="number" id="weightKg" min="20" max="660" step="0.1" aria-label="Weight">
+                  <select id="weightUnit" aria-label="Weight unit"><option value="kg">kg</option><option value="lb">lb</option></select>
                 </form>
-                <div id="weightList" class="pp-mini-list"></div>
+                <div id="weightList" class="pp-mini-list" style="margin-top:12px"></div>
               </div>
             </div>
             <div class="pp-card" style="margin-bottom:18px">
@@ -1116,6 +1221,15 @@
         </div>
 
         <div class="pp-tool-panel" data-panel="attendance" hidden>
+          <section class="panel member-panel mb-heat-panel" id="attHeatmapCard" style="margin-bottom:18px">
+            <div class="pf-panel-head">
+              <div>
+                <h2>Last 12 weeks</h2>
+              </div>
+              <span class="pp-muted" id="attHeatSub">Gold squares mark your check-in days</span>
+            </div>
+            <div class="mb-heat-grid" id="attHeatmapGrid" aria-label="Last 12 weeks attendance heatmap"></div>
+          </section>
           <section class="panel member-panel">
             <div class="pf-panel-head">
               <div>
@@ -1223,12 +1337,12 @@
   <script>
       (() => {
         const $ = id => document.getElementById(id);
-        const safe = value => String(value ?? "Ã¢â‚¬â€");
+        const safe = value => String(value ?? "&mdash;");
 
-        // Ã¢â€â‚¬Ã¢â€â‚¬ Date helpers Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+        // Ã¢”â‚¬Ã¢”â‚¬ Date helpers Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬
         // localDateStr: converts any date value to a Manila-local YYYY-MM-DD string,
         // avoiding the UTC-shift bug that occurs when you pass an ISO date string
-        // (e.g. "2026-10-29") to `new Date()` Ã¢â‚¬â€ that parses as midnight UTC, which
+        // (e.g. "2026-10-29") to `new Date()` &mdash; that parses as midnight UTC, which
         // is 8 hours behind Manila and rolls back to the previous local day.
         const localDateStr = value => {
           if (!value) return "";
@@ -1240,13 +1354,13 @@
           return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
         };
         const date = value => {
-          if (!value) return "Ã¢â‚¬â€";
+          if (!value) return "&mdash;";
           // Parse YYYY-MM-DD without UTC shift: treat it as local midnight
           const s = localDateStr(value);
-          if (!s) return "Ã¢â‚¬â€";
+          if (!s) return "&mdash;";
           const [y, mo, d] = s.split("-").map(Number);
           const obj = new Date(y, mo - 1, d);
-          return Number.isNaN(obj.getTime()) ? "Ã¢â‚¬â€" : obj.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+          return Number.isNaN(obj.getTime()) ? "&mdash;" : obj.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
         };
         // todayKey: local YYYY-MM-DD (not UTC)
         const todayKey = () => localDateStr(new Date());
@@ -1287,7 +1401,7 @@
           });
         };
 
-        // Ã¢â€â‚¬Ã¢â€â‚¬ Streak Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+        // Ã¢”â‚¬Ã¢”â‚¬ Streak Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬
         // Uses localDateStr() so UTC-midnight ISO timestamps don't shift the date.
         // If not checked in today, streak stays alive from yesterday until the day ends.
         function calcStreak(attendance) {
@@ -1303,7 +1417,7 @@
           return streak;
         }
 
-        // Ã¢â€â‚¬Ã¢â€â‚¬ Weekly goal Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+        // Ã¢”â‚¬Ã¢”â‚¬ Weekly goal Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬
         // Counts distinct check-in dates from the start of the current ISO week
         // (Monday 00:00 local time), NOT a rolling 7-day window. This means 1 visit
         // on Monday of a new week resets the count to 1, exactly as expected.
@@ -1401,7 +1515,7 @@
 
         function render(data) {
           setLoadingState(false);
-          const eh = v => String(v ?? "Ã¢â‚¬â€").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+          const eh = v => String(v ?? "&mdash;").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
           const raw = data.membership || {};
           const endIso = raw.endDate || raw.expiry || (raw.expiresAt ? localDateStr(raw.expiresAt) : null);
           const startIso = raw.startDate || null;
@@ -1426,8 +1540,8 @@
           $("membershipName").textContent = safe(raw.planName || raw.plan || "No active plan");
           $("membershipDetail").textContent = endIso
             ? (effStatus === "EXPIRED"
-              ? `Membership expired on ${date(endIso)} Ã‚Â· 0 days remaining`
-              : `Expires ${date(endIso)} Ã‚Â· ${remainingDays} day${remainingDays === 1 ? "" : "s"} remaining`)
+              ? `Membership expired on ${date(endIso)} Ã‚· 0 days remaining`
+              : `Expires ${date(endIso)} Ã‚· ${remainingDays} day${remainingDays === 1 ? "" : "s"} remaining`)
             : "No active membership period yet. Choose a plan to get started.";
           const badgeEl = $("membershipStatus");
           badgeEl.textContent = formatStatusLabel(effStatus);
@@ -1443,9 +1557,9 @@
             mBody.innerHTML = `
         <div class="pf-meta-grid">
           <div class="pf-meta-cell"><span class="k">Plan</span><span class="v">${eh(raw.planName || raw.plan || "No active plan")}</span></div>
-          <div class="pf-meta-cell"><span class="k">Start Date</span><span class="v">${startIso ? eh(date(startIso)) : "Ã¢â‚¬â€"}</span></div>
-          <div class="pf-meta-cell"><span class="k">Expiration Date</span><span class="v">${endIso ? eh(date(endIso)) : "Ã¢â‚¬â€"}</span></div>
-          <div class="pf-meta-cell"><span class="k">Duration</span><span class="v">${durationDays ? `${durationDays} day${durationDays === 1 ? "" : "s"}` : "Ã¢â‚¬â€"}</span></div>
+          <div class="pf-meta-cell"><span class="k">Start Date</span><span class="v">${startIso ? eh(date(startIso)) : "&mdash;"}</span></div>
+          <div class="pf-meta-cell"><span class="k">Expiration Date</span><span class="v">${endIso ? eh(date(endIso)) : "&mdash;"}</span></div>
+          <div class="pf-meta-cell"><span class="k">Duration</span><span class="v">${durationDays ? `${durationDays} day${durationDays === 1 ? "" : "s"}` : "&mdash;"}</span></div>
           <div class="pf-meta-cell"><span class="k">Remaining Days</span><span class="v">${endIso ? `${remainingDays} day${remainingDays === 1 ? "" : "s"}` : "0 days"}</span></div>
           <div class="pf-meta-cell"><span class="k">Status &amp; Payment</span><span class="v" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px"><span class="pf-status-badge ${statusBadgeClass(effStatus)}">${eh(formatStatusLabel(effStatus))}</span><span class="pf-status-badge ${statusBadgeClass(raw.paymentStatus)}">${eh(formatStatusLabel(raw.paymentStatus))}</span></span></div>
         </div>
@@ -1465,7 +1579,7 @@
           }
           const paintProfileCard = () => {
             const u = (window.__pfMemberMe || data).user || {};
-            $("profileDetails").innerHTML = `<dl class="profile-grid"><div><dt>Name</dt><dd>${eh(u.name)}</dd></div><div><dt>Email</dt><dd>${eh(u.email)}</dd></div><div><dt>Phone</dt><dd>${eh(u.phone || "Ã¢â‚¬â€")}</dd></div><div><dt>Address</dt><dd>${eh(u.address || "Ã¢â‚¬â€")}</dd></div></dl>`;
+            $("profileDetails").innerHTML = `<dl class="profile-grid"><div><dt>Name</dt><dd>${eh(u.name)}</dd></div><div><dt>Email</dt><dd>${eh(u.email)}</dd></div><div><dt>Phone</dt><dd>${eh(u.phone || "&mdash;")}</dd></div><div><dt>Address</dt><dd>${eh(u.address || "&mdash;")}</dd></div></dl>`;
           };
           paintProfileCard();
           window.__pfRefreshProfileCard = paintProfileCard;
@@ -1495,7 +1609,7 @@
           // Attendance dates from the API are already "YYYY-MM-DD" strings; use date()
           // which calls localDateStr() internally to avoid the UTC midnight shift.
           list("attendanceList", attendanceItems, "No attendance records yet.", x => `<span><b>${date(localDateStr(x.date))}</b><small>${safe(x.location || "Gym check-in")}</small></span><i class="fa-solid fa-arrow-right"></i>`);
-          list("paymentList", paymentItems, "No payment records yet.", x => `<span><b>${safe(x.reference || "Payment")}</b><small>${date(x.date)} Ã‚Â· ${safe(x.method)}</small></span><strong>${safe(x.amountFormatted || x.amount)}</strong><button type="button" class="member-receipt" data-receipt="${safe(x.reference || "Payment")}" data-when="${safe(x.date)}" data-method="${safe(x.method)}" data-amount="${safe(x.amountFormatted || x.amount || "")}"><i class="fa-solid fa-receipt" aria-hidden="true"></i> Receipt</button>`);
+          list("paymentList", paymentItems, "No payment records yet.", x => `<span><b>${safe(x.reference || "Payment")}</b><small>${date(x.date)} Ã‚· ${safe(x.method)}</small></span><strong>${safe(x.amountFormatted || x.amount)}</strong><button type="button" class="member-receipt" data-receipt="${safe(x.reference || "Payment")}" data-when="${safe(x.date)}" data-method="${safe(x.method)}" data-amount="${safe(x.amountFormatted || x.amount || "")}"><i class="fa-solid fa-receipt" aria-hidden="true"></i> Receipt</button>`);
           // Store attendance days as local YYYY-MM-DD strings so the calendar and
           // syncMemberChrome todayKey comparison are timezone-consistent.
           window.__pfAttendanceDays = attendanceItems.map(x => localDateStr(x.date));
@@ -1527,7 +1641,7 @@
         // Gym contact details for signed-in members. Same ProFitGym store the public
         // portal and footer read, so the number here can never drift from those.
         $("gymContactBtn")?.addEventListener("click", () => {
-          // `esc` is not global Ã¢â‚¬â€ it lives on PF, which pf-common.js declares as a
+          // `esc` is not global &mdash; it lives on PF, which pf-common.js declares as a
           // lexical const after this script. Resolve it the same way the receipt
           // handler does, with a plain fallback if the helper is not up yet.
           const p = (typeof PF === "object" && PF) ? PF : null;
@@ -1539,9 +1653,9 @@
           const body = `
       <div class="member-contact">
         <dl>
-          <dt>Phone</dt><dd><a href="tel:${esc(String(g.phone || "").replace(/\s+/g, ""))}">${esc(g.phone || "Ã¢â‚¬â€")}</a></dd>
-          <dt>Email</dt><dd><a href="mailto:${esc(g.email || "")}">${esc(g.email || "Ã¢â‚¬â€")}</a></dd>
-          <dt>Address</dt><dd>${esc(g.address || "Ã¢â‚¬â€")}</dd>
+          <dt>Phone</dt><dd><a href="tel:${esc(String(g.phone || "").replace(/\s+/g, ""))}">${esc(g.phone || "&mdash;")}</a></dd>
+          <dt>Email</dt><dd><a href="mailto:${esc(g.email || "")}">${esc(g.email || "&mdash;")}</a></dd>
+          <dt>Address</dt><dd>${esc(g.address || "&mdash;")}</dd>
           ${hours}
         </dl>
       </div>`;
@@ -1553,7 +1667,7 @@
         });
 
         // "Add a receipt" lives under the month calendar, but the payments the gym
-        // records are what it actually opens Ã¢â‚¬â€ jump there rather than dead-ending.
+        // records are what it actually opens &mdash; jump there rather than dead-ending.
         $("addReceiptBtn")?.addEventListener("click", () => {
           const panel = $("paymentList")?.closest(".member-panel");
           if (!panel) return;
@@ -1636,14 +1750,11 @@
           set("menuInitials", initials);
           window.__pfPaintAvatars = photo => {
             const seed = user.email || user.name || "member";
-            const src = window.ProFitAvatar ? window.ProFitAvatar.resolve(photo, seed) : "";
-            ["memberInitials", "menuInitials"].forEach(id => {
+            ["memberInitials", "menuInitials", "memberTopInitials"].forEach(id => {
               const el = $(id); if (!el) return;
-              el.classList.toggle("has-photo", !!src);
-              el.style.backgroundImage = src ? `url("${src}")` : "";
-              el.style.backgroundSize = src ? "cover" : "";
-              el.style.backgroundPosition = src ? "center" : "";
-              el.textContent = src ? "" : initials;
+              if (window.ProFitAvatar) {
+                window.ProFitAvatar.paint(el, { photo, seed, alt: name || "Member" });
+              }
             });
           };
           window.__pfPaintAvatars(user.photo || "");
@@ -1737,13 +1848,13 @@
           const esc = p ? p.esc : s => String(s ?? "");
           const ref = btn.dataset.receipt || "Payment";
           const when = btn.dataset.when || "";
-          const method = btn.dataset.method || "Ã¢â‚¬â€";
-          const amount = btn.dataset.amount || "Ã¢â‚¬â€";
+          const method = btn.dataset.method || "&mdash;";
+          const amount = btn.dataset.amount || "&mdash;";
           const paid = when ? new Date(when) : null;
           const gym = window.ProFitGym || {};
           const whenText = paid && !isNaN(paid)
             ? paid.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
-            : "Ã¢â‚¬â€";
+            : "&mdash;";
           const raw = String(amount).replace(/[^\d.]/g, "");
           const money = p ? p.money(raw || 0) : amount;
           const who = $("menuName")?.textContent || "Member";
@@ -1768,20 +1879,38 @@
         });
 
         const themeButton = $("memberTheme");
+        const applyMemberTheme = dark => {
+          document.body.classList.toggle("dark", !!dark);
+          document.documentElement.classList.toggle("dark", !!dark);
+          document.documentElement.dataset.theme = dark ? "dark" : "light";
+          document.documentElement.style.colorScheme = dark ? "dark" : "light";
+          document.documentElement.style.background = dark ? "#0a0e16" : "#fbf6ee";
+          if (themeButton) {
+            themeButton.innerHTML = dark
+              ? '<i class="fa-regular fa-sun" aria-hidden="true"></i>'
+              : '<i class="fa-solid fa-moon" aria-hidden="true"></i>';
+            themeButton.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
+            themeButton.title = dark ? "Light mode" : "Dark mode";
+          }
+        };
         let savedTheme = "dark";
         try { savedTheme = localStorage.getItem("theme") || "dark"; } catch (e) { }
-        document.body.classList.toggle("dark", savedTheme === "dark");
+        applyMemberTheme(savedTheme !== "light");
         themeButton?.addEventListener("click", () => {
           const dark = !document.body.classList.contains("dark");
-          document.body.classList.toggle("dark", dark);
-          try { localStorage.setItem("theme", dark ? "dark" : "light"); } catch (e) { }
+          applyMemberTheme(dark);
+          try {
+            localStorage.setItem("theme", dark ? "dark" : "light");
+            if (!dark) localStorage.setItem("pf-staff-explicit-light", "1");
+            else localStorage.removeItem("pf-staff-explicit-light");
+          } catch (e) { }
         });
         load();
       })();
   </script>
   <script src="pf-common.js"></script>
-  <script src="member-tabs.js?v=17"></script>
-  <script src="member-shell.js?v=2"></script>
+  <script src="member-tabs.js?v=5"></script>
+  <script src="member-shell.js?v=3"></script>
   <script src="change-password.js?v=1"></script>
   <script src="portal-fx.js?v=2"></script>
   <style>
@@ -1829,7 +1958,110 @@
     })();
   </script>
   <script src="announcements-member.js?v=1" defer></script>
+  <script src="notifications-live.js?v=2" defer></script>
   <script src="trainer-member.js?v=1" defer></script>
+  <script>
+    (() => {
+      // 1. Body check gauge + quick weight log + staff-only health notes
+      const syncBodyCheck = () => {
+        const bmiTxt = document.getElementById("statBmi")?.textContent?.trim() || "";
+        const catTxt = document.getElementById("statBmiCat")?.textContent?.trim() || "";
+        const hVal = document.getElementById("healthHeight")?.value || "";
+        const hUnit = document.getElementById("healthHeightUnit")?.value || "cm";
+        const hLbl = document.getElementById("bcHeightLabel");
+        if (hLbl) hLbl.textContent = hVal ? `Height ${hVal} ${hUnit}` : "Height \u2014";
+        const numEl = document.getElementById("bcBmiNum");
+        const lblEl = document.getElementById("bcBmiLbl");
+        if (numEl) numEl.textContent = bmiTxt && bmiTxt !== "\u2014" ? `BMI ${bmiTxt}` : "\u2014";
+        if (lblEl) lblEl.textContent = catTxt || "Log height & weight";
+        const needle = document.getElementById("bcNeedle");
+        const bmi = parseFloat(bmiTxt);
+        if (needle && Number.isFinite(bmi)) {
+          // Map BMI 15..35 to -75deg..+75deg
+          const clamped = Math.max(15, Math.min(35, bmi));
+          const deg = -75 + ((clamped - 15) / 20) * 150;
+          needle.setAttribute("transform", `rotate(${deg.toFixed(1)} 110 106)`);
+        }
+      };
+
+      const bcBtn = document.getElementById("bcLogBtn");
+      const bcInput = document.getElementById("bcWeightInput");
+      bcBtn?.addEventListener("click", () => {
+        const val = parseFloat(bcInput?.value || "");
+        if (!Number.isFinite(val) || val < 20 || val > 300) {
+          bcInput?.focus();
+          return;
+        }
+        const dateEl = document.getElementById("weightDate");
+        const kgEl = document.getElementById("weightKg");
+        const unitEl = document.getElementById("weightUnit");
+        const formEl = document.getElementById("weightForm");
+        const now = new Date();
+        const todayIso = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+        if (dateEl) dateEl.value = todayIso;
+        if (unitEl) { unitEl.value = "kg"; unitEl.dispatchEvent(new Event("change", { bubbles: true })); }
+        if (kgEl) kgEl.value = String(val);
+        if (formEl) formEl.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+        bcInput.value = "";
+        setTimeout(syncBodyCheck, 150);
+      });
+
+      const notesEl = document.getElementById("bcHealthNotes");
+      if (notesEl) {
+        try {
+          const saved = localStorage.getItem("pf-member-health-notes") || "";
+          if (saved && !notesEl.value) notesEl.value = saved;
+        } catch {}
+        notesEl.addEventListener("blur", () => {
+          const v = notesEl.value.trim();
+          try { localStorage.setItem("pf-member-health-notes", v); } catch {}
+        });
+      }
+
+      const statBmiEl = document.getElementById("statBmi");
+      if (statBmiEl) {
+        new MutationObserver(syncBodyCheck).observe(statBmiEl, { childList: true, characterData: true, subtree: true });
+      }
+      setTimeout(syncBodyCheck, 350);
+
+      // 2. Last 12 weeks attendance heatmap (12 cols x 7 rows = 84 days)
+      const renderHeatmap = () => {
+        const grid = document.getElementById("attHeatmapGrid");
+        if (!grid) return;
+        const days = Array.isArray(window.__pfAttendanceDays) ? window.__pfAttendanceDays : [];
+        const counts = new Map();
+        days.forEach(d => {
+          const k = String(d || "").slice(0, 10);
+          if (k) counts.set(k, (counts.get(k) || 0) + 1);
+        });
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const cols = [];
+        for (let w = 11; w >= 0; w--) {
+          const cells = [];
+          for (let r = 0; r < 7; r++) {
+            const offset = w * 7 + (6 - r);
+            const dt = new Date(today.getTime() - offset * 86400000);
+            const iso = `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}-${String(dt.getDate()).padStart(2, "0")}`;
+            const c = counts.get(iso) || 0;
+            const lvl = c >= 2 ? "l3" : c === 1 ? "l2" : "";
+            const lbl = dt.toLocaleDateString("en-PH", { month: "short", day: "numeric" });
+            cells.push(`<span class="mb-heat-cell ${lvl}" title="${lbl}: ${c ? `${c} check-in${c > 1 ? "s" : ""}` : "No check-in"}"></span>`);
+          }
+          cols.push(`<div class="mb-heat-col">${cells.join("")}</div>`);
+        }
+        grid.innerHTML = cols.join("");
+      };
+
+      renderHeatmap();
+      setTimeout(renderHeatmap, 600);
+      document.addEventListener("profit:synced", renderHeatmap);
+      const attBadge = document.getElementById("attendanceCountBadge");
+      if (attBadge) {
+        new MutationObserver(renderHeatmap).observe(attBadge, { childList: true, characterData: true, subtree: true });
+      }
+    })();
+  </script>
   <script src="/static/js/install-help.js" defer></script>
   <script src="site-footer.js?v=2" defer></script>
 </body>

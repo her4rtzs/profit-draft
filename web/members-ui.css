@@ -166,12 +166,12 @@ body[data-page="members"] .pp-header-bg::after {
 }
 
 body:not(.dark)[data-page="members"] .pp-header-bg {
-  opacity: 0.14;
-  filter: grayscale(35%) contrast(1.05);
+  opacity: 0.56;
+  filter: contrast(1.06);
 }
 
 body:not(.dark)[data-page="members"] .pp-header-bg::after {
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.65) 55%, rgba(255, 255, 255, 0.42) 100%);
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.72) 42%, rgba(255, 255, 255, 0.14) 100%);
 }
 
 body[data-page="members"] .pp-browse-title {
@@ -864,8 +864,18 @@ body[data-page="members"] .pp-status {
 body[data-page="members"] .pp-members-table .pp-status {
   width: 132px;
 }
+body[data-page="members"] .pp-members-table tbody td:nth-child(4) {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  height: 100%;
+}
 body[data-page="members"] .pp-ends-cell {
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 body[data-page="members"] .pp-ends-date {
   display: block;
@@ -1213,4 +1223,437 @@ body:not(.dark)[data-page="members"] .pp-chip { background: #f1f5f9; border-colo
   body[data-page="members"] .pp-span-2 { grid-column: span 12; }
   body[data-page="members"] .pp-plan-card { grid-column: span 6; }
   body[data-page="members"] .pp-detail-actions { width: 100%; }
+}
+
+
+/* Light Mode Plan Cards & Zero AI Glow Overrides */
+body:not(.dark)[data-page="members"] .pp-plan-card {
+  background: #ffffff !important;
+  border: 1px solid #eadfc8 !important;
+  color: #2a2418 !important;
+  box-shadow: none !important;
+}
+body:not(.dark)[data-page="members"] .pp-plan-card:not(.selected):hover {
+  background: #faf6ee !important;
+  border-color: #d6b25e !important;
+  box-shadow: none !important;
+}
+body:not(.dark)[data-page="members"] .pp-plan-card.selected {
+  background: #fef9eb !important;
+  border: 1.5px solid #b8860b !important;
+  box-shadow: none !important;
+}
+body:not(.dark)[data-page="members"] .pp-plan-body strong,
+body:not(.dark)[data-page="members"] .pp-plan-price {
+  color: #2a2418 !important;
+}
+body:not(.dark)[data-page="members"] .pp-plan-card.selected .pp-plan-body strong {
+  color: #8a6212 !important;
+}
+body:not(.dark)[data-page="members"] .pp-plan-body small {
+  color: #6f6450 !important;
+}
+body[data-page="members"] .pp-plan-card.selected,
+body[data-page="members"] .pp-page-tab.active,
+body[data-page="members"] .pp-view-toggle button.active,
+body[data-page="members"] .pp-btn-primary,
+body[data-page="members"] .pp-tab-ico,
+body[data-page="members"] .pp-dd-ico {
+  box-shadow: none !important;
+}
+
+
+/* Editorial 2-Column Member Detail Layout (Qclinic-inspired) + Consistent Gold Active Pills */
+.md-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.md-top-acts {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.md-layout {
+  display: grid;
+  grid-template-columns: 268px minmax(0, 1fr);
+  gap: 20px;
+  align-items: stretch;
+}
+.md-side {
+  background: var(--card, #111827);
+  border: 1px solid var(--border, #263246);
+  border-radius: 18px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+  box-sizing: border-box;
+}
+body:not(.dark) .md-side {
+  background: #ffffff;
+  border-color: #eadfc8;
+}
+.md-side-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 12px 14px;
+  border-radius: 14px;
+  background: rgba(232, 185, 58, .08);
+  border: 1px solid rgba(232, 185, 58, .16);
+}
+body:not(.dark) .md-side-top {
+  background: #fdf8eb;
+  border-color: #efe2be;
+}
+.md-ava-box {
+  display: grid;
+  place-items: center;
+  padding: 0;
+}
+.md-ava-box .pp-avatar.lg {
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+}
+.md-side-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.md-stat-tile {
+  padding: 12px;
+  border-radius: 13px;
+  border: 1px solid var(--border, #263246);
+  background: rgba(255, 255, 255, .03);
+}
+.md-stat-tile.is-gold {
+  border-color: rgba(232, 185, 58, .28);
+  background: rgba(232, 185, 58, .08);
+}
+.md-stat-tile.is-emerald {
+  border-color: rgba(34, 197, 94, .26);
+  background: rgba(34, 197, 94, .08);
+}
+body:not(.dark) .md-stat-tile.is-gold {
+  background: #fef9eb;
+  border-color: #eedb9f;
+}
+body:not(.dark) .md-stat-tile.is-emerald {
+  background: #eefbf3;
+  border-color: #bfe8cf;
+}
+.md-stat-tile span {
+  display: block;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .07em;
+  color: var(--muted, #94a3b8);
+  margin-bottom: 4px;
+}
+.md-stat-tile strong {
+  display: block;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text, #f3f4f6);
+}
+body:not(.dark) .md-stat-tile strong {
+  color: #2a2418;
+}
+.md-meta-list {
+  display: grid;
+  gap: 14px;
+  padding-top: 4px;
+}
+.md-meta-item {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border, rgba(255, 255, 255, .07));
+}
+body:not(.dark) .md-meta-item {
+  border-bottom-color: #f1e8d6;
+}
+.md-meta-item:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+.md-meta-item span {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .07em;
+  color: var(--muted, #94a3b8);
+  margin-bottom: 4px;
+}
+.md-meta-item strong {
+  display: block;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--text, #f3f4f6);
+}
+body:not(.dark) .md-meta-item strong {
+  color: #2a2418;
+}
+.md-side-btn {
+  width: 100%;
+  justify-content: center;
+  margin-top: auto;
+}
+.md-side-btn.is-active {
+  background: linear-gradient(135deg, #f2cb5c, #d9a425) !important;
+  border-color: transparent !important;
+  color: #141006 !important;
+}
+.md-main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+.md-id-card {
+  position: relative;
+  overflow: hidden;
+}
+.md-id-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("img/hero.jpg") right center / cover no-repeat;
+  opacity: .22;
+  pointer-events: none;
+  z-index: 0;
+}
+.md-id-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(17, 24, 39, .97) 0%, rgba(17, 24, 39, .92) 55%, rgba(17, 24, 39, .58) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+body:not(.dark) .md-id-card::before {
+  opacity: .24;
+}
+body:not(.dark) .md-id-card::after {
+  background: linear-gradient(90deg, rgba(255, 255, 255, .98) 0%, rgba(255, 255, 255, .92) 52%, rgba(255, 255, 255, .45) 100%);
+}
+.md-id-card > * {
+  position: relative;
+  z-index: 1;
+}
+.md-sec-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.md-sec-ico {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  display: inline-grid;
+  place-items: center;
+  font-size: 13px;
+  flex: none;
+}
+.md-sec-ico.is-gold {
+  background: rgba(232, 185, 58, .16);
+  color: #e8b93a;
+}
+body:not(.dark) .md-sec-ico.is-gold {
+  background: #fdf3d3;
+  color: #9a6b0d;
+}
+.md-sec-ico.is-emerald {
+  background: rgba(34, 197, 94, .16);
+  color: #4ade80;
+}
+body:not(.dark) .md-sec-ico.is-emerald {
+  background: #e3f8ec;
+  color: #15803d;
+}
+.md-sec-ico.is-sky {
+  background: rgba(56, 189, 248, .16);
+  color: #38bdf8;
+}
+body:not(.dark) .md-sec-ico.is-sky {
+  background: #e6f4fe;
+  color: #0369a1;
+}
+/* Clean pill toggle switch in Enroll without glow */
+body[data-page="members"] .pp-switch-row input:checked + .pp-switch-track {
+  background: #22c55e !important;
+  box-shadow: none !important;
+}
+.md-stack {
+  display: grid;
+  gap: 16px;
+}
+.md-card {
+  background: var(--card, #111827);
+  border: 1px solid var(--border, #263246);
+  border-radius: 18px;
+  padding: 20px 22px;
+}
+body:not(.dark) .md-card {
+  background: #ffffff;
+  border-color: #eadfc8;
+}
+.md-kicker {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  color: var(--muted, #94a3b8);
+  margin-bottom: 4px;
+}
+.md-id-card h2 {
+  margin: 0 0 18px;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text, #f3f4f6);
+}
+body:not(.dark) .md-id-card h2 {
+  color: #2a2418;
+}
+.md-card h3 {
+  margin: 0 0 14px;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text, #f3f4f6);
+}
+body:not(.dark) .md-card h3 {
+  color: #2a2418;
+}
+.md-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.md-card-head h3 {
+  margin: 0;
+}
+.md-link-btn {
+  border: 0;
+  background: transparent;
+  color: #e8b93a;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+body:not(.dark) .md-link-btn {
+  color: #8a6212;
+}
+.md-cols-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.md-cols-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.md-cols-3 span,
+.md-cols-2 span {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .07em;
+  color: var(--muted, #94a3b8);
+  margin-bottom: 4px;
+}
+.md-cols-3 strong,
+.md-cols-2 strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text, #f3f4f6);
+  overflow-wrap: anywhere;
+}
+body:not(.dark) .md-cols-3 strong,
+body:not(.dark) .md-cols-2 strong {
+  color: #2a2418;
+}
+.md-cols-3 small,
+.md-cols-2 small {
+  display: block;
+  font-size: 12.5px;
+  color: var(--muted, #94a3b8);
+  margin-top: 2px;
+}
+/* Consistent crisp gold pill hover/active style across Member tabs — matched height with Record renewal */
+body[data-page="members"] .md-top-acts .pp-btn,
+body[data-page="members"] .md-top-bar > .pp-btn {
+  height: 44px !important;
+  min-height: 44px !important;
+  padding: 0 18px !important;
+  border-radius: 12px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+}
+body[data-page="members"] .pp-subtabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 44px;
+  padding: 4px;
+  border-radius: 12px;
+  background: var(--card, #111827);
+  border: 1px solid var(--border, #263246);
+  width: fit-content;
+  max-width: 100%;
+  overflow-x: auto;
+  box-sizing: border-box;
+}
+body:not(.dark)[data-page="members"] .pp-subtabs {
+  background: #ffffff;
+  border-color: #eadfc8;
+}
+body[data-page="members"] .pp-subtabs button {
+  border: 0;
+  background: transparent;
+  height: 34px;
+  padding: 0 16px;
+  border-radius: 9px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--muted, #94a3b8);
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s ease, color .15s ease;
+}
+body[data-page="members"] .pp-subtabs button:hover:not(.active) {
+  background: rgba(232, 185, 58, .12);
+  color: var(--text, #f3f4f6);
+}
+body:not(.dark)[data-page="members"] .pp-subtabs button:hover:not(.active) {
+  background: #faf6ee;
+  color: #2a2418;
+}
+body[data-page="members"] .pp-subtabs button.active {
+  background: linear-gradient(135deg, #f2cb5c, #d9a425) !important;
+  color: #141006 !important;
+  box-shadow: none !important;
+}
+@media (max-width: 860px) {
+  .md-layout {
+    grid-template-columns: 1fr;
+  }
+  .md-cols-3,
+  .md-cols-2 {
+    grid-template-columns: 1fr;
+  }
 }

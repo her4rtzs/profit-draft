@@ -64,3 +64,16 @@ class CanReviewClaims(BasePermission):
             and getattr(user, "is_active", False)
             and getattr(user, "role", "") in ("OWNER", "CASHIER")
         )
+
+
+class IsActiveOwner(BasePermission):
+    """Owner-only permission checking login, active flag, and OWNER role."""
+
+    def has_permission(self, request, view):
+        user = getattr(request, "user", None)
+        return bool(
+            user
+            and user.is_authenticated
+            and getattr(user, "is_active", False)
+            and str(getattr(user, "role", "")).upper() == "OWNER"
+        )

@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.billing.models import PaymentClaim
-from apps.finance.services import PLAN_PRICE_CENTAVOS
+from apps.finance.services import PLAN_PRICE_CENTAVOS, get_plan_prices_centavos
 from apps.membership.models import MemberProfile
 from apps.membership.services import PLAN_DAYS, enroll_member
 from apps.notifications.models import Notification
@@ -24,6 +24,9 @@ from .permissions import CanReviewClaims
 
 
 def _plan_for_amount(amount_centavos):
+    for plan, price in get_plan_prices_centavos().items():
+        if price == amount_centavos:
+            return plan
     for plan, price in PLAN_PRICE_CENTAVOS.items():
         if price == amount_centavos:
             return plan

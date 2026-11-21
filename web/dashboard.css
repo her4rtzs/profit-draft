@@ -14274,3 +14274,733 @@ html body.pf-staff:not(.dark)[data-page="attendance"] .ci-table tbody tr {
   border-bottom-color: rgba(15, 23, 42, 0.08);
 }
 
+
+
+/* ==========================================================================
+   PROTOTYPE ALIGNMENT: NOTIFICATION POPOVER, WARM LIGHT MODE & MOBILE SHELL
+   Preserves original ProFit fonts, RBAC rules, and live API wiring.
+   ========================================================================== */
+
+/* 1. Notification Bell Badge & Prototype Popover (.np) */
+.topbar .notification {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+.topbar .notification .notification-badge {
+  position: absolute !important;
+  top: -4px !important;
+  right: -4px !important;
+  min-width: 18px !important;
+  height: 18px !important;
+  padding: 0 5px !important;
+  border-radius: 99px !important;
+  background: #ff7b8a !important;
+  color: #14060a !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  line-height: 18px !important;
+  text-align: center !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  box-shadow: 0 0 0 2px #0a0e17 !important;
+}
+.topbar .notification .notification-badge[hidden] {
+  display: none !important;
+}
+body:not(.dark) .topbar .notification .notification-badge {
+  background: #d6455a !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 0 2px #fbf6ee !important;
+}
+
+html body .notification-panel.np {
+  width: min(400px, calc(100vw - 24px)) !important;
+  border-radius: 18px !important;
+  background: #111827 !important;
+  border: 1px solid #263246 !important;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .55) !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+}
+html body .notification-panel.np .notification-head.nph {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 14px 18px !important;
+  background: transparent !important;
+  border-bottom: 1px solid #263246 !important;
+}
+html body .notification-panel.np .nph-title {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+html body .notification-panel.np .nph-title strong {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: #f3f4f6 !important;
+}
+html body .notification-panel.np .nph-title em {
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  font-style: normal !important;
+  color: #58b6ff !important;
+}
+html body .notification-panel.np .notification-head.nph button#markAllRead {
+  background: none !important;
+  border: 0 !important;
+  padding: 4px 6px !important;
+  border-radius: 8px !important;
+  color: #e0b94a !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  cursor: pointer;
+}
+html body .notification-panel.np .notification-head.nph button#markAllRead:hover {
+  background: rgba(224, 185, 74, .12) !important;
+  color: #f0cf68 !important;
+}
+html body .notification-panel.np .notification-list.npl {
+  max-height: min(62dvh, 420px) !important;
+  overflow-y: auto !important;
+  padding: 0 !important;
+}
+html body .notification-panel.np .notification-foot.npf {
+  display: block !important;
+  width: 100% !important;
+  padding: 13px 18px !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-top: 1px solid #263246 !important;
+  text-align: right !important;
+  color: #f0cf68 !important;
+  font-size: 13.5px !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+  transition: background .15s ease;
+}
+html body .notification-panel.np .notification-foot.npf:hover {
+  background: #1b2433 !important;
+}
+
+/* Light Mode Notification Popover */
+html body:not(.dark) .notification-panel.np {
+  background: #ffffff !important;
+  border: 1px solid #eadfc8 !important;
+  box-shadow: 0 20px 50px rgba(150, 110, 30, .16) !important;
+}
+html body:not(.dark) .notification-panel.np .notification-head.nph {
+  border-bottom-color: #eadfc8 !important;
+}
+html body:not(.dark) .notification-panel.np .nph-title strong {
+  color: #2a2418 !important;
+}
+html body:not(.dark) .notification-panel.np .nph-title em {
+  color: #2b8fd6 !important;
+}
+html body:not(.dark) .notification-panel.np .notification-head.nph button#markAllRead {
+  color: #b8860b !important;
+}
+html body:not(.dark) .notification-panel.np .notification-head.nph button#markAllRead:hover {
+  background: #f6ecd9 !important;
+  color: #8a6212 !important;
+}
+html body:not(.dark) .notification-panel.np .notification-foot.npf {
+  border-top-color: #eadfc8 !important;
+  color: #8a6212 !important;
+}
+html body:not(.dark) .notification-panel.np .notification-foot.npf:hover {
+  background: #f6ecd9 !important;
+}
+
+@media (max-width: 540px) {
+  html body .notification-panel.np {
+    position: fixed !important;
+    top: 64px !important;
+    left: 12px !important;
+    right: 12px !important;
+    width: auto !important;
+    max-width: 400px !important;
+    margin-left: auto !important;
+    z-index: 120 !important;
+  }
+}
+
+/* 2. Unified Warm Cream Light Mode, Consistent Dark Sidebar & Zero AI Glow */
+body.pf-staff:not(.dark) {
+  --bg: #fbf6ee;
+  --card: #ffffff;
+  --hover: #f6ecd9;
+  --border: #eadfc8;
+  --line: #eadfc8;
+  --text: #2a2418;
+  --muted: #6f6450;
+  --faint: #9a8e78;
+  --gold: #b8860b;
+  --gold-hi: #8a6212;
+  background: #fbf6ee !important;
+  color: #2a2418;
+}
+
+/* Keep the Sidebar IDENTICAL (dark obsidian, zero glow) in both Dark & Light Mode */
+body.pf-staff .dashboard .sidebar,
+body.pf-staff:not(.dark) .dashboard .sidebar {
+  background: linear-gradient(180deg, #141b27 0%, #0c1119 100%) !important;
+  border-right: 1px solid rgba(255, 255, 255, .07) !important;
+  box-shadow: none !important;
+}
+body.pf-staff .sidebar .imgbrand .image,
+body.pf-staff .sidebar li a.active,
+body.pf-staff .sidebar li a.active:hover {
+  box-shadow: none !important;
+}
+
+/* Warm Translucent Topbar in Light Mode */
+body.pf-staff:not(.dark) .topbar {
+  background: rgba(251, 246, 238, .94) !important;
+  border-bottom: 1px solid #eadfc8 !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+body.pf-staff:not(.dark) .topbar .topbar-avatar {
+  background: #ffffff !important;
+  border: 1px solid #eadfc8 !important;
+}
+body.pf-staff:not(.dark) .topbar .mobile-nav-toggle {
+  background: #ffffff !important;
+  border: 1px solid #eadfc8 !important;
+  color: #2a2418 !important;
+}
+
+/* Clean Flat White Cards, Quick Actions & KPIs in Light Mode (Zero AI Glow) */
+body.pf-staff:not(.dark) .stat-card,
+body.pf-staff:not(.dark) .quick-action,
+body.pf-staff:not(.dark) .panel,
+body.pf-staff:not(.dark)[data-page="dashboard"] .panel {
+  background: #ffffff !important;
+  border: 1px solid #eadfc8 !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, .05) !important;
+}
+body.pf-staff:not(.dark) .quick-action strong,
+body.pf-staff:not(.dark) .stat-card h2,
+body.pf-staff:not(.dark) .stat-card .kpi-title {
+  color: #2a2418 !important;
+}
+body.pf-staff:not(.dark) .quick-action small,
+body.pf-staff:not(.dark) .stat-card .kpi-sub {
+  color: #6f6450 !important;
+}
+body.pf-staff:not(.dark) .quick-action .quick-action-icon {
+  background: #fbefd0 !important;
+  color: #8a6212 !important;
+  box-shadow: none !important;
+}
+body.pf-staff:not(.dark) .quick-action:hover,
+body.pf-staff:not(.dark) .stat-card:hover {
+  border-color: #d6b25e !important;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, .07) !important;
+}
+body.pf-staff:not(.dark) .quick-action:hover .quick-action-icon {
+  background: #f0b92a !important;
+  color: #2a1d04 !important;
+}
+
+/* Strip AI glowing shadows globally in Dark Mode too */
+body.pf-staff.dark .stat-card,
+body.pf-staff.dark .stat-card:hover,
+body.pf-staff.dark .quick-action,
+body.pf-staff.dark .quick-action:hover,
+body.pf-staff.dark .panel,
+body.pf-staff.dark .panel:hover,
+body.pf-staff .btn-primary,
+body.pf-staff .btn-primary:hover,
+body.pf-staff .stat-icon,
+body.pf-staff .ow-hero {
+  box-shadow: none !important;
+}
+
+/* Keep the editorial Hero & "Today at the gym" card dark glass in Light Mode */
+body.pf-staff:not(.dark) .ow-hero {
+  background: #0c111b !important;
+  border: 1px solid rgba(42, 36, 24, .14) !important;
+}
+body.pf-staff:not(.dark) .ow-hero-card {
+  background: rgba(15, 21, 34, .88) !important;
+  border: 1px solid rgba(255, 255, 255, .14) !important;
+  color: #f8fafc !important;
+  box-shadow: none !important;
+}
+body.pf-staff:not(.dark) .ow-hero-card h3,
+body.pf-staff:not(.dark) .ow-hero-card strong {
+  color: #f8fafc !important;
+}
+body.pf-staff:not(.dark) .ow-hero-card .ow-card-date,
+body.pf-staff:not(.dark) .ow-hero-card .ow-ring-center small,
+body.pf-staff:not(.dark) .ow-hero-card .ow-card-foot span {
+  color: #94a3b8 !important;
+}
+body.pf-staff:not(.dark) .ow-hero .ow-btn-dark {
+  background: rgba(15, 23, 42, .78) !important;
+  color: #f1f5f9 !important;
+  border: 1px solid rgba(255, 255, 255, .2) !important;
+}
+
+/* 3. Device-Friendly Mobile Bottom Tab Bar & Slide-Up "More" Sheet */
+.pf-mob-tabs,
+.pf-mob-sheet,
+.pf-mob-backdrop {
+  display: none;
+}
+
+@media (max-width: 980px) {
+  body.pf-staff .main-content {
+    margin-left: 0 !important;
+    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px)) !important;
+    overflow-x: clip;
+  }
+  body.pf-staff .topbar {
+    padding: 10px 14px !important;
+    gap: 10px !important;
+  }
+  body.pf-staff .topbar .topbar-nav,
+  body.pf-staff .topbar .mobile-nav-toggle {
+    display: none !important;
+  }
+  body.pf-staff .panel-header .chip-row,
+  body.pf-staff .panel-header .rev-controls {
+    flex-wrap: wrap !important;
+    max-width: 100% !important;
+    row-gap: 8px !important;
+  }
+  body.pf-staff .topbar .topbar-title h1 {
+    font-size: 18px !important;
+    line-height: 1.2 !important;
+  }
+  body.pf-staff .topbar .topbar-title .welcome {
+    font-size: 11.5px !important;
+  }
+  body.pf-staff .pf-mob-tabs {
+    display: flex;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 65;
+    background: #151b24;
+    border-top: 1px solid #1d293b;
+    padding: 6px 6px calc(6px + env(safe-area-inset-bottom, 0px));
+    justify-content: space-around;
+    align-items: stretch;
+    gap: 2px;
+  }
+  body.pf-staff .pf-mob-tab {
+    flex: 1 1 0;
+    min-height: 46px;
+    border: 0;
+    background: transparent;
+    color: #758399;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 4px 4px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: color .15s ease, background .15s ease;
+  }
+  body.pf-staff .pf-mob-tab i {
+    font-size: 17px;
+  }
+  body.pf-staff .pf-mob-tab.on {
+    color: #f0cf68;
+  }
+  body.pf-staff .pf-mob-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    background: rgba(5, 8, 13, .55);
+    backdrop-filter: blur(3px);
+  }
+  body.pf-staff .pf-mob-backdrop.on {
+    display: block;
+  }
+  body.pf-staff .pf-mob-sheet {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 62;
+    background: #151b24;
+    border-top: 1px solid #263246;
+    border-radius: 22px 22px 0 0;
+    padding: 12px 16px calc(78px + env(safe-area-inset-bottom, 0px));
+    transform: translateY(110%);
+    transition: transform .3s cubic-bezier(.3, 1.15, .5, 1);
+    box-shadow: 0 -14px 40px rgba(0, 0, 0, .45);
+  }
+  body.pf-staff .pf-mob-sheet.on {
+    transform: translateY(0);
+  }
+  body.pf-staff .pf-mob-sheet-bar {
+    width: 40px;
+    height: 4px;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, .2);
+    margin: 0 auto 14px;
+  }
+  body.pf-staff .pf-mob-sheet-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  body.pf-staff .pf-mob-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 8px 15px;
+    border-radius: 99px;
+    border: 1px solid #263246;
+    background: #0a0e17;
+    color: #f3f4f6;
+    font-size: 13.5px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  body.pf-staff .pf-mob-chip.sel {
+    background: #e8b93a;
+    border-color: #e8b93a;
+    color: #1a1407;
+  }
+  body.pf-staff .pf-mob-chip.is-danger {
+    color: #ff7b8a;
+    border-color: rgba(255, 123, 138, .35);
+  }
+
+  /* Light Mode Mobile Tabs & Sheet */
+  body.pf-staff:not(.dark) .pf-mob-tabs {
+    background: #ffffff;
+    border-top: 1px solid #eadfc8;
+    box-shadow: 0 -8px 28px rgba(150, 110, 30, .1);
+  }
+  body.pf-staff:not(.dark) .pf-mob-tab {
+    color: #9a8e78;
+  }
+  body.pf-staff:not(.dark) .pf-mob-tab.on {
+    color: #8a6212;
+  }
+  body.pf-staff:not(.dark) .pf-mob-sheet {
+    background: #fbf6ee;
+    border-top-color: #eadfc8;
+    box-shadow: 0 -14px 40px rgba(150, 110, 30, .18);
+  }
+  body.pf-staff:not(.dark) .pf-mob-sheet-bar {
+    background: rgba(111, 100, 80, .28);
+  }
+  body.pf-staff:not(.dark) .pf-mob-chip {
+    background: #ffffff;
+    border-color: #eadfc8;
+    color: #2a2418;
+  }
+  body.pf-staff:not(.dark) .pf-mob-chip.sel {
+    background: #f0b92a;
+    border-color: #f0b92a;
+    color: #2a1d04;
+  }
+  body.pf-staff:not(.dark) .pf-mob-chip.is-danger {
+    color: #d6455a;
+    border-color: rgba(214, 69, 90, .3);
+  }
+
+  /* Responsive Dashboard Grids */
+  body.pf-staff[data-page="dashboard"] .quick-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+  }
+  body.pf-staff[data-page="dashboard"] .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+  }
+  body.pf-staff[data-page="dashboard"] .content-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 540px) {
+  body.pf-staff[data-page="dashboard"] .ow-hero {
+    padding: 20px 18px !important;
+    border-radius: 18px !important;
+    gap: 18px !important;
+  }
+  body.pf-staff[data-page="dashboard"] .ow-hero-btns {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  body.pf-staff[data-page="dashboard"] .ow-btn-gold,
+  body.pf-staff[data-page="dashboard"] .ow-btn-dark {
+    justify-content: center;
+    min-height: 44px;
+  }
+  body.pf-staff[data-page="dashboard"] .quick-actions {
+    grid-template-columns: 1fr !important;
+  }
+  body.pf-staff[data-page="dashboard"] .stats {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+
+/* Mobile More Sheet: hide duplicate Change Password (now in Settings) + Mobile Dashboard Polish + Consistent Gold Pill Hover */
+.pf-mob-sheet .pf-cp-item,
+.pf-mob-sheet [data-change-password] {
+  display: none !important;
+}
+.membership-type-panel .mt-tooltip {
+  z-index: 5 !important;
+}
+.membership-type-panel .menu-wrap .dropdown {
+  z-index: 50 !important;
+}
+/* Consistent crisp gold pill active/hover across tabs & chips */
+body.pf-staff .chip:hover:not(.active),
+body.pf-staff .fn-tabs .tab:hover:not(.active) {
+  background: rgba(232, 185, 58, .12) !important;
+  border-color: rgba(232, 185, 58, .4) !important;
+}
+body.pf-staff .chip.active,
+body.pf-staff .fn-tabs .tab.active {
+  background: linear-gradient(135deg, #f2cb5c, #d9a425) !important;
+  border-color: transparent !important;
+  color: #141006 !important;
+}
+@media (max-width: 640px) {
+  body.pf-staff[data-page="dashboard"] .membership-type-panel .panel-header,
+  body.pf-staff[data-page="dashboard"] .registrations-panel .panel-header {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 10px !important;
+  }
+  body.pf-staff[data-page="dashboard"] .registrations-panel .view-all {
+    margin: 0 !important;
+    flex: none !important;
+    white-space: nowrap !important;
+  }
+  body.pf-staff[data-page="dashboard"] .registrations-panel table tbody tr {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    gap: 8px 12px !important;
+    align-items: center !important;
+    padding: 14px !important;
+  }
+  body.pf-staff[data-page="dashboard"] .registrations-panel table tbody td[data-label="ID"],
+  body.pf-staff[data-page="dashboard"] .registrations-panel table tbody td[data-label="Registration date"] {
+    display: none !important;
+  }
+  body.pf-staff[data-page="dashboard"] .registrations-panel table tbody td[data-label="Member"] {
+    grid-column: 1 / 2 !important;
+    padding: 0 !important;
+  }
+  body.pf-staff[data-page="dashboard"] .registrations-panel table tbody td[data-label="Status"] {
+    grid-column: 2 / 3 !important;
+    padding: 0 !important;
+    justify-self: end !important;
+  }
+  body.pf-staff[data-page="dashboard"] .registrations-panel table tbody td[data-label="Action"] {
+    grid-column: 1 / -1 !important;
+    padding: 8px 0 0 !important;
+    border-top: 1px solid var(--border, rgba(255, 255, 255, .07)) !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+  }
+}
+
+
+/* Crisp Pill Toggle Switches (override any global min-height on inputs) + Editorial Staff Topbar Photo Fade */
+.pp-check input[type="checkbox"] {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  flex: 0 0 46px !important;
+  width: 46px !important;
+  min-width: 46px !important;
+  height: 26px !important;
+  min-height: 26px !important;
+  max-height: 26px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 99px !important;
+  border: 0 !important;
+  background: #334155 !important;
+  position: relative !important;
+  box-shadow: none !important;
+  cursor: pointer;
+}
+body:not(.dark) .pp-check input[type="checkbox"] {
+  background: #dcd3c1 !important;
+}
+.pp-check input[type="checkbox"]::after {
+  content: "" !important;
+  position: absolute !important;
+  top: 3px !important;
+  left: 3px !important;
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 50% !important;
+  background: #ffffff !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .25) !important;
+  transition: transform .2s ease !important;
+}
+.pp-check input[type="checkbox"]:checked {
+  background: #22c55e !important;
+}
+.pp-check input[type="checkbox"]:checked::after {
+  transform: translateX(20px) !important;
+}
+
+/* Full Edge-to-Edge FIXED Staff Header (Always Stays Pinned on Scroll) + Functional Font Size + Sidebar Menu Cleanup */
+html[data-font-size="sm"] body.pf-staff .main-content > :not(.topbar) {
+  zoom: 0.93;
+}
+html[data-font-size="md"] body.pf-staff .main-content > :not(.topbar) {
+  zoom: 1;
+}
+html[data-font-size="lg"] body.pf-staff .main-content > :not(.topbar) {
+  zoom: 1.07;
+}
+/* Hide Change password from the Sidebar Account Popover (now inside Settings & My Profile) */
+.sidebar .account-menu .pf-cp-item,
+.sidebar .account-menu [data-change-password] {
+  display: none !important;
+}
+body.pf-staff {
+  --pf-edge: 28px;
+}
+body.pf-staff .main-content {
+  padding: 96px var(--pf-edge) 42px var(--pf-edge) !important;
+}
+body.pf-staff .topbar {
+  position: fixed !important;
+  top: 0 !important;
+  left: var(--sidebar-w, 260px) !important;
+  right: 0 !important;
+  width: auto !important;
+  max-width: none !important;
+  margin: 0 !important;
+  z-index: 60 !important;
+  border-radius: 0 !important;
+  padding: 16px var(--pf-edge) !important;
+  min-height: 72px;
+  background: #0c111b !important;
+  border-bottom: 1px solid rgba(255, 255, 255, .08) !important;
+  box-sizing: border-box !important;
+  transition: left .22s ease;
+}
+body.pf-staff .sidebar.close ~ .main-content .topbar {
+  left: var(--sidebar-w-closed, 104px) !important;
+}
+body.pf-staff .topbar::before,
+body.pf-staff .topbar::after {
+  display: none !important;
+  content: none !important;
+}
+body.pf-staff:not(.dark) .topbar {
+  background: #fbf6ee !important;
+  border-bottom: 1px solid #eadfc8 !important;
+}
+body.pf-staff .topbar > * {
+  position: relative;
+  z-index: 1;
+}
+body.pf-staff .topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+@media (max-width: 980px) {
+  body.pf-staff {
+    --pf-edge: 16px;
+  }
+  body.pf-staff .main-content {
+    padding: 80px var(--pf-edge) calc(88px + env(safe-area-inset-bottom, 0px)) var(--pf-edge) !important;
+  }
+  body.pf-staff .topbar,
+  body.pf-staff .sidebar.close ~ .main-content .topbar {
+    left: 0 !important;
+    padding: 12px var(--pf-edge) !important;
+    min-height: 62px;
+  }
+}
+
+/* Consistent Sticky Topbar across ALL Staff pages (overflow-x: clip never breaks position: sticky) */
+html,
+body.pf-staff,
+html body.pf-staff .dashboard,
+html body.pf-staff .main-content {
+  overflow-x: clip !important;
+}
+
+/* Trainers Toolbar Stacking (prevent dropdowns from hiding behind directory panel) & Add Trainer Modal Fix */
+body[data-page="trainers"] .tr-toolbar-panel {
+  position: relative !important;
+  z-index: 30 !important;
+  overflow: visible !important;
+}
+body[data-page="trainers"] .tr-dir-panel {
+  position: relative !important;
+  z-index: 1 !important;
+}
+body[data-page="trainers"] .tr-spec-menu {
+  z-index: 60 !important;
+}
+body[data-page="trainers"] .tr-dir-toolbar .tr-search-wrap {
+  flex: 1 1 240px !important;
+  min-width: 180px !important;
+}
+body[data-page="trainers"] .tr-modal-wide {
+  width: min(860px, 94vw) !important;
+  max-width: 860px !important;
+}
+body[data-page="trainers"] .tr-modal-form {
+  align-items: stretch !important;
+}
+body[data-page="trainers"] .tr-modal-section {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+body[data-page="trainers"] .tr-modal-grid-2,
+body[data-page="trainers"] .tr-modal-row {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+}
+body[data-page="trainers"] .tr-modal-form .tr-field {
+  min-width: 0 !important;
+  width: 100% !important;
+}
+body[data-page="trainers"] .tr-modal-form input:not([type="radio"]):not([type="checkbox"]),
+body[data-page="trainers"] .tr-modal-form textarea,
+body[data-page="trainers"] .tr-modal-form select {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+@media (max-width: 760px) {
+  body[data-page="trainers"] .tr-modal-grid-2,
+  body[data-page="trainers"] .tr-modal-row {
+    grid-template-columns: 1fr !important;
+  }
+}

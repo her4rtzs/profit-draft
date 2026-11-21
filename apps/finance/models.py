@@ -79,3 +79,22 @@ class ManualPayment(models.Model):
             self.reference_number = self.reference_number.replace(" ", "")
         super().save(*args, **kwargs)
 
+
+class PlanPrice(models.Model):
+    """Owner-configurable membership plan price (stored in integer centavos)."""
+
+    plan = models.CharField(max_length=20, unique=True)
+    price_centavos = models.PositiveIntegerField()
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"PlanPrice<{self.plan}={self.price_centavos}>"
+
+

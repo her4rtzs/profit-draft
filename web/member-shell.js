@@ -89,10 +89,27 @@
     });
   }
 
+  const TAB_SUBTITLES = {
+    overview: "Your gym overview",
+    membership: "Plan & renewal",
+    attendance: "Your check-in log",
+    payments: "Receipts & GCash claims",
+    schedule: "Classes & bookings",
+    announcements: "Gym notices & updates",
+    diary: "Your training log",
+    health: "Body metrics & goals",
+    profile: "Your account details",
+    settings: "App preferences"
+  };
+
   function syncTopTitle(tabName) {
     const titleEl = $("memberTopTitle");
     if (titleEl && tabName) {
-      titleEl.textContent = TAB_TITLES[tabName] || "Overview";
+      titleEl.textContent = TAB_TITLES[tabName] || "Dashboard";
+    }
+    const eyebrowEl = $("mbTabEyebrow");
+    if (eyebrowEl && tabName) {
+      eyebrowEl.textContent = TAB_SUBTITLES[tabName] || "Member portal";
     }
     document.querySelectorAll("#memberSideAccountMenu [data-member-goto]").forEach(btn => {
       btn.classList.toggle("active", btn.dataset.memberGoto === tabName);
@@ -123,6 +140,18 @@
       setDrawer(!document.body.classList.contains("member-side-drawer"));
     });
     $("memberSideBackdrop")?.addEventListener("click", () => setDrawer(false));
+
+    $("memberTopAvatar")?.addEventListener("click", () => {
+      document.querySelector('.member-sidebar .nav-link[data-tab="profile"]')?.click();
+    });
+    $("allNotificationsLink")?.addEventListener("click", e => {
+      e.preventDefault();
+      const panel = $("notificationPanel");
+      const toggle = $("notificationToggle");
+      if (panel) panel.hidden = true;
+      if (toggle) toggle.setAttribute("aria-expanded", "false");
+      document.querySelector('.member-sidebar .nav-link[data-tab="announcements"]')?.click();
+    });
 
     const sidebar = $("memberSidebar");
     if (sidebar) {

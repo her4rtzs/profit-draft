@@ -15,7 +15,7 @@ from rest_framework.views import APIView
 
 from apps.billing.models import PaymentClaim, Subscription
 from apps.finance.models import ManualPayment
-from apps.finance.services import PLAN_PRICE_CENTAVOS
+from apps.finance.services import get_plan_prices_centavos
 from apps.membership.models import MemberProfile
 
 from .permissions import MemberAccess
@@ -59,7 +59,8 @@ def _amount_centavos(profile):
     """Use the member's latest plan price; never a value from the request."""
     sub = Subscription.objects.filter(member=profile).order_by("-created_at", "-id").first()
     plan = ((sub.plan if sub else "") or "monthly").strip().lower()
-    return PLAN_PRICE_CENTAVOS.get(plan, PLAN_PRICE_CENTAVOS["monthly"])
+    prices = get_plan_prices_centavos()
+    return prices.get(plan, prices["monthly"])
 
 
 def _claim_json(claim):

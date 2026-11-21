@@ -159,6 +159,47 @@
     amountInput.value = centavos != null ? fmtPeso(centavos) : '—';
   }
 
+  function applyLivePlanPrices(map) {
+    if (!map || typeof map !== 'object') return;
+    ['daily', 'monthly', 'quarterly', 'annual'].forEach(function (key) {
+      var entry = map[key];
+      if (!entry) return;
+      var centavos = entry.price_centavos != null
+        ? Number(entry.price_centavos)
+        : (entry.price != null ? Math.round(Number(entry.price) * 100) : NaN);
+      if (Number.isFinite(centavos) && centavos > 0) {
+        PLAN_CENTAVOS[key] = centavos;
+      }
+    });
+    var planSelect = $('cashierPlan');
+    if (planSelect) {
+      Array.prototype.forEach.call(planSelect.options, function (opt) {
+        var key = opt.value;
+        if (PLAN_CENTAVOS[key] != null && PLAN_LABELS[key]) {
+          opt.textContent = PLAN_LABELS[key] + ' - ' + fmtPesoWhole(PLAN_CENTAVOS[key]);
+        }
+      });
+    }
+    syncAmountFromPlan();
+  }
+
+  function hydrateLivePlanPrices() {
+    try {
+      var cached = JSON.parse(localStorage.getItem('profit-plan-prices-v1') || 'null');
+      if (cached) applyLivePlanPrices(cached);
+    } catch (_) {}
+    if (typeof fetch === 'function' && location.protocol !== 'file:') {
+      fetch('/api/plans/', { credentials: 'same-origin' })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (d) {
+          if (!d || !d.plans) return;
+          applyLivePlanPrices(d.plans);
+          try { localStorage.setItem('profit-plan-prices-v1', JSON.stringify(d.plans)); } catch (_) {}
+        })
+        .catch(function () {});
+    }
+  }
+
   function findMemberById(memberId) {
     var idNum = Number(memberId);
     if (!idNum) return null;
@@ -798,6 +839,10 @@
     if (planSelect) {
       planSelect.addEventListener('change', syncAmountFromPlan);
     }
+    hydrateLivePlanPrices();
+    window.addEventListener('profit:plans-updated', function (ev) {
+      if (ev && ev.detail) applyLivePlanPrices(ev.detail);
+    });
 
     var payForm = $('cashierPayForm');
     if (payForm) {

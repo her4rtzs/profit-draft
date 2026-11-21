@@ -471,28 +471,55 @@
       input.setSelectionRange(input.value.length, input.value.length);
     }
   }
-  const SUBTABS = { overview: "Overview", payments: "Payments", checkins: "Check-ins", edit: "Edit details" };
+  const TOP_SUBTABS = { overview: "Overview", payments: "Payments", edit: "Edit details" };
   function overviewHTML(m, payments, checkins, total) {
-    const last = checkins[checkins.length - 1];
     const rem = endsSub(m);
-    return `<div class="pp-info-grid">
-      <section class="pp-card pp-det-card is-gold"><h3><span class="pp-det-ico is-gold"><i class="fa-solid fa-id-badge" aria-hidden="true"></i></span>Membership</h3><div class="pp-det-panel"><dl class="pp-dl">
-        <dt>Plan</dt><dd>${esc(planLabel(m.plan) || "Unassigned")}</dd>
-        <dt>Started</dt><dd>${m.start ? esc(fmt(m.start)) : "—"}</dd>
-        <dt>Ends</dt><dd>${esc(fmt(m.end))}</dd>
-        <dt>Status</dt><dd class="${rem.cls}">${esc(rem.text)}</dd></dl></div></section>
-      <section class="pp-card pp-det-card is-cyan"><h3><span class="pp-det-ico is-cyan"><i class="fa-solid fa-address-book" aria-hidden="true"></i></span>Contact</h3><div class="pp-det-panel"><dl class="pp-dl">
-        <dt>Email</dt><dd class="pp-truncate">${esc(m.email)}</dd>
-        <dt>Mobile</dt><dd>${esc(m.phone || "Not added")}</dd>
-        <dt>Address</dt><dd class="${m.address ? "" : "is-muted"}">${esc(m.address || "Not added")}</dd></dl></div></section>
-      <section class="pp-card pp-det-card is-emerald"><h3><span class="pp-det-ico is-emerald"><i class="fa-solid fa-kit-medical" aria-hidden="true"></i></span>Emergency contact</h3><div class="pp-det-panel">${m.emergencyName || m.emergencyPhone
-        ? `<dl class="pp-dl"><dt>Name</dt><dd>${esc(m.emergencyName || "—")}</dd><dt>Phone</dt><dd>${esc(m.emergencyPhone || "—")}</dd></dl>`
-        : `<p class="pp-muted">Not added yet. The member can add this from their portal.</p>`}</div></section>
-      <section class="pp-card pp-det-card is-violet"><h3><span class="pp-det-ico is-violet"><i class="fa-solid fa-chart-simple" aria-hidden="true"></i></span>Activity summary</h3><div class="pp-det-panel"><dl class="pp-dl">
-        <dt>Total paid</dt><dd>${money(total)}</dd>
-        <dt>Payments</dt><dd>${payments.length}</dd>
-        <dt>Check-ins</dt><dd>${checkins.length}</dd>
-        <dt>Last check-in</dt><dd>${last ? esc(fmt(last.date)) : "None yet"}</dd></dl></div></section>
+    const recentPay = payments.slice(0, 4);
+    const pk = String(m.plan || "").toLowerCase();
+    const pCls = ["daily", "monthly", "quarterly", "annual"].includes(pk) ? pk : "unassigned";
+    return `<div class="md-stack">
+      <section class="md-card">
+        <div class="md-card-head">
+          <div class="md-sec-title">
+            <span class="md-sec-ico is-gold" aria-hidden="true"><i class="fa-solid fa-id-card"></i></span>
+            <h3>Membership information</h3>
+          </div>
+          <span class="pp-plan-pill plan-${pCls}">${esc(planLabel(m.plan) || "Unassigned")}</span>
+        </div>
+        <div class="md-cols-3">
+          <div><span>PLAN</span><strong>${esc(planLabel(m.plan) || "Unassigned")}</strong></div>
+          <div><span>STARTED</span><strong>${m.start ? esc(fmt(m.start)) : "—"}</strong></div>
+          <div><span>ENDS</span><strong>${esc(fmt(m.end))}</strong><small class="${rem.cls}">${esc(rem.text)}</small></div>
+        </div>
+      </section>
+      <section class="md-card">
+        <div class="md-card-head">
+          <div class="md-sec-title">
+            <span class="md-sec-ico is-emerald" aria-hidden="true"><i class="fa-solid fa-heart-pulse"></i></span>
+            <h3>Emergency contact</h3>
+          </div>
+        </div>
+        ${m.emergencyName || m.emergencyPhone
+          ? `<div class="md-cols-2">
+              <div><span>CONTACT NAME</span><strong>${esc(m.emergencyName || "—")}</strong></div>
+              <div><span>CONTACT NUMBER</span><strong>${esc(m.emergencyPhone || "—")}</strong></div>
+            </div>`
+          : `<p class="pp-muted" style="margin:0">Not added yet. The member can add this from their portal.</p>`}
+      </section>
+      <section class="md-card">
+        <div class="md-card-head">
+          <div class="md-sec-title">
+            <span class="md-sec-ico is-sky" aria-hidden="true"><i class="fa-solid fa-receipt"></i></span>
+            <h3>Billing</h3>
+          </div>
+          ${payments.length ? `<button type="button" class="md-link-btn" data-subtab="payments">View all</button>` : ""}
+        </div>
+        ${recentPay.length
+          ? `<div class="pp-table-wrap"><table class="pp-table md-mini-tbl"><thead><tr><th>Date</th><th>Plan</th><th>Method</th><th class="num">Amount</th></tr></thead><tbody>
+              ${recentPay.map(p => `<tr><td>${esc(fmt(p.date))}</td><td>${esc(planLabel(p.plan) || "—")}</td><td>${esc(p.method)}</td><td class="num">${money(p.amount)}</td></tr>`).join("")}
+            </tbody></table></div>`
+          : `<p class="pp-muted" style="margin:0">No payments recorded yet.</p>`}
+      </section>
     </div>`;
   }
   function paymentsHTML(payments, total) {
@@ -544,38 +571,56 @@
       : state.subtab === "edit" ? editHTML(m)
       : overviewHTML(m, payments, checkins, total);
     root.innerHTML = `
-      <div class="pp-detail-head pp-card">
-        <div class="pp-detail-id">${avatar(m, "lg")}
-          <div><h2>${esc(m.name)}</h2><p class="pp-muted">${esc(m.id)} · ${esc(m.email)}${m.phone ? " · " + esc(m.phone) : ""}</p>
-          <div class="pp-badges"><span class="pp-status ${s.key}">${s.label}</span><span class="pp-plan-pill plan-${["daily", "monthly", "quarterly", "annual"].includes(String(m.plan || "").toLowerCase()) ? esc(String(m.plan).toLowerCase()) : "unassigned"}">${esc(planLabel(m.plan) || "Unassigned")}</span></div></div>
-        </div>
-        <div class="pp-actions pp-detail-actions">
+      <div class="md-top-bar">
+        <button class="pp-btn" type="button" data-detail-action="back"><i class="fa-solid fa-arrow-left"></i> All members</button>
+        <div class="md-top-acts">
+          <nav class="pp-subtabs md-subtabs" role="tablist" aria-label="Member sections">
+            ${Object.keys(TOP_SUBTABS).map(k => `<button type="button" role="tab" aria-selected="${state.subtab === k}" class="${state.subtab === k ? "active" : ""}" data-subtab="${k}">${TOP_SUBTABS[k]}</button>`).join("")}
+          </nav>
           <button class="pp-btn pp-btn-primary" type="button" data-detail-action="renew"><i class="fa-solid fa-rotate"></i> Record renewal</button>
-          <button class="pp-btn" type="button" data-detail-action="back"><i class="fa-solid fa-arrow-left"></i> All members</button>
         </div>
       </div>
-      <div class="pp-detail-kpis">
-        <article class="pp-det-kpi is-gold">
-          <span class="pp-det-kpi-ico"><i class="fa-solid fa-peso-sign" aria-hidden="true"></i></span>
-          <div><strong>${money(total)}</strong><span>Total Paid</span></div>
-        </article>
-        <article class="pp-det-kpi is-emerald">
-          <span class="pp-det-kpi-ico"><i class="fa-solid fa-receipt" aria-hidden="true"></i></span>
-          <div><strong>${payments.length}</strong><span>Payments</span></div>
-        </article>
-        <article class="pp-det-kpi is-cyan">
-          <span class="pp-det-kpi-ico"><i class="fa-solid fa-calendar-check" aria-hidden="true"></i></span>
-          <div><strong>${checkins.length}</strong><span>Check-ins</span></div>
-        </article>
-        <article class="pp-det-kpi is-violet">
-          <span class="pp-det-kpi-ico"><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i></span>
-          <div><strong>${last ? esc(fmt(last.date)) : "None yet"}</strong><span>Last Check-in</span></div>
-        </article>
-      </div>
-      <nav class="pp-subtabs" role="tablist" aria-label="Member sections">
-        ${Object.keys(SUBTABS).map(k => `<button type="button" role="tab" aria-selected="${state.subtab === k}" class="${state.subtab === k ? "active" : ""}" data-subtab="${k}">${SUBTABS[k]}</button>`).join("")}
-      </nav>
-      <div class="pp-subtab-body">${body}</div>`;
+      <div class="md-layout">
+        <aside class="md-side">
+          <div class="md-side-top">
+            <div class="md-ava-box">${avatar(m, "lg")}</div>
+            <span class="pp-status ${s.key}">${s.label}</span>
+          </div>
+          <div class="md-side-stats">
+            <div class="md-stat-tile is-gold">
+              <span>CHECK-INS</span>
+              <strong>${checkins.length}</strong>
+            </div>
+            <div class="md-stat-tile is-emerald">
+              <span>TOTAL PAID</span>
+              <strong>${money(total)}</strong>
+            </div>
+          </div>
+          <div class="md-meta-list">
+            <div class="md-meta-item">
+              <span>MEMBER SINCE</span>
+              <strong>${m.start ? esc(fmt(m.start)) : "—"}</strong>
+            </div>
+            <div class="md-meta-item">
+              <span>LAST CHECK-IN</span>
+              <strong>${last ? esc(fmt(last.date)) : "None yet"}</strong>
+            </div>
+          </div>
+          <button class="pp-btn md-side-btn${state.subtab === "checkins" ? " is-active" : ""}" type="button" data-subtab="${state.subtab === "checkins" ? "overview" : "checkins"}">${state.subtab === "checkins" ? "Back to overview" : "View all check-ins"}</button>
+        </aside>
+        <div class="md-main">
+          <section class="md-card md-id-card">
+            <span class="md-kicker">FULL NAME</span>
+            <h2>${esc(m.name)}</h2>
+            <div class="md-cols-3">
+              <div><span>MEMBER ID</span><strong>${esc(m.id)}</strong></div>
+              <div><span>HOME ADDRESS</span><strong>${esc(m.address || "Not added")}</strong></div>
+              <div><span>CONTACT INFORMATION</span><strong>${esc(m.email)}</strong><small>${esc(m.phone || "No mobile added")}</small></div>
+            </div>
+          </section>
+          <div class="pp-subtab-body">${body}</div>
+        </div>
+      </div>`;
   }
   function renewalDialog(m) {
     const base = m.end >= today() ? m.end : today();
@@ -964,6 +1009,17 @@
   document.querySelectorAll("[data-view-mode]").forEach(b => b.addEventListener("click", () => { state.view = b.dataset.viewMode; renderBrowse(); }));
   // A phone gets cards, a desktop gets the table, even if the window is resized after load.
   matchMedia("(max-width: 768px)").addEventListener("change", e => { state.view = e.matches ? "cards" : "table"; renderBrowse(); });
+  // Re-render enrollment plan cards and amounts whenever live plan prices refresh from /api/plans/.
+  window.addEventListener("profit:plans-updated", () => {
+    const selected = document.querySelector('input[name="ePlan"]:checked')?.value;
+    buildEnroll();
+    if (selected) {
+      const match = document.querySelector(`input[name="ePlan"][value="${selected}"]`);
+      if (match) match.checked = true;
+      updateEnrollAmount();
+    }
+    renderAll();
+  });
 
   document.addEventListener("click", e => {
     const retry = e.target.closest("#memberRetryBtn");

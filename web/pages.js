@@ -337,6 +337,13 @@
         syncFromMember();
         sel?.addEventListener("change", syncFromMember);
         planSel?.addEventListener("change", syncAmount);
+        window.addEventListener("profit:plans-updated", () => {
+            if (!planSel) return;
+            const cur = planSel.value;
+            planSel.innerHTML = planOptions();
+            if (cur) planSel.value = cur;
+            syncAmount();
+        });
 
         const drawToday = () => {
             const list = DB.payments.filter(p => toISO(p.date) === toISO(TODAY)).sort(newest);

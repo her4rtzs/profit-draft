@@ -15,20 +15,19 @@ html[data-theme="dark"] body[data-portal="trainer"] {
   --gold-ink: #FCD34D;
 }
 
-/* Light Mode Theme: clean, crisp, comfortable slate-zinc palette (no dirty beige or harsh contrast) */
+/* Light Mode Theme: unified warm cream + crisp white surface (matches Staff & Member portals, zero AI glow) */
 html:not([data-theme="dark"]) body[data-portal="trainer"],
 html[data-theme="light"] body[data-portal="trainer"] {
-  /* Warm cream palette: soft on the eyes, never pure white */
-  --bg: #F2EEE5;
-  --bg-glow: rgba(245, 158, 11, .05);
-  --card: #FAF8F3;
-  --card-alpha: #FAF8F3;
-  --card-2: #F3EEE4;
-  --line: #E8E1D3;
-  --line-strong: #DAD1BF;
-  --text: #1F2430;
-  --text-2: #444A57;
-  --muted: #5c5f6b;
+  --bg: #fbf6ee;
+  --bg-glow: transparent;
+  --card: #ffffff;
+  --card-alpha: #ffffff;
+  --card-2: #f6ecd9;
+  --line: #eadfc8;
+  --line-strong: #d8c9aa;
+  --text: #2a2418;
+  --text-2: #4a4132;
+  --muted: #6f6450;
   /* Dark ink on these cream surfaces so every text pairing clears 4.5:1. */
   --tw-amber: #92400E;
   --green: #065F46;
@@ -40,24 +39,24 @@ html[data-theme="light"] body[data-portal="trainer"] {
   --blue-soft: rgba(37, 99, 235, .12);
   --purple: #7C3AED;
   --purple-soft: rgba(124, 58, 237, .12);
-  --tw-bg: #F2EEE5;
-  --tw-card: #FAF8F3;
-  --tw-card-2: #F3EEE4;
-  --tw-border: #E8E1D3;
-  --tw-border-strong: #DAD1BF;
-  --tw-dot-fill: #FAF8F3;
-  --tw-donut-track: #EAE4D7;
-  --tw-grid-line: #E6DFD0;
-  --tw-chart-tip-bg: #FAF8F3;
-  --tw-chart-tip-border: #E0D8C8;
-  --tw-chart-tip-text: #1F2430;
-  --shadow: 0 1px 2px rgba(60, 45, 15, .04), 0 8px 22px -10px rgba(60, 45, 15, .10);
+  --tw-bg: #fbf6ee;
+  --tw-card: #ffffff;
+  --tw-card-2: #f6ecd9;
+  --tw-border: #eadfc8;
+  --tw-border-strong: #d8c9aa;
+  --tw-dot-fill: #ffffff;
+  --tw-donut-track: #eadfc8;
+  --tw-grid-line: #eadfc8;
+  --tw-chart-tip-bg: #ffffff;
+  --tw-chart-tip-border: #eadfc8;
+  --tw-chart-tip-text: #2a2418;
+  --shadow: 0 1px 3px rgba(15, 23, 42, .05);
 }
 
 /* Dark Mode Theme: deep navy #0A0E17 base with charcoal #111827 cards */
 html[data-theme="dark"] body[data-portal="trainer"] {
   --bg: #0A0E17;
-  --bg-glow: rgba(245, 158, 11, .07);
+  --bg-glow: transparent;
   --card: #111827;
   --card-alpha: #111827;
   --card-2: #0D1320;
@@ -85,7 +84,7 @@ html[data-theme="dark"] body[data-portal="trainer"] {
   --tw-chart-tip-bg: rgba(10, 14, 23, .96);
   --tw-chart-tip-border: rgba(255, 255, 255, .14);
   --tw-chart-tip-text: #F3F4F6;
-  --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 10px 30px rgba(0, 0, 0, .28);
+  --shadow: 0 1px 2px rgba(0, 0, 0, .28);
 }
 
 body[data-portal="trainer"] {
@@ -2891,4 +2890,15 @@ body[data-portal="trainer"] .pp-small {
   .tw-dow-strip {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+
+
+/* Unified flat surfaces & zero AI glow (matches Staff & Member portals) */
+body[data-portal="trainer"] .tw-qa-tile:hover,
+body[data-portal="trainer"] .card:hover {
+  box-shadow: 0 2px 8px rgba(15, 23, 42, .06) !important;
+}
+html[data-theme="dark"] body[data-portal="trainer"] .tw-qa-tile:hover,
+html[data-theme="dark"] body[data-portal="trainer"] .card:hover {
+  box-shadow: none !important;
 }
