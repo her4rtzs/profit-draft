@@ -2513,3 +2513,13 @@ Fix OTP sending so it works for all accounts (not just one), stop OTP emails fro
 - Added tests in `apps/accounts/tests/test_email_backend.py` and `apps/accounts/tests/test_password_reset.py` and verified `python manage.py check` (0 errors) and 32/32 targeted OTP/email/URL/PWA tests OK.
 ### Decision-log skill
 Resend's sandbox sender (`onboarding@resend.dev`) only delivers to the single Resend account owner; always pair verified custom-domain DNS (SPF/DKIM/DMARC) or an authenticated SMTP fallback whose `From:` matches `EMAIL_HOST_USER` with proper transactional email headers to reach every user's primary inbox.
+
+
+## 2026-11-21 15:26 (Asia/Manila): Remove placeholder Apple Sign-In button from login page
+### What I asked for
+Remove the placeholder Apple Sign-In button from the login page because Sign in with Apple requires a paid Apple Developer account.
+### What the agent decided and why
+- Removed `#appleSignInBtn` and its click handler from `web/login.html`, switched `.lg-sso` to a single full-width column (`grid-template-columns: 1fr`), and labeled the remaining SSO button "Continue with Google".
+- Verified with `python manage.py check` and targeted `test_clean_urls`, `test_installable`, and `test_google_auth` tests.
+### Decision-log skill
+Keep the login page free of placeholder buttons for paid OAuth providers (like Apple Sign-In's paid Developer Program) on a free-tier project; a single full-width Google button looks cleaner and avoids dead UI paths.
