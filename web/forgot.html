@@ -255,13 +255,81 @@
   }
   .fp-links a:hover{color:var(--lime-hi)}
 
+  .fp-otp-boxes{
+    display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:4px;
+  }
+  .fp-otp-digit{
+    width:100%;height:48px;padding:0;text-align:center;
+    border-radius:12px;border:1px solid var(--field-line);
+    background:var(--bg2);color:var(--tx);
+    font:700 20px/1 "Plus Jakarta Sans",Inter,system-ui,sans-serif;
+    transition:border-color .16s ease,box-shadow .16s ease;
+  }
+  .fp-otp-digit:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,185,58,.22)}
+  .fp-done-box{text-align:center;padding:8px 0 4px}
+  .fp-done-box[hidden]{display:none}
+  .fp-done-icon{
+    width:64px;height:64px;margin:0 auto 14px;border-radius:50%;
+    background:rgba(74,222,128,.16);border:2px solid var(--ok);color:var(--ok);
+    display:grid;place-items:center;font-size:26px;
+  }
+  .fp-done-box p{margin:0 0 18px;font-size:14px;color:var(--mu)}
+  .fp-done-box a.fp-btn-gold{text-decoration:none}
+  .mob-auth-head{display:none}
+
   @media(max-width:900px){
     .fp-shell{min-height:auto;padding:28px 16px 36px;align-items:flex-start}
     .fp-wrap{grid-template-columns:1fr;gap:24px}
     .fp-card{max-width:480px;margin-inline:auto;justify-self:center}
   }
-  @media(max-width:480px){
-    .fp-input{font-size:16px}
+  @media(max-width:768px){
+    .portal-nav{
+      height:54px;min-height:54px;padding:0 14px;
+      background:rgba(11,12,16,.92);border-bottom:0;
+    }
+    .portal-brand img{width:28px;height:28px;border-radius:8px}
+    .portal-brand strong{font-size:18px}
+    .back-link span{display:none}
+    .fp-shell{
+      display:block;min-height:calc(100vh - 54px);padding:0 0 32px;
+      background:var(--bg);overflow:visible;
+    }
+    .fp-shell::before{display:none}
+    .fp-wrap{display:block;width:100%}
+    .fp-copy{display:none}
+    .mob-auth-head{
+      display:block;position:relative;overflow:hidden;
+      padding:22px 22px 68px;
+      border-radius:0 0 28px 28px;
+      background:
+        linear-gradient(160deg,rgba(11,13,22,.88) 0%,rgba(17,19,32,.92) 65%,rgba(232,185,58,.18) 100%),
+        url("img/hero.jpg") center/cover no-repeat;
+      border-bottom:1px solid rgba(232,185,58,.24);
+      text-align:left;
+    }
+    .mob-auth-badge{
+      width:52px;height:52px;margin:0 auto 14px;border-radius:14px;padding:4px;
+      background:rgba(255,255,255,.08);border:1px solid rgba(232,185,58,.45);
+      box-shadow:0 8px 20px -6px rgba(0,0,0,.55);
+      display:grid;place-items:center;
+    }
+    .mob-auth-badge img{width:100%;height:100%;border-radius:10px;object-fit:cover;display:block}
+    .mob-auth-head h2{
+      margin:0 0 4px;font-size:24px;font-weight:800;letter-spacing:-.02em;color:#f6efdc;
+    }
+    .mob-auth-head p{
+      margin:0;font-size:13.5px;line-height:1.45;color:#c9c4b4;
+    }
+    .fp-card{
+      position:relative;z-index:2;
+      width:calc(100% - 28px);max-width:440px;
+      margin:-44px auto 0;padding:20px 18px 20px;
+      border-radius:20px;
+      box-shadow:0 18px 40px -16px rgba(0,0,0,.65);
+    }
+    .fp-card > .fp-kicker,.fp-card > h2,.fp-card > .fp-lead{display:none}
+    .fp-input{height:46px;font-size:16px}
+    .fp-btn-gold{height:46px}
   }
   @media(prefers-reduced-motion:reduce){
     *{transition:none !important;animation:none !important}
@@ -279,6 +347,11 @@
 </header>
 
 <main class="fp-shell">
+  <div class="mob-auth-head" aria-hidden="true">
+    <div class="mob-auth-badge"><img src="logo.jpg" alt="" width="44" height="44"></div>
+    <h2 id="fpMobTitle">Forgot your password?</h2>
+    <p id="fpMobSub">Enter the Gmail or email on your account and we will send you a 6-digit code.</p>
+  </div>
   <div class="fp-wrap">
     <section class="fp-copy" aria-label="Password reset overview">
       <p class="fp-eyebrow">Your gym. One platform.</p>
@@ -313,8 +386,16 @@
 
       <form id="fpForm2" novalidate hidden>
         <div class="fp-field">
-          <label class="fp-field-label" for="fpCode">6-digit verification code</label>
-          <input class="fp-input" id="fpCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required placeholder="123456">
+          <label class="fp-field-label" for="fpOtp1">6-digit verification code</label>
+          <input id="fpCode" type="hidden" value="">
+          <div class="fp-otp-boxes" id="fpOtpBoxes" role="group" aria-label="6-digit verification code">
+            <input class="fp-otp-digit" id="fpOtp1" type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 1">
+            <input class="fp-otp-digit" id="fpOtp2" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 2">
+            <input class="fp-otp-digit" id="fpOtp3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 3">
+            <input class="fp-otp-digit" id="fpOtp4" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 4">
+            <input class="fp-otp-digit" id="fpOtp5" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 5">
+            <input class="fp-otp-digit" id="fpOtp6" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 6">
+          </div>
         </div>
         <div id="fpMsg2" class="fp-msg" role="alert" aria-live="polite" hidden></div>
         <button class="fp-btn-gold" type="submit">Verify OTP</button>
@@ -343,6 +424,12 @@
         <button class="fp-btn-gold" type="submit">Change password</button>
         <button type="button" class="fp-text-btn" id="fpBackOtp">Back to OTP code</button>
       </form>
+
+      <div class="fp-done-box" id="fpDoneBox" hidden>
+        <div class="fp-done-icon" aria-hidden="true"><i class="fa-solid fa-check"></i></div>
+        <p>Your password has been changed successfully. You can now sign in with your new password.</p>
+        <a class="fp-btn-gold" href="/login">Back to Sign In</a>
+      </div>
 
       <p class="fp-links"><a href="/login">Back to sign in</a></p>
     </section>
@@ -376,10 +463,57 @@
   let resendBusy = false;
   const resendBtn = $("fpResend");
 
+  const otpDigits = Array.from(document.querySelectorAll("#fpOtpBoxes .fp-otp-digit"));
+  function syncOtpValue() {
+    $("fpCode").value = otpDigits.map(d => d.value.replace(/\D/g, "").slice(0, 1)).join("");
+  }
+  function clearOtpBoxes() {
+    otpDigits.forEach(d => { d.value = ""; });
+    $("fpCode").value = "";
+  }
+  function setHeading(title, sub) {
+    $("fpTitle").textContent = title;
+    $("fpSub").textContent = sub;
+    if ($("fpMobTitle")) $("fpMobTitle").textContent = title;
+    if ($("fpMobSub")) $("fpMobSub").textContent = sub;
+  }
+
+  otpDigits.forEach((box, idx) => {
+    box.addEventListener("input", () => {
+      const digits = box.value.replace(/\D/g, "");
+      if (digits.length > 1) {
+        digits.slice(0, 6).split("").forEach((ch, i) => {
+          if (otpDigits[i]) otpDigits[i].value = ch;
+        });
+        syncOtpValue();
+        (otpDigits[Math.min(digits.length, 5)] || box).focus();
+        return;
+      }
+      box.value = digits;
+      syncOtpValue();
+      if (digits && otpDigits[idx + 1]) otpDigits[idx + 1].focus();
+    });
+    box.addEventListener("keydown", e => {
+      if (e.key === "Backspace" && !box.value && otpDigits[idx - 1]) {
+        otpDigits[idx - 1].focus();
+      }
+    });
+    box.addEventListener("paste", e => {
+      const text = (e.clipboardData || window.clipboardData)?.getData("text") || "";
+      const digits = text.replace(/\D/g, "").slice(0, 6);
+      if (!digits) return;
+      e.preventDefault();
+      digits.split("").forEach((ch, i) => { if (otpDigits[i]) otpDigits[i].value = ch; });
+      syncOtpValue();
+      (otpDigits[Math.min(digits.length, 5)] || box).focus();
+    });
+  });
+
   function setStep(stepNum) {
     $("fpForm1").hidden = stepNum !== 1;
     $("fpForm2").hidden = stepNum !== 2;
     $("fpForm3").hidden = stepNum !== 3;
+    if ($("fpDoneBox")) $("fpDoneBox").hidden = stepNum !== 4;
     [1, 2, 3].forEach(n => {
       const el = $("fpStep" + n);
       if (!el) return;
@@ -425,27 +559,20 @@
     }
   };
 
-  $("fpCode").addEventListener("input", () => {
-    const clean = $("fpCode").value.replace(/\D/g, "").slice(0, 6);
-    if ($("fpCode").value !== clean) $("fpCode").value = clean;
-  });
-
   $("fpBackEmail").addEventListener("click", () => {
     verifiedCode = "";
     $("fpMsg1").hidden = true;
     $("fpMsg2").hidden = true;
-    $("fpTitle").textContent = "Forgot your password?";
-    $("fpSub").textContent = "Enter the Gmail or email on your account and we will send you a 6-digit code.";
+    setHeading("Forgot your password?", "Enter the Gmail or email on your account and we will send you a 6-digit code.");
     setStep(1);
     $("fpEmail").focus();
   });
 
   $("fpBackOtp").addEventListener("click", () => {
     $("fpMsg3").hidden = true;
-    $("fpTitle").textContent = "Enter verification code";
-    $("fpSub").textContent = "Enter the 6-digit code sent to your email.";
+    setHeading("Enter verification code", "Enter the 6-digit OTP we sent to your email.");
     setStep(2);
-    $("fpCode").focus();
+    if (otpDigits[0]) otpDigits[0].focus();
   });
 
   $("fpForm1").addEventListener("submit", async e => {
@@ -460,13 +587,12 @@
       const res = await sendInitial($("fpMsg1"));
       if (res) {
         verifiedCode = "";
-        $("fpCode").value = "";
+        clearOtpBoxes();
         setStep(2);
-        $("fpTitle").textContent = "Enter verification code";
-        $("fpSub").textContent = "Enter the 6-digit OTP we sent to your email.";
+        setHeading("Enter verification code", "Enter the 6-digit OTP we sent to your email.");
         show($("fpMsg2"), "Verification code sent. Check your inbox (valid for 10 minutes).", false);
         startResendCountdown(res.cooldown_seconds || 60);
-        $("fpCode").focus();
+        if (otpDigits[0]) otpDigits[0].focus();
       }
     } finally {
       btn.disabled = false;
@@ -483,8 +609,8 @@
       resendBusy = false;
       verifiedCode = "";
       show($("fpMsg2"), res?.detail || "A new verification code has been sent to your email.", false);
-      $("fpCode").value = "";
-      $("fpCode").focus();
+      clearOtpBoxes();
+      if (otpDigits[0]) otpDigits[0].focus();
       startResendCountdown(res?.cooldown_seconds || 60);
     } catch (err) {
       resendBusy = false;
@@ -499,6 +625,7 @@
 
   $("fpForm2").addEventListener("submit", async e => {
     e.preventDefault();
+    syncOtpValue();
     const code = $("fpCode").value.trim();
     if (!/^\d{6}$/.test(code)) return show($("fpMsg2"), "Enter the 6-digit code from your email.", true);
     const btn = e.submitter || e.target.querySelector("button[type=submit]");
@@ -509,8 +636,7 @@
       $("fpNew").value = "";
       $("fpConf").value = "";
       setStep(3);
-      $("fpTitle").textContent = "Set a new password";
-      $("fpSub").textContent = "Your code is verified. Enter and confirm your new password.";
+      setHeading("Set a new password", "Your code is verified. Enter and confirm your new password.");
       show($("fpMsg3"), "OTP verified. Choose a strong password (at least 8 characters).", false);
       $("fpNew").focus();
     } catch (err) {
@@ -531,8 +657,7 @@
       await api("/auth/reset-password", { email, code: verifiedCode, new_password: pw });
       if (cooldownTimer) { clearInterval(cooldownTimer); cooldownTimer = null; }
       setStep(4);
-      $("fpTitle").textContent = "Password updated";
-      $("fpSub").innerHTML = 'You can now <a href="/login">sign in</a> with your new password.';
+      setHeading("Password changed", "You can now sign in with your new password.");
     } catch (err) {
       show($("fpMsg3"), err.message || "Could not reset the password.", true);
     } finally {

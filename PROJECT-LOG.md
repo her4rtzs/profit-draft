@@ -2523,3 +2523,14 @@ Remove the placeholder Apple Sign-In button from the login page because Sign in 
 - Verified with `python manage.py check` and targeted `test_clean_urls`, `test_installable`, and `test_google_auth` tests.
 ### Decision-log skill
 Keep the login page free of placeholder buttons for paid OAuth providers (like Apple Sign-In's paid Developer Program) on a free-tier project; a single full-width Google button looks cleaner and avoids dead UI paths.
+
+
+## 2026-11-21 15:41 (Asia/Manila): Mobile auth layout matching reference sheet while preserving ProFit palette
+### What I asked for
+Apply the mobile auth layout from the reference UI kit (compact curved branded top header with app icon + overlapping floating card + 6-box OTP + password-changed confirmation card) while preserving ProFit's colors and desktop layout.
+### What the agent decided and why
+- Added a mobile-only (`<= 768px`) curved branded header (`.mob-auth-head` with `.mob-auth-badge` logo) and overlapping elevated rounded form card (`margin-top: -44px`, `border-radius: 20px`) to `web/login.html`, `web/forgot.html`, and `web/join.html` while keeping desktop (`> 768px`) and ProFit's dark obsidian/gold (`--bg`, `--card`, `--gold`, `--tx`) + light-mode tokens untouched.
+- Upgraded `web/forgot.html` Step 2 to a 6-box segmented OTP input (`.fp-otp-boxes` with auto-advance, backspace, and paste support synced to `#fpCode`) and Step 4 to a centered checkmark confirmation card (`#fpDoneBox`) with a full-width "Back to Sign In" button.
+- Verified with `python manage.py check` and `python manage.py test profit.tests.test_clean_urls profit.tests.test_installable`.
+### Decision-log skill
+Keep mobile auth pages clean by hiding tall desktop marketing copy under `768px` in favor of a compact curved brand header and an overlapping card with `16px` inputs so iOS Safari never auto-zooms.
