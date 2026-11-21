@@ -123,7 +123,7 @@ Exit check: both phones pass the owner's checklist above.
 Goal: remove the payment gateway. Sign-up is free with a 7-day trial, GCash payments are claims reviewed by staff, and cash is recorded at the desk.
 
 - [ ] Remove PayMongo: delete checkout creation, the webhook receiver and its route, `PAYMONGO_SECRET_KEY` and `PAYMONGO_WEBHOOK_SECRET`. Keep every existing payment row and PayMongo reference as history.
-- [ ] Free sign-up creates a Member with status `trial` for 7 days: app access only, no gym membership and no attendance.
+- [x] Free sign-up creates a Member with status `trial` for 7 days: app access only, no gym membership and no attendance.
 - [ ] GCash claim form: GCash reference number and an https Google Drive screenshot link, saved as `pending_review`. The amount comes from the server-side plan price, never from the form.
 - [ ] Owner/Cashier review queue: approve or reject a claim; the member sees only their own claims. Enforced on the server.
 - [ ] Approval marks the claim `approved` and enrolls through the one membership service in a single transaction; a repeated approval changes nothing.

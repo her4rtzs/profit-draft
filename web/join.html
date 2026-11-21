@@ -385,8 +385,8 @@
   <div class="jn-wrap">
     <section class="jn-copy" aria-label="Self-enrollment overview">
       <p class="jn-eyebrow">Join the gym</p>
-      <h1 class="jn-title">Pay online.<span class="hl">Start training.</span></h1>
-      <p class="jn-desc">Choose a plan and pay with GCash, Maya, card or QR. Your member account is created as soon as payment is confirmed.</p>
+      <h1 class="jn-title">Start free.<span class="hl">Train with us.</span></h1>
+      <p class="jn-desc">Create your free account and get 7 days of app access. Add a gym membership any time by paying at the desk or by GCash.</p>
       <ul class="jn-checks">
         <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>No waiting for staff approval</span></li>
         <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Four plans, from one day to a full year</span></li>
@@ -396,7 +396,7 @@
 
     <section class="jn-card" id="box" aria-label="Create your account">
       <h2>Create your account</h2>
-      <p class="jn-lead">Pick a plan, add your details, then pay securely.</p>
+      <p class="jn-lead">Add your details to create your free account.</p>
 
       <form id="f" novalidate>
         <label class="jn-lbl">Plan</label>
@@ -467,7 +467,7 @@
         </label>
 
         <p class="jn-err" id="err" role="alert"></p>
-        <button class="jn-btn-gold" id="go" type="submit" disabled>Continue to secure payment</button>
+        <button class="jn-btn-gold" id="go" type="submit" disabled>Create my account</button>
       </form>
 
       <div id="joinGoogleWrap">
@@ -491,7 +491,7 @@
         <a class="jn-btn-gold" id="okgo" href="/login" style="text-decoration:none">Sign in</a>
       </div>
 
-      <p class="jn-paynote" id="paynote">Paid securely through PayMongo: GCash, Maya, card or QR Ph.</p>
+      <p class="jn-paynote" id="paynote">Your account starts with a 7-day free trial. Pay by GCash or cash at the desk to activate your gym membership.</p>
       <p class="jn-alt" id="alt">Already a member? <a href="/login">Sign in</a></p>
     </section>
   </div>
@@ -705,14 +705,14 @@
       phone: "0" + digits,
       password: pwEl.value
     };
-    btn.disabled = true; btn.textContent = "Opening secure checkout...";
+    btn.disabled = true; btn.textContent = "Creating your account...";
     try {
       const r = await window.ProFitAPI.post("/join/checkout", body);
-      location.href = r.checkout_url;
+      location.href = r.login_url || "/login";
     } catch (ex) {
-      err.textContent = ex.message || "Could not start the payment.";
+      err.textContent = ex.message || "Could not create your account.";
       btn.disabled = false;
-      btn.textContent = "Continue to secure payment";
+      btn.textContent = "Create my account";
       updateFormState(false);
     }
   });

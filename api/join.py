@@ -1,7 +1,8 @@
-"""POST /api/join/checkout/: pay first, account after. Public (no login needed).
+"""POST /api/join/checkout/: public self sign-up.
 
-Creates only a pending signup and a PayMongo checkout. The account is created by
-the webhook once the payment is confirmed.
+Creates a MEMBER login with a 7-day trial. It no longer starts a PayMongo
+checkout or redirects to payment; the PayMongo code stays in ``apps.billing``
+until it is removed in a later pass.
 """
 
 from django.conf import settings
@@ -12,7 +13,8 @@ from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
 
-from apps.billing.services import CheckoutError, confirm_join, create_join_checkout
+from apps.billing.services import confirm_join
+from apps.membership.services import register_trial_member
 
 
 class JoinThrottle(AnonRateThrottle):
@@ -29,21 +31,19 @@ class JoinCheckoutView(APIView):
         d = request.data
         base = settings.SITE_BASE_URL.rstrip("/")
         try:
-            url = create_join_checkout(
-                name=d.get("name"), email=d.get("email"), phone=d.get("phone"),
-                plan=d.get("plan"), password=d.get("password"),
-                success_url=f"{base}/join.html?paid=1",
-                cancel_url=f"{base}/join.html?cancelled=1",
+            register_trial_member(
+                name=d.get("name"),
+                email=d.get("email"),
+                password=d.get("password"),
+                phone=d.get("phone"),
             )
         except ValidationError as exc:
             raise DRFValidationError({"detail": " ".join(exc.messages)})
-        except CheckoutError as exc:
-            return Response({"detail": str(exc)}, status=503)
-        return Response({"checkout_url": url})
+        return Response({"status": "trial", "login_url": f"{base}/login"})
 
 
 class JoinConfirmView(APIView):
-    """POST /api/join/confirm/ {token}: create the account once PayMongo says it is paid."""
+    """POST /api/join/confirm/ {token}: legacy PayMongo return check, kept for now."""
 
     permission_classes = [AllowAny]
     authentication_classes = []

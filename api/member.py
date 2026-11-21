@@ -122,7 +122,9 @@ class MemberMeView(APIView):
 
         remaining_days = max(0, (end_date - today).days) if end_date else 0
         raw_status = profile.membership_status
-        if raw_status == MemberProfile.MembershipStatus.PENDING and not end_date:
+        if raw_status == MemberProfile.MembershipStatus.TRIAL:
+            effective_status = "TRIAL"
+        elif raw_status == MemberProfile.MembershipStatus.PENDING and not end_date:
             effective_status = "PENDING"
         elif end_date and end_date < today:
             effective_status = "EXPIRED"

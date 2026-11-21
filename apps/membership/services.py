@@ -4,6 +4,7 @@ Per AGENTS.md, business logic lives here and in model methods, never in views
 or serializers. Views/serializers call these functions.
 """
 
+import re
 from datetime import timedelta
 
 from django.core.exceptions import ValidationError
@@ -160,6 +161,18 @@ def trial_is_active(member, *, today=None):
         and member.trial_ends_at is not None
         and today <= timezone.localdate(member.trial_ends_at)
     )
+
+
+def register_trial_member(*, name, email, password, phone=""):
+    """Create a MEMBER login and start its 7-day trial. Role is never caller-supplied."""
+    if len((name or "").strip()) < 2:
+        raise ValidationError("Enter your full name.")
+    digits = re.sub(r"\D", "", phone or "")
+    if not 10 <= len(digits) <= 13:
+        raise ValidationError("Enter a valid mobile number (10 to 13 digits).")
+    with transaction.atomic():
+        profile = create_member(name=name, email=email, password=password, phone=phone or "")
+        return start_trial(profile)
 
 
 def check_in_member(member, recorded_by):

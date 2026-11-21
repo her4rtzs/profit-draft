@@ -2567,3 +2567,15 @@ Add a 7-day trial: a `trial` member status and `trial_ends_at`, one service in `
 - Generated migration `0005` but did not apply it. Tests ran on SQLite; `apps.membership` passed 37 tests. `ruff` reports only the pre-existing RUF012 errors that every migration and the Attendance `Meta` already have.
 ### Decision-log skill
 When a time limit is stored as a timestamp but judged by a business day, compare local dates in the project timezone; the stored value can then stay a plain `now + N days`.
+
+## 2026-11-21 16:42 (Asia/Manila): Self sign-up creates a trial member
+### What I asked for
+Change self sign-up so it creates a Member in `trial` with `trial_ends_at` set by the service, remove the PayMongo checkout and the redirect to payment, keep sign-up limited to the Member role, leave the PayMongo code in place, and add or update tests.
+### What the agent decided and why
+- Repointed the public join sign-up (`/api/join/checkout/`) at a new `register_trial_member`, which reuses `create_member` + `start_trial`; no checkout and no redirect to payment. See [[2026-11-21 Sign-up creates a trial member without a checkout]]
+- Left `create_join_checkout`, `_paymongo_session`, `complete_signup`, `confirm_join` and the webhook untouched; only sign-up stopped calling them.
+- The role is set inside the service, so a `role` field in the request is ignored; a test covers it.
+- `/accounts/signup/` was not changed: it still creates an inactive login with no profile, and it never called PayMongo.
+- Checked off the Phase 4.6 free-trial item. Full suite: 249 tests pass. Migration `0005` is still not applied.
+### Decision-log skill
+When a public form stops using a paid checkout, keep the retired gateway code but put the replacement behind one service, so the view cannot accept `role`, `amount`, or an end date.

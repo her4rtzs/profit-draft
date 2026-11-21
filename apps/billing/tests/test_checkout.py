@@ -1,14 +1,17 @@
 """Checkout creation (PayMongo call mocked) and webhook activation of the membership."""
 
+import datetime
 import hashlib
 import hmac
 import json
 from unittest import mock
 
 from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import make_password
 from django.test import Client, TestCase, override_settings
+from django.utils import timezone
 
-from apps.billing.models import Payment, Subscription
+from apps.billing.models import Payment, PendingSignup, Subscription
 from apps.membership.models import MemberProfile
 
 User = get_user_model()
@@ -80,74 +83,75 @@ class CheckoutFlowTests(TestCase):
 
 
 @override_settings(PAYMONGO_SECRET_KEY="sk_test_dummy", PAYMONGO_WEBHOOK_SECRET=SECRET)
-class JoinPayFirstTests(TestCase):
-    """Pay first: no account exists until the confirmed payment arrives."""
+class JoinSignupTests(TestCase):
+    """Self sign-up creates a MEMBER in TRIAL and never calls PayMongo."""
 
     BODY = {"name": "New Person", "email": "New@Example.com", "phone": "09120000000",
-            "plan": "monthly", "password": "Strong-pass-987"}
+            "password": "Strong-pass-987"}
 
     def _join(self, body=None):
-        fake = _Resp({"data": {"id": "cs_join_1", "attributes": {"checkout_url": "https://pay.example/cs_join_1"}}})
-        with mock.patch("apps.billing.services.urllib.request.urlopen", return_value=fake):
-            return Client().post("/api/join/checkout/", data=json.dumps(body or self.BODY), content_type="application/json")
+        return Client().post("/api/join/checkout/", data=json.dumps(body or self.BODY),
+                             content_type="application/json")
 
-    def _webhook(self, event_id, session="cs_join_1"):
-        payload = {"data": {"id": event_id, "attributes": {"type": "checkout_session.payment.paid", "livemode": False, "data": {"id": session}}}}
-        raw = json.dumps(payload).encode()
-        t = "1700000000"
-        sig = hmac.new(SECRET.encode(), t.encode() + b"." + raw, hashlib.sha256).hexdigest()
-        return Client().post("/webhooks/paymongo/", data=raw, content_type="application/json", HTTP_PAYMONGO_SIGNATURE=f"t={t},te={sig},li=")
-
-    def test_no_account_before_payment(self):
-        resp = self._join()
+    def test_creates_trial_member_without_payment(self):
+        with mock.patch("apps.billing.services.urllib.request.urlopen") as urlopen:
+            resp = self._join()
+        urlopen.assert_not_called()
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.json()["checkout_url"], "https://pay.example/cs_join_1")
-        self.assertFalse(User.objects.filter(username="new@example.com").exists())
-
-    def test_paid_webhook_creates_active_member_who_can_log_in(self):
-        self._join()
-        self.assertEqual(self._webhook("evt_j1").status_code, 200)
+        self.assertEqual(resp.json()["status"], "trial")
         user = User.objects.get(username="new@example.com")
         self.assertEqual(user.role, "MEMBER")
+        self.assertTrue(user.is_active)
         self.assertTrue(user.check_password("Strong-pass-987"))
         profile = MemberProfile.objects.get(user=user)
-        self.assertEqual(profile.membership_status, "ACTIVE")
-        self.assertEqual(Payment.objects.get(paymongo_payment_id="cs_join_1").status, Payment.Status.PAID)
+        self.assertEqual(profile.membership_status, "TRIAL")
+        self.assertIsNotNone(profile.trial_ends_at)
+        self.assertEqual(Payment.objects.count(), 0)
+        self.assertEqual(PendingSignup.objects.count(), 0)
 
-    def test_redelivery_does_not_duplicate(self):
+    def test_trial_ends_seven_days_out(self):
+        before = timezone.now()
         self._join()
-        self._webhook("evt_j1")
-        self._webhook("evt_j2")
-        self.assertEqual(User.objects.filter(username="new@example.com").count(), 1)
-        self.assertEqual(Payment.objects.filter(paymongo_payment_id="cs_join_1").count(), 1)
+        after = timezone.now()
+        profile = MemberProfile.objects.get(user__username="new@example.com")
+        self.assertGreaterEqual(profile.trial_ends_at, before + datetime.timedelta(days=7))
+        self.assertLessEqual(profile.trial_ends_at, after + datetime.timedelta(days=7))
+
+    def test_role_in_request_is_ignored(self):
+        self.assertEqual(self._join({**self.BODY, "role": "OWNER"}).status_code, 200)
+        self.assertEqual(User.objects.get(username="new@example.com").role, "MEMBER")
 
     def test_existing_email_is_refused(self):
         User.objects.create_user(username="new@example.com", email="new@example.com", password="x-Pass-12345")
         self.assertEqual(self._join().status_code, 400)
 
-    def test_weak_password_and_bad_plan_are_refused(self):
+    def test_weak_password_is_refused(self):
         self.assertEqual(self._join({**self.BODY, "password": "123"}).status_code, 400)
-        self.assertEqual(self._join({**self.BODY, "plan": "platinum"}).status_code, 400)
 
     def test_invalid_phone_is_refused(self):
         self.assertEqual(self._join({**self.BODY, "phone": "123"}).status_code, 400)
         self.assertEqual(self._join({**self.BODY, "phone": ""}).status_code, 400)
+
+    def test_short_name_is_refused(self):
+        self.assertEqual(self._join({**self.BODY, "name": "A"}).status_code, 400)
 
 
 @override_settings(PAYMONGO_SECRET_KEY="sk_test_dummy", PAYMONGO_WEBHOOK_SECRET=SECRET)
 class JoinConfirmTests(TestCase):
     """The return-from-payment check works even if the webhook never arrives."""
 
-    BODY = {"name": "Back Up", "email": "backup@example.com", "phone": "09120000000",
-            "plan": "monthly", "password": "Strong-pass-987"}
-
     def _join(self):
-        fake = _Resp({"data": {"id": "cs_c1", "attributes": {"checkout_url": "https://pay.example/cs_c1"}}})
-        with mock.patch("apps.billing.services.urllib.request.urlopen", return_value=fake) as m:
-            resp = Client().post("/api/join/checkout/", data=json.dumps(self.BODY), content_type="application/json")
-        self.assertEqual(resp.status_code, 200)
-        sent = json.loads(m.call_args[0][0].data.decode())
-        return sent["data"]["attributes"]["success_url"].split("t=")[-1]
+        """Seed the legacy row the old checkout used to create."""
+        PendingSignup.objects.create(
+            checkout_session_id="cs_c1",
+            token="tok_c1",
+            name="Back Up",
+            email="backup@example.com",
+            phone="09120000000",
+            plan="monthly",
+            password_hash=make_password("Strong-pass-987"),
+        )
+        return "tok_c1"
 
     def _confirm(self, token, paid):
         attrs = {"payments": [{"attributes": {"status": "paid" if paid else "pending"}}]}

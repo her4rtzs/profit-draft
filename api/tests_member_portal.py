@@ -11,7 +11,7 @@ from apps.accounts.models import Role
 from apps.billing.models import Payment, Subscription
 from apps.billing.services import activate_paid_payment, mark_payment_paid
 from apps.membership.models import Attendance, Enrollment, MemberProfile
-from apps.membership.services import enroll_member
+from apps.membership.services import enroll_member, start_trial
 
 User = get_user_model()
 
@@ -53,6 +53,14 @@ class MemberPortalApiTests(TestCase):
     def test_member_me_requires_authentication(self):
         res = self.client.get("/api/member/me/")
         self.assertIn(res.status_code, (401, 403))
+
+    def test_trial_member_reports_trial_status(self):
+        start_trial(self.profile)
+        self.client.force_authenticate(user=self.user)
+        res = self.client.get("/api/member/me/")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data["membership"]["status"], "TRIAL")
+        self.assertEqual(res.data["membership"]["rawStatus"], "TRIAL")
 
     def test_active_membership_returns_real_plan_dates_and_scoped_records(self):
         today = timezone.localdate()
