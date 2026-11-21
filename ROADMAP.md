@@ -131,17 +131,20 @@ Goal: remove the payment gateway. Sign-up is free with a 7-day trial, GCash paym
 - [x] Financial Dashboard counts `paid` cash rows and `approved` GCash claims only; `pending_review` and `rejected` claims are excluded and old PayMongo rows stay as history.
 - [x] Tests: a submitted claim grants no access; only Owner/Cashier can review; approval enrolls exactly once; a duplicate approval does not extend the expiry; a client-sent amount is ignored; a member cannot see another member's claims.
 - [x] Update the public landing page, join page and FAQ copy: cash and GCash only, free sign-up with a 7-day trial, no online checkout.
+- [x] Staff management: group **Trainers** and **Cashiers** under one **Staff** section in the Owner sidebar; Owner-only Cashiers page (`/cashiers`) reusing the trainer email invite flow (`role=CASHIER`) with Active / Invite pending / Deactivated status and Resend invite / Deactivate actions (never Delete).
+- [x] Real full names: require first and last name on public sign-up (`register_trial_member`, `join.html`) and staff walk-in (`create_member`, `StaffMemberCreateSerializer`, `members.js`); never display email as the user's name in the portal (show "Name not set" with a link to `/profile`); allow staff/owner to save their own full name on `/profile` (`PATCH /api/auth/profile/`) and edit member names on Member Detail.
+- [x] Phone duplicate warning: normalize Philippine mobile numbers (`+63` / `0` / spaces / dashes -> last 10 digits); warn staff on walk-in enrollment with existing member name/status while allowing confirmation for shared family numbers; block duplicate phones on public sign-up with a generic message that does not reveal existing accounts.
 
 Exit check: a new member signs up free, stays `trial`, submits a GCash claim that grants nothing, and becomes `active` only after a Cashier approves it, with the dashboard counting that payment once.
 
 ## Phase 5: Member Mobile App
 
-Goal: members can use their records and pay from their phones. Backend endpoints for each feature can be built in the earlier phases; this phase delivers the app.
+Goal: members can use their records and submit GCash payment claims from their phones. Backend endpoints for each feature can be built in the earlier phases; this phase delivers the member experience.
 
-- [ ] Sign-up and login
-- [ ] Self-enrollment and payment flow (shows only the enabled payment methods, then waits for webhook-confirmed status)
-- [ ] Profile, attendance history, and subscription/expiry status screens
-- [ ] Error and empty states, including the `pending` state
+- [x] Sign-up and login (free 7-day trial, email/password and Google Sign-In)
+- [x] Self-service GCash claim submission (reference number + Google Drive screenshot link, reviewed by Owner or Cashier)
+- [ ] Profile, attendance history, and subscription/expiry status screens polish on real phones
+- [ ] Error and empty states, including `trial`, `pending_review`, and `locked` states
 
 Exit check: a new member can sign up, pay, and see their active status in the app without staff help.
 

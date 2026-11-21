@@ -31,6 +31,10 @@
     if (d === 0) return { text: "Expires today", cls: "is-expiring" };
     return { text: `${d} day${d === 1 ? "" : "s"} left`, cls: d <= 7 ? "is-expiring" : "" };
   };
+  const validFullName = v => {
+    const parts = String(v || "").trim().split(/\s+/).filter(Boolean);
+    return parts.length >= 2 && /[A-Za-z]/.test(parts[0]) && /[A-Za-z]/.test(parts[parts.length - 1]);
+  };
   const validEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
   const validPhone = v => !v || /^[0-9+()\-\s]{7,20}$/.test(v);
   const findByEmail = (email, exceptId) => DB.members.find(m => m.email.toLowerCase() === String(email).trim().toLowerCase() && m.id !== exceptId);
@@ -48,12 +52,13 @@
   const refreshFromServer = async () => {
     if (!(await DB.sync(false))) throw new Error("Saved, but the list could not be refreshed. Reload the page.");
   };
-  async function createMember({ name, email, phone = "", address = "", plan, method, start = today(), recordPayment = true }) {
+  async function createMember({ name, email, phone = "", address = "", plan, method, start = today(), recordPayment = true, confirmDuplicatePhone = false }) {
     if (!PLANS[plan]) throw new Error("This plan is no longer available. Choose another plan.");
     const password = tempPassword();
     // With a payment, the payments endpoint starts the membership. Without one,
     // the create call starts it directly so no payment row is invented.
     const body = { name, email, password, phone, address };
+    if (confirmDuplicatePhone) body.confirm_duplicate_phone = true;
     if (!recordPayment) { body.plan = plan; body.start_date = iso(start); }
     const created = await ProFitAPI.post("/staff/members/", body);
     if (recordPayment) {
@@ -597,7 +602,7 @@
       emergencyPhone: form.eeEmgPhone.value.trim(), end: form.eeEnd.value, plan: form.eePlan.value
     };
     let ok = true;
-    if (v.name.length < 2) { setErr("eeName", "Enter the member's full name."); ok = false; }
+    if (!validFullName(v.name)) { setErr("eeName", "Enter your first and last name."); ok = false; }
     if (!validEmail(v.email)) { setErr("eeEmail", "Enter a valid email address."); ok = false; }
     else if (findByEmail(v.email, m.id)) { setErr("eeEmail", "Another member already uses this email."); ok = false; }
     if (!validPhone(v.phone)) { setErr("eePhone", "Enter a valid mobile number."); ok = false; }
@@ -865,23 +870,54 @@
     const plan = document.querySelector('input[name="ePlan"]:checked')?.value;
     const record = $("eRecord").checked;
     let ok = true;
-    if (name.length < 2) { setErr("eName", "Enter the member's full name."); ok = false; }
+    if (!validFullName(name)) { setErr("eName", "Enter your first and last name."); ok = false; }
     if (!validEmail(email)) { setErr("eEmail", "Enter a valid email address."); ok = false; }
     else if (findByEmail(email)) { setErr("eEmail", "A member with this email already exists."); ok = false; }
     if (!validPhone(phone)) { setErr("ePhone", "Enter a valid mobile number."); ok = false; }
     if (!start) { setErr("eStart", "Choose a start date."); ok = false; }
     if (!plan) { setErr("ePlan", "Choose a plan."); ok = false; }
     if (!ok) return toast("Please fix the highlighted fields.", true);
-    try {
-      const { member: m, password } = await createMember({ name, email, phone, address, plan, method, start: parseISO(start), recordPayment: record });
-      form.reset();
-      fillEnrollDefaults();
-      toast(`${name} is enrolled${m ? ` as ${m.id}` : ""}.`);
-      if (m) openDetail(m.id);
-      showTempPassword(name, email, password);
-    } catch (err) {
-      toast(err.message || "The member could not be saved.", true);
-    }
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const runEnroll = async (confirmDuplicatePhone = false) => {
+      if (submitBtn) submitBtn.disabled = true;
+      try {
+        const { member: m, password } = await createMember({
+          name,
+          email,
+          phone,
+          address,
+          plan,
+          method,
+          start: parseISO(start),
+          recordPayment: record,
+          confirmDuplicatePhone
+        });
+        form.reset();
+        fillEnrollDefaults();
+        toast(`${name} is enrolled${m ? ` as ${m.id}` : ""}.`);
+        if (m) openDetail(m.id);
+        showTempPassword(name, email, password);
+      } catch (err) {
+        if (!confirmDuplicatePhone && err.status === 409 && err.payload?.code === "duplicate_phone") {
+          const matches = Array.isArray(err.payload.matches) ? err.payload.matches : [];
+          const listHtml = matches.length
+            ? `<ul style="margin:10px 0 0 18px;padding:0;line-height:1.6">${matches.map(item => `<li><strong>${esc(item.name || "Name not set")}</strong> &mdash; ${esc(item.status || "Unknown")}</li>`).join("")}</ul>`
+            : "";
+          modal({
+            title: "Phone number already in use",
+            confirmText: "Continue anyway",
+            cancelText: "Cancel",
+            body: `<p class="pp-muted">This phone number matches an existing member account:</p>${listHtml}<p class="pp-muted" style="margin-top:10px">You can still continue if this is a shared family phone number.</p>`,
+            onConfirm: async () => { await runEnroll(true); }
+          });
+          return;
+        }
+        toast(err.message || "The member could not be saved.", true);
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
+      }
+    };
+    await runEnroll(false);
   });
   $("enrollForm").addEventListener("change", e => { if (e.target.name === "ePlan") updateEnrollAmount(); });
   $("enrollForm").addEventListener("reset", () => setTimeout(fillEnrollDefaults, 0));

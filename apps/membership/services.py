@@ -64,12 +64,67 @@ def record_attendance(member, check_in_at=None, recorded_by=None):
 PLAN_DAYS = {"daily": 1, "monthly": 30, "quarterly": 90, "annual": 365, "other": 30}
 
 
+FULL_NAME_ERROR = "Enter your first and last name."
+PUBLIC_DUPLICATE_PHONE_ERROR = (
+    "An account with this phone number already exists. "
+    "Please sign in or contact the gym."
+)
+
+
+class DuplicatePhoneError(ValidationError):
+    """Raised when a walk-in phone matches one or more existing member profiles."""
+
+    def __init__(self, matches):
+        self.matches = matches
+        names = ", ".join(f"{m['name']} ({m['status']})" for m in matches[:3])
+        super().__init__(
+            f"This phone number is already used by: {names}. "
+            "Confirm to continue if this is a shared family number."
+        )
+
+
+def validate_full_name(name):
+    """Require a first name and last name (at least two words with letters)."""
+    cleaned = re.sub(r"\s+", " ", (name or "").strip())
+    parts = cleaned.split(" ") if cleaned else []
+    if len(parts) < 2 or not re.search(r"[A-Za-z]", parts[0]) or not re.search(r"[A-Za-z]", parts[-1]):
+        raise ValidationError(FULL_NAME_ERROR)
+    return parts[0], " ".join(parts[1:])
+
+
+def normalize_ph_phone(raw):
+    """Normalize a Philippine phone number to its last 10 digits (e.g. 9171234567)."""
+    digits = re.sub(r"\D", "", raw or "")
+    if len(digits) >= 12 and digits.startswith("63"):
+        digits = digits[2:]
+    elif len(digits) >= 11 and digits.startswith("0"):
+        digits = digits[1:]
+    if len(digits) < 10:
+        return ""
+    return digits[-10:]
+
+
+def find_members_by_phone(phone, *, exclude_member_id=None):
+    """Return existing MemberProfiles whose normalized phone matches ``phone``."""
+    target = normalize_ph_phone(phone)
+    if not target:
+        return []
+    qs = MemberProfile.objects.select_related("user").exclude(phone="")
+    if exclude_member_id is not None:
+        qs = qs.exclude(pk=exclude_member_id)
+    matches = []
+    for member in qs:
+        if normalize_ph_phone(member.phone) == target:
+            matches.append(member)
+    return matches
+
+
 def _split_name(name):
     first, _, last = (name or "").strip().partition(" ")
     return first, last.strip()
 
 
-def create_member(*, name, email, password, phone="", address=""):
+def create_member(*, name, email, password, phone="", address="", confirm_duplicate_phone=False):
     """Create an active MEMBER login and its MemberProfile.
 
     The username is the normalized email, which is how the login form and the
@@ -82,6 +137,8 @@ def create_member(*, name, email, password, phone="", address=""):
 
     from apps.accounts.validators import validate_real_email
 
+    first, last = validate_full_name(name)
+
     User = get_user_model()
     raw_email = (email or "").strip()
     if not raw_email:
@@ -90,7 +147,19 @@ def create_member(*, name, email, password, phone="", address=""):
     if User.objects.filter(username=username).exists():
         raise ValidationError("An account with this email already exists.")
 
-    first, last = _split_name(name)
+    if phone and not confirm_duplicate_phone:
+        existing = find_members_by_phone(phone)
+        if existing:
+            match_list = [
+                {
+                    "id": m.id,
+                    "name": f"{m.user.first_name} {m.user.last_name}".strip() or "Name not set",
+                    "status": m.get_membership_status_display(),
+                }
+                for m in existing
+            ]
+            raise DuplicatePhoneError(match_list)
+
     user = User(
         username=username,
         email=username,
@@ -116,8 +185,9 @@ def create_member(*, name, email, password, phone="", address=""):
 def update_member_profile(profile, *, name=None, phone=None, address=None):
     """Update the editable staff fields on a member. ``None`` means unchanged."""
     if name is not None:
+        first, last = validate_full_name(name)
         user = profile.user
-        user.first_name, user.last_name = _split_name(name)
+        user.first_name, user.last_name = first, last
         user.save(update_fields=["first_name", "last_name"])
 
     changed = []
@@ -192,13 +262,20 @@ def member_access(member, *, today=None):
 
 def register_trial_member(*, name, email, password, phone=""):
     """Create a MEMBER login and start its 7-day trial. Role is never caller-supplied."""
-    if len((name or "").strip()) < 2:
-        raise ValidationError("Enter your full name.")
+    validate_full_name(name)
     digits = re.sub(r"\D", "", phone or "")
     if not 10 <= len(digits) <= 13:
         raise ValidationError("Enter a valid mobile number (10 to 13 digits).")
+    if find_members_by_phone(phone):
+        raise ValidationError(PUBLIC_DUPLICATE_PHONE_ERROR)
     with transaction.atomic():
-        profile = create_member(name=name, email=email, password=password, phone=phone or "")
+        profile = create_member(
+            name=name,
+            email=email,
+            password=password,
+            phone=phone or "",
+            confirm_duplicate_phone=True,
+        )
         return start_trial(profile)
 
 

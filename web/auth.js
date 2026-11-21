@@ -12,6 +12,7 @@
     "/subscriptions",
     "/transactions",
     "/trainers",
+    "/cashiers",
     "/announcements"
   ]);
   const cashierPages = new Set([
@@ -259,7 +260,12 @@
         logout: performLogout
       };
       document.querySelectorAll("[data-user-name]").forEach(el => {
-        el.textContent = user.name || user.email || "Account";
+        const displayName = (user.name || "").trim();
+        if (displayName) {
+          el.textContent = displayName;
+        } else {
+          el.innerHTML = '<a href="/profile" style="color:inherit;text-decoration:underline">Name not set</a>';
+        }
       });
       window.dispatchEvent(new CustomEvent("profit-auth-ready", { detail: { user, role } }));
     } catch (error) {

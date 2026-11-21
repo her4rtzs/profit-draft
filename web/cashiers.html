@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script>(function(){try{var t=localStorage.getItem('theme');if(t==='light'&&!localStorage.getItem('pf-staff-explicit-light')){t='dark';try{localStorage.setItem('theme','dark');}catch(_){}}var d=t!=='light';var h=document.documentElement;h.style.background=d?'#0a0e16':'#F7F4EE';h.style.colorScheme=d?'dark':'light';if(d){h.classList.add('dark');}else{h.classList.remove('dark');}}catch(e){}})();</script><script src="splash.js?v=3"></script>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cashiers · ProFit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Figtree:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="dashboard.css?v=1">
+<link rel="stylesheet" href="announcements.css?v=1">
+<script src="config.js"></script><script src="api.js"></script><script src="auth.js"></script>
+<script>document.documentElement.dataset.accent='gold'</script>
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0a0e17">
+<link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ProFit">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<style>
+  .csh-kpi-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-bottom:20px}
+  .csh-kpi{background:var(--panel,#141824);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:16px;padding:20px 22px;display:flex;flex-direction:column;gap:8px}
+  .csh-kpi-label{font-size:.86rem;color:var(--muted,#9aa4b8);font-weight:500}
+  .csh-kpi-val{font-size:2rem;line-height:1.1;font-weight:800;color:var(--text,#f6f7fb)}
+  .csh-panel{background:var(--panel,#141824);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:16px;padding:22px}
+  .csh-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+  .csh-toolbar h2{margin:0;font-size:1.05rem;font-weight:700}
+  .csh-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:48px 20px;gap:12px}
+  .csh-empty-ico{width:56px;height:56px;border-radius:999px;background:rgba(255,255,255,.06);display:grid;place-items:center;font-size:1.25rem;color:var(--muted,#9aa4b8)}
+  .csh-empty h3{margin:4px 0 0;font-size:1.15rem;font-weight:700}
+  .csh-empty p{margin:0;max-width:420px;color:var(--muted,#9aa4b8);font-size:.92rem}
+  .csh-table-wrap{overflow-x:auto}
+  .csh-table{width:100%;border-collapse:collapse;font-size:.92rem}
+  .csh-table th{text-align:left;padding:12px 14px;font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted,#9aa4b8);border-bottom:1px solid var(--border,rgba(255,255,255,.08))}
+  .csh-table td{padding:14px;border-bottom:1px solid var(--border,rgba(255,255,255,.06));vertical-align:middle}
+  .csh-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:.78rem;font-weight:600}
+  .csh-badge.is-active{background:rgba(34,197,94,.16);color:#4ade80}
+  .csh-badge.is-pending{background:rgba(245,158,11,.16);color:#fbbf24}
+  .csh-badge.is-deactivated{background:rgba(148,163,184,.16);color:#cbd5e1}
+  .csh-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .csh-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:0 16px;border-radius:10px;font-weight:600;font-size:.88rem;cursor:pointer;border:1px solid transparent;transition:opacity .15s ease,transform .15s ease}
+  .csh-btn:disabled{opacity:.55;cursor:not-allowed}
+  .csh-btn-primary{background:var(--accent,#f5b942);color:#0b0f17}
+  .csh-btn-secondary{background:transparent;border-color:var(--border,rgba(255,255,255,.16));color:var(--text,#f6f7fb)}
+  .csh-btn-danger{background:rgba(239,68,68,.14);border-color:rgba(239,68,68,.35);color:#fca5a5}
+  .csh-btn-sm{min-height:34px;padding:0 12px;font-size:.82rem}
+  .csh-invite-box{margin-top:14px;padding:14px;border-radius:12px;background:rgba(245,185,66,.08);border:1px solid rgba(245,185,66,.28);display:flex;flex-direction:column;gap:8px}
+  .csh-invite-row{display:flex;gap:8px;flex-wrap:wrap}
+  .csh-invite-row input{flex:1;min-width:200px;padding:8px 10px;border-radius:8px;border:1px solid var(--border,rgba(255,255,255,.14));background:rgba(0,0,0,.22);color:var(--text,#f6f7fb);font-size:.84rem}
+  .csh-backdrop{position:fixed;inset:0;background:rgba(6,8,14,.72);display:grid;place-items:center;padding:16px;z-index:1200}
+  .csh-backdrop[hidden]{display:none}
+  .csh-modal{width:min(460px,100%);background:var(--panel,#141824);border:1px solid var(--border,rgba(255,255,255,.12));border-radius:16px;padding:22px;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+  .csh-modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .csh-modal-head h2{margin:0;font-size:1.15rem}
+  .csh-field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+  .csh-field label{font-size:.85rem;font-weight:600}
+  .csh-field input{min-height:42px;padding:8px 12px;border-radius:10px;border:1px solid var(--border,rgba(255,255,255,.16));background:rgba(0,0,0,.2);color:var(--text,#f6f7fb);font-size:.94rem}
+  .csh-modal-err{color:#fca5a5;font-size:.85rem;min-height:18px;margin:0 0 10px}
+  .csh-modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:8px}
+  @media (max-width:640px){.csh-kpi-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body class="pf-staff" data-page="cashiers" data-title="Cashiers" data-welcome="Front desk staff accounts">
+<div class="dashboard"><nav class="sidebar" id="sidebar"></nav><main class="main-content" id="main" tabindex="-1">
+  <header class="topbar" id="topbar"><h1>Cashiers</h1></header>
+
+  <p class="ann-msg" id="cshMsg" role="status" aria-live="polite" style="margin-bottom:14px"></p>
+
+  <section class="csh-kpi-grid" aria-label="Cashier summary">
+    <article class="csh-kpi">
+      <span class="csh-kpi-label">Active cashiers</span>
+      <strong class="csh-kpi-val" id="kpiActiveCashiers">—</strong>
+    </article>
+    <article class="csh-kpi">
+      <span class="csh-kpi-label">Pending invites</span>
+      <strong class="csh-kpi-val" id="kpiPendingInvites">—</strong>
+    </article>
+  </section>
+
+  <section class="csh-panel" aria-label="Cashier accounts">
+    <div class="csh-toolbar" id="cshToolbar" hidden>
+      <h2>Cashier accounts</h2>
+      <button type="button" class="csh-btn csh-btn-primary" id="openInviteCashierTop">
+        <i class="fa-solid fa-user-plus" aria-hidden="true"></i> Invite cashier
+      </button>
+    </div>
+
+    <div class="csh-invite-box" id="cshInviteBox" hidden>
+      <strong id="cshInviteNote">Invitation link ready</strong>
+      <div class="csh-invite-row">
+        <label for="cshInviteUrl" class="sr-only">Invitation link</label>
+        <input type="text" id="cshInviteUrl" readonly>
+        <button type="button" class="csh-btn csh-btn-secondary csh-btn-sm" id="copyInviteBtn">
+          <i class="fa-regular fa-copy" aria-hidden="true"></i> Copy link
+        </button>
+      </div>
+    </div>
+
+    <div class="csh-empty" id="cshEmpty" hidden>
+      <div class="csh-empty-ico" aria-hidden="true"><i class="fa-solid fa-cash-register"></i></div>
+      <h3>No cashiers yet</h3>
+      <p>Invite a cashier by email. They set their own password from the link.</p>
+      <button type="button" class="csh-btn csh-btn-primary" id="openInviteCashierEmpty">
+        <i class="fa-solid fa-envelope" aria-hidden="true"></i> Invite cashier
+      </button>
+    </div>
+
+    <div class="csh-table-wrap" id="cshTableWrap" hidden>
+      <table class="csh-table">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Status</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="cshTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+</main></div>
+
+<div class="csh-backdrop" id="inviteModalBackdrop" hidden role="dialog" aria-modal="true" aria-labelledby="inviteModalTitle">
+  <div class="csh-modal">
+    <div class="csh-modal-head">
+      <h2 id="inviteModalTitle">Invite cashier</h2>
+      <button type="button" class="csh-btn csh-btn-secondary csh-btn-sm" id="closeInviteModal" aria-label="Close">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+    </div>
+    <form id="inviteCashierForm" novalidate>
+      <div class="csh-field">
+        <label for="cName">Full name</label>
+        <input type="text" id="cName" name="full_name" placeholder="e.g. Maria Santos" autocomplete="name" required>
+      </div>
+      <div class="csh-field">
+        <label for="cEmail">Email address</label>
+        <input type="email" id="cEmail" name="email" placeholder="e.g. maria@gmail.com" autocomplete="email" required>
+      </div>
+      <p class="csh-modal-err" id="inviteModalErr" role="alert"></p>
+      <div class="csh-modal-actions">
+        <button type="button" class="csh-btn csh-btn-secondary" id="cancelInviteModal">Cancel</button>
+        <button type="submit" class="csh-btn csh-btn-primary" id="submitInviteBtn">Send invite</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="layout.js?v=19"></script><script src="sidebar.js?v=18"></script><script src="data.js"></script><script src="settings.js?v=13"></script>
+<script src="portal-fx.js?v=2"></script>
+<script src="change-password.js?v=2" defer></script>
+<script src="notifications-live.js?v=1" defer></script>
+<script src="cashiers.js?v=1" defer></script>
+<script src="site-footer.js?v=2" defer></script>
+</body>
+</html>

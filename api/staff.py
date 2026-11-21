@@ -100,6 +100,8 @@ class StaffMemberViewSet(viewsets.ModelViewSet):
         return queryset
 
     def create(self, request, *args, **kwargs):
+        from apps.membership.services import DuplicatePhoneError
+
         serializer = StaffMemberCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
@@ -111,6 +113,7 @@ class StaffMemberViewSet(viewsets.ModelViewSet):
                     password=data["password"],
                     phone=data.get("phone", ""),
                     address=data.get("address", ""),
+                    confirm_duplicate_phone=bool(data.get("confirm_duplicate_phone", False)),
                 )
                 if data.get("plan"):
                     renew_member(
@@ -119,6 +122,15 @@ class StaffMemberViewSet(viewsets.ModelViewSet):
                         created_by=request.user,
                         start_date=data.get("start_date"),
                     )
+        except DuplicatePhoneError as exc:
+            return Response(
+                {
+                    "code": "duplicate_phone",
+                    "detail": exc.messages[0],
+                    "matches": exc.matches,
+                },
+                status=status.HTTP_409_CONFLICT,
+            )
         except DjangoValidationError as exc:
             return _bad_request(exc)
         profile.refresh_from_db()

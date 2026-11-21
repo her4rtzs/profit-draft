@@ -250,12 +250,19 @@
   });
 
   const user = window.ProFitAuth?.user;
-  // The staff profile page owns this record; fall back to the signed-in user.
+  // The staff profile page owns this record; fall back to the signed-in user's real name (never email).
   const profile = window.ProFitProfile?.get?.() || {};
-  const name = profile.name || user?.name || user?.email || 'Administrator';
-  document.querySelectorAll('[data-user-name]').forEach(el => el.textContent = name);
-  const parts = name.trim().split(/\s+/).slice(0, 2).map(part => part[0] || '').join('').toUpperCase();
-  const initials = window.ProFitProfile?.initials?.() || parts || 'PF';
+  const rawName = (profile.name || user?.name || '').trim();
+  const hasName = Boolean(rawName) && !rawName.includes('@');
+  document.querySelectorAll('[data-user-name]').forEach(el => {
+    if (hasName) {
+      el.textContent = rawName;
+    } else {
+      el.innerHTML = '<a href="/profile" style="color:inherit;text-decoration:underline">Name not set</a>';
+    }
+  });
+  const parts = hasName ? rawName.split(/\s+/).slice(0, 2).map(part => part[0] || '').join('').toUpperCase() : '';
+  const initials = (hasName && window.ProFitProfile?.initials?.()) || parts || 'PF';
   document.querySelectorAll('[data-user-initials]').forEach(el => el.textContent = initials);
   document.querySelectorAll('[data-user-role]').forEach(el => {
     const roleCode = String(user?.role || '').toUpperCase();
