@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
-<script src="api.js?v=4"></script>
+<script src="api.js?v=5"></script>
 <style>
   :root{
     --gold:#e8b93a;
@@ -292,7 +292,7 @@
   }
   .lg-divider::before,.lg-divider::after{content:"";flex:1;height:1px;background:var(--line)}
 
-  .lg-sso{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .lg-sso{display:grid;grid-template-columns:1fr;gap:10px}
   .lg-sso-btn{
     height:44px;padding:0 14px;border-radius:999px;
     border:1px solid var(--field-line);background:var(--bg2);color:var(--tx);
@@ -321,13 +321,23 @@
   .lg-join-row a:hover::after{transform:scaleX(1);opacity:1}
 
   @media(max-width:900px){
-    .lg-shell{min-height:auto;padding:28px 16px 36px;align-items:flex-start}
-    .lg-wrap{grid-template-columns:1fr;gap:24px}
-    .lg-card{max-width:480px;margin-inline:auto}
+    .lg-shell{min-height:calc(100vh - 68px);padding:24px 16px 32px;align-items:flex-start}
+    .lg-wrap{grid-template-columns:1fr;gap:22px}
+    .lg-card{max-width:480px;margin-inline:auto;justify-self:center}
   }
-  @media(max-width:480px){
-    .lg-input{font-size:16px}
-    .lg-sso{grid-template-columns:1fr}
+  @media(max-width:768px){
+    footer.site-footer,.site-footer{display:none!important}
+    .portal-nav{height:58px;min-height:58px;padding:0 16px}
+    .portal-brand img{width:32px;height:32px}
+    .portal-brand strong{font-size:20px}
+    .lg-shell{min-height:calc(100vh - 58px);padding:20px 14px 28px}
+    .lg-title{font-size:clamp(30px,8vw,42px);margin-bottom:10px}
+    .lg-desc{font-size:14.5px;margin-bottom:16px}
+    .lg-checks{gap:8px;margin-bottom:14px}
+    .lg-checks li{font-size:13.5px}
+    .lg-card{padding:20px 18px}
+    .lg-input{height:46px;font-size:16px}
+    .lg-btn-gold,.lg-sso-btn{height:46px}
   }
   @media(prefers-reduced-motion:reduce){
     *{transition:none !important;animation:none !important}
@@ -395,13 +405,7 @@
             <path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14Z"/>
             <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96Z"/>
           </svg>
-          <span>Google</span>
-        </button>
-        <button type="button" class="lg-sso-btn" id="appleSignInBtn">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path fill="#f6efdc" d="M16.365 1.43c0 1.14-.493 2.27-1.177 3.08-.744.9-1.99 1.57-2.987 1.57-.12 0-.23-.02-.3-.03-.01-.06-.04-.22-.04-.39 0-1.15.572-2.27 1.206-2.98.804-.94 2.142-1.64 3.248-1.68.03.13.05.28.05.43Zm4.565 15.71c-.03.07-.463 1.58-1.518 3.12-.945 1.34-1.94 2.71-3.43 2.71-1.517 0-1.9-.88-3.63-.88-1.698 0-2.302.91-3.67.91-1.377 0-2.332-1.26-3.428-2.8-1.287-1.82-2.323-4.63-2.323-7.28 0-4.28 2.797-6.55 5.552-6.55 1.448 0 2.675.95 3.6.95.865 0 2.222-1.01 3.902-1.01.613 0 2.886.06 4.374 2.19-.13.09-2.383 1.37-2.383 4.19 0 3.26 2.854 4.42 2.955 4.45Z"/>
-          </svg>
-          <span>Apple</span>
+          <span>Continue with Google</span>
         </button>
       </div>
 
@@ -414,7 +418,7 @@
 (() => {
   const $ = id => document.getElementById(id);
   const form = $('signInForm'), submit = form.querySelector('[type=submit]');
-  const HOME = { admin: '/index', trainer: '/trainer/index', member: '/member-home' };
+  const HOME = { admin: '/index', cashier: '/cashier', trainer: '/trainer/index', member: '/member-home' };
 
   const pwEl = $('password'), eyeBtn = $('showPassword'), capsEl = $('capsWarn');
   eyeBtn.addEventListener('click', () => {
@@ -441,10 +445,6 @@
     box.textContent = text;
   }
 
-  $('appleSignInBtn')?.addEventListener('click', () => {
-    message("Apple sign-in isn't available yet", true);
-  });
-
   function setBusy(busy) {
     submit.disabled = busy;
     submit.textContent = busy ? 'Signing in…' : 'Sign in';
@@ -457,6 +457,10 @@
     $('authMessage').hidden = true;
     const identity = $('identity').value.trim(), password = pwEl.value;
     if (!identity) { $('identityError').textContent = 'Enter your email or username.'; $('identity').focus(); return; }
+    if (identity.includes('@') && window.ProFitAPI?.validateRealEmail) {
+      const emailErr = window.ProFitAPI.validateRealEmail(identity);
+      if (emailErr) { $('identityError').textContent = emailErr; $('identity').focus(); return; }
+    }
     if (!password) { $('passwordError').textContent = 'Enter your password.'; pwEl.focus(); return; }
     setBusy(true);
     try {
@@ -477,8 +481,12 @@
         const session = await window.ProFitAPI.get('/auth/session');
         const user = session.user;
         const r = String(user?.role || '').toUpperCase();
-        const isStaff = ['ADMIN', 'OWNER', 'CASHIER'].includes(r);
-        const home = isStaff ? '/index' : (r === 'TRAINER' || r === 'COACH') ? '/trainer/index' : r === 'MEMBER' ? '/member-home' : null;
+        const isOwner = ['ADMIN', 'OWNER'].includes(r);
+        const home = isOwner ? '/index'
+          : r === 'CASHIER' ? '/cashier'
+          : (r === 'TRAINER' || r === 'COACH') ? '/trainer/index'
+          : r === 'MEMBER' ? '/member-home'
+          : null;
         if (home) {
           sessionStorage.setItem('profit-verified-session', JSON.stringify(user));
           sessionStorage.setItem('pf-auth-just-logged-in', '1');
@@ -489,19 +497,6 @@
         }
       }
     } catch (err) {
-      if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
-        try { sessionStorage.removeItem('profit-logged-out'); } catch (_) {}
-        const hint = identity.toLowerCase(), role = /coach|trainer/.test(hint) ? 'trainer' : /member/.test(hint) ? 'member' : 'admin';
-        const isTrainer = role === 'trainer', isMember = role === 'member';
-        const session = { name: isMember ? 'Demo Member' : isTrainer ? 'Coach Mika' : 'Administrator', role: isTrainer ? 'TRAINER' : isMember ? 'MEMBER' : 'ADMIN', demo: true };
-        const remember = $('rememberMe')?.checked;
-        (remember ? localStorage : sessionStorage).setItem('profit-demo-session', JSON.stringify(session));
-        sessionStorage.setItem('profit-verified-session', JSON.stringify(session));
-        sessionStorage.setItem('pf-auth-just-logged-in', '1');
-        message('Signed in (local mode). Opening workspace…', false);
-        setTimeout(() => location.replace(HOME[role]), 350);
-        return;
-      }
       message(err.status === 401 ? 'Those sign-in details were not accepted. Check them and try again.' : err.message || 'Sign-in is currently unavailable.', true);
       setBusy(false);
       pwEl.value = '';
@@ -531,7 +526,7 @@
   });
 })();
 </script>
-<script src="google-auth.js?v=2"></script>
+<script src="google-auth.js?v=3"></script>
 <script src="portal-fx.js?v=2"></script>
 <script src="site-footer.js?v=7" defer></script>
 </body>

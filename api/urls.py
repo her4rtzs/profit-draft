@@ -50,6 +50,7 @@ from .notifications import (
 )
 from .staff import (
     StaffAttendanceView,
+    StaffCashierOverviewView,
     StaffCheckInView,
     StaffMemberViewSet,
     StaffPaymentDetailView,
@@ -73,6 +74,7 @@ urlpatterns = [
     path("auth/session/", auth.session_view, name="auth-session"),
     path("auth/verify-password/", auth.verify_password_view, name="auth-verify-password"),
     path("auth/forgot-password/", auth.forgot_password_view, name="auth-forgot-password"),
+    path("auth/verify-reset-otp/", auth.verify_reset_otp_view, name="auth-verify-reset-otp"),
     path("auth/reset-password/", auth.reset_password_view, name="auth-reset-password"),
     path("auth/resend-otp/", auth.resend_otp_api_view, name="auth-resend-otp"),
     path("auth/change-password/", auth.change_password_view, name="auth-change-password"),
@@ -88,6 +90,7 @@ urlpatterns = [
     path("member/checkout/", MemberCheckoutView.as_view(), name="member-checkout"),
     path("staff/attendance/", StaffAttendanceView.as_view(), name="staff-attendance"),
     path("staff/attendance/check-in/", StaffCheckInView.as_view(), name="staff-checkin"),
+    path("staff/cashier/overview/", StaffCashierOverviewView.as_view(), name="staff-cashier-overview"),
     path("staff/payments/", StaffPaymentView.as_view(), name="staff-payments"),
     path("staff/payments/<int:pk>/", StaffPaymentDetailView.as_view(), name="staff-payment-detail"),
     path("staff/reports/summary/", StaffSummaryView.as_view(), name="staff-summary"),

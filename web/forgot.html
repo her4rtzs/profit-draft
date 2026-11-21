@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
 <script src="config.js"></script>
-<script src="api.js?v=4"></script>
+<script src="api.js?v=5"></script>
 <style>
   :root{
     --gold:#e8b93a;
@@ -220,6 +220,34 @@
   .fp-resend-btn:hover:not(:disabled){border-color:var(--gold);color:var(--lime-hi)}
   .fp-resend-btn:disabled{opacity:.58;color:var(--mu);cursor:not-allowed}
 
+  .fp-steps{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
+    margin:0 0 18px;padding:0;list-style:none;
+  }
+  .fp-step{
+    display:flex;align-items:center;gap:6px;
+    padding:7px 9px;border-radius:10px;
+    border:1px solid var(--line);background:var(--bg2);
+    font:600 11.5px/1.15 "Plus Jakarta Sans",sans-serif;color:var(--mu);
+    transition:border-color .18s ease,color .18s ease,background-color .18s ease;
+  }
+  .fp-step-num{
+    width:18px;height:18px;border-radius:50%;flex:none;
+    display:grid;place-items:center;font-size:11px;font-weight:700;
+    background:var(--line);color:var(--tx);
+  }
+  .fp-step.is-active{border-color:var(--gold);color:var(--tx)}
+  .fp-step.is-active .fp-step-num{background:var(--gold);color:var(--on)}
+  .fp-step.is-done{border-color:rgba(74,222,128,.45);color:var(--ok)}
+  .fp-step.is-done .fp-step-num{background:var(--ok);color:var(--on)}
+
+  .fp-text-btn{
+    margin:8px auto 0;display:block;border:0;background:transparent;padding:6px 10px;
+    color:var(--mu);font:600 12.5px/1.2 Inter,system-ui,sans-serif;cursor:pointer;
+    text-decoration:underline;text-underline-offset:3px;
+  }
+  .fp-text-btn:hover{color:var(--gold)}
+
   .fp-links{margin:12px 0 0;text-align:center;font-size:13px;color:var(--mu)}
   .fp-links a{
     display:inline-flex;align-items:center;min-height:36px;
@@ -227,13 +255,43 @@
   }
   .fp-links a:hover{color:var(--lime-hi)}
 
+  .fp-otp-boxes{
+    display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:4px;
+  }
+  .fp-otp-digit{
+    width:100%;height:48px;padding:0;text-align:center;
+    border-radius:12px;border:1px solid var(--field-line);
+    background:var(--bg2);color:var(--tx);
+    font:700 20px/1 "Plus Jakarta Sans",Inter,system-ui,sans-serif;
+    transition:border-color .16s ease,box-shadow .16s ease;
+  }
+  .fp-otp-digit:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,185,58,.22)}
+  .fp-done-box{text-align:center;padding:8px 0 4px}
+  .fp-done-box[hidden]{display:none}
+  .fp-done-icon{
+    width:64px;height:64px;margin:0 auto 14px;border-radius:50%;
+    background:rgba(74,222,128,.16);border:2px solid var(--ok);color:var(--ok);
+    display:grid;place-items:center;font-size:26px;
+  }
+  .fp-done-box p{margin:0 0 18px;font-size:14px;color:var(--mu)}
+  .fp-done-box a.fp-btn-gold{text-decoration:none}
   @media(max-width:900px){
-    .fp-shell{min-height:auto;padding:28px 16px 36px;align-items:flex-start}
-    .fp-wrap{grid-template-columns:1fr;gap:24px}
+    .fp-shell{min-height:calc(100vh - 68px);padding:24px 16px 32px;align-items:flex-start}
+    .fp-wrap{grid-template-columns:1fr;gap:22px}
     .fp-card{max-width:480px;margin-inline:auto;justify-self:center}
   }
-  @media(max-width:480px){
-    .fp-input{font-size:16px}
+  @media(max-width:768px){
+    footer.site-footer,.site-footer{display:none!important}
+    .portal-nav{height:58px;min-height:58px;padding:0 16px}
+    .portal-brand img{width:32px;height:32px}
+    .portal-brand strong{font-size:20px}
+    .fp-shell{min-height:calc(100vh - 58px);padding:20px 14px 28px}
+    .fp-title{font-size:clamp(30px,8vw,42px);margin-bottom:10px}
+    .fp-desc{font-size:14.5px;margin-bottom:16px}
+    .fp-checks{gap:8px;margin-bottom:14px}
+    .fp-card{padding:20px 18px}
+    .fp-input{height:46px;font-size:16px}
+    .fp-btn-gold{height:46px}
   }
   @media(prefers-reduced-motion:reduce){
     *{transition:none !important;animation:none !important}
@@ -266,13 +324,18 @@
 
     <section class="fp-card" aria-label="Password reset form">
       <p class="fp-kicker">Password reset</p>
+      <ol class="fp-steps" aria-label="Password reset steps">
+        <li class="fp-step is-active" id="fpStep1"><span class="fp-step-num">1</span><span>Email</span></li>
+        <li class="fp-step" id="fpStep2"><span class="fp-step-num">2</span><span>OTP</span></li>
+        <li class="fp-step" id="fpStep3"><span class="fp-step-num">3</span><span>Password</span></li>
+      </ol>
       <h2 id="fpTitle">Forgot your password?</h2>
-      <p class="fp-lead" id="fpSub">Enter the email on your account and we will send you a code.</p>
+      <p class="fp-lead" id="fpSub">Enter the Gmail or email on your account and we will send you a 6-digit code.</p>
 
       <form id="fpForm1" novalidate>
         <div class="fp-field">
           <label class="fp-field-label" for="fpEmail">Email</label>
-          <input class="fp-input" id="fpEmail" type="email" autocomplete="email" maxlength="254" required placeholder="you@example.com">
+          <input class="fp-input" id="fpEmail" type="email" autocomplete="email" maxlength="254" required placeholder="you@gmail.com">
         </div>
         <div id="fpMsg1" class="fp-msg" role="alert" aria-live="polite" hidden></div>
         <button class="fp-btn-gold" type="submit">Send code</button>
@@ -280,9 +343,26 @@
 
       <form id="fpForm2" novalidate hidden>
         <div class="fp-field">
-          <label class="fp-field-label" for="fpCode">6-digit code</label>
-          <input class="fp-input" id="fpCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required placeholder="123456">
+          <label class="fp-field-label" for="fpOtp1">6-digit verification code</label>
+          <input id="fpCode" type="hidden" value="">
+          <div class="fp-otp-boxes" id="fpOtpBoxes" role="group" aria-label="6-digit verification code">
+            <input class="fp-otp-digit" id="fpOtp1" type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 1">
+            <input class="fp-otp-digit" id="fpOtp2" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 2">
+            <input class="fp-otp-digit" id="fpOtp3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 3">
+            <input class="fp-otp-digit" id="fpOtp4" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 4">
+            <input class="fp-otp-digit" id="fpOtp5" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 5">
+            <input class="fp-otp-digit" id="fpOtp6" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 6">
+          </div>
         </div>
+        <div id="fpMsg2" class="fp-msg" role="alert" aria-live="polite" hidden></div>
+        <button class="fp-btn-gold" type="submit">Verify OTP</button>
+        <div class="fp-resend-row">
+          <button type="button" class="fp-resend-btn" id="fpResend" disabled>Resend code in 60s</button>
+        </div>
+        <button type="button" class="fp-text-btn" id="fpBackEmail">Use a different email</button>
+      </form>
+
+      <form id="fpForm3" novalidate hidden>
         <div class="fp-field">
           <label class="fp-field-label" for="fpNew">New password</label>
           <div class="fp-pw-wrap">
@@ -297,12 +377,16 @@
             <button type="button" class="fp-eye" id="toggleFpConf" aria-label="Show confirm password" aria-pressed="false"><i class="fa-regular fa-eye"></i></button>
           </div>
         </div>
-        <div id="fpMsg2" class="fp-msg" role="alert" aria-live="polite" hidden></div>
-        <button class="fp-btn-gold" type="submit">Reset password</button>
-        <div class="fp-resend-row">
-          <button type="button" class="fp-resend-btn" id="fpResend" disabled>Resend code in 60s</button>
-        </div>
+        <div id="fpMsg3" class="fp-msg" role="alert" aria-live="polite" hidden></div>
+        <button class="fp-btn-gold" type="submit">Change password</button>
+        <button type="button" class="fp-text-btn" id="fpBackOtp">Back to OTP code</button>
       </form>
+
+      <div class="fp-done-box" id="fpDoneBox" hidden>
+        <div class="fp-done-icon" aria-hidden="true"><i class="fa-solid fa-check"></i></div>
+        <p>Your password has been changed successfully. You can now sign in with your new password.</p>
+        <a class="fp-btn-gold" href="/login">Back to Sign In</a>
+      </div>
 
       <p class="fp-links"><a href="/login">Back to sign in</a></p>
     </section>
@@ -330,10 +414,70 @@
   bindToggle("toggleFpConf", "fpConf", "confirm password");
 
   let email = "";
+  let verifiedCode = "";
   let cooldownRemaining = 0;
   let cooldownTimer = null;
   let resendBusy = false;
   const resendBtn = $("fpResend");
+
+  const otpDigits = Array.from(document.querySelectorAll("#fpOtpBoxes .fp-otp-digit"));
+  function syncOtpValue() {
+    $("fpCode").value = otpDigits.map(d => d.value.replace(/\D/g, "").slice(0, 1)).join("");
+  }
+  function clearOtpBoxes() {
+    otpDigits.forEach(d => { d.value = ""; });
+    $("fpCode").value = "";
+  }
+  function setHeading(title, sub) {
+    $("fpTitle").textContent = title;
+    $("fpSub").textContent = sub;
+    if ($("fpMobTitle")) $("fpMobTitle").textContent = title;
+    if ($("fpMobSub")) $("fpMobSub").textContent = sub;
+  }
+
+  otpDigits.forEach((box, idx) => {
+    box.addEventListener("input", () => {
+      const digits = box.value.replace(/\D/g, "");
+      if (digits.length > 1) {
+        digits.slice(0, 6).split("").forEach((ch, i) => {
+          if (otpDigits[i]) otpDigits[i].value = ch;
+        });
+        syncOtpValue();
+        (otpDigits[Math.min(digits.length, 5)] || box).focus();
+        return;
+      }
+      box.value = digits;
+      syncOtpValue();
+      if (digits && otpDigits[idx + 1]) otpDigits[idx + 1].focus();
+    });
+    box.addEventListener("keydown", e => {
+      if (e.key === "Backspace" && !box.value && otpDigits[idx - 1]) {
+        otpDigits[idx - 1].focus();
+      }
+    });
+    box.addEventListener("paste", e => {
+      const text = (e.clipboardData || window.clipboardData)?.getData("text") || "";
+      const digits = text.replace(/\D/g, "").slice(0, 6);
+      if (!digits) return;
+      e.preventDefault();
+      digits.split("").forEach((ch, i) => { if (otpDigits[i]) otpDigits[i].value = ch; });
+      syncOtpValue();
+      (otpDigits[Math.min(digits.length, 5)] || box).focus();
+    });
+  });
+
+  function setStep(stepNum) {
+    $("fpForm1").hidden = stepNum !== 1;
+    $("fpForm2").hidden = stepNum !== 2;
+    $("fpForm3").hidden = stepNum !== 3;
+    if ($("fpDoneBox")) $("fpDoneBox").hidden = stepNum !== 4;
+    [1, 2, 3].forEach(n => {
+      const el = $("fpStep" + n);
+      if (!el) return;
+      el.classList.toggle("is-active", n === stepNum);
+      el.classList.toggle("is-done", n < stepNum || stepNum === 4);
+    });
+  }
 
   function updateResendButton() {
     if (!resendBtn || resendBusy) return;
@@ -372,26 +516,44 @@
     }
   };
 
-  $("fpCode").addEventListener("input", () => {
-    const clean = $("fpCode").value.replace(/\D/g, "").slice(0, 6);
-    if ($("fpCode").value !== clean) $("fpCode").value = clean;
+  $("fpBackEmail").addEventListener("click", () => {
+    verifiedCode = "";
+    $("fpMsg1").hidden = true;
+    $("fpMsg2").hidden = true;
+    setHeading("Forgot your password?", "Enter the Gmail or email on your account and we will send you a 6-digit code.");
+    setStep(1);
+    $("fpEmail").focus();
+  });
+
+  $("fpBackOtp").addEventListener("click", () => {
+    $("fpMsg3").hidden = true;
+    setHeading("Enter verification code", "Enter the 6-digit OTP we sent to your email.");
+    setStep(2);
+    if (otpDigits[0]) otpDigits[0].focus();
   });
 
   $("fpForm1").addEventListener("submit", async e => {
     e.preventDefault(); email = $("fpEmail").value.trim();
-    if (!email || !email.includes("@")) return show($("fpMsg1"), "Enter a valid email address.", true);
-    const btn = e.submitter || e.target.querySelector("button"); btn.disabled = true;
-    const res = await sendInitial($("fpMsg1"));
-    if (res) {
-      $("fpForm1").hidden = true;
-      $("fpForm2").hidden = false;
-      $("fpTitle").textContent = "Check your email";
-      $("fpSub").textContent = "Enter the 6-digit code we sent and choose a new password.";
-      show($("fpMsg2"), "Verification code sent. Check your inbox (valid for 10 minutes).", false);
-      startResendCountdown(res.cooldown_seconds || 60);
-      $("fpCode").focus();
+    const emailErr = window.ProFitAPI?.validateRealEmail
+      ? window.ProFitAPI.validateRealEmail(email)
+      : (!email || !email.includes("@") ? "Enter a valid email address." : "");
+    if (emailErr) return show($("fpMsg1"), emailErr, true);
+    const btn = e.submitter || e.target.querySelector("button[type=submit]");
+    btn.disabled = true;
+    try {
+      const res = await sendInitial($("fpMsg1"));
+      if (res) {
+        verifiedCode = "";
+        clearOtpBoxes();
+        setStep(2);
+        setHeading("Enter verification code", "Enter the 6-digit OTP we sent to your email.");
+        show($("fpMsg2"), "Verification code sent. Check your inbox (valid for 10 minutes).", false);
+        startResendCountdown(res.cooldown_seconds || 60);
+        if (otpDigits[0]) otpDigits[0].focus();
+      }
+    } finally {
+      btn.disabled = false;
     }
-    btn.disabled = false;
   });
 
   resendBtn.addEventListener("click", async () => {
@@ -402,9 +564,10 @@
     try {
       const res = await api("/auth/resend-otp", { email, purpose: "PASSWORD_RESET" });
       resendBusy = false;
+      verifiedCode = "";
       show($("fpMsg2"), res?.detail || "A new verification code has been sent to your email.", false);
-      $("fpCode").value = "";
-      $("fpCode").focus();
+      clearOtpBoxes();
+      if (otpDigits[0]) otpDigits[0].focus();
       startResendCountdown(res?.cooldown_seconds || 60);
     } catch (err) {
       resendBusy = false;
@@ -419,21 +582,44 @@
 
   $("fpForm2").addEventListener("submit", async e => {
     e.preventDefault();
-    const code = $("fpCode").value.trim(), pw = $("fpNew").value;
+    syncOtpValue();
+    const code = $("fpCode").value.trim();
     if (!/^\d{6}$/.test(code)) return show($("fpMsg2"), "Enter the 6-digit code from your email.", true);
-    if (pw.length < 8) return show($("fpMsg2"), "Use at least 8 characters for the new password.", true);
-    if (pw !== $("fpConf").value) return show($("fpMsg2"), "The two passwords do not match.", true);
-    const btn = e.submitter || e.target.querySelector("button[type=submit]"); btn.disabled = true;
+    const btn = e.submitter || e.target.querySelector("button[type=submit]");
+    btn.disabled = true;
     try {
-      await api("/auth/reset-password", { email, code, new_password: pw });
-      if (cooldownTimer) { clearInterval(cooldownTimer); cooldownTimer = null; }
-      $("fpForm2").hidden = true;
-      $("fpTitle").textContent = "Password updated";
-      $("fpSub").innerHTML = 'You can now <a href="/login">sign in</a> with your new password.';
+      await api("/auth/verify-reset-otp", { email, code });
+      verifiedCode = code;
+      $("fpNew").value = "";
+      $("fpConf").value = "";
+      setStep(3);
+      setHeading("Set a new password", "Your code is verified. Enter and confirm your new password.");
+      show($("fpMsg3"), "OTP verified. Choose a strong password (at least 8 characters).", false);
+      $("fpNew").focus();
     } catch (err) {
-      show($("fpMsg2"), err.message || "Could not reset the password.", true);
+      show($("fpMsg2"), err.message || "That code is not valid or has expired.", true);
+    } finally {
+      btn.disabled = false;
     }
-    btn.disabled = false;
+  });
+
+  $("fpForm3").addEventListener("submit", async e => {
+    e.preventDefault();
+    const pw = $("fpNew").value;
+    if (pw.length < 8) return show($("fpMsg3"), "Use at least 8 characters for the new password.", true);
+    if (pw !== $("fpConf").value) return show($("fpMsg3"), "The two passwords do not match.", true);
+    const btn = e.submitter || e.target.querySelector("button[type=submit]");
+    btn.disabled = true;
+    try {
+      await api("/auth/reset-password", { email, code: verifiedCode, new_password: pw });
+      if (cooldownTimer) { clearInterval(cooldownTimer); cooldownTimer = null; }
+      setStep(4);
+      setHeading("Password changed", "You can now sign in with your new password.");
+    } catch (err) {
+      show($("fpMsg3"), err.message || "Could not reset the password.", true);
+    } finally {
+      btn.disabled = false;
+    }
   });
 })();
 </script>

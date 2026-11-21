@@ -32,7 +32,7 @@
   let busy = false;
   let gsiReady = false;
   let gsiFailed = false;
-  let overlayWrap = null;
+  let tokenClient = null;
   let linkDialog = null;
   let configPromise = null;
 
@@ -73,9 +73,6 @@
     if (span) {
       if (!btn.dataset.origLabel) btn.dataset.origLabel = span.textContent;
       span.textContent = busy ? (label || "Signing in…") : btn.dataset.origLabel;
-    }
-    if (overlayWrap) {
-      overlayWrap.style.pointerEvents = busy ? "none" : "auto";
     }
   }
 
@@ -214,17 +211,11 @@
     }
   }
 
-  async function handleCredentialResponse(response) {
-    if (busy) return;
-    const credential = response && response.credential;
-    if (!credential) {
-      showMsg("Google sign-in was cancelled or returned no credential.", true);
-      return;
-    }
+  async function submitGoogleAuth(payload) {
     clearMsg();
     setBusy(true, "Connecting…");
     try {
-      const res = await window.ProFitAPI.post("/auth/google", { credential });
+      const res = await window.ProFitAPI.post("/auth/google", payload);
       if (res && res.status === "link_required") {
         setBusy(false);
         openLinkPrompt(res.email, res.link_token);
@@ -244,32 +235,19 @@
     }
   }
 
-  function mountGsiOverlay() {
-    if (!window.google?.accounts?.id) return;
-    btn.style.position = "relative";
-    btn.style.overflow = "hidden";
-    if (!overlayWrap) {
-      overlayWrap = document.createElement("div");
-      overlayWrap.className = "pf-gsi-overlay";
-      overlayWrap.setAttribute("aria-hidden", "true");
-      overlayWrap.style.cssText = "position:absolute;inset:0;opacity:0.001;overflow:hidden;z-index:2;display:flex;align-items:center;justify-content:center;";
-      btn.appendChild(overlayWrap);
-    } else {
-      overlayWrap.replaceChildren();
+  async function handleCredentialResponse(response) {
+    if (busy) return;
+    const credential = response && response.credential;
+    if (!credential) {
+      showMsg("Google sign-in was cancelled or returned no credential.", true);
+      return;
     }
-    const width = Math.max(160, Math.round(btn.getBoundingClientRect().width || 240));
-    window.google.accounts.id.renderButton(overlayWrap, {
-      type: "standard",
-      theme: "outline",
-      size: "large",
-      width: Math.min(400, width)
-    });
-    gsiReady = true;
+    await submitGoogleAuth({ credential });
   }
 
   function loadGsiScript() {
     return new Promise((resolve, reject) => {
-      if (window.google?.accounts?.id) {
+      if (window.google?.accounts?.oauth2 || window.google?.accounts?.id) {
         resolve();
         return;
       }
@@ -306,25 +284,54 @@
 
   async function initGoogle() {
     await loadConfig();
-    if (oauthRedirectEnabled) {
-      /* Server-side OAuth redirect is active; no invisible GIS iframe overlay needed. */
-      return;
-    }
-
     try {
       await loadGsiScript();
-      if (!window.google?.accounts?.id) throw new Error("gsi-missing");
-      window.google.accounts.id.initialize({
-        client_id: clientId,
-        callback: handleCredentialResponse,
-        ux_mode: "popup",
-        auto_select: false,
-        cancel_on_tap_outside: true
-      });
-      mountGsiOverlay();
-      window.addEventListener("resize", () => {
-        if (gsiReady && !busy) mountGsiOverlay();
-      }, { passive: true });
+      if (window.google?.accounts?.oauth2) {
+        tokenClient = window.google.accounts.oauth2.initTokenClient({
+          client_id: clientId,
+          scope: "openid email profile",
+          callback: async resp => {
+            if (resp && resp.error) {
+              setBusy(false);
+              showMsg(
+                resp.error === "access_denied"
+                  ? "Google sign-in was cancelled."
+                  : "Google authorization could not be completed. Please try again.",
+                true
+              );
+              return;
+            }
+            if (resp && resp.access_token) {
+              await submitGoogleAuth({ access_token: resp.access_token });
+              return;
+            }
+            setBusy(false);
+            showMsg("Google sign-in returned no access token.", true);
+          },
+          error_callback: err => {
+            setBusy(false);
+            const t = err?.type || "";
+            if (t === "popup_closed") {
+              showMsg("Google sign-in window was closed before completing.", true);
+            } else if (t === "popup_failed_to_open") {
+              showMsg("Popup was blocked by your browser. Please allow popups for this site and try again.", true);
+            } else {
+              showMsg("Could not open Google sign-in. Please allow accounts.google.com and try again.", true);
+            }
+          }
+        });
+      }
+      if (window.google?.accounts?.id) {
+        window.google.accounts.id.initialize({
+          client_id: clientId,
+          callback: handleCredentialResponse,
+          ux_mode: "popup",
+          auto_select: false,
+          cancel_on_tap_outside: true
+        });
+        gsiReady = true;
+      }
+      if (!tokenClient && !gsiReady) throw new Error("gsi-missing");
     } catch (_) {
       gsiFailed = true;
     }
@@ -334,9 +341,14 @@
     if (busy) return;
     clearMsg();
     await loadConfig();
-    if (oauthRedirectEnabled) {
-      setBusy(true, "Redirecting…");
-      location.href = `/api/auth/google/login/?source=${encodeURIComponent(sourceName)}`;
+    if (tokenClient) {
+      setBusy(true, "Waiting for Google…");
+      try {
+        tokenClient.requestAccessToken({ prompt: "select_account" });
+      } catch (_) {
+        setBusy(false);
+        showMsg("Could not open Google sign-in. Please try again.", true);
+      }
       return;
     }
     if (gsiReady && window.google?.accounts?.id) {
@@ -348,6 +360,11 @@
       return;
     }
     if (gsiFailed) {
+      if (oauthRedirectEnabled) {
+        setBusy(true, "Redirecting…");
+        location.href = `/api/auth/google/login/?source=${encodeURIComponent(sourceName)}`;
+        return;
+      }
       showMsg("Google Sign-In could not load right now. Please allow accounts.google.com or try again.", true);
       return;
     }

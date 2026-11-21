@@ -1,6 +1,6 @@
 // Shared ProFit navigation, top bar and the live status chips.
 (() => {
-  const groups = [
+  const ownerGroups = [
     { label: 'WORKSPACE', items: [
       { id: 'dashboard', label: 'Dashboard', icon: 'fa-house', href: '/index' },
       { id: 'announcements', label: 'Announcements', icon: 'fa-bullhorn', href: '/announcements' },
@@ -15,30 +15,63 @@
       { id: 'reports', label: 'Financial Reports', icon: 'fa-chart-column', href: '/reports' },
     ]},
   ];
+  const cashierGroups = [
+    { label: 'CASHIER DESK', items: [
+      { id: 'cashier', label: 'Cashier Portal', icon: 'fa-cash-register', href: '/cashier' },
+      { id: 'payments', label: 'Payments & Billing', icon: 'fa-wallet', href: '/payments' },
+    ]},
+    { label: 'FRONT DESK', items: [
+      { id: 'members', label: 'Member List', icon: 'fa-users', href: '/members' },
+      { id: 'attendance', label: 'Attendance', icon: 'fa-calendar-check', href: '/attendance' },
+    ]},
+  ];
   const body = document.body, current = body.dataset.page;
+
+  const detectWebRole = () => {
+    const authRole = window.ProFitAuth?.role || window.ProFitAuth?.user?.role;
+    if (authRole) return String(authRole).toUpperCase();
+    try {
+      const raw = sessionStorage.getItem('profit-verified-session') || localStorage.getItem('profit-demo-session') || sessionStorage.getItem('profit-demo-session');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && parsed.role) return String(parsed.role).toUpperCase();
+      }
+    } catch { /* storage blocked */ }
+    return current === 'cashier' ? 'CASHIER' : '';
+  };
 
   // Gym branding lives in Settings so the owner can rebrand without touching code.
   let GYM = { name: 'ProFit', tagline: 'FUNCTIONAL FITNESS', logo: '' };
   try { GYM = { ...GYM, ...(JSON.parse(localStorage.getItem('profit-gym-profile') || 'null') || {}) }; } catch { /* storage blocked */ }
 
+  const renderSidebarGroups = groups => groups.map(g =>
+    `<section class="nav-group"><p class="nav-group-label">${g.label}</p><ul class="menulist">${g.items.map(item => `<li><a href="${item.href}" data-tip="${item.label}" class="${item.id===current?'active':''}" ${item.id===current?'aria-current="page"':''}><i class="fa-solid ${item.icon} icon" aria-hidden="true"></i><span class="text nav-text">${item.label}</span></a></li>`).join('')}</ul></section>`
+  ).join('');
+
+  let renderedRole = detectWebRole();
   const nav = document.getElementById('sidebar');
   if (nav) {
+    const isCashier = renderedRole === 'CASHIER';
+    const groups = isCashier ? cashierGroups : ownerGroups;
+    const homeHref = isCashier ? '/cashier' : '/index';
+    const defaultName = isCashier ? 'Cashier' : 'Administrator';
+    const defaultRoleLabel = isCashier ? 'Cashier' : 'Gym administrator';
     nav.setAttribute('aria-label', 'Main navigation');
     nav.innerHTML = `
       <div class="sidebar-brand-row">
-        <a class="imgbrand" href="/index" aria-label="${GYM.name} dashboard">
+        <a class="imgbrand" href="${homeHref}" aria-label="${GYM.name} dashboard">
           <span class="image"><img id="gymLogoImg" src="${GYM.logo || 'logo.jpg'}" alt="${GYM.name}" onerror="this.style.display='none'"></span>
           <span class="headertxt"><strong id="gymNameTxt">${GYM.name}</strong><small id="gymTagTxt">${GYM.tagline}</small></span>
         </a>
       </div>
       <div class="sidebar-scroll">
-        ${groups.map(g => `<section class="nav-group"><p class="nav-group-label">${g.label}</p><ul class="menulist">${g.items.map(item => `<li><a href="${item.href}" data-tip="${item.label}" class="${item.id===current?'active':''}" ${item.id===current?'aria-current="page"':''}><i class="fa-solid ${item.icon} icon" aria-hidden="true"></i><span class="text nav-text">${item.label}</span></a></li>`).join('')}</ul></section>`).join('')}
+        ${renderSidebarGroups(groups)}
       </div>
       <div class="sidebar-foot">
         <div class="sidebar-account">
           <div class="sidebar-user">
             <span class="sidebar-avatar" data-user-initials id="railAvatar">AD</span>
-            <div class="sidebar-user-copy"><strong data-user-name>Administrator</strong><small data-user-role>Gym administrator</small></div>
+            <div class="sidebar-user-copy"><strong data-user-name>${defaultName}</strong><small data-user-role>${defaultRoleLabel}</small></div>
             <button type="button" class="account-menu-toggle" id="accountMenuToggle" aria-haspopup="menu" aria-expanded="false" aria-controls="accountMenu" aria-label="Account actions" title="Account"><i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i></button>
             <div class="account-menu" id="accountMenu" role="menu" aria-label="Account actions">
               <a href="/profile" role="menuitem" class="${current==='profile'?'active':''}"><i class="fa-regular fa-user" aria-hidden="true"></i> My profile</a>
@@ -79,11 +112,15 @@
     // Staff profile: photo or initials, shared with the rail below.
     const paintAccount = () => {
       const profile = (window.ProFitProfile && window.ProFitProfile.get()) || {};
-      const authName = (window.ProFitAuth && window.ProFitAuth.user && window.ProFitAuth.user.name) || 'Administrator';
+      const authUser = window.ProFitAuth && window.ProFitAuth.user;
+      const roleCode = String((authUser && authUser.role) || detectWebRole() || '').toUpperCase();
+      const isCashier = roleCode === 'CASHIER';
+      const authName = (authUser && authUser.name) || (isCashier ? 'Cashier' : 'Administrator');
       const name = profile.name || authName;
       document.querySelectorAll('[data-user-name]').forEach(el => { el.textContent = name; });
-      document.querySelectorAll('[data-user-role]').forEach(el => { el.textContent = profile.role || (window.ProFitAuth && window.ProFitAuth.user && window.ProFitAuth.user.role === 'MEMBER' ? 'Gym member' : 'Gym administrator'); });
-      const initials = (window.ProFitProfile && window.ProFitProfile.initials()) || 'PF';
+      const fallbackRoleLabel = roleCode === 'MEMBER' ? 'Gym member' : isCashier ? 'Cashier' : 'Gym administrator';
+      document.querySelectorAll('[data-user-role]').forEach(el => { el.textContent = profile.role || fallbackRoleLabel; });
+      const initials = (window.ProFitProfile && window.ProFitProfile.initials()) || name.trim().split(/\s+/).slice(0, 2).map(p => p[0] || '').join('').toUpperCase() || 'PF';
       document.querySelectorAll('[data-user-initials]').forEach(el => { el.textContent = initials; });
       document.querySelectorAll('.sidebar-avatar, .topbar-avatar, .pp-avatar-photo').forEach(box => {
         if (!box) return;
@@ -101,6 +138,18 @@
     };
     paintAccount();
     window.addEventListener('profit-account-changed', paintAccount);
+    window.addEventListener('profit-auth-ready', e => {
+      const nextRole = String(e.detail?.role || detectWebRole() || '').toUpperCase();
+      if (nav && nextRole && nextRole !== renderedRole) {
+        renderedRole = nextRole;
+        const isCashier = nextRole === 'CASHIER';
+        const scrollEl = nav.querySelector('.sidebar-scroll');
+        if (scrollEl) scrollEl.innerHTML = renderSidebarGroups(isCashier ? cashierGroups : ownerGroups);
+        const brandLink = nav.querySelector('.imgbrand');
+        if (brandLink) brandLink.setAttribute('href', isCashier ? '/cashier' : '/index');
+      }
+      paintAccount();
+    });
 
     // Back / forward mirror the browser history stack.
     const back = top.querySelector('#navBack'), fwd = top.querySelector('#navFwd');

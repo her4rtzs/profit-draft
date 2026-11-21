@@ -4,7 +4,8 @@
    ========================================================================== */
 
 body[data-page="payments"],
-body[data-page="reports"] {
+body[data-page="reports"],
+body[data-page="cashier"] {
   --fn-bg-card: linear-gradient(160deg, #111a2e 0%, #0d1424 60%, #090f1d 100%);
   --fn-bg-inset: rgba(8, 13, 24, 0.72);
   --fn-border: rgba(148, 163, 184, 0.14);
@@ -25,7 +26,8 @@ body[data-page="reports"] {
 }
 
 body:not(.dark)[data-page="payments"],
-body:not(.dark)[data-page="reports"] {
+body:not(.dark)[data-page="reports"],
+body:not(.dark)[data-page="cashier"] {
   --fn-bg-card: linear-gradient(155deg, #fffdf9 0%, #faf6ee 65%, #f5efe4 100%);
   --fn-bg-inset: rgba(255, 255, 255, 0.86);
   --fn-border: rgba(217, 170, 82, 0.42);
@@ -47,7 +49,8 @@ body:not(.dark)[data-page="reports"] {
 
 /* Override legacy portal shell spacing — rely on layout-fixes.css for sidebar width/collapse */
 html body.pf-staff[data-page="payments"] .main-content,
-html body.pf-staff[data-page="reports"] .main-content {
+html body.pf-staff[data-page="reports"] .main-content,
+html body.pf-staff[data-page="cashier"] .main-content {
   display: block !important;
 }
 
@@ -161,6 +164,7 @@ body:not(.dark) .fn-header-bg::after {
 
 html body.pf-staff[data-page="payments"] .fn-tabs .tab,
 html body.pf-staff[data-page="reports"] .fn-tabs .tab,
+html body.pf-staff[data-page="cashier"] .fn-tabs .tab,
 .fn-tabs .tab {
   position: relative;
   display: inline-flex !important;
@@ -185,13 +189,15 @@ html body.pf-staff[data-page="reports"] .fn-tabs .tab,
 }
 
 html body.pf-staff:not(.dark)[data-page="payments"] .fn-tabs .tab,
-html body.pf-staff:not(.dark)[data-page="reports"] .fn-tabs .tab {
+html body.pf-staff:not(.dark)[data-page="reports"] .fn-tabs .tab,
+html body.pf-staff:not(.dark)[data-page="cashier"] .fn-tabs .tab {
   background: rgba(255, 255, 255, 0.88) !important;
   border-color: rgba(148, 163, 184, 0.35) !important;
 }
 
 html body.pf-staff[data-page="payments"] .fn-tabs .tab:hover,
 html body.pf-staff[data-page="reports"] .fn-tabs .tab:hover,
+html body.pf-staff[data-page="cashier"] .fn-tabs .tab:hover,
 .fn-tabs .tab:hover {
   transform: translateY(-1px);
   color: var(--fn-text) !important;
@@ -200,6 +206,7 @@ html body.pf-staff[data-page="reports"] .fn-tabs .tab:hover,
 
 html body.pf-staff[data-page="payments"] .fn-tabs .tab.active,
 html body.pf-staff[data-page="reports"] .fn-tabs .tab.active,
+html body.pf-staff[data-page="cashier"] .fn-tabs .tab.active,
 .fn-tabs .tab.active {
   color: var(--fn-text) !important;
   border: 1.5px solid #f59e0b !important;
@@ -492,7 +499,8 @@ body:not(.dark) .fn-kpi-circle {
 
 .fn-input,
 body[data-page="payments"] .input,
-body[data-page="reports"] .input {
+body[data-page="reports"] .input,
+body[data-page="cashier"] .input {
   height: 44px;
   min-height: 44px;
   width: 100%;
@@ -509,7 +517,8 @@ body[data-page="reports"] .input {
 
 .fn-input:focus,
 body[data-page="payments"] .input:focus,
-body[data-page="reports"] .input:focus {
+body[data-page="reports"] .input:focus,
+body[data-page="cashier"] .input:focus {
   outline: none;
   border-color: rgba(245, 158, 11, 0.72);
   box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.22);
@@ -566,6 +575,7 @@ body:not(.dark) .fn-search-pill svg {
 
 html body.pf-staff[data-page="payments"] .fn-search-pill input,
 html body.pf-staff[data-page="reports"] .fn-search-pill input,
+html body.pf-staff[data-page="cashier"] .fn-search-pill input,
 .fn-search-pill input {
   width: 100%;
   height: 38px !important;
@@ -587,6 +597,7 @@ html body.pf-staff[data-page="reports"] .fn-search-pill input,
 
 html body.pf-staff[data-page="payments"] .fn-search-pill input:focus,
 html body.pf-staff[data-page="reports"] .fn-search-pill input:focus,
+html body.pf-staff[data-page="cashier"] .fn-search-pill input:focus,
 .fn-search-pill input:focus {
   outline: none;
   border-color: rgba(245, 158, 11, 0.72) !important;
@@ -726,8 +737,10 @@ body:not(.dark) .fn-btn-dark:hover {
 /* ---------- 6. CHIPS: UNIFORM PILL + DOT STATUS BADGES & PLAN PILLS ---------- */
 html body[data-page="payments"] .badge,
 html body[data-page="reports"] .badge,
+html body[data-page="cashier"] .badge,
 body[data-page="payments"] .badge,
-body[data-page="reports"] .badge {
+body[data-page="reports"] .badge,
+body[data-page="cashier"] .badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -752,7 +765,8 @@ body[data-page="reports"] .badge {
 }
 
 body[data-page="payments"] .badge::before,
-body[data-page="reports"] .badge::before {
+body[data-page="reports"] .badge::before,
+body[data-page="cashier"] .badge::before {
   content: "" !important;
   display: inline-block !important;
   width: 6px;
@@ -765,86 +779,110 @@ body[data-page="reports"] .badge::before {
 
 html body[data-page="payments"] .badge.active,
 html body[data-page="reports"] .badge.active,
+html body[data-page="cashier"] .badge.active,
 html body[data-page="payments"] .badge.paid,
-html body[data-page="reports"] .badge.paid {
+html body[data-page="reports"] .badge.paid,
+html body[data-page="cashier"] .badge.paid {
   background: var(--pf-st-active-bg) !important;
   color: var(--pf-st-active-fg) !important;
   border-color: var(--pf-st-active-bd) !important;
 }
 body[data-page="payments"] .badge.active::before,
 body[data-page="reports"] .badge.active::before,
+body[data-page="cashier"] .badge.active::before,
 body[data-page="payments"] .badge.paid::before,
-body[data-page="reports"] .badge.paid::before { background: var(--pf-st-active-dot); }
+body[data-page="reports"] .badge.paid::before,
+body[data-page="cashier"] .badge.paid::before { background: var(--pf-st-active-dot); }
 
 html body[data-page="payments"] .badge.warning,
 html body[data-page="reports"] .badge.warning,
+html body[data-page="cashier"] .badge.warning,
 html body[data-page="payments"] .badge.expiring,
-html body[data-page="reports"] .badge.expiring {
+html body[data-page="reports"] .badge.expiring,
+html body[data-page="cashier"] .badge.expiring {
   background: var(--pf-st-expiring-bg) !important;
   color: var(--pf-st-expiring-fg) !important;
   border-color: var(--pf-st-expiring-bd) !important;
 }
 body[data-page="payments"] .badge.warning::before,
 body[data-page="reports"] .badge.warning::before,
+body[data-page="cashier"] .badge.warning::before,
 body[data-page="payments"] .badge.expiring::before,
-body[data-page="reports"] .badge.expiring::before { background: var(--pf-st-expiring-dot); }
+body[data-page="reports"] .badge.expiring::before,
+body[data-page="cashier"] .badge.expiring::before { background: var(--pf-st-expiring-dot); }
 
 html body[data-page="payments"] .badge.expired,
 html body[data-page="reports"] .badge.expired,
+html body[data-page="cashier"] .badge.expired,
 html body[data-page="payments"] .badge.overdue,
-html body[data-page="reports"] .badge.overdue {
+html body[data-page="reports"] .badge.overdue,
+html body[data-page="cashier"] .badge.overdue {
   background: var(--pf-st-expired-bg) !important;
   color: var(--pf-st-expired-fg) !important;
   border-color: var(--pf-st-expired-bd) !important;
 }
 body[data-page="payments"] .badge.expired::before,
 body[data-page="reports"] .badge.expired::before,
+body[data-page="cashier"] .badge.expired::before,
 body[data-page="payments"] .badge.overdue::before,
-body[data-page="reports"] .badge.overdue::before { background: var(--pf-st-expired-dot); }
+body[data-page="reports"] .badge.overdue::before,
+body[data-page="cashier"] .badge.overdue::before { background: var(--pf-st-expired-dot); }
 
 html body[data-page="payments"] .badge.pending,
-html body[data-page="reports"] .badge.pending {
+html body[data-page="reports"] .badge.pending,
+html body[data-page="cashier"] .badge.pending {
   background: var(--pf-st-pending-bg) !important;
   color: var(--pf-st-pending-fg) !important;
   border-color: var(--pf-st-pending-bd) !important;
 }
 body[data-page="payments"] .badge.pending::before,
-body[data-page="reports"] .badge.pending::before { background: var(--pf-st-pending-dot); }
+body[data-page="reports"] .badge.pending::before,
+body[data-page="cashier"] .badge.pending::before { background: var(--pf-st-pending-dot); }
 
 html body[data-page="payments"] .badge.inactive,
 html body[data-page="reports"] .badge.inactive,
+html body[data-page="cashier"] .badge.inactive,
 html body[data-page="payments"] .badge.cancelled,
 html body[data-page="reports"] .badge.cancelled,
+html body[data-page="cashier"] .badge.cancelled,
 html body[data-page="payments"] .badge.declined,
-html body[data-page="reports"] .badge.declined {
+html body[data-page="reports"] .badge.declined,
+html body[data-page="cashier"] .badge.declined {
   background: var(--pf-st-inactive-bg) !important;
   color: var(--pf-st-inactive-fg) !important;
   border-color: var(--pf-st-inactive-bd) !important;
 }
 body[data-page="payments"] .badge.inactive::before,
 body[data-page="reports"] .badge.inactive::before,
+body[data-page="cashier"] .badge.inactive::before,
 body[data-page="payments"] .badge.cancelled::before,
 body[data-page="reports"] .badge.cancelled::before,
+body[data-page="cashier"] .badge.cancelled::before,
 body[data-page="payments"] .badge.declined::before,
-body[data-page="reports"] .badge.declined::before { background: var(--pf-st-inactive-dot); }
+body[data-page="reports"] .badge.declined::before,
+body[data-page="cashier"] .badge.declined::before { background: var(--pf-st-inactive-dot); }
 
 html body[data-page="payments"] .badge.unassigned,
-html body[data-page="reports"] .badge.unassigned {
+html body[data-page="reports"] .badge.unassigned,
+html body[data-page="cashier"] .badge.unassigned {
   background: var(--pf-st-unassigned-bg) !important;
   color: var(--pf-st-unassigned-fg) !important;
   border-color: var(--pf-st-unassigned-bd) !important;
 }
 body[data-page="payments"] .badge.unassigned::before,
-body[data-page="reports"] .badge.unassigned::before { background: var(--pf-st-unassigned-dot); }
+body[data-page="reports"] .badge.unassigned::before,
+body[data-page="cashier"] .badge.unassigned::before { background: var(--pf-st-unassigned-dot); }
 
 html body[data-page="payments"] .badge.processing,
-html body[data-page="reports"] .badge.processing {
+html body[data-page="reports"] .badge.processing,
+html body[data-page="cashier"] .badge.processing {
   background: var(--pf-st-processing-bg) !important;
   color: var(--pf-st-processing-fg) !important;
   border-color: var(--pf-st-processing-bd) !important;
 }
 body[data-page="payments"] .badge.processing::before,
-body[data-page="reports"] .badge.processing::before { background: var(--pf-st-processing-dot); }
+body[data-page="reports"] .badge.processing::before,
+body[data-page="cashier"] .badge.processing::before { background: var(--pf-st-processing-dot); }
 
 .fn-plan-pill {
   display: inline-flex;
@@ -934,6 +972,7 @@ body[data-page="reports"] .badge.processing::before { background: var(--pf-st-pr
 
 html body.pf-staff[data-page="payments"] .fn-table thead tr,
 html body.pf-staff[data-page="reports"] .fn-table thead tr,
+html body.pf-staff[data-page="cashier"] .fn-table thead tr,
 .fn-table thead tr {
   display: grid;
   grid-template-columns: var(--fn-cols);
@@ -947,6 +986,7 @@ html body.pf-staff[data-page="reports"] .fn-table thead tr,
 
 html body.pf-staff[data-page="payments"] .fn-table thead th,
 html body.pf-staff[data-page="reports"] .fn-table thead th,
+html body.pf-staff[data-page="cashier"] .fn-table thead th,
 .fn-table thead th {
   display: flex;
   align-items: center;
@@ -967,10 +1007,13 @@ html body.pf-staff[data-page="reports"] .fn-table thead th,
 
 html body.pf-staff[data-page="payments"] .fn-table thead th > *,
 html body.pf-staff[data-page="reports"] .fn-table thead th > *,
+html body.pf-staff[data-page="cashier"] .fn-table thead th > *,
 html body.pf-staff[data-page="payments"] .fn-table thead th::before,
 html body.pf-staff[data-page="reports"] .fn-table thead th::before,
+html body.pf-staff[data-page="cashier"] .fn-table thead th::before,
 html body.pf-staff[data-page="payments"] .fn-table thead th::after,
-html body.pf-staff[data-page="reports"] .fn-table thead th::after {
+html body.pf-staff[data-page="reports"] .fn-table thead th::after,
+html body.pf-staff[data-page="cashier"] .fn-table thead th::after {
   background: transparent !important;
   border: 0 !important;
   border-radius: 0 !important;
@@ -979,15 +1022,18 @@ html body.pf-staff[data-page="reports"] .fn-table thead th::after {
 }
 
 html body.pf-staff[data-page="payments"] .fn-table thead th.fn-center,
-html body.pf-staff[data-page="reports"] .fn-table thead th.fn-center {
+html body.pf-staff[data-page="reports"] .fn-table thead th.fn-center,
+html body.pf-staff[data-page="cashier"] .fn-table thead th.fn-center {
   justify-content: center;
   text-align: center;
 }
 
 html body.pf-staff[data-page="payments"] .fn-table thead th.num,
 html body.pf-staff[data-page="reports"] .fn-table thead th.num,
+html body.pf-staff[data-page="cashier"] .fn-table thead th.num,
 html body.pf-staff[data-page="payments"] .fn-table thead th.fn-right,
-html body.pf-staff[data-page="reports"] .fn-table thead th.fn-right {
+html body.pf-staff[data-page="reports"] .fn-table thead th.fn-right,
+html body.pf-staff[data-page="cashier"] .fn-table thead th.fn-right {
   justify-content: flex-end;
   text-align: right;
 }
@@ -1193,7 +1239,8 @@ body:not(.dark) .fn-feed .amt {
 /* Progress bars & breakdown */
 .fn-progress,
 body[data-page="payments"] .progress,
-body[data-page="reports"] .progress {
+body[data-page="reports"] .progress,
+body[data-page="cashier"] .progress {
   width: 100%;
   height: 7px;
   border-radius: 999px;
@@ -1202,26 +1249,31 @@ body[data-page="reports"] .progress {
 }
 
 body[data-page="payments"] .progress i,
-body[data-page="reports"] .progress i {
+body[data-page="reports"] .progress i,
+body[data-page="cashier"] .progress i {
   display: block;
   height: 100%;
   border-radius: 999px;
   background: linear-gradient(90deg, #22c55e, #4ade80);
 }
 
-body[data-page="payments"] .progress.warning {
+body[data-page="payments"] .progress.warning,
+body[data-page="cashier"] .progress.warning {
   background: rgba(245, 158, 11, 0.16);
 }
 
-body[data-page="payments"] .progress.warning i {
+body[data-page="payments"] .progress.warning i,
+body[data-page="cashier"] .progress.warning i {
   background: linear-gradient(90deg, #f59e0b, #fbbf24);
 }
 
-body[data-page="payments"] .progress.expired {
+body[data-page="payments"] .progress.expired,
+body[data-page="cashier"] .progress.expired {
   background: rgba(239, 68, 68, 0.2);
 }
 
-body[data-page="payments"] .progress.expired i {
+body[data-page="payments"] .progress.expired i,
+body[data-page="cashier"] .progress.expired i {
   background: linear-gradient(90deg, #ef4444, #f87171);
   min-width: 8px;
 }
@@ -1317,7 +1369,8 @@ body[data-page="reports"] .progress.gold i {
 
 /* Empty states */
 body[data-page="payments"] .empty-state,
-body[data-page="reports"] .empty-state {
+body[data-page="reports"] .empty-state,
+body[data-page="cashier"] .empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1329,7 +1382,8 @@ body[data-page="reports"] .empty-state {
 }
 
 body[data-page="payments"] .empty-state .fn-empty-icon,
-body[data-page="reports"] .empty-state .fn-empty-icon {
+body[data-page="reports"] .empty-state .fn-empty-icon,
+body[data-page="cashier"] .empty-state .fn-empty-icon {
   width: 44px;
   height: 44px;
   border-radius: 13px;
@@ -1342,13 +1396,15 @@ body[data-page="reports"] .empty-state .fn-empty-icon {
 }
 
 body:not(.dark)[data-page="payments"] .empty-state .fn-empty-icon,
-body:not(.dark)[data-page="reports"] .empty-state .fn-empty-icon {
+body:not(.dark)[data-page="reports"] .empty-state .fn-empty-icon,
+body:not(.dark)[data-page="cashier"] .empty-state .fn-empty-icon {
   background: #fef3c7;
   color: #b45309;
 }
 
 body[data-page="payments"] .empty-state p,
-body[data-page="reports"] .empty-state p {
+body[data-page="reports"] .empty-state p,
+body[data-page="cashier"] .empty-state p {
   margin: 0;
   font-size: 13px;
 }
@@ -1495,6 +1551,7 @@ body:not(.dark) .fn-tx-foot strong {
 
   html body.pf-staff[data-page="payments"] .fn-tabs .tab,
   html body.pf-staff[data-page="reports"] .fn-tabs .tab,
+  html body.pf-staff[data-page="cashier"] .fn-tabs .tab,
   .fn-tabs .tab {
     flex: 1 1 auto;
     height: 40px !important;
@@ -1543,3 +1600,183 @@ body:not(.dark) .fn-tx-foot strong {
   }
 }
 
+
+/* ---------- 9. CASHIER PORTAL HELPERS (SHARED FINANCE TOKENS) ---------- */
+.fn-kpi-grid--4 {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.fn-kpi-card--red {
+  --fn-kpi-color: #f87171;
+  --fn-kpi-border: rgba(248, 113, 113, 0.4);
+}
+
+.fn-kpi-skel {
+  display: none;
+  gap: 8px;
+}
+
+.fn-kpi-card.is-loading .fn-kpi-val,
+.fn-kpi-card.is-loading .fn-kpi-foot {
+  display: none;
+}
+
+.fn-kpi-card.is-loading .fn-kpi-skel {
+  display: grid;
+}
+
+.fn-kpi-skel .sk-val {
+  width: 58%;
+  height: 28px;
+  border-radius: 8px;
+}
+
+.fn-kpi-skel .sk-sub {
+  width: 78%;
+  height: 12px;
+  border-radius: 6px;
+}
+
+.cashier-member-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--fn-bg-inset);
+  border: 1px solid var(--fn-border);
+}
+
+.cashier-member-meta {
+  min-width: 0;
+}
+
+.cashier-member-meta strong {
+  display: block;
+  font-size: 13.5px;
+  color: var(--fn-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cashier-member-meta small {
+  display: block;
+  font-size: 12px;
+  color: var(--fn-muted);
+}
+
+.fn-table--cashier-hist {
+  --fn-cols: minmax(96px, 1fr) minmax(190px, 2fr) minmax(115px, 1fr) minmax(140px, 1.35fr) minmax(110px, 1fr) minmax(115px, 1fr) minmax(118px, 1fr);
+  --fn-min-w: 884px;
+}
+
+.fn-receipt-card {
+  max-width: 480px;
+}
+
+.fn-receipt-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed var(--fn-border);
+  margin-bottom: 14px;
+}
+
+.fn-receipt-head small {
+  display: block;
+  font-size: 11.5px;
+  color: var(--fn-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.fn-receipt-rows {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.fn-receipt-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 13.5px;
+}
+
+.fn-receipt-row dt {
+  color: var(--fn-muted);
+}
+
+.fn-receipt-row dd {
+  margin: 0;
+  font-weight: 600;
+  color: var(--fn-text);
+  text-align: right;
+}
+
+.fn-receipt-total {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--fn-bg-inset);
+  border: 1px solid var(--fn-divider);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fn-receipt-total span {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fn-muted);
+}
+
+.fn-receipt-total strong {
+  font-size: 20px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--fn-eyebrow);
+}
+
+.fn-feed-action {
+  margin-left: 10px;
+  flex-shrink: 0;
+}
+
+.fn-status-msg {
+  margin: 10px 0 0;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--fn-eyebrow);
+}
+
+.fn-status-msg.is-error {
+  color: #f87171;
+}
+
+@media (max-width: 1120px) {
+  .fn-kpi-grid--4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .fn-kpi-grid--4 {
+    grid-template-columns: 1fr;
+  }
+
+  .cashier-member-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

@@ -28,7 +28,24 @@ header.top{position:sticky;top:0;z-index:50;background:#0b0c10;border-bottom:1px
 .top nav{display:flex;align-items:center;gap:clamp(22px,2.4vw,38px);flex-wrap:nowrap}.top nav a{color:var(--mu);font-size:14px;font-weight:600;white-space:nowrap;display:inline-flex;align-items:center;transition:color .15s}.top nav a:hover{color:var(--lime)}
 .top .cta{display:flex;align-items:center;gap:24px;flex:none}.top .btn{height:40px;padding:0 18px;font-size:14px;white-space:nowrap}
 @media(max-width:1060px){.top nav{display:none}}
-@media(max-width:420px){.top .btn:not(.p){display:none}.top .cta{gap:12px}}
+@media(max-width:768px){
+  .wrap{width:calc(100% - 28px)}
+  .top .wrap{width:calc(100% - 28px);min-height:60px;gap:10px}
+  .brand img{width:32px;height:32px}
+  .brand-copy strong{font-size:18px}
+  .brand-copy small{font-size:9px;letter-spacing:.1em}
+  .top .cta{gap:8px}
+  .top .btn{height:38px;padding:0 14px;font-size:13px}
+}
+@media(max-width:560px){
+  .top .btn:not(.p){display:none}
+  .m-only{display:block}
+}
+@media(max-width:420px){
+  .brand-copy small{display:none}
+  .top .cta{gap:6px}
+  .top .btn{padding:0 12px;font-size:12.5px}
+}
 /* hero */
 .hero{padding:72px 0 56px}
 .hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
@@ -54,15 +71,22 @@ header.top{position:sticky;top:0;z-index:50;background:#0b0c10;border-bottom:1px
 .c-dot{width:6px;height:6px;border-radius:999px;border:0;padding:0;background:rgba(246,239,220,.35);cursor:pointer;transition:all .25s ease}
 .c-dot:hover{background:var(--mu)}
 .c-dot.active{width:18px;background:var(--lime)}
-@media(max-width:860px){.hero .wrap{grid-template-columns:1fr}.hero{padding-top:40px}.hero-media{aspect-ratio:16/10}}
-@media(max-width:480px){.chip.a small,.chip.b{display:none}.chip{padding:8px 11px;font-size:12px}.chip.a{max-width:calc(100% - 126px)}.carousel-ctrls{bottom:12px;right:12px;padding:4px 6px}}
+@media(max-width:860px){.hero .wrap{grid-template-columns:1fr;gap:28px}.hero{padding:36px 0 40px}.hero-media{aspect-ratio:16/10}}
+@media(max-width:480px){
+  .hero{padding:26px 0 32px}
+  .hero h1{font-size:clamp(30px,8.5vw,40px);margin:10px 0 14px}
+  .hero p.lead{font-size:15.5px}
+  .hero .acts{margin-top:20px;gap:10px}
+  .hero .acts .btn{flex:1 1 140px;height:44px;padding:0 16px;font-size:14px}
+  .chip.a small,.chip.b{display:none}.chip{padding:8px 11px;font-size:12px}.chip.a{max-width:calc(100% - 126px)}.carousel-ctrls{bottom:12px;right:12px;padding:4px 6px}
+}
 /* ticker strip */
 .strip{border-top:2px solid var(--gold);border-bottom:1px solid var(--line);background:var(--bg2)}
 .strip .wrap{display:grid;grid-template-columns:repeat(4,1fr)}
 .strip div{padding:20px;border-right:1px solid var(--line);display:flex;align-items:center;gap:12px;font:700 14px "Plus Jakarta Sans",sans-serif;color:var(--tx)}
 .strip div:last-child{border-right:0}
 .strip i{width:34px;height:34px;flex:none;border-radius:9px;display:grid;place-items:center;background:rgba(232,185,58,.1);border:1px solid rgba(232,185,58,.22);color:var(--gold);font-size:15px}
-@media(max-width:720px){.strip .wrap{grid-template-columns:1fr 1fr}.strip div:nth-child(2){border-right:0}.strip div:nth-child(-n+2){border-bottom:1px solid var(--line)}}
+@media(max-width:720px){.strip .wrap{grid-template-columns:1fr 1fr}.strip div{padding:14px 12px;gap:10px;font-size:13px}.strip div:nth-child(2){border-right:0}.strip div:nth-child(-n+2){border-bottom:1px solid var(--line)}}
 /* sections */
 section.s{padding:84px 0}
 .sh{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:36px;flex-wrap:wrap}
@@ -85,10 +109,19 @@ section.s{padding:84px 0}
 .prog .tags{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}.prog .tags span{font-size:12px;font-weight:600;border:1px solid var(--line);border-radius:99px;padding:4px 10px;color:var(--mu)}
 /* Programs horizontal carousel */
 #programs .prog-slider{position:relative;overflow:hidden;border-radius:var(--r)}
-#programs .grid3{display:flex;gap:var(--gap);overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;cursor:grab}
+#programs .grid3{display:flex;gap:var(--gap);overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;cursor:grab}
 #programs .grid3.is-dragging{cursor:grabbing}
 #programs .grid3::-webkit-scrollbar{display:none}
-#programs .prog{flex:0 0 min(86vw,520px);user-select:none}
+#programs .prog{flex:0 0 min(86vw,520px);scroll-snap-align:center;user-select:none}
+@media(max-width:520px){
+  .prog-arrow{width:36px;height:36px;top:32%}
+  .plans .grid3{gap:28px}
+  .plan,.diff-card{padding:24px 18px}
+  .cta-band .wrap{padding:28px 0;gap:16px}
+  .cta-band .btn{width:100%}
+  .gal-grid{gap:10px}
+  .box{padding:20px 18px}
+}
 #programs .prog img{-webkit-user-drag:none;pointer-events:none}
 .prog-arrow{position:absolute;top:40%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.14);background:rgba(110,115,128,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#f6efdc;display:grid;place-items:center;cursor:pointer;z-index:5;padding:0;transition:background .2s ease,border-color .2s ease,transform .2s ease,opacity .2s ease;box-shadow:0 4px 16px rgba(0,0,0,.35)}
 .prog-arrow:hover{background:rgba(145,150,165,.62);border-color:rgba(255,255,255,.28);transform:translateY(-50%) scale(1.06)}
@@ -266,7 +299,7 @@ header.top{background:#0b0c10;backdrop-filter:none;-webkit-backdrop-filter:none}
 </style><script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script><link rel="preload" as="image" href="img/hero.jpg" fetchpriority="high"><link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
 <body class="dark">
 <input id="navt" type="checkbox" hidden><header class="top"><div class="wrap"><a class="brand" href="/"><img src="logo.jpg" alt="ProFit logo" width="40" height="40"><span class="brand-copy"><strong>ProFit</strong><small data-gym-name>FUNCTIONAL FITNESS GYM</small></span></a>
-<nav aria-label="Primary"><a href="#home">Home</a><a href="#why">Features</a><a href="#difference">Difference</a><a href="#programs">Programs</a><a href="#plans">Membership</a><a href="#about">About</a><a href="#visit">Contact</a><a href="/faq">FAQs</a></nav><label class="menu-btn" for="navt" aria-label="Open menu"><i class="fa-solid fa-bars"></i></label>
+<nav aria-label="Primary"><a href="#home">Home</a><a href="#why">Features</a><a href="#difference">Difference</a><a href="#programs">Programs</a><a href="#plans">Membership</a><a href="#about">About</a><a href="#visit">Contact</a><a href="/faq">FAQs</a><a class="m-only" href="/login">Sign in</a></nav><label class="menu-btn" for="navt" aria-label="Open menu"><i class="fa-solid fa-bars"></i></label>
 <div class="cta"><a class="btn" href="/login">Sign in</a><a class="btn p" href="/join">Join now</a></div></div></header>
 <main id="home">
 <section class="hero"><div class="wrap"><div>

@@ -5,11 +5,11 @@ apps/accounts/permissions.py, through the DRF adapters. This module adds no
 capabilities. Business rules live in apps/membership/services.py.
 """
 
-from datetime import date
+from datetime import date, datetime, time, timedelta
 
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
-from django.db.models import Prefetch, Q
+from django.db.models import Prefetch, Q, Sum
 from django.utils import timezone
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -200,32 +200,66 @@ class StaffAttendanceView(APIView):
         return Response(StaffAttendanceSerializer(rows, many=True).data)
 
 
+def _combined_payment_rows(*, member_id=None, limit=200, include_meta=False):
+    """Return merged desk + paid online payments sorted newest-first."""
+    rows = ManualPayment.objects.select_related("member__user", "recorded_by").order_by("-created_at", "-id")
+    if member_id is not None:
+        rows = rows.filter(member_id=int(member_id))
+    desk_qs = list(rows[:limit])
+    data = []
+    if include_meta:
+        for mp, serialized in zip(desk_qs, ManualPaymentSerializer(desk_qs, many=True).data):
+            rec_by = mp.recorded_by
+            rec_name = (rec_by.get_full_name() or rec_by.username) if rec_by else "Front desk"
+            data.append({
+                **serialized,
+                "member_code": f"M{202600 + mp.member_id}",
+                "desk": True,
+                "recorded_by": rec_name,
+            })
+    else:
+        data = list(ManualPaymentSerializer(desk_qs, many=True).data)
+
+    online = Payment.objects.filter(status=Payment.Status.PAID).select_related("subscription__member__user")
+    if member_id is not None:
+        online = online.filter(subscription__member_id=int(member_id))
+    for p in online.order_by("-created_at", "-id")[:limit]:
+        member = p.subscription.member
+        user = member.user
+        row = {
+            "id": f"online-{p.pk}",
+            "ref": f"O-{p.pk:05d}",
+            "member_id": member.pk,
+            "name": user.get_full_name() or user.username,
+            "plan": p.subscription.plan or "monthly",
+            "method": "ONLINE",
+            "amount_centavos": p.amount_centavos,
+            "paid_on": timezone.localdate(p.created_at).isoformat(),
+            "created_at": p.created_at.isoformat(),
+        }
+        if include_meta:
+            row["member_code"] = f"M{202600 + member.pk}"
+            row["desk"] = False
+            row["recorded_by"] = "PayMongo"
+        data.append(row)
+    data.sort(key=lambda r: str(r["created_at"]), reverse=True)
+    return data[:limit]
+
+
 class StaffPaymentView(APIView):
     """GET lists desk payments (optional ?member=<id>). POST records one and renews."""
 
     permission_classes = [CanManageEnrollment]
 
     def get(self, request):
-        rows = ManualPayment.objects.select_related("member__user").order_by("-created_at", "-id")
         member_id = request.query_params.get("member")
         if member_id:
             if not member_id.isdigit():
                 return Response({"detail": "member must be a number."}, status=status.HTTP_400_BAD_REQUEST)
-            rows = rows.filter(member_id=int(member_id))
-        data = list(ManualPaymentSerializer(rows[:200], many=True).data)
-        online = Payment.objects.filter(status=Payment.Status.PAID).select_related("subscription__member__user")
-        if member_id:
-            online = online.filter(subscription__member_id=int(member_id))
-        for p in online.order_by("-created_at")[:200]:
-            user = p.subscription.member.user
-            data.append({
-                "id": f"online-{p.pk}", "ref": f"O-{p.pk:05d}", "member_id": p.subscription.member_id,
-                "name": user.get_full_name() or user.username, "plan": p.subscription.plan or "monthly",
-                "method": "ONLINE", "amount_centavos": p.amount_centavos,
-                "paid_on": timezone.localdate(p.created_at).isoformat(), "created_at": p.created_at.isoformat(),
-            })
-        data.sort(key=lambda r: str(r["created_at"]), reverse=True)
-        return Response(data[:200])
+            member_id = int(member_id)
+        else:
+            member_id = None
+        return Response(_combined_payment_rows(member_id=member_id, limit=200, include_meta=False))
 
     def post(self, request):
         serializer = RecordPaymentSerializer(data=request.data)
@@ -313,5 +347,55 @@ class StaffRevenueAnalyticsView(APIView):
         offset = request.query_params.get("offset", 0)
         data = revenue_analytics(period=period, year=year, anchor_date=date_str, offset=offset)
         return Response(data)
+
+
+class StaffCashierOverviewView(APIView):
+    """GET /api/staff/cashier/overview/ — shift metrics & recent transactions for Cashier & Owner."""
+
+    permission_classes = [CanManageEnrollment]
+
+    def get(self, request):
+        today = timezone.localdate()
+        due_cutoff = today + timedelta(days=7)
+        day_start = timezone.make_aware(datetime.combine(today, time.min), timezone.get_current_timezone())
+        day_end = day_start + timedelta(days=1)
+
+        desk_today = ManualPayment.objects.filter(paid_on=today)
+        online_today = Payment.objects.filter(
+            status=Payment.Status.PAID,
+            created_at__gte=day_start,
+            created_at__lt=day_end,
+        )
+
+        by_method = {"CASH": 0, "GCASH": 0, "BANK": 0, "ONLINE": 0}
+        for row in desk_today.values("method").annotate(total=Sum("amount_centavos")):
+            by_method[row["method"]] = row["total"] or 0
+        online_total = online_today.aggregate(t=Sum("amount_centavos"))["t"] or 0
+        by_method["ONLINE"] = online_total
+
+        collected_today = sum(by_method.values())
+        payments_today_count = desk_today.count() + online_today.count()
+        checkins_today_count = Attendance.objects.filter(check_in_date=today).count()
+        renewals_due_count = MemberProfile.objects.filter(
+            expiry_date__isnull=False,
+            expiry_date__lte=due_cutoff,
+        ).count()
+
+        user = request.user
+        return Response({
+            "cashier": {
+                "id": user.pk,
+                "name": user.get_full_name() or user.username,
+                "email": user.email,
+                "role": user.role,
+            },
+            "today": today.isoformat(),
+            "collected_today_centavos": collected_today,
+            "payments_today_count": payments_today_count,
+            "by_method_centavos": by_method,
+            "checkins_today_count": checkins_today_count,
+            "renewals_due_count": renewals_due_count,
+            "recent_payments": _combined_payment_rows(limit=50, include_meta=True),
+        })
 
 

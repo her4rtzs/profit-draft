@@ -277,6 +277,9 @@ else:
     CSRF_COOKIE_SECURE = False
     SECURE_HSTS_SECONDS = 0
 
+# Allow Google OAuth popups to post credentials back to /login and /join.
+SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
+
 # The web app (plain HTML/CSS/JS) is served from web/ at the site root, so pages,
 # manifest and service worker share one origin: no CORS, cookies just work.
 WHITENOISE_ROOT = BASE_DIR / "web"

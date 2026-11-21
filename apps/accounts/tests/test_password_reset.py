@@ -121,3 +121,50 @@ class PasswordResetTests(TestCase):
             self._post("/api/auth/reset-password/", {"email": "r@example.com", "code": f" {code} ", "new_password": NEW}).status_code,
             200,
         )
+
+    def test_three_step_verify_otp_then_change_password(self):
+        code = self._request_code()
+        wrong = "000000" if code != "000000" else "111111"
+
+        # Wrong OTP and unknown email fail step 2
+        self.assertEqual(
+            self._post("/api/auth/verify-reset-otp/", {"email": "r@example.com", "code": wrong}).status_code,
+            400,
+        )
+        self.assertEqual(
+            self._post("/api/auth/verify-reset-otp/", {"email": "nobody@example.com", "code": code}).status_code,
+            400,
+        )
+
+        # Valid OTP passes step 2 without consuming early
+        ok_step2 = self._post("/api/auth/verify-reset-otp/", {"email": "r@example.com", "code": code})
+        self.assertEqual(ok_step2.status_code, 200)
+
+        # Step 3 resets password and consumes the OTP
+        ok_step3 = self._post(
+            "/api/auth/reset-password/",
+            {"email": "r@example.com", "code": code, "new_password": NEW},
+        )
+        self.assertEqual(ok_step3.status_code, 200)
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.check_password(NEW))
+
+        # Consumed OTP can no longer pass step 2 or step 3
+        self.assertEqual(
+            self._post("/api/auth/verify-reset-otp/", {"email": "r@example.com", "code": code}).status_code,
+            400,
+        )
+        self.assertEqual(
+            self._post("/api/auth/reset-password/", {"email": "r@example.com", "code": code, "new_password": "Third-pass-789!"}).status_code,
+            400,
+        )
+
+    def test_reset_email_includes_transactional_headers_and_html(self):
+        mail.outbox.clear()
+        resp = self._post("/api/auth/forgot-password/", {"email": "r@example.com"})
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(len(mail.outbox), 1)
+        sent = mail.outbox[0]
+        self.assertEqual(sent.extra_headers.get("Auto-Submitted"), "auto-generated")
+        self.assertEqual(sent.extra_headers.get("X-Auto-Response-Suppress"), "All")
+        self.assertTrue(any(mt == "text/html" and "<!doctype html>" in body for body, mt in sent.alternatives))

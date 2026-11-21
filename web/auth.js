@@ -1,23 +1,28 @@
 /* UI route guard. Demo mode is clearly marked and never represents a server-authenticated session. */
 (() => {
   const cfg = window.PROFIT_CONFIG || {};
-  const file = location.pathname.split("/").pop() || "/index";
+  const rawSlug = (location.pathname.split("/").pop() || "index").replace(/\.html$/i, "");
+  const file = `/${rawSlug.toLowerCase()}`;
   const path = location.pathname.toLowerCase();
   const isTrainerSection = path.includes("/trainer/") || file === "/trainer-portal";
   const isStaffSection = path.includes("/staff/");
-  const adminPages = new Set([
+  const ownerOnlyPages = new Set([
     "/index",
-    "/members",
-    "/attendance",
-    "/payments",
     "/reports",
-    "/settings",
-    "/profile",
     "/subscriptions",
     "/transactions",
     "/trainers",
     "/announcements"
   ]);
+  const cashierPages = new Set([
+    "/cashier",
+    "/payments",
+    "/members",
+    "/attendance",
+    "/settings",
+    "/profile"
+  ]);
+  const adminPages = new Set([...ownerOnlyPages, ...cashierPages]);
   const memberPages = new Set(["/member-home"]);
   const loginPage = file === "/login";
   const loginTarget = isTrainerSection || isStaffSection ? "/login" : "/login";
@@ -189,7 +194,16 @@
   const isTrainer = isTrainerSection;
   if (!loginPage && !isAdmin && !isMember && !isTrainer) return;
 
-  const isStaffRole = r => ["ADMIN", "OWNER", "CASHIER"].includes(String(r || "").toUpperCase());
+  const isCashierRole = r => String(r || "").toUpperCase() === "CASHIER";
+  const isOwnerRole = r => ["ADMIN", "OWNER"].includes(String(r || "").toUpperCase());
+  const isStaffRole = r => isOwnerRole(r) || isCashierRole(r);
+  const homeForRole = r => {
+    const up = String(r || "").toUpperCase();
+    if (up === "CASHIER") return "/cashier";
+    if (up === "TRAINER" || up === "COACH") return "/trainer/index";
+    if (up === "MEMBER") return "/member-home";
+    return "/index";
+  };
 
   if (!storedUser && !loginPage) {
     document.documentElement.classList.add("auth-pending");
@@ -215,29 +229,23 @@
         sessionStorage.setItem("profit-verified-session", JSON.stringify(user));
       } catch {}
       if (loginPage) {
-        location.replace(
-          isStaffRole(role) ? "/index" : role === "TRAINER" ? "/trainer/index" : "/member-home"
-        );
+        location.replace(homeForRole(role));
         return;
       }
       if (isAdmin && !isStaffRole(role)) {
-        location.replace(
-          role === "TRAINER"
-            ? isStaffSection ? "/trainer/index" : "/trainer/index"
-            : isStaffSection ? "/member-home" : "/member-home"
-        );
+        location.replace(homeForRole(role));
+        return;
+      }
+      if (isAdmin && isCashierRole(role) && ownerOnlyPages.has(file)) {
+        location.replace("/cashier");
         return;
       }
       if (isMember && role !== "MEMBER") {
-        location.replace(role === "TRAINER" ? "/trainer/index" : "/index");
+        location.replace(homeForRole(role));
         return;
       }
       if (isTrainer && role !== "TRAINER") {
-        location.replace(
-          isStaffRole(role)
-            ? isTrainerSection ? "/index" : "/index"
-            : isTrainerSection ? "/member-home" : "/member-home"
-        );
+        location.replace(homeForRole(role));
         return;
       }
       if (user.must_change_password && isTrainer && file !== "/settings") {
@@ -253,6 +261,7 @@
       document.querySelectorAll("[data-user-name]").forEach(el => {
         el.textContent = user.name || user.email || "Account";
       });
+      window.dispatchEvent(new CustomEvent("profit-auth-ready", { detail: { user, role } }));
     } catch (error) {
       if (storedUser) {
         document.documentElement.classList.remove("auth-checking", "auth-pending");

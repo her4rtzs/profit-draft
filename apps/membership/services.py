@@ -79,10 +79,13 @@ def create_member(*, name, email, password, phone="", address=""):
     from django.contrib.auth import get_user_model
     from django.contrib.auth.password_validation import validate_password
 
+    from apps.accounts.validators import validate_real_email
+
     User = get_user_model()
-    username = (email or "").strip().lower()
-    if not username:
+    raw_email = (email or "").strip()
+    if not raw_email:
         raise ValidationError("Email is required.")
+    username = validate_real_email(raw_email)
     if User.objects.filter(username=username).exists():
         raise ValidationError("An account with this email already exists.")
 

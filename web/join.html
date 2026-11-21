@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
-<script src="api.js?v=4"></script>
+<script src="api.js?v=5"></script>
 <style>
   :root{
     --gold:#e8b93a;
@@ -354,6 +354,20 @@
   .jn-legal-btn{height:44px;padding:0 18px;border-radius:999px;font:600 13.5px/1 "Plus Jakarta Sans",sans-serif;border:1px solid var(--field-line);background:var(--bg2);color:var(--tx);cursor:pointer}
   .jn-legal-btn.primary{background:var(--gold);color:var(--on);border-color:var(--gold);font-weight:700}
   .jn-legal-btn.primary:disabled{opacity:.45;cursor:not-allowed}
+  @media(max-width:768px){
+    footer.site-footer,.site-footer{display:none!important}
+    .portal-nav{height:58px;min-height:58px;padding:0 16px}
+    .portal-brand img{width:32px;height:32px}
+    .portal-brand strong{font-size:20px}
+    .jn-shell{min-height:calc(100vh - 58px);padding:20px 14px 28px;align-items:flex-start}
+    .jn-title{font-size:clamp(30px,8vw,42px);margin-bottom:10px}
+    .jn-desc{font-size:14.5px;margin-bottom:16px}
+    .jn-checks{gap:8px;margin-bottom:14px}
+    .jn-card{padding:20px 16px}
+    .jn-row{grid-template-columns:1fr}
+    .jn-input{height:46px;font-size:16px}
+    .jn-btn-gold,.jn-sso-btn{height:46px}
+  }
   @media(max-width:560px){.jn-legal-backdrop{padding:10px}.jn-legal-head,.jn-legal-tabs,.jn-legal-body,.jn-legal-foot{padding-left:14px;padding-right:14px}.jn-legal-foot{flex-direction:column;align-items:stretch}.jn-legal-acts{justify-content:flex-end}}
 </style>
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script>
@@ -614,7 +628,9 @@
     const termsOk = $("terms").checked;
 
     const eName = name.length < 2 ? "Enter your full name (at least 2 characters)." : "";
-    const eEmail = !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) ? "Enter a valid email address." : "";
+    const eEmail = window.ProFitAPI?.validateRealEmail
+      ? window.ProFitAPI.validateRealEmail(email)
+      : (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) ? "Enter a valid email address." : "");
     const ePhone = phoneDigits.length !== 10 ? "Enter a 10-digit PH mobile number (e.g. 917 123 4567)." : "";
     const ePw = pw.length < 8 ? "Password must be at least 8 characters." : "";
     const ePw2 = pw !== pw2 ? "Passwords do not match." : "";
@@ -819,7 +835,7 @@
   });
 })();
 </script>
-<script src="google-auth.js?v=2"></script>
+<script src="google-auth.js?v=3"></script>
 <script src="portal-fx.js?v=2"></script>
 <script src="site-footer.js?v=6" defer></script>
 </body>

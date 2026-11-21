@@ -7,8 +7,12 @@ database access and exposes no member, payment, or financial data.
 """
 
 from django.conf import settings
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, HttpResponseForbidden
 from django.shortcuts import render
+
+
+OWNER_ONLY_PAGES = frozenset({"reports", "trainers", "announcements"})
+CASHIER_OR_OWNER_PAGES = frozenset({"cashier", "payments", "members", "attendance", "index", "profile", "settings"})
 
 
 def _serve_web_page(relative):
@@ -20,7 +24,16 @@ def _serve_web_page(relative):
 
 
 def web_page(request, page):
-    """Serve a top-level web/ page at an extensionless URL, e.g. /members."""
+    """Serve a top-level web/ page at an extensionless URL, with RBAC checks for signed-in users."""
+    if request.user.is_authenticated:
+        role = str(getattr(request.user, "role", "")).upper()
+        is_active = bool(getattr(request.user, "is_active", False))
+        if page in OWNER_ONLY_PAGES:
+            if not is_active or role != "OWNER":
+                return HttpResponseForbidden("Owner access required.")
+        elif page in CASHIER_OR_OWNER_PAGES:
+            if not is_active or role not in ("OWNER", "CASHIER"):
+                return HttpResponseForbidden("Staff access required.")
     return _serve_web_page(page)
 
 

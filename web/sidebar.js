@@ -13,7 +13,9 @@
   mobileToggle?.addEventListener("click",()=>setDrawer(!sidebar?.classList.contains("mobile-open")));
   drawerShade.addEventListener("click",()=>setDrawer(false));
   // Mobile drawer only on small screens (<= 768px)
-  sidebar?.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{if(window.matchMedia("(max-width: 768px)").matches)setDrawer(false)}));
+  sidebar?.addEventListener("click", e => {
+    if (e.target.closest("a") && window.matchMedia("(max-width: 768px)").matches) setDrawer(false);
+  });
   window.addEventListener("resize",()=>{if(!window.matchMedia("(max-width: 768px)").matches)setDrawer(false)});
 
 
@@ -255,7 +257,10 @@
   const parts = name.trim().split(/\s+/).slice(0, 2).map(part => part[0] || '').join('').toUpperCase();
   const initials = window.ProFitProfile?.initials?.() || parts || 'PF';
   document.querySelectorAll('[data-user-initials]').forEach(el => el.textContent = initials);
-  document.querySelectorAll('[data-user-role]').forEach(el => { el.textContent = profile.role || (user?.role === 'MEMBER' ? 'Gym member' : 'Gym administrator'); });
+  document.querySelectorAll('[data-user-role]').forEach(el => {
+    const roleCode = String(user?.role || '').toUpperCase();
+    el.textContent = profile.role || (roleCode === 'MEMBER' ? 'Gym member' : roleCode === 'CASHIER' ? 'Cashier' : 'Gym administrator');
+  });
 })();
 
 // Top bar condenses once the page scrolls — Spotify's header solidifies on scroll.

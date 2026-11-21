@@ -19,11 +19,11 @@ import urllib.request
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.core.validators import validate_email
 from django.db import transaction
 from django.db.models import Q
 from django.utils import timezone
 
+from apps.accounts.validators import validate_real_email
 from apps.finance.services import PLAN_PRICE_CENTAVOS
 from apps.membership.models import MemberProfile
 from apps.membership.services import renew_member
@@ -208,10 +208,7 @@ def create_join_checkout(*, name, email, phone, plan, password, success_url, can
     phone_digits = re.sub(r"\D", "", phone_clean)
     if len(name) < 2:
         raise ValidationError("Enter your full name.")
-    try:
-        validate_email(email)
-    except ValidationError:
-        raise ValidationError("Enter a valid email address.")
+    email = validate_real_email(email)
     if len(phone_digits) < 10 or len(phone_digits) > 13:
         raise ValidationError("Enter a valid mobile number (10 to 13 digits).")
     if get_user_model().objects.filter(Q(username__iexact=email) | Q(email__iexact=email)).exists():

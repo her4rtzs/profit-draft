@@ -2461,6 +2461,91 @@ Optimize the 13-14 stylesheet links and 4-6 font families on profile, settings a
 ### Decision-log skill
 When merging overlapping stylesheet sets that differ only in page-specific sheets, keep the shared sheets in the same relative order and insert the disjoint sheets around them; the cascade stays identical for both page groups.
 
+## 2026-11-20 01:21 (Asia/Manila): Keep Google Identity Services primary and preserve callback URI
+### What I asked for
+Investigate and fix `Error 400: redirect_uri_mismatch` showing after deploying with `GOOGLE_CLIENT_SECRET` and a custom domain.
+### What the agent decided and why
+- Kept Google Identity Services (`window.google.accounts.id` ID-token popup flow) initialized as primary in `web/google-auth.js`, reserving the `/api/auth/google/login/` OAuth redirect strictly as a fallback when `gsiFailed && oauthRedirectEnabled`.
+- Updated `_google_callback_url` in `api/auth.py` to stop altering explicit paths/trailing slashes on `GOOGLE_CALLBACK_URL`, only filling in `/api/auth/google/callback/` when `GOOGLE_CALLBACK_URL` is blank, bare-domain, or points to a different host than the live request.
+- Verified with `python manage.py check` (0 errors) and `python manage.py test apps.accounts.tests.test_google_auth` (8/8 OK).
+### Decision-log skill
+Never replace a working client-side ID-token flow with a server OAuth redirect automatically just because a client secret env var exists; keep redirect-URI-sensitive flows as an explicit fallback so domain/slash differences cannot break sign-in.
+
+## 2026-11-20 02:06 (Asia/Manila): Fix stuck Google popup (gsi/transform) and enforce real Gmail validation
+### What I asked for
+Fix Google Sign-In/Sign-Up getting stuck on a blank `accounts.google.com/gsi/transform` popup and ensure only real Gmail/email addresses are accepted when signing in or creating accounts.
+### What the agent decided and why
+- Set `SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"` in `profit/settings.py` and switched `web/google-auth.js` from the hidden `gsi/transform` iframe overlay to `google.accounts.oauth2.initTokenClient` with server-side `verify_google_access_token` (`apps/accounts/google_auth.py`, `api/auth.py`). See [[2026-11-20 Google popup flow and real Gmail validation]]
+- Added shared backend and frontend real-email validation (`apps/accounts/validators.py` and `ProFitAPI.validateRealEmail` in `web/api.js`) enforcing Gmail's 6–30 char alphanumeric-dot username rules, blocking typos (`gmai.com`, `gmail.co`), placeholders (`test@gmail.com`), and disposable domains across `login.html`, `join.html`, `forgot.html`, `SignupForm`, `create_join_checkout`, `create_member`, `login_view`, and `google_auth.py`, while removing the localhost demo login fallback in `web/login.html`.
+- Added COOP, `verify_google_access_token`, and fake/typo Gmail tests in `apps/accounts/tests/test_google_auth.py` and verified `python manage.py check` (0 errors) and `python manage.py test` (237/237 OK).
+### Decision-log skill
+Django's default `Cross-Origin-Opener-Policy: same-origin` breaks `window.opener` for cross-origin Google popups on Django-served pages; pair `same-origin-allow-popups` with direct `initTokenClient` popups (and server-side tokeninfo/userinfo verification) instead of hidden cross-origin iframe overlays, and enforce email-domain rules symmetrically on client and server.
+
+
+## 2026-11-20 02:56 (Asia/Manila): Add role-scoped Cashier Portal reusing Staff Portal UI/UX
+### What I asked for
+Build a complete Cashier Portal for ProFit reusing the existing Staff Portal UI/UX, navigation shell, themes, components, and real backend APIs while enforcing Cashier-only RBAC on frontend and backend.
+### What the agent decided and why
+- Separated `Role.CASHIER` to `"CASHIER"` in `api/auth.py` `WEB_ROLE`, added `/cashier` home routing in `web/login.html` and `web/auth.js`, and fixed `auth.js` clean-URL pathname normalization; see [[2026-11-20 Cashier portal reusing staff shell and RBAC]].
+- Enforced server-side `403` guards on `web_page` in `profit/views.py` for `OWNER_ONLY_PAGES` and `CASHIER_OR_OWNER_PAGES`, scoped `web/layout.js` / `web/sidebar.js` menus for Cashiers, hid Owner-only settings cards in `web/settings.js`, and replaced Owner payment Edit/Delete actions with a read-only `Recorded` pill in `web/pages.js`.
+- Added `StaffCashierOverviewView` (`/api/staff/cashier/overview/`) reusing shared `_combined_payment_rows`, created `web/cashier.html` and `web/cashier.js` on shared `finance-ui.css` (`fn-kpi-grid--4`, skeletons, tabs, member preview, duplicate-submit guard, and printable receipts), and verified with `python manage.py check` (0 errors) and `python manage.py test` (239/239 OK).
+### Decision-log skill
+When separating a new portal role out of an existing staff shell under extensionless URLs, fix both client pathname matching and server-side view guards before adding role menus, and share queryset/serializer helpers rather than duplicating payment models or recording logic.
+
+
+## 2026-11-20 03:16 (Asia/Manila): Configure demo Cashier account for local and cold-start sign-in
+### What I asked for
+Provide a working demo Cashier account so I can sign in and open the Cashier Portal.
+### What the agent decided and why
+- Updated `apps/accounts/management/commands/seed_demo_accounts.py` so the demo Cashier account uses the requested owner-supplied test Gmail address with `role="CASHIER"`.
+- Added idempotent demo Cashier provisioning to `_ensure_pending_migrations` in `api/index.py` (using `ensure_google_user_columns` and `DEMO_PASSWORD`) so deployed PostgreSQL cold starts ensure the demo Cashier account is created/promoted to `CASHIER` automatically, while leaving local `db.sqlite3` migrations untouched for the owner to run `python manage.py migrate && python manage.py seed_demo_accounts`.
+- Verified with `python manage.py check` (0 errors) and `python manage.py test apps.accounts.tests.test_web_session` (7/7 OK).
+### Decision-log skill
+Remember that `ensure_google_user_columns()` is PostgreSQL-only for Vercel cold starts; local SQLite still requires running `python manage.py migrate` before querying or seeding `accounts_user` after adding model fields.
+
+
+## 2026-11-20 03:38 (Asia/Manila): Fix multi-account OTP delivery, reduce spam, and split Forgot Password into 3 steps
+### What I asked for
+Fix OTP sending so it works for all accounts (not just one), stop OTP emails from landing in spam, and update Forgot Password to follow 3 steps: Email -> OTP -> Change Password.
+### What the agent decided and why
+- Added `verify_password_reset_otp` (`apps/accounts/services.py`) and `POST /api/auth/verify-reset-otp/` (`api/auth.py`, `api/urls.py`), and rebuilt `web/forgot.html` into 3 steps (1. Email -> 2. Verify OTP -> 3. Change Password) with a 3-step indicator; see [[2026-11-20 Three-step password reset and anti-spam OTP mail]].
+- Upgraded `apps/accounts/emails.py` to send full transactional HTML + plain-text emails with `Reply-To`, `Auto-Submitted: auto-generated`, and `X-Auto-Response-Suppress: All`, forwarded `reply_to` and `headers` in `ResendEmailBackend`, aligned `SMTPEmailBackend` `from_email` to `EMAIL_HOST_USER` for DMARC/SPF alignment, and matched active users by `email` or `username` in password-reset lookup.
+- Added tests in `apps/accounts/tests/test_email_backend.py` and `apps/accounts/tests/test_password_reset.py` and verified `python manage.py check` (0 errors) and 32/32 targeted OTP/email/URL/PWA tests OK.
+### Decision-log skill
+Resend's sandbox sender (`onboarding@resend.dev`) only delivers to the single Resend account owner; always pair verified custom-domain DNS (SPF/DKIM/DMARC) or an authenticated SMTP fallback whose `From:` matches `EMAIL_HOST_USER` with proper transactional email headers to reach every user's primary inbox.
+
+
+## 2026-11-21 15:26 (Asia/Manila): Remove placeholder Apple Sign-In button from login page
+### What I asked for
+Remove the placeholder Apple Sign-In button from the login page because Sign in with Apple requires a paid Apple Developer account.
+### What the agent decided and why
+- Removed `#appleSignInBtn` and its click handler from `web/login.html`, switched `.lg-sso` to a single full-width column (`grid-template-columns: 1fr`), and labeled the remaining SSO button "Continue with Google".
+- Verified with `python manage.py check` and targeted `test_clean_urls`, `test_installable`, and `test_google_auth` tests.
+### Decision-log skill
+Keep the login page free of placeholder buttons for paid OAuth providers (like Apple Sign-In's paid Developer Program) on a free-tier project; a single full-width Google button looks cleaner and avoids dead UI paths.
+
+
+## 2026-11-21 15:41 (Asia/Manila): Mobile auth layout matching reference sheet while preserving ProFit palette
+### What I asked for
+Apply the mobile auth layout from the reference UI kit (compact curved branded top header with app icon + overlapping floating card + 6-box OTP + password-changed confirmation card) while preserving ProFit's colors and desktop layout.
+### What the agent decided and why
+- Added a mobile-only (`<= 768px`) curved branded header (`.mob-auth-head` with `.mob-auth-badge` logo) and overlapping elevated rounded form card (`margin-top: -44px`, `border-radius: 20px`) to `web/login.html`, `web/forgot.html`, and `web/join.html` while keeping desktop (`> 768px`) and ProFit's dark obsidian/gold (`--bg`, `--card`, `--gold`, `--tx`) + light-mode tokens untouched.
+- Upgraded `web/forgot.html` Step 2 to a 6-box segmented OTP input (`.fp-otp-boxes` with auto-advance, backspace, and paste support synced to `#fpCode`) and Step 4 to a centered checkmark confirmation card (`#fpDoneBox`) with a full-width "Back to Sign In" button.
+- Verified with `python manage.py check` and `python manage.py test profit.tests.test_clean_urls profit.tests.test_installable`.
+### Decision-log skill
+Keep mobile auth pages clean by hiding tall desktop marketing copy under `768px` in favor of a compact curved brand header and an overlapping card with `16px` inputs so iOS Safari never auto-zooms.
+
+
+## 2026-11-21 15:54 (Asia/Manila): Keep full-bleed auth layout, hide mobile auth footer, and fix mobile landing page
+### What I asked for
+Keep the previous full-bleed Sign In / Sign Up / Forgot Password layout (retaining the 3-step / 6-box OTP flow), remove the footer on mobile for auth pages, fix the landing page in mobile view, and verify multi-device compatibility.
+### What the agent decided and why
+- Removed `.mob-auth-head` from `web/login.html`, `web/join.html`, and `web/forgot.html` to restore the original full-bleed hero layout while keeping the 3-step Forgot Password flow (Email -> 6-box OTP -> New Password -> Password Changed card) and `16px` mobile inputs.
+- Hid `footer.site-footer` at `<= 768px` on `body.auth-page` in `web/site-footer.css` and inline in `login.html`, `join.html`, and `forgot.html`.
+- Fixed mobile responsiveness in `web/welcome.html`: added `<a class="m-only" href="/login">Sign in</a>` to the mobile dropdown menu, tightened header/hero/ticker/card spacing for `360px–768px`, added scroll-snap to `#programs`, increased vertical spacing on stacked `.plans` cards so badges never collide, and made `.cta-band .btn` full-width on narrow phones.
+- Verified with `python manage.py check` (0 errors) and `python manage.py test profit.tests.test_clean_urls profit.tests.test_installable` (15/15 OK). Automated browser DevTools verification was unavailable in this session; local server left running at `http://127.0.0.1:8000` for manual device-emulation review.
+### Decision-log skill
+When hiding header buttons (like `Sign in`) on narrow mobile viewports, always add a matching `.m-only` link inside the mobile navigation drawer so phone users never lose access to the route.
 ## 2026-11-21 16:10 (Asia/Manila): Payment redesign docs: free trial and GCash claims
 ### What I asked for
 Replace PayMongo with cash and GCash, make sign-up free with a 7-day trial, and make GCash payments staff-reviewed claims. Docs only; no code.
