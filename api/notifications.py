@@ -14,6 +14,8 @@ from apps.notifications.services import (
     unread_count,
 )
 
+from .permissions import MemberAccess
+
 
 class NotificationSerializer(serializers.ModelSerializer):
     time = serializers.DateTimeField(source="created_at", read_only=True)
@@ -66,7 +68,7 @@ def build_notification_payload(user, *, limit=30, kind="", unread_only=False):
 class NotificationListView(APIView):
     """GET /api/notifications/?limit=30 -> {"unread": n, "total": t, "stats": {...}, "items": [...]}"""
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, MemberAccess]
 
     def get(self, request):
         try:
@@ -88,7 +90,7 @@ class NotificationListView(APIView):
 class NotificationReadView(APIView):
     """POST /api/notifications/<id>/read/"""
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, MemberAccess]
 
     def post(self, request, pk):
         try:
@@ -106,7 +108,7 @@ class NotificationReadView(APIView):
 class NotificationReadAllView(APIView):
     """POST /api/notifications/read-all/"""
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, MemberAccess]
 
     def post(self, request):
         mark_all_read(request.user)
@@ -116,7 +118,7 @@ class NotificationReadAllView(APIView):
 class NotificationDeleteView(APIView):
     """DELETE /api/notifications/<id>/"""
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, MemberAccess]
 
     def delete(self, request, pk):
         try:
@@ -129,7 +131,7 @@ class NotificationDeleteView(APIView):
 class NotificationClearView(APIView):
     """POST /api/notifications/clear/"""
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, MemberAccess]
 
     def post(self, request):
         read_only = bool(request.data.get("read_only", False))

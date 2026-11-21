@@ -38,6 +38,8 @@ class CheckoutFlowTests(TestCase):
         self.client = Client(enforce_csrf_checks=True)
         user = User.objects.create_user(username="m@example.com", email="m@example.com", password="Pass-word-123!")
         self.profile = MemberProfile.objects.get_or_create(user=user)[0]
+        self.profile.membership_status = MemberProfile.MembershipStatus.ACTIVE
+        self.profile.save(update_fields=["membership_status"])
 
     def _token(self):
         return self.client.get("/api/auth/csrf/").cookies["csrftoken"].value

@@ -24,7 +24,7 @@ class SessionAuthFlowTests(TestCase):
         # browser/mobile client: the CSRF token must be supplied on POST.
         self.client = Client(enforce_csrf_checks=True)
         self.user = User.objects.create_user(username="member1", password="pw-secret")
-        MemberProfile.objects.create(user=self.user)
+        MemberProfile.objects.create(user=self.user, membership_status="ACTIVE")
 
     def _csrf_token(self):
         resp = self.client.get("/api/auth/csrf/")

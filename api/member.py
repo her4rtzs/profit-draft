@@ -8,13 +8,14 @@ from datetime import timedelta
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.exceptions import NotFound
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.billing.models import Payment, Subscription
 from apps.membership.models import Attendance, Enrollment, MemberProfile
 from apps.membership.services import PLAN_DAYS
+
+from .permissions import MemberAccess, TrialAllowedMemberAccess
 
 
 PHOTO_PREFIX = "data:image/jpeg;base64,"
@@ -35,7 +36,7 @@ def _clean_photo(value):
 
 
 class MemberMeView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [TrialAllowedMemberAccess]
 
     def patch(self, request):
         """Members may update their own photo, phone and address."""
@@ -176,7 +177,7 @@ class MemberMeView(APIView):
 
 class MemberCheckoutView(APIView):
     """POST /api/member/checkout/ {plan}: start an online payment for the caller."""
-    permission_classes = [IsAuthenticated]
+    permission_classes = [MemberAccess]
 
     def post(self, request):
         from django.conf import settings
@@ -205,7 +206,7 @@ class MemberCheckoutView(APIView):
 
 class MemberCheckInView(APIView):
     """POST /api/member/check-in/: self check-in for the authenticated member."""
-    permission_classes = [IsAuthenticated]
+    permission_classes = [MemberAccess]
 
     def post(self, request):
         from django.core.exceptions import ValidationError as DjangoValidationError

@@ -143,6 +143,19 @@ def renew_member(member, plan, created_by, start_date=None):
 
 TRIAL_DAYS = 7
 
+TRIAL_ENDED_MESSAGE = (
+    "Your free trial has ended and you have no active membership. "
+    "Pay at the desk or submit a GCash payment to activate your membership."
+)
+NO_MEMBERSHIP_MESSAGE = (
+    "You have no active membership. "
+    "Pay at the desk or submit a GCash payment to activate your membership."
+)
+TRIAL_PROFILE_ONLY_MESSAGE = (
+    "Your free trial gives access to your profile only. "
+    "Pay at the desk or submit a GCash payment to activate your membership."
+)
+
 
 def start_trial(member, *, now=None):
     """Put ``member`` in TRIAL for 7 days; the end is computed here, never passed in."""
@@ -161,6 +174,20 @@ def trial_is_active(member, *, today=None):
         and member.trial_ends_at is not None
         and today <= timezone.localdate(member.trial_ends_at)
     )
+
+
+def member_access(member, *, today=None):
+    """Return ACTIVE, TRIAL or LOCKED for this request; expiry is computed now.
+
+    No status is written here and no scheduled job is involved: an expired trial
+    simply stops counting the moment the request is made.
+    """
+    today = today or timezone.localdate()
+    if member.is_active_on(today):
+        return "ACTIVE"
+    if trial_is_active(member, today=today):
+        return "TRIAL"
+    return "LOCKED"
 
 
 def register_trial_member(*, name, email, password, phone=""):

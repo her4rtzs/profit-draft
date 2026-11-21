@@ -77,3 +77,4 @@ One note per decision, oldest first; entries with an `Unknown` date are listed l
 - [[2026-11-21 GCash claims reviewed by staff]]: GCash payments are claims with a reference and a Drive screenshot link, approved by Owner or Cashier; only approval enrolls, in one transaction.
 - [[2026-11-21 Trial status with a server-set end date]]: Add a `TRIAL` member status and nullable `trial_ends_at`, set by one service to now + 7 days and judged by Asia/Manila local dates.
 - [[2026-11-21 Sign-up creates a trial member without a checkout]]: Join sign-up creates a `trial` Member through one service, returns a login URL, and stops calling the PayMongo checkout.
+- [[2026-11-21 Server-side trial and membership access]]: Trial members reach only their own profile; expired trials get a clear 403 and no member features, computed per request with no cron job.

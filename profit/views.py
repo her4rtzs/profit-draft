@@ -10,6 +10,13 @@ from django.conf import settings
 from django.http import Http404, HttpResponse, HttpResponseForbidden
 from django.shortcuts import render
 
+from apps.membership.models import MemberProfile
+from apps.membership.services import (
+    NO_MEMBERSHIP_MESSAGE,
+    TRIAL_ENDED_MESSAGE,
+    TRIAL_PROFILE_ONLY_MESSAGE,
+    member_access,
+)
 
 OWNER_ONLY_PAGES = frozenset({"reports", "trainers", "announcements"})
 CASHIER_OR_OWNER_PAGES = frozenset({"cashier", "payments", "members", "attendance", "index", "profile", "settings"})
@@ -28,6 +35,18 @@ def web_page(request, page):
     if request.user.is_authenticated:
         role = str(getattr(request.user, "role", "")).upper()
         is_active = bool(getattr(request.user, "is_active", False))
+        if role == "MEMBER":
+            profile = MemberProfile.objects.filter(user=request.user).first()
+            state = member_access(profile) if profile is not None else "LOCKED"
+            if state == "LOCKED":
+                has_trial = profile is not None and profile.trial_ends_at is not None
+                return HttpResponseForbidden(
+                    TRIAL_ENDED_MESSAGE if has_trial else NO_MEMBERSHIP_MESSAGE
+                )
+            if state == "TRIAL":
+                if page in ("member-home", "profile"):
+                    return _serve_web_page(page)
+                return HttpResponseForbidden(TRIAL_PROFILE_ONLY_MESSAGE)
         if page in OWNER_ONLY_PAGES:
             if not is_active or role != "OWNER":
                 return HttpResponseForbidden("Owner access required.")

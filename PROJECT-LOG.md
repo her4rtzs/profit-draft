@@ -2579,3 +2579,15 @@ Change self sign-up so it creates a Member in `trial` with `trial_ends_at` set b
 - Checked off the Phase 4.6 free-trial item. Full suite: 249 tests pass. Migration `0005` is still not applied.
 ### Decision-log skill
 When a public form stops using a paid checkout, keep the retired gateway code but put the replacement behind one service, so the view cannot accept `role`, `amount`, or an end date.
+
+## 2026-11-21 17:16 (Asia/Manila): Server-side trial and membership access
+### What I asked for
+Enforce the trial on the server: an active trial may log in and see only its own profile, an expired trial with no active membership sees a clear message and gets no features, check every Django view and DRF endpoint involved, change no data, and compute expiry per request instead of adding a pg_cron job.
+### What the agent decided and why
+- Added one `member_access` helper that computes ACTIVE, TRIAL or LOCKED from the Manila date on every request; no status write, no deactivation, no cron. See [[2026-11-21 Server-side trial and membership access]]
+- Added two DRF permissions and applied them to the member profile, attendance, check-in, checkout, trainer, announcement and notification endpoints; staff and trainers are unaffected.
+- Applied the same rule to static member pages in `profit.views.web_page`; a locked member gets a plain 403 message and a trial member can open only the profile pages.
+- Kept profile-less users on their old 404/empty-list behaviour, and updated existing tests whose PENDING or expired fixtures no longer represent an active member.
+- Full suite: 257 tests pass. `api` suite: 15 tests pass.
+### Decision-log skill
+Gate at the server boundary with one pure state helper and one permission class; menus are a hint, and request-time evaluation avoids a scheduler that free-tier hosting may not run.

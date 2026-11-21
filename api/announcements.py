@@ -14,6 +14,8 @@ from apps.announcements import services
 from apps.announcements.models import Announcement
 from apps.membership.models import MemberProfile
 
+from .permissions import MemberAccess
+
 
 def _effective_staff_user(request):
     """Return the signed-in user, or in local DEBUG mode fall back to the local OWNER account
@@ -267,7 +269,7 @@ def _item_with_meta(note):
 class MemberAnnouncementListView(APIView):
     """GET /api/announcements/ -> published notices visible to the signed-in member or trainer."""
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, MemberAccess]
 
     def get(self, request):
         rows = services.visible_to(request.user)
