@@ -1,10 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Welcome Setup Â· ProFit</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Welcome Setup &middot; ProFit</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@600;700;800;900&family=Inter:wght@500;600;700&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <script src="config.js?v=4"></script><script src="api.js"></script><script src="auth.js?v=4"></script>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -15,127 +16,225 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <style>
   :root{
-    --bg:#0a0e16;
-    --card:#121722;
-    --card-2:#171d2b;
-    --border:rgba(255,255,255,.1);
-    --text:#f5f6fa;
-    --muted:#9aa4b8;
-    --accent:#f5b942;
-    --accent-ink:#0b0f17;
-    --danger:#fca5a5;
-    --ok:#4ade80;
+    color-scheme:dark;
+    --bg:#0a0e17;
+    --card:#111827;
+    --hover:#1b2433;
+    --line:#263246;
+    --text:#f3f4f6;
+    --mut:#a5b1c2;
+    --faint:#758399;
+    --gold:#e8b93a;
+    --gold-d:#b8891c;
+    --ink:#1a1407;
+    --ok:#3ddc84;
+    --danger:#ff7b8a;
+    --head:"Figtree","Plus Jakarta Sans","Inter",system-ui,sans-serif;
   }
-  *{box-sizing:border-box}
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-padding-top:env(safe-area-inset-top,0px)}
   body{
     margin:0;min-height:100dvh;background:var(--bg);color:var(--text);
-    font-family:Inter,system-ui,-apple-system,sans-serif;
-    display:flex;flex-direction:column;align-items:center;padding:20px 16px 40px;
+    font-family:"Inter","Segoe UI",system-ui,sans-serif;font-weight:600;
+    padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
   }
-  .ob-shell{width:min(540px,100%);display:flex;flex-direction:column;gap:18px}
-  .ob-top{display:flex;align-items:center;gap:12px}
+  h1,.ob-btn,.ob-bubble,.ob-chip,.ob-tile,.ob-edit,.ob-tag,.ob-back,.ob-brand,.ob-role-pill,.ob-steps li{font-family:var(--head)}
+  .ob-layout{min-height:100dvh;display:flex}
+  .ob-side{
+    width:310px;flex:none;border-right:2px solid var(--line);background:var(--card);
+    padding:30px 24px;display:flex;flex-direction:column;gap:16px;
+    position:sticky;top:0;height:100dvh;overflow-y:auto;
+  }
+  .ob-brand{font:900 25px/1 var(--head);display:flex;align-items:center;gap:10px;color:var(--text);text-decoration:none}
+  .ob-brand img{width:34px;height:34px;border-radius:10px;object-fit:cover;border:1px solid var(--line)}
+  .ob-role-pill{
+    align-self:flex-start;background:rgba(232,185,58,.16);color:var(--gold);
+    border-radius:999px;padding:6px 12px;font:800 13px/1 var(--head);
+  }
+  .ob-side p{margin:0;color:var(--mut);font-size:14px;line-height:1.5}
+  .ob-steps{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+  .ob-steps li{
+    display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:12px;
+    color:var(--faint);font:800 14.5px/1.2 var(--head);
+  }
+  .ob-steps li b{
+    width:26px;height:26px;border-radius:50%;border:2px solid var(--line);
+    display:grid;place-items:center;font-size:12px;flex:none;
+  }
+  .ob-steps li.is-on{color:var(--text);background:var(--hover)}
+  .ob-steps li.is-on b{border-color:var(--gold);color:var(--gold)}
+  .ob-steps li.is-done{color:var(--mut)}
+  .ob-steps li.is-done b{background:var(--gold);border-color:var(--gold);color:var(--ink)}
+
+  .ob-pane{flex:1;min-width:0;display:flex;flex-direction:column;padding:24px 28px 0}
+  .ob-inner{width:100%;max-width:540px;margin:0 auto;min-height:calc(100dvh - 24px);display:flex;flex-direction:column}
+  .ob-top{display:flex;align-items:center;gap:14px;height:42px}
   .ob-back{
-    width:40px;height:40px;border-radius:10px;border:1px solid var(--border);
-    background:var(--card);color:var(--text);display:inline-grid;place-items:center;
-    cursor:pointer;flex-shrink:0;
+    background:none;border:0;color:var(--mut);width:38px;height:38px;border-radius:12px;
+    font-size:22px;cursor:pointer;display:grid;place-items:center;flex:none;
   }
-  .ob-back[hidden]{visibility:hidden;display:inline-grid}
-  .ob-prog-wrap{flex:1;display:flex;flex-direction:column;gap:6px}
-  .ob-prog-track{height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
-  .ob-prog-fill{height:100%;width:12.5%;background:var(--accent);border-radius:999px;transition:width .25s ease}
-  .ob-step-meta{display:flex;justify-content:space-between;font-size:.76rem;color:var(--muted);font-weight:600}
-  .ob-card{
-    background:var(--card);border:1px solid var(--border);border-radius:16px;
-    padding:24px 22px;display:flex;flex-direction:column;gap:18px;
+  .ob-back:hover{background:var(--hover);color:var(--text)}
+  .ob-back[hidden]{visibility:hidden;display:grid}
+  .ob-bar{flex:1;height:16px;border-radius:999px;background:var(--hover);overflow:hidden}
+  .ob-fill{
+    height:100%;width:12%;border-radius:999px;background:var(--gold);position:relative;
+    transition:width .25s ease;
   }
-  .ob-head h1{margin:0 0 6px;font:800 1.45rem/1.2 "Plus Jakarta Sans",Inter,sans-serif}
-  .ob-head p{margin:0;color:var(--muted);font-size:.92rem;line-height:1.55}
-  .ob-trial-banner{
-    display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-radius:12px;
-    background:rgba(245,185,66,.09);border:1px solid rgba(245,185,66,.28);
+  .ob-fill::after{
+    content:"";position:absolute;left:10px;right:10px;top:4px;height:4px;
+    border-radius:9px;background:rgba(255,255,255,.38);
   }
-  .ob-trial-banner i{color:var(--accent);margin-top:2px}
-  .ob-trial-banner strong{display:block;font-size:.9rem;margin-bottom:2px}
-  .ob-trial-banner span{font-size:.83rem;color:var(--muted);line-height:1.45}
-  .ob-avatar-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-  .ob-ava-btn{
-    display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 10px;
-    border-radius:14px;border:1px solid var(--border);background:var(--card-2);
-    color:var(--text);cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:600;
-    transition:border-color .15s ease,background .15s ease;
+  .ob-mascot{display:flex;align-items:center;gap:14px;margin:20px 0 18px}
+  .ob-mascot svg{flex:none;width:82px;height:auto}
+  .ob-bubble{
+    position:relative;border:2px solid var(--line);border-radius:18px;
+    padding:13px 16px;font-size:17.5px;line-height:1.32;font-weight:800;background:var(--bg);
   }
-  .ob-ava-btn img{width:64px;height:64px;border-radius:50%;display:block;border:1px solid rgba(255,255,255,.12)}
-  .ob-ava-btn.is-selected{border-color:var(--accent);background:rgba(245,185,66,.12)}
-  .ob-field{display:flex;flex-direction:column;gap:6px}
-  .ob-field label{font-size:.84rem;font-weight:600;color:var(--text)}
-  .ob-field input,.ob-field textarea{
-    width:100%;min-height:44px;padding:10px 12px;border-radius:10px;
-    border:1px solid var(--border);background:rgba(0,0,0,.22);color:var(--text);
-    font:500 .93rem/1.4 Inter,sans-serif;
+  .ob-bubble::before{
+    content:"";position:absolute;left:-9px;top:50%;width:14px;height:14px;
+    background:var(--bg);border-left:2px solid var(--line);border-bottom:2px solid var(--line);
+    transform:translateY(-50%) rotate(45deg);
   }
-  .ob-field textarea{min-height:84px;resize:vertical}
-  .ob-field input.is-invalid,.ob-field textarea.is-invalid{border-color:#f87171}
-  .ob-field-hint{font-size:.78rem;color:var(--muted)}
-  .ob-field-err{font-size:.8rem;color:var(--danger);min-height:16px}
-  .ob-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-  .ob-chips{display:flex;flex-wrap:wrap;gap:8px}
+  .ob-main{flex:1;padding-bottom:12px}
+  .ob-main h1{font-size:25px;margin:0 0 6px;font-weight:900;line-height:1.2}
+  .ob-sub{color:var(--mut);margin:0 0 16px;font-size:15px;line-height:1.45}
+  .ob-grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .ob-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .ob-tile{
+    background:var(--card);border:2px solid var(--line);box-shadow:0 4px 0 var(--line);
+    border-radius:18px;padding:13px 10px;color:var(--text);font-weight:800;font-size:15px;
+    cursor:pointer;text-align:center;transition:transform .08s,box-shadow .08s,border-color .15s;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  }
+  .ob-tile:active{transform:translateY(3px);box-shadow:0 1px 0 var(--line)}
+  .ob-tile.is-sel{border-color:var(--gold);background:rgba(232,185,58,.15);box-shadow:0 4px 0 var(--gold-d)}
+  .ob-tile .ob-ico{font-size:24px;color:var(--gold)}
+  .ob-tile.ob-av{padding:14px 8px 11px}
+  .ob-tile.ob-av img{width:84px;height:84px;border-radius:50%;display:block;border:2px solid rgba(255,255,255,.12)}
+  .ob-lbl{font-size:14px;color:var(--mut);margin:18px 0 10px;font-weight:800}
+  .ob-row{display:flex;flex-wrap:wrap;gap:10px}
   .ob-chip{
-    min-height:38px;padding:0 14px;border-radius:999px;border:1px solid var(--border);
-    background:var(--card-2);color:var(--text);font:600 .84rem/1 Inter,sans-serif;
-    cursor:pointer;
+    border:2px solid var(--line);box-shadow:0 3px 0 var(--line);background:var(--card);
+    color:var(--text);border-radius:999px;padding:10px 16px;font-weight:800;font-size:15px;cursor:pointer;
   }
-  .ob-chip.is-on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-  .ob-staff-note{
-    display:inline-flex;align-items:center;gap:6px;font-size:.78rem;color:var(--accent);
-    font-weight:600;
+  .ob-chip.is-sel{border-color:var(--gold);background:var(--gold);color:var(--ink);box-shadow:0 3px 0 var(--gold-d)}
+  .ob-field{margin-bottom:14px}
+  .ob-field label{display:block;font-size:14px;color:var(--mut);margin-bottom:6px;font-weight:800}
+  .ob-field input,.ob-field textarea{
+    width:100%;background:var(--card);border:2px solid var(--line);border-radius:16px;
+    padding:14px 16px;color:var(--text);font:600 16px/1.4 "Inter",system-ui,sans-serif;outline:none;
   }
-  .ob-review-list{display:flex;flex-direction:column;gap:12px}
-  .ob-review-item{
-    padding:14px 16px;border-radius:12px;background:var(--card-2);border:1px solid var(--border);
-    display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+  .ob-field input:focus,.ob-field textarea:focus{border-color:var(--gold)}
+  .ob-field input.is-invalid,.ob-field textarea.is-invalid{border-color:var(--danger)}
+  .ob-field textarea{resize:vertical;min-height:92px}
+  .ob-hint{font-size:13px;color:var(--gold);margin:0 0 8px;display:inline-flex;align-items:center;gap:6px}
+  .ob-err{font-size:13px;color:var(--danger);min-height:18px;margin-top:5px;display:block}
+  .ob-trial{
+    background:var(--card);border:2px dashed var(--gold);border-radius:18px;
+    padding:16px 18px;text-align:left;line-height:1.55;font-size:15px;color:var(--mut);
   }
-  .ob-review-item h3{margin:0 0 4px;font-size:.86rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
-  .ob-review-item p{margin:0;font-size:.9rem;line-height:1.5}
-  .ob-edit-btn{
-    padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:transparent;
-    color:var(--accent);font:600 .8rem/1 Inter,sans-serif;cursor:pointer;flex-shrink:0;
+  .ob-trial b{color:var(--text)}
+  .ob-rev{
+    display:flex;align-items:center;gap:14px;background:var(--card);
+    border:2px solid var(--line);border-radius:18px;padding:13px 14px;margin-bottom:11px;
   }
-  .ob-done{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;padding:12px 0}
-  .ob-done img{width:84px;height:84px;border-radius:50%;border:1px solid var(--border)}
-  .ob-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:4px}
+  .ob-rev-ic{
+    flex:none;width:46px;height:46px;border-radius:50%;background:var(--hover);
+    display:grid;place-items:center;font-size:18px;color:var(--gold);overflow:hidden;
+  }
+  .ob-rev-ic img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
+  .ob-rev-copy{flex:1;min-width:0}
+  .ob-rev-copy small{color:var(--mut);font-weight:800;display:block;margin-bottom:2px;font-size:12.5px}
+  .ob-rev-copy b{font-weight:800;font-size:15px;line-height:1.35;display:block;overflow-wrap:anywhere}
+  .ob-edit{
+    background:none;border:2px solid var(--line);color:var(--gold);border-radius:12px;
+    padding:7px 13px;font-weight:800;cursor:pointer;flex:none;
+  }
+  .ob-edit:hover{border-color:var(--gold)}
+  .ob-big{text-align:center;padding:8px 0}
+  .ob-big img{width:112px;height:112px;border-radius:50%;border:2px solid var(--line);display:block;margin:0 auto}
+  .ob-tag{
+    display:inline-flex;align-items:center;gap:6px;background:rgba(61,220,132,.16);
+    color:var(--ok);padding:8px 14px;border-radius:999px;font-weight:900;margin:10px 0 16px;font-size:14px;
+  }
+  .ob-foot{
+    display:flex;gap:12px;position:sticky;bottom:0;
+    padding:16px 0 22px;background:linear-gradient(transparent,var(--bg) 28%);
+  }
   .ob-btn{
-    min-height:44px;padding:0 20px;border-radius:10px;border:1px solid transparent;
-    font:700 .92rem/1 Inter,sans-serif;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;
-    text-decoration:none;
+    flex:1;border:0;border-radius:18px;padding:16px;font-weight:900;font-size:15.5px;
+    letter-spacing:.05em;text-transform:uppercase;cursor:pointer;text-decoration:none;
+    background:var(--gold);color:var(--ink);box-shadow:0 5px 0 var(--gold-d);
+    transition:transform .08s,box-shadow .08s;display:inline-flex;align-items:center;justify-content:center;gap:8px;
   }
-  .ob-btn-primary{background:var(--accent);color:var(--accent-ink);flex:1}
-  .ob-btn-ghost{background:transparent;border-color:var(--border);color:var(--muted)}
-  .ob-btn:disabled{opacity:.55;cursor:not-allowed}
-  .ob-global-err{margin:0;font-size:.85rem;color:var(--danger);min-height:18px}
-  @media (max-width:480px){.ob-avatar-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ob-row{grid-template-columns:1fr}}
+  .ob-btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--gold-d)}
+  .ob-btn.is-ghost{
+    flex:0 0 auto;padding:16px 22px;background:transparent;color:var(--mut);
+    border:2px solid var(--line);box-shadow:0 4px 0 var(--line);
+  }
+  .ob-btn:disabled{background:var(--hover);color:var(--faint);box-shadow:0 5px 0 var(--line);cursor:not-allowed}
+  .ob-global-err{color:var(--danger);font-size:14px;margin:0 0 8px;min-height:18px}
+  .ob-pop{animation:obPop .4s cubic-bezier(.3,1.5,.5,1)}
+  @keyframes obPop{from{transform:scale(.82);opacity:0}to{transform:none;opacity:1}}
+  @media (max-width:860px){
+    .ob-side{display:none}
+    .ob-pane{padding:14px 16px 0}
+    .ob-inner{min-height:calc(100dvh - 14px)}
+  }
+  @media (max-width:520px){
+    .ob-grid3.ob-av-grid{grid-template-columns:repeat(2,1fr)}
+    .ob-mascot svg{width:68px}
+    .ob-bubble{font-size:16px}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<main class="ob-shell" id="main">
-  <div class="ob-top">
-    <button type="button" class="ob-back" id="obBackBtn" aria-label="Previous step" hidden>
-      <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
-    </button>
-    <div class="ob-prog-wrap">
-      <div class="ob-prog-track" role="progressbar" aria-valuemin="1" aria-valuemax="8" aria-valuenow="1" id="obProgBar">
-        <div class="ob-prog-fill" id="obProgFill"></div>
+<div class="ob-layout">
+  <aside class="ob-side" aria-label="Onboarding steps">
+    <a class="ob-brand" href="/onboarding">
+      <img src="logo.jpg" alt="ProFit" id="obBrandLogo">
+      <span>ProFit</span>
+    </a>
+    <span class="ob-role-pill">New member</span>
+    <p>Your gym. One platform. Let's set up your member profile in a few quick steps.</p>
+    <ol class="ob-steps" id="obStepList"></ol>
+  </aside>
+
+  <div class="ob-pane" id="obPane">
+    <div class="ob-inner">
+      <div class="ob-top">
+        <button type="button" class="ob-back" id="obBackBtn" aria-label="Back" hidden>&larr;</button>
+        <div class="ob-bar" role="progressbar" aria-valuemin="1" aria-valuemax="8" aria-valuenow="1" id="obProgBar">
+          <div class="ob-fill" id="obProgFill"></div>
+        </div>
       </div>
-      <div class="ob-step-meta">
-        <span id="obStepLabel">Welcome</span>
-        <span id="obStepCount">Step 1 of 8</span>
+
+      <div class="ob-mascot" id="obMascotRow">
+        <svg viewBox="0 0 120 130" aria-hidden="true">
+          <ellipse cx="60" cy="122" rx="38" ry="6" fill="#151b24"/>
+          <path d="M38 40q0-30 22-30t22 30" fill="none" stroke="#b8891c" stroke-width="10" stroke-linecap="round"/>
+          <circle cx="60" cy="78" r="42" fill="#e8b93a"/>
+          <path d="M30 56q30-14 60 0" stroke="#3ddc84" stroke-width="9" fill="none" stroke-linecap="round"/>
+          <ellipse cx="45" cy="76" rx="11" ry="13" fill="#fff"/>
+          <ellipse cx="75" cy="76" rx="11" ry="13" fill="#fff"/>
+          <circle cx="47" cy="78" r="6" fill="#1a1407"/>
+          <circle cx="77" cy="78" r="6" fill="#1a1407"/>
+          <circle cx="49" cy="75" r="2" fill="#fff"/>
+          <circle cx="79" cy="75" r="2" fill="#fff"/>
+          <path d="M50 98q10 8 20 0" stroke="#1a1407" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <path d="M20 70q-14 8-8 22" stroke="#b8891c" stroke-width="8" fill="none" stroke-linecap="round"/>
+        </svg>
+        <div class="ob-bubble" id="obBubble">Hi, I'm Kettle! Let's set up your profile.</div>
       </div>
+
+      <main class="ob-main" id="obMain" aria-live="polite"></main>
+      <p class="ob-global-err" id="obGlobalErr" role="alert"></p>
+      <div class="ob-foot" id="obFoot"></div>
     </div>
   </div>
+</div>
 
-  <section class="ob-card" id="obCard" aria-live="polite"></section>
-  <p class="ob-global-err" id="obGlobalErr" role="alert"></p>
-</main>
-
-<script src="onboarding.js?v=1" defer></script>
+<script src="onboarding.js?v=2" defer></script>
 </body>
 </html>

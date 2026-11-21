@@ -231,6 +231,7 @@
         throw new Error("No active session.");
       }
       try {
+        sessionStorage.removeItem("profit-logged-out");
         sessionStorage.setItem("profit-verified-session", JSON.stringify(user));
       } catch {}
       if (loginPage) {
