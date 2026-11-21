@@ -646,7 +646,7 @@
     btn.disabled = true; btn.textContent = "Creating your account...";
     try {
       const r = await window.ProFitAPI.post("/join/checkout", body);
-      location.href = r.login_url || "/login";
+      location.href = r.next_url || "/onboarding";
     } catch (ex) {
       err.textContent = ex.message || "Could not create your account.";
       updateFormState(false);

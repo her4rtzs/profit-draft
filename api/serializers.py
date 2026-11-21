@@ -38,6 +38,7 @@ class StaffMemberSerializer(serializers.ModelSerializer):
 
     name = serializers.SerializerMethodField()
     email = serializers.EmailField(source="user.email", read_only=True)
+    photo = serializers.SerializerMethodField()
     trainer = serializers.SerializerMethodField()
     plan = serializers.SerializerMethodField()
 
@@ -47,6 +48,7 @@ class StaffMemberSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "email",
+            "photo",
             "phone",
             "address",
             "membership_status",
@@ -55,10 +57,13 @@ class StaffMemberSerializer(serializers.ModelSerializer):
             "expiry_date",
             "trainer",
         ]
-        read_only_fields = ["membership_status", "plan", "date_joined", "expiry_date", "trainer"]
+        read_only_fields = ["photo", "membership_status", "plan", "date_joined", "expiry_date", "trainer"]
 
     def get_name(self, obj):
         return obj.user.get_full_name() or obj.user.username
+
+    def get_photo(self, obj):
+        return (obj.photo_data or getattr(obj.user, "avatar_data", "") or "").strip()
 
     def get_plan(self, obj):
         """Return the member's latest plan from manual payments or subscriptions."""

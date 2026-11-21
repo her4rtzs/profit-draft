@@ -485,7 +485,7 @@
         const home = isOwner ? '/index'
           : r === 'CASHIER' ? '/cashier'
           : (r === 'TRAINER' || r === 'COACH') ? '/trainer/index'
-          : r === 'MEMBER' ? '/member-home'
+          : r === 'MEMBER' ? (user?.onboarding_completed === false ? '/onboarding' : '/member-home')
           : null;
         if (home) {
           sessionStorage.setItem('profit-verified-session', JSON.stringify(user));

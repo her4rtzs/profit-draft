@@ -4,6 +4,7 @@ Creates a MEMBER login with a 7-day trial. No payment gateway is involved.
 """
 
 from django.conf import settings
+from django.contrib.auth import login
 from django.core.exceptions import ValidationError
 from rest_framework.exceptions import ValidationError as DRFValidationError
 from rest_framework.permissions import AllowAny
@@ -28,7 +29,7 @@ class JoinCheckoutView(APIView):
         d = request.data
         base = settings.SITE_BASE_URL.rstrip("/")
         try:
-            register_trial_member(
+            profile = register_trial_member(
                 name=d.get("name"),
                 email=d.get("email"),
                 password=d.get("password"),
@@ -36,4 +37,5 @@ class JoinCheckoutView(APIView):
             )
         except ValidationError as exc:
             raise DRFValidationError({"detail": " ".join(exc.messages)})
-        return Response({"status": "trial", "login_url": f"{base}/login"})
+        login(request._request, profile.user, backend="django.contrib.auth.backends.ModelBackend")
+        return Response({"status": "trial", "next_url": "/onboarding", "login_url": f"{base}/login"})

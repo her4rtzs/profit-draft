@@ -107,22 +107,26 @@ window.PROFIT_CONFIG = window.PROFIT_CONFIG || { API_BASE_URL: "/api", DEMO_MODE
   }
 
   function dataUrlFromSvg(svg) {
-    return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
+    try {
+      return "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svg)));
+    } catch (_) {
+      return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
+    }
   }
 
-  // Enforce one flat, consistent circular avatar look across every portal (no glowing rings).
+  // Enforce one flat, consistent circular avatar look across every portal (no boxes, no glowing rings).
   if (typeof document !== "undefined" && !document.getElementById("pf-avatar-uniform")) {
     const st = document.createElement("style");
     st.id = "pf-avatar-uniform";
     st.textContent = [
-      ".sidebar-avatar,.topbar-avatar,.pp-avatar,.pp-avatar.gold-frame,.mini-avatar,.csh-avatar,.member-avatar-face,.tr-avatar,.tr-req-ava,.tw-coach-avatar,.pp-avatar-photo{",
-      "  box-shadow:none!important;outline:none!important;filter:none!important;",
+      ".sidebar-avatar,.topbar-avatar,.pp-avatar,.pp-avatar.gold-frame,.mini-avatar,.csh-avatar,.member-avatar-face,.tr-avatar,.tr-req-ava,.tw-coach-avatar,.pp-avatar-photo,.avatar{",
+      "  border-radius:50%!important;box-shadow:none!important;outline:none!important;filter:none!important;",
       "  border:1px solid rgba(255,255,255,.12)!important;overflow:hidden!important;background:#1b2230!important;",
       "}",
       ".sidebar-avatar::before,.sidebar-avatar::after,.topbar-avatar::before,.topbar-avatar::after,.pp-avatar::before,.pp-avatar::after,.pp-avatar.gold-frame::before,.pp-avatar.gold-frame::after,.member-avatar-face::before,.member-avatar-face::after{",
       "  display:none!important;content:none!important;box-shadow:none!important;",
       "}",
-      ".sidebar-avatar img,.topbar-avatar img,.pp-avatar img,.mini-avatar img,.csh-avatar img,.tr-avatar img,.tr-req-ava img,.tw-coach-avatar img,.pp-avatar-photo img{",
+      ".sidebar-avatar img,.topbar-avatar img,.pp-avatar img,.mini-avatar img,.csh-avatar img,.tr-avatar img,.tr-req-ava img,.tw-coach-avatar img,.pp-avatar-photo img,.avatar img{",
       "  width:100%!important;height:100%!important;object-fit:cover!important;border-radius:50%!important;display:block!important;",
       "}"
     ].join("\n");

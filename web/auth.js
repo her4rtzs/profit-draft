@@ -234,6 +234,10 @@
         sessionStorage.setItem("profit-verified-session", JSON.stringify(user));
       } catch {}
       if (loginPage) {
+        if (role === "MEMBER" && user.onboarding_completed === false) {
+          location.replace("/onboarding");
+          return;
+        }
         location.replace(homeForRole(role));
         return;
       }

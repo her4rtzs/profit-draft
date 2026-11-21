@@ -92,12 +92,12 @@
   // ---------- Shared UI pieces ----------
   const emptyBlock = (icon, title, text) => `<div class="pp-empty"><i class="fa-solid ${icon}" aria-hidden="true"></i><strong>${esc(title)}</strong><p>${esc(text)}</p></div>`;
   const avatar = (m, cls = "") => {
-    const fallbackSrc = window.ProFitAvatar ? window.ProFitAvatar.dataUrl(m.email || m.name || m.id) : "";
-    if (m.photoId) {
-      return `<span class="pp-avatar ${cls} has-photo" aria-hidden="true">${fallbackSrc ? `<img src="${fallbackSrc}" alt="">` : esc(initialsOf(m.name))}<img data-photo-id="${esc(m.photoId)}" alt="" hidden></span>`;
+    const src = window.ProFitAvatar ? window.ProFitAvatar.resolve(m.photo, m.email || m.name || m.id) : "";
+    if (m.photoId && !m.photo) {
+      return `<span class="pp-avatar ${cls} has-photo" aria-hidden="true">${src ? `<img src="${src}" alt="">` : esc(initialsOf(m.name))}<img data-photo-id="${esc(m.photoId)}" alt="" hidden></span>`;
     }
-    if (fallbackSrc) {
-      return `<span class="pp-avatar ${cls} has-photo" aria-hidden="true"><img src="${fallbackSrc}" alt=""></span>`;
+    if (src) {
+      return `<span class="pp-avatar ${cls} has-photo" aria-hidden="true"><img src="${src}" alt=""></span>`;
     }
     return `<span class="pp-avatar ${cls}" aria-hidden="true">${esc(initialsOf(m.name))}</span>`;
   };
@@ -979,6 +979,7 @@
     afterSync(renderAll);
   });
   buildEnroll();
-  afterSync(renderAll);
+  if (DB.members && DB.members.length) renderAll();
+  else afterSync(renderAll);
   tabFromHash();
 })();

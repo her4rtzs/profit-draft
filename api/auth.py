@@ -106,6 +106,12 @@ def _session_user_dict(user):
     first = (user.first_name or "").strip()
     last = (user.last_name or "").strip()
     full_name = f"{first} {last}".strip()
+    onboarding_completed = True
+    if getattr(user, "role", "") == "MEMBER":
+        from apps.membership.models import MemberProfile
+
+        profile = MemberProfile.objects.filter(user=user).only("onboarding_data").first()
+        onboarding_completed = bool((getattr(profile, "onboarding_data", None) or {}).get("completed")) if profile else True
     return {
         "id": user.pk,
         "name": full_name,
@@ -113,6 +119,7 @@ def _session_user_dict(user):
         "email": user.email,
         "role": WEB_ROLE.get(user.role, "MEMBER"),
         "photo": getattr(user, "avatar_data", "") or "",
+        "onboarding_completed": onboarding_completed,
         "must_change_password": bool(getattr(user, "must_change_password", False)),
     }
 

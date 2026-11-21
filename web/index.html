@@ -31,9 +31,9 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
 
     <!-- CSS -->
     <link rel="stylesheet" href="dashboard.css?v=1">
-    <script src="config.js?v=3"></script>
+    <script src="config.js?v=4"></script>
     <script src="api.js"></script>
-    <script src="auth.js?v=3"></script>
+    <script src="auth.js?v=4"></script>
 <script>document.documentElement.dataset.accent='gold'</script>
 
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script><link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
@@ -103,7 +103,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
                 </div>
                 <div class="stat-content">
                     <p class="sr-only">Total members</p>
-                    <h2 id="kpiTotalMembersVal">â€”</h2>
+                    <h2 id="kpiTotalMembersVal">Ã¢â‚¬â€</h2>
                     <div class="kpi-bottom">
                         <small class="kpi-sub" id="kpiTotalMembersSub">
                             <span class="kpi-trend positive"><i class="fa-solid fa-arrow-up"></i> +12%</span> from last month
@@ -121,7 +121,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
                 </div>
                 <div class="stat-content">
                     <p class="sr-only">Expired members</p>
-                    <h2 id="kpiExpiredVal">â€”</h2>
+                    <h2 id="kpiExpiredVal">Ã¢â‚¬â€</h2>
                     <div class="kpi-bottom">
                         <small class="kpi-sub" id="kpiExpiredSub">
                             <span class="kpi-trend neutral">&rarr; No change</span>
@@ -139,7 +139,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
                 </div>
                 <div class="stat-content">
                     <p class="sr-only">Expiring soon</p>
-                    <h2 id="kpiExpiringVal">â€”</h2>
+                    <h2 id="kpiExpiringVal">Ã¢â‚¬â€</h2>
                     <div class="kpi-bottom">
                         <small class="kpi-sub" id="kpiExpiringSub">
                             <span class="kpi-trend positive"><i class="fa-solid fa-arrow-up"></i> +2</span> this month
@@ -157,7 +157,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
                 </div>
                 <div class="stat-content">
                     <p class="sr-only">Total revenue</p>
-                    <h2 id="kpiRevenueVal">â‚±0.00</h2>
+                    <h2 id="kpiRevenueVal">Ã¢â€šÂ±0.00</h2>
                     <div class="kpi-bottom">
                         <small class="kpi-sub" id="kpiRevenueSub">
                             <span class="kpi-trend neutral">&rarr; No payments yet</span>
@@ -200,13 +200,13 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
                     </div>
 
                     <div class="chart-y" id="revenueAxis">
-                        <span>â‚±12k</span>
-                        <span>â‚±10k</span>
-                        <span>â‚±8k</span>
-                        <span>â‚±6k</span>
-                        <span>â‚±4k</span>
-                        <span>â‚±2k</span>
-                        <span>â‚±0</span>
+                        <span>Ã¢â€šÂ±12k</span>
+                        <span>Ã¢â€šÂ±10k</span>
+                        <span>Ã¢â€šÂ±8k</span>
+                        <span>Ã¢â€šÂ±6k</span>
+                        <span>Ã¢â€šÂ±4k</span>
+                        <span>Ã¢â€šÂ±2k</span>
+                        <span>Ã¢â€šÂ±0</span>
                     </div>
 
                     <div class="chart">
@@ -258,7 +258,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
                             <g id="mtDonutLabels"></g>
                         </svg>
                         <div class="mt-donut-center">
-                            <strong id="mtTotalCount">â€”</strong>
+                            <strong id="mtTotalCount">Ã¢â‚¬â€</strong>
                             <span id="mtTotalLabel">Total Members</span>
                             <i class="fa-solid fa-users mt-center-ico" aria-hidden="true"></i>
                         </div>
@@ -365,7 +365,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
     const [cls, label] = statusFor(m);
     const jd = toDate(m.joined);
     const joined = jd ? (typeof fmtShort === "function" ? fmtShort(jd) : jd.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })) : "&mdash;";
-    const avaSrc = window.ProFitAvatar ? window.ProFitAvatar.dataUrl(m.email || m.name || m.id) : "";
+    const avaSrc = window.ProFitAvatar ? window.ProFitAvatar.resolve(m.photo, m.email || m.name || m.id) : "";
     return `<tr class="pf-row-in" style="--i:${i}">
       <td><span class="member-id">${esc(m.id)}</span></td>
       <td><div class="member"><div class="mini-avatar">${avaSrc ? `<img src="${avaSrc}" alt="">` : esc(initials(m.name))}</div><div><strong>${esc(m.name)}</strong><small>Member</small></div></div></td>
@@ -625,7 +625,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
       const item = entries[activeIdx];
       if (totalEl) totalEl.textContent = item.count;
       if (totalLabelEl) totalLabelEl.textContent = item.label;
-      tooltip.innerHTML = `<strong>${esc(item.label)}</strong><small>${item.count} member${item.count === 1 ? "" : "s"} (${item.pctText}) Â· Click to view</small>`;
+      tooltip.innerHTML = `<strong>${esc(item.label)}</strong><small>${item.count} member${item.count === 1 ? "" : "s"} (${item.pctText}) Ã‚Â· Click to view</small>`;
       tooltip.hidden = false;
     };
 

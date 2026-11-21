@@ -314,6 +314,7 @@ DB.sync = async function (reload = false) {
             const end = (r.expiry_date ? fromISO(r.expiry_date) : null) || TODAY;
             return {
                 id: idFor(r.id), serverId: r.id, name: r.name, email: r.email || "",
+                photo: r.photo || "",
                 phone: r.phone || "", address: r.address || "",
                 emergencyName: "", emergencyPhone: "", photoId: null,
                 plan, start: addDays(end, -(PLANS[plan]?.days || 30)), end, checkins: 0,

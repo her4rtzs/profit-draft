@@ -68,7 +68,7 @@
     const methodOptions = () => METHODS.map(m => `<option>${m}</option>`).join("");
 
     const memberCell = m => {
-        const avaSrc = window.ProFitAvatar ? window.ProFitAvatar.dataUrl(m.email || m.name || m.id) : "";
+        const avaSrc = window.ProFitAvatar ? window.ProFitAvatar.resolve(m.photo, m.email || m.name || m.id) : "";
         return `
         <div class="member">
             <div class="mini-avatar">${avaSrc ? `<img src="${avaSrc}" alt="">` : initials(m.name)}</div>

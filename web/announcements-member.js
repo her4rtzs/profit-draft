@@ -18,7 +18,14 @@
       const rows = await window.ProFitAPI.get("/announcements/");
       if (list) list.innerHTML = rows.length ? rows.map(card).join("") : empty("No announcements yet. New notices from the gym show up here.");
       if (preview) preview.innerHTML = rows.length ? rows.slice(0, 3).map(card).join("") : `<p class="ann-msg">No announcements yet.</p>`;
-    } catch { /* keep what is on the page */ }
+    } catch (err) {
+      const restricted = err && err.status === 403;
+      const msg = restricted
+        ? "Announcements are available once your membership is active."
+        : "Could not load announcements right now.";
+      if (list) list.innerHTML = empty(msg);
+      if (preview) preview.innerHTML = `<p class="ann-msg">${esc(msg)}</p>`;
+    }
   }
 
   async function unread() {
