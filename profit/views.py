@@ -18,6 +18,7 @@ from apps.membership.services import (
     member_access,
 )
 
+PUBLIC_PAGES = frozenset({"welcome", "login", "join", "forgot", "faq", "terms", "privacy"})
 OWNER_ONLY_PAGES = frozenset({"reports", "trainers", "announcements"})
 CASHIER_OR_OWNER_PAGES = frozenset({"cashier", "payments", "members", "attendance", "index", "profile", "settings"})
 
@@ -32,6 +33,8 @@ def _serve_web_page(relative):
 
 def web_page(request, page):
     """Serve a top-level web/ page at an extensionless URL, with RBAC checks for signed-in users."""
+    if page in PUBLIC_PAGES:
+        return _serve_web_page(page)
     if request.user.is_authenticated:
         role = str(getattr(request.user, "role", "")).upper()
         is_active = bool(getattr(request.user, "is_active", False))

@@ -183,11 +183,12 @@ class GoogleAuthTests(TestCase):
         self.assertEqual(resp.json()["code"], "db_error")
         log.assert_called_once()
         args = log.call_args.args
-        self.assertEqual(args[0], "event=google_db_error step=%s type=%s message=%s")
+        self.assertEqual(args[0], "event=google_db_error step=%s type=%s pgcode=%s message=%s")
         self.assertEqual(args[1], "sign_in")
         self.assertEqual(args[2], "DatabaseError")
-        self.assertIn("trial_ends_at", args[3])
-        self.assertNotIn("secret-token", args[3])
+        self.assertEqual(args[3], "")
+        self.assertIn("trial_ends_at", args[4])
+        self.assertNotIn("secret-token", args[4])
         self.assertNotIn("gmail.com", str(args))
 
     @override_settings(GOOGLE_CLIENT_ID=TEST_CLIENT_ID)

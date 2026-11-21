@@ -51,9 +51,10 @@ logger = logging.getLogger("api.auth")
 def _log_google_db_error(step, exc):
     # First line only: PostgreSQL DETAIL/CONTEXT lines can carry values/tokens.
     message = str(exc).splitlines()[0][:200]
+    pgcode = getattr(getattr(exc, "__cause__", None), "pgcode", "") or ""
     logger.error(
-        "event=google_db_error step=%s type=%s message=%s",
-        step, type(exc).__name__, message,
+        "event=google_db_error step=%s type=%s pgcode=%s message=%s",
+        step, type(exc).__name__, pgcode, message,
     )
 
 
