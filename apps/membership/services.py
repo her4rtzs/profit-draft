@@ -140,6 +140,28 @@ def renew_member(member, plan, created_by, start_date=None):
     return enroll_member(member, start, end, created_by=created_by)
 
 
+TRIAL_DAYS = 7
+
+
+def start_trial(member, *, now=None):
+    """Put ``member`` in TRIAL for 7 days; the end is computed here, never passed in."""
+    now = now or timezone.now()
+    member.membership_status = MemberProfile.MembershipStatus.TRIAL
+    member.trial_ends_at = now + timedelta(days=TRIAL_DAYS)
+    member.save(update_fields=["membership_status", "trial_ends_at"])
+    return member
+
+
+def trial_is_active(member, *, today=None):
+    """True while a TRIAL member is inside the 7 days, measured in Manila days."""
+    today = today or timezone.localdate()
+    return (
+        member.membership_status == MemberProfile.MembershipStatus.TRIAL
+        and member.trial_ends_at is not None
+        and today <= timezone.localdate(member.trial_ends_at)
+    )
+
+
 def check_in_member(member, recorded_by):
     """Check a member in for today, only while the membership is active.
 

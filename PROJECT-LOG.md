@@ -2556,3 +2556,14 @@ Replace PayMongo with cash and GCash, make sign-up free with a 7-day trial, and 
 - Left two gaps as questions rather than inventing answers: end-of-trial access (`Architecture.md` 14.7) and what happens to members already in `pending` when Phase 4.6 lands.
 ### Decision-log skill
 When a payment provider is removed, update the env var list, the golden rules that name its keys, and the phase and conformance tables in the same pass; a stale env list is how a decommissioned secret outlives its service.
+
+## 2026-11-21 16:27 (Asia/Manila): Trial status with a server-set end date
+### What I asked for
+Add a 7-day trial: a `trial` member status and `trial_ends_at`, one service in `apps/membership/` that sets and checks it, the migration file created but not applied, and tests. Do not change signup or any view.
+### What the agent decided and why
+- Added `TRIAL` to `MemberProfile.MembershipStatus` and a nullable `trial_ends_at`; `start_trial` computes the end server-side so no caller or client can set it. See [[2026-11-21 Trial status with a server-set end date]]
+- A trial is active through the end of the seventh Asia/Manila day, so a stored UTC timestamp cannot end it one day early.
+- Left `is_active_on` and `check_in_member` alone: both already require `ACTIVE`, so a trial member gets app access with no gym membership and no attendance.
+- Generated migration `0005` but did not apply it. Tests ran on SQLite; `apps.membership` passed 37 tests. `ruff` reports only the pre-existing RUF012 errors that every migration and the Attendance `Meta` already have.
+### Decision-log skill
+When a time limit is stored as a timestamp but judged by a business day, compare local dates in the project timezone; the stored value can then stay a plain `now + N days`.
