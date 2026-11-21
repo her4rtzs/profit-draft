@@ -17,6 +17,7 @@ LOGGING POLICY: never log credentials or PII.
 
 import hmac
 import json
+import logging
 import secrets
 import urllib.parse
 
@@ -43,6 +44,17 @@ from apps.accounts.validators import validate_real_email
 
 # Backend roles -> the four web portal shells.
 WEB_ROLE = {"OWNER": "ADMIN", "CASHIER": "CASHIER", "TRAINER": "TRAINER", "MEMBER": "MEMBER"}
+
+logger = logging.getLogger("api.auth")
+
+
+def _log_google_db_error(step, exc):
+    # First line only: PostgreSQL DETAIL/CONTEXT lines can carry values/tokens.
+    message = str(exc).splitlines()[0][:200]
+    logger.error(
+        "event=google_db_error step=%s type=%s message=%s",
+        step, type(exc).__name__, message,
+    )
 
 
 @ensure_csrf_cookie
@@ -397,7 +409,8 @@ def google_auth_view(request):
         outcome = authenticate_google_member(claims)
     except GoogleAuthError as exc:
         return JsonResponse({"detail": exc.message, "code": exc.code}, status=exc.status_code)
-    except DatabaseError:
+    except DatabaseError as exc:
+        _log_google_db_error("sign_in", exc)
         return JsonResponse(
             {"detail": "A database error occurred while signing you in. Please try again.", "code": "db_error"},
             status=503,
@@ -437,7 +450,8 @@ def google_link_view(request):
         )
     except GoogleAuthError as exc:
         return JsonResponse({"detail": exc.message, "code": exc.code}, status=exc.status_code)
-    except DatabaseError:
+    except DatabaseError as exc:
+        _log_google_db_error("link", exc)
         return JsonResponse(
             {"detail": "A database error occurred while linking your account. Please try again.", "code": "db_error"},
             status=503,
@@ -502,7 +516,8 @@ def google_oauth_callback_view(request):
     except GoogleAuthError as exc:
         q = urllib.parse.urlencode({"google_error": exc.code, "google_msg": exc.message})
         return HttpResponseRedirect(f"{page}?{q}")
-    except DatabaseError:
+    except DatabaseError as exc:
+        _log_google_db_error("callback", exc)
         return HttpResponseRedirect(f"{page}?google_error=db_error")
 
     if outcome.status == "link_required":

@@ -10,12 +10,14 @@ from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from django.db import DatabaseError
 from django.test import Client, RequestFactory, TestCase, override_settings
 from django.utils import timezone
 
 from apps.accounts.google_auth import (
     _SHA256_DIGEST_INFO_PREFIX,
     GoogleAuthError,
+    GoogleClaims,
     verify_google_access_token,
     verify_google_id_token,
 )
@@ -158,6 +160,35 @@ class GoogleAuthTests(TestCase):
             content_type="application/json",
             HTTP_X_CSRFTOKEN=csrf,
         )
+
+    def test_database_error_is_logged_without_pii(self):
+        claims = GoogleClaims(
+            sub="google-sub-new-123",
+            email="newmember@gmail.com",
+            email_verified=True,
+            name="Maria Santos",
+        )
+        error = DatabaseError(
+            "column memberprofile.trial_ends_at does not exist\n"
+            "DETAIL: Key (google_sub)=(secret-token) already exists."
+        )
+        with (
+            patch("api.auth.verify_google_id_token", return_value=claims),
+            patch("api.auth.authenticate_google_member", side_effect=error),
+            patch("api.auth.logger.error") as log,
+        ):
+            resp = self._post_google({"credential": "any-token"})
+
+        self.assertEqual(resp.status_code, 503)
+        self.assertEqual(resp.json()["code"], "db_error")
+        log.assert_called_once()
+        args = log.call_args.args
+        self.assertEqual(args[0], "event=google_db_error step=%s type=%s message=%s")
+        self.assertEqual(args[1], "sign_in")
+        self.assertEqual(args[2], "DatabaseError")
+        self.assertIn("trial_ends_at", args[3])
+        self.assertNotIn("secret-token", args[3])
+        self.assertNotIn("gmail.com", str(args))
 
     @override_settings(GOOGLE_CLIENT_ID=TEST_CLIENT_ID)
     def test_rs256_token_verification_and_rejection_cases(self):
