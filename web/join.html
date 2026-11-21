@@ -354,53 +354,16 @@
   .jn-legal-btn{height:44px;padding:0 18px;border-radius:999px;font:600 13.5px/1 "Plus Jakarta Sans",sans-serif;border:1px solid var(--field-line);background:var(--bg2);color:var(--tx);cursor:pointer}
   .jn-legal-btn.primary{background:var(--gold);color:var(--on);border-color:var(--gold);font-weight:700}
   .jn-legal-btn.primary:disabled{opacity:.45;cursor:not-allowed}
-  .mob-auth-head{display:none}
   @media(max-width:768px){
-    .portal-nav{
-      height:54px;min-height:54px;padding:0 14px;
-      background:rgba(11,12,16,.92);border-bottom:0;
-    }
-    .portal-brand img{width:28px;height:28px;border-radius:8px}
-    .portal-brand strong{font-size:18px}
-    .back-link span{display:none}
-    .jn-shell{
-      display:block;min-height:calc(100vh - 54px);padding:0 0 32px;
-      background:var(--bg);overflow:visible;
-    }
-    .jn-shell::before{display:none}
-    .jn-wrap{display:block;width:100%}
-    .jn-copy{display:none}
-    .mob-auth-head{
-      display:block;position:relative;overflow:hidden;
-      padding:22px 22px 68px;
-      border-radius:0 0 28px 28px;
-      background:
-        linear-gradient(160deg,rgba(11,13,22,.88) 0%,rgba(17,19,32,.92) 65%,rgba(232,185,58,.18) 100%),
-        url("img/hero.jpg") center/cover no-repeat;
-      border-bottom:1px solid rgba(232,185,58,.24);
-      text-align:left;
-    }
-    .mob-auth-badge{
-      width:52px;height:52px;margin:0 auto 14px;border-radius:14px;padding:4px;
-      background:rgba(255,255,255,.08);border:1px solid rgba(232,185,58,.45);
-      box-shadow:0 8px 20px -6px rgba(0,0,0,.55);
-      display:grid;place-items:center;
-    }
-    .mob-auth-badge img{width:100%;height:100%;border-radius:10px;object-fit:cover;display:block}
-    .mob-auth-head h2{
-      margin:0 0 4px;font-size:24px;font-weight:800;letter-spacing:-.02em;color:#f6efdc;
-    }
-    .mob-auth-head p{
-      margin:0;font-size:13.5px;line-height:1.45;color:#c9c4b4;
-    }
-    .jn-card{
-      position:relative;z-index:2;
-      width:calc(100% - 28px);max-width:480px;
-      margin:-44px auto 0;padding:20px 16px 20px;
-      border-radius:20px;
-      box-shadow:0 18px 40px -16px rgba(0,0,0,.65);
-    }
-    .jn-card > h2,.jn-card > .jn-lead{display:none}
+    footer.site-footer,.site-footer{display:none!important}
+    .portal-nav{height:58px;min-height:58px;padding:0 16px}
+    .portal-brand img{width:32px;height:32px}
+    .portal-brand strong{font-size:20px}
+    .jn-shell{min-height:calc(100vh - 58px);padding:20px 14px 28px;align-items:flex-start}
+    .jn-title{font-size:clamp(30px,8vw,42px);margin-bottom:10px}
+    .jn-desc{font-size:14.5px;margin-bottom:16px}
+    .jn-checks{gap:8px;margin-bottom:14px}
+    .jn-card{padding:20px 16px}
     .jn-row{grid-template-columns:1fr}
     .jn-input{height:46px;font-size:16px}
     .jn-btn-gold,.jn-sso-btn{height:46px}
@@ -419,11 +382,6 @@
 </header>
 
 <main class="jn-shell">
-  <div class="mob-auth-head" aria-hidden="true">
-    <div class="mob-auth-badge"><img src="logo.jpg" alt="" width="44" height="44"></div>
-    <h2>Create your account</h2>
-    <p>Pick a plan, add your details, then pay securely.</p>
-  </div>
   <div class="jn-wrap">
     <section class="jn-copy" aria-label="Self-enrollment overview">
       <p class="jn-eyebrow">Join the gym</p>

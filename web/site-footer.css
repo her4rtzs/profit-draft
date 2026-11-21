@@ -22,6 +22,7 @@ body:not(.dark) .site-footer{--foot-mu:#5d5f66;--foot-line:#e2ddd0;background:#f
 .site-footer .legal{display:flex;flex-wrap:wrap;gap:6px 20px}
 .site-footer .foot-team{color:var(--foot-gold);font-weight:600}
 @media (max-width:860px){.site-footer .foot-top{grid-template-columns:1fr 1fr}.site-footer .foot-lead{grid-column:1/-1}}
+@media (max-width:768px){body.auth-page footer.site-footer,body.auth-page .site-footer{display:none!important}}
 @media (max-width:520px){.site-footer .foot-top{grid-template-columns:1fr}.site-footer .foot-inner{padding:44px 20px 24px}}
 @media (prefers-reduced-motion:reduce){.site-footer a{transition:none}}
 

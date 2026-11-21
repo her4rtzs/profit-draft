@@ -2534,3 +2534,15 @@ Apply the mobile auth layout from the reference UI kit (compact curved branded t
 - Verified with `python manage.py check` and `python manage.py test profit.tests.test_clean_urls profit.tests.test_installable`.
 ### Decision-log skill
 Keep mobile auth pages clean by hiding tall desktop marketing copy under `768px` in favor of a compact curved brand header and an overlapping card with `16px` inputs so iOS Safari never auto-zooms.
+
+
+## 2026-11-21 15:54 (Asia/Manila): Keep full-bleed auth layout, hide mobile auth footer, and fix mobile landing page
+### What I asked for
+Keep the previous full-bleed Sign In / Sign Up / Forgot Password layout (retaining the 3-step / 6-box OTP flow), remove the footer on mobile for auth pages, fix the landing page in mobile view, and verify multi-device compatibility.
+### What the agent decided and why
+- Removed `.mob-auth-head` from `web/login.html`, `web/join.html`, and `web/forgot.html` to restore the original full-bleed hero layout while keeping the 3-step Forgot Password flow (Email -> 6-box OTP -> New Password -> Password Changed card) and `16px` mobile inputs.
+- Hid `footer.site-footer` at `<= 768px` on `body.auth-page` in `web/site-footer.css` and inline in `login.html`, `join.html`, and `forgot.html`.
+- Fixed mobile responsiveness in `web/welcome.html`: added `<a class="m-only" href="/login">Sign in</a>` to the mobile dropdown menu, tightened header/hero/ticker/card spacing for `360px–768px`, added scroll-snap to `#programs`, increased vertical spacing on stacked `.plans` cards so badges never collide, and made `.cta-band .btn` full-width on narrow phones.
+- Verified with `python manage.py check` (0 errors) and `python manage.py test profit.tests.test_clean_urls profit.tests.test_installable` (15/15 OK). Automated browser DevTools verification was unavailable in this session; local server left running at `http://127.0.0.1:8000` for manual device-emulation review.
+### Decision-log skill
+When hiding header buttons (like `Sign in`) on narrow mobile viewports, always add a matching `.m-only` link inside the mobile navigation drawer so phone users never lose access to the route.
