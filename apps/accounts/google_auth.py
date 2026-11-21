@@ -38,7 +38,7 @@ from django.db.models import Q
 from django.utils import timezone
 
 from apps.membership.models import MemberProfile
-from apps.membership.services import _split_name
+from apps.membership.services import _split_name, start_trial
 
 from .models import Role, User
 from .services import MAX_EMAIL_LENGTH, normalize_email
@@ -477,12 +477,30 @@ def _issue_link_token(user: User, sub: str) -> str:
     return signer.sign_object({"uid": user.pk, "sub": sub, "email": normalize_email(user.email or "")})
 
 
+def _ensure_google_member_trial(user: User) -> MemberProfile:
+    """Create a MemberProfile if missing and start the 7-day trial for never-enrolled accounts."""
+    profile, created = MemberProfile.objects.get_or_create(
+        user=user,
+        defaults={"membership_status": MemberProfile.MembershipStatus.PENDING},
+    )
+    if (
+        created
+        or (
+            profile.membership_status == MemberProfile.MembershipStatus.PENDING
+            and profile.trial_ends_at is None
+            and profile.expiry_date is None
+        )
+    ):
+        start_trial(profile)
+    return profile
+
+
 def authenticate_google_member(claims: GoogleClaims) -> GoogleAuthOutcome:
     """Authenticate an existing Google-linked member, request verified linking, or register a new Member."""
     linked_user = User.objects.filter(google_sub=claims.sub).first()
     if linked_user is not None:
         _assert_member_eligible(linked_user)
-        MemberProfile.objects.get_or_create(user=linked_user)
+        _ensure_google_member_trial(linked_user)
         return GoogleAuthOutcome(status="authenticated", user=linked_user, created=False)
 
     existing = User.objects.filter(Q(email__iexact=claims.email) | Q(username__iexact=claims.email)).first()
@@ -521,17 +539,14 @@ def authenticate_google_member(claims: GoogleClaims) -> GoogleAuthOutcome:
             )
             user.set_unusable_password()
             user.save()
-            MemberProfile.objects.get_or_create(
-                user=user,
-                defaults={"membership_status": MemberProfile.MembershipStatus.PENDING},
-            )
+            _ensure_google_member_trial(user)
             return GoogleAuthOutcome(status="authenticated", user=user, created=True)
     except IntegrityError:
         # Race condition: inspect whether google_sub or email was created concurrently
         raced_sub = User.objects.filter(google_sub=claims.sub).first()
         if raced_sub is not None:
             _assert_member_eligible(raced_sub)
-            MemberProfile.objects.get_or_create(user=raced_sub)
+            _ensure_google_member_trial(raced_sub)
             return GoogleAuthOutcome(status="authenticated", user=raced_sub, created=False)
         raced_email = User.objects.filter(Q(email__iexact=claims.email) | Q(username__iexact=claims.email)).first()
         if raced_email is not None:

@@ -2683,3 +2683,13 @@ Fix `Server Error (500)` on `https://functionalfitnessgym.site/join` after mergi
 - Verified with `python manage.py check` and `python manage.py test apps.membership.tests.test_access profit.tests.test_clean_urls apps.accounts.tests.test_web_session`.
 ### Decision-log skill
 Never run member-profile DB queries on public pages like `/join` or `/login` inside a generic `web_page` view; keep public routes database-free so unapplied migrations or stale session cookies cannot 500 the sign-up or login screen.
+
+
+## 2026-11-21 21:12 (Asia/Manila): Start 7-day free trial on Google Sign-In registration
+### What I asked for
+Fix `"You have no active membership"` lock screen immediately after signing in as a new Member with Google Sign-In.
+### What the agent decided and why
+- Updated `apps/accounts/google_auth.py` to call the shared `start_trial()` service (`_ensure_google_member_trial`) whenever a new Member is registered via Google Sign-In (or when a never-enrolled `PENDING` Google member with no trial or expiry signs in), aligning Google Sign-In with Phase 4.6 free-trial sign-up so members can open `/member-home` and `/profile`.
+- Verified with `python manage.py check` and `python manage.py test apps.accounts.tests.test_google_auth apps.membership.tests.test_access`.
+### Decision-log skill
+When adding a new onboarding status like `TRIAL` to public sign-up, update every registration entry point (including Google Sign-In) to call the same shared `start_trial` service so OAuth users are not left in legacy `PENDING` lockouts.
