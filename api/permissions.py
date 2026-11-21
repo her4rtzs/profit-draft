@@ -21,6 +21,7 @@ class MemberAccess(BasePermission):
     """An active membership is required; a running trial is not enough."""
 
     allow_trial = False
+    allow_locked_portal = False
 
     def has_permission(self, request, view):
         user = request.user
@@ -33,7 +34,7 @@ class MemberAccess(BasePermission):
             # Let each view decide (404 from /me/, [] from attendance, etc).
             return True
         state = member_access(profile)
-        if state == "LOCKED":
+        if state == "LOCKED" and not self.allow_locked_portal:
             message = (
                 TRIAL_ENDED_MESSAGE
                 if profile.trial_ends_at is not None
@@ -46,9 +47,10 @@ class MemberAccess(BasePermission):
 
 
 class TrialAllowedMemberAccess(MemberAccess):
-    """Own profile reads and edits are allowed while the trial is running."""
+    """Own profile reads and edits are allowed while in trial or restricted/expired portal mode."""
 
     allow_trial = True
+    allow_locked_portal = True
 
 
 class CanReviewClaims(BasePermission):

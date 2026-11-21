@@ -55,12 +55,14 @@ class MemberApiAccessTests(_MemberFixture):
     def test_expired_trial_has_no_features_and_nothing_is_written(self):
         start_trial(self.profile, now=timezone.now() - timedelta(days=8))
 
+        # Restricted portal profile read stays accessible so the member can view status/renew
         res = self.api.get("/api/member/me/")
-        self.assertEqual(res.status_code, 403)
-        self.assertIn("free trial has ended", str(res.data["detail"]))
+        self.assertEqual(res.status_code, 200)
 
         for url in FEATURE_URLS:
-            self.assertEqual(self.api.get(url).status_code, 403, url)
+            f_res = self.api.get(url)
+            self.assertEqual(f_res.status_code, 403, url)
+            self.assertIn("free trial has ended", str(f_res.data["detail"]))
         self.assertEqual(self.api.post("/api/member/check-in/").status_code, 403)
         self.assertEqual(Attendance.objects.count(), 0)
 
@@ -73,10 +75,11 @@ class MemberApiAccessTests(_MemberFixture):
         start_trial(self.profile)
         self.assertEqual(self.api.get("/api/member/me/").status_code, 200)
 
-        # No status write, no cron: changing the stored end is enough.
+        # No status write, no cron: changing the stored end immediately blocks gym features.
         self.profile.trial_ends_at = timezone.now() - timedelta(days=1)
         self.profile.save(update_fields=["trial_ends_at"])
-        self.assertEqual(self.api.get("/api/member/me/").status_code, 403)
+        self.assertEqual(self.api.get("/api/attendance/").status_code, 403)
+        self.assertIn("free trial has ended", str(self.api.get("/api/attendance/").data["detail"]))
 
     def test_active_membership_gets_member_features(self):
         today = timezone.localdate()
@@ -101,11 +104,13 @@ class MemberApiAccessTests(_MemberFixture):
 
 
 class MemberPageAccessTests(_MemberFixture):
-    def test_locked_member_sees_a_clear_message(self):
+    def test_locked_member_can_open_portal_but_restricted_pages_are_blocked(self):
         start_trial(self.profile, now=timezone.now() - timedelta(days=8))
         self.web.force_login(self.user)
 
-        res = self.web.get("/member-home")
+        self.assertEqual(self.web.get("/member-home").status_code, 200)
+        self.assertEqual(self.web.get("/profile").status_code, 200)
+        res = self.web.get("/claim")
         self.assertEqual(res.status_code, 403)
         self.assertIn(b"free trial has ended", res.content)
 

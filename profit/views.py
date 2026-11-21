@@ -36,12 +36,17 @@ def web_page(request, page):
     if page in PUBLIC_PAGES:
         return _serve_web_page(page)
     if request.user.is_authenticated:
+        from apps.accounts.google_auth import ensure_google_user_columns
+
+        ensure_google_user_columns()
         role = str(getattr(request.user, "role", "")).upper()
         is_active = bool(getattr(request.user, "is_active", False))
         if role == "MEMBER":
             profile = MemberProfile.objects.filter(user=request.user).first()
             state = member_access(profile) if profile is not None else "LOCKED"
             if state == "LOCKED":
+                if page in ("member-home", "profile", "onboarding"):
+                    return _serve_web_page(page)
                 has_trial = profile is not None and profile.trial_ends_at is not None
                 return HttpResponseForbidden(
                     TRIAL_ENDED_MESSAGE if has_trial else NO_MEMBERSHIP_MESSAGE

@@ -2726,3 +2726,13 @@ Apply the flat human avatar design consistently across every tab and portal with
 - Persisted onboarding details in `MemberProfile.onboarding_data` (`apps/membership/migrations/0006_memberprofile_onboarding_data.py`), accepted preset avatar IDs `av-1`..`av-6` in `PATCH /api/auth/profile/` and `PATCH /api/member/me/`, and allowed `TRIAL` members to open `/onboarding` in `profit/views.py`.
 ### Decision-log skill
 When unifying a visual component like avatars across a multi-page static portal, update every renderer, inject a shared base style rule to neutralize page-specific overrides (such as glow frames), and bump script cache-busting query versions on every HTML page so no tab serves a stale version.
+
+## 2026-11-21 23:54 (Asia/Manila): Fix live login/member-home 500, allow restricted expired-member portal, fix Recent registrations & Payments encoding
+### What I asked for
+Fix the live login database error and `/member-home` 500, let expired/locked member accounts still open their portal in restricted mode, update Dashboard Recent registrations with live backend sync, skeleton loading, and consistent avatars, and fix the Payments page sidebar/avatar consistency and `₱0` mojibake.
+### What the agent decided and why
+- Extended `ensure_google_user_columns()` (`apps/accounts/google_auth.py`) to idempotently add `accounts_user.avatar_data`, `membership_memberprofile.trial_ends_at`, and `membership_memberprofile.onboarding_data` on PostgreSQL, and called it in `profit/views.py` `web_page()` so Vercel cold starts never 500 on missing columns before manual migration.
+- Updated `profit/views.py` and `TrialAllowedMemberAccess` (`api/permissions.py`) so `LOCKED` (expired) members can still open `/member-home`, `/profile`, and `/onboarding` and read `/api/member/me/` to see their status and renew, while gym features (`/api/attendance/`, `/api/announcements/`, `/api/notifications/`, `/api/trainer/me/`, `/api/member/check-in/`, `/claim`, `/payments`) remain strictly 403 Forbidden.
+- Updated Dashboard `Recent registrations` (`web/index.html`) to always show its 4-row skeleton loader until live backend `/api/staff/members/` sync completes, render `ProFitAvatar` flat faceless avatars instead of initials, and fix UTF-8 mojibake (`—`, `→`) and `₱0` (`&#8369;0`) in `web/payments.html`.
+### Decision-log skill
+Whenever adding a new Django model column on a serverless Vercel deployment that does not run `migrate` during build, guard the column in the runtime PostgreSQL schema helper as well as the tracked migration so live auth and portal routes never 500 between deploy and manual migration.

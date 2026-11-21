@@ -101,6 +101,24 @@ def ensure_google_user_columns() -> None:
                 cursor.execute(
                     "ALTER TABLE accounts_user ADD COLUMN IF NOT EXISTS must_change_password boolean NOT NULL DEFAULT false;"
                 )
+            if "avatar_data" not in cols:
+                cursor.execute(
+                    "ALTER TABLE accounts_user ADD COLUMN IF NOT EXISTS avatar_data text NOT NULL DEFAULT '';"
+                )
+            tables = set(connection.introspection.table_names(cursor))
+            if "membership_memberprofile" in tables:
+                member_cols = {
+                    c.name
+                    for c in connection.introspection.get_table_description(cursor, "membership_memberprofile")
+                }
+                if "trial_ends_at" not in member_cols:
+                    cursor.execute(
+                        "ALTER TABLE membership_memberprofile ADD COLUMN IF NOT EXISTS trial_ends_at timestamp with time zone NULL;"
+                    )
+                if "onboarding_data" not in member_cols:
+                    cursor.execute(
+                        "ALTER TABLE membership_memberprofile ADD COLUMN IF NOT EXISTS onboarding_data jsonb NOT NULL DEFAULT '{}'::jsonb;"
+                    )
         _schema_checked = True
     except Exception as exc:
         pgcode = getattr(getattr(exc, "__cause__", None), "pgcode", "") or ""

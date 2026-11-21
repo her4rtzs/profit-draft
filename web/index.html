@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head><script>
 (function(){
@@ -364,11 +364,12 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
   const rowHTML = (m, i) => {
     const [cls, label] = statusFor(m);
     const jd = toDate(m.joined);
-    const joined = jd ? (typeof fmtShort === "function" ? fmtShort(jd) : jd.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })) : "â€”";
+    const joined = jd ? (typeof fmtShort === "function" ? fmtShort(jd) : jd.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })) : "&mdash;";
+    const avaSrc = window.ProFitAvatar ? window.ProFitAvatar.dataUrl(m.email || m.name || m.id) : "";
     return `<tr class="pf-row-in" style="--i:${i}">
       <td><span class="member-id">${esc(m.id)}</span></td>
-      <td><div class="member"><div class="mini-avatar">${esc(initials(m.name))}</div><div><strong>${esc(m.name)}</strong><small>Member</small></div></div></td>
-      <td>${esc(joined)}</td>
+      <td><div class="member"><div class="mini-avatar">${avaSrc ? `<img src="${avaSrc}" alt="">` : esc(initials(m.name))}</div><div><strong>${esc(m.name)}</strong><small>Member</small></div></div></td>
+      <td>${joined}</td>
       <td><span class="badge ${cls}">${label}</span></td>
       <td><div class="row-menu-wrap pf-menu-wrap">
         <button class="action-btn pf-menu-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="More actions for ${esc(m.name)}"><i class="fa-solid fa-ellipsis" aria-hidden="true"></i></button>
@@ -445,7 +446,7 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
         })
         .slice(0, 5);
       if (!newest.length) {
-        body.innerHTML = `<tr><td colspan="5" class="pf-empty">No members registered yet. <a href="/members" style="color:#F59E0B;font-weight:700;margin-left:6px">Go to Members â†’</a></td></tr>`;
+        body.innerHTML = `<tr><td colspan="5" class="pf-empty">No members registered yet. <a href="/members" style="color:#F59E0B;font-weight:700;margin-left:6px">Go to Members &rarr;</a></td></tr>`;
         delete body.dataset.sig;
         return;
       }
@@ -457,13 +458,13 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
     }
   }
 
-  const hasCached = (typeof DB !== "undefined" && DB && DB.members && DB.members.length > 0);
-  if (hasCached) {
+  const SKEL_HTML = Array.from({ length: 4 }, () => '<tr class="pf-skel"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr>').join("");
+  if (table) table.setAttribute("aria-busy", "true");
+  body.innerHTML = SKEL_HTML;
+  if (typeof DB !== "undefined" && DB.synced) {
     render(true);
-  } else {
-    if (typeof DB !== "undefined" && DB.synced) render(true);
-    else if (typeof window.pfAfterSync === "function") window.pfAfterSync(() => render(typeof DB !== "undefined" && DB.synced));
-    else render(false);
+  } else if (typeof window.pfAfterSync === "function") {
+    window.pfAfterSync(() => render(typeof DB !== "undefined" && DB.synced));
   }
   document.addEventListener("profit:synced", e => render(e.detail?.ok !== false));
 })();
