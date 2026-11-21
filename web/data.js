@@ -29,7 +29,7 @@ if (typeof window !== "undefined") {
     window.PLANS = PLANS;
 }
 
-const METHODS = ["Cash", "GCash", "Bank transfer"];
+const METHODS = ["Cash", "GCash"];
 
 // Small deterministic PRNG (mulberry32). The seed history generator must
 // reproduce the same records on every re-seed — a Math.random() based seed
@@ -98,12 +98,12 @@ const DB = {
         const pays = [
             [0, "M202601", "monthly", "GCash"], [0, "M202603", "monthly", "Cash"], [0, "M202604", "monthly", "Cash"],
             [-1, "M202609", "quarterly", "GCash"], [-1, "M202606", "monthly", "Cash"],
-            [-2, "M202610", "quarterly", "Bank transfer"], [-3, "M202607", "monthly", "GCash"],
+            [-2, "M202610", "quarterly", "GCash"], [-3, "M202607", "monthly", "GCash"],
             [-5, "M202602", "monthly", "Cash"], [-6, "M202605", "monthly", "Cash"],
             [-8, "M202611", "quarterly", "GCash"], [-10, "M202604", "monthly", "Cash"],
-            [-12, "M202613", "annual", "Bank transfer"], [-14, "M202614", "annual", "GCash"],
+            [-12, "M202613", "annual", "GCash"], [-14, "M202614", "annual", "GCash"],
             [-15, "M202615", "other", "Cash"], [-18, "M202616", "other", "GCash"],
-            [-21, "M202608", "monthly", "Bank transfer"]
+            [-21, "M202608", "monthly", "GCash"]
         ];
 
         // Renewal history. The hand-written rows above only reach back 21 days,
@@ -209,7 +209,7 @@ const DB = {
                 email: "maria@example.com",
                 phone: "0921 555 0002",
                 plan: "quarterly",
-                payment: "Bank transfer",
+                payment: "GCash",
                 status: "pending",
                 createdAt: new Date().toISOString(),
                 notes: ""
@@ -271,14 +271,14 @@ DB.load();
 // Signed-out visitors and non-staff roles get 401/403 and keep the local copy.
 // When the server data differs from what this browser last saw, the page
 // reloads once so every screen renders the server data.
-const METHOD_CODE = { "Cash": "CASH", "GCash": "GCASH", "Bank transfer": "BANK" };
+const METHOD_CODE = { "Cash": "CASH", "GCash": "GCASH" };
 // sync(true) reloads the page once when the server data changed (page load).
 // sync(false) just refreshes DB in place; used right after a write so the screen can redraw.
 let _inFlightSync = null;
 DB.sync = async function (reload = false) {
     if (_inFlightSync) return _inFlightSync;
     _inFlightSync = (async () => {
-        const METHOD_LABEL = { CASH: "Cash", GCASH: "GCash", BANK: "Bank transfer", ONLINE: "Online (PayMongo)" };
+        const METHOD_LABEL = { CASH: "Cash", GCASH: "GCash", ONLINE: "Online (PayMongo)" };
         const idFor = pk => "M" + (202600 + pk);
         const SIG_KEY = "profit-server-sig";
         const controller = new AbortController();

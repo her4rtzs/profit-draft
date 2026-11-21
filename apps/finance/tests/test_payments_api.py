@@ -34,12 +34,11 @@ class DeskPaymentTests(TestCase):
     def as_(self, user):
         self.api.force_authenticate(user=user)
 
-    def pay(self, plan="monthly", method="CASH", member=None):
-        return self.api.post(
-            PAY,
-            {"member_id": (member or self.member).pk, "plan": plan, "method": method},
-            format="json",
-        )
+    def pay(self, plan="monthly", method="CASH", member=None, reference=None):
+        body = {"member_id": (member or self.member).pk, "plan": plan, "method": method}
+        if method == "GCASH":
+            body["reference_number"] = reference or "0917 123 4567"
+        return self.api.post(PAY, body, format="json")
 
     def test_first_payment_activates_membership_at_correct_price(self):
         self.as_(self.owner)
@@ -86,7 +85,7 @@ class DeskPaymentTests(TestCase):
     def test_summary_is_owner_only_and_totals_desk_payments(self):
         self.as_(self.owner)
         self.assertEqual(self.pay("monthly", "CASH").status_code, 201)
-        self.assertEqual(self.pay("annual", "BANK").status_code, 201)
+        self.assertEqual(self.pay("annual", "GCASH").status_code, 201)
         today = timezone.localdate()
         res = self.api.get(SUMMARY, {"year": today.year, "month": today.month})
         self.assertEqual(res.status_code, 200)
@@ -95,7 +94,7 @@ class DeskPaymentTests(TestCase):
         self.assertEqual(body["online_centavos"], 0)
         self.assertEqual(body["total_centavos"], 830_000)
         self.assertEqual(body["payment_count"], 2)
-        self.assertEqual(body["by_method"], {"CASH": 80_000, "BANK": 750_000})
+        self.assertEqual(body["by_method"], {"CASH": 80_000, "GCASH": 750_000})
         self.assertEqual(body["by_plan"], {"monthly": 80_000, "annual": 750_000})
 
         self.as_(self.cashier)
@@ -108,7 +107,7 @@ class DeskPaymentTests(TestCase):
     def test_revenue_analytics_endpoint(self):
         self.as_(self.owner)
         self.assertEqual(self.pay("monthly", "CASH").status_code, 201)
-        self.assertEqual(self.pay("annual", "BANK").status_code, 201)
+        self.assertEqual(self.pay("annual", "GCASH").status_code, 201)
         today = timezone.localdate()
 
         # Month
@@ -183,10 +182,37 @@ class DeskPaymentTests(TestCase):
         # Cashier is denied Owner-only operations (edit/delete payments, trainers, announcements)
         pid = payment_data["id"]
         self.assertEqual(
-            self.api.patch(f"/api/staff/payments/{pid}/", {"method": "GCASH"}, format="json").status_code,
+            self.api.patch(f"/api/staff/payments/{pid}/", {"method": "GCASH", "reference_number": "0917 123 4567"}, format="json").status_code,
             403,
         )
         self.assertEqual(self.api.delete(f"/api/staff/payments/{pid}/").status_code, 403)
         self.assertEqual(self.api.get("/api/staff/trainers/").status_code, 403)
         self.assertEqual(self.api.get("/api/staff/announcements/").status_code, 403)
+
+    def test_gcash_requires_and_normalises_reference(self):
+        self.as_(self.owner)
+        no_ref = self.api.post(
+            PAY,
+            {"member_id": self.member.pk, "plan": "monthly", "method": "GCASH"},
+            format="json",
+        )
+        self.assertEqual(no_ref.status_code, 400)
+
+        res = self.pay("monthly", "GCASH", reference="0917 123 4567")
+        self.assertEqual(res.status_code, 201, res.content)
+        self.assertEqual(ManualPayment.objects.get().reference_number, "09171234567")
+
+    def test_duplicate_gcash_reference_is_rejected(self):
+        self.as_(self.owner)
+        self.assertEqual(
+            self.pay("monthly", "GCASH", reference="0917 123 4567").status_code, 201
+        )
+        res = self.pay("quarterly", "GCASH", reference="09171234567")
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(ManualPayment.objects.count(), 1)
+
+    def test_bank_is_no_longer_a_payment_method(self):
+        self.as_(self.owner)
+        self.assertEqual(self.pay("monthly", "BANK").status_code, 400)
+        self.assertFalse(ManualPayment.objects.exists())
 

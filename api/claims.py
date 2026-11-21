@@ -14,6 +14,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.billing.models import PaymentClaim, Subscription
+from apps.finance.models import ManualPayment
 from apps.finance.services import PLAN_PRICE_CENTAVOS
 from apps.membership.models import MemberProfile
 
@@ -94,6 +95,13 @@ class MemberClaimView(APIView):
             raise NotFound("No member profile.")
         serializer = ClaimSubmitSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        reference = serializer.validated_data["reference_number"].replace(" ", "")
+        if ManualPayment.objects.filter(
+            method=ManualPayment.Method.GCASH, reference_number=reference
+        ).exists():
+            raise serializers.ValidationError(
+                {"reference_number": "This GCash reference is already in use."}
+            )
 
         with transaction.atomic():
             member = MemberProfile.objects.select_for_update().get(pk=profile.pk)

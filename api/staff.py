@@ -8,7 +8,7 @@ capabilities. Business rules live in apps/membership/services.py.
 from datetime import date, datetime, time, timedelta
 
 from django.core.exceptions import ValidationError as DjangoValidationError
-from django.db import transaction
+from django.db import IntegrityError, transaction
 from django.db.models import Prefetch, Q, Sum
 from django.utils import timezone
 from rest_framework import status, viewsets
@@ -18,7 +18,7 @@ from rest_framework.views import APIView
 
 from apps.accounts.adapters import CanManageEnrollment, CanViewAttendance, CanViewFinancials
 from apps.membership.models import Attendance, MemberProfile
-from apps.billing.models import Payment, Subscription
+from apps.billing.models import Payment, PaymentClaim, Subscription
 from apps.finance.models import ManualPayment
 from apps.trainers.models import TrainerAssignment
 from apps.finance.services import monthly_summary, record_desk_payment, revenue_analytics
@@ -275,6 +275,7 @@ class StaffPaymentView(APIView):
                 method=data["method"],
                 recorded_by=request.user,
                 paid_on=data.get("paid_on"),
+                reference_number=data.get("reference_number"),
             )
         except DjangoValidationError as exc:
             return _bad_request(exc)
@@ -303,11 +304,33 @@ class StaffPaymentDetailView(APIView):
             return Response({"detail": "Payment not found."}, status=status.HTTP_404_NOT_FOUND)
         serializer = EditPaymentSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        data = dict(serializer.validated_data)
+        raw_ref = data.pop("reference_number", None)
+        if raw_ref is not None:
+            data["reference_number"] = str(raw_ref).replace(" ", "") or None
+        final_method = data.get("method", payment.method)
+        final_ref = data.get("reference_number", payment.reference_number)
+        if final_method == ManualPayment.Method.GCASH and not final_ref:
+            return Response(
+                {"detail": "A GCash reference number is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if not data:
+            return Response(
+                {"detail": "Send a method, reference or paid_on date to change."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         changed = []
-        for field, value in serializer.validated_data.items():
+        for field, value in data.items():
             setattr(payment, field, value)
             changed.append(field)
-        payment.save(update_fields=changed)
+        try:
+            payment.save(update_fields=changed)
+        except IntegrityError:
+            return Response(
+                {"detail": "This GCash reference number is already in use."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         return Response(ManualPaymentSerializer(payment).data)
 
     def delete(self, request, pk):
@@ -367,14 +390,19 @@ class StaffCashierOverviewView(APIView):
             created_at__lt=day_end,
         )
 
-        by_method = {"CASH": 0, "GCASH": 0, "BANK": 0, "ONLINE": 0}
+        by_method = {"CASH": 0, "GCASH": 0, "ONLINE": 0}
         for row in desk_today.values("method").annotate(total=Sum("amount_centavos")):
             by_method[row["method"]] = row["total"] or 0
         online_total = online_today.aggregate(t=Sum("amount_centavos"))["t"] or 0
         by_method["ONLINE"] = online_total
+        claims_today = PaymentClaim.objects.filter(
+            status=PaymentClaim.Status.APPROVED, reviewed_at__date=today
+        )
+        claim_total = claims_today.aggregate(t=Sum("amount_centavos"))["t"] or 0
+        by_method["GCASH"] += claim_total
 
         collected_today = sum(by_method.values())
-        payments_today_count = desk_today.count() + online_today.count()
+        payments_today_count = desk_today.count() + online_today.count() + claims_today.count()
         checkins_today_count = Attendance.objects.filter(check_in_date=today).count()
         renewals_due_count = MemberProfile.objects.filter(
             expiry_date__isnull=False,

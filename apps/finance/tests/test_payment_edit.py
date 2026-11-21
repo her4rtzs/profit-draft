@@ -30,19 +30,25 @@ class PaymentEditTests(TestCase):
     def test_owner_can_change_method_and_date(self):
         self.api.force_authenticate(self.owner)
         day = timezone.localdate() - datetime.timedelta(days=2)
-        res = self.api.patch(self.url, {"method": "GCASH", "paid_on": day.isoformat()}, format="json")
+        res = self.api.patch(self.url, {"method": "GCASH", "reference_number": "0917 123 4567", "paid_on": day.isoformat()}, format="json")
         self.assertEqual(res.status_code, 200, res.content)
         self.payment.refresh_from_db()
         self.assertEqual(self.payment.method, "GCASH")
+        self.assertEqual(self.payment.reference_number, "09171234567")
         self.assertEqual(self.payment.paid_on, day)
         self.assertEqual(self.payment.amount_centavos, 80_000)
 
     def test_amount_and_plan_are_ignored(self):
         self.api.force_authenticate(self.owner)
-        res = self.api.patch(self.url, {"method": "BANK", "amount_centavos": 1, "plan": "annual"}, format="json")
+        res = self.api.patch(self.url, {"method": "GCASH", "reference_number": "0917 123 4567", "amount_centavos": 1, "plan": "annual"}, format="json")
         self.assertEqual(res.status_code, 200)
         self.payment.refresh_from_db()
         self.assertEqual((self.payment.plan, self.payment.amount_centavos), ("monthly", 80_000))
+        self.assertEqual(self.payment.reference_number, "09171234567")
+
+    def test_bank_method_is_rejected(self):
+        self.api.force_authenticate(self.owner)
+        self.assertEqual(self.api.patch(self.url, {"method": "BANK"}, format="json").status_code, 400)
 
     def test_future_date_and_empty_body_rejected(self):
         self.api.force_authenticate(self.owner)
@@ -52,7 +58,7 @@ class PaymentEditTests(TestCase):
 
     def test_cashier_cannot_edit(self):
         self.api.force_authenticate(self.cashier)
-        res = self.api.patch(self.url, {"method": "BANK"}, format="json")
+        res = self.api.patch(self.url, {"method": "GCASH"}, format="json")
         self.assertEqual(res.status_code, 403)
 
     def test_unknown_payment_is_404(self):

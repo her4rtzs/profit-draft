@@ -90,6 +90,11 @@
                         <label for="payAmount">Amount</label>
                         <input class="fn-input" id="payAmount" type="text" readonly>
                     </div>
+                    <div class="fn-field">
+                        <label for="payReference">GCash reference number</label>
+                        <input class="fn-input" id="payReference" maxlength="20" inputmode="numeric" placeholder="0917 123 4567 (GCash only)">
+                        <small>Required for GCash. Digits and spaces only.</small>
+                    </div>
                     <button class="fn-btn-gold" type="submit">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
                         Record payment

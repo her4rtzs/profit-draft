@@ -2638,3 +2638,15 @@ Create an email and a website notification when a GCash claim is approved.
 - Added 3 tests for the notification/email, mail failure, and duplicate approval; full suite: 279 tests pass.
 ### Decision-log skill
 Prefer the existing notification service for "email plus in-app" requests; it already has the failure policy, and duplicating it in a new endpoint would give the two channels different behaviour.
+
+## 2026-11-21 18:45 (Asia/Manila): Cash and GCash only at the desk
+### What I asked for
+Limit staff-recorded payments to cash and GCash, remove bank, require a GCash reference with the same normalisation and uniqueness rule, keep using the shared enrollment service, count approved claims plus desk payments plus old PayMongo records in the Financial Dashboard while ignoring pending and rejected claims, create the migration but do not apply it, and add tests.
+### What the agent decided and why
+- Removed BANK from the model choices, API serializers, staff forms, filters and demo data. See [[2026-11-21 Cash and GCash only at the desk]]
+- GCash desk payments need a 10-20 digit/space reference stored without spaces; uniqueness is a database constraint for desk rows plus service checks against both tables.
+- Approved claims are counted on their review date in the monthly summary, revenue charts and cashier overview; pending and rejected claims never count.
+- Migration `finance.0003` is created but NOT applied. Together with `membership.0005` and `billing.0005`, three migrations still need applying to Dev.
+- Full suite: 286 tests pass.
+### Decision-log skill
+When the same business identifier lives in two tables, enforce uniqueness inside each table with a database constraint and check across tables in the write services; a single-table constraint cannot cover a workflow split across two models.

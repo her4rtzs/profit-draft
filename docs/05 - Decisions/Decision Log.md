@@ -82,3 +82,4 @@ One note per decision, oldest first; entries with an `Unknown` date are listed l
 - [[2026-11-21 Member GCash claim submission]]: Members submit only a reference and a Drive link; the server sets member, amount, method and status, and the link is never fetched.
 - [[2026-11-21 Staff review of GCash claims]]: Owner/Cashier approve or reject pending claims from the Payments page; approval enrolls once in one transaction.
 - [[2026-11-21 Approval notifies the member]]: Approval creates one in-app notification and its email mirror with the plan and expiry only; mail failure cannot roll it back.
+- [[2026-11-21 Cash and GCash only at the desk]]: Desk payments are cash or GCash only; GCash needs a unique normalised reference and dashboards count approved claims too.

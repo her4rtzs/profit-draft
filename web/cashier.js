@@ -19,7 +19,6 @@
   var METHOD_LABELS = {
     CASH: 'Cash (Desk)',
     GCASH: 'GCash (Desk)',
-    BANK: 'Bank Transfer',
     ONLINE: 'PayMongo QR Ph',
     QRPH: 'PayMongo QR Ph',
   };
@@ -260,7 +259,7 @@
     var collected = Number((overview && overview.collected_today_centavos) || 0);
     var countToday = Number((overview && overview.payments_today_count) || 0);
     var cashToday = Number(byMethod.CASH || 0);
-    var digitalToday = Number(byMethod.GCASH || 0) + Number(byMethod.BANK || 0) + Number(byMethod.ONLINE || 0);
+    var digitalToday = Number(byMethod.GCASH || 0) + Number(byMethod.ONLINE || 0);
     var renewalsDue = Number((overview && overview.renewals_due_count) || 0);
 
     var el;
@@ -273,7 +272,7 @@
     if ((el = $('kpiCashSub'))) el.textContent = cashToday > 0 ? 'Cash received at desk' : 'No cash payments yet today';
 
     if ((el = $('kpiDigitalVal'))) el.textContent = fmtPesoWhole(digitalToday);
-    if ((el = $('kpiDigitalSub'))) el.textContent = 'GCash, Bank & QR Ph';
+    if ((el = $('kpiDigitalSub'))) el.textContent = 'GCash and old online payments';
 
     if ((el = $('kpiDueVal'))) el.textContent = String(renewalsDue);
     if ((el = $('kpiDueSub'))) {
@@ -677,6 +676,12 @@
       if (methodSelect) methodSelect.focus();
       return;
     }
+    var reference = $('cashierReference') ? $('cashierReference').value.trim() : '';
+    if (method === 'GCASH' && !reference) {
+      showFormStatus('error', 'Enter the GCash reference number.');
+      if ($('cashierReference')) $('cashierReference').focus();
+      return;
+    }
 
     state.isSubmitting = true;
     var originalHtml = submitBtn ? submitBtn.innerHTML : '';
@@ -690,6 +695,7 @@
       member_id: memberId,
       plan: plan,
       method: method,
+      reference_number: reference,
     })
       .then(function (res) {
         var payment = (res && res.payment) || {};

@@ -109,14 +109,6 @@ window.PROFIT_CONFIG = window.PROFIT_CONFIG || { API_BASE_URL: "/api", DEMO_MODE
         number: "0917 555 0142",
         note: "Send the exact amount, then paste the reference number below."
       },
-      {
-        id: "bank",
-        label: "Bank transfer",
-        icon: "fa-building-columns",
-        accountName: "BDO · PROFIT FUNCTIONAL FITNESS",
-        number: "0012 345 678 901",
-        note: "Transfers post within one banking day. Use your name as the remark."
-      },
       /* Cash is a real option on the form but has no account to send to. Without
          this entry the panel fell through to rows[0] and told a walk-in to send
          GCash, which is the wrong instruction for someone standing at the desk. */

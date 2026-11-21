@@ -400,8 +400,12 @@
             if (!m.serverId) return toast("This member is not on the server yet.");
             try {
                 // The server records the payment and renews the membership in one step.
+                const method = METHOD_CODE[$("#payMethod").value] || "CASH";
+                const reference = $("#payReference") ? $("#payReference").value.trim() : "";
+                if (method === "GCASH" && !reference) return toast("Enter the GCash reference number.", true);
                 await window.ProFitAPI.post("/staff/payments/", {
-                    member_id: m.serverId, plan: planSel.value, method: METHOD_CODE[$("#payMethod").value] || "CASH"
+                    member_id: m.serverId, plan: planSel.value, method: method,
+                    reference_number: reference
                 });
                 if (!(await DB.sync(false))) throw new Error("Saved, but the list could not be refreshed. Reload the page.");
             } catch (err) {
