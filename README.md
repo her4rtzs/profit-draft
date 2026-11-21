@@ -6,7 +6,7 @@ Gym operations system for Functional Fitness Gym. It replaces paper logbooks and
 - **Members** use the same web portal on their phone.
 - Both talk to one Django + Django REST Framework backend and one Supabase PostgreSQL database.
 
-> This repository is the **first-build scaffold**: a runnable, tested foundation with a vertical slice through each module. Some areas (full PayMongo payment flow, financial reporting, Supabase Storage, deploy automation) are intentionally documented stubs — see [Project status](#project-status).
+> This repository is a runnable gym operations app. Some areas (financial reporting detail, Supabase Storage, deploy automation) are still being completed - see [Project status](#project-status).
 
 ## Stack
 
@@ -16,7 +16,7 @@ Gym operations system for Functional Fitness Gym. It replaces paper logbooks and
 | Database | Supabase PostgreSQL via the Django ORM |
 | Web (staff portal) | Django templates, Tailwind CSS, daisyUI, HTMX, Alpine.js, Lucide icons, django-components |
 | Files | Supabase Storage via `django-storages` (PDFs, profile images) — deferred |
-| Payments | PayMongo (GCash, Maya, cards) |
+| Payments | Cash at the desk and staff-reviewed GCash claims; no online gateway |
 | Scheduled jobs | Supabase `pg_cron` |
 
 Timezone is `Asia/Manila`; currency is PHP (payment amounts are stored in centavos).
@@ -24,7 +24,7 @@ Timezone is `Asia/Manila`; currency is PHP (payment amounts are stored in centav
 ## Modules
 
 1. **Membership** — enrollment, attendance records, member profiles. Staff and members use the same web portal.
-2. **Billing & Subscription** — daily gym subscription payments through PayMongo. A `pg_cron` job expires memberships automatically.
+2. **Billing & Subscription** - free sign-up with a seven-day trial, then cash payments or GCash claims reviewed by staff. A `pg_cron` job expires memberships automatically.
 3. **Financial Dashboard** — transaction history and financial reports. Owner only.
 
 ### Roles (RBAC)
@@ -45,7 +45,7 @@ Permissions are enforced server-side on **both** Django views and DRF endpoints.
 manage.py, requirements.txt, vercel.json   backend entry points and deploy config
 profit/            Django project (settings, urls, wsgi)
 apps/membership/   enrollment, attendance, member profiles (Module 1)
-apps/billing/      subscriptions, PayMongo integration, webhook receiver (Module 2)
+apps/billing/      subscriptions, GCash claims, and old payment history (Module 2)
 apps/finance/      transaction history and reports (Module 3)
 apps/accounts/     users, roles, RBAC permissions
 api/               DRF serializers, viewsets, and session-auth endpoints for the web portal
@@ -99,22 +99,20 @@ Copy `.env.example` to `.env` and fill in values as needed. The file documents e
 | `ALLOWED_HOSTS` | Host allow-list (CSV). Required when `DEBUG=False` — startup fails fast if unset. Include your Vercel and custom domains. |
 | `DATABASE_URL` | DB connection. Leave unset for the offline SQLite fallback. In production, target the Supabase **transaction-mode pooler** host on port **6543**. |
 | `SUPABASE_URL`, `SUPABASE_KEY` | Supabase Storage integration (deferred). |
-| `PAYMONGO_SECRET_KEY` | PayMongo API auth (billing). |
-| `PAYMONGO_WEBHOOK_SECRET` | PayMongo webhook signature verification secret. |
 
 ## Deployment notes (Vercel + Supabase)
 
-- Serverless: no background workers and no persistent local filesystem. Scheduled work runs via `pg_cron`; async payment results arrive via webhooks.
+- Serverless: no background workers and no persistent local filesystem. Scheduled work runs via `pg_cron`.
 - Static files are served through WhiteNoise from inside the function (compiled at build time, no runtime CDN). CDN/edge static hosting is a later optimization.
 - Use the Supabase pooler in transaction mode; the app sets `DISABLE_SERVER_SIDE_CURSORS = True` and `CONN_MAX_AGE = 0`.
 - `pg_cron` jobs are not managed by Django migrations — their SQL lives in `supabase/cron/` and is applied manually.
 
-## Payments (PayMongo)
+## Payments (cash and GCash)
 
 - Amounts are in centavos (PHP 100.00 = `10000`).
-- The webhook signature is verified before any event is processed.
-- Webhook handlers are idempotent — the same event may be delivered more than once.
-- **Only the webhook** sets a payment to paid or failed; the client redirect is never trusted.
+- Sign-up is free and creates a seven-day trial with app access only.
+- Cash is recorded at the desk by Owner or Cashier; GCash is a claim with a reference and a Drive screenshot link that staff must approve before it enrolls anyone.
+- The old online gateway is retired. Its `Payment`, `Subscription`, `WebhookEvent` and `PendingSignup` rows are kept as history and shown as "paymongo" in reports; no table or column was dropped.
 
 ## Project status
 
@@ -123,11 +121,11 @@ Implemented in this first build:
 - Django project wired for the Supabase/Vercel constraints with an offline local-dev fallback.
 - `accounts`: custom user + four-role RBAC, single-sourced and enforced on views and DRF.
 - `membership` (Module 1): models, services, DRF read API (`/api/membership/me/`, `/api/attendance/`), staff web views, and the web portal shell (build-time Tailwind/daisyUI, a django-component, an HTMX partial).
-- `billing` (Module 2): models, single-writer payment mutators, and a concrete race-safe, signature-verifying, idempotent PayMongo webhook receiver.
+- `billing` (Module 2): subscription and payment history models kept intact, plus GCash claims with staff review and one-transaction enrollment.
 - `finance` (Module 3): model stub + Owner-only dashboard gate.
 - `supabase/cron/`: membership-expiry SQL stub.
 
-Deferred (documented stubs): full PayMongo payment-intent flow, financial reporting logic, Supabase Storage wiring, and deploy automation.
+Deferred: deeper financial reporting detail, Supabase Storage wiring, and deploy automation.
 
 ## Contributing
 

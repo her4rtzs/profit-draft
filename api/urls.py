@@ -4,8 +4,10 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from . import auth
-from .join import JoinCheckoutView, JoinConfirmView
-from .member import MemberCheckInView, MemberCheckoutView, MemberMeView
+from .claims import MemberClaimView
+from .join import JoinCheckoutView
+from .member import MemberCheckInView, MemberMeView
+from .staff_claims import ClaimApproveView, ClaimRejectView, StaffClaimListView
 from rest_framework.routers import SimpleRouter
 
 from .trainers import (
@@ -84,15 +86,17 @@ urlpatterns = [
     path("auth/google/login/", auth.google_oauth_login_view, name="auth-google-login"),
     path("auth/google/callback/", auth.google_oauth_callback_view, name="auth-google-callback"),
     path("join/checkout/", JoinCheckoutView.as_view(), name="join-checkout"),
-    path("join/confirm/", JoinConfirmView.as_view(), name="join-confirm"),
     path("member/me/", MemberMeView.as_view(), name="member-me"),
     path("member/check-in/", MemberCheckInView.as_view(), name="member-checkin"),
-    path("member/checkout/", MemberCheckoutView.as_view(), name="member-checkout"),
+    path("member/claims/", MemberClaimView.as_view(), name="member-claims"),
     path("staff/attendance/", StaffAttendanceView.as_view(), name="staff-attendance"),
     path("staff/attendance/check-in/", StaffCheckInView.as_view(), name="staff-checkin"),
     path("staff/cashier/overview/", StaffCashierOverviewView.as_view(), name="staff-cashier-overview"),
     path("staff/payments/", StaffPaymentView.as_view(), name="staff-payments"),
     path("staff/payments/<int:pk>/", StaffPaymentDetailView.as_view(), name="staff-payment-detail"),
+    path("staff/claims/", StaffClaimListView.as_view(), name="staff-claims"),
+    path("staff/claims/<int:pk>/approve/", ClaimApproveView.as_view(), name="staff-claim-approve"),
+    path("staff/claims/<int:pk>/reject/", ClaimRejectView.as_view(), name="staff-claim-reject"),
     path("staff/reports/summary/", StaffSummaryView.as_view(), name="staff-summary"),
     path("staff/reports/revenue/", StaffRevenueAnalyticsView.as_view(), name="staff-revenue-analytics"),
     path("notifications/", NotificationListView.as_view(), name="notifications"),

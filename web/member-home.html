@@ -440,9 +440,10 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
         <div class="pf-panel-head">
           <div>
             <h2><i class="fa-solid fa-receipt"></i> Payment History</h2>
-            <p>Membership payments, pending checkouts, and receipts.</p>
+            <p>Membership payments, GCash claims, and receipts.</p>
           </div>
           <button type="button" class="btn btn-soft" data-renew-membership><i class="fa-solid fa-plus"></i> Pay / Renew online</button>
+          <a class="btn btn-soft" href="/claim"><i class="fa-solid fa-mobile-screen"></i> Submit GCash claim</a>
         </div>
         <div class="pf-sk-wrap" data-skeleton="payments" style="display:grid;gap:8px">
           <div class="pf-sk-row"><div class="pf-sk-line md"></div><div class="pf-sk-line sm"></div></div>
@@ -998,7 +999,6 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
 <script src="member-tabs.js?v=17"></script>
 <script src="member-shell.js?v=2"></script>
 <script src="change-password.js?v=1"></script>
-<script src="member-pay.js?v=2"></script>
 <script src="portal-fx.js?v=2"></script>
 <style>@media (max-width:760px){body{padding-bottom:92px}}</style>
 <nav class="pf-bottomnav" aria-label="Member sections">

@@ -35,6 +35,7 @@ from apps.notifications.services import (
     unread_count,
 )
 from .notifications import build_notification_payload
+from .permissions import MemberAccess
 from apps.trainers import services
 from apps.trainers.models import TrainerAssignment, TrainerProfile, TrainerRequest
 
@@ -433,7 +434,7 @@ def _member_profile(user):
 class MemberTrainerView(APIView):
     """GET my current trainer, my pending request, and the trainers I can pick from."""
 
-    permission_classes = [IsMember]
+    permission_classes = [IsMember, MemberAccess]
 
     def get(self, request):
         profile = _member_profile(request.user)
@@ -452,7 +453,7 @@ class MemberTrainerView(APIView):
 class MemberTrainerRequestView(APIView):
     """POST {"trainer_id": n?, "note": "..."} asks for a trainer. The owner decides."""
 
-    permission_classes = [IsMember]
+    permission_classes = [IsMember, MemberAccess]
 
     def post(self, request):
         profile = _member_profile(request.user)
@@ -471,7 +472,7 @@ class MemberTrainerRequestView(APIView):
 
 
 class MemberTrainerRequestCancelView(APIView):
-    permission_classes = [IsMember]
+    permission_classes = [IsMember, MemberAccess]
 
     def post(self, request, pk):
         profile = _member_profile(request.user)

@@ -4,6 +4,7 @@ Per AGENTS.md, business logic lives here and in model methods, never in views
 or serializers. Views/serializers call these functions.
 """
 
+import re
 from datetime import timedelta
 
 from django.core.exceptions import ValidationError
@@ -138,6 +139,67 @@ def renew_member(member, plan, created_by, start_date=None):
     start = start_date or timezone.localdate()
     end = start + timedelta(days=PLAN_DAYS[plan])
     return enroll_member(member, start, end, created_by=created_by)
+
+
+TRIAL_DAYS = 7
+
+TRIAL_ENDED_MESSAGE = (
+    "Your free trial has ended and you have no active membership. "
+    "Pay at the desk or submit a GCash payment to activate your membership."
+)
+NO_MEMBERSHIP_MESSAGE = (
+    "You have no active membership. "
+    "Pay at the desk or submit a GCash payment to activate your membership."
+)
+TRIAL_PROFILE_ONLY_MESSAGE = (
+    "Your free trial gives access to your profile only. "
+    "Pay at the desk or submit a GCash payment to activate your membership."
+)
+
+
+def start_trial(member, *, now=None):
+    """Put ``member`` in TRIAL for 7 days; the end is computed here, never passed in."""
+    now = now or timezone.now()
+    member.membership_status = MemberProfile.MembershipStatus.TRIAL
+    member.trial_ends_at = now + timedelta(days=TRIAL_DAYS)
+    member.save(update_fields=["membership_status", "trial_ends_at"])
+    return member
+
+
+def trial_is_active(member, *, today=None):
+    """True while a TRIAL member is inside the 7 days, measured in Manila days."""
+    today = today or timezone.localdate()
+    return (
+        member.membership_status == MemberProfile.MembershipStatus.TRIAL
+        and member.trial_ends_at is not None
+        and today <= timezone.localdate(member.trial_ends_at)
+    )
+
+
+def member_access(member, *, today=None):
+    """Return ACTIVE, TRIAL or LOCKED for this request; expiry is computed now.
+
+    No status is written here and no scheduled job is involved: an expired trial
+    simply stops counting the moment the request is made.
+    """
+    today = today or timezone.localdate()
+    if member.is_active_on(today):
+        return "ACTIVE"
+    if trial_is_active(member, today=today):
+        return "TRIAL"
+    return "LOCKED"
+
+
+def register_trial_member(*, name, email, password, phone=""):
+    """Create a MEMBER login and start its 7-day trial. Role is never caller-supplied."""
+    if len((name or "").strip()) < 2:
+        raise ValidationError("Enter your full name.")
+    digits = re.sub(r"\D", "", phone or "")
+    if not 10 <= len(digits) <= 13:
+        raise ValidationError("Enter a valid mobile number (10 to 13 digits).")
+    with transaction.atomic():
+        profile = create_member(name=name, email=email, password=password, phone=phone or "")
+        return start_trial(profile)
 
 
 def check_in_member(member, recorded_by):

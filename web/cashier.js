@@ -19,9 +19,7 @@
   var METHOD_LABELS = {
     CASH: 'Cash (Desk)',
     GCASH: 'GCash (Desk)',
-    BANK: 'Bank Transfer',
-    ONLINE: 'PayMongo QR Ph',
-    QRPH: 'PayMongo QR Ph',
+    ONLINE: 'paymongo (old)',
   };
 
   var RECEIPT_ICON =
@@ -92,7 +90,7 @@
 
   function isOnlinePayment(p) {
     var m = String((p && p.method) || '').toUpperCase();
-    return p && (p.desk === false || m === 'ONLINE' || m === 'QRPH');
+    return p && (p.desk === false || m === 'ONLINE');
   }
 
   function paymentKey(p, fallbackIndex) {
@@ -260,7 +258,7 @@
     var collected = Number((overview && overview.collected_today_centavos) || 0);
     var countToday = Number((overview && overview.payments_today_count) || 0);
     var cashToday = Number(byMethod.CASH || 0);
-    var digitalToday = Number(byMethod.GCASH || 0) + Number(byMethod.BANK || 0) + Number(byMethod.ONLINE || 0);
+    var digitalToday = Number(byMethod.GCASH || 0) + Number(byMethod.ONLINE || 0);
     var renewalsDue = Number((overview && overview.renewals_due_count) || 0);
 
     var el;
@@ -273,7 +271,7 @@
     if ((el = $('kpiCashSub'))) el.textContent = cashToday > 0 ? 'Cash received at desk' : 'No cash payments yet today';
 
     if ((el = $('kpiDigitalVal'))) el.textContent = fmtPesoWhole(digitalToday);
-    if ((el = $('kpiDigitalSub'))) el.textContent = 'GCash, Bank & QR Ph';
+    if ((el = $('kpiDigitalSub'))) el.textContent = 'GCash and old online payments';
 
     if ((el = $('kpiDueVal'))) el.textContent = String(renewalsDue);
     if ((el = $('kpiDueSub'))) {
@@ -291,7 +289,7 @@
 
     var today = (overview && overview.today) || state.today || '';
     if (shiftDate) {
-      shiftDate.textContent = today ? 'Shift date: ' + today : 'Live desk and online receipts for today.';
+      shiftDate.textContent = today ? 'Shift date: ' + today : 'Desk payments and approved claims for today.';
     }
 
     var todays = state.payments.filter(function (p) {
@@ -467,7 +465,7 @@
     var memberObj = findMemberById(payment.member_id);
     var memberCode = payment.member_code || (payment.member_id ? 'MEM-' + String(payment.member_id).padStart(4, '0') : '—');
     var expiry = payment.expiry_date || (memberObj && memberObj.expiry_date) || 'Updated on account';
-    var recordedBy = payment.recorded_by || (payment.desk === false ? 'Online Self-Checkout' : state.cashierName);
+    var recordedBy = payment.recorded_by || (payment.desk === false ? 'paymongo (old)' : state.cashierName);
 
     var fields = {
       recRef: payment.ref || '—',
@@ -677,6 +675,12 @@
       if (methodSelect) methodSelect.focus();
       return;
     }
+    var reference = $('cashierReference') ? $('cashierReference').value.trim() : '';
+    if (method === 'GCASH' && !reference) {
+      showFormStatus('error', 'Enter the GCash reference number.');
+      if ($('cashierReference')) $('cashierReference').focus();
+      return;
+    }
 
     state.isSubmitting = true;
     var originalHtml = submitBtn ? submitBtn.innerHTML : '';
@@ -690,6 +694,7 @@
       member_id: memberId,
       plan: plan,
       method: method,
+      reference_number: reference,
     })
       .then(function (res) {
         var payment = (res && res.payment) || {};

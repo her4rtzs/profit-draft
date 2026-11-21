@@ -11,7 +11,7 @@ from apps.accounts.models import Role
 from apps.billing.models import Payment, Subscription
 from apps.billing.services import activate_paid_payment, mark_payment_paid
 from apps.membership.models import Attendance, Enrollment, MemberProfile
-from apps.membership.services import enroll_member
+from apps.membership.services import enroll_member, start_trial
 
 User = get_user_model()
 
@@ -53,6 +53,14 @@ class MemberPortalApiTests(TestCase):
     def test_member_me_requires_authentication(self):
         res = self.client.get("/api/member/me/")
         self.assertIn(res.status_code, (401, 403))
+
+    def test_trial_member_reports_trial_status(self):
+        start_trial(self.profile)
+        self.client.force_authenticate(user=self.user)
+        res = self.client.get("/api/member/me/")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data["membership"]["status"], "TRIAL")
+        self.assertEqual(res.data["membership"]["rawStatus"], "TRIAL")
 
     def test_active_membership_returns_real_plan_dates_and_scoped_records(self):
         today = timezone.localdate()
@@ -103,7 +111,7 @@ class MemberPortalApiTests(TestCase):
         self.assertEqual(len(res.data["payments"]), 1)
         self.assertEqual(len(res.data["attendance"]), 0)
 
-    def test_expired_membership_clamps_remaining_days_to_zero(self):
+    def test_expired_membership_is_locked(self):
         today = timezone.localdate()
         yesterday = today - timedelta(days=1)
         self.profile.membership_status = MemberProfile.MembershipStatus.ACTIVE
@@ -118,9 +126,8 @@ class MemberPortalApiTests(TestCase):
 
         self.client.force_authenticate(user=self.user)
         res = self.client.get("/api/member/me/")
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(res.data["membership"]["remainingDays"], 0)
-        self.assertEqual(res.data["membership"]["status"], "EXPIRED")
+        self.assertEqual(res.status_code, 403)
+        self.assertIn("no active membership", str(res.data["detail"]))
 
     def test_expiring_soon_membership_flags_within_seven_days(self):
         today = timezone.localdate()
@@ -149,9 +156,11 @@ class MemberPortalApiTests(TestCase):
             paymongo_payment_id="pi_failed_1",
         )
         self.client.force_authenticate(user=self.user)
+        self.profile.membership_status = MemberProfile.MembershipStatus.ACTIVE
+        self.profile.save(update_fields=["membership_status"])
         res = self.client.get("/api/member/me/")
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(res.data["membership"]["status"], "PENDING")
+        self.assertEqual(res.data["membership"]["status"], "ACTIVE")
         self.assertEqual(res.data["membership"]["paymentStatus"], Payment.Status.FAILED)
         self.assertEqual(res.data["payments"][0]["status"], Payment.Status.FAILED)
 

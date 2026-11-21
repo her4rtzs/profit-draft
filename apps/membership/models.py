@@ -18,6 +18,7 @@ class MemberProfile(models.Model):
         ACTIVE = "ACTIVE", "Active"
         EXPIRED = "EXPIRED", "Expired"
         PENDING = "PENDING", "Pending"
+        TRIAL = "TRIAL", "Trial"
 
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
@@ -31,6 +32,8 @@ class MemberProfile(models.Model):
     )
     date_joined = models.DateField(default=timezone.localdate)
     expiry_date = models.DateField(null=True, blank=True)
+    # End of the free trial. Set only by services.start_trial, never by a client.
+    trial_ends_at = models.DateTimeField(null=True, blank=True)
     phone = models.CharField(max_length=30, blank=True, default="")
     address = models.CharField(max_length=255, blank=True, default="")
     photo_data = models.TextField(blank=True, default="")  # small JPEG data URL, set by the member

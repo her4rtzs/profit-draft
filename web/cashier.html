@@ -59,7 +59,7 @@
       </div>
       <h2 class="fn-kpi-val" id="kpiDigitalVal">₱0</h2>
       <div class="fn-kpi-foot">
-        <span class="fn-kpi-cap" id="kpiDigitalSub">GCash, Bank &amp; QR Ph</span>
+        <span class="fn-kpi-cap" id="kpiDigitalSub">GCash and old online payments</span>
       </div>
     </article>
 
@@ -159,9 +159,14 @@
               <select class="fn-input" id="cashierMethod" name="method" required>
                 <option value="CASH">Cash (Desk)</option>
                 <option value="GCASH">GCash (Desk)</option>
-                <option value="BANK">Bank Transfer</option>
               </select>
             </div>
+          </div>
+
+          <div class="fn-field">
+            <label for="cashierReference">GCash reference number</label>
+            <input class="fn-input" id="cashierReference" maxlength="20" inputmode="numeric" placeholder="0917 123 4567 (GCash only)">
+            <small>Required for GCash. Digits and spaces only.</small>
           </div>
 
           <div class="fn-field">
@@ -186,7 +191,7 @@
             </span>
             <div>
               <h2 class="fn-card-title">Today&apos;s receipts</h2>
-              <p class="fn-card-sub" id="cashierShiftDate">Live desk and online receipts for today.</p>
+              <p class="fn-card-sub" id="cashierShiftDate">Desk payments and approved claims for today.</p>
             </div>
           </div>
           <div style="display:flex;align-items:center;gap:8px;">
@@ -234,8 +239,7 @@
           <button class="chip active" type="button" data-method="">All</button>
           <button class="chip" type="button" data-method="CASH">Cash</button>
           <button class="chip" type="button" data-method="GCASH">GCash</button>
-          <button class="chip" type="button" data-method="BANK">Bank</button>
-          <button class="chip" type="button" data-method="ONLINE">QR Ph (Online)</button>
+          <button class="chip" type="button" data-method="ONLINE">paymongo (old)</button>
         </div>
       </div>
 

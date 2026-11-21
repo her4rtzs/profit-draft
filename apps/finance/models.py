@@ -6,6 +6,7 @@ Amounts are ALWAYS integer centavos, never floats (per AGENTS.md).
 
 from django.conf import settings
 from django.db import models
+from django.db.models import Q
 
 
 class TransactionRecord(models.Model):
@@ -24,11 +25,11 @@ class TransactionRecord(models.Model):
 
 
 class ManualPayment(models.Model):
-    """A payment staff recorded at the desk: cash, GCash, or bank transfer.
+    """A payment staff recorded at the desk: cash or GCash.
 
-    Kept separate from ``billing.Payment`` on purpose. That model's status is
-    written only by the PayMongo webhook, and a desk payment is settled the
-    moment staff record it, so it lives here instead.
+    Kept separate from ``billing.Payment`` on purpose: that table holds
+    read-only history from the retired online gateway, while a desk payment is
+    settled the moment staff record it.
     """
 
     class Plan(models.TextChoices):
@@ -39,7 +40,6 @@ class ManualPayment(models.Model):
     class Method(models.TextChoices):
         CASH = "CASH", "Cash"
         GCASH = "GCASH", "GCash"
-        BANK = "BANK", "Bank transfer"
 
     member = models.ForeignKey(
         "membership.MemberProfile",
@@ -49,6 +49,9 @@ class ManualPayment(models.Model):
     plan = models.CharField(max_length=20, choices=Plan.choices)
     method = models.CharField(max_length=20, choices=Method.choices)
     amount_centavos = models.PositiveIntegerField()
+    # Required for GCash desk payments. Stored with spaces removed so it
+    # matches the reference on a member's GCash claim.
+    reference_number = models.CharField(max_length=64, null=True, blank=True)
     paid_on = models.DateField()
     recorded_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -59,6 +62,20 @@ class ManualPayment(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["reference_number"],
+                condition=Q(method="GCASH") & ~Q(reference_number=""),
+                name="unique_desk_gcash_reference",
+            ),
+        ]
+
     def __str__(self):
         return f"ManualPayment<{self.pk} {self.plan} {self.method}>"
+
+    def save(self, *args, **kwargs):
+        if self.reference_number is not None:
+            self.reference_number = self.reference_number.replace(" ", "")
+        super().save(*args, **kwargs)
 

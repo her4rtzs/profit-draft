@@ -1,12 +1,11 @@
-"""Single-writer / stale-transition guard tests for the payment mutators."""
+"""Guard tests for the legacy payment status helpers (history rows only)."""
 
 from django.test import TestCase
 from django.utils import timezone
 
-from apps.billing.models import Payment, Subscription, WebhookEvent
+from apps.billing.models import Payment, Subscription
 from apps.billing.services import (
     activate_paid_payment,
-    create_payment_intent,
     mark_payment_failed,
     mark_payment_paid,
 )
@@ -64,7 +63,3 @@ class PaymentMutatorTests(TestCase):
         activate_paid_payment(payment)
         member.refresh_from_db()
         self.assertEqual(member.expiry_date, moved_to + timezone.timedelta(days=30))
-
-    def test_create_payment_intent_is_stub(self):
-        with self.assertRaises(NotImplementedError):
-            create_payment_intent(None, 10000)

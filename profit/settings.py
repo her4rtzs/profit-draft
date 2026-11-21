@@ -7,7 +7,7 @@ fallback for local development, and a production target of Vercel serverless
 functions backed by Supabase PostgreSQL (transaction-mode pooler).
 
 LOGGING POLICY: never log PII (names, contact details) or payment details
-(amounts, PayMongo IDs, card/wallet data). Loggers configured below must only
+(amounts, payment references, card/wallet data). Loggers configured below must only
 record non-sensitive identifiers and status/outcome enums.
 """
 
@@ -187,15 +187,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # PASSWORD_HASHERS left at Django's default (Argon2 first); argon2-cffi is
 # installed so the preferred hasher is available.
-
-# --- PayMongo --------------------------------------------------------------
-# Webhook signature-verification secret (whsk_ prefix in production). Empty by
-# default so the project runs offline; the webhook rejects (400) any event when
-# the secret is unset. NEVER log or echo this value.
-PAYMONGO_WEBHOOK_SECRET = env("PAYMONGO_WEBHOOK_SECRET", default="")
-# API secret key (sk_test_... / sk_live_...). Empty = online payment disabled. NEVER log it.
-PAYMONGO_SECRET_KEY = env("PAYMONGO_SECRET_KEY", default="")
-PAYMONGO_PAYMENT_METHODS = env.list("PAYMONGO_PAYMENT_METHODS", default=["gcash", "paymaya", "card", "qrph"])
 
 # --- Email (Resend) --------------------------------------------------------
 # When RESEND_API_KEY is set, outbound mail goes through the stdlib-only

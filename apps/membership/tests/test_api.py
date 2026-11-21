@@ -23,7 +23,7 @@ class MembershipMeTests(TestCase):
 
     def test_me_returns_own_profile(self):
         user = User.objects.create_user(username="withprofile", password="x")
-        profile = MemberProfile.objects.create(user=user)
+        profile = MemberProfile.objects.create(user=user, membership_status="ACTIVE")
         self.client.force_authenticate(user=user)
         resp = self.client.get("/api/membership/me/")
         self.assertEqual(resp.status_code, 200)
@@ -53,7 +53,7 @@ class AttendanceApiTests(TestCase):
         )
 
         bob = User.objects.create_user(username="bob", password="x")
-        MemberProfile.objects.create(user=bob)
+        MemberProfile.objects.create(user=bob, membership_status="ACTIVE")
 
         self.client.force_authenticate(user=bob)
         resp = self.client.get("/api/attendance/")
@@ -93,8 +93,8 @@ class MemberCheckInApiTests(TestCase):
         self.profile.save()
         self.client.force_authenticate(user=self.user)
         resp = self.client.post("/api/member/check-in/")
-        self.assertEqual(resp.status_code, 400)
-        self.assertIn("not active", resp.data["detail"])
+        self.assertEqual(resp.status_code, 403)
+        self.assertIn("no active membership", resp.data["detail"])
 
     def test_checkin_persists_in_member_me(self):
         self.client.force_authenticate(user=self.user)

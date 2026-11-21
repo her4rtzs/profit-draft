@@ -4,6 +4,8 @@ Business logic lives here. Money is always integer centavos (PHP 800.00 = 80000)
 Prices match the plan list the staff UI shows.
 """
 
+import re
+
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.models import Sum
@@ -24,7 +26,16 @@ PLAN_PRICE_CENTAVOS = {
 }
 
 
-def record_desk_payment(*, member, plan, method, recorded_by, paid_on=None):
+def _approved_claims():
+    """GCash claims counted on the date staff approved them."""
+    from apps.billing.models import PaymentClaim
+
+    return PaymentClaim.objects.filter(
+        status=PaymentClaim.Status.APPROVED, reviewed_at__isnull=False
+    )
+
+
+def record_desk_payment(*, member, plan, method, recorded_by, paid_on=None, reference_number=None):
     """Record a settled desk payment and renew the membership in one transaction.
 
     The new period starts on the current expiry when the membership is still
@@ -35,6 +46,25 @@ def record_desk_payment(*, member, plan, method, recorded_by, paid_on=None):
         raise ValidationError("Unknown plan.")
     if method not in ManualPayment.Method.values:
         raise ValidationError("Unknown payment method.")
+
+    reference = ""
+    if method == ManualPayment.Method.GCASH:
+        raw = str(reference_number or "")
+        if not re.fullmatch(r"[0-9 ]{10,20}", raw):
+            raise ValidationError(
+                "Enter a GCash reference number: 10 to 20 digits and spaces."
+            )
+        reference = raw.replace(" ", "")
+        from apps.billing.models import PaymentClaim
+
+        already_used = PaymentClaim.objects.filter(
+            reference_number=reference,
+            status__in=(PaymentClaim.Status.PENDING_REVIEW, PaymentClaim.Status.APPROVED),
+        ).exists() or ManualPayment.objects.filter(
+            method=ManualPayment.Method.GCASH, reference_number=reference
+        ).exists()
+        if already_used:
+            raise ValidationError("This GCash reference number is already in use.")
 
     today = timezone.localdate()
     with transaction.atomic():
@@ -49,6 +79,7 @@ def record_desk_payment(*, member, plan, method, recorded_by, paid_on=None):
             plan=plan,
             method=method,
             amount_centavos=PLAN_PRICE_CENTAVOS[plan],
+            reference_number=reference if method == ManualPayment.Method.GCASH else None,
             paid_on=paid_on or today,
             recorded_by=recorded_by,
         )
@@ -74,9 +105,11 @@ def monthly_summary(year, month):
         created_at__year=year,
         created_at__month=month,
     )
+    claims = _approved_claims().filter(reviewed_at__year=year, reviewed_at__month=month)
 
     desk_total = desk.aggregate(t=Sum("amount_centavos"))["t"] or 0
     online_total = online.aggregate(t=Sum("amount_centavos"))["t"] or 0
+    claim_total = claims.aggregate(t=Sum("amount_centavos"))["t"] or 0
 
     by_method = {
         row["method"]: row["total"]
@@ -84,6 +117,8 @@ def monthly_summary(year, month):
     }
     if online_total:
         by_method["ONLINE"] = online_total
+    if claim_total:
+        by_method["GCASH"] = by_method.get("GCASH", 0) + claim_total
 
     by_plan = {
         row["plan"]: row["total"]
@@ -93,10 +128,11 @@ def monthly_summary(year, month):
     return {
         "year": year,
         "month": month,
-        "total_centavos": desk_total + online_total,
+        "total_centavos": desk_total + online_total + claim_total,
         "desk_centavos": desk_total,
         "online_centavos": online_total,
-        "payment_count": desk.count() + online.count(),
+        "claim_centavos": claim_total,
+        "payment_count": desk.count() + online.count() + claims.count(),
         "by_method": by_method,
         "by_plan": by_plan,
     }
@@ -154,6 +190,11 @@ def revenue_analytics(*, period="month", year=None, anchor_date=None, offset=0):
             r["m"]: r["total"]
             for r in online.values(m=F("created_at__month")).annotate(total=Sum("amount_centavos"))
         }
+        claims_by_m = {
+            r["m"]: r["total"]
+            for r in _approved_claims().filter(reviewed_at__year=year)
+            .values(m=F("reviewed_at__month")).annotate(total=Sum("amount_centavos"))
+        }
 
         month_labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
         month_titles = [
@@ -161,7 +202,7 @@ def revenue_analytics(*, period="month", year=None, anchor_date=None, offset=0):
             "July", "August", "September", "October", "November", "December"
         ]
         for m in range(1, 13):
-            centavos = desk_by_m.get(m, 0) + online_by_m.get(m, 0)
+            centavos = desk_by_m.get(m, 0) + online_by_m.get(m, 0) + claims_by_m.get(m, 0)
             val = centavos / 100.0
             buckets.append({
                 "key": f"{year}-{m:02d}",
@@ -192,9 +233,15 @@ def revenue_analytics(*, period="month", year=None, anchor_date=None, offset=0):
             r["y"]: r["total"]
             for r in online.values(y=F("created_at__year")).annotate(total=Sum("amount_centavos"))
         }
+        claims_by_y = {
+            r["y"]: r["total"]
+            for r in _approved_claims().filter(
+                reviewed_at__year__gte=start_year, reviewed_at__year__lte=end_year
+            ).values(y=F("reviewed_at__year")).annotate(total=Sum("amount_centavos"))
+        }
 
         for y in range(start_year, end_year + 1):
-            centavos = desk_by_y.get(y, 0) + online_by_y.get(y, 0)
+            centavos = desk_by_y.get(y, 0) + online_by_y.get(y, 0) + claims_by_y.get(y, 0)
             val = centavos / 100.0
             buckets.append({
                 "key": str(y),
@@ -224,11 +271,16 @@ def revenue_analytics(*, period="month", year=None, anchor_date=None, offset=0):
             r["d"]: r["total"]
             for r in online.values(d=F("created_at__date")).annotate(total=Sum("amount_centavos"))
         }
+        claims_by_d = {
+            r["d"]: r["total"]
+            for r in _approved_claims().filter(reviewed_at__date__gte=monday, reviewed_at__date__lte=sunday)
+            .values(d=F("reviewed_at__date")).annotate(total=Sum("amount_centavos"))
+        }
 
         day_names = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
         for i in range(7):
             cur = monday + timedelta(days=i)
-            centavos = desk_by_d.get(cur, 0) + online_by_d.get(cur, 0)
+            centavos = desk_by_d.get(cur, 0) + online_by_d.get(cur, 0) + claims_by_d.get(cur, 0)
             val = centavos / 100.0
             buckets.append({
                 "key": cur.isoformat(),
@@ -257,10 +309,15 @@ def revenue_analytics(*, period="month", year=None, anchor_date=None, offset=0):
             r["d"]: r["total"]
             for r in online.values(d=F("created_at__date")).annotate(total=Sum("amount_centavos"))
         }
+        claims_by_d = {
+            r["d"]: r["total"]
+            for r in _approved_claims().filter(reviewed_at__date__gte=start_d, reviewed_at__date__lte=end_d)
+            .values(d=F("reviewed_at__date")).annotate(total=Sum("amount_centavos"))
+        }
 
         for i in range(14):
             cur = start_d + timedelta(days=i)
-            centavos = desk_by_d.get(cur, 0) + online_by_d.get(cur, 0)
+            centavos = desk_by_d.get(cur, 0) + online_by_d.get(cur, 0) + claims_by_d.get(cur, 0)
             val = centavos / 100.0
             buckets.append({
                 "key": cur.isoformat(),

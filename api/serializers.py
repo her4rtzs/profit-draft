@@ -175,6 +175,17 @@ class RecordPaymentSerializer(serializers.Serializer):
     plan = serializers.ChoiceField(choices=PLAN_CHOICES)
     method = serializers.ChoiceField(choices=ManualPayment.Method.values)
     paid_on = serializers.DateField(required=False)
+    reference_number = serializers.CharField(max_length=64, required=False, allow_blank=True)
+
+    def validate(self, attrs):
+        if (
+            attrs.get("method") == ManualPayment.Method.GCASH
+            and not str(attrs.get("reference_number") or "").strip()
+        ):
+            raise serializers.ValidationError(
+                {"reference_number": "A GCash reference number is required."}
+            )
+        return attrs
 
 
 class EditPaymentSerializer(serializers.Serializer):
@@ -182,6 +193,7 @@ class EditPaymentSerializer(serializers.Serializer):
 
     method = serializers.ChoiceField(choices=ManualPayment.Method.values, required=False)
     paid_on = serializers.DateField(required=False)
+    reference_number = serializers.CharField(max_length=64, required=False, allow_blank=True)
 
     def validate_paid_on(self, value):
         from django.utils import timezone

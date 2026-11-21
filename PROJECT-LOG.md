@@ -2546,7 +2546,122 @@ Keep the previous full-bleed Sign In / Sign Up / Forgot Password layout (retaini
 - Verified with `python manage.py check` (0 errors) and `python manage.py test profit.tests.test_clean_urls profit.tests.test_installable` (15/15 OK). Automated browser DevTools verification was unavailable in this session; local server left running at `http://127.0.0.1:8000` for manual device-emulation review.
 ### Decision-log skill
 When hiding header buttons (like `Sign in`) on narrow mobile viewports, always add a matching `.m-only` link inside the mobile navigation drawer so phone users never lose access to the route.
+## 2026-11-21 16:10 (Asia/Manila): Payment redesign docs: free trial and GCash claims
+### What I asked for
+Replace PayMongo with cash and GCash, make sign-up free with a 7-day trial, and make GCash payments staff-reviewed claims. Docs only; no code.
+### What the agent decided and why
+- Removed PayMongo from `AGENTS.md`, `Architecture.md` and `ROADMAP.md` and documented cash plus a staff-reviewed GCash claim; the code still runs PayMongo until Phase 4.6 lands. See [[2026-11-21 Free sign-up with a seven-day trial]] and [[2026-11-21 GCash claims reviewed by staff]]
+- Stored a claim as a `payments` row (`pending_review` / `approved` / `rejected`) instead of a new table, so the Financial Dashboard still reads one source of truth.
+- Added Phase 4.6 with every item open, left all existing roadmap check states untouched, and recorded the Phase 4.6 gate checks in `Architecture.md`.
+- Left two gaps as questions rather than inventing answers: end-of-trial access (`Architecture.md` 14.7) and what happens to members already in `pending` when Phase 4.6 lands.
+### Decision-log skill
+When a payment provider is removed, update the env var list, the golden rules that name its keys, and the phase and conformance tables in the same pass; a stale env list is how a decommissioned secret outlives its service.
 
+## 2026-11-21 16:27 (Asia/Manila): Trial status with a server-set end date
+### What I asked for
+Add a 7-day trial: a `trial` member status and `trial_ends_at`, one service in `apps/membership/` that sets and checks it, the migration file created but not applied, and tests. Do not change signup or any view.
+### What the agent decided and why
+- Added `TRIAL` to `MemberProfile.MembershipStatus` and a nullable `trial_ends_at`; `start_trial` computes the end server-side so no caller or client can set it. See [[2026-11-21 Trial status with a server-set end date]]
+- A trial is active through the end of the seventh Asia/Manila day, so a stored UTC timestamp cannot end it one day early.
+- Left `is_active_on` and `check_in_member` alone: both already require `ACTIVE`, so a trial member gets app access with no gym membership and no attendance.
+- Generated migration `0005` but did not apply it. Tests ran on SQLite; `apps.membership` passed 37 tests. `ruff` reports only the pre-existing RUF012 errors that every migration and the Attendance `Meta` already have.
+### Decision-log skill
+When a time limit is stored as a timestamp but judged by a business day, compare local dates in the project timezone; the stored value can then stay a plain `now + N days`.
+
+## 2026-11-21 16:42 (Asia/Manila): Self sign-up creates a trial member
+### What I asked for
+Change self sign-up so it creates a Member in `trial` with `trial_ends_at` set by the service, remove the PayMongo checkout and the redirect to payment, keep sign-up limited to the Member role, leave the PayMongo code in place, and add or update tests.
+### What the agent decided and why
+- Repointed the public join sign-up (`/api/join/checkout/`) at a new `register_trial_member`, which reuses `create_member` + `start_trial`; no checkout and no redirect to payment. See [[2026-11-21 Sign-up creates a trial member without a checkout]]
+- Left `create_join_checkout`, `_paymongo_session`, `complete_signup`, `confirm_join` and the webhook untouched; only sign-up stopped calling them.
+- The role is set inside the service, so a `role` field in the request is ignored; a test covers it.
+- `/accounts/signup/` was not changed: it still creates an inactive login with no profile, and it never called PayMongo.
+- Checked off the Phase 4.6 free-trial item. Full suite: 249 tests pass. Migration `0005` is still not applied.
+### Decision-log skill
+When a public form stops using a paid checkout, keep the retired gateway code but put the replacement behind one service, so the view cannot accept `role`, `amount`, or an end date.
+
+## 2026-11-21 17:16 (Asia/Manila): Server-side trial and membership access
+### What I asked for
+Enforce the trial on the server: an active trial may log in and see only its own profile, an expired trial with no active membership sees a clear message and gets no features, check every Django view and DRF endpoint involved, change no data, and compute expiry per request instead of adding a pg_cron job.
+### What the agent decided and why
+- Added one `member_access` helper that computes ACTIVE, TRIAL or LOCKED from the Manila date on every request; no status write, no deactivation, no cron. See [[2026-11-21 Server-side trial and membership access]]
+- Added two DRF permissions and applied them to the member profile, attendance, check-in, checkout, trainer, announcement and notification endpoints; staff and trainers are unaffected.
+- Applied the same rule to static member pages in `profit.views.web_page`; a locked member gets a plain 403 message and a trial member can open only the profile pages.
+- Kept profile-less users on their old 404/empty-list behaviour, and updated existing tests whose PENDING or expired fixtures no longer represent an active member.
+- Full suite: 257 tests pass. `api` suite: 15 tests pass.
+### Decision-log skill
+Gate at the server boundary with one pure state helper and one permission class; menus are a hint, and request-time evaluation avoids a scheduler that free-tier hosting may not run.
+
+## 2026-11-21 17:27 (Asia/Manila): Payment claim data model
+### What I asked for
+Add data for GCash payment claims: server-set member and amount, normalised reference, proof link, review fields, and a conditional unique constraint that allows resubmission after rejection. Migration and tests only, no views; tell me first if a new model is cleaner.
+### What the agent decided and why
+- Created a separate `billing.PaymentClaim` instead of changing `Payment`, which needs a subscription and a PayMongo id and holds real payment history. See [[2026-11-21 Payment claims get their own model]]
+- Marked the earlier payments-row decision superseded and linked it to the new note.
+- Migration `billing.0005_paymentclaim` is created but NOT applied. It depends on `membership.0005`, which is also still unapplied.
+- Added 5 model tests for defaults, space normalisation and the conditional constraint; full suite: 262 tests pass.
+- RLS reminder: after applying the migration, open Supabase Table Editor -> `public.billing_paymentclaim`, enable Row Level Security and leave it with NO policies. Django is the only writer.
+### Decision-log skill
+Put a conditional unique constraint on the table that owns the new workflow; adding it to a history table also constrains rows written before the feature existed.
+
+## 2026-11-21 17:40 (Asia/Manila): Member GCash claim submission
+### What I asked for
+Add a page and endpoint for a logged-in Member to submit a GCash claim with only a reference number and a Google Drive link, with strict validation, a 3-pending-claim limit, own-claims-only reads, privacy instructions on the page, and tests for forged status/amount/member fields.
+### What the agent decided and why
+- The endpoint accepts exactly two fields and rejects any extra key with a 400; the server sets member, amount, method and status. See [[2026-11-21 Member GCash claim submission]]
+- The screenshot link is checked by scheme and host and stored as text; the server never opens it.
+- The amount comes from the member's latest subscription plan price, defaulting to monthly, because no plan is in the request.
+- Kept the earlier trial rule: a trial-only member is refused, so for now only active members can submit a claim. Say the word if trial members should be allowed to pay this way.
+- Full suite: 270 tests pass.
+### Decision-log skill
+When a form has only two allowed fields, reject unknown keys outright; silently ignoring a forged `status` or `amount` hides an attack instead of stopping it.
+
+## 2026-11-21 18:09 (Asia/Manila): Staff review of GCash claims
+### What I asked for
+Add a review tab on the payment and billing page for Owner and Cashier, with pending claims, proof links opening safely in a new tab, Approve and Reject buttons, server-side role and active checks, one-transaction approval through the existing enrollment service, idempotent approval, and tests for wrong role, duplicate approval, rejection and a member trying to approve.
+### What the agent decided and why
+- Added staff claim endpoints with an explicit active + Owner/Cashier permission; members, trainers and inactive staff get a 403. See [[2026-11-21 Staff review of GCash claims]]
+- Approval locks the claim and member, calls `enroll_member` once, and a repeated approval returns without writing another enrollment or extending the expiry.
+- Rejection needs a reason and records the reviewer and time; nothing is enrolled.
+- The proof link uses `target="_blank"` with `rel="noopener noreferrer"`; no name, reference or link is logged.
+- Full suite: 276 tests pass.
+### Decision-log skill
+When a staff action both changes a status and enrolls a member, put both in one transaction guarded by a locked row and a status check; a button double-click is a normal event, not an edge case.
+
+## 2026-11-21 18:19 (Asia/Manila): Approval notifies the member
+### What I asked for
+Create an email and a website notification when a GCash claim is approved.
+### What the agent decided and why
+- Reused `notifications.services.notify` to write the in-app notification and its email mirror in one call; no new mail code. See [[2026-11-21 Approval notifies the member]]
+- The message names only the plan and expiry date — no reference number or Drive link — and uses the existing MEMBERSHIP kind and member-home link.
+- Email remains best-effort: a mail failure logs only the kind code and still leaves the approval and in-app notice in place.
+- Added 3 tests for the notification/email, mail failure, and duplicate approval; full suite: 279 tests pass.
+### Decision-log skill
+Prefer the existing notification service for "email plus in-app" requests; it already has the failure policy, and duplicating it in a new endpoint would give the two channels different behaviour.
+
+## 2026-11-21 18:45 (Asia/Manila): Cash and GCash only at the desk
+### What I asked for
+Limit staff-recorded payments to cash and GCash, remove bank, require a GCash reference with the same normalisation and uniqueness rule, keep using the shared enrollment service, count approved claims plus desk payments plus old PayMongo records in the Financial Dashboard while ignoring pending and rejected claims, create the migration but do not apply it, and add tests.
+### What the agent decided and why
+- Removed BANK from the model choices, API serializers, staff forms, filters and demo data. See [[2026-11-21 Cash and GCash only at the desk]]
+- GCash desk payments need a 10-20 digit/space reference stored without spaces; uniqueness is a database constraint for desk rows plus service checks against both tables.
+- Approved claims are counted on their review date in the monthly summary, revenue charts and cashier overview; pending and rejected claims never count.
+- Migration `finance.0003` is created but NOT applied. Together with `membership.0005` and `billing.0005`, three migrations still need applying to Dev.
+- Full suite: 286 tests pass.
+### Decision-log skill
+When the same business identifier lives in two tables, enforce uniqueness inside each table with a database constraint and check across tables in the write services; a single-table constraint cannot cover a workflow split across two models.
+
+## 2026-11-21 19:03 (Asia/Manila): Online gateway code removed
+### What I asked for
+Remove PayMongo: the webhook endpoint and route, client and service code, checkout creation, PAYMONGO_* settings, any package in requirements.txt and the related tests. Keep every model and column holding payment history, keep old payments readable as paymongo in reports, drop no table or column, list the environment variables and external settings the owner must remove, and do not touch any .env file.
+### What the agent decided and why
+- Deleted the webhook module, its route, the HTTP client/checkout functions, the member checkout endpoint, the legacy join-confirm endpoint and their tests. See [[2026-11-21 Online gateway code removed]]
+- Kept `Payment`, `Subscription`, `WebhookEvent`, `PendingSignup` and `paymongo_payment_id`; old online rows are labelled "paymongo (old)" in staff reports. No migration was created.
+- Updated public copy, the README and the phase status so nothing still claims the gateway runs.
+- Owner must remove, by hand: `PAYMONGO_SECRET_KEY`, `PAYMONGO_WEBHOOK_SECRET` and `PAYMONGO_PAYMENT_METHODS` from the local `.env` and Vercel environment variables, plus the webhook URL and API keys configured in the PayMongo dashboard. There was no PayMongo package in `requirements.txt`.
+- Full suite: 261 tests pass.
+### Decision-log skill
+When retiring an external service, delete its client, routes and settings in one pass but leave history tables and their reference columns intact; then hand the owner an explicit checklist for secrets that live outside the repository.
 
 ## 2026-11-21 20:48 (Asia/Manila): Harden PostgreSQL Google column check and non-PII DB error logging
 ### What I asked for

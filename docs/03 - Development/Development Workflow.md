@@ -48,9 +48,9 @@ Deployment shape (`vercel.json`): one serverless function `api/index.py` exporti
 ## Inspect
 
 - API routes: `api/urls.py` (auth, join, member, staff, announcements, notifications, trainers, `/api/membership/`, `/api/attendance/`, `/api/staff/members/`).
-- Root routes: `profit/urls.py` (`/`, `admin/`, `api/`, `accounts/`, `membership/`, `finance/`, `webhooks/paymongo/`).
+- Root routes: `profit/urls.py` (`/`, `admin/`, `api/`, `accounts/`, `membership/`, `finance/`).
 - Settings and environment names: `profit/settings.py`, `.env.example`.
-- Bulk logic: services under `apps/*/services.py`; models under `apps/*/models.py`; webhook in `apps/billing/webhooks.py`.
+- Bulk logic: services under `apps/*/services.py`; models under `apps/*/models.py`; claim submission in `api/claims.py` and review in `api/staff_claims.py`.
 - Front-end entry points: `web/config.js` (config + shared browser stores), `web/api.js` (fetch client with CSRF), `web/layout.js`, `web/pages.js`.
 - Component/browser state (timetable, gym contact, notifications) is seeded in `web/config.js`.
 
@@ -59,7 +59,7 @@ Deployment shape (`vercel.json`): one serverless function `api/index.py` exporti
 Project rules live in `AGENTS.md`:
 
 - Business logic in services/models, not views or serializers.
-- Enrollment logic stays in `apps/membership/` — staff, webhook and desk-payment paths all call it.
+- Enrollment logic stays in `apps/membership/` — staff, claim approval and desk-payment paths all call it.
 - Tests are required for changes to billing, auth, permissions or enrollment.
 - Never log PII or payment details; never commit secrets.
 - Do not edit applied migrations — add a new one.

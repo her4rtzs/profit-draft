@@ -8,13 +8,14 @@ from datetime import timedelta
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.exceptions import NotFound
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.billing.models import Payment, Subscription
 from apps.membership.models import Attendance, Enrollment, MemberProfile
 from apps.membership.services import PLAN_DAYS
+
+from .permissions import MemberAccess, TrialAllowedMemberAccess
 
 
 PHOTO_PREFIX = "data:image/jpeg;base64,"
@@ -35,7 +36,7 @@ def _clean_photo(value):
 
 
 class MemberMeView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [TrialAllowedMemberAccess]
 
     def patch(self, request):
         """Members may update their own photo, phone and address."""
@@ -122,7 +123,9 @@ class MemberMeView(APIView):
 
         remaining_days = max(0, (end_date - today).days) if end_date else 0
         raw_status = profile.membership_status
-        if raw_status == MemberProfile.MembershipStatus.PENDING and not end_date:
+        if raw_status == MemberProfile.MembershipStatus.TRIAL:
+            effective_status = "TRIAL"
+        elif raw_status == MemberProfile.MembershipStatus.PENDING and not end_date:
             effective_status = "PENDING"
         elif end_date and end_date < today:
             effective_status = "EXPIRED"
@@ -172,38 +175,9 @@ class MemberMeView(APIView):
         })
 
 
-class MemberCheckoutView(APIView):
-    """POST /api/member/checkout/ {plan}: start an online payment for the caller."""
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        from django.conf import settings
-        from django.core.exceptions import ValidationError
-        from rest_framework.exceptions import ValidationError as DRFValidationError
-
-        from apps.billing.services import CheckoutError, create_checkout
-
-        profile = MemberProfile.objects.filter(user=request.user).first()
-        if profile is None:
-            raise NotFound("No member profile.")
-        base = settings.SITE_BASE_URL.rstrip("/")
-        try:
-            url = create_checkout(
-                profile,
-                request.data.get("plan"),
-                success_url=f"{base}/member-home.html?paid=1",
-                cancel_url=f"{base}/member-home.html",
-            )
-        except ValidationError as exc:
-            raise DRFValidationError({"detail": " ".join(exc.messages)})
-        except CheckoutError as exc:
-            return Response({"detail": str(exc)}, status=503)
-        return Response({"checkout_url": url})
-
-
 class MemberCheckInView(APIView):
     """POST /api/member/check-in/: self check-in for the authenticated member."""
-    permission_classes = [IsAuthenticated]
+    permission_classes = [MemberAccess]
 
     def post(self, request):
         from django.core.exceptions import ValidationError as DjangoValidationError

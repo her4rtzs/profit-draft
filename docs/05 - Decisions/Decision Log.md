@@ -73,3 +73,14 @@ One note per decision, oldest first; entries with an `Unknown` date are listed l
 - [[2026-11-20 Google popup flow and real Gmail validation]]: Use `same-origin-allow-popups` COOP + OAuth2 `initTokenClient` popup instead of `gsi/transform`, and enforce real Gmail/email validation.
 - [[2026-11-20 Cashier portal reusing staff shell and RBAC]]: Map CASHIER to a distinct portal at /cashier reusing the Staff UI/UX shell, read-only overview endpoint, and server-side RBAC.
 - [[2026-11-20 Three-step password reset and anti-spam OTP mail]]: Split forgot-password into Email -> Verify OTP -> Change Password, align SMTP fallback From headers, and send transactional HTML/headers to reduce spam.
+- [[2026-11-21 Free sign-up with a seven-day trial]]: Free sign-up creates a Member in `trial` for 7 days with app access only, no gym membership and no attendance.
+- [[2026-11-21 GCash claims reviewed by staff]]: GCash payments are claims with a reference and a Drive screenshot link, approved by Owner or Cashier; only approval enrolls, in one transaction.
+- [[2026-11-21 Trial status with a server-set end date]]: Add a `TRIAL` member status and nullable `trial_ends_at`, set by one service to now + 7 days and judged by Asia/Manila local dates.
+- [[2026-11-21 Sign-up creates a trial member without a checkout]]: Join sign-up creates a `trial` Member through one service, returns a login URL, and stops calling the PayMongo checkout.
+- [[2026-11-21 Server-side trial and membership access]]: Trial members reach only their own profile; expired trials get a clear 403 and no member features, computed per request with no cron job.
+- [[2026-11-21 Payment claims get their own model]]: GCash claims use a new `PaymentClaim` table with a conditional unique reference; old `Payment` history is untouched.
+- [[2026-11-21 Member GCash claim submission]]: Members submit only a reference and a Drive link; the server sets member, amount, method and status, and the link is never fetched.
+- [[2026-11-21 Staff review of GCash claims]]: Owner/Cashier approve or reject pending claims from the Payments page; approval enrolls once in one transaction.
+- [[2026-11-21 Approval notifies the member]]: Approval creates one in-app notification and its email mirror with the plan and expiry only; mail failure cannot roll it back.
+- [[2026-11-21 Cash and GCash only at the desk]]: Desk payments are cash or GCash only; GCash needs a unique normalised reference and dashboards count approved claims too.
+- [[2026-11-21 Online gateway code removed]]: Webhook, checkout client, settings and tests deleted; payment history tables and columns kept and shown as paymongo in reports.

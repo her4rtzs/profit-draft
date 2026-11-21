@@ -6,11 +6,11 @@ Phases are ordered by dependency, not by date. Each phase has an exit check: do 
 
 Convention: `[x]` means verified against the code, `[ ]` means not done. Where part of an item already exists, a note says what is there.
 
-Last reviewed: 2026-10-18, on the single root tree after the duplicate `ProFit-combined/` copy was merged into it and removed (code reading, every item checked against `AGENTS.md`; no runtime test run, Django was not installed in the review environment).
+Last reviewed: 2026-11-21, PayMongo removed from the code and the trial/claim flows built; Phase 4.6 gate checks still pending.
 
 ## Current status
 
-**The system is at Phase 4 (Financial Dashboard), in progress. Phases 0 to 3 have passed their exit checks, Phase 4 has not. Phase 4.5 (Installable Web App) is implemented; its real-phone gate is still open.**
+**The system is at Phase 4 (Financial Dashboard), in progress. Phases 0 to 3 have passed their exit checks, Phase 4 has not. Phase 4.5 (Installable Web App) is implemented; its real-phone gate is still open. Phase 4.6 (Free Trial and GCash Claim Review) is implemented in code; its gate checks are still pending.**
 
 | Phase | State | What is actually there |
 |---|---|---|
@@ -20,9 +20,10 @@ Last reviewed: 2026-10-18, on the single root tree after the duplicate `ProFit-c
 | 3 Billing & Subscription | Pass, with deviations | PayMongo Checkout Sessions, webhook with signature verification + idempotent handling + race handling (`apps/billing/webhooks.py`), self-enrollment in one transaction (`complete_signup`), pay-first join, failed/abandoned payments stay pending, desk cash/GCash/bank payments (`finance.ManualPayment`), webhook/checkout tests. Deviations: see Conformance with AGENTS.md. |
 | 4 Financial Dashboard | **In progress** | Owner-only gate, transaction list with search/member/method filters, monthly totals (`monthly_summary`), client-side CSV and print-to-PDF export. Missing: server-side PDF stored in Supabase Storage, status reconciliation view, and a status filter over paid/pending/failed. |
 | 4.5 Installable Web App | Implemented, gate open | Static `web/manifest.webmanifest` served by WhiteNoise at the site root with `application/manifest+json` via `WHITENOISE_MIMETYPES`, `static/icons/` (192, 512, maskable 512, Apple 180) from the approved logo, manifest/theme-color/Apple tags on every page, install card on three pages, `static/js/install-help.js`, `profit/tests/test_installable.py`. No service worker, offline cache, or push. The old `web/sw.js`, `web/pwa.js` and service worker registration are deleted. Real-phone install check still to be done by the owner. |
+| 4.6 Free Trial & GCash Claims | In progress | PayMongo removed, free 7-day `trial`, GCash claims with a reference and a Drive screenshot link, Owner/Cashier approval enrolling through the shared service, cash at the desk, cash/GCash-only dashboard totals. Gate checks pending. |
 | 5 Member Mobile App | Removed | Native app dropped; members use the installable web portal in Phase 4.5. The Expo skeleton was deleted from the repo. |
 | 6 Hardening & Launch | Not started | No security review, no load testing, no member import, no staff guide, no monitoring. |
-| 7 After Launch | Not started | No PayMongo business registration, no extra methods, `Architecture.md` not updated for the shipped methods. |
+| 7 After Launch | Not started | No payment-gateway registration (cash and GCash only), no extra payment methods; the payment docs are rewritten in Phase 4.6. |
 
 ## Built outside this roadmap
 
@@ -77,6 +78,8 @@ Exit check: staff can enroll a walk-in member and record their attendance end to
 
 Goal: members can pay online and be enrolled automatically.
 
+> **Superseded for online payments by Phase 4.6.** PayMongo is removed and sign-up no longer goes through an online checkout. The items below record what shipped at the time and keep their check state; do not rebuild them.
+
 - [ ] PayMongo integration limited to the methods `AGENTS.md` names (GCash, Maya, cards), read from one configured list so enabling or disabling a method is a settings change, not a code change. Shipped as `PAYMONGO_PAYMENT_METHODS` in `profit/settings.py`; its default also enables QR Ph, which is acceptable only while the launch subset stays a setting. PayMongo Wallet is not in `AGENTS.md`, so it is dropped.
 - [x] Payment creation from both web views and DRF endpoints (`/api/join/checkout/`, `/api/member/checkout/`, Checkout Sessions)
 - [x] Webhook receiver: signature verification, idempotent handling, intent matching against server-side records
@@ -115,6 +118,22 @@ Deviations: the portal has no single page every role can open, so the card is on
 
 Exit check: both phones pass the owner's checklist above.
 
+## Phase 4.6: Free Trial and GCash Claim Review
+
+Goal: remove the payment gateway. Sign-up is free with a 7-day trial, GCash payments are claims reviewed by staff, and cash is recorded at the desk.
+
+- [x] Remove PayMongo: delete checkout creation, the webhook receiver and its route, `PAYMONGO_SECRET_KEY` and `PAYMONGO_WEBHOOK_SECRET`. Keep every existing payment row and PayMongo reference as history.
+- [x] Free sign-up creates a Member with status `trial` for 7 days: app access only, no gym membership and no attendance.
+- [x] GCash claim form: GCash reference number and an https Google Drive screenshot link, saved as `pending_review`. The amount comes from the server-side plan price, never from the form.
+- [x] Owner/Cashier review queue: approve or reject a claim; the member sees only their own claims. Enforced on the server.
+- [x] Approval marks the claim `approved` and enrolls through the one membership service in a single transaction; a repeated approval changes nothing.
+- [x] Cash desk payments recorded by staff through the same service, with `recorded_by` set.
+- [x] Financial Dashboard counts `paid` cash rows and `approved` GCash claims only; `pending_review` and `rejected` claims are excluded and old PayMongo rows stay as history.
+- [x] Tests: a submitted claim grants no access; only Owner/Cashier can review; approval enrolls exactly once; a duplicate approval does not extend the expiry; a client-sent amount is ignored; a member cannot see another member's claims.
+- [x] Update the public landing page, join page and FAQ copy: cash and GCash only, free sign-up with a 7-day trial, no online checkout.
+
+Exit check: a new member signs up free, stays `trial`, submits a GCash claim that grants nothing, and becomes `active` only after a Cashier approves it, with the dashboard counting that payment once.
+
 ## Phase 5: Member Mobile App
 
 Goal: members can use their records and pay from their phones. Backend endpoints for each feature can be built in the earlier phases; this phase delivers the app.
@@ -130,7 +149,7 @@ Exit check: a new member can sign up, pay, and see their active status in the ap
 
 Goal: safe to run the real gym on.
 
-- [ ] Security review: RBAC, webhook handling, HTTPS, no PII or payment details in logs, secrets only in env vars
+- [ ] Security review: RBAC, GCash claim review, HTTPS, no PII or payment details in logs, secrets only in env vars
 - [ ] Handling of Vercel timeouts and Supabase connection limits under realistic load
 - [ ] Import existing members from the paper logbooks
 - [ ] Staff training and a short user guide for Owner, Cashier, and Trainer
@@ -146,8 +165,8 @@ Exit check: the gym runs a full week using ProFit with no logbook fallback.
 
 ## Phase 7: After Launch
 
-- [ ] Register the business with PayMongo, then turn on the rest of the `AGENTS.md` method list (GCash, Maya, cards) by changing the configured list, plus any method-specific handling those methods need
-- [ ] Update `Architecture.md` to match the enabled payment methods
+- [ ] If the gym later registers with a payment gateway, revisit online cards or bank transfer as a new decision; the current design is cash and GCash only
+- [ ] Re-read `Architecture.md` and `AGENTS.md` after Phase 4.6 to confirm the payment sections match the code
 - [ ] Collect staff and member feedback and prioritize fixes
 - [ ] Revisit deferred ideas (for example drag-and-drop UI, which is currently out of scope)
 
@@ -155,7 +174,7 @@ Exit check: the gym runs a full week using ProFit with no logbook fallback.
 
 `AGENTS.md` is the standard and it wins. Nothing below is a choice between two valid options: every line is a place where the code drifted from `AGENTS.md`, with the action `AGENTS.md` implies.
 
-- **Payment methods.** `AGENTS.md` names GCash, Maya and cards. The list is read from one setting so a change stays configuration. PayMongo Wallet came from the first draft of this roadmap, is not in `AGENTS.md`, and is dropped.
+- **Payment methods.** Superseded by Phase 4.6: `AGENTS.md` now names cash and GCash only, and PayMongo is removed. The old method list (GCash, Maya, cards) and the PayMongo Wallet note no longer apply.
 - **Staff portal, two surfaces.** `AGENTS.md` fixes two stacks. The Django-templated pages (`templates/`, `components/`, `static/`) use Django templates, Tailwind, daisyUI, HTMX, Alpine, Lucide and django-components. The static pages in `web/` use plain HTML/CSS/JS with Font Awesome and Google Fonts from CDNs and call the API from the browser. Both are legitimate under `AGENTS.md`, so this is no longer a conformance gap: keeping both means the duplicated screens have to stay in step, which is the Phase 6 item.
 - **Permission areas.** The pure helpers in `apps/accounts/permissions.py` encode the matrix exactly, but the code also runs areas the matrix does not list (announcements, notifications, trainer assignment and requests). `AGENTS.md` sanctions only what the matrix grants, so those areas need rows there or removal. Staff invites are already covered by "the Owner assigns staff roles".
 - **Supabase Storage.** `AGENTS.md` names it for PDFs and profile images. Profile photos are data URLs in the database and report PDFs are printed in the browser: Phase 2 and Phase 4 items.
@@ -164,8 +183,8 @@ Exit check: the gym runs a full week using ProFit with no logbook fallback.
 
 ## Open questions and risks
 
-- **Business registration:** timing controls when the `AGENTS.md` method list (GCash, Maya, cards) can be turned on; QR Ph is the only method that can run before it.
-- **Vercel limits:** function timeouts and cold starts may affect webhook and report generation; test early.
+- **Business registration:** no longer blocks payments, because there is no gateway. It only matters if online cards or bank transfer are ever added back.
+- **Vercel limits:** function timeouts and cold starts may affect report generation; test early.
 - **Cron deployment:** `AGENTS.md` requires the `pg_cron` job to be applied by a documented route; decide the route and record when the job was applied.
 - **Conflicting gym details:** the landing page, the footer and the legal pages disagree on the gym name, phone number and address; the owner must confirm one set.
 - **Trainer scope:** the matrix gives the Trainer role attendance and its own profile, but the code also runs trainer assignment and requests; add the rows to `AGENTS.md` or drop the features.

@@ -18,6 +18,7 @@ from rest_framework.response import Response
 from apps.accounts.adapters import CanViewAttendance
 from apps.membership.models import Attendance, MemberProfile
 
+from .permissions import MemberAccess, TrialAllowedMemberAccess
 from .serializers import AttendanceSerializer, MemberProfileSerializer
 
 
@@ -25,6 +26,7 @@ class MemberProfileViewSet(viewsets.ReadOnlyModelViewSet):
     """Member profile reads. Only the ``me`` action is exposed to the client."""
 
     serializer_class = MemberProfileSerializer
+    permission_classes = [TrialAllowedMemberAccess]
 
     def get_queryset(self):
         # Scope strictly to the caller's own profile.
@@ -59,7 +61,7 @@ class MyAttendanceViewSet(viewsets.ReadOnlyModelViewSet):
     """
 
     serializer_class = AttendanceSerializer
-    permission_classes = [CanViewAttendance]
+    permission_classes = [MemberAccess, CanViewAttendance]
 
     def get_queryset(self):
         return Attendance.objects.filter(member__user=self.request.user)
@@ -69,5 +71,5 @@ class MyAttendanceViewSet(viewsets.ReadOnlyModelViewSet):
         # it to the caller's own records. Object reads additionally enforce
         # CanViewAttendance so another member's record is unreadable.
         if self.action == "list":
-            return [IsAuthenticated()]
+            return [MemberAccess(), IsAuthenticated()]
         return super().get_permissions()

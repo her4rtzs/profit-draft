@@ -17,7 +17,7 @@ class MemberProfileEditTests(TestCase):
     def setUp(self):
         self.api = APIClient()
         user = User.objects.create_user(username="m@gym.test", email="m@gym.test", password="Sup3r-secret-pass", role="MEMBER")
-        self.profile = MemberProfile.objects.create(user=user)
+        self.profile = MemberProfile.objects.create(user=user, membership_status="ACTIVE")
         self.api.force_authenticate(user)
 
     def test_photo_is_saved_and_returned(self):
