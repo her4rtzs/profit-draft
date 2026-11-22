@@ -233,6 +233,8 @@ class ReviewPageMarkupTests(TestCase):
         self.assertIn("min-height: 44px", css)
         self.assertIn("white-space: normal", css)
         self.assertIn("var(--pf-st-pending-bg)", css)
+        self.assertIn('html body.pf-staff[data-page="payments"] .fn-table--review', css)
+        self.assertIn("overflow-x: hidden !important", css)
         self.assertIn("@media (max-width: 768px)", css)
         self.assertGreater(
             css.index("@media (max-width: 768px)"),

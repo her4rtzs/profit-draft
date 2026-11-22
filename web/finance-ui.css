@@ -1881,3 +1881,20 @@ body[data-page="reports"] .fn-card {
   .fn-table--review tbody tr.fn-review-empty { display: block; padding: 20px 0; }
   .fn-table--review tbody tr.fn-review-empty td { display: block !important; color: var(--muted); }
 }
+
+/* Force the mobile cards to fit the pane even when the shared table rules win. */
+@media (max-width: 768px) {
+  html body.pf-staff[data-page="payments"] .fn-table--review,
+  html body.pf-staff[data-page="payments"] .fn-table--review tbody,
+  html body.pf-staff[data-page="payments"] .fn-table--review tbody tr,
+  html body.pf-staff[data-page="payments"] .fn-table--review tbody td.review-card-cell {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+  html body.pf-staff[data-page="payments"] #pane-review .fn-table-scroll {
+    overflow-x: hidden !important;
+  }
+}
