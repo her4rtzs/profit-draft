@@ -385,7 +385,7 @@
         <div class="lg-caps" id="capsWarn" hidden><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Caps Lock is on</div>
         <small class="lg-err-sm" id="passwordError"></small>
 
-        <label class="lg-remember"><input type="checkbox" id="rememberMe" name="remember"><span>Remember me</span></label>
+
 
         <div id="authMessage" class="lg-msg" role="alert" aria-live="polite" hidden></div>
 
@@ -469,11 +469,10 @@
         const hint = identity.toLowerCase(), role = /coach|trainer/.test(hint) ? 'trainer' : /member/.test(hint) ? 'member' : 'admin';
         const isTrainer = role === 'trainer', isMember = role === 'member';
         const session = { name: isMember ? 'Demo Member' : isTrainer ? 'Coach Mika' : 'Administrator', role: isTrainer ? 'TRAINER' : isMember ? 'MEMBER' : 'ADMIN', demo: true };
-        const remember = $('rememberMe')?.checked;
-        (remember ? localStorage : sessionStorage).setItem('profit-demo-session', JSON.stringify(session));
+        sessionStorage.setItem('profit-demo-session', JSON.stringify(session));
         sessionStorage.setItem('profit-verified-session', JSON.stringify(session));
         sessionStorage.setItem('pf-auth-just-logged-in', '1');
-        if (!remember) localStorage.removeItem('profit-demo-session'); else localStorage.setItem('profit-demo-session', JSON.stringify(session));
+        localStorage.removeItem('profit-demo-session');
         message('Signed in successfully. Opening your workspace…', false);
         setTimeout(() => location.replace(HOME[role]), 350);
       } else {

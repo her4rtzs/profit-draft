@@ -17,6 +17,7 @@ from django.utils import timezone
 from apps.accounts.google_auth import (
     _SHA256_DIGEST_INFO_PREFIX,
     GoogleAuthError,
+    GoogleAuthOutcome,
     GoogleClaims,
     verify_google_access_token,
     verify_google_id_token,
@@ -160,6 +161,26 @@ class GoogleAuthTests(TestCase):
             content_type="application/json",
             HTTP_X_CSRFTOKEN=csrf,
         )
+
+    def test_google_signin_uses_three_day_session(self):
+        claims = GoogleClaims(
+            sub="google-session-123",
+            email="google-session@gmail.com",
+            email_verified=True,
+            name="Google Session",
+        )
+        with (
+            patch("api.auth.verify_google_id_token", return_value=claims),
+            patch(
+                "api.auth.authenticate_google_member",
+                return_value=GoogleAuthOutcome(
+                    status="authenticated", user=self.member_pw
+                ),
+            ),
+        ):
+            resp = self._post_google({"credential": "token"})
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.cookies["sessionid"]["max-age"], 3 * 24 * 60 * 60)
 
     def test_database_error_is_logged_without_pii(self):
         claims = GoogleClaims(
