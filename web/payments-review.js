@@ -54,6 +54,8 @@
             const submitted = esc(String(c.created_at).slice(0, 10));
             const waiting = Math.max(1, Math.min(7, Math.floor((Date.now() - new Date(submitted).getTime()) / 86400000) + 1));
             const dayWord = waiting === 1 ? "day" : "days";
+            const initials = String(c.member_name || "").trim().split(/\s+/)
+              .slice(0, 2).map((w) => w[0] || "").join("").toUpperCase();
             return '<tr>'
               + '<td><strong>' + member + '</strong></td>'
               + '<td>' + plan + '</td>'
@@ -67,25 +69,29 @@
               + '<button type="button" class="fn-btn-dark" data-reject="' + id + '" data-member="' + member + '">Reject</button>'
               + '</td>'
               + '<td class="review-card-cell" colspan="7">'
-              + '<div class="review-card">'
-              + '<header class="review-card-head">'
-              + '<span class="review-avatar" aria-hidden="true"><i class="fa-regular fa-user"></i></span>'
-              + '<div class="review-card-title"><h3>' + member + '</h3><span>' + reference + '</span></div>'
-              + '<span class="review-status"><i class="fa-solid fa-circle" aria-hidden="true"></i> PENDING</span>'
+              + '<article class="pp-member review-card">'
+              + '<header>'
+              + '<span class="pp-avatar" aria-hidden="true">' + esc(initials) + '</span>'
+              + '<div class="pp-member-title"><h3>' + member + '</h3><span>' + reference + '</span></div>'
+              + '<span class="pp-status pending">Pending</span>'
               + '</header>'
-              + '<dl class="review-kv">'
+              + '<dl class="pp-kv">'
               + '<div><dt>Plan</dt><dd>' + plan + '</dd></div>'
               + '<div><dt>Amount</dt><dd>' + amount + '</dd></div>'
+              + '<div><dt>Reference</dt><dd>' + reference + '</dd></div>'
+              + '<div><dt>Date</dt><dd>' + submitted + '</dd></div>'
+              + '<div><dt>Waiting</dt><dd>' + waiting + ' ' + dayWord + '</dd></div>'
               + '</dl>'
-              + '<p class="review-expiry">Submitted ' + submitted + ' &middot; waiting ' + waiting + ' ' + dayWord + '</p>'
-              + '<div class="review-actions">'
+              + '<div class="review-proof-actions">'
               + '<button type="button" class="fn-btn-dark fn-btn-sm" data-preview="' + link + '">Preview</button> '
-              + '<a href="' + link + '" target="_blank" rel="noopener noreferrer">Open proof <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a> '
+              + '<a href="' + link + '" target="_blank" rel="noopener noreferrer">Open proof <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>'
+              + '</div>'
+              + '<div class="review-decision-actions">'
               + '<button type="button" class="fn-btn-gold fn-btn-sm" data-confirm="' + id + '">Confirm</button> '
               + '<button type="button" class="fn-btn-dark fn-btn-sm" data-reject="' + id + '" data-member="' + member + '">Reject</button>'
               + '</div>'
-              + '<div class="review-meter" title="Waiting ' + waiting + ' ' + dayWord + '"><span style="width:' + Math.round(waiting / 7 * 100) + '%"></span></div>'
-              + '</div></td></tr>';
+              + '<div class="pp-meter" aria-hidden="true" title="Waiting ' + waiting + ' ' + dayWord + '"><span style="width:' + Math.round(waiting / 7 * 100) + '%"></span></div>'
+              + '</article></td></tr>';
           }).join("")
         : '<tr class="fn-review-empty"><td colspan="7">No payments are waiting for review.</td></tr>';
     } catch (e) {

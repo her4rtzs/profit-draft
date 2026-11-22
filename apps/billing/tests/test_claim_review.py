@@ -219,13 +219,17 @@ class ReviewPageMarkupTests(TestCase):
         self.assertIn('id="rejectPaymentModal"', html)
         self.assertIn('data-confirm="', script)
         self.assertIn('data-preview="', script)
-        self.assertIn('class="review-card"', script)
-        self.assertIn('class="review-meter"', script)
-        self.assertIn("PENDING", script)
+        self.assertIn('class="pp-member review-card"', script)
+        self.assertIn('class="pp-avatar"', script)
+        self.assertIn('class="pp-status pending"', script)
+        self.assertIn('class="pp-kv"', script)
+        self.assertIn('class="pp-meter"', script)
+        self.assertIn('class="review-decision-actions"', script)
+        self.assertIn("Pending", script)
         self.assertIn('target="_blank" rel="noopener noreferrer"', script)
-        self.assertIn(".review-card {", css)
-        self.assertIn("@media (max-width: 699px)", css)
+        self.assertIn(".review-card-cell .pp-member {", css)
+        self.assertIn("@media (max-width: 768px)", css)
         self.assertGreater(
-            css.index("@media (max-width: 699px)"),
+            css.index("@media (max-width: 768px)"),
             css.index(".fn-table tbody tr {"),
         )
