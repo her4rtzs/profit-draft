@@ -6,7 +6,31 @@
 
   const modal = $("rejectPaymentModal");
   const reason = $("rejectPaymentReason");
+  const previewModal = $("proofPreviewModal");
+  const previewFrame = $("proofPreviewFrame");
+  const previewOpen = $("proofPreviewOpen");
   let rejectId = null;
+
+  function previewUrl(raw) {
+    try {
+      const url = new URL(raw);
+      const search = url.search || "";
+      if (url.hostname === "drive.google.com") {
+        const file = url.pathname.match(/\/file\/d\/([^/]+)/);
+        const id = file ? file[1] : url.searchParams.get("id");
+        if (id) {
+          return "https://drive.google.com/file/d/" + encodeURIComponent(id) + "/preview" + search;
+        }
+      }
+      const doc = url.pathname.match(/\/document\/d\/([^/]+)/);
+      if (url.hostname === "docs.google.com" && doc) {
+        return "https://docs.google.com/document/d/" + doc[1] + "/preview" + search;
+      }
+    } catch (e) {
+      /* keep the submitted link as-is */
+    }
+    return raw;
+  }
 
   function esc(value) {
     return String(value ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));

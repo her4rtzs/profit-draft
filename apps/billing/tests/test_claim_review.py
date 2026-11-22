@@ -219,6 +219,8 @@ class ReviewPageMarkupTests(TestCase):
         self.assertIn('id="rejectPaymentModal"', html)
         self.assertIn('data-confirm="', script)
         self.assertIn('data-preview="', script)
+        self.assertIn('previewFrame.src = previewUrl(link)', script)
+        self.assertIn('url.search', script)
         self.assertIn('>Open proof</button>', script)
         self.assertNotIn('>Preview</button>', script)
         self.assertIn('class="pp-member review-card"', script)
