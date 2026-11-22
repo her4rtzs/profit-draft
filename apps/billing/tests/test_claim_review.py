@@ -208,8 +208,15 @@ class ReviewPageMarkupTests(TestCase):
         html = (web / "payments.html").read_text(encoding="utf-8")
         script = (web / "payments-review.js").read_text(encoding="utf-8")
 
+        css = (web / "finance-ui.css").read_text(encoding="utf-8")
+
         self.assertIn("Payments for review", html)
         self.assertIn('data-tab="review"', html)
         self.assertIn("<th>Plan</th>", html)
+        self.assertIn("fn-table--review", html)
+        self.assertIn(".fn-table--review", css)
+        self.assertIn('id="proofPreviewModal"', html)
+        self.assertIn('id="rejectPaymentModal"', html)
         self.assertIn('data-confirm="', script)
+        self.assertIn('data-preview="', script)
         self.assertIn('target="_blank" rel="noopener noreferrer"', script)

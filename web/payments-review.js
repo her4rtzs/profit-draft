@@ -6,7 +6,27 @@
 
   const modal = $("rejectPaymentModal");
   const reason = $("rejectPaymentReason");
+  const previewModal = $("proofPreviewModal");
+  const previewFrame = $("proofPreviewFrame");
+  const previewOpen = $("proofPreviewOpen");
   let rejectId = null;
+
+  function previewUrl(raw) {
+    try {
+      const url = new URL(raw);
+      const file = url.pathname.match(/\/file\/d\/([^/]+)/);
+      if (url.hostname === "drive.google.com" && file) {
+        return "https://drive.google.com/file/d/" + file[1] + "/preview";
+      }
+      const doc = url.pathname.match(/\/document\/d\/([^/]+)/);
+      if (url.hostname === "docs.google.com" && doc) {
+        return "https://docs.google.com/document/d/" + doc[1] + "/preview";
+      }
+    } catch (e) {
+      /* keep the submitted link as-is */
+    }
+    return raw;
+  }
 
   function esc(value) {
     return String(value ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -27,17 +47,19 @@
         ? items.map((c) => {
             const id = esc(c.id);
             const link = esc(c.proof_link);
+            const member = esc(c.member_name);
             const plan = c.plan ? c.plan.charAt(0).toUpperCase() + c.plan.slice(1) : "Membership";
             return '<tr>'
-              + '<td><strong>' + esc(c.member_name) + '</strong></td>'
+              + '<td><strong>' + member + '</strong></td>'
               + '<td>' + esc(plan) + '</td>'
               + '<td class="num">\u20b1' + esc((c.amount_centavos / 100).toFixed(2)) + '</td>'
               + '<td>' + esc(c.reference_number) + '</td>'
-              + '<td><a href="' + link + '" target="_blank" rel="noopener noreferrer">Open proof <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a></td>'
+              + '<td><button type="button" class="fn-btn-dark fn-btn-sm" data-preview="' + link + '">Preview</button> '
+              + '<a href="' + link + '" target="_blank" rel="noopener noreferrer">Open proof <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a></td>'
               + '<td>' + esc(String(c.created_at).slice(0, 10)) + '</td>'
               + '<td class="fn-right">'
               + '<button type="button" class="fn-btn-gold" data-confirm="' + id + '">Confirm</button> '
-              + '<button type="button" class="fn-btn-dark" data-reject="' + id + '">Reject</button>'
+              + '<button type="button" class="fn-btn-dark" data-reject="' + id + '" data-member="' + member + '">Reject</button>'
               + '</td></tr>';
           }).join("")
         : '<tr><td colspan="7">No payments are waiting for review.</td></tr>';
@@ -47,9 +69,15 @@
   }
 
   tbody.addEventListener("click", async (event) => {
+    const preview = event.target.closest("[data-preview]");
     const confirm = event.target.closest("[data-confirm]");
     const reject = event.target.closest("[data-reject]");
-    if (confirm) {
+    if (preview) {
+      const link = preview.dataset.preview;
+      previewFrame.src = previewUrl(link);
+      previewOpen.href = link;
+      previewModal.hidden = false;
+    } else if (confirm) {
       confirm.disabled = true;
       try {
         await window.ProFitAPI.post("/staff/claims/" + confirm.dataset.confirm + "/approve/", {});
@@ -61,11 +89,20 @@
       }
     } else if (reject) {
       rejectId = reject.dataset.reject;
+      $("rejectPaymentInfo").textContent =
+        "Rejecting the payment from " + (reject.dataset.member || "this member") +
+        ". The member will see the reason you enter below.";
       modal.hidden = false;
       reason.focus();
     }
   });
 
+  function closePreview() {
+    previewModal.hidden = true;
+    previewFrame.src = "about:blank";
+  }
+
+  $("proofPreviewClose").addEventListener("click", closePreview);
   $("rejectPaymentCancel").addEventListener("click", closeModal);
   $("rejectPaymentForm").addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -84,7 +121,9 @@
     }
   });
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && !modal.hidden) closeModal();
+    if (event.key !== "Escape") return;
+    if (!previewModal.hidden) closePreview();
+    else if (!modal.hidden) closeModal();
   });
 
   load();

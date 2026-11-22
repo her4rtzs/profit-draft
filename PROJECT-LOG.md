@@ -3100,3 +3100,14 @@ Rename the cashier "GCash claims" section to "Payments for review", reuse the ex
 - Added tests for the review list fields, confirming twice enrolling once, rejection with a reason, and the review markup's Plan column and safe proof link.
 ### Decision-log skill
 When renaming a user-facing concept, change the labels, notices, empty states, dead pages and rules in one pass, but keep the stored names and migrations intact.
+
+## 2026-11-22 21:23 (Asia/Manila): Review table columns, proof preview and reject card
+### What I asked for
+Make the Confirm/Reject buttons visible, add a preview button for the Google Drive proof, and have Reject open a card that asks for the reason.
+### What the agent decided and why
+- Gave the review table a `fn-table--review` column template; without it the grid stacked every cell vertically and the action buttons were off-screen.
+- Added a Preview button that opens the Drive file in an embedded preview modal, with an "Open in new tab" fallback that keeps `target="_blank" rel="noopener noreferrer"`.
+- Kept the existing Reject modal but now shows the member name and asks for the reason before submitting.
+- Added tests for the column template and both modals; targeted tests 25 pass and `manage.py check` is clean.
+### Decision-log skill
+When a table uses a CSS grid driven by a custom property, every new table needs its own column template or its cells will stack and the action buttons disappear.

@@ -964,6 +964,11 @@ body[data-page="cashier"] .badge.processing::before { background: var(--pf-st-pr
   --fn-min-w: 790px;
 }
 
+.fn-table--review {
+  --fn-cols: minmax(150px, 1.2fr) minmax(90px, .8fr) minmax(100px, .9fr) minmax(140px, 1.2fr) minmax(180px, 1.3fr) minmax(100px, .9fr) minmax(190px, 1.1fr);
+  --fn-min-w: 960px;
+}
+
 .fn-table thead,
 .fn-table tbody {
   display: block;
