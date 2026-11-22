@@ -223,11 +223,16 @@ class ReviewPageMarkupTests(TestCase):
         self.assertIn('class="pp-avatar"', script)
         self.assertIn('class="pp-status pending"', script)
         self.assertIn('class="pp-kv"', script)
-        self.assertIn('class="pp-meter"', script)
+        self.assertIn('class="review-proof-actions"', script)
         self.assertIn('class="review-decision-actions"', script)
         self.assertIn("Pending", script)
         self.assertIn('target="_blank" rel="noopener noreferrer"', script)
         self.assertIn(".review-card-cell .pp-member {", css)
+        self.assertIn("grid-template-columns: 1fr 1fr", css)
+        self.assertIn("overflow-wrap: anywhere", css)
+        self.assertIn("min-height: 44px", css)
+        self.assertIn("white-space: normal", css)
+        self.assertIn("var(--pf-st-pending-bg)", css)
         self.assertIn("@media (max-width: 768px)", css)
         self.assertGreater(
             css.index("@media (max-width: 768px)"),
