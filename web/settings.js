@@ -62,7 +62,7 @@
     btn.addEventListener("click", () => applyFontSize(btn.dataset.fontSize));
   });
 
-  // ---- Help & Support popup modal ----
+  // ---- Help & Support popup modal (with Contact / FAQs / GCash & Plans tabs) ----
   const helpModal = $("stHelpModal");
   const openHelp = () => { if (helpModal) helpModal.hidden = false; };
   const closeHelp = () => { if (helpModal) helpModal.hidden = true; };
@@ -71,13 +71,28 @@
   $("stHelpDone")?.addEventListener("click", closeHelp);
   helpModal?.addEventListener("click", e => { if (e.target === helpModal) closeHelp(); });
   document.addEventListener("keydown", e => { if (e.key === "Escape" && helpModal && !helpModal.hidden) closeHelp(); });
+  helpModal?.querySelectorAll("[data-help-tab]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const key = btn.dataset.helpTab;
+      helpModal.querySelectorAll("[data-help-tab]").forEach(b => {
+        const on = b === btn;
+        b.classList.toggle("active", on);
+        b.setAttribute("aria-selected", String(on));
+      });
+      helpModal.querySelectorAll("[data-help-pane]").forEach(p => {
+        p.hidden = p.dataset.helpPane !== key;
+      });
+    });
+  });
 
   // ---- Change password shortcut ----
   $("stChangePwBtn")?.addEventListener("click", () => {
-    if (typeof window.openChangePasswordModal === "function") {
+    if (window.PFChangePassword && typeof window.PFChangePassword.open === "function") {
+      window.PFChangePassword.open();
+    } else if (typeof window.openChangePasswordModal === "function") {
       window.openChangePasswordModal();
     } else {
-      document.querySelector("[data-change-password]")?.click();
+      document.querySelector("[data-cp-item], [data-change-password]")?.click();
     }
   });
 

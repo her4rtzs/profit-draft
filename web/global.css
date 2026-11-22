@@ -15093,3 +15093,63 @@ body[data-page="trainers"] .tr-modal-form select {
     grid-template-columns: 1fr !important;
   }
 }
+
+
+/* Fix hidden stepper year input overlapping label + cross-device mobile responsiveness */
+.stepper-input[hidden],
+.stepper-label[hidden] {
+  display: none !important;
+}
+@media (max-width: 768px) {
+  .main-content {
+    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px)) !important;
+    overflow-x: clip;
+  }
+}
+
+
+/* Member-Portal Sticky Header Parity for Owner & Cashier Portals */
+body.pf-staff .topbar {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 40 !important;
+  padding: 14px 28px !important;
+  min-height: 68px !important;
+  background: var(--bg) !important;
+  border-bottom: 1px solid var(--border, rgba(255, 255, 255, .08)) !important;
+  margin-bottom: 18px !important;
+}
+body.pf-staff .topbar-nav,
+body.pf-staff .topbar-title .welcome,
+body.pf-staff .mobile-nav-toggle {
+  display: none !important;
+}
+body.pf-staff .topbar-title h1 {
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  letter-spacing: -.01em !important;
+  line-height: 1.2 !important;
+  margin: 0 !important;
+}
+body.pf-staff .topbar-actions .theme-toggle,
+body.pf-staff .topbar-actions .notification,
+body.pf-staff .topbar-avatar {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+}
+@media (max-width: 768px) {
+  body.pf-staff .topbar {
+    padding: 12px 14px !important;
+  }
+}
+
+
+/* Ensure legacy bottom bars and closed sheets never peek behind .pf-mob-tabs */
+body.pf-staff .pf-bottomnav,
+body.pf-staff .bottom-nav,
+body.pf-staff .pf-mob-sheet:not(.on) {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}

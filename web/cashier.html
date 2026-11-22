@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head><script>(function(){try{var t=localStorage.getItem('theme');if(t==='light'&&!localStorage.getItem('pf-staff-explicit-light')){t='dark';try{localStorage.setItem('theme','dark');}catch(_){}}var d=t!=='light';var h=document.documentElement;h.style.background=d?'#0a0e16':'#F7F4EE';h.style.colorScheme=d?'dark':'light';if(d){h.classList.add('dark');}else{h.classList.remove('dark');}}catch(e){}})();</script><script src="splash.js?v=3"></script>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,10 +11,100 @@
 <script src="config.js?v=4"></script><script src="api.js?v=5"></script><script src="auth.js?v=4"></script>
 <script>document.documentElement.dataset.accent='gold'</script>
 <link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
-<body class="pf-staff" data-page="cashier" data-title="Cashier Portal" data-welcome="Front desk billing &amp; payments">
+<body class="pf-staff" data-page="cashier" data-title="Dashboard" data-welcome="Front desk billing &amp; payments">
 <script>(function(){try{if(document.documentElement.classList.contains("dark"))document.body.classList.add("dark");}catch(e){}})();</script>
 <div class="dashboard"><nav class="sidebar" id="sidebar"></nav><main class="main-content" id="main" tabindex="-1">
-  <header class="topbar" id="topbar"><h1>Cashier Portal</h1></header>
+  <header class="topbar" id="topbar"><h1>Dashboard</h1></header>
+
+  <!-- Owner-Reference Hero Banner (Cashier-scoped actions only) -->
+  <section class="csh-hero" aria-label="Cashier workspace overview">
+    <div class="csh-hero-bg" aria-hidden="true"></div>
+    <div class="csh-hero-copy">
+      <span class="csh-hero-eyebrow">FRONT DESK &middot; CASHIER</span>
+      <h1>Front desk,<br>live.</h1>
+      <p>Take cash payments, review GCash claims, enroll walk-ins, and record gym check-ins from one desk.</p>
+      <div class="csh-hero-actions">
+        <a class="csh-btn-gold" href="#cashierPayForm"><i class="fa-solid fa-peso-sign" aria-hidden="true"></i> Record payment</a>
+        <a class="csh-btn-dark" href="/attendance"><i class="fa-regular fa-calendar-check" aria-hidden="true"></i> Record attendance</a>
+      </div>
+    </div>
+    <aside class="csh-hero-card" aria-label="Shift status">
+      <span class="csh-live-pill"><span class="csh-live-dot" aria-hidden="true"></span> Desk open</span>
+      <h3>Today's shift</h3>
+      <p class="csh-shift-sub" id="cshHeroDate">Front desk active</p>
+      <div class="csh-hero-card-foot">
+        <div>
+          <small>GCash queue</small>
+          <strong>Pending claims</strong>
+        </div>
+        <a class="csh-mini-gold" href="/payments#claims">Review claims</a>
+      </div>
+    </aside>
+  </section>
+
+  <!-- Owner-Reference 4-Card Horizontal Quick Actions -->
+  <section class="csh-qa-grid" aria-label="Quick front desk actions">
+    <a class="csh-qa-card" href="/members#enroll">
+      <span class="csh-qa-ico" aria-hidden="true"><i class="fa-solid fa-user-plus"></i></span>
+      <span class="csh-qa-txt"><strong>Add a member</strong><small>Walk-in at the desk</small></span>
+      <span class="csh-qa-arrow" aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></span>
+    </a>
+    <a class="csh-qa-card" href="#cashierPayForm">
+      <span class="csh-qa-ico" aria-hidden="true"><i class="fa-solid fa-peso-sign"></i></span>
+      <span class="csh-qa-txt"><strong>Record payment</strong><small>Cash at the desk</small></span>
+      <span class="csh-qa-arrow" aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></span>
+    </a>
+    <a class="csh-qa-card" href="/payments#claims">
+      <span class="csh-qa-ico" aria-hidden="true"><i class="fa-solid fa-clipboard-check"></i></span>
+      <span class="csh-qa-txt"><strong>Review claims</strong><small>GCash waiting for review</small></span>
+      <span class="csh-qa-arrow" aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></span>
+    </a>
+    <a class="csh-qa-card" href="/attendance">
+      <span class="csh-qa-ico" aria-hidden="true"><i class="fa-solid fa-qrcode"></i></span>
+      <span class="csh-qa-txt"><strong>Check-in member</strong><small>Scan QR or front desk</small></span>
+      <span class="csh-qa-arrow" aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></span>
+    </a>
+  </section>
+  <style>
+    .csh-hero { position: relative; overflow: hidden; border-radius: 18px; border: 1px solid rgba(255,255,255,.09); background: #101521; padding: 26px 30px; margin-bottom: 16px; display: grid; grid-template-columns: minmax(0,1.25fr) minmax(260px,330px); gap: 24px; align-items: center; }
+    .csh-hero-bg { position: absolute; inset: 0; background: url("img/hero.jpg") right center / cover no-repeat; opacity: .35; pointer-events: none; }
+    .csh-hero-bg::after { content: ""; position: absolute; inset: 0; background: rgba(11,16,28,.68); }
+    .csh-hero-copy { position: relative; z-index: 1; }
+    .csh-hero-eyebrow { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .09em; color: #e8b93a; margin-bottom: 8px; }
+    .csh-hero-copy h1 { margin: 0 0 10px; font-size: clamp(28px,3vw,40px); font-weight: 800; line-height: 1.06; color: #ffffff; }
+    .csh-hero-copy p { margin: 0 0 18px; font-size: 14px; color: #cbd5e1; max-width: 46ch; line-height: 1.5; }
+    .csh-hero-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+    .csh-btn-gold { display: inline-flex; align-items: center; gap: 8px; min-height: 42px; padding: 0 18px; border-radius: 12px; background: #e8b93a; color: #161209; font-size: 13.5px; font-weight: 800; text-decoration: none; }
+    .csh-btn-gold:hover { background: #f4cc58; }
+    .csh-btn-dark { display: inline-flex; align-items: center; gap: 8px; min-height: 42px; padding: 0 18px; border-radius: 12px; background: rgba(15,23,42,.85); border: 1px solid rgba(255,255,255,.2); color: #f8fafc; font-size: 13.5px; font-weight: 700; text-decoration: none; }
+    .csh-btn-dark:hover { border-color: #e8b93a; }
+    .csh-hero-card { position: relative; z-index: 1; background: #101624; border: 1px solid rgba(255,255,255,.1); border-radius: 16px; padding: 18px 20px; display: flex; flex-direction: column; gap: 6px; }
+    .csh-live-pill { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; background: rgba(34,197,94,.16); color: #4ade80; font-size: 11.5px; font-weight: 700; }
+    .csh-live-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; }
+    .csh-hero-card h3 { margin: 4px 0 0; font-size: 19px; font-weight: 800; color: #ffffff; }
+    .csh-shift-sub { margin: 0 0 8px; font-size: 12.5px; color: #94a3b8; }
+    .csh-hero-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 12px; border-top: 1px dashed rgba(255,255,255,.15); }
+    .csh-hero-card-foot small { display: block; font-size: 11px; color: #94a3b8; }
+    .csh-hero-card-foot strong { font-size: 13.5px; color: #ffffff; }
+    .csh-mini-gold { display: inline-flex; align-items: center; min-height: 34px; padding: 0 14px; border-radius: 10px; background: #e8b93a; color: #161209; font-size: 12.5px; font-weight: 800; text-decoration: none; }
+    .csh-qa-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; margin-bottom: 16px; }
+    .csh-qa-card { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 16px; background: #111622; border: 1px solid rgba(255,255,255,.08); text-decoration: none; color: inherit; transition: border-color .15s ease, transform .15s ease; }
+    .csh-qa-card:hover { border-color: rgba(232,185,58,.45); transform: translateY(-2px); }
+    .csh-qa-ico { width: 38px; height: 38px; border-radius: 50%; background: rgba(232,185,58,.14); color: #e8b93a; display: inline-grid; place-items: center; flex: none; font-size: 14px; }
+    .csh-qa-txt { flex: 1 1 auto; min-width: 0; }
+    .csh-qa-txt strong { display: block; font-size: 13.5px; font-weight: 700; color: #f8fafc; }
+    .csh-qa-txt small { display: block; font-size: 12px; color: #94a3b8; }
+    .csh-qa-arrow { width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,.05); color: #e8b93a; display: inline-grid; place-items: center; flex: none; font-size: 11px; }
+    body:not(.dark) .csh-qa-card { background: #ffffff; border-color: #eadfc8; }
+    body:not(.dark) .csh-qa-txt strong { color: #2a2418; }
+    body:not(.dark) .csh-qa-txt small { color: #6f6450; }
+    body:not(.dark) .csh-qa-ico { background: #fdf4db; color: #9a6b0d; }
+    body:not(.dark) .csh-qa-arrow { background: #faf6ee; color: #9a6b0d; }
+    @media (max-width: 1080px) { .csh-qa-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+    @media (max-width: 860px) { .csh-hero { grid-template-columns: 1fr; padding: 20px; } }
+    @media (max-width: 560px) { .csh-qa-grid { grid-template-columns: 1fr; } }
+  </style>
+  <script>(function(){var el=document.getElementById("cshHeroDate");if(el)el.textContent=new Date().toLocaleDateString("en-PH",{weekday:"short",month:"short",day:"numeric",year:"numeric"});})();</script>
 
   <!-- 4 Shift KPI Cards -->
   <section class="fn-kpi-grid fn-kpi-grid--4" aria-label="Cashier shift overview">
@@ -173,6 +263,29 @@
             <label for="cashierAmount">Official amount (PHP)</label>
             <input class="fn-input" id="cashierAmount" type="text" value="₱800.00" readonly>
           </div>
+          <script>
+            (function () {
+              function syncCashierPlans() {
+                var P = window.PLANS;
+                var sel = document.getElementById('cashierPlan');
+                var amt = document.getElementById('cashierAmount');
+                if (!P || !sel) return;
+                var labels = { daily: 'Daily Pass', monthly: 'Monthly Membership', quarterly: 'Quarterly Membership', annual: 'Annual Membership' };
+                Array.from(sel.options).forEach(function (opt) {
+                  var p = P[opt.value];
+                  if (p && p.price) {
+                    opt.textContent = (labels[opt.value] || p.label) + ' - \u20B1' + Number(p.price).toLocaleString('en-US');
+                  }
+                });
+                var cur = P[sel.value];
+                if (amt && cur && cur.price) {
+                  amt.value = '\u20B1' + Number(cur.price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                }
+              }
+              window.addEventListener('profit:plans-updated', syncCashierPlans);
+              document.addEventListener('DOMContentLoaded', syncCashierPlans);
+            })();
+          </script>
 
           <p class="fn-status-msg" id="cashierFormStatus" role="status" aria-live="polite" hidden></p>
 

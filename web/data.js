@@ -48,7 +48,7 @@ if (typeof window !== "undefined") {
         if (cached) applyPlanMap(cached);
     } catch (_) {}
     if (typeof fetch === "function" && location.protocol !== "file:") {
-        fetch("/api/plans/", { credentials: "same-origin" })
+        fetch("/api/plans/", { credentials: "same-origin", cache: "no-store" })
             .then(r => (r.ok ? r.json() : null))
             .then(d => {
                 if (!d || !d.plans) return;

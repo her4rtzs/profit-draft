@@ -236,9 +236,71 @@
     // =====================================================
     function pageAttendance() {
         const input = $("#ciInput");
+        const acMenu = $("#ciAcMenu");
+        let acIdx = -1;
 
-        $("#ciList").innerHTML = DB.members
-            .map(m => `<option value="${m.id} - ${esc(m.name)}"></option>`).join("");
+        const closeAc = () => {
+            if (!acMenu) return;
+            acMenu.hidden = true;
+            input?.setAttribute("aria-expanded", "false");
+            acIdx = -1;
+        };
+
+        const renderAc = (query) => {
+            if (!acMenu) return;
+            const q = String(query || "").trim().toLowerCase();
+            const matches = (DB.members || [])
+                .filter(m => !q || String(m.id).toLowerCase().includes(q) || String(m.name).toLowerCase().includes(q))
+                .slice(0, 12);
+            if (!matches.length) {
+                acMenu.innerHTML = `<div class="ci-ac-empty">No matching member found</div>`;
+            } else {
+                acMenu.innerHTML = matches.map((m, i) => {
+                    const st = statusOf(m);
+                    return `<button type="button" class="ci-ac-item${i === acIdx ? " is-active" : ""}" role="option" data-ci-val="${esc(m.id + " - " + m.name)}">
+                        <span class="ci-ac-main"><strong>${esc(m.id)}</strong> &mdash; ${esc(m.name)}</span>
+                        <span class="ci-ac-pill is-${esc(st.key)}">${esc(st.label)}</span>
+                    </button>`;
+                }).join("");
+            }
+            acMenu.hidden = false;
+            input?.setAttribute("aria-expanded", "true");
+        };
+
+        input?.addEventListener("focus", () => renderAc(input.value));
+        input?.addEventListener("input", () => { acIdx = -1; renderAc(input.value); });
+        acMenu?.addEventListener("mousedown", e => {
+            const btn = e.target.closest("[data-ci-val]");
+            if (!btn) return;
+            e.preventDefault();
+            input.value = btn.dataset.ciVal;
+            closeAc();
+            input.focus();
+        });
+        document.addEventListener("click", e => {
+            if (!e.target.closest(".checkin-input-wrap")) closeAc();
+        });
+        input?.addEventListener("keydown", e => {
+            if (!acMenu || acMenu.hidden) return;
+            const items = [...acMenu.querySelectorAll(".ci-ac-item")];
+            if (e.key === "ArrowDown") {
+                e.preventDefault();
+                acIdx = Math.min(items.length - 1, acIdx + 1);
+                items.forEach((el, i) => el.classList.toggle("is-active", i === acIdx));
+                items[acIdx]?.scrollIntoView({ block: "nearest" });
+            } else if (e.key === "ArrowUp") {
+                e.preventDefault();
+                acIdx = Math.max(0, acIdx - 1);
+                items.forEach((el, i) => el.classList.toggle("is-active", i === acIdx));
+                items[acIdx]?.scrollIntoView({ block: "nearest" });
+            } else if (e.key === "Escape") {
+                closeAc();
+            } else if (e.key === "Enter" && acIdx >= 0 && items[acIdx]) {
+                e.preventDefault();
+                input.value = items[acIdx].dataset.ciVal;
+                closeAc();
+            }
+        });
 
         if (params.get("member")) {
             const m = DB.member(params.get("member"));
@@ -266,23 +328,25 @@
             }).join("") : `<tr><td colspan="4">${empty("fa-door-open", "No one has checked in yet today.")}</td></tr>`;
         };
 
-        const checkIn = async () => {
-            const raw = input.value.trim();
-            if (!raw) return toast("Type a member name or ID first");
+        const checkIn = async (overrideRaw) => {
+            const raw = String(overrideRaw !== undefined ? overrideRaw : input.value).replace(/^PROFIT:/i, "").trim();
+            if (!raw) return { ok: false, message: "Type a member name or ID first" };
 
             const idMatch = raw.match(/^m\d+/i);
             const m = idMatch
                 ? DB.member(idMatch[0].toUpperCase())
                 : DB.members.find(x => x.name.toLowerCase().includes(raw.toLowerCase()));
 
-            if (!m) return toast("No member found with that name or ID");
-            if (statusOf(m).key === "expired") return toast(`${m.name}'s membership has expired. Renew it first.`);
-            if (todays().some(c => c.memberId === m.id)) return toast(`${m.name} already checked in today`);
+            if (!m) { toast("No member found with that name or ID"); return { ok: false, message: "No member found for this QR code." }; }
+            if (statusOf(m).key === "expired") { toast(`${m.name}'s membership has expired. Renew it first.`); return { ok: false, message: `${m.name}'s membership has expired.` }; }
+            if (todays().some(c => c.memberId === m.id)) { toast(`${m.name} already checked in today`); return { ok: false, message: `${m.name} already checked in today.` }; }
 
             try {
                 await window.ProFitAPI.post("/staff/attendance/check-in/", { member_id: m.serverId });
             } catch (err) {
-                return toast(err.message || "Check-in failed");
+                const msg = err.message || "Check-in failed";
+                toast(msg);
+                return { ok: false, message: msg };
             }
             DB.checkins.push({ date: TODAY, time: nowTime(), memberId: m.id });
             m.checkins++;
@@ -290,10 +354,73 @@
             input.value = "";
             draw();
             toast(`${m.name} checked in`);
+            return { ok: true, message: `${m.name} checked in!` };
         };
 
-        $("#ciBtn").addEventListener("click", checkIn);
+        $("#ciBtn").addEventListener("click", () => checkIn());
         input.addEventListener("keydown", e => { if (e.key === "Enter") checkIn(); });
+
+        // ---- QR Check-in Camera Scanner ----
+        const qrBtn = $("#ciQrBtn");
+        const qrModal = $("#qrScanModal");
+        const qrStatus = $("#qrScanStatus");
+        let qrScanner = null;
+        let qrBusy = false;
+
+        const setQrStatus = (msg, tone) => {
+            if (!qrStatus) return;
+            qrStatus.textContent = msg;
+            qrStatus.style.color = tone === "ok" ? "#22c55e" : tone === "err" ? "#f87171" : "";
+        };
+
+        const stopQrScanner = async () => {
+            if (qrScanner) {
+                try { await qrScanner.stop(); } catch (_) {}
+                try { qrScanner.clear(); } catch (_) {}
+                qrScanner = null;
+            }
+            qrBusy = false;
+            if (qrModal) qrModal.hidden = true;
+        };
+
+        const openQrScanner = async () => {
+            if (!qrModal) return;
+            qrModal.hidden = false;
+            setQrStatus("Starting camera...", "");
+            if (typeof window.Html5Qrcode !== "function") {
+                setQrStatus("QR scanner library failed to load. Check your internet connection.", "err");
+                return;
+            }
+            try {
+                qrScanner = new window.Html5Qrcode("qrReader");
+                await qrScanner.start(
+                    { facingMode: "environment" },
+                    { fps: 10, qrbox: { width: 220, height: 220 } },
+                    async decodedText => {
+                        if (qrBusy) return;
+                        qrBusy = true;
+                        setQrStatus("Checking in...", "");
+                        try {
+                            const res = await checkIn(decodedText);
+                            setQrStatus(res.message, res.ok ? "ok" : "err");
+                        } finally {
+                            setTimeout(() => { qrBusy = false; }, 2200);
+                        }
+                    },
+                    () => {}
+                );
+                setQrStatus("Point the camera at the member's Check-in QR pass.", "");
+            } catch (err) {
+                setQrStatus("Could not access camera. Allow camera permission (HTTPS or localhost required).", "err");
+            }
+        };
+
+        qrBtn?.addEventListener("click", openQrScanner);
+        $("#qrScanClose")?.addEventListener("click", stopQrScanner);
+        $("#qrScanDone")?.addEventListener("click", stopQrScanner);
+        qrModal?.addEventListener("click", e => { if (e.target === qrModal) stopQrScanner(); });
+        document.addEventListener("keydown", e => { if (e.key === "Escape" && qrModal && !qrModal.hidden) stopQrScanner(); });
+
         afterSync(draw);
     }
 

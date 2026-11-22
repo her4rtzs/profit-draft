@@ -1,0 +1,35 @@
+
+/* Clean single-column layout when editing a trainer (Account Access hidden) */
+.tr-modal:has(#trAccessSection[hidden]) {
+  max-width: 560px !important;
+}
+
+#trForm:has(#trAccessSection[hidden]) {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 14px !important;
+}
+
+#trForm:has(#trAccessSection[hidden]) .tr-modal-section {
+  width: 100% !important;
+}
+
+#trActiveWrap {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, .1);
+  background: rgba(255, 255, 255, .03);
+  cursor: pointer;
+}
+
+#trActiveWrap[hidden] {
+  display: none !important;
+}
+
+body:not(.dark) #trActiveWrap {
+  background: #faf6ee;
+  border-color: #eadfc8;
+}

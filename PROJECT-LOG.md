@@ -3111,3 +3111,515 @@ Make the Confirm/Reject buttons visible, add a preview button for the Google Dri
 - Added tests for the column template and both modals; targeted tests 25 pass and `manage.py check` is clean.
 ### Decision-log skill
 When a table uses a CSS grid driven by a custom property, every new table needs its own column template or its cells will stack and the action buttons disappear.
+## 2026-11-22 20:27 (Asia/Manila): Added QR check-in pass and Staff camera QR scanner
+### What I asked for
+Add QR code scanning for gym check-in in the simplest, most engaging way.
+### What the agent decided and why
+- Added a **Check-in QR** pass modal (`qrcodejs` CDN) in `web/member-home.html` encoding `PROFIT:<memberId>` for active members (with a clear notice for trial/expired accounts) — see [[2026-11-22 Add QR check-in using CDN scanner and existing endpoint]].
+- Added a **Scan QR** camera modal (`html5-qrcode` CDN) to `web/attendance.html` and `web/pages.js` that parses scanned codes and posts through the existing `POST /api/staff/attendance/check-in/` endpoint so all server-side RBAC, active-membership, and duplicate check-in rules stay enforced.
+### Decision-log skill
+Reuse existing server-side check-in endpoints for QR scanning instead of creating a parallel check-in API, so permission checks and membership validation cannot drift.
+
+## 2026-11-22 20:35 (Asia/Manila): Streamlined Member hero actions to My check-in QR and Book a class
+### What I asked for
+Match the Member Portal hero to show only `My check-in QR` and `Book a class` with the short QR check-in subtitle.
+### What the agent decided and why
+- Simplified `.member-hero-actions` in `web/member-home.html` to two buttons (`My check-in QR` + `Book a class`) since `Renew` is already in the right-hand plan card, and updated the hero subline to `"Your coach or the front desk checks you in when you arrive. Show your QR to speed things up."`
+### Decision-log skill
+Keep hero CTAs focused to at most two primary actions when secondary actions like `Renew` already live inside the adjacent status card.
+
+## 2026-11-22 20:43 (Asia/Manila): Member Portal UI upgrade (4-KPI strip, progress challenges, glance card, and Attendance badges)
+### What I asked for
+Upgrade the Member Portal UI to match the 4-card KPI strip, bar-style Challenges + This week at a glance, and Attendance 4-KPI + side-by-side 12-week heatmap & Badges layout.
+### What the agent decided and why
+- Upgraded `#overview` in `web/member-home.html` and `web/member-shell.css` to a 4-card KPI strip (`Current streak` with M–S week dots, `Weekly goal` with 4 segmented gold bars, `Next class`, and gold-bordered `Unread notices`), horizontal progress-bar `Challenges`, and a `This week at a glance` card with `Open the schedule`.
+- Upgraded `#attendance` with a 4-card summary KPI strip (`Visits this month`, `Best streak`, `Total check-ins`, `Active weeks`) and a 2-column `Last 12 weeks` heatmap + 6 circular achievement `Badges` panel driven by live member attendance data.
+### Decision-log skill
+Drive new visual widgets (weekday dots, segmented goal bars, and achievement badges) strictly from the member's real `/api/member/me` attendance data rather than static placeholder counts.
+
+## 2026-11-22 20:54 (Asia/Manila): Member Portal cleanup (remove duplicate cards & preview/auth banners)
+### What I asked for
+Remove the duplicate "Latest from the gym" and "Membership Summary / Renew membership" cards on Member Overview, the local preview banner, and the "Authentication credentials were not provided" trainer card box.
+### What the agent decided and why
+- Hid `.ann-overview` and `#overviewMembershipCard` on Overview (keeping their inner IDs in the DOM for compatibility) because the hero card already shows membership status + Renew and the new 4-card KPI strip already links to unread notices.
+- Stopped rendering the local-preview `#memberNotice` banner when falling back to demo data on localhost.
+- Updated `web/trainer-member.js` to hide the `#trainerCard` wrapper section on 401/403 auth errors instead of displaying raw "Authentication credentials were not provided." text.
+### Decision-log skill
+Keep Overview focused without repeating cards that already exist in the hero or dedicated sidebar tabs, and silently hide auth-gated widgets in local preview instead of printing raw DRF 401 messages.
+
+## 2026-11-22 21:04 (Asia/Manila): Balance Member Portal container proportions
+### What I asked for
+Balance oversized containers on Member Portal Overview, Schedule, and Attendance to match the reference layouts.
+### What the agent decided and why
+- Tightened `.member-content` max-width from `1280px` to `1080px` so cards keep balanced proportions on wide screens.
+- Removed the stale `max-width: 440px` cap on `.mb-heat-grid` and set `.mb-att-split` to an equal `50/50` grid so the 12-week heatmap fills its card cleanly beside Badges.
+- Placed Schedule's calendar and day sessions side-by-side in `.mb-sched-split` (`50/50` grid with a scrollable sessions list) and tightened Overview calendar cell sizing (`34px`, `4px 2px` gap) and panel padding (`18px 20px`).
+### Decision-log skill
+Check for older overriding `max-width` rules when converting a full-width card into a split grid, and constrain main portal content width to ~1080px to prevent stretched dashboards on desktop.
+
+## 2026-11-22 21:07 (Asia/Manila): Restore 1280px width & tighten vertical card heights
+### What I asked for
+Keep the original wider container width (`1280px`) and reduce the tall vertical height of the Member Portal cards.
+### What the agent decided and why
+- Restored `.member-content` `max-width: 1280px` while tightening vertical heights across KPI cards (`padding: 14px 18px`), calendar cells (`30px`, `2px` row gap), heatmap cells (`height: 24px` full-width), Schedule day sessions (`max-height: 240px`), and Badges (`46px` circles).
+### Decision-log skill
+On wide desktop containers, cap heatmap cell height directly instead of using `aspect-ratio: 1` so full-width grids stay short and balanced vertically.
+
+## 2026-11-22 21:33 (Asia/Manila): Align Member Overview to 3-row photo-hero bento reference
+### What I asked for
+Match the uploaded 3-row Member Portal layout: Photo Hero + This Week cluster on top, Weekly Goal dual-ring + Activity Rhythm curve + Up Next in row 2, and Monthly Calendar + Challenges + Latest from the gym in row 3.
+### What the agent decided and why
+- Updated `[data-panel="overview"]` in `web/member-home.html` and appended matching flat Light & Dark Mode styles in `web/member-shell.css` (`?v=21`) with zero AI glow and real attendance/membership/announcement data (no hardcoded fake coaches).
+- Kept Schedule's 2-column Calendar + Day Sessions + My own sessions layout intact.
+### Decision-log skill
+Keep all real portal widgets (`#memberCalendar`, `#upNextList`, `#challengeList`, `#annPreview`) live inside a compact 3-column bento grid so members get full utility without oversized vertical containers.
+
+## 2026-11-22 21:41 (Asia/Manila): Solid yellow calendar circles
+### What I asked for
+Make the calendar circles solid yellow instead of transparent yellow.
+### What the agent decided and why
+- Changed `.pp-cal-day.is-selected` and `.pp-cal-day.is-checkin` in `web/member-home.html` from translucent `rgba(232, 185, 58, .18)` to solid `#f4c430` with dark `#141006` text in both Dark and Light Mode.
+### Decision-log skill
+Use solid brand yellow (`#f4c430`) with high-contrast dark text for selected and checked-in calendar circles so they never look washed out.
+
+## 2026-11-22 21:54 (Asia/Manila): Deduplicate Member Portal stats, buttons, avatar & fix null days bug
+### What I asked for
+Remove the duplicate "Submit GCash claim" button under Payment History, remove the duplicate top-right avatar, fix "null days left" in the hero, and remove all repeated Weekly goal, Visits, Streak, M-S weekday, "This week", and CTA buttons on Member Overview.
+### What the agent decided and why
+- Removed "Submit GCash claim" from Payment History in My Membership (keeping "Renew membership" at the top) and hid the duplicate `#memberTopAvatar` (keeping the sidebar account card).
+- Fixed `#mbHeroDaysInline` to use sanitized `displayDays` or `"No active plan"` + `"Choose a plan"` when un-enrolled so `"null days left"` can never render.
+- Simplified Overview into: Full-width Hero (`Check in` + single `Book a class` + single plan/days-left bar), 3-card summary strip (`This month`, combined `Streak` current + best, `Unread notices`), 2-column `Weekly goal` (merged ring + single `M-S` row + compact curve) & `Up next` (single `Open the schedule`), and 3-column Calendar + Challenges + Latest from the gym.
+### Decision-log skill
+Guard every numeric template string (like `days left`) with `Number.isFinite()` and an explicit empty-plan fallback, and audit every dashboard screen for duplicate labels, buttons, and avatars.
+
+## 2026-11-22 22:01 (Asia/Manila): Fix Hero gold pill buttons & real remaining days calculation
+### What I asked for
+Fix the unstyled Check in button, style Renew as a gold pill button, and fix "0 days left" in the hero bar when the member has active days remaining.
+### What the agent decided and why
+- Styled `.mb-bento-btn.is-gold` ("My check-in QR") and `.mb-hero-renew-link` ("Renew") as solid gold `#e8b93a` pills with `#161209` text in `web/member-shell.css` (`?v=23`).
+- Updated `syncMemberChrome()` in `web/member-home.html` to read `m.expiresAt` and compute `remainingDays` from `endIso` when `m.remainingDays` is null, matching the calculation used in the My Membership tab.
+### Decision-log skill
+Compute `endIso` and `remainingDays` consistently across both `render()` and `syncMemberChrome()` so the Hero and My Membership tab never disagree on remaining days.
+
+## 2026-11-22 22:02 (Asia/Manila): Restore Member header avatar & remove sidebar avatar duplicate
+### What I asked for
+Put the avatar back in the top-right header.
+### What the agent decided and why
+- Restored `#memberTopAvatar` in the header and hid the duplicate `#memberInitials` avatar circle in the sidebar footer (keeping the sidebar name, plan, and account menu intact).
+### Decision-log skill
+Keep the single profile avatar in the top-right header for consistent parity with the Staff portal while keeping the sidebar footer text + menu clean.
+
+## 2026-11-22 22:04 (Asia/Manila): Equal-height containers on Member My Profile tab
+### What I asked for
+Align the left avatar card and right Personal details card to the same height on Member My Profile.
+### What the agent decided and why
+- Set `align-items: stretch` on `.pp-profile` and flex-column `height: 100%` on both `.pp-profile > .pp-card` panels in `web/member-shell.css` (`?v=24`), anchoring the form action buttons cleanly to the bottom.
+### Decision-log skill
+Use `align-items: stretch` on two-column profile grids with `margin-top: auto` on the form action bar so side-by-side cards stay flush top and bottom.
+
+## 2026-11-22 22:05 (Asia/Manila): Style Payment History Receipt button to match ProFit UI
+### What I asked for
+Match the browser-default gray Receipt button in Payment History to ProFit's UI design system.
+### What the agent decided and why
+- Styled `.member-receipt` in `web/member-shell.css` (`?v=25`) as a crisp flat pill button with gold receipt icon (`#e8b93a` dark / `#b47d0b` light) and matching Dark & Light Mode hover states.
+### Decision-log skill
+Always reset `appearance: none` and style table action buttons with ProFit's pill border/surface tokens so native browser button chrome never leaks through.
+
+## 2026-11-22 22:07 (Asia/Manila): Hero Floating Ticket Card & smooth number count-up animations
+### What I asked for
+Style the Member Hero banner with the floating dark Membership Ticket Card (dashed divider, gold SVG ring, Renew button) and add smooth count-up animations for numbers.
+### What the agent decided and why
+- Updated the Hero in `web/member-home.html` and `web/member-shell.css` (`?v=26`) to the 2-column stacked headline + floating Membership Ticket Card layout with dashed ticket divider, animated SVG ring (`226.19` circumference), and crisp gold rounded buttons.
+- Added `animateCountUp()` (`easeOutCubic`, respects `prefers-reduced-motion`) across Overview and Attendance KPI counters (`#mbHeroDaysVal`, `#glanceMonthVal`, `#streakCount`, `#unreadNoticeCount`, `#weeklyGoalText`, `#attKpi*`).
+### Decision-log skill
+Use `requestAnimationFrame` with cubic ease-out and `prefers-reduced-motion` guard for smooth, non-janky KPI count-ups without external animation libraries.
+
+## 2026-11-22 22:04 (Asia/Manila): Equal-height containers on Member My Profile tab
+### What I asked for
+Align the left avatar card and right Personal details card to the same height on Member My Profile.
+### What the agent decided and why
+- Set `align-items: stretch` on `.pp-profile` and flex-column `height: 100%` on both `.pp-profile > .pp-card` panels in `web/member-shell.css` (`?v=24`), anchoring the form action buttons cleanly to the bottom.
+### Decision-log skill
+Use `align-items: stretch` on two-column profile grids with `margin-top: auto` on the form action bar so side-by-side cards stay flush top and bottom.
+
+## 2026-11-22 22:05 (Asia/Manila): Style Payment History Receipt button to match ProFit UI
+### What I asked for
+Match the browser-default gray Receipt button in Payment History to ProFit's UI design system.
+### What the agent decided and why
+- Styled `.member-receipt` in `web/member-shell.css` (`?v=25`) as a crisp flat pill button with gold receipt icon (`#e8b93a` dark / `#b47d0b` light) and matching Dark & Light Mode hover states.
+### Decision-log skill
+Always reset `appearance: none` and style table action buttons with ProFit's pill border/surface tokens so native browser button chrome never leaks through.
+
+## 2026-11-22 22:07 (Asia/Manila): Hero Floating Ticket Card & smooth number count-up animations
+### What I asked for
+Style the Member Hero banner with the floating dark Membership Ticket Card (dashed divider, gold SVG ring, Renew button) and add smooth count-up animations for numbers.
+### What the agent decided and why
+- Updated the Hero in `web/member-home.html` and `web/member-shell.css` (`?v=26`) to the 2-column stacked headline + floating Membership Ticket Card layout with dashed ticket divider, animated SVG ring (`226.19` circumference), and crisp gold rounded buttons.
+- Added `animateCountUp()` (`easeOutCubic`, respects `prefers-reduced-motion`) across Overview and Attendance KPI counters (`#mbHeroDaysVal`, `#glanceMonthVal`, `#streakCount`, `#unreadNoticeCount`, `#weeklyGoalText`, `#attKpi*`).
+### Decision-log skill
+Use `requestAnimationFrame` with cubic ease-out and `prefers-reduced-motion` guard for smooth, non-janky KPI count-ups without external animation libraries.
+
+## 2026-11-22 22:16 (Asia/Manila): Restore sidebar avatar, live name updates, and unified RBAC Settings
+### What I asked for
+Restore the missing avatar in the Member sidebar, make name changes update across the app, put Change Password inside Settings, and apply the Staff Settings layout to Member, Trainer, and Cashier while keeping only role-appropriate options.
+### What the agent decided and why
+- Removed `hidden` from `#memberInitials` in `web/member-home.html` so the sidebar avatar renders in both expanded and collapsed states.
+- Enabled editing `#pfName` in `web/member-tabs.js` (`?v=8`), sent `name` in `PATCH /api/member/me/`, and synced the updated name immediately to the Hero greeting, sidebar name, initials, session storage, and Settings subtitle.
+- Fixed `web/settings.js` so `#stChangePwBtn` calls `window.PFChangePassword.open()` (used by Owner, Cashier, and Trainer on `/settings`, where Subscription Prices and Edit Gym Profile remain strictly Owner-only).
+- Rebuilt Member Settings in `web/member-tabs.js` and `web/member-shell.css` (`?v=27`) to match Staff Settings' grouped card-row layout (Account with Edit Profile + Change Password, Notifications, Appearance with Dark Mode + Font Size preview, General with Help & Support, Install the app, My Data, Logout) while hiding the auto-injected duplicate Change Password button next to Logout.
+### Decision-log skill
+Keep role-restricted settings (Subscription Prices, Edit Gym Profile) Owner-only on `/settings` while giving Member, Trainer, and Cashier the same clean grouped Settings UI with Change Password inside Account.
+
+## 2026-11-22 22:25 (Asia/Manila): Member Settings polish (side nav, yellow toggles, working font size, title sync)
+### What I asked for
+Remove the duplicate Install the app card, make Font Size visibly scale, change toggle switches to yellow/gold, fix the header title to say "Settings" instead of "My profile", and add the left section jump-nav matching Staff Settings.
+### What the agent decided and why
+- Removed the duplicate `#install` panel below `#memberSettingsRoot` in `web/member-home.html` and moved `#installHelpStatus` + `data-install-steps` inside the Settings card.
+- Updated `web/member-shell.js` (`?v=4`) to sync `#memberTopTitle` from the visible `[data-panel]:not([hidden])` and `[data-member-goto]` clicks so `#settings` always shows "Settings".
+- Added sticky left section jump-nav (`.mb-st-shell` / `.mb-st-sidenav`), brand yellow/gold (`#e8b93a`) ON toggles, and live `Small / Medium / Large` text scaling in `web/member-tabs.js` (`?v=9`) and `web/member-shell.css` (`?v=28`).
+### Decision-log skill
+Sync topbar titles from the active panel element rather than only sidebar `.nav-link` buttons so footer/account-menu views like Settings always display their own title.
+
+## 2026-11-22 22:35 (Asia/Manila): Staff & Portal UI polish (Attendance dropdown/badges, Trainers deactivate, Reports spacing, Search ring, Chart stepper, Tabbed Help)
+### What I asked for
+Fix the Attendance check-in dropdown and status badge colors, let Owners deactivate/reactivate trainers like cashiers, fix Reports Transactions column spacing, fix the double yellow focus ring on Announcements search, align the `< 2025 >` chart period stepper, and upgrade Help & Support with in-modal tabs.
+### What the agent decided and why
+- Replaced native `<datalist>` in `web/attendance.html` & `web/pages.js` with a custom ProFit autocomplete dropdown anchored beneath `#ciInput` and updated Attendance status pills in `web/attendance-ui.css` to match the system's soft-tinted bordered pills.
+- Added a direct Deactivate / Set Active button on each Trainer card in `web/trainers-staff.js` calling `PATCH /staff/trainers/<id>/` with `{ is_active }`.
+- Rebalanced `.fn-table--tx` column proportions in `web/finance-ui.css`, removed the inner `<input>` focus box-shadow in `web/announcements.css`, and vertically centered `.chart-stepper` arrows/labels in `web/dashboard.css`.
+- Upgraded Help & Support modals in `web/settings.html`, `web/settings.js`, and `web/member-tabs.js` with interactive Contact / FAQs / GCash & Plans tabs right inside the popup.
+### Decision-log skill
+Prefer custom anchored autocomplete dropdowns over native `<datalist>` for consistent cross-browser positioning and theme parity, and keep Help/FAQ content inside tabbed modals so users stay in context.
+
+## 2026-11-22 22:38 (Asia/Manila): Apply Owner My Profile layout to Member Portal
+### What I asked for
+Apply the Owner's My Profile layout (Hero + Completeness ring + 2-column Your details & How you appear) to the other portals.
+### What the agent decided and why
+- Confirmed Owner, Cashier, and Trainer already share `/profile` (`web/profile.html` + `web/profile.js`) with this exact layout.
+- Upgraded Member Portal's `renderProfile()` in `web/member-tabs.js` (`?v=10`) and `web/member-shell.css` (`?v=29`) to match the Owner's Hero + live SVG Completeness ring + 4-item checklist + equal-height 2-column `Your details` and live `How you appear` preview (with quick preset avatars).
+### Decision-log skill
+Keep My Profile visually unified across all 4 roles (Owner, Cashier, Trainer, Member) using the same Hero + Completeness ring + live preview pattern while adapting role-specific fields.
+
+## 2026-11-22 22:41 (Asia/Manila): Polish Edit Trainer modal, Payments grid height, and collapsed sidebar avatar
+### What I asked for
+Fix the lopsided Edit Trainer modal layout, align the Payments two-column grid heights, and remove the vertical oval behind the collapsed sidebar avatar.
+### What the agent decided and why
+- Made `#trForm` single-column and capped `.tr-modal` to `560px` when `#trAccessSection[hidden]` is active in `web/trainers.css`, styling `#trActiveWrap` as a clean full-width row.
+- Set `.fn-daily-grid` to `align-items: stretch` and `.fn-daily-right > .fn-card` to `flex: 1 1 auto` in `web/finance-ui.css` so both columns align flush at the bottom.
+- Removed the oval background/padding on collapsed sidebar profile containers in `web/dashboard.css` and `web/member-shell.css` so only the circular avatar renders.
+### Decision-log skill
+Use CSS `:has([hidden])` to collapse multi-column edit modals to a balanced single column when creation-only sections are hidden.
+
+## 2026-11-22 22:44 (Asia/Manila): Maximize Member Portal width (phone-safe) & unify Trainer Portal to Staff UI
+### What I asked for
+Maximize Member Portal container widths, ensure phone responsiveness, and apply the Staff Portal UI to the Trainer Portal.
+### What the agent decided and why
+- Removed the `1280px` / `980px` width caps on `.member-content` and `.mb-st-shell` in `web/member-shell.css` (`?v=31`) and added mobile overflow/padding safeguards (`<=640px`) for phones.
+- Added a Staff-UI parity theme layer to `web/trainer/trainer.css` (applies to all `/trainer/*` pages): Staff gold `#e8b93a`, obsidian `#0d111a` sidebar in both Dark and Light Mode, `#0a0e16`/`#111622` Dark Mode and `#faf6ee`/`#ffffff` Light Mode surfaces, flat zero-glow cards/buttons, and full-width `.content`.
+### Decision-log skill
+Style the shared `web/trainer/trainer.css` tokens and shell selectors to bring every Trainer Portal page into visual parity with Staff without duplicating HTML across 8 pages.
+
+## 2026-11-22 22:49 (Asia/Manila): Add OG Terms & Privacy tabs and restore exact gym contact info in Help & Support
+### What I asked for
+Include Terms and Privacy tabs in the Help & Support modal and keep the exact original gym contact and legal info from the original FAQ/Terms/Privacy page.
+### What the agent decided and why
+- Updated the Help & Support tabbed modal in `web/settings.html` and `web/member-tabs.js` (`?v=11`) with 4 well-spaced pill tabs (`Contact`, `FAQs`, `Terms`, `Privacy`) using the exact original `Functional Performance` details (`0906 053 6064`, `FunctionalPerformance.2022@gmail.com`, `Luksuhin - Mangas Rd., Saray, Mangas 1, Alfonso, Cavite, Philippines`) and OG October 2026 legal/FAQ text from `web/faq.html`.
+### Decision-log skill
+Always pull gym contact details and legal policy copy from the existing canonical `web/faq.html` source rather than paraphrasing or substituting placeholder numbers.
+
+## 2026-11-22 22:53 (Asia/Manila): Match Trainer header & sidebar to Staff portal reference
+### What I asked for
+Apply the Staff portal header and sidebar structure directly to the Trainer portal.
+### What the agent decided and why
+- Updated `topbarHTML()`, `pageHead()`, and `TRAINER_NAV` in `web/assets/js/staff.js` so the Trainer portal places the page title + eyebrow inside the topbar (removing the duplicate below-topbar page header) and removes the redundant sidebar Account links (keeping Notifications in the topbar bell and Profile/Settings/Logout in the bottom account menu and header avatar, identical to Staff).
+- Styled the Trainer topbar, active nav pills, and collapsed sidebar avatar in `web/trainer/trainer.css` to match Staff's exact geometry and colors.
+### Decision-log skill
+Centralize shell chrome differences inside `web/assets/js/staff.js` so Trainer and Staff share the exact same topbar and sidebar patterns across all subpages.
+
+## 2026-11-22 22:44 (Asia/Manila): Maximize Member Portal width (phone-safe) & unify Trainer Portal to Staff UI
+### What I asked for
+Maximize Member Portal container widths, ensure phone responsiveness, and apply the Staff Portal UI to the Trainer Portal.
+### What the agent decided and why
+- Removed the `1280px` / `980px` width caps on `.member-content` and `.mb-st-shell` in `web/member-shell.css` (`?v=31`) and added mobile overflow/padding safeguards (`<=640px`) for phones.
+- Added a Staff-UI parity theme layer to `web/trainer/trainer.css` (applies to all `/trainer/*` pages): Staff gold `#e8b93a`, obsidian `#0d111a` sidebar in both Dark and Light Mode, `#0a0e16`/`#111622` Dark Mode and `#faf6ee`/`#ffffff` Light Mode surfaces, flat zero-glow cards/buttons, and full-width `.content`.
+### Decision-log skill
+Style the shared `web/trainer/trainer.css` tokens and shell selectors to bring every Trainer Portal page into visual parity with Staff without duplicating HTML across 8 pages.
+
+## 2026-11-22 22:49 (Asia/Manila): Add OG Terms & Privacy tabs and restore exact gym contact info in Help & Support
+### What I asked for
+Include Terms and Privacy tabs in the Help & Support modal and keep the exact original gym contact and legal info from the original FAQ/Terms/Privacy page.
+### What the agent decided and why
+- Updated the Help & Support tabbed modal in `web/settings.html` and `web/member-tabs.js` (`?v=11`) with 4 well-spaced pill tabs (`Contact`, `FAQs`, `Terms`, `Privacy`) using the exact original `Functional Performance` details (`0906 053 6064`, `FunctionalPerformance.2022@gmail.com`, `Luksuhin - Mangas Rd., Saray, Mangas 1, Alfonso, Cavite, Philippines`) and OG October 2026 legal/FAQ text from `web/faq.html`.
+### Decision-log skill
+Always pull gym contact details and legal policy copy from the existing canonical `web/faq.html` source rather than paraphrasing or substituting placeholder numbers.
+
+## 2026-11-22 22:53 (Asia/Manila): Match Trainer header & sidebar to Staff portal reference
+### What I asked for
+Apply the Staff portal header and sidebar structure directly to the Trainer portal.
+### What the agent decided and why
+- Updated `topbarHTML()`, `pageHead()`, and `TRAINER_NAV` in `web/assets/js/staff.js` so the Trainer portal places the page title + eyebrow inside the topbar (removing the duplicate below-topbar page header) and removes the redundant sidebar Account links (keeping Notifications in the topbar bell and Profile/Settings/Logout in the bottom account menu and header avatar, identical to Staff).
+- Styled the Trainer topbar, active nav pills, and collapsed sidebar avatar in `web/trainer/trainer.css` to match Staff's exact geometry and colors.
+### Decision-log skill
+Centralize shell chrome differences inside `web/assets/js/staff.js` so Trainer and Staff share the exact same topbar and sidebar patterns across all subpages.
+
+## 2026-11-22 22:57 (Asia/Manila): Fix Trainer Portal 403 route errors & Owner sidebar parity
+### What I asked for
+Fix the "Staff access required." errors when clicking links inside the Trainer Portal and match the Trainer sidebar to the Owner portal (remove the collapse toggle button).
+### What the agent decided and why
+- Prefixed all Trainer navigation, topbar avatar, account menu, mobile bottom nav, and notification links in `web/assets/js/staff.js` (`?v=13`) with `/trainer/` so trainers stay inside `/trainer/*` instead of hitting Staff-only routes that return 403.
+- Updated all 18 root-relative links across the 8 `web/trainer/*.html` pages to `/trainer/*` and bumped `trainer.css?v=15` and `staff.js?v=13`.
+- Hid `.collapse-btn` on the Trainer sidebar in `web/trainer/trainer.css` to match the Owner portal sidebar.
+### Decision-log skill
+Always namespace role-scoped sub-portal links (`/trainer/*`) in shared shell builders (`staff.js`) and page templates so role-restricted views never accidentally route into Staff-only URLs.
+
+## 2026-11-22 23:03 (Asia/Manila): Exact Owner Portal UI parity for Trainer Dashboard & Sidebar
+### What I asked for
+Use the Owner dashboard as main reference for Trainer: remove all gradients, match Quick Actions, match table arrangement/styling, and fix the Trainer sidebar to match the Owner's sleek hover-expanding obsidian icon rail.
+### What the agent decided and why
+- Appended an Owner-parity CSS layer to `web/trainer/trainer.css` (`?v=16` across all 8 `web/trainer/*.html` pages): stripped all colored gradients from Quick Action tiles and cards, converted Quick Actions into Owner's horizontal 4-card row (gold circular icon left, title/subtitle center, arrow circle right), converted the desktop Trainer sidebar into Owner's `76px` hover-expanding obsidian icon rail with grouped nav pods, and matched table headers/rows and gold active period pills to Owner.
+### Decision-log skill
+Match the Owner Portal's exact rail width (`76px` -> `248px` on hover), grouped nav pods, flat card surfaces, and horizontal Quick Action cards in `trainer.css` so Owner and Trainer feel like one unified system.
+
+## 2026-11-22 23:05 (Asia/Manila): Fix Trainer Portal sidebar overlap, page titles, and Owner card parity
+### What I asked for
+Check ROADMAP.md for Trainer permissions and fix the Trainer Portal UI to match Owner Portal cleanly (fix sidebar clipping, page titles, and pastel KPI cards).
+### What the agent decided and why
+- Confirmed Trainer permissions against `ROADMAP.md` & `AGENTS.md`: Attendance records, assigned member roster, schedule, announcements, and own profile/settings only (no billing, claims, enrollment, or financial reports).
+- Fixed desktop `.main` offset (`margin-left: 76px; width: calc(100% - 76px)`) in `web/trainer/trainer.css` (`?v=17`) so content never clips behind the fixed `76px` Owner-style rail sidebar, and normalized subpage KPI/banner cards to Owner's flat white/obsidian surfaces.
+- Added `TRAINER_PAGE_TITLES` in `web/assets/js/staff.js` (`?v=14`) so every Trainer subpage displays its real title (`My Members`, `Attendance`, `My Schedule`, `Announcements`, `My Profile`, `Settings`) in the topbar instead of falling back to `Dashboard`.
+### Decision-log skill
+When converting a flex `.app` shell to a fixed narrow rail sidebar, always apply explicit `margin-left` and `calc(100% - railWidth)` on `.main` so subpages never clip underneath the rail.
+
+## 2026-11-22 23:03 (Asia/Manila): Exact Owner Portal UI parity for Trainer Dashboard & Sidebar
+### What I asked for
+Use the Owner dashboard as main reference for Trainer: remove all gradients, match Quick Actions, match table arrangement/styling, and fix the Trainer sidebar to match the Owner's sleek hover-expanding obsidian icon rail.
+### What the agent decided and why
+- Appended an Owner-parity CSS layer to `web/trainer/trainer.css` (`?v=16` across all 8 `web/trainer/*.html` pages): stripped all colored gradients from Quick Action tiles and cards, converted Quick Actions into Owner's horizontal 4-card row (gold circular icon left, title/subtitle center, arrow circle right), converted the desktop Trainer sidebar into Owner's `76px` hover-expanding obsidian icon rail with grouped nav pods, and matched table headers/rows and gold active period pills to Owner.
+### Decision-log skill
+Match the Owner Portal's exact rail width (`76px` -> `248px` on hover), grouped nav pods, flat card surfaces, and horizontal Quick Action cards in `trainer.css` so Owner and Trainer feel like one unified system.
+
+## 2026-11-22 23:05 (Asia/Manila): Fix Trainer Portal sidebar overlap, page titles, and Owner card parity
+### What I asked for
+Check ROADMAP.md for Trainer permissions and fix the Trainer Portal UI to match Owner Portal cleanly (fix sidebar clipping, page titles, and pastel KPI cards).
+### What the agent decided and why
+- Confirmed Trainer permissions against `ROADMAP.md` & `AGENTS.md`: Attendance records, assigned member roster, schedule, announcements, and own profile/settings only (no billing, claims, enrollment, or financial reports).
+- Fixed desktop `.main` offset (`margin-left: 76px; width: calc(100% - 76px)`) in `web/trainer/trainer.css` (`?v=17`) so content never clips behind the fixed `76px` Owner-style rail sidebar, and normalized subpage KPI/banner cards to Owner's flat white/obsidian surfaces.
+- Added `TRAINER_PAGE_TITLES` in `web/assets/js/staff.js` (`?v=14`) so every Trainer subpage displays its real title (`My Members`, `Attendance`, `My Schedule`, `Announcements`, `My Profile`, `Settings`) in the topbar instead of falling back to `Dashboard`.
+### Decision-log skill
+When converting a flex `.app` shell to a fixed narrow rail sidebar, always apply explicit `margin-left` and `calc(100% - railWidth)` on `.main` so subpages never clip underneath the rail.
+
+## 2026-11-22 23:11 (Asia/Manila): Add Owner-style Dashboard to Cashier Portal & fix Trainer rail sidebar clipping
+### What I asked for
+Add an Owner-style Dashboard (Hero + Quick Actions) to the Cashier Portal and fix the cropped text / border on the collapsed Trainer rail sidebar.
+### What the agent decided and why
+- Updated `web/cashier.html` and `web/layout.js` so Cashiers land on a full Owner-reference Dashboard (`Dashboard` nav item, Hero banner + Shift Status card, 4 horizontal Quick Action cards for Add a member / Record payment / Review claims / Check-in member, plus the 4 Shift KPI cards and Desk tabs — keeping Financial Reports strictly Owner-only).
+- Fixed the collapsed Trainer rail sidebar in `web/trainer/trainer.css` (`?v=18`) using `display: none` when unhovered so no cropped text bleeds out, removing the box border around the collapsed bottom avatar, and locking `.main` to `margin-left: 76px`.
+### Decision-log skill
+Use `display: none` (not `opacity: 0; width: 0`) on collapsed rail sidebar labels so browsers never paint clipped text fragments inside narrow icon rails.
+
+## 2026-11-22 23:15 (Asia/Manila): Apply Member Portal Header, Settings & My Profile to Trainer Portal
+### What I asked for
+Apply the Member Portal's header, Settings, and My Profile layout to the Trainer Portal.
+### What the agent decided and why
+- Styled Trainer topbar controls as circular `42px` buttons matching Member Portal in `web/trainer/trainer.css` (`?v=19`).
+- Rebuilt `web/trainer/settings.html` to match Member/Staff Settings (sticky left section nav, Account with Edit Profile + Change Password modal, Notifications with yellow/gold toggles, Appearance with Dark Mode + live Font Size preview, General with tabbed OG Help & Support modal, Install the app, and Logout).
+- Rebuilt `web/trainer/profile.html` to match Member/Owner My Profile (Hero card + gold-ringed avatar + Change password button + live SVG Completeness ring + 4-item checklist + equal-height 2-column `Your details` and live `How you appear` preview).
+### Decision-log skill
+Keep Settings and My Profile structurally identical across Owner, Cashier, Member, and Trainer so switching portals feels like one cohesive application.
+
+
+## 2026-11-22 23:21 (Asia/Manila): GCash Claim UI redesign
+### What I asked for
+Apply the uploaded Submit a GCash claim HTML UI design to the GCash claim page (`web/claim.html`).
+### What the agent decided and why
+- Rebuilt `web/claim.html` with the uploaded card layout (4-step safe-screenshot guide, live-formatted GCash reference input, live Google Drive link check + "Open link to check access", privacy confirmation checkbox, 0-of-3 pending claims progress bar, and styled claims list) synced with ProFit's warm ivory/obsidian theme toggle and Member initials avatar.
+- Omitted the editable Amount/Plan/Date inputs and client-only Withdraw button from the sample HTML so the form strictly follows ProFit's server-side pricing security rule and real `/member/claims` API contract.
+### Decision-log skill
+When adapting static UI mockups to ProFit payment flows, keep the visual polish and inline validation while never exposing client-editable payment amounts or fake client-only actions without real server endpoints.
+
+
+## 2026-11-22 23:27 (Asia/Manila): Trainer collapsed sidebar, Member-style header, modal overlay & photo banners
+### What I asked for
+Fix the Trainer collapsed sidebar alignment, apply the Member portal header style + settings shortcut to Trainer, remove repeated data cards, and add photo-backed hero banners.
+### What the agent decided and why
+- Centered the collapsed `52px` `.nav-list` pods and `42px` `.nav-link` squares inside the `76px` Trainer rail in `web/trainer/trainer.css` so active icons no longer clip past the pill edge.
+- Added fixed overlay `.modal-backdrop` styles in `web/trainer/trainer.css` so modals on `/trainer/members` and `/trainer/schedule` stay hidden until opened instead of rendering inline at the bottom of the page.
+- Updated `web/assets/js/staff.js` and `web/trainer/trainer.css` so the Trainer topbar matches the Member portal's full-width sticky header (single-line title, Theme + Bell + Settings + live logged-in user initials instead of hardcoded `CM`).
+- Applied the gym photo hero background (`../img/hero.jpg` + dark scrim) to `.tw-page-hero` across Trainer pages and added a matching `.tw-dash-hero` banner on `web/trainer/index.html`.
+- Removed duplicate KPI/roster cards on `web/trainer/members.html`, `web/trainer/announcements.html`, `web/trainer/schedule.html`, and `web/trainer/index.html` where the same counts or lists already appeared in filter pills or dedicated pages.
+### Decision-log skill
+Always verify modal overlay CSS (`.modal-backdrop` vs `.modal-back`) and hydrate topbar initials from `ProFitAuth.getUser()` on initial render so demo fallback initials never flash in the header.
+
+
+## 2026-11-22 23:29 (Asia/Manila): GCash Claim full-width layout & Member Portal header parity
+### What I asked for
+Use the same Member Portal header before entering GCash claims and maximize the width of `web/claim.html`.
+### What the agent decided and why
+- Replaced the narrow `980px` centered header with a full-width sticky Member-Portal topbar (back button, page title, Theme, Notifications, Settings, and Profile avatar) plus a photo-backed `.claim-hero` banner (`img/hero.jpg`).
+- Maximized `.wrap` to `width: 100%; max-width: none` with `28px` desktop padding so the 4-step guide, payment form, and claims list fill the viewport cleanly while staying phone-responsive.
+### Decision-log skill
+Keep standalone member subpages (like `/claim`) visually seamless with `/member-home` by reusing the sticky full-width topbar, photo hero banner, and maximized container width.
+
+## 2026-11-22 23:11 (Asia/Manila): Add Owner-style Dashboard to Cashier Portal & fix Trainer rail sidebar clipping
+### What I asked for
+Add an Owner-style Dashboard (Hero + Quick Actions) to the Cashier Portal and fix the cropped text / border on the collapsed Trainer rail sidebar.
+### What the agent decided and why
+- Updated `web/cashier.html` and `web/layout.js` so Cashiers land on a full Owner-reference Dashboard (`Dashboard` nav item, Hero banner + Shift Status card, 4 horizontal Quick Action cards for Add a member / Record payment / Review claims / Check-in member, plus the 4 Shift KPI cards and Desk tabs — keeping Financial Reports strictly Owner-only).
+- Fixed the collapsed Trainer rail sidebar in `web/trainer/trainer.css` (`?v=18`) using `display: none` when unhovered so no cropped text bleeds out, removing the box border around the collapsed bottom avatar, and locking `.main` to `margin-left: 76px`.
+### Decision-log skill
+Use `display: none` (not `opacity: 0; width: 0`) on collapsed rail sidebar labels so browsers never paint clipped text fragments inside narrow icon rails.
+
+## 2026-11-22 23:15 (Asia/Manila): Apply Member Portal Header, Settings & My Profile to Trainer Portal
+### What I asked for
+Apply the Member Portal's header, Settings, and My Profile layout to the Trainer Portal.
+### What the agent decided and why
+- Styled Trainer topbar controls as circular `42px` buttons matching Member Portal in `web/trainer/trainer.css` (`?v=19`).
+- Rebuilt `web/trainer/settings.html` to match Member/Staff Settings (sticky left section nav, Account with Edit Profile + Change Password modal, Notifications with yellow/gold toggles, Appearance with Dark Mode + live Font Size preview, General with tabbed OG Help & Support modal, Install the app, and Logout).
+- Rebuilt `web/trainer/profile.html` to match Member/Owner My Profile (Hero card + gold-ringed avatar + Change password button + live SVG Completeness ring + 4-item checklist + equal-height 2-column `Your details` and live `How you appear` preview).
+### Decision-log skill
+Keep Settings and My Profile structurally identical across Owner, Cashier, Member, and Trainer so switching portals feels like one cohesive application.
+
+
+## 2026-11-22 23:21 (Asia/Manila): GCash Claim UI redesign
+### What I asked for
+Apply the uploaded Submit a GCash claim HTML UI design to the GCash claim page (`web/claim.html`).
+### What the agent decided and why
+- Rebuilt `web/claim.html` with the uploaded card layout (4-step safe-screenshot guide, live-formatted GCash reference input, live Google Drive link check + "Open link to check access", privacy confirmation checkbox, 0-of-3 pending claims progress bar, and styled claims list) synced with ProFit's warm ivory/obsidian theme toggle and Member initials avatar.
+- Omitted the editable Amount/Plan/Date inputs and client-only Withdraw button from the sample HTML so the form strictly follows ProFit's server-side pricing security rule and real `/member/claims` API contract.
+### Decision-log skill
+When adapting static UI mockups to ProFit payment flows, keep the visual polish and inline validation while never exposing client-editable payment amounts or fake client-only actions without real server endpoints.
+
+
+## 2026-11-22 23:27 (Asia/Manila): Trainer collapsed sidebar, Member-style header, modal overlay & photo banners
+### What I asked for
+Fix the Trainer collapsed sidebar alignment, apply the Member portal header style + settings shortcut to Trainer, remove repeated data cards, and add photo-backed hero banners.
+### What the agent decided and why
+- Centered the collapsed `52px` `.nav-list` pods and `42px` `.nav-link` squares inside the `76px` Trainer rail in `web/trainer/trainer.css` so active icons no longer clip past the pill edge.
+- Added fixed overlay `.modal-backdrop` styles in `web/trainer/trainer.css` so modals on `/trainer/members` and `/trainer/schedule` stay hidden until opened instead of rendering inline at the bottom of the page.
+- Updated `web/assets/js/staff.js` and `web/trainer/trainer.css` so the Trainer topbar matches the Member portal's full-width sticky header (single-line title, Theme + Bell + Settings + live logged-in user initials instead of hardcoded `CM`).
+- Applied the gym photo hero background (`../img/hero.jpg` + dark scrim) to `.tw-page-hero` across Trainer pages and added a matching `.tw-dash-hero` banner on `web/trainer/index.html`.
+- Removed duplicate KPI/roster cards on `web/trainer/members.html`, `web/trainer/announcements.html`, `web/trainer/schedule.html`, and `web/trainer/index.html` where the same counts or lists already appeared in filter pills or dedicated pages.
+### Decision-log skill
+Always verify modal overlay CSS (`.modal-backdrop` vs `.modal-back`) and hydrate topbar initials from `ProFitAuth.getUser()` on initial render so demo fallback initials never flash in the header.
+
+
+## 2026-11-22 23:29 (Asia/Manila): GCash Claim full-width layout & Member Portal header parity
+### What I asked for
+Use the same Member Portal header before entering GCash claims and maximize the width of `web/claim.html`.
+### What the agent decided and why
+- Replaced the narrow `980px` centered header with a full-width sticky Member-Portal topbar (back button, page title, Theme, Notifications, Settings, and Profile avatar) plus a photo-backed `.claim-hero` banner (`img/hero.jpg`).
+- Maximized `.wrap` to `width: 100%; max-width: none` with `28px` desktop padding so the 4-step guide, payment form, and claims list fill the viewport cleanly while staying phone-responsive.
+### Decision-log skill
+Keep standalone member subpages (like `/claim`) visually seamless with `/member-home` by reusing the sticky full-width topbar, photo hero banner, and maximized container width.
+
+
+## 2026-11-22 23:32 (Asia/Manila): Remove hamburger and settings icon from Trainer header
+### What I asked for
+Remove the hamburger menu button (on desktop) and the settings gear icon from the Trainer portal header.
+### What the agent decided and why
+- Removed the Settings gear icon link from `topbarHTML()` in `web/assets/js/staff.js` (Settings remains accessible via the bottom-left account popup menu).
+- Restored `display: none !important` on `.topbar .t-menu` at desktop widths (`>= 960px`) in `web/trainer/trainer.css` so the hamburger only appears on mobile drawers.
+### Decision-log skill
+When styling `.topbar .icon-btn` with `display: inline-grid !important`, always add an explicit desktop media query rule keeping `.topbar .t-menu` hidden so the mobile hamburger never leaks onto desktop.
+
+
+## 2026-11-22 23:35 (Asia/Manila): Trainer QR code attendance check-in
+### What I asked for
+Allow Personal Trainers to record member attendance using QR code scanning.
+### What the agent decided and why
+- Extended `TrainerCheckInView` in `api/trainers.py` (`IsTrainerOrOwner`) to accept `qr_code` (`PROFIT:M202601` or `M202601`) in addition to numeric `member_id`, routing through the shared `check_in_member()` service so active membership and duplicate-check-in rules stay server-enforced.
+- Added `Trainer.api.checkInByQr()` in `web/trainer/trainer.js` and a **Scan QR** button + `html5-qrcode` camera scanner modal on `web/trainer/attendance.html`.
+- Added 4 automated tests in `api/tests_trainer_qr.py` covering valid trainer QR check-in, member role 403 rejection, invalid QR 400 rejection, and expired membership rejection.
+### Decision-log skill
+Reuse the existing `PROFIT:M{202600 + pk}` QR format and resolve it server-side inside the role-protected DRF endpoint so trainers can scan any active gym member without exposing full member directory data to the client.
+
+
+## 2026-11-22 23:38 (Asia/Manila): Remove repeated buttons and KPI cards across Trainer portal
+### What I asked for
+Remove repeated buttons and repeated data cards across Trainer portal pages.
+### What the agent decided and why
+- Removed the duplicate `+ Record check-in` and `Weekly schedule` buttons from the Dashboard hero banner in `web/trainer/index.html` since both already live in the Quick Actions row directly underneath.
+- Removed the duplicate `Edit Availability` hero button and redundant 4-card KPI row on `web/trainer/schedule.html`, and removed the redundant 4-card KPI rows on `web/trainer/attendance.html` and `web/trainer/notifications.html` where the same counts already appear in the filter pills (with null-safe JS updates).
+### Decision-log skill
+Avoid placing identical CTA buttons in a hero banner right above a Quick Actions strip, and avoid duplicating filter-pill counters in a separate KPI row directly above them.
+
+
+## 2026-11-22 23:44 (Asia/Manila): Unified Member-style My Profile across Owner, Cashier, and Trainer portals
+### What I asked for
+Use the Member Portal's My Profile UI as the reference for all portals (with Quick Avatar picker, Change photo, completeness ring, and live preview) while keeping role-appropriate fields for each portal.
+### What the agent decided and why
+- Updated `api/trainers.py` (`TrainerProfileView`) to serialize and accept `photo` (`av-1`..`av-6` presets or validated `data:image/` uploads) saved to `user.avatar_data`, matching `api/auth.py`.
+- Updated `web/profile.html` and `web/profile.js` (Owner & Cashier) to match Member Profile 1:1: yellow bottom-right camera badge, read-only Email & Role fields, Discard/Save actions, equal-height 2-column grid, and the 6-option Quick Avatar picker (`av-1`..`av-6`) under How you appear.
+- Rebuilt `web/trainer/profile.html` (and updated `web/trainer/trainer.css`, `web/trainer/trainer.js`, and `web/assets/js/staff.js`) to match Member Profile 1:1 with clickable avatar + camera badge, Upload/Remove photo menu, 6-option Quick Avatar picker, read-only Email, Trainer-specific fields (specialization, weekly availability, bio, accepting athletes toggle), live Member Directory preview, and server-persisted avatars across sidebar and topbar.
+### Decision-log skill
+Reuse `window.ProFitAvatar.resolve` (`av-1`..`av-6`) and `user.avatar_data` across all portals so Quick Avatar presets and custom photos render identically in Member, Owner, Cashier, and Trainer workspaces.
+
+
+## 2026-11-22 23:46 (Asia/Manila): Fix spurious "Accent colour saved." toast on Trainer Settings
+### What I asked for
+Stop the "Accent colour saved." toast from popping up repeatedly when clicking or navigating inside Trainer Settings.
+### What the agent decided and why
+- Removed the broad `document.querySelectorAll('[data-accent]')` click listener in `web/trainer/settings.html` because `<html data-accent="gold">` matched `[data-accent]`, causing every click anywhere on the page to trigger the toast.
+### Decision-log skill
+Never bind click listeners to bare attribute selectors like `[data-accent]` that also exist on `<html>` or `<body>`; always scope to `button[...]` or a specific container.
+
+
+## 2026-11-22 23:49 (Asia/Manila): GCash Claim pastel/blue polish & Trainer Coach Hero + KPI strip
+### What I asked for
+Apply the two uploaded design references: pastel step cards + GCash blue card accent on `web/claim.html`, and the "FLOOR IS OPEN." photo hero with On-Duty ring, QR Check-in CTA, and 4-card KPI strip on `web/trainer/index.html`.
+### What the agent decided and why
+- Styled the 4 guide steps in `web/claim.html` with pastel Light-Mode tints (warm yellow, sky blue, mint green, peach) + matching Dark-Mode tints, a blue-tinted privacy bar, and a GCash blue (`#007dfe`) top accent bar and badge on the Payment Details card while keeping amount server-derived.
+- Rebuilt the Trainer Dashboard hero in `web/trainer/index.html` and `web/trainer/trainer.css` with the `COACH <NAME>, FLOOR IS OPEN.` banner, floating `On duty` ring card, QR **Check in athletes** button (`/trainer/attendance?scan=1` auto-opening the QR scanner modal), **Broadcast** button, and the 4-card live KPI strip replacing the duplicate Quick Actions row.
+### Decision-log skill
+Auto-launching the QR camera modal via `?scan=1` lets the Trainer Dashboard's primary CTA trigger QR check-in in one tap without duplicating camera scanner code across pages.
+
+
+## 2026-11-22 23:46 (Asia/Manila): Fix spurious "Accent colour saved." toast on Trainer Settings
+### What I asked for
+Stop the "Accent colour saved." toast from popping up repeatedly when clicking or navigating inside Trainer Settings.
+### What the agent decided and why
+- Removed the broad `document.querySelectorAll('[data-accent]')` click listener in `web/trainer/settings.html` because `<html data-accent="gold">` matched `[data-accent]`, causing every click anywhere on the page to trigger the toast.
+### Decision-log skill
+Never bind click listeners to bare attribute selectors like `[data-accent]` that also exist on `<html>` or `<body>`; always scope to `button[...]` or a specific container.
+
+
+## 2026-11-22 23:49 (Asia/Manila): GCash Claim pastel/blue polish & Trainer Coach Hero + KPI strip
+### What I asked for
+Apply the two uploaded design references: pastel step cards + GCash blue card accent on `web/claim.html`, and the "FLOOR IS OPEN." photo hero with On-Duty ring, QR Check-in CTA, and 4-card KPI strip on `web/trainer/index.html`.
+### What the agent decided and why
+- Styled the 4 guide steps in `web/claim.html` with pastel Light-Mode tints (warm yellow, sky blue, mint green, peach) + matching Dark-Mode tints, a blue-tinted privacy bar, and a GCash blue (`#007dfe`) top accent bar and badge on the Payment Details card while keeping amount server-derived.
+- Rebuilt the Trainer Dashboard hero in `web/trainer/index.html` and `web/trainer/trainer.css` with the `COACH <NAME>, FLOOR IS OPEN.` banner, floating `On duty` ring card, QR **Check in athletes** button (`/trainer/attendance?scan=1` auto-opening the QR scanner modal), **Broadcast** button, and the 4-card live KPI strip replacing the duplicate Quick Actions row.
+### Decision-log skill
+Auto-launching the QR camera modal via `?scan=1` lets the Trainer Dashboard's primary CTA trigger QR check-in in one tap without duplicating camera scanner code across pages.
+
+
+## 2026-11-22 23:54 (Asia/Manila): Fix chart YYYY stepper overlap, apply Owner mobile bottom nav + More sheet to all portals, and cross-device responsive fixes
+### What I asked for
+Fix the overlapping YYYY input box in chart period steppers, apply the Owner portal's mobile bottom navigation + More bottom sheet to Member and Trainer portals, and fix cross-device responsive UI issues across all portals.
+### What the agent decided and why
+- Hid `.stepper-input` reliably via both inline `style.display = "none"` in `web/chart-periods.js` and `[hidden] { display: none !important }` in `web/dashboard.css` and `web/global.css` so `YYYY` only appears when editing a year.
+- Added the Owner-style 5-tab mobile bottom nav + rounded **More** bottom sheet to Member Portal (`web/member-shell.js`, `web/member-shell.css`) and Trainer Portal (`web/assets/js/staff.js`, `web/trainer/trainer.css`), hiding mobile hamburger buttons cleanly.
+- Added consistent phone/tablet safe-area bottom padding, single-column grid stacking, wrapping toolbars, and scrollable table wrappers across Owner, Cashier, Member, and Trainer portals.
+### Decision-log skill
+Use one unified mobile bottom-tab + More bottom-sheet pattern across every portal with `env(safe-area-inset-bottom)` clearance so phones never hide actions behind the nav bar.
+
+
+## 2026-11-22 23:58 (Asia/Manila): Inline Trainer Dashboard QR modal, unique Member IDs, Member header on Owner/Cashier, and live plan price sync
+### What I asked for
+Open the QR scanner modal directly on the Trainer Dashboard when clicking "Check in athletes", ensure Member IDs are unique (`M2026XX`), apply the Member Portal header style to Owner and Cashier portals, and ensure Owner plan price updates propagate everywhere including Cashier and Landing Page.
+### What the agent decided and why
+- Changed `#dashQrBtn` in `web/trainer/index.html` to open `#dashQrModal` (`html5-qrcode`) right on the Trainer Dashboard and call `Trainer.api.checkInByQr()` + `loadDashboard()` live without navigating away.
+- Added `formatUniqueMemberId()` in `web/member-tabs.js` so raw numeric IDs always display as their unique `M{202600 + pk}` code (matching `/api/member/me/`).
+- Applied the Member Portal's full-width sticky header (`17px` bold single-line title, circular `40px` Theme/Bell/Avatar, hidden `< >`/hamburger/eyebrow clutter) to Owner & Cashier in `web/dashboard.css` and `web/global.css`.
+- Added `cache: "no-store"` to `/api/plans/` fetches in `web/data.js` and `web/welcome.html`, and wired `web/cashier.html` to update its plan dropdown and official amount live from `window.PLANS` / `profit:plans-updated`.
+### Decision-log skill
+Always fetch `/api/plans/` with `cache: "no-store"` and listen for `profit:plans-updated` on every plan selector so Owner price changes appear immediately across the Landing Page, Member Portal, and Cashier Desk.
+
+
+## 2026-11-23 00:02 (Asia/Manila): Hide legacy peeking mobile bottom dock across all portals
+### What I asked for
+Remove the old rounded bar peeking out right above the mobile bottom navigation across all portals.
+### What the agent decided and why
+- Hid the legacy `.pf-bottomnav` dock and enforced `display: none !important; visibility: hidden !important;` on closed `.pf-mob-sheet` / `.tr-mob-sheet` elements across `web/member-shell.css`, `web/dashboard.css`, `web/global.css`, and `web/trainer/trainer.css`.
+### Decision-log skill
+When replacing a legacy mobile bottom dock (`.pf-bottomnav`) with a unified `.pf-mob-tabs` bar, explicitly hide the legacy element across all portal stylesheets so it never peeks behind the new bar.

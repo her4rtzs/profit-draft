@@ -19,7 +19,11 @@
   PF.debounce = (fn, ms = 160) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
   PF.avatar = (name, cls, photo) => {
     const [bg, fg] = avatarColors(name);
-    return `<span class="avatar ${cls || ''}" style="--av-bg:${bg};--av-fg:${fg}">${photo ? `<img src="${esc(photo)}" alt="">` : esc(initials(name))}</span>`;
+    let src = photo || '';
+    if (src && window.ProFitAvatar && typeof window.ProFitAvatar.resolve === 'function' && !src.startsWith('data:') && !src.startsWith('http')) {
+      src = window.ProFitAvatar.resolve(src, name);
+    }
+    return `<span class="avatar ${cls || ''}" style="--av-bg:${bg};--av-fg:${fg}">${src ? `<img src="${esc(src)}" alt="">` : esc(initials(name))}</span>`;
   };
   const STATUS = {
     active: ['green', 'Active'], expiring: ['amber', 'Expiring soon'], expired: ['red', 'Expired'], frozen: ['blue', 'Frozen'], cancelled: ['gray', 'Cancelled'], pending: ['amber', 'Pending'],
@@ -251,16 +255,12 @@
 
   const TRAINER_NAV = [
     { label: 'WORKSPACE', items: [
-      { id: 'dashboard', label: 'Dashboard', icon: 'home', href: '/index' },
-      { id: 'announcements', label: 'Announcements', icon: 'megaphone', href: '/announcements' }] },
+      { id: 'dashboard', label: 'Dashboard', icon: 'home', href: '/trainer/index' },
+      { id: 'announcements', label: 'Announcements', icon: 'megaphone', href: '/trainer/announcements' }] },
     { label: 'TRAINING', items: [
-      { id: 'members', label: 'My Members', icon: 'users', href: '/members' },
-      { id: 'attendance', label: 'Attendance', icon: 'calendar-check', href: '/attendance' },
-      { id: 'schedule', label: 'My Schedule', icon: 'calendar', href: '/schedule' }] },
-    { label: 'ACCOUNT', items: [
-      { id: 'notifications', label: 'Notifications', icon: 'bell', href: '/notifications', badge: () => PF.db.unread() },
-      { id: 'profile', label: 'My Profile', icon: 'user', href: '/profile' },
-      { id: 'settings', label: 'Settings', icon: 'settings', href: '/settings' }] }
+      { id: 'members', label: 'My Members', icon: 'users', href: '/trainer/members' },
+      { id: 'attendance', label: 'Attendance', icon: 'calendar-check', href: '/trainer/attendance' },
+      { id: 'schedule', label: 'My Schedule', icon: 'calendar', href: '/trainer/schedule' }] }
   ];
 
   const getNav = () => (isTrainerContext() ? TRAINER_NAV : STAFF_NAV);
@@ -286,35 +286,66 @@
   PF.can = roles => !roles || roles.includes(role()) || role() === 'Admin' || role() === 'Administrator';
   const currentId = () => { const p = document.body.dataset.page; return PARENT[p] || p; };
 
+  function currentProfile() {
+    const base = PF.db ? PF.db.profile() : { name: 'Coach', role: 'Personal Trainer' };
+    try {
+      const u = window.ProFitAuth && ProFitAuth.getUser ? ProFitAuth.getUser() : null;
+      if (u) {
+        const full = [u.first_name, u.last_name].filter(Boolean).join(' ').trim() || u.full_name || u.name || u.username;
+        if (full) return Object.assign({}, base, { name: full, email: u.email || base.email || '' });
+      }
+    } catch (_) { /* ignore */ }
+    return base;
+  }
+
   function sidebarHTML() {
-    const gym = PF.db.gym(), me = PF.db.profile(), cur = currentId();
+    const gym = PF.db.gym(), me = currentProfile(), cur = currentId();
     const navItems = getNav();
     const isTrainer = isTrainerContext();
-    const homeHref = '/index';
+    const base = isTrainer ? '/trainer' : '';
+    const homeHref = `${base}/index`;
     const tagline = isTrainer ? 'TRAINER WORKSPACE' : (gym.tagline || 'FUNCTIONAL FITNESS');
     const displayRole = isTrainer ? 'Personal Trainer' : (me.role || 'Staff');
     return `<div class="brand"><a href="${homeHref}" style="display:flex;align-items:center;gap:12px;min-width:0" aria-label="${esc(gym.name)} dashboard"><img class="brand-logo" src="${esc(gym.logo || PF.assetBase + 'img/logo.jpg')}" alt=""><span class="brand-txt"><strong>${esc(gym.name)}</strong><small>${esc(tagline)}</small></span></a><button class="collapse-btn" id="collapseBtn" type="button" aria-label="Collapse sidebar" title="Collapse sidebar">${PF.icon('chevrons-left')}</button></div>
       <nav class="side-scroll" aria-label="Main navigation">${navItems.map(g => { const items = g.items.filter(allowed); return items.length ? `<p class="nav-label">${g.label}</p><ul class="nav-list">${items.map(it => { const hasBadge = typeof it.badge === 'function'; const b = hasBadge ? it.badge() : 0; return `<li><a class="nav-link ${it.id === cur ? 'active' : ''}" href="${it.href}" title="${esc(it.label)}" ${it.id === cur ? 'aria-current="page"' : ''}>${PF.icon(it.icon)}<span class="nav-text">${esc(it.label)}</span>${hasBadge ? `<span class="nav-count" data-badge="${it.id}" ${b ? '' : 'hidden'}>${b || 0}</span>` : ''}</a></li>`; }).join('')}</ul>` : ''; }).join('')}</nav>
-      <div class="side-foot"><div class="side-user" id="sideUserCard" role="button" tabindex="0" aria-haspopup="menu" aria-expanded="false" aria-controls="sideAccountMenu">${PF.avatar(me.name, 'md', me.photo)}<div class="who"><strong>${esc(me.name)}</strong><small>${esc(displayRole)}</small></div><button class="icon-btn" id="accountBtn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="sideAccountMenu" aria-label="Account menu" title="Account">${PF.icon('more-v')}</button><div class="side-account-menu" id="sideAccountMenu" role="menu" aria-label="Account actions"><a href="/profile" role="menuitem" class="${cur === 'profile' ? 'active' : ''}">${PF.icon('user')}<span>My profile</span></a><a href="/settings" role="menuitem" class="${cur === 'settings' ? 'active' : ''}">${PF.icon('settings')}<span>Settings</span></a><hr><button type="button" role="menuitem" class="danger" id="sideLogoutBtn">${PF.icon('log-out')}<span>Log out</span></button></div></div></div>`;
+      <div class="side-foot"><div class="side-user" id="sideUserCard" role="button" tabindex="0" aria-haspopup="menu" aria-expanded="false" aria-controls="sideAccountMenu">${PF.avatar(me.name, 'md', me.photo)}<div class="who"><strong>${esc(me.name)}</strong><small>${esc(displayRole)}</small></div><button class="icon-btn" id="accountBtn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="sideAccountMenu" aria-label="Account menu" title="Account">${PF.icon('more-v')}</button><div class="side-account-menu" id="sideAccountMenu" role="menu" aria-label="Account actions"><a href="${base}/profile" role="menuitem" class="${cur === 'profile' ? 'active' : ''}">${PF.icon('user')}<span>My profile</span></a><a href="${base}/settings" role="menuitem" class="${cur === 'settings' ? 'active' : ''}">${PF.icon('settings')}<span>Settings</span></a><hr><button type="button" role="menuitem" class="danger" id="sideLogoutBtn">${PF.icon('log-out')}<span>Log out</span></button></div></div></div>`;
   }
 
+  const TRAINER_PAGE_TITLES = {
+    dashboard: 'Dashboard',
+    members: 'My Members',
+    attendance: 'Attendance',
+    schedule: 'My Schedule',
+    announcements: 'Announcements',
+    notifications: 'Notifications',
+    profile: 'My Profile',
+    settings: 'Settings'
+  };
+
   function topbarHTML() {
-    const me = PF.db.profile(), n = PF.db.unread();
-    const back = document.body.dataset.page === 'dashboard' ? '' : `<button class="icon-btn" id="backBtn" type="button" aria-label="Go back">${PF.icon('chevron-left')}</button>`;
-    return `<div class="t-left"><button class="icon-btn t-menu" id="menuBtn" type="button" aria-label="Open navigation">${PF.icon('menu')}</button>${back}</div><div class="t-spacer"></div>
+    const me = currentProfile(), n = PF.db.unread();
+    const b = document.body.dataset;
+    const isTrainer = isTrainerContext();
+    const base = isTrainer ? '/trainer' : '';
+    const back = (!isTrainer && b.page !== 'dashboard') ? `<button class="icon-btn" id="backBtn" type="button" aria-label="Go back">${PF.icon('chevron-left')}</button>` : '';
+    const pageTitle = TRAINER_PAGE_TITLES[b.page] || b.title || 'Dashboard';
+    const titleBlock = isTrainer
+      ? `<h1 class="tr-top-title">${esc(pageTitle)}</h1>`
+      : '';
+    return `<div class="t-left"><button class="icon-btn t-menu" id="menuBtn" type="button" aria-label="Open navigation">${PF.icon('menu')}</button>${back}${titleBlock}</div><div class="t-spacer"></div>
       <button class="icon-btn" id="themeBtn" type="button" aria-label="Toggle dark mode"></button>
       <div style="position:relative"><button class="icon-btn" id="bellBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Notifications">${PF.icon('bell')}<span class="badge-dot" id="bellBadge" ${n ? '' : 'hidden'}>${n}</span></button><section class="npanel" id="npanel" hidden aria-label="Notifications"></section></div>
-      <a class="avatar-btn" href="/profile" aria-label="My profile" title="My profile">${PF.avatar(me.name, 'md', me.photo)}</a>`;
+      <a class="avatar-btn" href="${base}/profile" aria-label="My profile" title="My profile">${PF.avatar(me.name, 'md', me.photo)}</a>`;
   }
 
   function bottomHTML() {
     const cur = document.body.dataset.page;
     const isTrainer = isTrainerContext();
     const items = isTrainer ? [
-      ['dashboard', 'Home', 'home', '/index'],
-      ['members', 'Members', 'users', '/members'],
-      ['attendance', 'Attendance', 'calendar-check', '/attendance'],
-      ['schedule', 'Schedule', 'calendar', '/schedule']
+      ['dashboard', 'Home', 'home', '/trainer/index'],
+      ['members', 'Members', 'users', '/trainer/members'],
+      ['attendance', 'Attendance', 'calendar-check', '/trainer/attendance'],
+      ['schedule', 'Schedule', 'calendar', '/trainer/schedule']
     ] : [
       ['dashboard', 'Home', 'home', '/index'],
       ['members', 'Members', 'users', '/members'],
@@ -326,23 +357,24 @@
 
   function pageHead() {
     const b = document.body.dataset;
-    if (b.head === 'none') return '';
+    if (b.head === 'none' || isTrainerContext()) return '';
     const tag = b.tagline === 'off' ? '' : '<div class="tagline" aria-hidden="true">Stronger<br>Healthier<br>Happier</div>';
     return `<div class="page-head"><span class="tile">${PF.icon(b.icon || 'home')}</span><div><div class="eyebrow">${esc(b.eyebrow || '')}</div><h1>${esc(b.title || '')}</h1>${b.sub ? `<p>${esc(b.sub)}</p>` : ''}</div>${tag}</div>`;
   }
 
   function resolveNotifHref(rawLink, kind) {
     const isTrainer = isTrainerContext();
+    const base = isTrainer ? '/trainer' : '';
     let link = String(rawLink || '').trim();
-    if (link === '/trainer-portal') link = '/members';
-    if (isTrainer && link.startsWith('trainer/')) link = link.slice('trainer/'.length);
+    if (link === '/trainer-portal') link = `${base}/members`;
+    if (isTrainer && link.startsWith('trainer/')) link = '/' + link;
     if (!link) {
       const k = String(kind || '').toUpperCase();
-      if (k === 'ANNOUNCEMENT') return '/announcements';
-      if (k === 'TRAINER') return isTrainer ? '/members' : '/trainers';
-      if (k === 'MEMBERSHIP') return '/members';
-      if (k === 'PAYMENT') return isTrainer ? '/notifications' : '/transactions';
-      return '/notifications';
+      if (k === 'ANNOUNCEMENT') return `${base}/announcements`;
+      if (k === 'TRAINER') return isTrainer ? '/trainer/members' : '/trainers';
+      if (k === 'MEMBERSHIP') return `${base}/members`;
+      if (k === 'PAYMENT') return isTrainer ? '/trainer/notifications' : '/transactions';
+      return `${base}/notifications`;
     }
     return link;
   }
@@ -542,7 +574,54 @@
     themeIcon();
 
     const scrim = $('#scrim'), setDrawer = on => { body.classList.toggle('drawer', on); scrim.classList.toggle('on', on); };
-    $('#menuBtn').onclick = () => setDrawer(true); $('#moreBtn') && ($('#moreBtn').onclick = () => setDrawer(true)); scrim.onclick = () => setDrawer(false);
+    $('#menuBtn').onclick = () => setDrawer(true);
+    scrim.onclick = () => setDrawer(false);
+    if (isTrainerContext()) {
+      const cur = document.body.dataset.page;
+      const moreItems = [
+        { id: 'announcements', label: 'Announcements', icon: 'megaphone', href: '/trainer/announcements' },
+        { id: 'notifications', label: 'Notifications', icon: 'bell', href: '/trainer/notifications' },
+        { id: 'profile', label: 'My profile', icon: 'user', href: '/trainer/profile' },
+        { id: 'settings', label: 'Settings', icon: 'settings', href: '/trainer/settings' }
+      ];
+      let trBackdrop = $('#trMobBackdrop');
+      if (!trBackdrop) {
+        trBackdrop = document.createElement('div');
+        trBackdrop.id = 'trMobBackdrop';
+        trBackdrop.className = 'tr-mob-backdrop';
+        trBackdrop.hidden = true;
+        document.body.appendChild(trBackdrop);
+      }
+      let trSheet = $('#trMobSheet');
+      if (!trSheet) {
+        trSheet = document.createElement('div');
+        trSheet.id = 'trMobSheet';
+        trSheet.className = 'tr-mob-sheet';
+        trSheet.setAttribute('role', 'dialog');
+        trSheet.setAttribute('aria-label', 'More pages');
+        document.body.appendChild(trSheet);
+      }
+      trSheet.innerHTML = `<div class="tr-mob-sheet-bar" aria-hidden="true"></div><div class="tr-mob-sheet-chips">${moreItems.map(it =>
+        `<a class="tr-mob-chip${it.id === cur ? ' sel' : ''}" href="${it.href}">${PF.icon(it.icon)}<span>${esc(it.label)}</span></a>`
+      ).join('')}<button type="button" class="tr-mob-chip is-danger" id="trMobLogoutBtn">${PF.icon('log-out')}<span>Log out</span></button></div>`;
+
+      const moreBtn = $('#moreBtn');
+      const inMore = moreItems.some(x => x.id === cur);
+      if (moreBtn && inMore) moreBtn.classList.add('active');
+      const setSheet = open => {
+        trSheet.classList.toggle('on', open);
+        trBackdrop.hidden = !open;
+        trBackdrop.classList.toggle('on', open);
+        if (moreBtn) moreBtn.setAttribute('aria-expanded', String(open));
+      };
+      if (moreBtn) moreBtn.onclick = e => { e.stopPropagation(); setSheet(!trSheet.classList.contains('on')); };
+      trBackdrop.onclick = () => setSheet(false);
+      document.addEventListener('keydown', e => { if (e.key === 'Escape' && trSheet.classList.contains('on')) setSheet(false); });
+      const mobLo = $('#trMobLogoutBtn');
+      if (mobLo) mobLo.onclick = () => { setSheet(false); $('#sideLogoutBtn')?.click(); };
+    } else {
+      $('#moreBtn') && ($('#moreBtn').onclick = () => setDrawer(true));
+    }
     $$('.nav-link').forEach(a => a.addEventListener('click', () => setDrawer(false)));
     $('#collapseBtn').onclick = () => { const on = body.classList.toggle('mini'); try { localStorage.setItem('pf-mini', on ? '1' : '0'); } catch (e) { /* ignore */ } document.dispatchEvent(new CustomEvent('pf:resize')); setTimeout(() => window.dispatchEvent(new Event('resize')), 260); };
     const bb = $('#backBtn'); if (bb) bb.onclick = () => (history.length > 1 ? history.back() : (location.href = '/index'));

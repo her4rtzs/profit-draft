@@ -8,11 +8,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="../assets/css/staff.css?v=12">
-  <link rel="stylesheet" href="trainer.css?v=12">
+  <link rel="stylesheet" href="trainer.css?v=22">
   <script src="../assets/js/staff-boot.js?v=12"></script>
 <link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
-<body data-portal="trainer" data-page="dashboard" data-tagline="off" data-title="Coach Dashboard" data-eyebrow="Trainer Workspace" data-sub="Your roster, today's sessions, and recent check-ins in one place." data-icon="home">
+<body data-portal="trainer" data-page="dashboard" data-tagline="off" data-title="Dashboard" data-eyebrow="Trainer Workspace" data-sub="Your roster, today's sessions, and recent check-ins in one place." data-icon="home">
 <div class="app">
   <aside class="sidebar" id="sidebar"></aside>
   <div class="scrim" id="scrim"></div>
@@ -20,54 +21,68 @@
     <header class="topbar" id="topbar"></header>
     <main class="content" id="content">
 
-      <!-- 1. Quick actions -->
-      <section class="tw-qa-section tw-anim" style="--i:0" aria-labelledby="qaHeading">
-        <div class="tw-section-label" id="qaHeading">Quick actions</div>
-        <div class="tw-qa-grid">
-          <a class="tw-qa-tile is-amber" href="/attendance#checkin" id="qaRecordCheckin">
-            <div class="tw-qa-top">
-              <span class="tw-qa-ico" data-icon="plus"></span>
-              <span class="tw-qa-arrow" data-icon="arrow-up-right"></span>
-            </div>
-            <div class="tw-qa-body">
-              <strong>Record check-in</strong>
-              <small>Log a member's visit</small>
-            </div>
-          </a>
-
-          <a class="tw-qa-tile is-green" href="/schedule#update" id="qaSendUpdate">
-            <div class="tw-qa-top">
-              <span class="tw-qa-ico" data-icon="send"></span>
-              <span class="tw-qa-arrow" data-icon="arrow-up-right"></span>
-            </div>
-            <div class="tw-qa-body">
-              <strong>Send schedule update</strong>
-              <small>Notify your members</small>
-            </div>
-          </a>
-
-          <a class="tw-qa-tile is-purple" href="/members" id="qaMyMembers">
-            <div class="tw-qa-top">
-              <span class="tw-qa-ico" data-icon="user"></span>
-              <span class="tw-qa-arrow" data-icon="arrow-up-right"></span>
-            </div>
-            <div class="tw-qa-body">
-              <strong>My members</strong>
-              <small>View your roster</small>
-            </div>
-          </a>
-
-          <a class="tw-qa-tile is-blue" href="/schedule" id="qaWeeklySchedule">
-            <div class="tw-qa-top">
-              <span class="tw-qa-ico" data-icon="calendar"></span>
-              <span class="tw-qa-arrow" data-icon="arrow-up-right"></span>
-            </div>
-            <div class="tw-qa-body">
-              <strong>Weekly schedule</strong>
-              <small>See the full timetable</small>
-            </div>
-          </a>
+      <!-- Coach Photo Hero Banner + On-Duty Floating Card -->
+      <section class="tw-dash-hero tw-anim" style="--i:0" aria-label="Coach overview">
+        <div>
+          <span class="tw-hero-eyebrow" id="heroCoachEyebrow">COACH,</span>
+          <h1 class="tw-hero-title">FLOOR IS<br>OPEN.</h1>
+          <p class="tw-hero-sub">Check in your athletes as they arrive. Their streaks and calendars update right away.</p>
+          <div class="tw-dash-hero-actions">
+            <button type="button" class="tw-btn-primary" id="dashQrBtn"><i class="fa-solid fa-qrcode" aria-hidden="true"></i> Check in athletes</button>
+            <a class="tw-btn" href="/trainer/schedule#update"><i class="fa-solid fa-bullhorn" aria-hidden="true"></i> Broadcast</a>
+          </div>
         </div>
+
+        <aside class="tw-duty-card" aria-label="On duty status">
+          <div class="tw-duty-top">
+            <div>
+              <span class="tw-duty-pill">On duty</span>
+              <h3 id="dutySessionName">Today on the floor</h3>
+              <div class="tw-duty-sub" id="dutySessionSub">Live coaching schedule</div>
+            </div>
+            <div class="tw-duty-ring" aria-label="Athletes checked in today">
+              <svg viewBox="0 0 80 80" aria-hidden="true">
+                <circle class="tw-duty-ring-track" cx="40" cy="40" r="32"></circle>
+                <circle class="tw-duty-ring-arc" id="dutyRingArc" cx="40" cy="40" r="32" stroke-dasharray="201.06" stroke-dashoffset="201.06"></circle>
+              </svg>
+              <div class="tw-duty-ring-txt">
+                <strong id="dutyCheckedNum">0</strong>
+                <small>checked in</small>
+              </div>
+            </div>
+          </div>
+          <div class="tw-duty-foot">
+            <div>
+              <span>Assigned athletes</span>
+              <strong id="dutyRosterCount">0 members</strong>
+            </div>
+            <a class="tw-btn-primary" href="/trainer/members" style="height:36px;padding:0 16px;font-size:13px">Roster</a>
+          </div>
+        </aside>
+      </section>
+
+      <!-- 4-Card Live Coach KPI Strip -->
+      <section class="tw-coach-kpis tw-anim" style="--i:1" aria-label="Coach summary metrics">
+        <article class="tw-ckpi">
+          <span class="tw-ckpi-lbl"><i class="fa-solid fa-users" aria-hidden="true"></i> Assigned athletes</span>
+          <div class="tw-ckpi-val"><strong id="ckpiAssigned">0</strong><span>members</span></div>
+          <span class="tw-ckpi-sub" id="ckpiAssignedSub">Active coaching roster</span>
+        </article>
+        <article class="tw-ckpi">
+          <span class="tw-ckpi-lbl"><i class="fa-solid fa-check" aria-hidden="true"></i> Checked in today</span>
+          <div class="tw-ckpi-val"><strong id="ckpiToday">0</strong><span id="ckpiTodayDenom">/ 0</span></div>
+          <div class="tw-ckpi-segs" id="ckpiTodaySegs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+        </article>
+        <article class="tw-ckpi">
+          <span class="tw-ckpi-lbl"><i class="fa-regular fa-calendar" aria-hidden="true"></i> Classes today</span>
+          <div class="tw-ckpi-val"><strong id="ckpiClasses">0</strong><span>classes</span></div>
+          <span class="tw-ckpi-sub" id="ckpiClassesNext">No classes scheduled</span>
+        </article>
+        <article class="tw-ckpi">
+          <span class="tw-ckpi-lbl"><i class="fa-solid fa-chart-column" aria-hidden="true"></i> Attendance rate</span>
+          <div class="tw-ckpi-val"><strong id="ckpiRate">0</strong><span>%</span></div>
+          <span class="tw-ckpi-sub">Current selected range</span>
+        </article>
       </section>
 
       <!-- Main Dashboard Grid -->
@@ -228,7 +243,7 @@
               <h2 class="tw-card-title" id="recentAttTitle">Recent Member Check-ins</h2>
               <p class="tw-card-sub">Latest visits from your members</p>
             </div>
-            <a class="tw-link" href="/attendance">All attendance</a>
+            <a class="tw-link" href="/trainer/attendance">All attendance</a>
           </div>
           <div class="tw-table-wrap">
             <table class="tw-table">
@@ -248,25 +263,27 @@
           </div>
         </section>
 
-        <!-- Row 3, Full width: My Roster -->
-        <section class="tw-card tw-span-3 tw-anim" style="--i:5" aria-labelledby="rosterTitle">
-          <div class="tw-card-head">
-            <div>
-              <h2 class="tw-card-title" id="rosterTitle">My Roster</h2>
-              <p class="tw-card-sub" id="rosterCountSub">Assigned members</p>
-            </div>
-            <a class="tw-link" href="/members">View all</a>
-          </div>
-          <div class="tw-roster-grid" id="rosterMiniList">
-            <span class="tw-skel tw-skel-row"></span>
-            <span class="tw-skel tw-skel-row"></span>
-          </div>
-        </section>
-
       </div>
     </main>
   </div>
   <nav class="bottom-nav" id="bottomNav" aria-label="Quick navigation"></nav>
+</div>
+
+<!-- QR Check-in Camera Scanner Modal (right on Dashboard) -->
+<div class="modal-backdrop" id="dashQrModal" role="dialog" aria-modal="true" aria-labelledby="dashQrTitle">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-head">
+      <h3 id="dashQrTitle"><i class="fa-solid fa-qrcode" style="color:#e8b93a;margin-right:8px" aria-hidden="true"></i>Scan Member QR</h3>
+      <button type="button" class="modal-close" id="dashQrClose" aria-label="Close scanner">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div id="dashQrReader" style="width:100%;min-height:240px;border-radius:14px;overflow:hidden;background:#070b14;border:1px solid var(--line-strong)"></div>
+      <p id="dashQrStatus" role="status" aria-live="polite" style="margin:12px 0 0;font-size:13.5px;font-weight:600;color:var(--muted);text-align:center">Point the camera at the member's Check-in QR pass.</p>
+    </div>
+    <div class="modal-foot">
+      <button type="button" class="tw-btn" id="dashQrDone" style="width:100%;justify-content:center">Close scanner</button>
+    </div>
+  </div>
 </div>
 
 <!-- Scripts -->
@@ -275,8 +292,9 @@
 <script src="../auth.js?v=5"></script>
 <script src="../assets/js/staff-icons.js?v=5"></script>
 <script src="../assets/js/staff-data.js?v=12"></script>
-<script src="../assets/js/staff.js?v=12"></script>
-<script src="trainer.js?v=12"></script>
+<script src="../assets/js/staff.js?v=16"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script>
+<script src="trainer.js?v=13"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const PF = window.PF || {};
@@ -643,6 +661,11 @@ document.addEventListener('DOMContentLoaded', () => {
     setSum('sumScheduled', String(summary.scheduled ?? 0));
     setSum('sumRate', formatRateDisplay(sumRateVal));
     $('sumRate').title = formatRateExact(sumRateVal);
+    if ($('ckpiRate')) {
+      $('ckpiRate').textContent = (sumRateVal !== null && sumRateVal !== undefined && !Number.isNaN(Number(sumRateVal)))
+        ? String(Math.round(Number(sumRateVal)))
+        : '0';
+    }
 
     // Empty state when no buckets or scheduled is 0
     if (!buckets.length || buckets.every(b => (Number(b.scheduled) || 0) === 0 && (Number(b.checked_in) || 0) === 0)) {
@@ -1133,19 +1156,21 @@ document.addEventListener('DOMContentLoaded', () => {
         <td>${T.format.date(a.check_in_date)}</td>
         <td>${T.format.time(a.check_in_at)}</td>
         <td>
-          <a class="tw-btn" href="/members#detail=${encodeURIComponent(a.member_id)}" aria-label="View profile of ${esc(a.member_name)}">Profile</a>
+          <a class="tw-btn" href="/trainer/members#detail=${encodeURIComponent(a.member_id)}" aria-label="View profile of ${esc(a.member_name)}">Profile</a>
         </td>
       </tr>`).join('');
   }
 
   /* ---------- 5. My Roster ---------- */
   function renderRoster(members) {
-    const list = $('rosterMiniList');
-    const activeCount = members.filter(m => m.is_active || String(m.membership_status || '').toUpperCase() === 'ACTIVE').length;
-    $('rosterCountSub').textContent = `${activeCount} active member${activeCount === 1 ? '' : 's'}`;
-
     // Populate Member filter dropdown in Attendance card using numeric primary keys
     populateMemberSelect(members);
+
+    const list = $('rosterMiniList');
+    const sub = $('rosterCountSub');
+    if (!list) return;
+    const activeCount = members.filter(m => m.is_active || String(m.membership_status || '').toUpperCase() === 'ACTIVE').length;
+    if (sub) sub.textContent = `${activeCount} active member${activeCount === 1 ? '' : 's'}`;
 
     if (!members.length) {
       list.innerHTML = `<div style="grid-column: 1 / -1">${emptyState('users', 'No members assigned yet', 'Assigned athletes will appear here once matched to your roster.')}</div>`;
@@ -1161,7 +1186,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <small class="${m.today_checked_in ? 'is-in' : ''}">${m.today_checked_in ? 'In gym today' : 'Not yet in today'}</small>
           </div>
         </div>
-        <a class="tw-btn" href="/members#detail=${encodeURIComponent(m.id)}" aria-label="View profile of ${esc(m.name)}">View</a>
+        <a class="tw-btn" href="/trainer/members#detail=${encodeURIComponent(m.id)}" aria-label="View profile of ${esc(m.name)}">View</a>
       </div>`).join('');
   }
 
@@ -1180,12 +1205,112 @@ document.addEventListener('DOMContentLoaded', () => {
     if (Array.isArray(dash.assigned_members) && dash.assigned_members.length) {
       populateMemberSelect(dash.assigned_members);
     }
+
+    // Hydrate Coach Hero + On-Duty Ring + 4-Card KPI Strip
+    const coachName = (dash.trainer && dash.trainer.name) || (window.ProFitAuth?.getUser?.()?.first_name) || 'Coach';
+    const firstWord = String(coachName).trim().split(/\s+/)[0] || 'Coach';
+    if ($('heroCoachEyebrow')) $('heroCoachEyebrow').textContent = `COACH ${firstWord.toUpperCase()},`;
+
+    const st = dash.stats || {};
+    const assignedCnt = Number(st.assigned_members ?? members.length) || 0;
+    const todayInCnt = Number(st.today_checkins ?? 0) || 0;
+    const todayDow = new Date().getDay();
+    const todayClasses = (sch.sessions || []).filter(s => s.dow === todayDow);
+    const firstClass = todayClasses[0] || null;
+
+    if ($('dutySessionName')) $('dutySessionName').textContent = firstClass ? firstClass.name : 'Open floor';
+    if ($('dutySessionSub')) $('dutySessionSub').textContent = firstClass ? `${firstClass.time} · ${firstClass.coach || coachName}` : 'No scheduled class today';
+    if ($('dutyCheckedNum')) $('dutyCheckedNum').textContent = String(todayInCnt);
+    if ($('dutyRosterCount')) $('dutyRosterCount').textContent = `${assignedCnt} member${assignedCnt === 1 ? '' : 's'}`;
+    if ($('dutyRingArc')) {
+      const frac = assignedCnt > 0 ? Math.min(1, todayInCnt / assignedCnt) : 0;
+      $('dutyRingArc').style.strokeDashoffset = (201.06 * (1 - frac)).toFixed(2);
+    }
+    if ($('ckpiAssigned')) $('ckpiAssigned').textContent = String(assignedCnt);
+    if ($('ckpiToday')) $('ckpiToday').textContent = String(todayInCnt);
+    if ($('ckpiTodayDenom')) $('ckpiTodayDenom').textContent = `/ ${assignedCnt}`;
+    const segs = $('ckpiTodaySegs');
+    if (segs) {
+      const filled = assignedCnt > 0 ? Math.round((Math.min(todayInCnt, assignedCnt) / assignedCnt) * 5) : 0;
+      segs.querySelectorAll('i').forEach((el, idx) => el.classList.toggle('on', idx < filled));
+    }
+    if ($('ckpiClasses')) $('ckpiClasses').textContent = String(todayClasses.length);
+    if ($('ckpiClassesNext')) $('ckpiClassesNext').textContent = firstClass ? `Next: ${firstClass.time} ${firstClass.name}` : 'No classes today';
+
     renderRoster(members);
-    renderMembershipOverview(dash.stats || {}, members);
+    renderMembershipOverview(st, members);
     renderRecentCheckins(dash.recent_attendances || []);
     renderSessions(sch);
     await fetchAndRenderAttendance();
   }
+
+  // ---- Dashboard QR Camera Scanner (no page navigation) ----
+  const dashQrBtn = $('dashQrBtn');
+  const dashQrModal = $('dashQrModal');
+  const dashQrStatus = $('dashQrStatus');
+  let dashQrScanner = null;
+  let dashQrBusy = false;
+
+  const setDashQrStatus = (msg, tone) => {
+    if (!dashQrStatus) return;
+    dashQrStatus.textContent = msg;
+    dashQrStatus.style.color = tone === 'ok' ? 'var(--tw-green, #10B981)' : tone === 'err' ? 'var(--tw-red, #EF4444)' : 'var(--muted)';
+  };
+
+  const stopDashQrScanner = async () => {
+    if (dashQrScanner) {
+      try { await dashQrScanner.stop(); } catch (_) {}
+      try { dashQrScanner.clear(); } catch (_) {}
+      dashQrScanner = null;
+    }
+    dashQrBusy = false;
+    if (dashQrModal) dashQrModal.classList.remove('open');
+  };
+
+  const openDashQrScanner = async () => {
+    if (!dashQrModal) return;
+    dashQrModal.classList.add('open');
+    setDashQrStatus('Starting camera...', '');
+    if (typeof window.Html5Qrcode !== 'function') {
+      setDashQrStatus('QR scanner library failed to load. Check your internet connection.', 'err');
+      return;
+    }
+    try {
+      dashQrScanner = new window.Html5Qrcode('dashQrReader');
+      await dashQrScanner.start(
+        { facingMode: 'environment' },
+        { fps: 10, qrbox: { width: 220, height: 220 } },
+        async decodedText => {
+          if (dashQrBusy) return;
+          dashQrBusy = true;
+          setDashQrStatus('Checking in...', '');
+          try {
+            const res = await T.api.checkInByQr(decodedText);
+            const msg = res.detail || `${res.member_name || 'Member'} checked in!`;
+            setDashQrStatus(msg, 'ok');
+            if (PF.toast) PF.toast(msg, 'success');
+            await loadDashboard();
+          } catch (err) {
+            const msg = err.message || 'Could not check in member.';
+            setDashQrStatus(msg, 'err');
+            if (PF.toast) PF.toast(msg, 'error');
+          } finally {
+            setTimeout(() => { dashQrBusy = false; }, 2200);
+          }
+        },
+        () => {}
+      );
+      setDashQrStatus("Point the camera at the member's Check-in QR pass.", '');
+    } catch (err) {
+      setDashQrStatus('Could not access camera. Allow camera permission (HTTPS or localhost required).', 'err');
+    }
+  };
+
+  if (dashQrBtn) dashQrBtn.addEventListener('click', openDashQrScanner);
+  $('dashQrClose')?.addEventListener('click', stopDashQrScanner);
+  $('dashQrDone')?.addEventListener('click', stopDashQrScanner);
+  dashQrModal?.addEventListener('mousedown', (e) => { if (e.target === dashQrModal) stopDashQrScanner(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && dashQrModal?.classList.contains('open')) stopDashQrScanner(); });
 
   loadDashboard();
 });

@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/css/staff.css?v=12">
-<link rel="stylesheet" href="trainer.css?v=12">
+<link rel="stylesheet" href="trainer.css?v=20">
 <link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
 <body data-page="members" data-portal="trainer" data-head="none">
 <div class="app">
@@ -30,48 +30,9 @@
           </div>
         </div>
         <div class="tw-hero-actions">
-          <a href="/attendance" class="tw-btn"><span data-ico="check"></span> Attendance Log</a>
-          <a href="/schedule" class="tw-btn-primary"><span data-ico="calendar"></span> Broadcast Update</a>
+          <a href="/trainer/attendance" class="tw-btn"><span data-ico="check"></span> Attendance Log</a>
+          <a href="/trainer/schedule" class="tw-btn-primary"><span data-ico="calendar"></span> Broadcast Update</a>
         </div>
-      </section>
-
-      <!-- KPI Summary Cards -->
-      <section class="tw-kpi-grid tw-anim" style="--i:1" aria-label="Roster statistics">
-        <article class="tw-kpi-card is-amber">
-          <div class="tw-kpi-top">
-            <span class="tw-kpi-label">Assigned Roster</span>
-            <div class="tw-kpi-ico" data-ico="users"></div>
-          </div>
-          <div class="tw-kpi-val" id="kpiMemTotal">0</div>
-          <div class="tw-kpi-sub" id="kpiMemCapSub">Active coaching assignments</div>
-        </article>
-
-        <article class="tw-kpi-card is-green">
-          <div class="tw-kpi-top">
-            <span class="tw-kpi-label">Active Memberships</span>
-            <div class="tw-kpi-ico" data-ico="shield"></div>
-          </div>
-          <div class="tw-kpi-val" id="kpiMemActive">0</div>
-          <div class="tw-kpi-sub">In good standing today</div>
-        </article>
-
-        <article class="tw-kpi-card is-blue">
-          <div class="tw-kpi-top">
-            <span class="tw-kpi-label">Checked In Today</span>
-            <div class="tw-kpi-ico" data-ico="check"></div>
-          </div>
-          <div class="tw-kpi-val" id="kpiMemToday">0</div>
-          <div class="tw-kpi-sub">Athletes on the floor today</div>
-        </article>
-
-        <article class="tw-kpi-card is-purple">
-          <div class="tw-kpi-top">
-            <span class="tw-kpi-label">Expiring Soon</span>
-            <div class="tw-kpi-ico" data-ico="clock"></div>
-          </div>
-          <div class="tw-kpi-val" id="kpiMemExpiring">0</div>
-          <div class="tw-kpi-sub">Renewals due within 7 days</div>
-        </article>
       </section>
 
       <!-- Toolbar: Filter Pills, Search & View Mode -->
@@ -163,7 +124,7 @@
 <script src="../auth.js?v=5"></script>
 <script src="../assets/js/staff-icons.js?v=5"></script>
 <script src="../assets/js/staff-data.js?v=12"></script>
-<script src="../assets/js/staff.js?v=12"></script>
+<script src="../assets/js/staff.js?v=15"></script>
 <script src="trainer.js?v=12"></script>
 <script>
 PF.ready(async () => {
@@ -189,15 +150,16 @@ PF.ready(async () => {
     const todayIn = list.filter(m => m.today_checked_in).length;
     const expiring = list.filter(m => isExpiringSoon(m)).length;
 
-    document.getElementById('kpiMemTotal').textContent = total;
-    document.getElementById('kpiMemActive').textContent = active;
-    document.getElementById('kpiMemToday').textContent = todayIn;
-    document.getElementById('kpiMemExpiring').textContent = expiring;
+    const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    setTxt('kpiMemTotal', total);
+    setTxt('kpiMemActive', active);
+    setTxt('kpiMemToday', todayIn);
+    setTxt('kpiMemExpiring', expiring);
 
-    document.getElementById('cntMemAll').textContent = total;
-    document.getElementById('cntMemActive').textContent = active;
-    document.getElementById('cntMemToday').textContent = todayIn;
-    document.getElementById('cntMemExpiring').textContent = expiring;
+    setTxt('cntMemAll', total);
+    setTxt('cntMemActive', active);
+    setTxt('cntMemToday', todayIn);
+    setTxt('cntMemExpiring', expiring);
   }
 
   function getFiltered() {

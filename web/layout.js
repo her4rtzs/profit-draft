@@ -19,8 +19,8 @@
     ]},
   ];
   const cashierGroups = [
-    { label: 'CASHIER DESK', items: [
-      { id: 'cashier', label: 'Cashier Portal', icon: 'fa-cash-register', href: '/cashier' },
+    { label: 'WORKSPACE', items: [
+      { id: 'cashier', label: 'Dashboard', icon: 'fa-house', href: '/cashier' },
       { id: 'payments', label: 'Payments & Billing', icon: 'fa-wallet', href: '/payments' },
     ]},
     { label: 'FRONT DESK', items: [

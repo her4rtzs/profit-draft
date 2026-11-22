@@ -27,9 +27,18 @@
   }
 
   async function load() {
+    const wrap = card.closest("section");
     try {
-      render(await window.ProFitAPI.get("/trainer/me/"));
+      const data = await window.ProFitAPI.get("/trainer/me/");
+      if (wrap) wrap.hidden = false;
+      render(data);
     } catch (err) {
+      const isAuthErr = err?.status === 401 || err?.status === 403 || /authentication credentials/i.test(String(err?.message || ""));
+      if (isAuthErr) {
+        if (wrap) wrap.hidden = true;
+        card.innerHTML = "";
+        return;
+      }
       card.innerHTML = `<div class="ann-card"><p class="ann-msg">${esc(err.message || "Trainer details are not available right now.")}</p></div>`;
     }
   }

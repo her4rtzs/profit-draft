@@ -448,7 +448,9 @@ window.PFChart = (function () {
           slot.style.width = currentW + "px";
         }
         lbl.hidden = true;
+        lbl.style.display = "none";
         input.hidden = false;
+        input.style.display = "";
         input.min = "2000";
         input.max = String(currentYear);
         input.value = String(year);
@@ -462,7 +464,9 @@ window.PFChart = (function () {
         isEditing = false;
         if (slot) slot.style.width = "";
         input.hidden = true;
+        input.style.display = "none";
         lbl.hidden = false;
+        lbl.style.display = "";
         stepper.classList.remove("is-editing");
       }
 
@@ -542,6 +546,10 @@ window.PFChart = (function () {
 
       if (input) {
         input.max = String(currentYear);
+        if (!stepper.classList.contains("is-editing")) {
+          input.hidden = true;
+          input.style.display = "none";
+        }
       }
 
       // Determine whether forward navigation into future is allowed

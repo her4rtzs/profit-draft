@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head><script>(function(){try{var d=localStorage.getItem('theme')!=='light';var h=document.documentElement;h.style.background=d?'#0a0e16':'#f0f2f5';h.style.colorScheme=d?'dark':'light';}catch(e){}})();</script><script src="splash.js?v=2"></script>
     <meta charset="UTF-8">
@@ -50,15 +50,35 @@
                         <p>Type a name or member ID, then press Enter.</p>
                     </div>
                 </div>
-                <div class="checkin-input-wrap">
+                <div class="checkin-input-wrap" style="position:relative">
                     <label class="ci-sr" for="ciInput">Member</label>
                     <i class="fa-solid fa-magnifying-glass checkin-search-ico" aria-hidden="true"></i>
-                    <input class="input" id="ciInput" type="text" list="ciList" placeholder="e.g. M202601 or Namjoon" autocomplete="off">
-                    <datalist id="ciList"></datalist>
+                    <input class="input" id="ciInput" type="text" placeholder="e.g. M202601 or Namjoon" autocomplete="off" aria-autocomplete="list" aria-controls="ciAcMenu" aria-expanded="false">
+                    <div class="ci-ac-menu" id="ciAcMenu" role="listbox" hidden></div>
                 </div>
                 <button class="btn btn-primary checkin-submit" id="ciBtn" type="button"><i class="fa-solid fa-check"></i> Check in</button>
+                <button class="btn checkin-submit" id="ciQrBtn" type="button" style="background:transparent;border:1px solid var(--border,#263246);color:var(--text,#f3f4f6)"><i class="fa-solid fa-qrcode" aria-hidden="true"></i> Scan QR</button>
             </div>
         </section>
+
+        <!-- QR Check-in Scanner Modal -->
+        <div id="qrScanModal" role="dialog" aria-modal="true" aria-labelledby="qrScanTitle" hidden
+            style="position:fixed;inset:0;z-index:9600;background:rgba(6,10,18,.74);backdrop-filter:blur(4px);display:grid;place-items:center;padding:18px">
+            <div style="width:min(440px,100%);background:var(--card,#111827);border:1px solid var(--border,#263246);border-radius:20px;padding:22px;color:var(--text,#f3f4f6)">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px">
+                    <h2 id="qrScanTitle" style="margin:0;font-size:18px;font-weight:800;display:inline-flex;align-items:center;gap:8px"><i class="fa-solid fa-qrcode" style="color:#e8b93a" aria-hidden="true"></i> Scan Member QR</h2>
+                    <button type="button" id="qrScanClose" aria-label="Close scanner" style="width:34px;height:34px;border-radius:10px;border:1px solid var(--border,#263246);background:transparent;color:inherit;cursor:pointer;display:grid;place-items:center"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div id="qrReader" style="width:100%;min-height:240px;border-radius:14px;overflow:hidden;background:#070b14;border:1px solid var(--border,#263246)"></div>
+                <p id="qrScanStatus" role="status" aria-live="polite" style="margin:12px 0 14px;font-size:13.5px;font-weight:600;color:var(--muted,#94a3b8);text-align:center">Point the camera at the member's Check-in QR pass.</p>
+                <button type="button" class="btn" id="qrScanDone" style="width:100%;justify-content:center;border-radius:12px">Close scanner</button>
+            </div>
+        </div>
+        <style>
+            #qrScanModal[hidden] { display: none !important; }
+            body:not(.dark) #qrScanModal > div { background: #ffffff !important; border-color: #eadfc8 !important; color: #2a2418 !important; }
+            body:not(.dark) #ciQrBtn { border-color: #eadfc8 !important; color: #2a2418 !important; background: #ffffff !important; }
+        </style>
 
         <section class="panel revenue-panel attendance-chart-panel">
             <div class="panel-header">
@@ -118,7 +138,8 @@
 <script src="layout.js?v=25"></script>
 <script src="sidebar.js?v=21"></script>
 <script src="data.js"></script>
-<script src="pages.js"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script>
+<script src="pages.js?v=5"></script>
 <script src="chart-periods.js?v=918"></script>
 <script src="portal-fx.js?v=2"></script>
 <script src="change-password.js?v=2" defer></script>

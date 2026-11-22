@@ -46,7 +46,7 @@
   <link rel="stylesheet" href="ui-polish.css?v=2">
   <link rel="stylesheet" href="ui-fixes.css?v=1">
   <link rel="stylesheet" href="pf-modern.css?v=2">
-  <link rel="stylesheet" href="member-shell.css?v=16">
+  <link rel="stylesheet" href="member-shell.css?v=31">
   <style>
     @keyframes mbDashRise {
       from {
@@ -399,7 +399,7 @@
     }
 
     .pp-cal-day.is-checkin {
-      background: #e8b93a !important;
+      background: #f4c430 !important;
       color: #141006 !important;
       font-weight: 800 !important
     }
@@ -410,7 +410,7 @@
 
     .pp-cal-day.is-today {
       border-color: #f8fafc !important;
-      color: #e8b93a !important
+      color: #f4c430 !important
     }
 
     .pp-cal-day.is-today.is-checkin {
@@ -419,8 +419,14 @@
     }
 
     .pp-cal-day.is-selected:not(.is-today):not(.is-checkin) {
-      background: rgba(232, 185, 58, .18) !important;
-      border-color: rgba(232, 185, 58, .6) !important
+      background: #f4c430 !important;
+      border-color: #f4c430 !important;
+      color: #141006 !important;
+      font-weight: 800 !important
+    }
+
+    .pp-cal-day.is-selected:not(.is-today):not(.is-checkin) b {
+      color: #141006 !important
     }
 
     .pp-cal-day .pp-cal-dots {
@@ -522,9 +528,12 @@
       border-color: #8a6212 !important;
       color: #2a1d04 !important;
     }
-    body.member-home:not(.dark) .pp-cal-day.is-checkin {
-      background: #f0b92a !important;
-      color: #2a1d04 !important;
+    body.member-home:not(.dark) .pp-cal-day.is-checkin,
+    body.member-home:not(.dark) .pp-cal-day.is-selected:not(.is-today) {
+      background: #f4c430 !important;
+      border-color: #f4c430 !important;
+      color: #141006 !important;
+      font-weight: 800 !important;
     }
     body.member-home:not(.dark) .pp-cal-stats {
       border-top-color: #eadfc8 !important;
@@ -791,53 +800,6 @@
       </header>
 
       <main class="member-content">
-        <section class="member-welcome member-hero pf-app-hero">
-          <div class="pf-app-hero-copy">
-            <div class="mb-hero-eyebrow">
-              <span class="pf-date-pill" id="heroDatePill">TODAY</span>
-            </div>
-            <h1 id="memberGreeting"><span id="heroFirstName">Member</span>,<br>let's get to work.</h1>
-            <p id="heroMembershipLine">Your coach or the front desk checks you in when you arrive. Stay consistent and
-              track your progress here.</p>
-            <div class="member-hero-actions">
-              <a class="btn btn-primary pf-pill-btn" href="#schedule"><i class="fa-regular fa-calendar"></i> Book a
-                class</a>
-              <button class="btn btn-soft pf-pill-btn" type="button" data-renew-membership><i
-                  class="fa-solid fa-rotate"></i> Renew membership</button>
-              <button class="btn btn-soft pf-pill-btn" id="gymContactBtn" type="button"><i
-                  class="fa-solid fa-headset"></i> Contact</button>
-            </div>
-          </div>
-          <aside class="mb-hero-card" aria-label="Membership plan status">
-            <div class="mb-card-top">
-              <div>
-                <span class="mb-status-pill" id="mbHeroStatusPill"><span class="mb-status-dot"
-                    aria-hidden="true"></span> <span id="mbHeroStatusText">Active</span></span>
-                <h3 id="mbHeroPlanTitle">Membership</h3>
-                <span class="mb-card-sub" id="mbHeroStart">&mdash;</span>
-              </div>
-              <div class="mb-ring-wrap" aria-label="Days remaining">
-                <svg class="mb-ring-svg" viewBox="0 0 80 80" aria-hidden="true">
-                  <circle class="mb-ring-track" cx="40" cy="40" r="32"></circle>
-                  <circle class="mb-ring-arc" id="mbHeroRingArc" cx="40" cy="40" r="32" stroke-dasharray="201.06"
-                    stroke-dashoffset="201.06"></circle>
-                </svg>
-                <div class="mb-ring-center">
-                  <strong id="mbHeroDaysVal">0</strong>
-                  <small>days left</small>
-                </div>
-              </div>
-            </div>
-            <div class="mb-card-foot">
-              <div>
-                <span id="mbHeroEndLabel">Renews on</span>
-                <strong id="mbHeroEndDate">&mdash;</strong>
-              </div>
-              <button type="button" class="mb-mini-btn" data-renew-membership>Renew</button>
-            </div>
-          </aside>
-        </section>
-
         <section class="mb-tab-banner" id="mbTabBanner" hidden aria-live="polite">
           <div class="mb-tab-banner-inner">
             <span class="mb-tab-eyebrow" id="mbTabEyebrow">Member portal</span>
@@ -846,169 +808,170 @@
         </section>
 
         <div class="portal-result" id="memberNotice" role="status" hidden></div>
-        <div class="pp-tool-panel" data-panel="overview">
-          <section class="panel ann-overview">
-            <div class="panel-header">
-              <div>
-                <h2>Latest from the gym</h2>
-                <p>Notices and updates.</p>
-              </div><a class="ann-btn" href="#announcements">See all</a>
-            </div>
-            <div id="annPreview" class="ann-list">
-              <div class="pf-sk-row">
-                <div class="pf-sk-line lg"></div>
-                <div class="pf-sk-line sm"></div>
+        <div class="pp-tool-panel mb-bento-overview" data-panel="overview">
+          <!-- Row 1: Full-width Hero Banner with Floating Membership Ticket Card -->
+          <section class="mb-bento-card mb-bento-hero-photo mb-hero-ticket-layout" aria-label="Welcome">
+            <div class="mb-hero-photo-bg" aria-hidden="true"></div>
+            <div class="mb-hero-left-col">
+              <h1 id="memberGreeting"><span id="heroFirstName">Member</span>,<br>let's get<br>to work.</h1>
+              <p id="heroMembershipLine">Your coach or the front desk checks you in when you arrive. Show your QR to speed things up.</p>
+              <div class="mb-hero-cta-row">
+                <button class="mb-bento-btn is-gold is-rect" id="showMemberQrBtn" type="button">
+                  <i class="fa-solid fa-qrcode" aria-hidden="true"></i> My check-in QR
+                </button>
+                <a class="mb-hero-book-btn is-rect" href="#schedule">
+                  <i class="fa-regular fa-calendar" aria-hidden="true"></i> Book a class
+                </a>
               </div>
+              <span id="heroDatePill" hidden>TODAY</span>
+              <span id="mbHeroDaysSep" hidden></span>
+              <span id="mbHeroDaysInline" hidden></span>
             </div>
-          </section>
-          <section class="member-status-card" id="overviewMembershipCard">
-            <div class="pf-sk-wrap" data-skeleton="overview-membership" style="width:100%;display:grid;gap:10px">
-              <div class="pf-sk-line sm"></div>
-              <div class="pf-sk-line lg"></div>
-              <div class="pf-sk-line md"></div>
-              <div class="pf-sk-bar"></div>
-            </div>
-            <div id="overviewMembershipBody" hidden style="width:100%">
-              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap">
+            <aside class="mb-ticket-card" aria-label="Membership plan status">
+              <div class="mb-ticket-top">
+                <div class="mb-ticket-info">
+                  <span class="mb-status-pill" id="mbHeroStatusPill"><span class="mb-status-dot" aria-hidden="true"></span> <span id="mbHeroStatusText">Active</span></span>
+                  <h3 id="mbHeroPlanTitle">Monthly plan</h3>
+                  <span class="mb-ticket-sub" id="mbHeroStart">&mdash;</span>
+                </div>
+                <div class="mb-ticket-ring" aria-label="Days remaining">
+                  <svg class="mb-ticket-ring-svg" viewBox="0 0 88 88" aria-hidden="true">
+                    <circle class="mb-ticket-ring-track" cx="44" cy="44" r="36"></circle>
+                    <circle class="mb-ticket-ring-arc" id="mbHeroRingArc" cx="44" cy="44" r="36" stroke-dasharray="226.19" stroke-dashoffset="226.19"></circle>
+                  </svg>
+                  <div class="mb-ticket-ring-center">
+                    <strong id="mbHeroDaysVal">0</strong>
+                    <small>days left</small>
+                  </div>
+                </div>
+              </div>
+              <div class="mb-ticket-foot">
                 <div>
-                  <span class="member-status-label"><i class="fa-solid fa-circle-check"></i> MEMBERSHIP SUMMARY</span>
-                  <h2 id="membershipName">&mdash;</h2>
-                  <p id="membershipDetail">Checking your current account details.</p>
+                  <span id="mbHeroEndLabel">Renews on</span>
+                  <strong id="mbHeroEndDate">&mdash;</strong>
                 </div>
-                <div class="pf-status-actions">
-                  <span class="pf-status-badge" id="membershipStatus">&mdash;</span>
-                  <button type="button" class="btn btn-primary" data-renew-membership><i class="fa-solid fa-rotate"></i>
-                    Renew membership</button>
-                </div>
+                <button type="button" class="mb-ticket-renew" id="mbHeroRenewBtn" data-renew-membership>Renew</button>
               </div>
-              <div class="pf-progress-wrap">
-                <div class="pf-progress-labels">
-                  <span id="overviewMembershipRemaining">&mdash;</span>
-                  <span id="overviewMembershipPct">0%</span>
-                </div>
-                <div class="pf-progress-track">
-                  <div class="pf-progress-fill" id="overviewMembershipBar"></div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section class="member-metrics" aria-label="Member progress metrics">
-            <article class="member-metric-card streak-card">
-              <span class="metric-icon fire"><i class="fa-solid fa-fire"></i></span>
-              <div><small>Current streak</small><strong id="streakCount">0 days</strong>
-                <p>Train consistently to unlock rewards.</p>
-              </div>
-            </article>
-            <article class="member-metric-card">
-              <span class="metric-icon"><i class="fa-solid fa-bullseye"></i></span>
-              <div><small>Weekly goal</small><strong id="weeklyGoalText">0 / 4 visits</strong>
-                <div class="mini-progress"><span id="weeklyGoalBar"></span></div>
-              </div>
-            </article>
-            <article class="member-metric-card">
-              <span class="metric-icon green"><i class="fa-solid fa-trophy"></i></span>
-              <div><small>Achievements</small><strong id="achievementCount">0 unlocked</strong>
-                <p id="achievementHint">Start checking in to earn badges.</p>
-              </div>
-            </article>
+            </aside>
           </section>
 
-          <section class="member-grid">
-            <div class="panel member-panel">
-              <div class="panel-header">
-                <div>
-                  <h2>This month</h2>
-                  <p>Your training calendar</p>
-                </div>
-                <i class="fa-regular fa-calendar"></i>
-              </div>
-              <div id="memberCalendar" class="pp-cal"></div>
-              <button class="btn btn-soft" type="button" id="addReceiptBtn" hidden><i class="fa-solid fa-receipt"></i>
-                Add a receipt</button>
+          <!-- Row 2: 3 Clean Summary Cards (Zero Repeated Stats) -->
+          <section class="mb-strip-3" aria-label="Monthly summary">
+            <div class="mb-strip-card is-slate">
+              <span class="mb-strip-lbl">This month</span>
+              <div class="mb-strip-val"><strong id="glanceMonthVal">0</strong> <small>visits</small></div>
             </div>
-
-            <div class="panel member-panel">
-              <div class="panel-header">
-                <div>
-                  <h2>Up next</h2>
-                  <p>Classes you have booked</p>
-                </div>
-                <i class="fa-solid fa-dumbbell"></i>
+            <div class="mb-strip-card is-gold">
+              <div class="mb-strip-head">
+                <span class="mb-strip-lbl">Streak</span>
+                <span class="mb-strip-sub">Best <b id="mbGoalBestStreak">0 days</b></span>
               </div>
-              <div id="upNextList" class="member-list">
+              <div class="mb-strip-val"><strong id="streakCount">0</strong> <small>days current</small></div>
+            </div>
+            <button type="button" class="mb-strip-card is-sage mb-strip-btn" data-member-goto="announcements">
+              <span class="mb-strip-lbl">Unread notices</span>
+              <div class="mb-strip-val"><strong id="unreadNoticeCount">0</strong> <small>new</small></div>
+            </button>
+          </section>
+
+          <!-- Row 3: Weekly Goal (combined with trend, single M-S row) + Up Next (only Open the schedule) -->
+          <div class="mb-bento-mid-2">
+            <section class="mb-bento-card mb-bento-goal-clean" aria-label="Weekly goal">
+              <div class="mb-bento-head">
+                <h2>Weekly goal</h2>
+                <span class="mb-head-chip"><b id="weeklyGoalText">0</b> / 4</span>
+              </div>
+              <div class="mb-goal-inline">
+                <div class="mb-single-ring-box">
+                  <svg class="mb-single-ring-svg" viewBox="0 0 96 96" aria-hidden="true">
+                    <circle class="mb-ring-outer-track" cx="48" cy="48" r="40"></circle>
+                    <circle class="mb-ring-outer-arc" id="mbWeekOuterArc" cx="48" cy="48" r="40" stroke-dasharray="251.33" stroke-dashoffset="251.33"></circle>
+                  </svg>
+                  <div class="mb-dual-ring-center">
+                    <small>Visits</small>
+                    <strong id="mbRingVisitsLabel">0 of 4</strong>
+                  </div>
+                </div>
+                <div class="mb-goal-right">
+                  <div class="mb-week-dots" id="streakWeekDots" aria-label="This week check-ins">
+                    <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+                  </div>
+                  <div class="mb-week-mini-chart">
+                    <svg id="mbWeekChartSvg" class="mb-week-chart-svg is-compact" viewBox="0 0 280 76" preserveAspectRatio="none" aria-label="Weekly check-in rhythm"></svg>
+                  </div>
+                </div>
+              </div>
+              <div class="mb-goal-foot-row">
+                <span id="mbWeekDelta">This week</span>
+                <span><b id="mbWeekMiniPct">0%</b> of weekly goal</span>
+              </div>
+            </section>
+
+            <section class="mb-bento-card mb-bento-upnext" aria-label="Up next">
+              <div class="mb-bento-head">
+                <h2>Up next</h2>
+                <span class="mb-head-sub" id="nextClassSub">Booked classes</span>
+              </div>
+              <div id="upNextList" class="member-list mb-upnext-list">
                 <p class="member-loading">Loading</p>
               </div>
-              <button class="btn btn-soft" type="button" data-member-goto="schedule"><i
-                  class="fa-regular fa-calendar-plus"></i> Book a class</button>
-            </div>
-          </section>
+              <button type="button" class="mb-bento-gold-btn" data-member-goto="schedule">
+                <i class="fa-regular fa-calendar" aria-hidden="true"></i> Open the schedule
+              </button>
+            </section>
+          </div>
 
-          <section class="member-grid">
-            <div class="panel member-panel">
-              <div class="panel-header">
-                <div>
-                  <h2>Recent attendance</h2>
-                  <p>Your latest gym check-ins</p>
-                </div>
-                <i class="fa-solid fa-calendar-check"></i>
-              </div>
-              <div id="attendanceList" class="member-list">
-                <div class="pf-sk-row">
-                  <div class="pf-sk-line md"></div>
-                  <div class="pf-sk-line sm"></div>
-                </div>
-                <div class="pf-sk-row">
-                  <div class="pf-sk-line md"></div>
-                  <div class="pf-sk-line sm"></div>
-                </div>
-              </div>
-            </div>
+          <!-- Row 4: Monthly Calendar + Challenges + Latest from the gym -->
+          <div class="mb-bento-bottom">
+            <section class="mb-bento-card mb-bento-cal" aria-label="Monthly training calendar">
+              <div id="memberCalendar" class="pp-cal"></div>
+              <button class="btn btn-soft" type="button" id="addReceiptBtn" hidden>Add a receipt</button>
+            </section>
 
-            <div class="panel member-panel">
-              <div class="panel-header">
-                <div>
-                  <h2>Payment history</h2>
-                  <p>Recent membership payments</p>
-                </div>
-                <i class="fa-solid fa-receipt"></i>
+            <section class="mb-bento-card mb-bento-challenges" aria-label="Challenges">
+              <div class="mb-bento-head">
+                <h2>Challenges</h2>
+                <span class="mb-head-sub">Small wins, every week</span>
               </div>
-              <div id="paymentList" class="member-list">
-                <div class="pf-sk-row">
-                  <div class="pf-sk-line md"></div>
-                  <div class="pf-sk-line sm"></div>
-                </div>
-                <div class="pf-sk-row">
-                  <div class="pf-sk-line md"></div>
-                  <div class="pf-sk-line sm"></div>
-                </div>
-              </div>
-            </div>
-          </section>
+              <div class="challenge-list mb-ch-bars" id="challengeList"></div>
+            </section>
 
-          <section class="member-grid member-grid-secondary">
-            <div class="panel member-panel">
-              <div class="panel-header">
-                <div>
-                  <h2>Member profile</h2>
-                  <p>Account information</p>
-                </div>
-                <i class="fa-solid fa-user-shield"></i>
+            <section class="mb-bento-card mb-bento-ann" aria-label="Latest from the gym">
+              <div class="mb-bento-head">
+                <h2>Latest from the gym</h2>
+                <a class="mb-head-link" href="#announcements">See all</a>
               </div>
-              <p class="profile-details" id="profileDetails">Loading</p>
-            </div>
+              <div id="annPreview" class="ann-list mb-ann-compact">
+                <p class="pp-muted" style="margin:0;font-size:13px">Loading notices...</p>
+              </div>
+            </section>
+          </div>
 
-            <div class="panel member-panel">
-              <div class="panel-header">
-                <div>
-                  <h2>Challenges</h2>
-                  <p>Simple goals to keep you moving</p>
-                </div>
-                <i class="fa-solid fa-bolt"></i>
+          <!-- Hidden compatibility hooks for existing member scripts -->
+          <div hidden aria-hidden="true">
+            <div id="overviewMembershipCard">
+              <div id="overviewMembershipBody">
+                <h2 id="membershipName">&mdash;</h2>
+                <p id="membershipDetail"></p>
+                <span id="membershipStatus">&mdash;</span>
+                <span id="overviewMembershipRemaining">&mdash;</span>
+                <span id="overviewMembershipPct">0%</span>
+                <div id="overviewMembershipBar"></div>
               </div>
-              <div class="challenge-list" id="challengeList"></div>
             </div>
-          </section>
+            <span id="mbWeekMiniArc"></span>
+            <span id="mbWeekRangePill"></span>
+            <span id="mbGoalTotalVal">0</span>
+            <span id="mbWeekVisitsBig">0</span>
+            <strong id="glanceWeekVal">0</strong>
+            <span id="nextClassDate">None</span>
+            <span id="weeklyGoalBar"></span>
+            <span id="achievementCount">0 unlocked</span>
+            <span id="achievementHint"></span>
+            <div id="attendanceList"></div>
+            <div id="paymentList"></div>
+            <div id="profileDetails"></div>
+          </div>
         </div>
         <div class="pp-tool-panel" data-panel="schedule" hidden>
           <div class="pf-sk-wrap pf-sk-card" data-skeleton="schedule">
@@ -1284,15 +1247,50 @@
         </div>
 
         <div class="pp-tool-panel" data-panel="attendance" hidden>
-          <section class="panel member-panel mb-heat-panel" id="attHeatmapCard" style="margin-bottom:18px">
-            <div class="pf-panel-head">
-              <div>
-                <h2>Last 12 weeks</h2>
-              </div>
-              <span class="pp-muted" id="attHeatSub">Gold squares mark your check-in days</span>
-            </div>
-            <div class="mb-heat-grid" id="attHeatmapGrid" aria-label="Last 12 weeks attendance heatmap"></div>
+          <section class="mb-att-kpis" aria-label="Attendance summary">
+            <article class="member-panel mb-kpi-card">
+              <div class="mb-kpi-head"><span>Visits this month</span></div>
+              <div class="mb-kpi-val"><strong id="attKpiMonth">0</strong><small>visits</small></div>
+              <p class="mb-kpi-sub" id="attKpiMonthSub">Monthly goal: 12 visits</p>
+            </article>
+            <article class="member-panel mb-kpi-card">
+              <div class="mb-kpi-head"><i class="fa-solid fa-fire" style="color:#e8b93a" aria-hidden="true"></i><span>Best streak</span></div>
+              <div class="mb-kpi-val"><strong id="attKpiStreak">0</strong><small>days</small></div>
+              <p class="mb-kpi-sub">Consecutive gym days</p>
+            </article>
+            <article class="member-panel mb-kpi-card">
+              <div class="mb-kpi-head"><span>Total check-ins</span></div>
+              <div class="mb-kpi-val"><strong id="attKpiTotal">0</strong><small>visits</small></div>
+              <p class="mb-kpi-sub">All recorded check-ins</p>
+            </article>
+            <article class="member-panel mb-kpi-card">
+              <div class="mb-kpi-head"><span>Active weeks</span></div>
+              <div class="mb-kpi-val"><strong id="attKpiWeeks">0</strong><small>of 12</small></div>
+              <p class="mb-kpi-sub">In the last 12 weeks</p>
+            </article>
           </section>
+
+          <div class="mb-att-split">
+            <section class="panel member-panel mb-heat-panel" id="attHeatmapCard">
+              <div class="pf-panel-head">
+                <div>
+                  <h2>Last 12 weeks</h2>
+                </div>
+                <span class="pp-muted" id="attHeatSub">Gold squares mark check-ins</span>
+              </div>
+              <div class="mb-heat-grid" id="attHeatmapGrid" aria-label="Last 12 weeks attendance heatmap"></div>
+            </section>
+            <section class="panel member-panel mb-badges-panel">
+              <div class="pf-panel-head">
+                <div>
+                  <h2>Badges</h2>
+                </div>
+                <span class="pp-muted" id="attBadgesSub">0 of 6 unlocked</span>
+              </div>
+              <div class="mb-badges-grid" id="attBadgesGrid"></div>
+            </section>
+          </div>
+
           <section class="panel member-panel">
             <div class="pf-panel-head">
               <div>
@@ -1342,25 +1340,24 @@
             <div class="pf-sk-line md"></div>
             <div class="pf-sk-line md"></div>
           </div>
-          <div id="memberSettingsRoot"></div>
-          <div class="panel member-panel" id="install">
-            <h2>Install the app</h2>
-            <p class="pp-muted">Add ProFit to this phone's home screen. It opens like an app and still needs internet.
-            </p>
-            <p id="installHelpStatus" role="status">Checking...</p>
-            <div data-install-steps>
-              <h3>iPhone (Safari)</h3>
-              <ol>
-                <li>Open ProFit in Safari.</li>
-                <li>Tap the Share button.</li>
-                <li>Tap Add to Home Screen, then Add.</li>
-              </ol>
-              <h3>Android (Chrome)</h3>
-              <ol>
-                <li>Open ProFit in Chrome.</li>
-                <li>Tap the three-dot menu.</li>
-                <li>Tap Install app (or Add to Home screen), then Install.</li>
-              </ol>
+          <div id="memberSettingsRoot">
+            <div class="panel member-panel" id="install" hidden>
+              <h2>Install the app</h2>
+              <p id="installHelpStatus" role="status">Checking...</p>
+              <div data-install-steps>
+                <h3>iPhone (Safari)</h3>
+                <ol>
+                  <li>Open ProFit in Safari.</li>
+                  <li>Tap the Share button.</li>
+                  <li>Tap Add to Home Screen, then Add.</li>
+                </ol>
+                <h3>Android (Chrome)</h3>
+                <ol>
+                  <li>Open ProFit in Chrome.</li>
+                  <li>Tap the three-dot menu.</li>
+                  <li>Tap Install app (or Add to Home screen), then Install.</li>
+                </ol>
+              </div>
             </div>
           </div>
         </div>
@@ -1465,21 +1462,122 @@
           return uniqueDays.size;
         }
 
+        function calcBestStreak(attendance) {
+          const days = [...new Set((attendance || []).map(x => localDateStr(x.date)).filter(Boolean))].sort();
+          if (!days.length) return 0;
+          let best = 1;
+          let cur = 1;
+          for (let i = 1; i < days.length; i++) {
+            const [py, pm, pd] = days[i - 1].split("-").map(Number);
+            const [cy, cm, cd] = days[i].split("-").map(Number);
+            const diff = Math.round((new Date(cy, cm - 1, cd) - new Date(py, pm - 1, pd)) / 86400000);
+            if (diff === 1) {
+              cur += 1;
+              if (cur > best) best = cur;
+            } else if (diff > 1) {
+              cur = 1;
+            }
+          }
+          return best;
+        }
+
+        function animateCountUp(el, target, suffix = "", duration = 680) {
+          if (!el) return;
+          const end = Math.max(0, Number(target) || 0);
+          if (end === 0 || window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+            el.textContent = `${end}${suffix}`;
+            return;
+          }
+          const t0 = performance.now();
+          const step = now => {
+            const p = Math.min((now - t0) / duration, 1);
+            const eased = 1 - Math.pow(1 - p, 3);
+            el.textContent = `${Math.round(end * eased)}${suffix}`;
+            if (p < 1) requestAnimationFrame(step);
+            else el.textContent = `${end}${suffix}`;
+          };
+          requestAnimationFrame(step);
+        }
+
         function renderProgress(data) {
           const attendance = data.attendance || [];
-          // Prefer server-computed values (present when the live API is used).
-          // Fall back to client-side calculation for demo/offline mode.
           const streak = (typeof data.streak === "number") ? data.streak : calcStreak(attendance);
           const weekly = (typeof data.weeklyVisits === "number") ? data.weeklyVisits : calcWeeklyVisits(attendance);
           const goal = 4;
-          const achievements = [streak >= 3, weekly >= goal, attendance.length >= 10].filter(Boolean).length;
-          if ($("streakCount")) $("streakCount").textContent = `${streak} day${streak === 1 ? "" : "s"}`;
-          if ($("weeklyGoalText")) $("weeklyGoalText").textContent = `${Math.min(weekly, goal)} / ${goal} visits`;
-          if ($("weeklyGoalBar")) $("weeklyGoalBar").style.width = `${Math.min(100, (weekly / goal) * 100)}%`;
-          if ($("achievementCount")) $("achievementCount").textContent = `${achievements} unlocked`;
-          if ($("achievementHint")) $("achievementHint").textContent = achievements ? "Great momentum. Keep collecting badges." : "Start checking in to earn badges.";
+          const now = new Date();
+          const ymPrefix = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+          const visitSet = new Set(attendance.map(x => localDateStr(x.date)).filter(Boolean));
+          const monthVisits = [...visitSet].filter(d => d.startsWith(ymPrefix)).length;
+          const totalVisits = attendance.length;
+          const bestStreak = Math.max(streak, calcBestStreak(attendance));
 
-          // App-style Progress Ring & Week Strip
+          // Active weeks (unique Monday keys across attendance history)
+          const activeWeeksSet = new Set();
+          visitSet.forEach(iso => {
+            const [y, m, d] = iso.split("-").map(Number);
+            const dt = new Date(y, m - 1, d);
+            const offset = (dt.getDay() + 6) % 7;
+            dt.setDate(dt.getDate() - offset);
+            activeWeeksSet.add(localDateStr(dt));
+          });
+          const activeWeeks = activeWeeksSet.size;
+
+          // 4-card KPI strip (Overview) — smooth count-up animations
+          animateCountUp($("streakCount"), streak);
+          animateCountUp($("weeklyGoalText"), Math.min(weekly, goal));
+          if ($("weeklyGoalBar")) $("weeklyGoalBar").style.width = `${Math.min(100, (weekly / goal) * 100)}%`;
+
+          // 7 weekday dots (Mon..Sun) under Current streak
+          const dotsEl = $("streakWeekDots");
+          if (dotsEl) {
+            const monOffset = (now.getDay() + 6) % 7;
+            const mon = new Date(now.getFullYear(), now.getMonth(), now.getDate() - monOffset);
+            const todayIso = todayKey();
+            const letters = ["M", "T", "W", "T", "F", "S", "S"];
+            dotsEl.innerHTML = letters.map((ch, idx) => {
+              const d = new Date(mon.getFullYear(), mon.getMonth(), mon.getDate() + idx);
+              const iso = localDateStr(d);
+              const isToday = iso === todayIso;
+              const isDone = visitSet.has(iso);
+              return `<span class="mb-wdot${isDone ? " is-done" : ""}${isToday ? " is-today" : ""}" title="${iso}">${ch}</span>`;
+            }).join("");
+          }
+
+          // 4 segmented bars under Weekly goal
+          const segEl = $("weeklySegBars");
+          if (segEl) {
+            const filled = Math.min(goal, weekly);
+            segEl.innerHTML = Array.from({ length: goal }, (_, i) =>
+              `<span class="mb-seg${i < filled ? " is-filled" : ""}"></span>`
+            ).join("");
+          }
+
+          // Unread notices count (synced from announcements badge)
+          const unreadEl = $("unreadNoticeCount");
+          if (unreadEl) {
+            const badge = document.querySelector("#annBellBtn .notification-badge, #notificationBadge");
+            const count = badge && !badge.hidden ? (parseInt(badge.textContent, 10) || 0) : 0;
+            animateCountUp(unreadEl, count);
+          }
+
+          // This week at a glance tiles
+          animateCountUp($("glanceWeekVal"), weekly);
+          animateCountUp($("glanceMonthVal"), monthVisits);
+
+          // 6 real achievement badges
+          const badges = [
+            { title: "First check-in", icon: "fa-check", unlocked: totalVisits >= 1 },
+            { title: "3-day streak", icon: "fa-fire", unlocked: bestStreak >= 3 },
+            { title: "Weekly goal", icon: "fa-bolt", unlocked: weekly >= goal },
+            { title: "10 visits", icon: "fa-star", unlocked: totalVisits >= 10 },
+            { title: "12 this month", icon: "fa-calendar-check", unlocked: monthVisits >= 12 },
+            { title: "30-day streak", icon: "fa-trophy", unlocked: bestStreak >= 30 }
+          ];
+          const unlockedCount = badges.filter(b => b.unlocked).length;
+          if ($("achievementCount")) $("achievementCount").textContent = `${unlockedCount} unlocked`;
+          if ($("achievementHint")) $("achievementHint").textContent = unlockedCount ? "Great momentum. Keep collecting badges." : "Start checking in to earn badges.";
+
+          // Hidden compatibility ring/strip hooks
           const ringCount = $("weeklyRingCount");
           const ringFg = $("weeklyRingFg");
           if (ringCount) ringCount.textContent = `${Math.min(weekly, goal)}/${goal}`;
@@ -1490,36 +1588,118 @@
             ringFg.style.strokeDashoffset = String(circ * (1 - pct));
           }
           if ($("ringStreakVal")) $("ringStreakVal").textContent = `${streak} day${streak === 1 ? "" : "s"}`;
-          if ($("ringBadgesVal")) $("ringBadgesVal").textContent = String(achievements);
-          if ($("ringTotalVal")) $("ringTotalVal").textContent = String(attendance.length);
+          if ($("ringBadgesVal")) $("ringBadgesVal").textContent = String(unlockedCount);
+          if ($("ringTotalVal")) $("ringTotalVal").textContent = String(totalVisits);
 
-          const strip = $("weekStrip");
-          if (strip) {
-            const visitSet = new Set(attendance.map(x => localDateStr(x.date)));
-            const now = new Date();
-            const sunday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
-            const todayIso = todayKey();
-            const letters = ["S", "M", "T", "W", "T", "F", "S"];
-            strip.innerHTML = letters.map((ch, idx) => {
-              const d = new Date(sunday.getFullYear(), sunday.getMonth(), sunday.getDate() + idx);
-              const iso = localDateStr(d);
-              const isToday = iso === todayIso;
-              const hasVisit = visitSet.has(iso);
-              return `<div class="pf-week-day${isToday ? " is-today" : ""}${hasVisit ? " has-visit" : ""}"><span>${ch}</span><strong>${d.getDate()}</strong>${hasVisit ? '<i></i>' : ''}</div>`;
-            }).join("");
-          }
+          // Horizontal progress-bar Challenges (Overview)
           const challenges = [
-            { title: "3-day consistency", done: streak >= 3, detail: "Check in 3 days in a row" },
-            { title: "Weekly finisher", done: weekly >= goal, detail: "Complete 4 visits this week" },
-            { title: "First 10 visits", done: attendance.length >= 10, detail: "Reach your first 10 check-ins" }
+            { title: "3-day consistency", cur: Math.min(streak, 3), target: 3, unit: "days" },
+            { title: "Weekly finisher", cur: Math.min(weekly, goal), target: goal, unit: "visits" },
+            { title: "12 visits this month", cur: Math.min(monthVisits, 12), target: 12, unit: "visits" },
+            { title: "First 10 visits", cur: Math.min(totalVisits, 10), target: 10, unit: "check-ins" }
           ];
-          const box = $("challengeList"); box.replaceChildren();
-          challenges.forEach(item => {
-            const row = document.createElement("div");
-            row.className = `challenge-row ${item.done ? "done" : ""}`;
-            row.innerHTML = `<span><i class="fa-solid ${item.done ? "fa-circle-check" : "fa-circle"}"></i></span><div><strong>${item.title}</strong><small>${item.detail}</small></div>`;
-            box.append(row);
-          });
+          const box = $("challengeList");
+          if (box) {
+            box.replaceChildren();
+            challenges.forEach(item => {
+              const done = item.cur >= item.target;
+              const pct = Math.max(4, Math.min(100, Math.round((item.cur / item.target) * 100)));
+              const row = document.createElement("div");
+              row.className = `mb-ch-item${done ? " is-done" : ""}`;
+              row.innerHTML =
+                `<div class="mb-ch-top"><strong>${item.title}</strong><span>${done ? `${item.target} / ${item.target} done` : `${item.cur} / ${item.target} ${item.unit}`}</span></div>` +
+                `<div class="mb-ch-track"><span class="mb-ch-fill" style="width:${pct}%"></span></div>`;
+              box.append(row);
+            });
+          }
+
+          // Attendance tab 4 KPIs (with smooth count-up)
+          animateCountUp($("attKpiMonth"), monthVisits);
+          if ($("attKpiMonthSub")) {
+            $("attKpiMonthSub").textContent = monthVisits >= 12
+              ? "Monthly goal of 12 reached"
+              : `${Math.max(0, 12 - monthVisits)} more to reach 12`;
+          }
+          animateCountUp($("attKpiStreak"), bestStreak);
+          animateCountUp($("attKpiTotal"), totalVisits);
+          animateCountUp($("attKpiWeeks"), activeWeeks);
+
+          // Attendance tab 6 circular Badges
+          if ($("attBadgesSub")) $("attBadgesSub").textContent = `${unlockedCount} of ${badges.length} unlocked`;
+          const badgeGrid = $("attBadgesGrid");
+          if (badgeGrid) {
+            badgeGrid.innerHTML = badges.map(b =>
+              `<div class="mb-badge-item${b.unlocked ? " is-unlocked" : ""}">` +
+                `<span class="mb-badge-circle"><i class="fa-solid ${b.icon}"></i></span>` +
+                `<span class="mb-badge-name">${b.title}</span>` +
+              `</div>`
+            ).join("");
+          }
+
+          // 3-Row Bento Overview: Week range, dual ring, activity rhythm curve
+          const monOffset = (now.getDay() + 6) % 7;
+          const monDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - monOffset);
+          const sunDate = new Date(monDate.getFullYear(), monDate.getMonth(), monDate.getDate() + 6);
+          if ($("mbWeekRangePill")) {
+            const m1 = monDate.toLocaleDateString("en-PH", { month: "short", day: "numeric" });
+            const m2 = sunDate.toLocaleDateString("en-PH", { day: "numeric" });
+            $("mbWeekRangePill").textContent = `${m1} \u2013 ${m2}`;
+          }
+          if ($("mbRingVisitsLabel")) $("mbRingVisitsLabel").textContent = `${Math.min(weekly, goal)} of ${goal}`;
+          if ($("mbGoalTotalVal")) $("mbGoalTotalVal").textContent = String(totalVisits);
+          if ($("mbGoalBestStreak")) $("mbGoalBestStreak").textContent = `${bestStreak} day${bestStreak === 1 ? "" : "s"}`;
+          if ($("mbWeekVisitsBig")) $("mbWeekVisitsBig").textContent = `${weekly} visit${weekly === 1 ? "" : "s"}`;
+          const outerArc = $("mbWeekOuterArc");
+          if (outerArc) {
+            const c = 251.33;
+            outerArc.style.strokeDashoffset = String((c * (1 - Math.min(1, weekly / goal))).toFixed(2));
+          }
+          const weekPct = Math.min(100, Math.round((weekly / goal) * 100));
+          if ($("mbWeekMiniPct")) $("mbWeekMiniPct").textContent = `${weekPct}%`;
+          const miniArc = $("mbWeekMiniArc");
+          if (miniArc) {
+            const c = 113.1;
+            miniArc.style.strokeDashoffset = String((c * (1 - weekPct / 100)).toFixed(2));
+          }
+          const lastMon = new Date(monDate.getFullYear(), monDate.getMonth(), monDate.getDate() - 7);
+          let lastWeekVisits = 0;
+          const dayCounts = [0, 0, 0, 0, 0, 0, 0];
+          for (let i = 0; i < 7; i++) {
+            const curD = new Date(monDate.getFullYear(), monDate.getMonth(), monDate.getDate() + i);
+            const prevD = new Date(lastMon.getFullYear(), lastMon.getMonth(), lastMon.getDate() + i);
+            if (visitSet.has(localDateStr(curD))) dayCounts[i] = 1;
+            if (visitSet.has(localDateStr(prevD))) lastWeekVisits += 1;
+          }
+          const deltaEl = $("mbWeekDelta");
+          if (deltaEl) {
+            const diff = weekly - lastWeekVisits;
+            deltaEl.textContent = diff > 0 ? `+${diff} vs last wk` : diff === 0 && weekly > 0 ? "Same as last wk" : "This week";
+          }
+          const svg = $("mbWeekChartSvg");
+          if (svg) {
+            let acc = 0;
+            const pts = dayCounts.map((v, i) => {
+              acc += v;
+              const x = 14 + (i * (252 / 6));
+              const norm = Math.min(1, acc / Math.max(goal, 1));
+              const y = 104 - norm * 78;
+              return { x, y, active: v > 0, isToday: i === monOffset };
+            });
+            let d = `M ${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
+            for (let i = 0; i < pts.length - 1; i++) {
+              const p0 = pts[i];
+              const p1 = pts[i + 1];
+              const cx = ((p0.x + p1.x) / 2).toFixed(1);
+              d += ` C ${cx} ${p0.y.toFixed(1)}, ${cx} ${p1.y.toFixed(1)}, ${p1.x.toFixed(1)} ${p1.y.toFixed(1)}`;
+            }
+            const vLines = pts.map(p => `<line class="mb-chart-guide" x1="${p.x.toFixed(1)}" y1="18" x2="${p.x.toFixed(1)}" y2="112" />`).join("");
+            const dots = pts.map(p =>
+              p.active || p.isToday
+                ? `<circle class="mb-chart-dot${p.isToday ? " is-today" : ""}" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${p.isToday ? 4.5 : 3}" />`
+                : ""
+            ).join("");
+            svg.innerHTML = vLines + `<path class="mb-chart-line" d="${d}" />` + dots;
+          }
         }
         function statusBadgeClass(st) {
           const s = String(st || "").toUpperCase();
@@ -1767,13 +1947,6 @@
             }
             if (isAuthErr && isLocalPreview) {
               render(demoData());
-              if (notice) {
-                notice.hidden = false;
-                notice.classList.remove("error");
-                notice.style.cssText = "padding:12px 16px;border-radius:12px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap";
-                notice.innerHTML = `<span>Previewing locally without a member login. <a href="/login" style="color:#e8b93a;font-weight:700;text-decoration:underline">Sign in as a member</a> to load live records.</span><button type="button" class="btn btn-soft" id="dismissPreviewNotice" style="padding:4px 12px;min-height:32px">Dismiss</button>`;
-                $("dismissPreviewNotice")?.addEventListener("click", () => { notice.hidden = true; });
-              }
               return;
             }
             setLoadingState(false);
@@ -1932,14 +2105,19 @@
           const heroLine = $("heroMembershipLine");
           if (heroLine && data?.membership) {
             const m = data.membership;
-            const endIso = m.endDate || m.expiry;
-            const rem = typeof m.remainingDays === "number" ? Math.max(0, m.remainingDays) : null;
+            const endIso = m.endDate || m.expiry || (m.expiresAt ? localDateStr(m.expiresAt) : null);
+            let rem = typeof m.remainingDays === "number" ? Math.max(0, m.remainingDays) : null;
+            if (rem === null && endIso) {
+              const [ay, am, ad] = todayKey().split("-").map(Number);
+              const [by, bm, bd] = endIso.split("-").map(Number);
+              rem = Math.max(0, Math.round((new Date(by, bm - 1, bd) - new Date(ay, am - 1, ad)) / 86400000));
+            }
             if (m.status === "EXPIRED" && endIso) {
               heroLine.textContent = `Your ${m.planName || "membership"} ended ${date(endIso)}. Renew to keep training.`;
             } else if (m.status === "TRIAL") {
               heroLine.textContent = "Your 7-day free trial is active. Pay at the desk or submit a GCash payment anytime to unlock full gym access.";
             } else if (endIso) {
-              heroLine.textContent = `Your ${m.planName || "membership"} is active until ${date(endIso)}${rem != null ? ` (${rem} day${rem === 1 ? "" : "s"} left)` : ""}.`;
+              heroLine.textContent = "Your coach or the front desk checks you in when you arrive. Show your QR to speed things up.";
             } else {
               heroLine.textContent = "Choose a plan to activate your membership and start tracking check-ins.";
             }
@@ -1990,8 +2168,24 @@
               };
               requestAnimationFrame(tick);
             }
+            const hasValidPlan = Boolean(m.planName && (st === "ACTIVE" || st === "EXPIRING_SOON" || st === "TRIAL"));
+            if (statusTxt) statusTxt.textContent = st === "TRIAL" ? "Free trial" : st === "EXPIRED" ? "Expired" : hasValidPlan ? "Active" : "No plan";
+            if (planTitle) planTitle.textContent = st === "TRIAL" ? "7-day free trial" : (hasValidPlan ? cleanPlan : "No active plan");
+            const daysInline = $("mbHeroDaysInline");
+            const daysSep = $("mbHeroDaysSep");
+            const renewBtn = $("mbHeroRenewBtn");
+            if (daysInline) {
+              if (hasValidPlan && Number.isFinite(displayDays)) {
+                daysInline.textContent = `${displayDays} day${displayDays === 1 ? "" : "s"} left`;
+                if (daysSep) daysSep.hidden = false;
+              } else {
+                daysInline.textContent = "";
+                if (daysSep) daysSep.hidden = true;
+              }
+            }
+            if (renewBtn) renewBtn.textContent = hasValidPlan ? "Renew" : "Choose a plan";
             if (arcEl) {
-              const circ = 201.06;
+              const circ = 226.19;
               const frac = displayDays > 0 ? Math.max(0.06, Math.min(1, displayDays / Math.max(totalDays, 1))) : 0;
               arcEl.style.strokeDashoffset = (circ * (1 - frac)).toFixed(2);
             }
@@ -2073,9 +2267,81 @@
         load();
       })();
   </script>
+  <!-- Member Check-in QR Pass Modal -->
+  <div id="mbQrModal" role="dialog" aria-modal="true" aria-labelledby="mbQrTitle" hidden
+    style="position:fixed;inset:0;z-index:9600;background:rgba(6,10,18,.72);backdrop-filter:blur(4px);display:grid;place-items:center;padding:18px">
+    <div style="width:min(360px,100%);background:var(--card,#111827);border:1px solid var(--border,#263246);border-radius:20px;padding:24px;text-align:center;color:var(--text,#f3f4f6)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <h2 id="mbQrTitle" style="margin:0;font-size:18px;font-weight:800;display:inline-flex;align-items:center;gap:8px"><i class="fa-solid fa-qrcode" style="color:#e8b93a" aria-hidden="true"></i> Check-in QR Pass</h2>
+        <button type="button" id="mbQrClose" aria-label="Close QR pass" style="width:34px;height:34px;border-radius:10px;border:1px solid var(--border,#263246);background:transparent;color:inherit;cursor:pointer;display:grid;place-items:center"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="mbQrCanvasWrap" style="background:#ffffff;padding:18px;border-radius:16px;display:inline-grid;place-items:center;margin:4px auto 14px;border:1px solid #eadfc8">
+        <div id="mbQrCodeBox"></div>
+      </div>
+      <p id="mbQrName" style="margin:0 0 2px;font-size:16px;font-weight:800">&mdash;</p>
+      <p id="mbQrId" style="margin:0 0 10px;font-size:13px;color:var(--muted,#94a3b8);font-weight:700;letter-spacing:.04em">&mdash;</p>
+      <p id="mbQrHint" style="margin:0 0 16px;font-size:12.5px;color:var(--muted,#94a3b8);line-height:1.45">Show this QR code to the front desk or coach to check in.</p>
+      <button type="button" id="mbQrDone" class="btn btn-primary" style="width:100%;justify-content:center;border-radius:12px">Done</button>
+    </div>
+  </div>
+  <style>
+    #mbQrModal[hidden] { display: none !important; }
+    body.member-home:not(.dark) #mbQrModal > div { background: #ffffff !important; border-color: #eadfc8 !important; color: #2a2418 !important; }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+  <script>
+    (function () {
+      const $ = id => document.getElementById(id);
+      const modal = $("mbQrModal");
+      const openQr = () => {
+        if (!modal) return;
+        const me = window.__pfMemberMe || {};
+        const u = me.user || window.ProFitAuth?.user || {};
+        const m = me.membership || {};
+        const code = String(u.memberId || u.id || "").trim();
+        const st = String(m.status || "").toUpperCase();
+        if ($("mbQrName")) $("mbQrName").textContent = u.name || "Member";
+        if ($("mbQrId")) $("mbQrId").textContent = code ? `Member ID · ${code}` : "No Member ID yet";
+        const box = $("mbQrCodeBox");
+        const wrap = $("mbQrCanvasWrap");
+        const hint = $("mbQrHint");
+        if (box) box.innerHTML = "";
+        if (!code || st === "TRIAL" || st === "EXPIRED" || st === "PENDING") {
+          if (wrap) wrap.style.display = "none";
+          if (hint) {
+            hint.textContent = st === "TRIAL"
+              ? "Your 7-day free trial includes app access only. Activate a gym membership (cash at desk or GCash claim) to unlock QR check-in."
+              : "An active gym membership is required for QR check-in. Renew at the desk or submit a GCash claim.";
+          }
+        } else {
+          if (wrap) wrap.style.display = "inline-grid";
+          if (hint) hint.textContent = "Show this QR code to the front desk or coach to check in.";
+          if (box && typeof window.QRCode === "function") {
+            new window.QRCode(box, {
+              text: "PROFIT:" + code,
+              width: 210,
+              height: 210,
+              colorDark: "#0b1120",
+              colorLight: "#ffffff",
+              correctLevel: window.QRCode.CorrectLevel.M
+            });
+          } else if (box) {
+            box.innerHTML = `<div style="padding:18px 10px;color:#0b1120;font-weight:800;font-size:18px">${code}</div>`;
+          }
+        }
+        modal.hidden = false;
+      };
+      const closeQr = () => { if (modal) modal.hidden = true; };
+      $("showMemberQrBtn")?.addEventListener("click", openQr);
+      $("mbQrClose")?.addEventListener("click", closeQr);
+      $("mbQrDone")?.addEventListener("click", closeQr);
+      modal?.addEventListener("click", e => { if (e.target === modal) closeQr(); });
+      document.addEventListener("keydown", e => { if (e.key === "Escape" && modal && !modal.hidden) closeQr(); });
+    })();
+  </script>
   <script src="pf-common.js"></script>
-  <script src="member-tabs.js?v=6"></script>
-  <script src="member-shell.js?v=3"></script>
+  <script src="member-tabs.js?v=11"></script>
+  <script src="member-shell.js?v=4"></script>
   <script src="change-password.js?v=1"></script>
   <script src="portal-fx.js?v=2"></script>
   <style>
@@ -2124,7 +2390,7 @@
   </script>
   <script src="announcements-member.js?v=1" defer></script>
   <script src="notifications-live.js?v=2" defer></script>
-  <script src="trainer-member.js?v=1" defer></script>
+  <script src="trainer-member.js?v=2" defer></script>
   <script>
     (() => {
       // 1. Body check gauge + quick weight log + staff-only health notes

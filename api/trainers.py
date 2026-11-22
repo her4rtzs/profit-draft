@@ -1,5 +1,6 @@
 """Trainer endpoints: the owner manages trainers and assignments; members pick or request one."""
 
+import re
 import secrets
 import string
 
@@ -534,6 +535,7 @@ class TrainerProfileView(APIView):
             "last_name": profile.user.last_name,
             "email": profile.user.email,
             "username": profile.user.username,
+            "photo": getattr(profile.user, "avatar_data", "") or "",
             "phone": (profile.phone if _has_phone_column() else "") or "",
             "specialization": profile.specialization,
             "bio": profile.bio,
@@ -579,6 +581,21 @@ class TrainerProfileView(APIView):
             profile.phone = str(data["phone"] or "")[:40]
         if "is_active" in data:
             profile.is_active = bool(data["is_active"])
+        if "photo" in data:
+            photo = data.get("photo")
+            if photo is None:
+                photo = ""
+            if not isinstance(photo, str):
+                return Response({"detail": "Invalid profile photo format."}, status=400)
+            photo = photo.strip()
+            allowed_presets = {"av-1", "av-2", "av-3", "av-4", "av-5", "av-6"}
+            if photo and photo not in allowed_presets:
+                if not photo.startswith("data:image/"):
+                    return Response({"detail": "Profile photo must be an image."}, status=400)
+                if len(photo) > 1_350_000:
+                    return Response({"detail": "That photo is too large. Please pick one under 900 KB."}, status=400)
+            profile.user.avatar_data = photo
+            profile.user.save(update_fields=["avatar_data"])
         profile.save()
         payload = self._serialize(profile, user)
         payload["detail"] = "Profile updated successfully."
@@ -879,17 +896,35 @@ class TrainerAttendanceListView(APIView):
 
 
 class TrainerCheckInView(APIView):
-    """POST /api/trainer/attendance/check-in/ with {"member_id": n}."""
+    """POST /api/trainer/attendance/check-in/ with {"member_id": n} or {"qr_code": "PROFIT:M202601"}."""
 
     permission_classes = [IsTrainerOrOwner]
 
+    @staticmethod
+    def _resolve_member_id(data):
+        raw_id = data.get("member_id")
+        if raw_id is not None and str(raw_id).strip() != "":
+            try:
+                val = int(raw_id)
+                return val if val > 0 else None
+            except (TypeError, ValueError):
+                return None
+
+        raw_qr = str(data.get("qr_code") or data.get("member_code") or "").strip()
+        if not raw_qr:
+            return None
+        cleaned = re.sub(r"^PROFIT:", "", raw_qr, flags=re.IGNORECASE).strip()
+        match = re.match(r"^M(\d+)$", cleaned, flags=re.IGNORECASE)
+        if not match:
+            return None
+        pk = int(match.group(1)) - 202600
+        return pk if pk > 0 else None
+
     def post(self, request):
         user = _effective_trainer_user(request)
-        raw_id = request.data.get("member_id")
-        try:
-            member_id = int(raw_id)
-        except (TypeError, ValueError):
-            return Response({"detail": "Valid member_id is required."}, status=400)
+        member_id = self._resolve_member_id(request.data)
+        if member_id is None:
+            return Response({"detail": "Valid member_id or QR code is required."}, status=400)
 
         member = MemberProfile.objects.select_related("user").filter(pk=member_id).first()
         if member is None:
@@ -904,7 +939,7 @@ class TrainerCheckInView(APIView):
             f"Attendance logged: {_name(member.user)}",
             kind=Notification.Kind.TRAINER,
             body=f"{_name(member.user)} checked in on {record.check_in_date.isoformat()}.",
-            link="attendance.html",
+            link="/trainer/attendance",
         )
 
         return Response({

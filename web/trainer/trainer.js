@@ -103,6 +103,20 @@
         } catch (_) {}
         return res;
       },
+      async checkInByQr(qrCode) {
+        if (!api) throw new Error('API unavailable.');
+        const res = await api.post('/trainer/attendance/check-in/', { qr_code: String(qrCode || '').trim() });
+        try {
+          localStorage.setItem('profit-last-checkin-ts', String(Date.now()));
+          if (window.BroadcastChannel) {
+            const bc = new BroadcastChannel('profit-attendance-sync');
+            bc.postMessage({ type: 'checkin', memberId: Number(res.member_id || 0), ts: Date.now() });
+            bc.close();
+          }
+          if (window.PF && PF.syncNotifications) PF.syncNotifications();
+        } catch (_) {}
+        return res;
+      },
       async getSchedule() {
         if (!api) return Trainer.demo.getSchedule();
         try {
@@ -574,7 +588,8 @@
           PF.syncShellProfile({
             name: prof.name || 'Coach',
             email: prof.email || '',
-            role: 'Personal Trainer'
+            role: 'Personal Trainer',
+            photo: prof.photo || ''
           });
         }
       } catch (e) {

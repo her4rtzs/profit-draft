@@ -825,30 +825,54 @@
         </button>
       </article>
 
-      <!-- Help & Support Popup Modal -->
+      <!-- Help & Support Popup Modal (Tabbed: Contact / FAQs / Terms / Privacy — exact OG info) -->
       <div class="st-modal-backdrop" id="stHelpModal" role="dialog" aria-modal="true" aria-labelledby="stHelpTitle" hidden>
-        <div class="st-modal">
+        <div class="st-modal" style="max-width:580px">
           <div class="st-modal-head">
             <h2 id="stHelpTitle"><i class="fa-regular fa-circle-question" style="color:#e8b93a" aria-hidden="true"></i> Help &amp; Support</h2>
             <button type="button" class="st-modal-close" id="stHelpClose" aria-label="Close help popup"><i class="fa-solid fa-xmark"></i></button>
           </div>
-          <div class="st-help-list">
-            <a class="st-help-item" href="tel:+639122617663">
-              <i class="fa-solid fa-phone" aria-hidden="true"></i>
-              <div><strong>Call gym front desk</strong><small>0912 261 7663 · Opens at 7:00 AM</small></div>
-            </a>
-            <div class="st-help-item">
-              <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
-              <div><strong>Visit Functional Fitness Gym</strong><small>Alfonso, Calabarzon · Luksuhin-Mangas Road</small></div>
+          <div class="st-pills" id="stHelpTabs" role="tablist" aria-label="Help topics" style="margin:0 0 14px;display:flex;gap:8px;flex-wrap:wrap">
+            <button type="button" role="tab" class="active" data-help-tab="contact" aria-selected="true" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px"><i class="fa-solid fa-headset" aria-hidden="true"></i> Contact</button>
+            <button type="button" role="tab" data-help-tab="faqs" aria-selected="false" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px"><i class="fa-regular fa-circle-question" aria-hidden="true"></i> FAQs</button>
+            <button type="button" role="tab" data-help-tab="terms" aria-selected="false" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px"><i class="fa-solid fa-file-contract" aria-hidden="true"></i> Terms</button>
+            <button type="button" role="tab" data-help-tab="privacy" aria-selected="false" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Privacy</button>
+          </div>
+          <div style="max-height:52vh;overflow-y:auto;padding-right:4px">
+            <div class="st-help-list" data-help-pane="contact">
+              <a class="st-help-item" href="tel:+639060536064">
+                <i class="fa-solid fa-phone" aria-hidden="true"></i>
+                <div><strong>Call Functional Performance</strong><small>0906 053 6064</small></div>
+              </a>
+              <a class="st-help-item" href="mailto:FunctionalPerformance.2022@gmail.com">
+                <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+                <div><strong>Email</strong><small>FunctionalPerformance.2022@gmail.com</small></div>
+              </a>
+              <div class="st-help-item">
+                <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                <div><strong>Address</strong><small>Luksuhin - Mangas Rd., Saray, Mangas 1, Alfonso, Cavite, Philippines</small></div>
+              </div>
             </div>
-            <div class="st-help-item">
-              <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
-              <div><strong>Need help with billing or accounts?</strong><small>Contact the gym owner or check the full FAQ guide below.</small></div>
+            <div class="st-help-list" data-help-pane="faqs" hidden>
+              <div class="st-help-item"><i class="fa-regular fa-circle-question" aria-hidden="true"></i><div><strong>How do I sign in?</strong><small>Use the email or username and password you set when joining online, or the account details provided by the Gym. Staff use the account created via the owner's invitation.</small></div></div>
+              <div class="st-help-item"><i class="fa-regular fa-circle-question" aria-hidden="true"></i><div><strong>I forgot my password. What do I do?</strong><small>Use the Forgot password? link on the Sign in page. Enter your account email to receive a 6-digit verification code, then enter the code and set a new password. If you still need help, contact the gym front desk.</small></div></div>
+              <div class="st-help-item"><i class="fa-regular fa-circle-question" aria-hidden="true"></i><div><strong>How do I check my membership status, payments, and attendance?</strong><small>After you sign in, your member home shows your membership status, expiry date, recent paid invoices, and recent gym check-ins.</small></div></div>
+              <div class="st-help-item"><i class="fa-regular fa-circle-question" aria-hidden="true"></i><div><strong>How do I request a trainer?</strong><small>You can request a trainer from your member home. The Gym reviews every request and may approve, change, or decline it. If you cannot find the option, ask the front desk.</small></div></div>
+              <div class="st-help-item"><i class="fa-regular fa-circle-question" aria-hidden="true"></i><div><strong>Is my information safe?</strong><small>Yes. Passwords and verification codes are stored only as hashes, production traffic runs over HTTPS, and access is limited by role.</small></div></div>
+            </div>
+            <div class="st-help-list" data-help-pane="terms" hidden>
+              <div class="st-help-item"><i class="fa-solid fa-file-contract" aria-hidden="true"></i><div><strong>Terms of Service (Last updated: October 2026)</strong><small>By using ProFit, the gym management system used by Functional Performance (the "Gym"), you agree to these terms. Keep your login details private, provide accurate personal details, and tell the front desk right away if you think someone else used your account.</small></div></div>
+              <div class="st-help-item"><i class="fa-solid fa-id-card" aria-hidden="true"></i><div><strong>Memberships, Attendance &amp; Payments</strong><small>Sign-up is free and starts a seven-day trial with app access only. Active membership is required for gym access. To activate a gym membership, pay cash at the desk or submit a GCash claim with a reference number and a screenshot link. Staff review the claim before your membership starts. Memberships automatically expire at the end of the selected plan period unless renewed. Old online payment records remain as history and are never changed.</small></div></div>
+              <div class="st-help-item"><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i><div><strong>Acceptable Use &amp; Suspension</strong><small>Do not use another person's account, try to access other members' information, interfere with the system or its security, or submit false, offensive, or unlawful content. The Gym may suspend or end an account that breaks these terms or the Gym's house rules.</small></div></div>
+            </div>
+            <div class="st-help-list" data-help-pane="privacy" hidden>
+              <div class="st-help-item"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i><div><strong>Privacy Policy (Last updated: October 2026)</strong><small>The data controller is Functional Performance. We collect account details (passwords stored only as secure hashes), profile details, membership/check-in records, payment references, health/goals entries, trainer requests, and one-time verification hashes to operate the Gym and keep accounts secure.</small></div></div>
+              <div class="st-help-item"><i class="fa-solid fa-server" aria-hidden="true"></i><div><strong>Access, Service Providers &amp; Retention</strong><small>Gym staff see only what their role allows; members see only their own information. Data is processed through Supabase, Vercel, and Resend over HTTPS. Attendance and payment history remain stored when a membership expires so you can renew without losing records. Verification codes expire after 10 minutes; staff invitations expire after 72 hours.</small></div></div>
+              <div class="st-help-item"><i class="fa-solid fa-user-check" aria-hidden="true"></i><div><strong>Your Rights (Data Privacy Act of 2012 / RA 10173)</strong><small>You may ask to be informed, access, correct, object, or request erasure/blocking where the law allows, or complain to the National Privacy Commission. Contact Functional Performance at 0906 053 6064 or FunctionalPerformance.2022@gmail.com.</small></div></div>
             </div>
           </div>
-          <div class="st-modal-foot">
-            <a class="pp-btn" href="/faq" style="height:38px;padding:0 14px;font-size:13px;text-decoration:none;display:inline-flex;align-items:center">Open full FAQ</a>
-            <button type="button" class="st-save-btn" id="stHelpDone" style="width:auto;height:38px;padding:0 18px;margin:0">Close</button>
+          <div class="st-modal-foot" style="justify-content:flex-end">
+            <button type="button" class="st-save-btn" id="stHelpDone" style="width:auto;height:38px;padding:0 22px;margin:0">Close</button>
           </div>
         </div>
       </div>
@@ -891,7 +915,7 @@
 <script src="layout.js?v=25"></script>
 <script src="sidebar.js?v=21"></script>
 <script src="data.js?v=3"></script>
-<script src="settings.js?v=18"></script>
+<script src="settings.js?v=19"></script>
 <script src="portal-fx.js?v=2"></script>
 <script src="/static/js/install-help.js" defer></script>
 <script src="change-password.js?v=2" defer></script>

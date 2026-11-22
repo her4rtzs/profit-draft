@@ -98,3 +98,4 @@ One note per decision, oldest first; entries with an `Unknown` date are listed l
 - [[2026-11-22 Payments for review replaces GCash claims]]: Cashier review table renamed with a Plan column, Confirm/Reject actions and a safe proof link.
 - [[2026-11-22 Remove claim wording from the portals]]: All visible claim wording replaced with payment wording and dead claim page/script deleted.
 - [[2026-11-22 Only staff and admin enroll members]]: AGENTS.md now names cash desk recording and payment confirmation as the only enrollment paths.
+- [[2026-11-22 Add QR check-in using CDN scanner and existing endpoint]]: Added Member Check-in QR pass and Staff camera QR scanner reusing `POST /api/staff/attendance/check-in/`.

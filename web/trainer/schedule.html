@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/css/staff.css?v=12">
-<link rel="stylesheet" href="trainer.css?v=12">
+<link rel="stylesheet" href="trainer.css?v=20">
 <link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
 <body data-page="schedule" data-portal="trainer" data-head="none">
 <div class="app">
@@ -30,50 +30,10 @@
           </div>
         </div>
         <div class="tw-hero-actions">
-          <a href="/profile" class="tw-btn"><span data-ico="clock"></span> Edit Availability</a>
           <button type="button" class="tw-btn-primary" id="openNoteModalBtn">
             <span data-ico="megaphone"></span> Send Schedule Note
           </button>
         </div>
-      </section>
-
-      <!-- KPI Summary Cards -->
-      <section class="tw-kpi-grid tw-anim" style="--i:1" aria-label="Schedule statistics">
-        <article class="tw-kpi-card is-amber">
-          <div class="tw-kpi-top">
-            <span class="tw-kpi-label">My Weekly Classes</span>
-            <div class="tw-kpi-ico" data-ico="dumbbell"></div>
-          </div>
-          <div class="tw-kpi-val" id="kpiSchedMine">0</div>
-          <div class="tw-kpi-sub">Sessions led by you</div>
-        </article>
-
-        <article class="tw-kpi-card is-green">
-          <div class="tw-kpi-top">
-            <span class="tw-kpi-label">Today's Classes</span>
-            <div class="tw-kpi-ico" data-ico="calendar"></div>
-          </div>
-          <div class="tw-kpi-val" id="kpiSchedToday">0</div>
-          <div class="tw-kpi-sub" id="kpiSchedTodaySub">Scheduled for today</div>
-        </article>
-
-        <article class="tw-kpi-card is-blue">
-          <div class="tw-kpi-top">
-            <span class="tw-kpi-label">Total Gym Timetable</span>
-            <div class="tw-kpi-ico" data-ico="layers"></div>
-          </div>
-          <div class="tw-kpi-val" id="kpiSchedTotal">0</div>
-          <div class="tw-kpi-sub">Weekly group sessions</div>
-        </article>
-
-        <article class="tw-kpi-card is-purple">
-          <div class="tw-kpi-top">
-            <span class="tw-kpi-label">Assigned Athletes</span>
-            <div class="tw-kpi-ico" data-ico="users"></div>
-          </div>
-          <div class="tw-kpi-val" id="kpiSchedRoster">0</div>
-          <div class="tw-kpi-sub">Subscribed to your alerts</div>
-        </article>
       </section>
 
       <!-- 7-Day Selector Strip -->
@@ -104,22 +64,11 @@
                 <h2 class="tw-card-title">My Coaching Hours</h2>
                 <p class="tw-card-sub">Displayed to members on the trainer directory.</p>
               </div>
-              <a href="/profile" class="tw-link">Update →</a>
+              <a href="/trainer/profile" class="tw-link">Update →</a>
             </div>
             <div style="padding:14px 16px;border-radius:12px;border:1px solid var(--line);background:var(--card-2);font-size:13.5px;color:var(--text);line-height:1.55" id="coachAvailBox">
               Mon – Sat · 6:00 AM – 2:00 PM
             </div>
-          </article>
-
-          <article class="tw-card">
-            <div class="tw-card-head">
-              <div>
-                <h2 class="tw-card-title">Assigned Athletes</h2>
-                <p class="tw-card-sub">Members who receive your schedule broadcasts.</p>
-              </div>
-              <a href="/members" class="tw-link">Full Roster →</a>
-            </div>
-            <div id="schedRosterList" class="tw-list"></div>
           </article>
         </div>
       </section>
@@ -165,7 +114,7 @@
 <script src="../auth.js?v=5"></script>
 <script src="../assets/js/staff-icons.js?v=5"></script>
 <script src="../assets/js/staff-data.js?v=12"></script>
-<script src="../assets/js/staff.js?v=12"></script>
+<script src="../assets/js/staff.js?v=15"></script>
 <script src="trainer.js?v=12"></script>
 <script>
 PF.ready(async () => {
@@ -178,14 +127,15 @@ PF.ready(async () => {
   const sessions = data.sessions || [];
   const roster = data.assigned_members || [];
 
-  // Populate KPIs
+  // Populate KPIs (null-safe)
+  const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
   const mySessionsCount = sessions.filter(s => s.is_mine).length;
   const todayCount = sessions.filter(s => s.dow === new Date().getDay()).length;
-  document.getElementById('kpiSchedMine').textContent = mySessionsCount;
-  document.getElementById('kpiSchedToday').textContent = todayCount;
-  document.getElementById('kpiSchedTodaySub').textContent = `${DAYS_FULL[new Date().getDay()]} timetable`;
-  document.getElementById('kpiSchedTotal').textContent = sessions.length;
-  document.getElementById('kpiSchedRoster').textContent = roster.length;
+  setTxt('kpiSchedMine', mySessionsCount);
+  setTxt('kpiSchedToday', todayCount);
+  setTxt('kpiSchedTodaySub', `${DAYS_FULL[new Date().getDay()]} timetable`);
+  setTxt('kpiSchedTotal', sessions.length);
+  setTxt('kpiSchedRoster', roster.length);
 
   if (data.availability) {
     document.getElementById('coachAvailBox').textContent = data.availability;
@@ -273,6 +223,7 @@ PF.ready(async () => {
 
   function renderRoster() {
     const rosterEl = document.getElementById('schedRosterList');
+    if (!rosterEl) return;
     if (!roster.length) {
       rosterEl.innerHTML = `
         <div class="tw-empty" style="min-height:110px;padding:18px">

@@ -334,12 +334,55 @@
   .pf-comp-arc {
     transition: stroke-dashoffset 1s cubic-bezier(.2, .8, .2, 1);
   }
+  .pf-ava-badge {
+    position: absolute;
+    right: 2px;
+    bottom: 2px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #e8b93a;
+    color: #161209;
+    border: 2.5px solid var(--card, #111827);
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    pointer-events: none;
+    z-index: 2;
+  }
+  body:not(.dark) .pf-ava-badge { border-color: #ffffff; }
   .pf-grid-2 {
     display: grid;
     grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
     gap: 20px;
-    align-items: start;
+    align-items: stretch;
   }
+  .pf-grid-2 > .pp-section-card {
+    display: flex;
+    flex-direction: column;
+    margin: 0 !important;
+  }
+  .pf-ava-picker { margin-top: auto; padding-top: 16px; }
+  .pf-ava-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .pf-ava-head strong { font-size: 13.5px; font-weight: 800; color: var(--text, #f3f4f6); }
+  body:not(.dark) .pf-ava-head strong { color: #2a2418; }
+  .pf-ava-head span { font-size: 12px; color: var(--muted, #94a3b8); }
+  .pf-ava-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .pf-ava-opt {
+    height: 62px;
+    border-radius: 14px;
+    border: 1.5px solid var(--border, #263246);
+    background: var(--bg, #0a0e17);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: border-color .16s ease, transform .16s ease;
+  }
+  body:not(.dark) .pf-ava-opt { background: #fdfaf3; border-color: #eadfc8; }
+  .pf-ava-opt:hover { border-color: #e8b93a; transform: translateY(-2px); }
+  .pf-ava-opt.sel { border-color: #e8b93a; background: rgba(232, 185, 58, .12); }
+  .pf-ava-opt img { width: 42px; height: 42px; border-radius: 50%; display: block; object-fit: cover; }
+  input[readonly] { opacity: .68; cursor: not-allowed; }
   @media (max-width: 900px) {
     .pf-grid-2 {
       grid-template-columns: 1fr;
@@ -471,6 +514,7 @@
         <span class="pp-avatar-photo" id="profilePhotoBox"><i class="fa-solid fa-user"></i></span>
         <span class="pf-ava-cam" aria-hidden="true"><i class="fa-solid fa-camera"></i><span>Change photo</span></span>
       </button>
+      <span class="pf-ava-badge" aria-hidden="true"><i class="fa-solid fa-camera"></i></span>
       <div class="pf-ava-menu" id="profileAvaMenu" role="menu" hidden>
         <button type="button" role="menuitem" id="profilePhotoPick"><i class="fa-solid fa-camera" aria-hidden="true"></i> Upload photo</button>
         <button type="button" role="menuitem" class="is-danger" id="profilePhotoClear"><i class="fa-regular fa-trash-can" aria-hidden="true"></i> Remove photo</button>
@@ -509,31 +553,27 @@
   <div class="pf-grid-2">
     <article class="pp-section-card pf-rv" style="--i:1">
       <div class="pp-card-head"><div><h2><i class="fa-regular fa-id-card"></i> Your details</h2><p>Shown in the sidebar, the header avatar and on receipts you send.</p></div></div>
-      <form id="profileForm" class="pp-form-grid" novalidate>
+      <form id="profileForm" class="pp-form-grid" novalidate style="flex:1 1 auto">
         <div class="pp-field"><label for="profileName">Full name</label><input id="profileName" maxlength="60" placeholder="Administrator"></div>
-        <div class="pp-field"><label for="profileRole">Role</label><input id="profileRole" maxlength="40" placeholder="Gym administrator"></div>
-        <div class="pp-field"><label for="profileEmail">Email</label><input id="profileEmail" type="email" maxlength="90" placeholder="admin@profit.test"></div>
+        <div class="pp-field"><label for="profileEmail">Email (for sign-in)</label><input id="profileEmail" type="email" maxlength="90" readonly placeholder="admin@profit.test"></div>
+        <div class="pp-field"><label for="profileRole">Role</label><input id="profileRole" maxlength="40" readonly placeholder="Gym administrator"></div>
         <div class="pp-field"><label for="profilePhone">Mobile number</label><input id="profilePhone" maxlength="30" placeholder="09XX XXX XXXX"></div>
         <div class="pp-field" style="grid-column:1/-1"><label for="profileBio" style="display:flex;justify-content:space-between"><span>Short note</span><small id="profileBioCount" style="font-weight:600;opacity:.75">0 / 140</small></label><textarea id="profileBio" rows="3" maxlength="140" placeholder="Anything your team should know about you."></textarea></div>
-        <div class="pp-field pp-actions" style="grid-column:1/-1"><button class="pp-btn pp-btn-primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save profile</button></div>
+        <div class="pp-field pp-actions" style="grid-column:1/-1;display:flex;justify-content:flex-end;gap:12px;margin-top:auto">
+          <button class="pp-btn" type="button" id="profileDiscardInline">Discard changes</button>
+          <button class="pp-btn pp-btn-primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save profile</button>
+        </div>
       </form>
     </article>
 
     <article class="pp-section-card pf-rv" style="--i:2">
       <div class="pp-card-head"><div><h2><i class="fa-regular fa-eye"></i> How you appear</h2><p>Updates live as you edit.</p></div></div>
-      <div class="pf-pv-stack">
+      <div class="pf-pv-stack" style="flex:1 1 auto">
         <div>
           <div class="pf-pv-lab">Sidebar</div>
           <div class="pf-pv-mini">
             <span class="pf-pv-ava" id="pvSideAva"></span>
             <div><strong id="pvSideName">Administrator</strong><small id="pvSideRole">Gym administrator</small></div>
-          </div>
-        </div>
-        <div>
-          <div class="pf-pv-lab">Header</div>
-          <div class="pf-pv-mini" style="justify-content:space-between">
-            <small id="pvBranch">Functional Fitness Gym</small>
-            <span class="pf-pv-ava" id="pvHeadAva" style="width:32px;height:32px"></span>
           </div>
         </div>
         <div>
@@ -543,6 +583,10 @@
             Monthly plan &middot; <span id="pvReceiptPrice">&#8369;800</span><br>
             Received by <em id="pvReceiptName">Administrator</em>
           </div>
+        </div>
+        <div class="pf-ava-picker">
+          <div class="pf-ava-head"><strong>Quick avatar</strong><span>Change anytime</span></div>
+          <div class="pf-ava-grid" id="staffQuickAvaGrid" role="radiogroup" aria-label="Choose an avatar"></div>
         </div>
       </div>
     </article>
@@ -567,7 +611,7 @@ document.addEventListener("click", function (e) {
   }
 });
 </script>
-<script src="layout.js?v=25"></script><script src="sidebar.js?v=21"></script><script src="data.js"></script><script src="profile.js?v=15"></script>
+<script src="layout.js?v=25"></script><script src="sidebar.js?v=21"></script><script src="data.js"></script><script src="profile.js?v=16"></script>
 <script src="portal-fx.js?v=2"></script>
 <script src="change-password.js?v=2" defer></script>
 <script src="notifications-live.js?v=2" defer></script>

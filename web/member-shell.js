@@ -114,6 +114,96 @@
     document.querySelectorAll("#memberSideAccountMenu [data-member-goto]").forEach(btn => {
       btn.classList.toggle("active", btn.dataset.memberGoto === tabName);
     });
+    const moreTabs = new Set(["payments", "announcements", "diary", "health", "profile", "settings"]);
+    document.querySelectorAll("#memberMobTabs [data-mob-tab]").forEach(btn => {
+      btn.classList.toggle("on", btn.dataset.mobTab === tabName);
+    });
+    const moreBtn = $("memberMobMoreBtn");
+    if (moreBtn) moreBtn.classList.toggle("on", moreTabs.has(tabName));
+    document.querySelectorAll("#memberMobSheet [data-mob-tab]").forEach(btn => {
+      btn.classList.toggle("sel", btn.dataset.mobTab === tabName);
+    });
+  }
+
+  function initMobileBottomNav() {
+    if ($("memberMobTabs")) return;
+    const primary = [
+      { id: "overview", label: "Home", icon: "fa-solid fa-house" },
+      { id: "membership", label: "Plan", icon: "fa-regular fa-id-card" },
+      { id: "attendance", label: "Check-ins", icon: "fa-regular fa-calendar-check" },
+      { id: "schedule", label: "Schedule", icon: "fa-regular fa-clock" }
+    ];
+    const moreItems = [
+      { id: "payments", label: "Payments", icon: "fa-solid fa-wallet" },
+      { id: "announcements", label: "Announcements", icon: "fa-solid fa-bullhorn" },
+      { id: "diary", label: "Training diary", icon: "fa-solid fa-book-open" },
+      { id: "health", label: "Health & goals", icon: "fa-solid fa-heart-pulse" },
+      { id: "profile", label: "My profile", icon: "fa-regular fa-user" },
+      { id: "settings", label: "Settings", icon: "fa-solid fa-sliders" }
+    ];
+
+    const tabs = document.createElement("nav");
+    tabs.id = "memberMobTabs";
+    tabs.className = "pf-mob-tabs";
+    tabs.setAttribute("aria-label", "Mobile navigation");
+    tabs.innerHTML = primary.map(it =>
+      `<button type="button" class="pf-mob-tab${it.id === "overview" ? " on" : ""}" data-mob-tab="${it.id}"><i class="${it.icon}" aria-hidden="true"></i><span>${it.label}</span></button>`
+    ).join("") +
+      `<button type="button" class="pf-mob-tab" id="memberMobMoreBtn" aria-expanded="false" aria-controls="memberMobSheet"><i class="fa-solid fa-ellipsis" aria-hidden="true"></i><span>More</span></button>`;
+    document.body.appendChild(tabs);
+
+    const backdrop = document.createElement("div");
+    backdrop.id = "memberMobBackdrop";
+    backdrop.className = "pf-mob-backdrop";
+    backdrop.hidden = true;
+    document.body.appendChild(backdrop);
+
+    const sheet = document.createElement("div");
+    sheet.id = "memberMobSheet";
+    sheet.className = "pf-mob-sheet";
+    sheet.setAttribute("role", "dialog");
+    sheet.setAttribute("aria-label", "More pages");
+    sheet.innerHTML = `<div class="pf-mob-sheet-bar" aria-hidden="true"></div><div class="pf-mob-sheet-chips">${moreItems.map(it =>
+      `<button type="button" class="pf-mob-chip" data-mob-tab="${it.id}"><i class="${it.icon}" aria-hidden="true"></i><span>${it.label}</span></button>`
+    ).join("")}<button type="button" class="pf-mob-chip is-danger" data-logout><i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i><span>Log out</span></button></div>`;
+    document.body.appendChild(sheet);
+
+    const moreBtn = $("memberMobMoreBtn");
+    const setSheet = open => {
+      sheet.classList.toggle("on", open);
+      backdrop.hidden = !open;
+      backdrop.classList.toggle("on", open);
+      moreBtn?.setAttribute("aria-expanded", String(open));
+    };
+
+    const goTab = tabId => {
+      setSheet(false);
+      const navTarget = document.querySelector(`.member-sidebar [data-member-tab="${tabId}"], .member-sidebar [data-member-goto="${tabId}"]`);
+      if (navTarget) {
+        navTarget.click();
+      } else {
+        location.hash = "#" + tabId;
+      }
+      syncTopTitle(tabId);
+    };
+
+    tabs.addEventListener("click", e => {
+      const btn = e.target.closest("[data-mob-tab]");
+      if (btn) { goTab(btn.dataset.mobTab); return; }
+      if (e.target.closest("#memberMobMoreBtn")) {
+        e.stopPropagation();
+        setSheet(!sheet.classList.contains("on"));
+      }
+    });
+    sheet.addEventListener("click", e => {
+      const btn = e.target.closest("[data-mob-tab]");
+      if (btn) { goTab(btn.dataset.mobTab); return; }
+      if (e.target.closest("[data-logout]")) setSheet(false);
+    });
+    backdrop.addEventListener("click", () => setSheet(false));
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape" && sheet.classList.contains("on")) setSheet(false);
+    });
   }
 
   function syncAnnouncementBadge() {
@@ -134,6 +224,7 @@
   function init() {
     initCollapse();
     initAccountMenu();
+    initMobileBottomNav();
     syncAnnouncementBadge();
 
     $("memberMenuBtn")?.addEventListener("click", () => {
@@ -153,6 +244,25 @@
       document.querySelector('.member-sidebar .nav-link[data-tab="announcements"]')?.click();
     });
 
+    const syncFromVisiblePanel = () => {
+      const visible = document.querySelector("[data-panel]:not([hidden])");
+      if (visible && visible.dataset.panel) {
+        syncTopTitle(visible.dataset.panel);
+        return;
+      }
+      const h = location.hash.slice(1);
+      if (h && TAB_TITLES[h]) syncTopTitle(h);
+    };
+
+    document.addEventListener("click", e => {
+      const gotoBtn = e.target.closest("[data-member-goto]");
+      if (gotoBtn && gotoBtn.dataset.memberGoto) {
+        syncTopTitle(gotoBtn.dataset.memberGoto);
+      }
+    });
+    window.addEventListener("hashchange", syncFromVisiblePanel);
+    setTimeout(syncFromVisiblePanel, 0);
+
     const sidebar = $("memberSidebar");
     if (sidebar) {
       sidebar.addEventListener("click", e => {
@@ -164,11 +274,11 @@
 
       const active = sidebar.querySelector('.nav-link[aria-selected="true"]');
       if (active) syncTopTitle(active.dataset.tab);
+      syncFromVisiblePanel();
 
       new MutationObserver(() => {
-        const cur = sidebar.querySelector('.nav-link[aria-selected="true"]');
-        if (cur) syncTopTitle(cur.dataset.tab);
-      }).observe(sidebar, { attributes: true, subtree: true, attributeFilter: ["aria-selected"] });
+        syncFromVisiblePanel();
+      }).observe(document.querySelector(".member-content") || document.body, { attributes: true, subtree: true, attributeFilter: ["hidden"] });
     }
   }
 

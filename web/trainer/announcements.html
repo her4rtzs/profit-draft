@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/css/staff.css?v=12">
-<link rel="stylesheet" href="trainer.css?v=12">
+<link rel="stylesheet" href="trainer.css?v=20">
 <link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
 <body data-page="announcements" data-portal="trainer" data-head="none">
 <div class="app">
@@ -31,47 +31,8 @@
         </div>
         <div class="tw-hero-actions">
           <span class="tw-updated-badge" id="annUpdatedBadge">Live Feed</span>
-          <a href="/notifications" class="tw-btn"><span data-ico="bell"></span> Alerts</a>
+          <a href="/trainer/notifications" class="tw-btn"><span data-ico="bell"></span> Alerts</a>
         </div>
-      </section>
-
-      <!-- KPI Summary Row -->
-      <section class="tw-kpi-grid tw-anim" style="--i:1" aria-label="Announcement statistics">
-        <article class="tw-kpi-card is-amber">
-          <div class="tw-kpi-top">
-            <span class="tw-kpi-label">Active Notices</span>
-            <div class="tw-kpi-ico" data-ico="megaphone"></div>
-          </div>
-          <div class="tw-kpi-val" id="kpiAnnTotal">0</div>
-          <div class="tw-kpi-sub">Published across the gym</div>
-        </article>
-
-        <article class="tw-kpi-card is-green">
-          <div class="tw-kpi-top">
-            <span class="tw-kpi-label">Pinned Bulletins</span>
-            <div class="tw-kpi-ico" data-ico="award"></div>
-          </div>
-          <div class="tw-kpi-val" id="kpiAnnPinned">0</div>
-          <div class="tw-kpi-sub">Priority coach &amp; gym alerts</div>
-        </article>
-
-        <article class="tw-kpi-card is-purple">
-          <div class="tw-kpi-top">
-            <span class="tw-kpi-label">Coach Briefings</span>
-            <div class="tw-kpi-ico" data-ico="dumbbell"></div>
-          </div>
-          <div class="tw-kpi-val" id="kpiAnnTrainers">0</div>
-          <div class="tw-kpi-sub">Targeted for trainers</div>
-        </article>
-
-        <article class="tw-kpi-card is-blue">
-          <div class="tw-kpi-top">
-            <span class="tw-kpi-label">Scheduled Events</span>
-            <div class="tw-kpi-ico" data-ico="calendar"></div>
-          </div>
-          <div class="tw-kpi-val" id="kpiAnnEvents">0</div>
-          <div class="tw-kpi-sub">With upcoming event dates</div>
-        </article>
       </section>
 
       <!-- Filter & Search Toolbar -->
@@ -118,7 +79,7 @@
 <script src="../auth.js?v=5"></script>
 <script src="../assets/js/staff-icons.js?v=5"></script>
 <script src="../assets/js/staff-data.js?v=12"></script>
-<script src="../assets/js/staff.js?v=12"></script>
+<script src="../assets/js/staff.js?v=15"></script>
 <script src="trainer.js?v=12"></script>
 <script>
 PF.ready(async () => {
@@ -135,15 +96,16 @@ PF.ready(async () => {
     const trainers = list.filter(a => String(a.audience || '').toLowerCase() === 'trainers').length;
     const events = list.filter(a => Boolean(a.event_date)).length;
 
-    document.getElementById('kpiAnnTotal').textContent = total;
-    document.getElementById('kpiAnnPinned').textContent = pinned;
-    document.getElementById('kpiAnnTrainers').textContent = trainers;
-    document.getElementById('kpiAnnEvents').textContent = events;
+    const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    setTxt('kpiAnnTotal', total);
+    setTxt('kpiAnnPinned', pinned);
+    setTxt('kpiAnnTrainers', trainers);
+    setTxt('kpiAnnEvents', events);
 
-    document.getElementById('cntAll').textContent = total;
-    document.getElementById('cntPinned').textContent = pinned;
-    document.getElementById('cntTrainers').textContent = trainers;
-    document.getElementById('cntEvents').textContent = events;
+    setTxt('cntAll', total);
+    setTxt('cntPinned', pinned);
+    setTxt('cntTrainers', trainers);
+    setTxt('cntEvents', events);
   }
 
   function render() {

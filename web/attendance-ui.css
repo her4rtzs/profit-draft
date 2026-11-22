@@ -308,6 +308,162 @@ body[data-page="attendance"] .ci-btn,
 body[data-page="attendance"] .checkin-btn {
   box-shadow: none !important;
 }
+
+/* Custom Check-in Member Autocomplete Dropdown (anchored cleanly below input) */
+body[data-page="attendance"] .checkin-panel {
+  overflow: visible !important;
+}
+
+body[data-page="attendance"] .ci-ac-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 60;
+  max-height: 260px;
+  overflow-y: auto;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, .12);
+  background: #101624;
+  padding: 6px;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, .42);
+}
+
+body[data-page="attendance"] .ci-ac-menu[hidden] {
+  display: none !important;
+}
+
+body[data-page="attendance"] .ci-ac-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: #e2e8f0;
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+
+body[data-page="attendance"] .ci-ac-item:hover,
+body[data-page="attendance"] .ci-ac-item.is-active {
+  background: rgba(232, 185, 58, .14);
+  color: #ffffff;
+}
+
+body[data-page="attendance"] .ci-ac-main strong {
+  color: #e8b93a;
+  font-weight: 700;
+}
+
+body[data-page="attendance"] .ci-ac-pill {
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+body[data-page="attendance"] .ci-ac-pill.is-active {
+  background: rgba(34, 197, 94, .14);
+  color: #4ade80;
+}
+
+body[data-page="attendance"] .ci-ac-pill.is-expiring {
+  background: rgba(245, 158, 11, .14);
+  color: #fbbf24;
+}
+
+body[data-page="attendance"] .ci-ac-pill.is-expired {
+  background: rgba(239, 68, 68, .14);
+  color: #f87171;
+}
+
+body[data-page="attendance"] .ci-ac-empty {
+  padding: 12px;
+  text-align: center;
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+body:not(.dark)[data-page="attendance"] .ci-ac-menu {
+  background: #ffffff;
+  border-color: #eadfc8;
+  box-shadow: 0 12px 26px rgba(42, 36, 24, .12);
+}
+
+body:not(.dark)[data-page="attendance"] .ci-ac-item {
+  color: #2a2418;
+}
+
+body:not(.dark)[data-page="attendance"] .ci-ac-item:hover,
+body:not(.dark)[data-page="attendance"] .ci-ac-item.is-active {
+  background: #fdf4db;
+  color: #2a2418;
+}
+
+body:not(.dark)[data-page="attendance"] .ci-ac-main strong {
+  color: #9a6b0d;
+}
+
+/* Match Attendance Status Pills to System Soft-Tinted Bordered Style */
+body[data-page="attendance"] .ci-table .status,
+body[data-page="attendance"] .ci-table .pp-status {
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  font-size: 11px !important;
+  width: auto !important;
+  min-width: 92px;
+  padding: 0 12px !important;
+}
+
+body[data-page="attendance"] .ci-table .status.active,
+body[data-page="attendance"] .ci-table .status.is-active {
+  background: rgba(34, 197, 94, .14) !important;
+  border: 1px solid rgba(34, 197, 94, .35) !important;
+  color: #4ade80 !important;
+}
+
+body[data-page="attendance"] .ci-table .status.expiring,
+body[data-page="attendance"] .ci-table .status.is-expiring {
+  background: rgba(245, 158, 11, .14) !important;
+  border: 1px solid rgba(245, 158, 11, .35) !important;
+  color: #fbbf24 !important;
+}
+
+body[data-page="attendance"] .ci-table .status.expired,
+body[data-page="attendance"] .ci-table .status.is-expired {
+  background: rgba(239, 68, 68, .14) !important;
+  border: 1px solid rgba(239, 68, 68, .35) !important;
+  color: #f87171 !important;
+}
+
+body:not(.dark)[data-page="attendance"] .ci-table .status.active,
+body:not(.dark)[data-page="attendance"] .ci-table .status.is-active {
+  background: #e8f8ee !important;
+  border-color: #86efac !important;
+  color: #15803d !important;
+}
+
+body:not(.dark)[data-page="attendance"] .ci-table .status.expiring,
+body:not(.dark)[data-page="attendance"] .ci-table .status.is-expiring {
+  background: #fef5e0 !important;
+  border-color: #fcd34d !important;
+  color: #b45309 !important;
+}
+
+body:not(.dark)[data-page="attendance"] .ci-table .status.expired,
+body:not(.dark)[data-page="attendance"] .ci-table .status.is-expired {
+  background: #feecec !important;
+  border-color: #fca5a5 !important;
+  color: #b91c1c !important;
+}
+
 body:not(.dark)[data-page="attendance"] .chart-empty-state {
   background: #faf6ee !important;
   border: 1px dashed #e2d5bc !important;

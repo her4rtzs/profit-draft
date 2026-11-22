@@ -1,599 +1,2311 @@
 <!doctype html>
-<html lang="en"><head><script src="splash.js?v=6"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ProFit · Functional Fitness Gym, Alfonso</title><link rel="icon" type="image/jpeg" href="logo.jpg"><meta name="description" content="Functional Fitness Gym in Alfonso, Calabarzon. Sign up free for a seven-day trial, then pay cash or by GCash at the desk and manage your membership.">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Permanent+Marker&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link rel="stylesheet" href="site-footer.css?v=5">
-<style>
-*{box-sizing:border-box;margin:0}html{scroll-behavior:smooth}
-:root{--gold:#e8b93a;--lime:#e8b93a;--lime-hi:#f2cb5c;--on:#1a1407;--bg:#07080c;--grad:#e8b93a;--bg2:#0b0d16;--card:#111320;--line:#232636;--tx:#f6efdc;--mu:#9a9788;--wrap:1160px;--r:16px;--gap:20px}
-body{position:relative;font:16px/1.6 Inter,system-ui,sans-serif;background:transparent;color:var(--tx);-webkit-font-smoothing:antialiased;overflow-x:hidden}
-h1,h2,h3,.brand{font-family:"Plus Jakarta Sans",Inter,sans-serif;letter-spacing:-.02em}
-a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
-.wrap{width:min(var(--wrap),100% - 40px);margin-inline:auto}
-:focus-visible{outline:2px solid var(--lime);outline-offset:3px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 22px;border-radius:999px;font:700 15px "Plus Jakarta Sans",sans-serif;border:1px solid var(--line);background:transparent;color:var(--tx);cursor:pointer;transition:background-color .15s,border-color .15s}
-.btn:hover{border-color:var(--lime)}
-.btn.p{background:var(--grad);color:var(--on);border-color:var(--lime)}.btn.p:hover{filter:brightness(1.07)}
-html{background-color:#07080c;background-image:none;background-size:auto,auto,48px 48px,48px 48px;background-attachment:fixed}
-.strip,.plans{background:rgba(11,13,22,.85)}
-/* header */
-header.top{position:sticky;top:0;z-index:50;background:#0b0c10;border-bottom:1px solid var(--line)}
-.top .wrap{width:min(1280px,100% - 40px);display:flex;align-items:center;justify-content:space-between;min-height:68px;gap:clamp(24px,2.5vw,40px)}
-.brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:22px;min-width:0;flex:none;text-decoration:none}
-.brand img{width:36px;height:36px;border-radius:10px;flex:none;object-fit:cover}
-.brand-copy{display:flex;flex-direction:column;line-height:1.05;gap:3px}
-.brand-copy strong{font-size:22px;font-weight:800;letter-spacing:-.02em;color:#f6efdc}
-.brand-copy small{font-size:10px;font-weight:700;letter-spacing:.14em;color:#e8b93a;text-transform:uppercase}
-.top nav{display:flex;align-items:center;gap:clamp(22px,2.4vw,38px);flex-wrap:nowrap}.top nav a{color:var(--mu);font-size:14px;font-weight:600;white-space:nowrap;display:inline-flex;align-items:center;transition:color .15s}.top nav a:hover{color:var(--lime)}
-.top .cta{display:flex;align-items:center;gap:24px;flex:none}.top .btn{height:40px;padding:0 18px;font-size:14px;white-space:nowrap}
-@media(max-width:1060px){.top nav{display:none}}
-@media(max-width:768px){
-  .wrap{width:calc(100% - 28px)}
-  .top .wrap{width:calc(100% - 28px);min-height:60px;gap:10px}
-  .brand img{width:32px;height:32px}
-  .brand-copy strong{font-size:18px}
-  .brand-copy small{font-size:9px;letter-spacing:.1em}
-  .top .cta{gap:8px}
-  .top .btn{height:38px;padding:0 14px;font-size:13px}
-}
-@media(max-width:560px){
-  .top .btn:not(.p){display:none}
-  .m-only{display:block}
-}
-@media(max-width:420px){
-  .brand-copy small{display:none}
-  .top .cta{gap:6px}
-  .top .btn{padding:0 12px;font-size:12.5px}
-}
-/* hero */
-.hero{padding:72px 0 56px}
-.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
-.eyebrow{display:inline-block;font-family:"Permanent Marker",cursive;font-size:18px;font-weight:400;letter-spacing:.01em;color:var(--gold);text-transform:none;line-height:1.2}
-.hero h1{font-size:clamp(40px,6vw,72px);line-height:1.02;font-weight:800;margin:16px 0 18px}
-.hero h1 em{font-style:normal}
-.hero p.lead{color:var(--mu);font-size:18px;max-width:520px}
-.hero .acts{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap}
-.hero-media{position:relative;aspect-ratio:4/5;border-radius:24px;border:1px solid var(--line);background:var(--card);overflow:hidden}
-.carousel-track{position:absolute;inset:0;width:100%;height:100%}
-.carousel-slide{position:absolute;inset:0;opacity:0;transition:opacity .7s cubic-bezier(.4,0,.2,1);pointer-events:none}
-.carousel-slide.active{opacity:1;pointer-events:auto;z-index:1}
-.carousel-slide img{width:100%;height:100%;object-fit:cover;display:block}
-.ph{display:grid;place-items:center;gap:10px;text-align:center;color:var(--mu);font-size:13px;padding:24px}
-.ph i{font-size:44px;color:var(--lime)}
-.chip{position:absolute;display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;background:rgba(11,12,16,.88);border:1px solid rgba(255,255,255,.12);font-size:13px;font-weight:600;z-index:3;backdrop-filter:blur(6px)}
-.chip i{color:var(--lime)}.chip small{display:block;color:var(--mu);font-weight:500}
-.chip.a{left:14px;bottom:14px;max-width:calc(100% - 140px)}.chip.b{right:14px;top:14px}
-.carousel-ctrls{position:absolute;bottom:14px;right:14px;display:flex;align-items:center;gap:6px;background:rgba(11,12,16,.86);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:5px 8px;z-index:3;backdrop-filter:blur(8px)}
-.c-arrow{width:26px;height:26px;border-radius:50%;border:0;background:transparent;color:var(--tx);display:grid;place-items:center;cursor:pointer;font-size:11px;padding:0;transition:background .15s,color .15s}
-.c-arrow:hover{background:var(--lime);color:var(--on)}
-.c-dots{display:flex;align-items:center;gap:5px;padding:0 3px}
-.c-dot{width:6px;height:6px;border-radius:999px;border:0;padding:0;background:rgba(246,239,220,.35);cursor:pointer;transition:all .25s ease}
-.c-dot:hover{background:var(--mu)}
-.c-dot.active{width:18px;background:var(--lime)}
-@media(max-width:860px){.hero .wrap{grid-template-columns:1fr;gap:28px}.hero{padding:36px 0 40px}.hero-media{aspect-ratio:16/10}}
-@media(max-width:480px){
-  .hero{padding:26px 0 32px}
-  .hero h1{font-size:clamp(30px,8.5vw,40px);margin:10px 0 14px}
-  .hero p.lead{font-size:15.5px}
-  .hero .acts{margin-top:20px;gap:10px}
-  .hero .acts .btn{flex:1 1 140px;height:44px;padding:0 16px;font-size:14px}
-  .chip.a small,.chip.b{display:none}.chip{padding:8px 11px;font-size:12px}.chip.a{max-width:calc(100% - 126px)}.carousel-ctrls{bottom:12px;right:12px;padding:4px 6px}
-}
-/* ticker strip */
-.strip{border-top:2px solid var(--gold);border-bottom:1px solid var(--line);background:var(--bg2)}
-.strip .wrap{display:grid;grid-template-columns:repeat(4,1fr)}
-.strip div{padding:20px;border-right:1px solid var(--line);display:flex;align-items:center;gap:12px;font:700 14px "Plus Jakarta Sans",sans-serif;color:var(--tx)}
-.strip div:last-child{border-right:0}
-.strip i{width:34px;height:34px;flex:none;border-radius:9px;display:grid;place-items:center;background:rgba(232,185,58,.1);border:1px solid rgba(232,185,58,.22);color:var(--gold);font-size:15px}
-@media(max-width:720px){.strip .wrap{grid-template-columns:1fr 1fr}.strip div{padding:14px 12px;gap:10px;font-size:13px}.strip div:nth-child(2){border-right:0}.strip div:nth-child(-n+2){border-bottom:1px solid var(--line)}}
-/* sections */
-section.s{padding:84px 0}
-.sh{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:36px;flex-wrap:wrap}
-.sh h2{font-size:clamp(28px,4vw,44px);line-height:1.08;margin-top:10px;max-width:640px}
-.sh p{color:var(--mu);max-width:420px}
-.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap)}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap)}
-.box{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px}
-.box .ic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:rgba(232,185,58,.12);color:var(--lime);font-size:18px;margin-bottom:18px}
-.box h3{font-size:18px;margin-bottom:8px}.box p{color:var(--mu);font-size:14.5px}
-@media(max-width:980px){.grid4{grid-template-columns:1fr 1fr}.grid3{grid-template-columns:1fr}}
-@media(max-width:520px){.grid4{grid-template-columns:1fr}}
-/* programs */
-.prog{padding:0;overflow:hidden;display:flex;flex-direction:column;transition:transform .24s cubic-bezier(.2,.8,.2,1),border-color .24s ease,box-shadow .24s ease}
-.prog:hover,.prog:focus-within{transform:translateY(-4px);border-color:rgba(232,185,58,.45);box-shadow:0 14px 32px rgba(0,0,0,.35)}
-.prog .pic{aspect-ratio:16/10;background:#0b0c10;border-bottom:1px solid var(--line);position:relative;overflow:hidden}
-.prog .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .28s cubic-bezier(.2,.8,.2,1)}
-.prog:hover .pic img{transform:scale(1.03)}
-.prog .in{padding:22px;flex:1}.prog .in h3{font-size:18px;margin-bottom:6px}.prog .in p{color:var(--mu);font-size:14.5px}
-.prog .tags{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}.prog .tags span{font-size:12px;font-weight:600;border:1px solid var(--line);border-radius:99px;padding:4px 10px;color:var(--mu)}
-/* Programs horizontal carousel */
-#programs .prog-slider{position:relative;overflow:hidden;border-radius:var(--r)}
-#programs .grid3{display:flex;gap:var(--gap);overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;cursor:grab}
-#programs .grid3.is-dragging{cursor:grabbing}
-#programs .grid3::-webkit-scrollbar{display:none}
-#programs .prog{flex:0 0 min(86vw,520px);scroll-snap-align:center;user-select:none}
-@media(max-width:520px){
-  .prog-arrow{width:36px;height:36px;top:32%}
-  .plans .grid3{gap:28px}
-  .plan,.diff-card{padding:24px 18px}
-  .cta-band .wrap{padding:28px 0;gap:16px}
-  .cta-band .btn{width:100%}
-  .gal-grid{gap:10px}
-  .box{padding:20px 18px}
-}
-#programs .prog img{-webkit-user-drag:none;pointer-events:none}
-.prog-arrow{position:absolute;top:40%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.14);background:rgba(110,115,128,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#f6efdc;display:grid;place-items:center;cursor:pointer;z-index:5;padding:0;transition:background .2s ease,border-color .2s ease,transform .2s ease,opacity .2s ease;box-shadow:0 4px 16px rgba(0,0,0,.35)}
-.prog-arrow:hover{background:rgba(145,150,165,.62);border-color:rgba(255,255,255,.28);transform:translateY(-50%) scale(1.06)}
-.prog-arrow:active{transform:translateY(-50%) scale(.96)}
-.prog-arrow.prev{left:10px}
-.prog-arrow.next{right:10px}
-.prog-arrow svg{width:18px;height:18px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;display:block}
-/* plans */
-.plans{background:var(--bg2);border-block:1px solid var(--line)}
-.plans .grid3{align-items:stretch;padding-top:12px}
-.plan{position:relative;display:flex;flex-direction:column;height:100%;padding:28px;transition:transform .24s cubic-bezier(.2,.8,.2,1),border-color .24s ease,box-shadow .24s ease}
-.plan:hover,.plan:focus-within{transform:translateY(-4px);border-color:rgba(232,185,58,.55);box-shadow:0 16px 36px rgba(0,0,0,.38)}
-.plan.hot{border-color:var(--lime)}
-.plan .badge{position:absolute;top:-12px;left:24px;background:var(--lime);color:var(--on);font-size:11px;font-weight:800;letter-spacing:.06em;padding:4px 12px;border-radius:99px}
-.plan h3{font-size:16px;color:var(--mu);font-weight:600}
-.plan .price{font:800 44px/1.1 "Plus Jakarta Sans",sans-serif;margin:10px 0 2px}
-.plan .price small{font-size:14px;color:var(--mu);font-weight:500}
-.plan ul{list-style:none;padding:0;margin:20px 0 24px;display:grid;gap:10px;flex:1}
-.plan li{display:flex;gap:10px;font-size:14.5px}.plan li i{color:var(--lime);margin-top:5px;font-size:12px}
-.plan .btn{width:100%}
-/* story */
-.story{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
-.story .pic{aspect-ratio:4/3;border-radius:24px;border:1px solid var(--line);background:#0b0c10;position:relative;overflow:hidden;display:grid;place-items:center}
-.story .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.story h2{font-size:clamp(28px,4vw,42px);line-height:1.1;margin:10px 0 16px}.story p{color:var(--mu);margin-bottom:14px}
-.story ul{list-style:none;padding:0;display:grid;gap:10px;margin-top:18px}.story li{display:flex;gap:10px}.story li i{color:var(--lime);margin-top:5px}
-@media(max-width:860px){.story{grid-template-columns:1fr;gap:28px}}
-/* cta */
-.cta-band{background:var(--grad);color:var(--on)}
-.cta-band .wrap{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:44px 0;flex-wrap:wrap}
-.cta-band h2{font-size:clamp(26px,3.6vw,38px);line-height:1.1}.cta-band p{opacity:.8;margin-top:6px}
-.cta-band .btn{background:var(--on);color:var(--lime);border-color:var(--on)}.cta-band .btn:hover{background:#000}
-/* visit */
-.visit{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.visit a.box.visit-card{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:20px 22px;border-radius:14px;background:#131C2E;border:1px solid rgba(255,255,255,.08);text-decoration:none;color:inherit;transition:background-color .18s ease,border-color .18s ease,transform .18s ease}
-.visit a.box.visit-card:hover,.visit a.box.visit-card:focus-visible{background:rgba(232,185,58,.08);border-color:rgba(232,185,58,.45);transform:translateY(-2px);outline:none}
-.visit .visit-main{display:flex;gap:14px;align-items:flex-start;min-width:0}
-.visit .box .ic{margin:0;flex:none;width:42px;height:42px;border-radius:11px;display:grid;place-items:center;background:rgba(232,185,58,.12);color:#e8b93a;border:1px solid rgba(232,185,58,.24)}
-.visit h3{font-size:15px;font-weight:700;color:#fff;margin:0 0 4px}
-.visit .visit-val{font-size:14.5px;color:#cbd5e1;line-height:1.45;margin:0}
-.visit .visit-meta{font-size:12.5px;color:#94a3b8;margin:3px 0 0}
-.visit .visit-go{flex:none;width:30px;height:30px;border-radius:8px;display:grid;place-items:center;color:#94a3b8;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);font-size:12px;transition:color .18s ease,border-color .18s ease,background-color .18s ease,transform .18s ease}
-.visit a.box.visit-card:hover .visit-go,.visit a.box.visit-card:focus-visible .visit-go{color:#e8b93a;border-color:rgba(232,185,58,.35);background:rgba(232,185,58,.12);transform:translateX(2px)}
-@media(max-width:860px){.visit{grid-template-columns:1fr}}
+<html lang="en">
 
-/* Landing hero: team photo behind the headline with a solid dark overlay; solid gold accent (no gradient text). */
-.hero{position:relative;overflow:hidden;background:#0b0b09 url("img/hero.jpg") center 30%/cover no-repeat}
-.hero::before{content:"";position:absolute;inset:0;background:rgba(9,9,7,.82)}
-.hero .wrap{position:relative;z-index:1}
-.hero h1 em{background:none;-webkit-background-clip:initial;background-clip:initial;color:var(--gold,#d4a646)}
+<head>
+  <script src="splash.js?v=6"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ProFit · Functional Fitness Gym, Alfonso</title>
+  <link rel="icon" type="image/jpeg" href="logo.jpg">
+  <meta name="description"
+    content="Functional Fitness Gym in Alfonso, Calabarzon. Sign up free for a seven-day trial, then pay cash or by GCash at the desk and manage your membership.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Anton&family=Permanent+Marker&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="site-footer.css?v=5">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0
+    }
 
-/* Inside ProFit gallery */
-.gal-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:22px}
-.gal-grid figure{margin:0}
-.gal-grid img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:16px;border:1px solid var(--line)}
-@media (max-width:860px){.gal-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    html {
+      scroll-behavior: smooth
+    }
 
-/* Refinement pass: calmer spacing, solid surfaces, photo program cards, no intro overlay. */
-header.top{background:#0b0c10;backdrop-filter:none;-webkit-backdrop-filter:none}
-.s{padding:68px 0}
-@media (max-width:820px){.s{padding:48px 0}}
-.cta-band{background:var(--card);color:var(--tx);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.cta-band .wrap{padding:34px 0}
-.cta-band p{color:var(--mu);opacity:1;margin-top:4px}
-.cta-band .btn{background:var(--lime);color:var(--on);border-color:var(--lime)}
-.cta-band .btn:hover{filter:brightness(1.07)}
-.pc-img{aspect-ratio:4/3;overflow:hidden;border-radius:14px;border:1px solid var(--line);margin-bottom:18px}
-.pc-img img{display:block;width:100%;height:100%;object-fit:cover}
+    :root {
+      --gold: #e8b93a;
+      --lime: #e8b93a;
+      --lime-hi: #f2cb5c;
+      --on: #1a1407;
+      --bg: #07080c;
+      --grad: #e8b93a;
+      --bg2: #0b0d16;
+      --card: #111320;
+      --line: #232636;
+      --tx: #f6efdc;
+      --mu: #9a9788;
+      --wrap: 1160px;
+      --r: 16px;
+      --gap: 20px
+    }
 
-/* Subtle hover states for cards */
-.anim-features .box{transition:transform .24s cubic-bezier(.2,.8,.2,1),border-color .24s ease,box-shadow .24s ease,opacity .5s ease}
-.anim-features .box:hover,.anim-features .box:focus-within{transform:translateY(-4px);border-color:rgba(232,185,58,.45);box-shadow:0 14px 30px rgba(0,0,0,.35)}
-.gal-grid figure{border:1px solid var(--line);transition:transform .24s cubic-bezier(.2,.8,.2,1),border-color .24s ease,box-shadow .24s ease}
-.gal-grid figure:hover,.gal-grid figure:focus-visible{transform:translateY(-4px);border-color:rgba(232,185,58,.5);box-shadow:0 14px 30px rgba(0,0,0,.4)}
+    body {
+      position: relative;
+      font: 16px/1.6 Inter, system-ui, sans-serif;
+      background: transparent;
+      color: var(--tx);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden
+    }
 
-/* =========================================================
+    h1,
+    h2,
+    h3,
+    .brand {
+      font-family: "Plus Jakarta Sans", Inter, sans-serif;
+      letter-spacing: -.02em
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none
+    }
+
+    img {
+      display: block;
+      max-width: 100%
+    }
+
+    .wrap {
+      width: min(var(--wrap), 100% - 40px);
+      margin-inline: auto
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--lime);
+      outline-offset: 3px
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      height: 46px;
+      padding: 0 22px;
+      border-radius: 999px;
+      font: 700 15px "Plus Jakarta Sans", sans-serif;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--tx);
+      cursor: pointer;
+      transition: background-color .15s, border-color .15s
+    }
+
+    .btn:hover {
+      border-color: var(--lime)
+    }
+
+    .btn.p {
+      background: var(--grad);
+      color: var(--on);
+      border-color: var(--lime)
+    }
+
+    .btn.p:hover {
+      filter: brightness(1.07)
+    }
+
+    html {
+      background-color: #07080c;
+      background-image: none;
+      background-size: auto, auto, 48px 48px, 48px 48px;
+      background-attachment: fixed
+    }
+
+    .strip,
+    .plans {
+      background: rgba(11, 13, 22, .85)
+    }
+
+    /* header */
+    header.top {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: #0b0c10;
+      border-bottom: 1px solid var(--line)
+    }
+
+    .top .wrap {
+      width: min(1280px, 100% - 40px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 68px;
+      gap: clamp(24px, 2.5vw, 40px)
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 22px;
+      min-width: 0;
+      flex: none;
+      text-decoration: none
+    }
+
+    .brand img {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      flex: none;
+      object-fit: cover
+    }
+
+    .brand-copy {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.05;
+      gap: 3px
+    }
+
+    .brand-copy strong {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      color: #f6efdc
+    }
+
+    .brand-copy small {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .14em;
+      color: #e8b93a;
+      text-transform: uppercase
+    }
+
+    .top nav {
+      display: flex;
+      align-items: center;
+      gap: clamp(22px, 2.4vw, 38px);
+      flex-wrap: nowrap
+    }
+
+    .top nav a {
+      color: var(--mu);
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      transition: color .15s
+    }
+
+    .top nav a:hover {
+      color: var(--lime)
+    }
+
+    .top .cta {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex: none
+    }
+
+    .top .btn {
+      height: 40px;
+      padding: 0 18px;
+      font-size: 14px;
+      white-space: nowrap
+    }
+
+    @media(max-width:1060px) {
+      .top nav {
+        display: none
+      }
+    }
+
+    @media(max-width:768px) {
+      .wrap {
+        width: calc(100% - 28px)
+      }
+
+      .top .wrap {
+        width: calc(100% - 28px);
+        min-height: 60px;
+        gap: 10px
+      }
+
+      .brand img {
+        width: 32px;
+        height: 32px
+      }
+
+      .brand-copy strong {
+        font-size: 18px
+      }
+
+      .brand-copy small {
+        font-size: 9px;
+        letter-spacing: .1em
+      }
+
+      .top .cta {
+        gap: 8px
+      }
+
+      .top .btn {
+        height: 38px;
+        padding: 0 14px;
+        font-size: 13px
+      }
+    }
+
+    @media(max-width:560px) {
+      .top .btn:not(.p) {
+        display: none
+      }
+
+      .m-only {
+        display: block
+      }
+    }
+
+    @media(max-width:420px) {
+      .brand-copy small {
+        display: none
+      }
+
+      .top .cta {
+        gap: 6px
+      }
+
+      .top .btn {
+        padding: 0 12px;
+        font-size: 12.5px
+      }
+    }
+
+    /* hero */
+    .hero {
+      padding: 72px 0 56px
+    }
+
+    .hero .wrap {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 48px;
+      align-items: center
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-family: "Permanent Marker", cursive;
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: .01em;
+      color: var(--gold);
+      text-transform: none;
+      line-height: 1.2
+    }
+
+    .hero h1 {
+      font-size: clamp(40px, 6vw, 72px);
+      line-height: 1.02;
+      font-weight: 800;
+      margin: 16px 0 18px
+    }
+
+    .hero h1 em {
+      font-style: normal
+    }
+
+    .hero p.lead {
+      color: var(--mu);
+      font-size: 18px;
+      max-width: 520px
+    }
+
+    .hero .acts {
+      display: flex;
+      gap: 12px;
+      margin-top: 28px;
+      flex-wrap: wrap
+    }
+
+    .hero-media {
+      position: relative;
+      aspect-ratio: 4/5;
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      background: var(--card);
+      overflow: hidden
+    }
+
+    .carousel-track {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%
+    }
+
+    .carousel-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity .7s cubic-bezier(.4, 0, .2, 1);
+      pointer-events: none
+    }
+
+    .carousel-slide.active {
+      opacity: 1;
+      pointer-events: auto;
+      z-index: 1
+    }
+
+    .carousel-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block
+    }
+
+    .ph {
+      display: grid;
+      place-items: center;
+      gap: 10px;
+      text-align: center;
+      color: var(--mu);
+      font-size: 13px;
+      padding: 24px
+    }
+
+    .ph i {
+      font-size: 44px;
+      color: var(--lime)
+    }
+
+    .chip {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: rgba(11, 12, 16, .88);
+      border: 1px solid rgba(255, 255, 255, .12);
+      font-size: 13px;
+      font-weight: 600;
+      z-index: 3;
+      backdrop-filter: blur(6px)
+    }
+
+    .chip i {
+      color: var(--lime)
+    }
+
+    .chip small {
+      display: block;
+      color: var(--mu);
+      font-weight: 500
+    }
+
+    .chip.a {
+      left: 14px;
+      bottom: 14px;
+      max-width: calc(100% - 140px)
+    }
+
+    .chip.b {
+      right: 14px;
+      top: 14px
+    }
+
+    .carousel-ctrls {
+      position: absolute;
+      bottom: 14px;
+      right: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(11, 12, 16, .86);
+      border: 1px solid rgba(255, 255, 255, .14);
+      border-radius: 999px;
+      padding: 5px 8px;
+      z-index: 3;
+      backdrop-filter: blur(8px)
+    }
+
+    .c-arrow {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 0;
+      background: transparent;
+      color: var(--tx);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      font-size: 11px;
+      padding: 0;
+      transition: background .15s, color .15s
+    }
+
+    .c-arrow:hover {
+      background: var(--lime);
+      color: var(--on)
+    }
+
+    .c-dots {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 0 3px
+    }
+
+    .c-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      border: 0;
+      padding: 0;
+      background: rgba(246, 239, 220, .35);
+      cursor: pointer;
+      transition: all .25s ease
+    }
+
+    .c-dot:hover {
+      background: var(--mu)
+    }
+
+    .c-dot.active {
+      width: 18px;
+      background: var(--lime)
+    }
+
+    @media(max-width:860px) {
+      .hero .wrap {
+        grid-template-columns: 1fr;
+        gap: 28px
+      }
+
+      .hero {
+        padding: 36px 0 40px
+      }
+
+      .hero-media {
+        aspect-ratio: 16/10
+      }
+    }
+
+    @media(max-width:480px) {
+      .hero {
+        padding: 26px 0 32px
+      }
+
+      .hero h1 {
+        font-size: clamp(30px, 8.5vw, 40px);
+        margin: 10px 0 14px
+      }
+
+      .hero p.lead {
+        font-size: 15.5px
+      }
+
+      .hero .acts {
+        margin-top: 20px;
+        gap: 10px
+      }
+
+      .hero .acts .btn {
+        flex: 1 1 140px;
+        height: 44px;
+        padding: 0 16px;
+        font-size: 14px
+      }
+
+      .chip.a small,
+      .chip.b {
+        display: none
+      }
+
+      .chip {
+        padding: 8px 11px;
+        font-size: 12px
+      }
+
+      .chip.a {
+        max-width: calc(100% - 126px)
+      }
+
+      .carousel-ctrls {
+        bottom: 12px;
+        right: 12px;
+        padding: 4px 6px
+      }
+    }
+
+    /* ticker strip */
+    .strip {
+      border-top: 2px solid var(--gold);
+      border-bottom: 1px solid var(--line);
+      background: var(--bg2)
+    }
+
+    .strip .wrap {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr)
+    }
+
+    .strip div {
+      padding: 20px;
+      border-right: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font: 700 14px "Plus Jakarta Sans", sans-serif;
+      color: var(--tx)
+    }
+
+    .strip div:last-child {
+      border-right: 0
+    }
+
+    .strip i {
+      width: 34px;
+      height: 34px;
+      flex: none;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      background: rgba(232, 185, 58, .1);
+      border: 1px solid rgba(232, 185, 58, .22);
+      color: var(--gold);
+      font-size: 15px
+    }
+
+    @media(max-width:720px) {
+      .strip .wrap {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .strip div {
+        padding: 14px 12px;
+        gap: 10px;
+        font-size: 13px
+      }
+
+      .strip div:nth-child(2) {
+        border-right: 0
+      }
+
+      .strip div:nth-child(-n+2) {
+        border-bottom: 1px solid var(--line)
+      }
+    }
+
+    /* sections */
+    section.s {
+      padding: 84px 0
+    }
+
+    .sh {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 24px;
+      margin-bottom: 36px;
+      flex-wrap: wrap
+    }
+
+    .sh h2 {
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.08;
+      margin-top: 10px;
+      max-width: 640px
+    }
+
+    .sh p {
+      color: var(--mu);
+      max-width: 420px
+    }
+
+    .grid4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--gap)
+    }
+
+    .grid3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--gap)
+    }
+
+    .box {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      padding: 24px
+    }
+
+    .box .ic {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: rgba(232, 185, 58, .12);
+      color: var(--lime);
+      font-size: 18px;
+      margin-bottom: 18px
+    }
+
+    .box h3 {
+      font-size: 18px;
+      margin-bottom: 8px
+    }
+
+    .box p {
+      color: var(--mu);
+      font-size: 14.5px
+    }
+
+    @media(max-width:980px) {
+      .grid4 {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .grid3 {
+        grid-template-columns: 1fr
+      }
+    }
+
+    @media(max-width:520px) {
+      .grid4 {
+        grid-template-columns: 1fr
+      }
+    }
+
+    /* programs */
+    .prog {
+      padding: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform .24s cubic-bezier(.2, .8, .2, 1), border-color .24s ease, box-shadow .24s ease
+    }
+
+    .prog:hover,
+    .prog:focus-within {
+      transform: translateY(-4px);
+      border-color: rgba(232, 185, 58, .45);
+      box-shadow: 0 14px 32px rgba(0, 0, 0, .35)
+    }
+
+    .prog .pic {
+      aspect-ratio: 16/10;
+      background: #0b0c10;
+      border-bottom: 1px solid var(--line);
+      position: relative;
+      overflow: hidden
+    }
+
+    .prog .pic img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .28s cubic-bezier(.2, .8, .2, 1)
+    }
+
+    .prog:hover .pic img {
+      transform: scale(1.03)
+    }
+
+    .prog .in {
+      padding: 22px;
+      flex: 1
+    }
+
+    .prog .in h3 {
+      font-size: 18px;
+      margin-bottom: 6px
+    }
+
+    .prog .in p {
+      color: var(--mu);
+      font-size: 14.5px
+    }
+
+    .prog .tags {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+      flex-wrap: wrap
+    }
+
+    .prog .tags span {
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid var(--line);
+      border-radius: 99px;
+      padding: 4px 10px;
+      color: var(--mu)
+    }
+
+    /* Programs horizontal carousel */
+    #programs .prog-slider {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--r)
+    }
+
+    #programs .grid3 {
+      display: flex;
+      gap: var(--gap);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      -webkit-overflow-scrolling: touch;
+      cursor: grab
+    }
+
+    #programs .grid3.is-dragging {
+      cursor: grabbing
+    }
+
+    #programs .grid3::-webkit-scrollbar {
+      display: none
+    }
+
+    #programs .prog {
+      flex: 0 0 min(86vw, 520px);
+      scroll-snap-align: center;
+      user-select: none
+    }
+
+    @media(max-width:520px) {
+      .prog-arrow {
+        width: 36px;
+        height: 36px;
+        top: 32%
+      }
+
+      .plans .grid3 {
+        gap: 28px
+      }
+
+      .plan,
+      .diff-card {
+        padding: 24px 18px
+      }
+
+      .cta-band .wrap {
+        padding: 28px 0;
+        gap: 16px
+      }
+
+      .cta-band .btn {
+        width: 100%
+      }
+
+      .gal-grid {
+        gap: 10px
+      }
+
+      .box {
+        padding: 20px 18px
+      }
+    }
+
+    #programs .prog img {
+      -webkit-user-drag: none;
+      pointer-events: none
+    }
+
+    .prog-arrow {
+      position: absolute;
+      top: 40%;
+      transform: translateY(-50%);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, .14);
+      background: rgba(110, 115, 128, .45);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: #f6efdc;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      z-index: 5;
+      padding: 0;
+      transition: background .2s ease, border-color .2s ease, transform .2s ease, opacity .2s ease;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, .35)
+    }
+
+    .prog-arrow:hover {
+      background: rgba(145, 150, 165, .62);
+      border-color: rgba(255, 255, 255, .28);
+      transform: translateY(-50%) scale(1.06)
+    }
+
+    .prog-arrow:active {
+      transform: translateY(-50%) scale(.96)
+    }
+
+    .prog-arrow.prev {
+      left: 10px
+    }
+
+    .prog-arrow.next {
+      right: 10px
+    }
+
+    .prog-arrow svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      display: block
+    }
+
+    /* plans */
+    .plans {
+      background: var(--bg2);
+      border-block: 1px solid var(--line)
+    }
+
+    .plans .grid3 {
+      align-items: stretch;
+      padding-top: 12px
+    }
+
+    .plan {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: 28px;
+      transition: transform .24s cubic-bezier(.2, .8, .2, 1), border-color .24s ease, box-shadow .24s ease
+    }
+
+    .plan:hover,
+    .plan:focus-within {
+      transform: translateY(-4px);
+      border-color: rgba(232, 185, 58, .55);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, .38)
+    }
+
+    .plan.hot {
+      border-color: var(--lime)
+    }
+
+    .plan .badge {
+      position: absolute;
+      top: -12px;
+      left: 24px;
+      background: var(--lime);
+      color: var(--on);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .06em;
+      padding: 4px 12px;
+      border-radius: 99px
+    }
+
+    .plan h3 {
+      font-size: 16px;
+      color: var(--mu);
+      font-weight: 600
+    }
+
+    .plan .price {
+      font: 800 44px/1.1 "Plus Jakarta Sans", sans-serif;
+      margin: 10px 0 2px
+    }
+
+    .plan .price small {
+      font-size: 14px;
+      color: var(--mu);
+      font-weight: 500
+    }
+
+    .plan ul {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0 24px;
+      display: grid;
+      gap: 10px;
+      flex: 1
+    }
+
+    .plan li {
+      display: flex;
+      gap: 10px;
+      font-size: 14.5px
+    }
+
+    .plan li i {
+      color: var(--lime);
+      margin-top: 5px;
+      font-size: 12px
+    }
+
+    .plan .btn {
+      width: 100%
+    }
+
+    /* story */
+    .story {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center
+    }
+
+    .story .pic {
+      aspect-ratio: 4/3;
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      background: #0b0c10;
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      place-items: center
+    }
+
+    .story .pic img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover
+    }
+
+    .story h2 {
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.1;
+      margin: 10px 0 16px
+    }
+
+    .story p {
+      color: var(--mu);
+      margin-bottom: 14px
+    }
+
+    .story ul {
+      list-style: none;
+      padding: 0;
+      display: grid;
+      gap: 10px;
+      margin-top: 18px
+    }
+
+    .story li {
+      display: flex;
+      gap: 10px
+    }
+
+    .story li i {
+      color: var(--lime);
+      margin-top: 5px
+    }
+
+    @media(max-width:860px) {
+      .story {
+        grid-template-columns: 1fr;
+        gap: 28px
+      }
+    }
+
+    /* cta */
+    .cta-band {
+      background: var(--grad);
+      color: var(--on)
+    }
+
+    .cta-band .wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      padding: 44px 0;
+      flex-wrap: wrap
+    }
+
+    .cta-band h2 {
+      font-size: clamp(26px, 3.6vw, 38px);
+      line-height: 1.1
+    }
+
+    .cta-band p {
+      opacity: .8;
+      margin-top: 6px
+    }
+
+    .cta-band .btn {
+      background: var(--on);
+      color: var(--lime);
+      border-color: var(--on)
+    }
+
+    .cta-band .btn:hover {
+      background: #000
+    }
+
+    /* visit */
+    .visit {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px
+    }
+
+    .visit a.box.visit-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 20px 22px;
+      border-radius: 14px;
+      background: #131C2E;
+      border: 1px solid rgba(255, 255, 255, .08);
+      text-decoration: none;
+      color: inherit;
+      transition: background-color .18s ease, border-color .18s ease, transform .18s ease
+    }
+
+    .visit a.box.visit-card:hover,
+    .visit a.box.visit-card:focus-visible {
+      background: rgba(232, 185, 58, .08);
+      border-color: rgba(232, 185, 58, .45);
+      transform: translateY(-2px);
+      outline: none
+    }
+
+    .visit .visit-main {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      min-width: 0
+    }
+
+    .visit .box .ic {
+      margin: 0;
+      flex: none;
+      width: 42px;
+      height: 42px;
+      border-radius: 11px;
+      display: grid;
+      place-items: center;
+      background: rgba(232, 185, 58, .12);
+      color: #e8b93a;
+      border: 1px solid rgba(232, 185, 58, .24)
+    }
+
+    .visit h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      margin: 0 0 4px
+    }
+
+    .visit .visit-val {
+      font-size: 14.5px;
+      color: #cbd5e1;
+      line-height: 1.45;
+      margin: 0
+    }
+
+    .visit .visit-meta {
+      font-size: 12.5px;
+      color: #94a3b8;
+      margin: 3px 0 0
+    }
+
+    .visit .visit-go {
+      flex: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: #94a3b8;
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .06);
+      font-size: 12px;
+      transition: color .18s ease, border-color .18s ease, background-color .18s ease, transform .18s ease
+    }
+
+    .visit a.box.visit-card:hover .visit-go,
+    .visit a.box.visit-card:focus-visible .visit-go {
+      color: #e8b93a;
+      border-color: rgba(232, 185, 58, .35);
+      background: rgba(232, 185, 58, .12);
+      transform: translateX(2px)
+    }
+
+    @media(max-width:860px) {
+      .visit {
+        grid-template-columns: 1fr
+      }
+    }
+
+    /* Landing hero: team photo behind the headline with a solid dark overlay; solid gold accent (no gradient text). */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: #0b0b09 url("img/hero.jpg") center 30%/cover no-repeat
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(9, 9, 7, .82)
+    }
+
+    .hero .wrap {
+      position: relative;
+      z-index: 1
+    }
+
+    .hero h1 em {
+      background: none;
+      -webkit-background-clip: initial;
+      background-clip: initial;
+      color: var(--gold, #d4a646)
+    }
+
+    /* Inside ProFit gallery */
+    .gal-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 22px
+    }
+
+    .gal-grid figure {
+      margin: 0
+    }
+
+    .gal-grid img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4/5;
+      object-fit: cover;
+      border-radius: 16px;
+      border: 1px solid var(--line)
+    }
+
+    @media (max-width:860px) {
+      .gal-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr))
+      }
+    }
+
+    /* Refinement pass: calmer spacing, solid surfaces, photo program cards, no intro overlay. */
+    header.top {
+      background: #0b0c10;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none
+    }
+
+    .s {
+      padding: 68px 0
+    }
+
+    @media (max-width:820px) {
+      .s {
+        padding: 48px 0
+      }
+    }
+
+    .cta-band {
+      background: var(--card);
+      color: var(--tx);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line)
+    }
+
+    .cta-band .wrap {
+      padding: 34px 0
+    }
+
+    .cta-band p {
+      color: var(--mu);
+      opacity: 1;
+      margin-top: 4px
+    }
+
+    .cta-band .btn {
+      background: var(--lime);
+      color: var(--on);
+      border-color: var(--lime)
+    }
+
+    .cta-band .btn:hover {
+      filter: brightness(1.07)
+    }
+
+    .pc-img {
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      margin-bottom: 18px
+    }
+
+    .pc-img img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover
+    }
+
+    /* Subtle hover states for cards */
+    .anim-features .box {
+      transition: transform .24s cubic-bezier(.2, .8, .2, 1), border-color .24s ease, box-shadow .24s ease, opacity .5s ease
+    }
+
+    .anim-features .box:hover,
+    .anim-features .box:focus-within {
+      transform: translateY(-4px);
+      border-color: rgba(232, 185, 58, .45);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, .35)
+    }
+
+    .gal-grid figure {
+      border: 1px solid var(--line);
+      transition: transform .24s cubic-bezier(.2, .8, .2, 1), border-color .24s ease, box-shadow .24s ease
+    }
+
+    .gal-grid figure:hover,
+    .gal-grid figure:focus-visible {
+      transform: translateY(-4px);
+      border-color: rgba(232, 185, 58, .5);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, .4)
+    }
+
+    /* =========================================================
    Clean, Non-Overlapping Section Scroll Animations
    ========================================================= */
-.anim-header{opacity:0;transform:translateY(14px);transition:opacity .55s cubic-bezier(.2,.8,.2,1),transform .55s cubic-bezier(.2,.8,.2,1)}
-.anim-header.is-visible{opacity:1;transform:none}
+    .anim-header {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity .55s cubic-bezier(.2, .8, .2, 1), transform .55s cubic-bezier(.2, .8, .2, 1)
+    }
 
-.anim-ticker > *{opacity:0;transform:translateY(10px);transition:opacity .45s ease,transform .45s ease}
-.anim-ticker.is-visible > *:nth-child(1){transition-delay:.04s}
-.anim-ticker.is-visible > *:nth-child(2){transition-delay:.1s}
-.anim-ticker.is-visible > *:nth-child(3){transition-delay:.16s}
-.anim-ticker.is-visible > *:nth-child(4){transition-delay:.22s}
-.anim-ticker.is-visible > *{opacity:1;transform:none}
+    .anim-header.is-visible {
+      opacity: 1;
+      transform: none
+    }
 
-.anim-features > *{opacity:0;transform:translateY(16px)}
-.anim-features.is-visible > *:nth-child(1){transition-delay:.04s}
-.anim-features.is-visible > *:nth-child(2){transition-delay:.1s}
-.anim-features.is-visible > *:nth-child(3){transition-delay:.16s}
-.anim-features.is-visible > *:nth-child(4){transition-delay:.22s}
-.anim-features.is-visible > *{opacity:1;transform:none}
+    .anim-ticker>* {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity .45s ease, transform .45s ease
+    }
 
-.anim-diff-trad,.anim-diff-profit{opacity:0;transform:translateY(16px);transition:opacity .55s ease,transform .55s ease}
-.anim-diff-trad.is-visible{opacity:.92;transform:none}
-.anim-diff-profit.is-visible{opacity:1;transform:none;box-shadow:0 16px 40px rgba(0,0,0,.42)}
+    .anim-ticker.is-visible>*:nth-child(1) {
+      transition-delay: .04s
+    }
 
-.anim-programs > *,.anim-gallery > *,.anim-plans > *,.anim-visit > *{opacity:0;transform:translateY(16px)}
-.anim-programs.is-visible > *,.anim-gallery.is-visible > *,.anim-plans.is-visible > *,.anim-visit.is-visible > *{opacity:1;transform:none}
+    .anim-ticker.is-visible>*:nth-child(2) {
+      transition-delay: .1s
+    }
 
-.anim-story-pic,.anim-story-text,.anim-cta{opacity:0;transform:translateY(16px);transition:opacity .55s ease,transform .55s ease}
-.anim-story-pic.is-visible,.anim-story-text.is-visible,.anim-cta.is-visible{opacity:1;transform:none}
-.anim-cta .btn{transition:transform .18s ease,background-color .15s,border-color .15s,filter .15s}
+    .anim-ticker.is-visible>*:nth-child(3) {
+      transition-delay: .16s
+    }
 
-/* Accessibility override */
-@media(prefers-reduced-motion:reduce){
-  .anim-header,.anim-header.is-visible,
-  .anim-ticker > *,
-  .anim-features > *,
-  .anim-diff-trad,.anim-diff-profit,
-  .anim-programs > *,.anim-programs > * .pic img,
-  .anim-gallery > *,.gal-grid figure,.gal-grid figure img,
-  .anim-plans > *,
-  .anim-story-pic,.anim-story-text,
-  .anim-cta,
-  .anim-visit > *{
-    opacity:1!important;transform:none!important;transition:none!important;box-shadow:none!important;
-  }
-}
+    .anim-ticker.is-visible>*:nth-child(4) {
+      transition-delay: .22s
+    }
 
-/* Difference section */
-.diff-grid{display:grid;grid-template-columns:1fr 1.08fr;gap:24px;align-items:stretch}
-.diff-card{position:relative;display:flex;flex-direction:column;padding:32px 28px;border-radius:var(--r);background:var(--card);border:1px solid var(--line)}
-.diff-card.trad{background:rgba(17,19,32,.55);opacity:.88}
-.diff-card.profit-card{border:2px solid var(--lime);background:linear-gradient(180deg,rgba(232,185,58,.04) 0%,rgba(17,19,32,.95) 100%)}
-.diff-badge{position:absolute;top:-12px;left:24px;background:var(--lime);color:var(--on);font-size:11px;font-weight:800;letter-spacing:.08em;padding:4px 12px;border-radius:99px}
-.diff-head{margin-bottom:24px}
-.diff-tag{font-family:"Permanent Marker",cursive;font-size:17px;font-weight:400;letter-spacing:.01em;text-transform:none;color:var(--mu);margin-bottom:8px}
-.diff-tag.hl{color:var(--gold)}
-.diff-head h3{font-size:22px;margin-bottom:8px}
-.diff-head p{color:var(--mu);font-size:14.5px;line-height:1.5}
-.diff-list{list-style:none;padding:0;margin:0 0 28px;display:grid;gap:16px;flex:1}
-.diff-list li{display:flex;align-items:flex-start;gap:12px;font-size:14.5px;line-height:1.45}
-.diff-card.trad .diff-list li i{color:#e05a5a;font-size:14px;margin-top:3px;flex:none}
-.diff-card.profit-card .diff-list li i{color:var(--lime);font-size:14px;margin-top:3px;flex:none}
-.diff-foot{margin-top:auto}
-.diff-foot .btn{width:100%}
-@media(max-width:860px){.diff-grid{grid-template-columns:1fr}}
+    .anim-ticker.is-visible>* {
+      opacity: 1;
+      transform: none
+    }
 
-/* Mobile navigation: the menu button opens the links on small screens. */
-.menu-btn{display:none;margin-left:auto;cursor:pointer;font-size:22px;padding:6px 8px;color:inherit}
-.m-only{display:none!important}
-@media(max-width:560px){.m-only{display:block!important}}
-@media(max-width:1060px){
- .menu-btn{display:block}
- #navt:checked ~ header nav{display:flex!important;position:absolute;top:100%;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;background:#0b0c10;border-bottom:1px solid var(--line);padding:4px 24px 12px;z-index:60}
- #navt:checked ~ header nav a{padding:13px 0;border-top:1px solid var(--line);font-size:16px}
-}
-@media(max-width:420px){.m-only{display:block}}
+    .anim-features>* {
+      opacity: 0;
+      transform: translateY(16px)
+    }
 
-/* Editorial & animation enhancements (preserving ProFit colors and info) */
-.wl-motto{display:inline-block;margin-top:14px;font-family:"Permanent Marker",cursive;font-size:15px;color:var(--gold);letter-spacing:.04em}
+    .anim-features.is-visible>*:nth-child(1) {
+      transition-delay: .04s
+    }
+
+    .anim-features.is-visible>*:nth-child(2) {
+      transition-delay: .1s
+    }
+
+    .anim-features.is-visible>*:nth-child(3) {
+      transition-delay: .16s
+    }
+
+    .anim-features.is-visible>*:nth-child(4) {
+      transition-delay: .22s
+    }
+
+    .anim-features.is-visible>* {
+      opacity: 1;
+      transform: none
+    }
+
+    .anim-diff-trad,
+    .anim-diff-profit {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity .55s ease, transform .55s ease
+    }
+
+    .anim-diff-trad.is-visible {
+      opacity: .92;
+      transform: none
+    }
+
+    .anim-diff-profit.is-visible {
+      opacity: 1;
+      transform: none;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, .42)
+    }
+
+    .anim-programs>*,
+    .anim-gallery>*,
+    .anim-plans>*,
+    .anim-visit>* {
+      opacity: 0;
+      transform: translateY(16px)
+    }
+
+    .anim-programs.is-visible>*,
+    .anim-gallery.is-visible>*,
+    .anim-plans.is-visible>*,
+    .anim-visit.is-visible>* {
+      opacity: 1;
+      transform: none
+    }
+
+    .anim-story-pic,
+    .anim-story-text,
+    .anim-cta {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity .55s ease, transform .55s ease
+    }
+
+    .anim-story-pic.is-visible,
+    .anim-story-text.is-visible,
+    .anim-cta.is-visible {
+      opacity: 1;
+      transform: none
+    }
+
+    .anim-cta .btn {
+      transition: transform .18s ease, background-color .15s, border-color .15s, filter .15s
+    }
+
+    /* Accessibility override */
+    @media(prefers-reduced-motion:reduce) {
+
+      .anim-header,
+      .anim-header.is-visible,
+      .anim-ticker>*,
+      .anim-features>*,
+      .anim-diff-trad,
+      .anim-diff-profit,
+      .anim-programs>*,
+      .anim-programs>* .pic img,
+      .anim-gallery>*,
+      .gal-grid figure,
+      .gal-grid figure img,
+      .anim-plans>*,
+      .anim-story-pic,
+      .anim-story-text,
+      .anim-cta,
+      .anim-visit>* {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+        box-shadow: none !important;
+      }
+    }
+
+    /* Difference section */
+    .diff-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.08fr;
+      gap: 24px;
+      align-items: stretch
+    }
+
+    .diff-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      padding: 32px 28px;
+      border-radius: var(--r);
+      background: var(--card);
+      border: 1px solid var(--line)
+    }
+
+    .diff-card.trad {
+      background: rgba(17, 19, 32, .55);
+      opacity: .88
+    }
+
+    .diff-card.profit-card {
+      border: 2px solid var(--lime);
+      background: linear-gradient(180deg, rgba(232, 185, 58, .04) 0%, rgba(17, 19, 32, .95) 100%)
+    }
+
+    .diff-badge {
+      position: absolute;
+      top: -12px;
+      left: 24px;
+      background: var(--lime);
+      color: var(--on);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      padding: 4px 12px;
+      border-radius: 99px
+    }
+
+    .diff-head {
+      margin-bottom: 24px
+    }
+
+    .diff-tag {
+      font-family: "Permanent Marker", cursive;
+      font-size: 17px;
+      font-weight: 400;
+      letter-spacing: .01em;
+      text-transform: none;
+      color: var(--mu);
+      margin-bottom: 8px
+    }
+
+    .diff-tag.hl {
+      color: var(--gold)
+    }
+
+    .diff-head h3 {
+      font-size: 22px;
+      margin-bottom: 8px
+    }
+
+    .diff-head p {
+      color: var(--mu);
+      font-size: 14.5px;
+      line-height: 1.5
+    }
+
+    .diff-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 28px;
+      display: grid;
+      gap: 16px;
+      flex: 1
+    }
+
+    .diff-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 14.5px;
+      line-height: 1.45
+    }
+
+    .diff-card.trad .diff-list li i {
+      color: #e05a5a;
+      font-size: 14px;
+      margin-top: 3px;
+      flex: none
+    }
+
+    .diff-card.profit-card .diff-list li i {
+      color: var(--lime);
+      font-size: 14px;
+      margin-top: 3px;
+      flex: none
+    }
+
+    .diff-foot {
+      margin-top: auto
+    }
+
+    .diff-foot .btn {
+      width: 100%
+    }
+
+    @media(max-width:860px) {
+      .diff-grid {
+        grid-template-columns: 1fr
+      }
+    }
+
+    /* Mobile navigation: the menu button opens the links on small screens. */
+    .menu-btn {
+      display: none;
+      margin-left: auto;
+      cursor: pointer;
+      font-size: 22px;
+      padding: 6px 8px;
+      color: inherit
+    }
+
+    .m-only {
+      display: none !important
+    }
+
+    @media(max-width:560px) {
+      .m-only {
+        display: block !important
+      }
+    }
+
+    @media(max-width:1060px) {
+      .menu-btn {
+        display: block
+      }
+
+      #navt:checked~header nav {
+        display: flex !important;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        background: #0b0c10;
+        border-bottom: 1px solid var(--line);
+        padding: 4px 24px 12px;
+        z-index: 60
+      }
+
+      #navt:checked~header nav a {
+        padding: 13px 0;
+        border-top: 1px solid var(--line);
+        font-size: 16px
+      }
+    }
+
+    @media(max-width:420px) {
+      .m-only {
+        display: block
+      }
+    }
+
+    /* Editorial & animation enhancements (preserving ProFit colors and info) */
+    .wl-motto {
+      display: inline-block;
+      margin-top: 14px;
+      font-family: "Permanent Marker", cursive;
+      font-size: 15px;
+      color: var(--gold);
+      letter-spacing: .04em
+    }
 
 
 
 
 
-.anim-features .box{position:relative;overflow:hidden}
-.wl-num{position:absolute;top:14px;right:18px;font-family:"Anton",sans-serif;font-size:38px;line-height:1;color:rgba(255,255,255,.06);pointer-events:none;user-select:none}
-.gal-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.gal-hint{font-family:"Permanent Marker",cursive;font-size:13px;color:var(--gold);letter-spacing:.04em}
-.gal-grid figure{position:relative;cursor:pointer;overflow:hidden;border-radius:16px}
-.gal-grid figure img{transition:transform .35s ease}
-.gal-grid figure:hover img{transform:scale(1.04)}
-.gal-cap{position:absolute;left:10px;bottom:10px;background:rgba(11,12,16,.86);color:#f6efdc;font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;border:1px solid rgba(255,255,255,.14)}
-.wl-crew-pill{position:absolute;left:16px;bottom:16px;z-index:2;background:var(--gold);color:#111318;font-family:"Permanent Marker",cursive;font-size:14px;padding:6px 14px;border-radius:6px;transform:rotate(-2deg);box-shadow:0 8px 20px rgba(0,0,0,.45)}
-.wl-lightbox{position:fixed;inset:0;z-index:2000;display:grid;place-items:center;padding:20px;background:rgba(7,8,12,.88);backdrop-filter:blur(6px)}
-.wl-lightbox[hidden]{display:none}
-.wl-lightbox-inner{position:relative;max-width:min(860px,94vw);max-height:88vh;display:flex;flex-direction:column;align-items:center;gap:10px}
-.wl-lightbox-inner img{max-width:100%;max-height:78vh;border-radius:12px;border:1px solid rgba(255,255,255,.15);object-fit:contain}
-.wl-lightbox-cap{font-family:"Permanent Marker",cursive;font-size:16px;color:var(--gold)}
-.wl-lightbox-x{position:absolute;top:-14px;right:-14px;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:#131C2E;color:#fff;font-size:20px;cursor:pointer;display:grid;place-items:center}
-@media(prefers-reduced-motion:reduce){.gal-grid figure img{animation:none !important;transition:none !important}}
-</style><script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script><link rel="preload" as="image" href="img/hero.jpg" fetchpriority="high"><link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
+    .anim-features .box {
+      position: relative;
+      overflow: hidden
+    }
+
+    .wl-num {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      font-family: "Anton", sans-serif;
+      font-size: 38px;
+      line-height: 1;
+      color: rgba(255, 255, 255, .06);
+      pointer-events: none;
+      user-select: none
+    }
+
+    .gal-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap
+    }
+
+    .gal-hint {
+      font-family: "Permanent Marker", cursive;
+      font-size: 13px;
+      color: var(--gold);
+      letter-spacing: .04em
+    }
+
+    .gal-grid figure {
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+      border-radius: 16px
+    }
+
+    .gal-grid figure img {
+      transition: transform .35s ease
+    }
+
+    .gal-grid figure:hover img {
+      transform: scale(1.04)
+    }
+
+    .gal-cap {
+      position: absolute;
+      left: 10px;
+      bottom: 10px;
+      background: rgba(11, 12, 16, .86);
+      color: #f6efdc;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, .14)
+    }
+
+    .wl-crew-pill {
+      position: absolute;
+      left: 16px;
+      bottom: 16px;
+      z-index: 2;
+      background: var(--gold);
+      color: #111318;
+      font-family: "Permanent Marker", cursive;
+      font-size: 14px;
+      padding: 6px 14px;
+      border-radius: 6px;
+      transform: rotate(-2deg);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, .45)
+    }
+
+    .wl-lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(7, 8, 12, .88);
+      backdrop-filter: blur(6px)
+    }
+
+    .wl-lightbox[hidden] {
+      display: none
+    }
+
+    .wl-lightbox-inner {
+      position: relative;
+      max-width: min(860px, 94vw);
+      max-height: 88vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px
+    }
+
+    .wl-lightbox-inner img {
+      max-width: 100%;
+      max-height: 78vh;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, .15);
+      object-fit: contain
+    }
+
+    .wl-lightbox-cap {
+      font-family: "Permanent Marker", cursive;
+      font-size: 16px;
+      color: var(--gold)
+    }
+
+    .wl-lightbox-x {
+      position: absolute;
+      top: -14px;
+      right: -14px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, .2);
+      background: #131C2E;
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+      display: grid;
+      place-items: center
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+      .gal-grid figure img {
+        animation: none !important;
+        transition: none !important
+      }
+    }
+  </style>
+  <script
+    type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script>
+  <link rel="preload" as="image" href="img/hero.jpg" fetchpriority="high">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#0a0e17">
+  <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="ProFit">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+</head>
+
 <body class="dark">
-<input id="navt" type="checkbox" hidden><header class="top"><div class="wrap"><a class="brand" href="/"><img src="logo.jpg" alt="ProFit logo" width="40" height="40"><span class="brand-copy"><strong>ProFit</strong><small data-gym-name>FUNCTIONAL FITNESS GYM</small></span></a>
-<nav aria-label="Primary"><a href="#home">Home</a><a href="#why">Features</a><a href="#difference">Difference</a><a href="#programs">Programs</a><a href="#plans">Membership</a><a href="#about">About</a><a href="#visit">Contact</a><a href="/faq">FAQs</a><a class="m-only" href="/login">Sign in</a></nav><label class="menu-btn" for="navt" aria-label="Open menu"><i class="fa-solid fa-bars"></i></label>
-<div class="cta"><a class="btn" href="/login">Sign in</a><a class="btn p" href="/join">Join now</a></div></div></header>
-<main id="home">
-<section class="hero"><div class="wrap"><div>
-<span class="eyebrow">Functional Fitness Gym · Alfonso</span>
-<h1>Stronger people.<br><em>Healthier</em> community.</h1>
-<p class="lead">Train with coaches who know your name. Join online in minutes with a free seven-day trial, then pay cash at the desk or by GCash and manage everything in your member portal.</p>
-<div class="acts"><a class="btn p" href="/join">Join now <i class="fa-solid fa-arrow-right"></i></a><a class="btn" href="#plans">View plans</a></div>
-<span class="wl-motto">We lift and uplift.</span></div>
-<div class="hero-media" id="heroCarousel" aria-roledescription="carousel" aria-label="Gym highlights">
-<div class="carousel-track">
-<div class="carousel-slide active" aria-hidden="false"><img src="img/hero-side.jpg" alt="ProFit gym interior with members training" width="1200" height="900" fetchpriority="high"></div>
-<div class="carousel-slide" aria-hidden="true"><img src="img/gal-1.jpg" alt="Functional fitness training floor" loading="lazy"></div>
-<div class="carousel-slide" aria-hidden="true"><img src="img/gal-2.jpg" alt="ProFit community workout session" loading="lazy"></div>
-<div class="carousel-slide" aria-hidden="true"><img src="img/gal-3.jpg" alt="Strength and squat rack training" loading="lazy"></div>
-<div class="carousel-slide" aria-hidden="true"><img src="img/gal-4.jpg" alt="Weights and gym equipment" loading="lazy"></div>
-</div>
-<div class="chip b"><i class="fa-solid fa-bolt"></i><span>Free trial<small>7 days</small></span></div>
-<div class="chip a"><i class="fa-solid fa-location-dot"></i><span>Alfonso, Calabarzon<small>Luksuhin-Mangas Road</small></span></div>
-<div class="carousel-ctrls">
-<button type="button" class="c-arrow c-prev" aria-label="Previous image"><i class="fa-solid fa-chevron-left"></i></button>
-<div class="c-dots" role="tablist" aria-label="Slide dots">
-<button type="button" class="c-dot active" aria-label="Slide 1" aria-selected="true"></button>
-<button type="button" class="c-dot" aria-label="Slide 2" aria-selected="false"></button>
-<button type="button" class="c-dot" aria-label="Slide 3" aria-selected="false"></button>
-<button type="button" class="c-dot" aria-label="Slide 4" aria-selected="false"></button>
-<button type="button" class="c-dot" aria-label="Slide 5" aria-selected="false"></button>
-</div>
-<button type="button" class="c-arrow c-next" aria-label="Next image"><i class="fa-solid fa-chevron-right"></i></button>
-</div></div></div></section>
+  <input id="navt" type="checkbox" hidden>
+  <header class="top">
+    <div class="wrap"><a class="brand" href="/"><img src="logo.jpg" alt="ProFit logo" width="40" height="40"><span
+          class="brand-copy"><strong>ProFit</strong><small data-gym-name>FUNCTIONAL FITNESS GYM</small></span></a>
+      <nav aria-label="Primary"><a href="#home">Home</a><a href="#why">Features</a><a
+          href="#difference">Difference</a><a href="#programs">Programs</a><a href="#plans">Membership</a><a
+          href="#about">About</a><a href="#visit">Contact</a><a href="/faq">FAQs</a><a class="m-only" href="/login">Sign
+          in</a></nav><label class="menu-btn" for="navt" aria-label="Open menu"><i class="fa-solid fa-bars"></i></label>
+      <div class="cta"><a class="btn" href="/login">Sign in</a><a class="btn p" href="/join">Join now</a></div>
+    </div>
+  </header>
+  <main id="home">
+    <section class="hero">
+      <div class="wrap">
+        <div>
+          <span class="eyebrow">Functional Fitness Gym · Alfonso</span>
+          <h1>Stronger people.<br><em>Healthier</em> community.</h1>
+          <p class="lead">Train with coaches who know your name. Join online in minutes with a free seven-day trial,
+            then pay cash at the desk or by GCash and manage everything in your member portal.</p>
+          <div class="acts"><a class="btn p" href="/join">Join now <i class="fa-solid fa-arrow-right"></i></a><a
+              class="btn" href="#plans">View plans</a></div>
+          <span class="wl-motto">We lift and uplift.</span>
+        </div>
+        <div class="hero-media" id="heroCarousel" aria-roledescription="carousel" aria-label="Gym highlights">
+          <div class="carousel-track">
+            <div class="carousel-slide active" aria-hidden="false"><img src="img/hero-side.jpg"
+                alt="ProFit gym interior with members training" width="1200" height="900" fetchpriority="high"></div>
+            <div class="carousel-slide" aria-hidden="true"><img src="img/gal-1.jpg"
+                alt="Functional fitness training floor" loading="lazy"></div>
+            <div class="carousel-slide" aria-hidden="true"><img src="img/gal-2.jpg"
+                alt="ProFit community workout session" loading="lazy"></div>
+            <div class="carousel-slide" aria-hidden="true"><img src="img/gal-3.jpg"
+                alt="Strength and squat rack training" loading="lazy"></div>
+            <div class="carousel-slide" aria-hidden="true"><img src="img/gal-4.jpg" alt="Weights and gym equipment"
+                loading="lazy"></div>
+          </div>
+          <div class="chip b"><i class="fa-solid fa-bolt"></i><span>Free trial<small>7 days</small></span></div>
+          <div class="chip a"><i class="fa-solid fa-location-dot"></i><span>Alfonso, Calabarzon<small>Luksuhin-Mangas
+                Road</small></span></div>
+          <div class="carousel-ctrls">
+            <button type="button" class="c-arrow c-prev" aria-label="Previous image"><i
+                class="fa-solid fa-chevron-left"></i></button>
+            <div class="c-dots" role="tablist" aria-label="Slide dots">
+              <button type="button" class="c-dot active" aria-label="Slide 1" aria-selected="true"></button>
+              <button type="button" class="c-dot" aria-label="Slide 2" aria-selected="false"></button>
+              <button type="button" class="c-dot" aria-label="Slide 3" aria-selected="false"></button>
+              <button type="button" class="c-dot" aria-label="Slide 4" aria-selected="false"></button>
+              <button type="button" class="c-dot" aria-label="Slide 5" aria-selected="false"></button>
+            </div>
+            <button type="button" class="c-arrow c-next" aria-label="Next image"><i
+                class="fa-solid fa-chevron-right"></i></button>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<div class="strip"><div class="wrap anim-ticker">
-<div><i class="fa-solid fa-ticket"></i>4 flexible plans</div><div><i class="fa-solid fa-credit-card"></i>Cash or GCash at the desk</div><div><i class="fa-solid fa-mobile-screen"></i>Member portal on your phone</div><div><i class="fa-solid fa-user-group"></i>Coaches on the floor</div></div></div>
+    <div class="strip">
+      <div class="wrap anim-ticker">
+        <div><i class="fa-solid fa-ticket"></i>4 flexible plans</div>
+        <div><i class="fa-solid fa-credit-card"></i>Cash or GCash at the desk</div>
+        <div><i class="fa-solid fa-mobile-screen"></i>Member portal on your phone</div>
+        <div><i class="fa-solid fa-user-group"></i>Coaches on the floor</div>
+      </div>
+    </div>
 
-<section class="s" id="why"><div class="wrap"><div class="sh anim-header"><div><span class="eyebrow">Why choose us</span><h2>Everything you need to keep showing up</h2></div><p>From your first workout to your hundredth, ProFit keeps your plan, schedule and progress in one place.</p></div>
-<div class="grid4 anim-features">
-<div class="box"><span class="wl-num" aria-hidden="true">01</span><div class="ic"><i class="fa-solid fa-dumbbell"></i></div><h3>Functional training</h3><p>Strength, conditioning and mobility built around real-life movement.</p></div>
-<div class="box"><span class="wl-num" aria-hidden="true">02</span><div class="ic"><i class="fa-solid fa-user-check"></i></div><h3>Coach guidance</h3><p>Trainers assigned to you, with schedules and notes inside your portal.</p></div>
-<div class="box"><span class="wl-num" aria-hidden="true">03</span><div class="ic"><i class="fa-solid fa-chart-line"></i></div><h3>Track progress</h3><p>Attendance, health goals and your diary, all in one dashboard.</p></div>
-<div class="box"><span class="wl-num" aria-hidden="true">04</span><div class="ic"><i class="fa-solid fa-shield-halved"></i></div><h3>Secure payments</h3><p>Cash is recorded by staff. A GCash payment is reviewed before it activates your membership.</p></div></div></div></section>
+    <section class="s" id="why">
+      <div class="wrap">
+        <div class="sh anim-header">
+          <div><span class="eyebrow">Why choose us</span>
+            <h2>Everything you need to keep showing up</h2>
+          </div>
+          <p>From your first workout to your hundredth, ProFit keeps your plan, schedule and progress in one place.</p>
+        </div>
+        <div class="grid4 anim-features">
+          <div class="box"><span class="wl-num" aria-hidden="true">01</span>
+            <div class="ic"><i class="fa-solid fa-dumbbell"></i></div>
+            <h3>Functional training</h3>
+            <p>Strength, conditioning and mobility built around real-life movement.</p>
+          </div>
+          <div class="box"><span class="wl-num" aria-hidden="true">02</span>
+            <div class="ic"><i class="fa-solid fa-user-check"></i></div>
+            <h3>Coach guidance</h3>
+            <p>Trainers assigned to you, with schedules and notes inside your portal.</p>
+          </div>
+          <div class="box"><span class="wl-num" aria-hidden="true">03</span>
+            <div class="ic"><i class="fa-solid fa-chart-line"></i></div>
+            <h3>Track progress</h3>
+            <p>Attendance, health goals and your diary, all in one dashboard.</p>
+          </div>
+          <div class="box"><span class="wl-num" aria-hidden="true">04</span>
+            <div class="ic"><i class="fa-solid fa-shield-halved"></i></div>
+            <h3>Secure payments</h3>
+            <p>Cash is recorded by staff. A GCash payment is reviewed before it activates your membership.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<section class="s" id="difference" style="padding-top:0"><div class="wrap"><div class="sh anim-header"><div><span class="eyebrow">The Difference</span><h2>Why ProFit is not your typical gym</h2></div><p>We built Functional Fitness Gym to solve the friction of traditional gyms — from transparent pricing to real coaching on the floor.</p></div>
-<div class="diff-grid">
-<div class="box diff-card trad anim-diff-trad"><div class="diff-head"><div class="diff-tag">Traditional Gyms</div><h3>The Old Way</h3><p>Overcrowded floors, confusing machines, and feeling like just another barcode.</p></div>
-<ul class="diff-list">
-<li><i class="fa-solid fa-xmark"></i><span>Isolated machines with long queues and zero workout direction</span></li>
-<li><i class="fa-solid fa-xmark"></i><span>Paper sign-up forms, lost logbooks, and manual attendance records</span></li>
-<li><i class="fa-solid fa-xmark"></i><span>Hidden lock-in contracts and complicated cancellation policies</span></li>
-<li><i class="fa-solid fa-xmark"></i><span>Coaches only engage if you pay expensive separate hourly rates</span></li>
-</ul></div>
-<div class="box diff-card profit-card anim-diff-profit"><div class="diff-badge">THE PROFIT ADVANTAGE</div><div class="diff-head"><div class="diff-tag hl">Functional Fitness Gym</div><h3>The ProFit Way</h3><p>Every member gets purposeful coaching, modern technology, and a supportive community.</p></div>
-<ul class="diff-list">
-<li><i class="fa-solid fa-check"></i><span>Functional free-weight &amp; movement floor built around real-life strength</span></li>
-<li><i class="fa-solid fa-check"></i><span>Instant digital member portal with live attendance &amp; workout history</span></li>
-<li><i class="fa-solid fa-check"></i><span>Simple, transparent pricing paid in cash or by GCash at the desk, with zero surprises</span></li>
-<li><i class="fa-solid fa-check"></i><span>Floor coaches who know your name and actively guide your lifting form</span></li>
-</ul>
-<div class="diff-foot"><a class="btn p" href="/join">Experience the difference <i class="fa-solid fa-arrow-right"></i></a></div></div></div></div></section>
+    <section class="s" id="difference" style="padding-top:0">
+      <div class="wrap">
+        <div class="sh anim-header">
+          <div><span class="eyebrow">The Difference</span>
+            <h2>Why ProFit is not your typical gym</h2>
+          </div>
+          <p>We built Functional Fitness Gym to solve the friction of traditional gyms — from transparent pricing to
+            real coaching on the floor.</p>
+        </div>
+        <div class="diff-grid">
+          <div class="box diff-card trad anim-diff-trad">
+            <div class="diff-head">
+              <div class="diff-tag">Traditional Gyms</div>
+              <h3>The Old Way</h3>
+              <p>Overcrowded floors, confusing machines, and feeling like just another barcode.</p>
+            </div>
+            <ul class="diff-list">
+              <li><i class="fa-solid fa-xmark"></i><span>Isolated machines with long queues and zero workout
+                  direction</span></li>
+              <li><i class="fa-solid fa-xmark"></i><span>Paper sign-up forms, lost logbooks, and manual attendance
+                  records</span></li>
+              <li><i class="fa-solid fa-xmark"></i><span>Hidden lock-in contracts and complicated cancellation
+                  policies</span></li>
+              <li><i class="fa-solid fa-xmark"></i><span>Coaches only engage if you pay expensive separate hourly
+                  rates</span></li>
+            </ul>
+          </div>
+          <div class="box diff-card profit-card anim-diff-profit">
+            <div class="diff-badge">THE PROFIT ADVANTAGE</div>
+            <div class="diff-head">
+              <div class="diff-tag hl">Functional Fitness Gym</div>
+              <h3>The ProFit Way</h3>
+              <p>Every member gets purposeful coaching, modern technology, and a supportive community.</p>
+            </div>
+            <ul class="diff-list">
+              <li><i class="fa-solid fa-check"></i><span>Functional free-weight &amp; movement floor built around
+                  real-life strength</span></li>
+              <li><i class="fa-solid fa-check"></i><span>Instant digital member portal with live attendance &amp;
+                  workout history</span></li>
+              <li><i class="fa-solid fa-check"></i><span>Simple, transparent pricing paid in cash or by GCash at the
+                  desk, with zero surprises</span></li>
+              <li><i class="fa-solid fa-check"></i><span>Floor coaches who know your name and actively guide your
+                  lifting form</span></li>
+            </ul>
+            <div class="diff-foot"><a class="btn p" href="/join">Experience the difference <i
+                  class="fa-solid fa-arrow-right"></i></a></div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<section class="s" id="programs" style="padding-top:0"><div class="wrap"><div class="sh anim-header"><div><span class="eyebrow">Programs</span><h2>Train the way that fits you</h2></div><p>Sample programs. Final schedules and offerings are confirmed by the gym.</p></div>
-<div class="prog-slider">
-<button type="button" class="prog-arrow prev" aria-label="Previous program"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg></button>
-<div class="grid3 anim-programs">
-<article class="box prog"><div class="pic"><img src="img/prog-1.jpg" alt="Member training at the squat rack" loading="lazy"></div><div class="in"><h3>Strength &amp; conditioning</h3><p>Guided lifting and circuits for all levels.</p><div class="tags"><span>All levels</span><span>Group</span></div></div></article>
-<article class="box prog"><div class="pic"><img src="img/prog-2.jpg" alt="Bench and equipment on the ProFit gym floor" loading="lazy"></div><div class="in"><h3>HIIT &amp; functional</h3><p>Short, high-energy sessions that build stamina.</p><div class="tags"><span>Intermediate</span><span>Group</span></div></div></article>
-<article class="box prog"><div class="pic"><img src="img/prog-3.jpg" alt="Group of members posing together in the gym" loading="lazy"></div><div class="in"><h3>Personal coaching</h3><p>One-on-one attention and a plan made for your goals.</p><div class="tags"><span>1-on-1</span><span>By schedule</span></div></div></article></div>
-<button type="button" class="prog-arrow next" aria-label="Next program"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg></button>
-</div></div></section>
+    <section class="s" id="programs" style="padding-top:0">
+      <div class="wrap">
+        <div class="sh anim-header">
+          <div><span class="eyebrow">Programs</span>
+            <h2>Train the way that fits you</h2>
+          </div>
+          <p>Sample programs. Final schedules and offerings are confirmed by the gym.</p>
+        </div>
+        <div class="prog-slider">
+          <button type="button" class="prog-arrow prev" aria-label="Previous program"><svg viewBox="0 0 24 24"
+              aria-hidden="true">
+              <polyline points="15 18 9 12 15 6" />
+            </svg></button>
+          <div class="grid3 anim-programs">
+            <article class="box prog">
+              <div class="pic"><img src="img/prog-1.jpg" alt="Member training at the squat rack" loading="lazy"></div>
+              <div class="in">
+                <h3>Strength &amp; conditioning</h3>
+                <p>Guided lifting and circuits for all levels.</p>
+                <div class="tags"><span>All levels</span><span>Group</span></div>
+              </div>
+            </article>
+            <article class="box prog">
+              <div class="pic"><img src="img/prog-2.jpg" alt="Bench and equipment on the ProFit gym floor"
+                  loading="lazy"></div>
+              <div class="in">
+                <h3>HIIT &amp; functional</h3>
+                <p>Short, high-energy sessions that build stamina.</p>
+                <div class="tags"><span>Intermediate</span><span>Group</span></div>
+              </div>
+            </article>
+            <article class="box prog">
+              <div class="pic"><img src="img/prog-3.jpg" alt="Group of members posing together in the gym"
+                  loading="lazy"></div>
+              <div class="in">
+                <h3>Personal coaching</h3>
+                <p>One-on-one attention and a plan made for your goals.</p>
+                <div class="tags"><span>1-on-1</span><span>By schedule</span></div>
+              </div>
+            </article>
+          </div>
+          <button type="button" class="prog-arrow next" aria-label="Next program"><svg viewBox="0 0 24 24"
+              aria-hidden="true">
+              <polyline points="9 18 15 12 9 6" />
+            </svg></button>
+        </div>
+      </div>
+    </section>
 
-<section class="s gal" aria-label="Inside ProFit"><div class="wrap"><div class="gal-head anim-header"><h2>Inside ProFit</h2><span class="gal-hint">Tap a photo to enlarge</span></div><div class="gal-grid anim-gallery"><figure tabindex="0" data-cap="Rain or shine"><img src="img/gal-1.jpg" alt="Team photo at the ProFit gym" loading="lazy"><span class="gal-cap">Rain or shine</span></figure><figure tabindex="0" data-cap="The crew"><img src="img/gal-2.jpg" alt="Group of members posing together in the gym" loading="lazy"><span class="gal-cap">The crew</span></figure><figure tabindex="0" data-cap="Strength"><img src="img/gal-3.jpg" alt="Member training at the squat rack" loading="lazy"><span class="gal-cap">Strength</span></figure><figure tabindex="0" data-cap="Real equipment"><img src="img/gal-4.jpg" alt="Equipment on the ProFit gym floor" loading="lazy"><span class="gal-cap">Real equipment</span></figure></div></div></section>
-<section class="s plans" id="plans"><div class="wrap"><div class="sh anim-header"><div><span class="eyebrow">Membership</span><h2>Simple plans, no surprises</h2></div><p>Sign up free for seven days, then choose a plan and pay cash or by GCash. Need just one visit? A Daily pass is <span data-plan-price="daily">₱80</span>.</p></div>
-<div class="grid3 anim-plans">
-<div class="box plan"><h3>Monthly</h3><div class="price"><span data-plan-price="monthly">₱800</span><small> / 30 days</small></div><ul><li><i class="fa-solid fa-check"></i>Gym access</li><li><i class="fa-solid fa-check"></i>Member portal</li><li><i class="fa-solid fa-check"></i>Attendance tracking</li></ul><a class="btn" href="/join">Choose plan</a></div>
-<div class="box plan hot"><span class="badge">MOST POPULAR</span><h3>Quarterly</h3><div class="price"><span data-plan-price="quarterly">₱2,100</span><small> / 90 days</small></div><ul><li><i class="fa-solid fa-check"></i>Gym access</li><li><i class="fa-solid fa-check"></i>Member portal</li><li><i class="fa-solid fa-check"></i>Attendance tracking</li></ul><a class="btn p" href="/join">Choose plan</a></div>
-<div class="box plan"><h3>Annual</h3><div class="price"><span data-plan-price="annual">₱7,500</span><small> / 365 days</small></div><ul><li><i class="fa-solid fa-check"></i>Gym access</li><li><i class="fa-solid fa-check"></i>Member portal</li><li><i class="fa-solid fa-check"></i>Attendance tracking</li></ul><a class="btn" href="/join">Choose plan</a></div></div></div></section>
-<script>(function(){try{fetch('/api/plans/').then(function(r){return r.ok?r.json():null;}).then(function(d){if(!d||!d.plans)return;document.querySelectorAll('[data-plan-price]').forEach(function(el){var p=d.plans[el.dataset.planPrice];if(p&&p.price){el.textContent='\u20b1'+Number(p.price).toLocaleString('en-US');}});}).catch(function(){});}catch(e){}})();</script>
+    <section class="s gal" aria-label="Inside ProFit">
+      <div class="wrap">
+        <div class="gal-head anim-header">
+          <h2>Inside ProFit</h2><span class="gal-hint">Tap a photo to enlarge</span>
+        </div>
+        <div class="gal-grid anim-gallery">
+          <figure tabindex="0" data-cap="Rain or shine"><img src="img/gal-1.jpg" alt="Team photo at the ProFit gym"
+              loading="lazy"><span class="gal-cap">Rain or shine</span></figure>
+          <figure tabindex="0" data-cap="The crew"><img src="img/gal-2.jpg"
+              alt="Group of members posing together in the gym" loading="lazy"><span class="gal-cap">The crew</span>
+          </figure>
+          <figure tabindex="0" data-cap="Strength"><img src="img/gal-3.jpg" alt="Member training at the squat rack"
+              loading="lazy"><span class="gal-cap">Strength</span></figure>
+          <figure tabindex="0" data-cap="Real equipment"><img src="img/gal-4.jpg"
+              alt="Equipment on the ProFit gym floor" loading="lazy"><span class="gal-cap">Real equipment</span>
+          </figure>
+        </div>
+      </div>
+    </section>
+    <section class="s plans" id="plans">
+      <div class="wrap">
+        <div class="sh anim-header">
+          <div><span class="eyebrow">Membership</span>
+            <h2>Simple plans, no surprises</h2>
+          </div>
+          <p>Sign up free for seven days, then choose a plan and pay cash or by GCash. Need just one visit? A Daily pass
+            is <span data-plan-price="daily">₱80</span>.</p>
+        </div>
+        <div class="grid3 anim-plans">
+          <div class="box plan">
+            <h3>Monthly</h3>
+            <div class="price"><span data-plan-price="monthly">₱800</span><small> / 30 days</small></div>
+            <ul>
+              <li><i class="fa-solid fa-check"></i>Gym access</li>
+              <li><i class="fa-solid fa-check"></i>Member portal</li>
+              <li><i class="fa-solid fa-check"></i>Attendance tracking</li>
+            </ul><a class="btn" href="/join">Choose plan</a>
+          </div>
+          <div class="box plan hot"><span class="badge">MOST POPULAR</span>
+            <h3>Quarterly</h3>
+            <div class="price"><span data-plan-price="quarterly">₱2,100</span><small> / 90 days</small></div>
+            <ul>
+              <li><i class="fa-solid fa-check"></i>Gym access</li>
+              <li><i class="fa-solid fa-check"></i>Member portal</li>
+              <li><i class="fa-solid fa-check"></i>Attendance tracking</li>
+            </ul><a class="btn p" href="/join">Choose plan</a>
+          </div>
+          <div class="box plan">
+            <h3>Annual</h3>
+            <div class="price"><span data-plan-price="annual">₱7,500</span><small> / 365 days</small></div>
+            <ul>
+              <li><i class="fa-solid fa-check"></i>Gym access</li>
+              <li><i class="fa-solid fa-check"></i>Member portal</li>
+              <li><i class="fa-solid fa-check"></i>Attendance tracking</li>
+            </ul><a class="btn" href="/join">Choose plan</a>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script>(function () { try { fetch('/api/plans/', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) { if (!d || !d.plans) return; document.querySelectorAll('[data-plan-price]').forEach(function (el) { var p = d.plans[el.dataset.planPrice]; if (p && p.price) { el.textContent = '\u20b1' + Number(p.price).toLocaleString('en-US'); } }); }).catch(function () { }); } catch (e) { } })();</script>
 
-<section class="s" id="about"><div class="wrap story"><div class="pic anim-story-pic"><img src="img/hero.jpg" alt="ProFit members posing together in the gym" loading="lazy" onerror="this.remove()"><span class="wl-crew-pill">Alfonso crew</span></div>
-<div class="anim-story-text"><span class="eyebrow">Our story</span><h2>A neighborhood gym built on community</h2><p>Functional Fitness Gym is a local gym in Alfonso, Calabarzon. We focus on practical strength, steady habits and a friendly floor where everyone belongs.</p><p>ProFit is the system behind it: join online, check in, and follow your progress without paperwork.</p>
-<ul><li><i class="fa-solid fa-circle-check"></i>Friendly, beginner-welcome environment</li><li><i class="fa-solid fa-circle-check"></i>Coaches who track your progress</li><li><i class="fa-solid fa-circle-check"></i>Clear pricing, paid online</li></ul></div></div></section>
+    <section class="s" id="about">
+      <div class="wrap story">
+        <div class="pic anim-story-pic"><img src="img/hero.jpg" alt="ProFit members posing together in the gym"
+            loading="lazy" onerror="this.remove()"><span class="wl-crew-pill">Alfonso crew</span></div>
+        <div class="anim-story-text"><span class="eyebrow">Our story</span>
+          <h2>A neighborhood gym built on community</h2>
+          <p>Functional Fitness Gym is a local gym in Alfonso, Calabarzon. We focus on practical strength, steady habits
+            and a friendly floor where everyone belongs.</p>
+          <p>ProFit is the system behind it: join online, check in, and follow your progress without paperwork.</p>
+          <ul>
+            <li><i class="fa-solid fa-circle-check"></i>Friendly, beginner-welcome environment</li>
+            <li><i class="fa-solid fa-circle-check"></i>Coaches who track your progress</li>
+            <li><i class="fa-solid fa-circle-check"></i>Clear pricing, paid online</li>
+          </ul>
+        </div>
+      </div>
+    </section>
 
-<div class="cta-band"><div class="wrap anim-cta"><div><h2>Ready to start?</h2><p>Sign up free for seven days, then add a membership when you are ready.</p></div><a class="btn" href="/join">Join now <i class="fa-solid fa-arrow-right"></i></a></div></div>
+    <div class="cta-band">
+      <div class="wrap anim-cta">
+        <div>
+          <h2>Ready to start?</h2>
+          <p>Sign up free for seven days, then add a membership when you are ready.</p>
+        </div><a class="btn" href="/join">Join now <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+    </div>
 
-<section class="s" id="visit"><div class="wrap"><div class="sh anim-header"><div><span class="eyebrow">Visit</span><h2>Come train with us</h2></div></div>
-<div class="visit anim-visit">
-<a class="box visit-card" href="https://maps.google.com/?q=259+Luksuhin-Mangas+Road,+Alfonso,+Cavite" target="_blank" rel="noopener" aria-label="Open gym address in Google Maps"><div class="visit-main"><div class="ic"><i class="fa-solid fa-location-dot" aria-hidden="true"></i></div><div><h3>Address</h3><p class="visit-val">259 Luksuhin-Mangas Road<br>Alfonso, Calabarzon</p><p class="visit-meta">View on Google Maps</p></div></div><span class="visit-go" aria-hidden="true"><i class="fa-solid fa-arrow-up-right-from-square"></i></span></a>
-<a class="box visit-card" href="tel:+639122617663" aria-label="Call Functional Fitness Gym at 0912 261 7663"><div class="visit-main"><div class="ic"><i class="fa-solid fa-phone" aria-hidden="true"></i></div><div><h3>Call us</h3><p class="visit-val">0912 261 7663</p><p class="visit-meta">Opens at 7 AM</p></div></div><span class="visit-go" aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></span></a>
-<a class="box visit-card" href="https://www.facebook.com/FunctionalPerformance.2022" target="_blank" rel="noopener" aria-label="Visit Functional Fitness Gym on Facebook"><div class="visit-main"><div class="ic"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></div><div><h3>Facebook</h3><p class="visit-val">Functional Fitness Gym</p><p class="visit-meta">Updates &amp; community</p></div></div><span class="visit-go" aria-hidden="true"><i class="fa-solid fa-arrow-up-right-from-square"></i></span></a>
-</div></div></section>
-</main>
-<script src="site-footer.js?v=7" defer></script>
-<script>
-document.querySelectorAll('header nav a').forEach(function(a){a.addEventListener('click',function(){document.getElementById('navt').checked=false;});});
-(function(){
-  var media = document.getElementById('heroCarousel');
-  if(!media) return;
-  var slides = media.querySelectorAll('.carousel-slide');
-  var dots = media.querySelectorAll('.c-dot');
-  var prevBtn = media.querySelector('.c-prev');
-  var nextBtn = media.querySelector('.c-next');
-  if(!slides.length) return;
-  var current = 0;
-  var timer = null;
-  var delay = 4500;
-  var isPaused = false;
-  function show(idx){
-    current = (idx + slides.length) % slides.length;
-    slides.forEach(function(s, i){
-      var active = (i === current);
-      s.classList.toggle('active', active);
-      s.setAttribute('aria-hidden', !active);
-    });
-    dots.forEach(function(d, i){
-      var active = (i === current);
-      d.classList.toggle('active', active);
-      d.setAttribute('aria-selected', active);
-    });
-  }
-  function next(){ show(current + 1); }
-  function prev(){ show(current - 1); }
-  function start(){ stop(); timer = setInterval(function(){ if(!isPaused) next(); }, delay); }
-  function stop(){ if(timer){ clearInterval(timer); timer = null; } }
-  if(nextBtn) nextBtn.addEventListener('click', function(e){ e.preventDefault(); next(); start(); });
-  if(prevBtn) prevBtn.addEventListener('click', function(e){ e.preventDefault(); prev(); start(); });
-  dots.forEach(function(dot, i){
-    dot.addEventListener('click', function(e){ e.preventDefault(); show(i); start(); });
-  });
-  media.addEventListener('mouseenter', function(){ isPaused = true; });
-  media.addEventListener('mouseleave', function(){ isPaused = false; });
-  var touchStartX = 0;
-  media.addEventListener('touchstart', function(e){ if(e.changedTouches) touchStartX = e.changedTouches[0].screenX; }, {passive: true});
-  media.addEventListener('touchend', function(e){
-    if(!e.changedTouches) return;
-    var diff = e.changedTouches[0].screenX - touchStartX;
-    if(Math.abs(diff) > 40){
-      if(diff < 0) next(); else prev();
+    <section class="s" id="visit">
+      <div class="wrap">
+        <div class="sh anim-header">
+          <div><span class="eyebrow">Visit</span>
+            <h2>Come train with us</h2>
+          </div>
+        </div>
+        <div class="visit anim-visit">
+          <a class="box visit-card" href="https://maps.google.com/?q=259+Luksuhin-Mangas+Road,+Alfonso,+Cavite"
+            target="_blank" rel="noopener" aria-label="Open gym address in Google Maps">
+            <div class="visit-main">
+              <div class="ic"><i class="fa-solid fa-location-dot" aria-hidden="true"></i></div>
+              <div>
+                <h3>Address</h3>
+                <p class="visit-val">259 Luksuhin-Mangas Road<br>Alfonso, Calabarzon</p>
+                <p class="visit-meta">View on Google Maps</p>
+              </div>
+            </div><span class="visit-go" aria-hidden="true"><i
+                class="fa-solid fa-arrow-up-right-from-square"></i></span>
+          </a>
+          <a class="box visit-card" href="tel:+639122617663" aria-label="Call Functional Fitness Gym at 0912 261 7663">
+            <div class="visit-main">
+              <div class="ic"><i class="fa-solid fa-phone" aria-hidden="true"></i></div>
+              <div>
+                <h3>Call us</h3>
+                <p class="visit-val">0912 261 7663</p>
+                <p class="visit-meta">Opens at 7 AM</p>
+              </div>
+            </div><span class="visit-go" aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></span>
+          </a>
+          <a class="box visit-card" href="https://www.facebook.com/FunctionalPerformance.2022" target="_blank"
+            rel="noopener" aria-label="Visit Functional Fitness Gym on Facebook">
+            <div class="visit-main">
+              <div class="ic"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></div>
+              <div>
+                <h3>Facebook</h3>
+                <p class="visit-val">Functional Fitness Gym</p>
+                <p class="visit-meta">Updates &amp; community</p>
+              </div>
+            </div><span class="visit-go" aria-hidden="true"><i
+                class="fa-solid fa-arrow-up-right-from-square"></i></span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="site-footer.js?v=7" defer></script>
+  <script>
+    document.querySelectorAll('header nav a').forEach(function (a) { a.addEventListener('click', function () { document.getElementById('navt').checked = false; }); });
+    (function () {
+      var media = document.getElementById('heroCarousel');
+      if (!media) return;
+      var slides = media.querySelectorAll('.carousel-slide');
+      var dots = media.querySelectorAll('.c-dot');
+      var prevBtn = media.querySelector('.c-prev');
+      var nextBtn = media.querySelector('.c-next');
+      if (!slides.length) return;
+      var current = 0;
+      var timer = null;
+      var delay = 4500;
+      var isPaused = false;
+      function show(idx) {
+        current = (idx + slides.length) % slides.length;
+        slides.forEach(function (s, i) {
+          var active = (i === current);
+          s.classList.toggle('active', active);
+          s.setAttribute('aria-hidden', !active);
+        });
+        dots.forEach(function (d, i) {
+          var active = (i === current);
+          d.classList.toggle('active', active);
+          d.setAttribute('aria-selected', active);
+        });
+      }
+      function next() { show(current + 1); }
+      function prev() { show(current - 1); }
+      function start() { stop(); timer = setInterval(function () { if (!isPaused) next(); }, delay); }
+      function stop() { if (timer) { clearInterval(timer); timer = null; } }
+      if (nextBtn) nextBtn.addEventListener('click', function (e) { e.preventDefault(); next(); start(); });
+      if (prevBtn) prevBtn.addEventListener('click', function (e) { e.preventDefault(); prev(); start(); });
+      dots.forEach(function (dot, i) {
+        dot.addEventListener('click', function (e) { e.preventDefault(); show(i); start(); });
+      });
+      media.addEventListener('mouseenter', function () { isPaused = true; });
+      media.addEventListener('mouseleave', function () { isPaused = false; });
+      var touchStartX = 0;
+      media.addEventListener('touchstart', function (e) { if (e.changedTouches) touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+      media.addEventListener('touchend', function (e) {
+        if (!e.changedTouches) return;
+        var diff = e.changedTouches[0].screenX - touchStartX;
+        if (Math.abs(diff) > 40) {
+          if (diff < 0) next(); else prev();
+          start();
+        }
+      }, { passive: true });
       start();
-    }
-  }, {passive: true});
-  start();
-})();
-(function(){
-  var targets = document.querySelectorAll(
-    '.anim-header, .anim-ticker, .anim-features, .anim-diff-trad, .anim-diff-profit, .anim-programs, .anim-gallery, .anim-plans, .anim-story-pic, .anim-story-text, .anim-cta, .anim-visit'
-  );
-  if(!('IntersectionObserver' in window)){
-    targets.forEach(function(el){ el.classList.add('is-visible'); });
-    return;
-  }
-  var observer = new IntersectionObserver(function(entries){
-    entries.forEach(function(entry){
-      if(entry.isIntersecting){
-        entry.target.classList.add('is-visible');
-        observer.unobserve(entry.target);
+    })();
+    (function () {
+      var targets = document.querySelectorAll(
+        '.anim-header, .anim-ticker, .anim-features, .anim-diff-trad, .anim-diff-profit, .anim-programs, .anim-gallery, .anim-plans, .anim-story-pic, .anim-story-text, .anim-cta, .anim-visit'
+      );
+      if (!('IntersectionObserver' in window)) {
+        targets.forEach(function (el) { el.classList.add('is-visible'); });
+        return;
       }
-    });
-  },{
-    rootMargin: '0px 0px -40px 0px',
-    threshold: 0.08
-  });
-  targets.forEach(function(el){ observer.observe(el); });
-})();
-/* Programs horizontal slider: smooth chevron button scrolling + drag support. */
-(function(){
-  var section = document.getElementById('programs');
-  if(!section) return;
-  var track = section.querySelector('.grid3');
-  var prevBtn = section.querySelector('.prog-arrow.prev');
-  var nextBtn = section.querySelector('.prog-arrow.next');
-  var cards = track ? Array.prototype.slice.call(track.children) : [];
-  if(!track || cards.length < 2) return;
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        rootMargin: '0px 0px -40px 0px',
+        threshold: 0.08
+      });
+      targets.forEach(function (el) { observer.observe(el); });
+    })();
+    /* Programs horizontal slider: smooth chevron button scrolling + drag support. */
+    (function () {
+      var section = document.getElementById('programs');
+      if (!section) return;
+      var track = section.querySelector('.grid3');
+      var prevBtn = section.querySelector('.prog-arrow.prev');
+      var nextBtn = section.querySelector('.prog-arrow.next');
+      var cards = track ? Array.prototype.slice.call(track.children) : [];
+      if (!track || cards.length < 2) return;
 
-  var animId = null;
+      var animId = null;
 
-  function getStops(){
-    var maxScroll = Math.max(0, track.scrollWidth - track.clientWidth);
-    if(maxScroll <= 0) return [0];
-    return cards.map(function(card, idx){
-      if(idx === 0) return 0;
-      if(idx === cards.length - 1) return maxScroll;
-      var center = card.offsetLeft + card.offsetWidth / 2 - track.clientWidth / 2;
-      return Math.max(0, Math.min(maxScroll, center));
-    });
-  }
+      function getStops() {
+        var maxScroll = Math.max(0, track.scrollWidth - track.clientWidth);
+        if (maxScroll <= 0) return [0];
+        return cards.map(function (card, idx) {
+          if (idx === 0) return 0;
+          if (idx === cards.length - 1) return maxScroll;
+          var center = card.offsetLeft + card.offsetWidth / 2 - track.clientWidth / 2;
+          return Math.max(0, Math.min(maxScroll, center));
+        });
+      }
 
-  function animateScrollTo(target){
-    if(animId){ cancelAnimationFrame(animId); animId = null; }
-    var start = track.scrollLeft;
-    var change = target - start;
-    if(Math.abs(change) < 1){
-      track.scrollLeft = target;
-      return;
-    }
-    var duration = 520;
-    var startTime = performance.now();
-    function step(now){
-      var elapsed = now - startTime;
-      var t = Math.min(1, elapsed / duration);
-      var ease = 1 - Math.pow(1 - t, 4);
-      track.scrollLeft = start + change * ease;
-      if(t < 1){
+      function animateScrollTo(target) {
+        if (animId) { cancelAnimationFrame(animId); animId = null; }
+        var start = track.scrollLeft;
+        var change = target - start;
+        if (Math.abs(change) < 1) {
+          track.scrollLeft = target;
+          return;
+        }
+        var duration = 520;
+        var startTime = performance.now();
+        function step(now) {
+          var elapsed = now - startTime;
+          var t = Math.min(1, elapsed / duration);
+          var ease = 1 - Math.pow(1 - t, 4);
+          track.scrollLeft = start + change * ease;
+          if (t < 1) {
+            animId = requestAnimationFrame(step);
+          } else {
+            track.scrollLeft = target;
+            animId = null;
+          }
+        }
         animId = requestAnimationFrame(step);
-      } else {
-        track.scrollLeft = target;
-        animId = null;
       }
-    }
-    animId = requestAnimationFrame(step);
-  }
 
-  function findCurrentStopIndex(stops){
-    var cur = track.scrollLeft;
-    var bestIdx = 0;
-    var bestDist = Infinity;
-    stops.forEach(function(s, i){
-      var d = Math.abs(cur - s);
-      if(d < bestDist){ bestDist = d; bestIdx = i; }
-    });
-    return bestIdx;
-  }
+      function findCurrentStopIndex(stops) {
+        var cur = track.scrollLeft;
+        var bestIdx = 0;
+        var bestDist = Infinity;
+        stops.forEach(function (s, i) {
+          var d = Math.abs(cur - s);
+          if (d < bestDist) { bestDist = d; bestIdx = i; }
+        });
+        return bestIdx;
+      }
 
-  function stepDir(dir){
-    var stops = getStops();
-    if(stops.length < 2) return;
-    var idx = findCurrentStopIndex(stops);
-    var nextIdx = idx + dir;
-    if(nextIdx >= stops.length) nextIdx = 0;
-    if(nextIdx < 0) nextIdx = stops.length - 1;
-    animateScrollTo(stops[nextIdx]);
-  }
+      function stepDir(dir) {
+        var stops = getStops();
+        if (stops.length < 2) return;
+        var idx = findCurrentStopIndex(stops);
+        var nextIdx = idx + dir;
+        if (nextIdx >= stops.length) nextIdx = 0;
+        if (nextIdx < 0) nextIdx = stops.length - 1;
+        animateScrollTo(stops[nextIdx]);
+      }
 
-  if(prevBtn) prevBtn.addEventListener('click', function(){ stepDir(-1); });
-  if(nextBtn) nextBtn.addEventListener('click', function(){ stepDir(1); });
+      if (prevBtn) prevBtn.addEventListener('click', function () { stepDir(-1); });
+      if (nextBtn) nextBtn.addEventListener('click', function () { stepDir(1); });
 
-  var isDown = false, startX = 0, scrollStart = 0;
-  track.addEventListener('mousedown', function(e){
-    if(e.button !== 0) return;
-    if(animId){ cancelAnimationFrame(animId); animId = null; }
-    isDown = true;
-    track.classList.add('is-dragging');
-    startX = e.pageX;
-    scrollStart = track.scrollLeft;
-  });
-  window.addEventListener('mousemove', function(e){
-    if(!isDown) return;
-    e.preventDefault();
-    track.scrollLeft = scrollStart - (e.pageX - startX);
-  });
-  window.addEventListener('mouseup', function(){
-    if(!isDown) return;
-    isDown = false;
-    track.classList.remove('is-dragging');
-  });
-})();
-</script>
-<div class="wl-lightbox" id="wlLightbox" hidden role="dialog" aria-modal="true" aria-label="Photo preview">
-  <div class="wl-lightbox-inner">
-    <button type="button" class="wl-lightbox-x" id="wlLightboxClose" aria-label="Close photo">&times;</button>
-    <img id="wlLightboxImg" src="" alt="">
-    <div class="wl-lightbox-cap" id="wlLightboxCap"></div>
+      var isDown = false, startX = 0, scrollStart = 0;
+      track.addEventListener('mousedown', function (e) {
+        if (e.button !== 0) return;
+        if (animId) { cancelAnimationFrame(animId); animId = null; }
+        isDown = true;
+        track.classList.add('is-dragging');
+        startX = e.pageX;
+        scrollStart = track.scrollLeft;
+      });
+      window.addEventListener('mousemove', function (e) {
+        if (!isDown) return;
+        e.preventDefault();
+        track.scrollLeft = scrollStart - (e.pageX - startX);
+      });
+      window.addEventListener('mouseup', function () {
+        if (!isDown) return;
+        isDown = false;
+        track.classList.remove('is-dragging');
+      });
+    })();
+  </script>
+  <div class="wl-lightbox" id="wlLightbox" hidden role="dialog" aria-modal="true" aria-label="Photo preview">
+    <div class="wl-lightbox-inner">
+      <button type="button" class="wl-lightbox-x" id="wlLightboxClose" aria-label="Close photo">&times;</button>
+      <img id="wlLightboxImg" src="" alt="">
+      <div class="wl-lightbox-cap" id="wlLightboxCap"></div>
+    </div>
   </div>
-</div>
-<script>
-(function(){
-  var box = document.getElementById('wlLightbox');
-  var img = document.getElementById('wlLightboxImg');
-  var cap = document.getElementById('wlLightboxCap');
-  var closeBtn = document.getElementById('wlLightboxClose');
-  if(!box || !img) return;
-  var lastEl = null;
-  function open(fig){
-    var im = fig.querySelector('img');
-    if(!im) return;
-    lastEl = fig;
-    img.src = im.src;
-    img.alt = im.alt || '';
-    cap.textContent = fig.getAttribute('data-cap') || '';
-    box.hidden = false;
-    document.body.style.overflow = 'hidden';
-    closeBtn && closeBtn.focus();
-  }
-  function close(){
-    box.hidden = true;
-    document.body.style.overflow = '';
-    if(lastEl && typeof lastEl.focus === 'function') lastEl.focus();
-  }
-  document.querySelectorAll('.gal-grid figure').forEach(function(fig){
-    fig.addEventListener('click', function(){ open(fig); });
-    fig.addEventListener('keydown', function(e){
-      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); open(fig); }
-    });
-  });
-  closeBtn && closeBtn.addEventListener('click', close);
-  box.addEventListener('click', function(e){ if(e.target === box) close(); });
-  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !box.hidden) close(); });
-})();
-</script></body></html>
+  <script>
+    (function () {
+      var box = document.getElementById('wlLightbox');
+      var img = document.getElementById('wlLightboxImg');
+      var cap = document.getElementById('wlLightboxCap');
+      var closeBtn = document.getElementById('wlLightboxClose');
+      if (!box || !img) return;
+      var lastEl = null;
+      function open(fig) {
+        var im = fig.querySelector('img');
+        if (!im) return;
+        lastEl = fig;
+        img.src = im.src;
+        img.alt = im.alt || '';
+        cap.textContent = fig.getAttribute('data-cap') || '';
+        box.hidden = false;
+        document.body.style.overflow = 'hidden';
+        closeBtn && closeBtn.focus();
+      }
+      function close() {
+        box.hidden = true;
+        document.body.style.overflow = '';
+        if (lastEl && typeof lastEl.focus === 'function') lastEl.focus();
+      }
+      document.querySelectorAll('.gal-grid figure').forEach(function (fig) {
+        fig.addEventListener('click', function () { open(fig); });
+        fig.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(fig); }
+        });
+      });
+      closeBtn && closeBtn.addEventListener('click', close);
+      box.addEventListener('click', function (e) { if (e.target === box) close(); });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !box.hidden) close(); });
+    })();
+  </script>
+</body>
+
+</html>

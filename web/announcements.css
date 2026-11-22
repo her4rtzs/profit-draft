@@ -1226,3 +1226,12 @@ body:not(.dark) .ann-modal {
 .ann-btn.primary:hover {
   box-shadow: none !important;
 }
+
+/* Fix double yellow focus ring on Search announcements input */
+.ann-search-box input,
+.ann-search-box input:focus,
+.ann-search-box input:focus-visible {
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}

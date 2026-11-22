@@ -111,6 +111,14 @@
       }
     };
     updatePreview($("profileName")?.value, $("profileRole")?.value);
+    const avaGrid = $("staffQuickAvaGrid");
+    if (avaGrid && window.ProFitAvatar) {
+      avaGrid.innerHTML = ["av-1", "av-2", "av-3", "av-4", "av-5", "av-6"].map(pid => {
+        const src = window.ProFitAvatar.resolve(pid, pid);
+        const sel = String(profile.photo || "") === pid;
+        return `<button type="button" class="pf-ava-opt${sel ? " sel" : ""}" data-pick-avatar="${pid}" aria-pressed="${sel}" title="Use avatar ${pid.slice(-1)}"><img src="${src}" alt="Avatar ${pid.slice(-1)}"></button>`;
+      }).join("");
+    }
     $("pfDirtyBar")?.classList.remove("on");
   }
 
@@ -131,6 +139,12 @@
     $(id)?.addEventListener("input", checkDirty);
   });
   $("pfDiscardBtn")?.addEventListener("click", () => paint());
+  $("profileDiscardInline")?.addEventListener("click", () => paint());
+  $("staffQuickAvaGrid")?.addEventListener("click", e => {
+    const btn = e.target.closest("[data-pick-avatar]");
+    if (!btn) return;
+    savePhotoToServer(btn.dataset.pickAvatar, "Avatar updated.");
+  });
   $("pfQuickSaveBtn")?.addEventListener("click", () => $("profileForm")?.requestSubmit());
   window.addEventListener("profit:plans-updated", () => {
     if ($("pvReceiptPrice") && window.PLANS?.monthly) {

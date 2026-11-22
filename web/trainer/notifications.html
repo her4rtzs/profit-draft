@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/css/staff.css?v=12">
-<link rel="stylesheet" href="trainer.css?v=12">
+<link rel="stylesheet" href="trainer.css?v=20">
 <link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
 <body data-page="notifications" data-portal="trainer" data-head="none">
 <div class="app">
@@ -37,45 +37,6 @@
             <span data-ico="check"></span> Mark All as Read
           </button>
         </div>
-      </section>
-
-      <!-- KPI Summary Cards -->
-      <section class="tw-kpi-grid tw-anim" style="--i:1" aria-label="Notification metrics">
-        <article class="tw-kpi-card is-amber">
-          <div class="tw-kpi-top">
-            <span class="tw-kpi-label">Unread Alerts</span>
-            <div class="tw-kpi-ico" data-ico="bell"></div>
-          </div>
-          <div class="tw-kpi-val" id="kpiNotifUnread">0</div>
-          <div class="tw-kpi-sub">Awaiting your review</div>
-        </article>
-
-        <article class="tw-kpi-card is-green">
-          <div class="tw-kpi-top">
-            <span class="tw-kpi-label">Total Inbox</span>
-            <div class="tw-kpi-ico" data-ico="layers"></div>
-          </div>
-          <div class="tw-kpi-val" id="kpiNotifTotal">0</div>
-          <div class="tw-kpi-sub">Recent system notifications</div>
-        </article>
-
-        <article class="tw-kpi-card is-purple">
-          <div class="tw-kpi-top">
-            <span class="tw-kpi-label">Coaching &amp; Roster</span>
-            <div class="tw-kpi-ico" data-ico="dumbbell"></div>
-          </div>
-          <div class="tw-kpi-val" id="kpiNotifTrainer">0</div>
-          <div class="tw-kpi-sub">Assignments &amp; schedule notes</div>
-        </article>
-
-        <article class="tw-kpi-card is-blue">
-          <div class="tw-kpi-top">
-            <span class="tw-kpi-label">Gym Bulletins</span>
-            <div class="tw-kpi-ico" data-ico="megaphone"></div>
-          </div>
-          <div class="tw-kpi-val" id="kpiNotifAnn">0</div>
-          <div class="tw-kpi-sub">Facility &amp; announcement alerts</div>
-        </article>
       </section>
 
       <!-- Filter & Search Toolbar -->
@@ -128,7 +89,7 @@
 <script src="../auth.js?v=5"></script>
 <script src="../assets/js/staff-icons.js?v=5"></script>
 <script src="../assets/js/staff-data.js?v=12"></script>
-<script src="../assets/js/staff.js?v=12"></script>
+<script src="../assets/js/staff.js?v=15"></script>
 <script src="trainer.js?v=12"></script>
 <script>
 PF.ready(async () => {
@@ -154,15 +115,16 @@ PF.ready(async () => {
     const trainer = list.filter(isTrainerKind).length;
     const ann = list.filter(isAnnKind).length;
 
-    document.getElementById('kpiNotifUnread').textContent = unread;
-    document.getElementById('kpiNotifTotal').textContent = total;
-    document.getElementById('kpiNotifTrainer').textContent = trainer;
-    document.getElementById('kpiNotifAnn').textContent = ann;
+    const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    setTxt('kpiNotifUnread', unread);
+    setTxt('kpiNotifTotal', total);
+    setTxt('kpiNotifTrainer', trainer);
+    setTxt('kpiNotifAnn', ann);
 
-    document.getElementById('cntNotifAll').textContent = total;
-    document.getElementById('cntNotifUnread').textContent = unread;
-    document.getElementById('cntNotifTrainer').textContent = trainer;
-    document.getElementById('cntNotifAnn').textContent = ann;
+    setTxt('cntNotifAll', total);
+    setTxt('cntNotifUnread', unread);
+    setTxt('cntNotifTrainer', trainer);
+    setTxt('cntNotifAnn', ann);
   }
 
   function getIconConfig(n) {

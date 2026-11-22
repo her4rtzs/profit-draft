@@ -144,6 +144,7 @@
       <div class="tr-card-actions">
         <button type="button" class="tr-btn-outline" data-profile="${t.id}"><i class="fa-regular fa-eye" aria-hidden="true"></i> View Profile</button>
         <button type="button" class="tr-btn-edit" data-edit="${t.id}"><i class="fa-solid fa-pen" aria-hidden="true"></i> Edit</button>
+        <button type="button" class="tr-btn-outline" data-toggle-active="${t.id}" title="${t.is_active ? "Deactivate trainer account" : "Reactivate trainer account"}" style="${t.is_active ? "color:#f87171;border-color:rgba(248,113,113,.32)" : "color:#4ade80;border-color:rgba(74,222,128,.32)"}"><i class="fa-solid ${t.is_active ? "fa-user-slash" : "fa-user-check"}" aria-hidden="true"></i> ${t.is_active ? "Deactivate" : "Set Active"}</button>
       </div>
     </article>`;
   }
@@ -734,7 +735,26 @@
   });
 
   // Directory card interactions
-  list.addEventListener("click", e => {
+  list.addEventListener("click", async e => {
+    const toggleBtn = e.target.closest("[data-toggle-active]");
+    if (toggleBtn) {
+      const t = trainers.find(x => String(x.id) === toggleBtn.dataset.toggleActive);
+      if (!t) return;
+      const nextActive = !t.is_active;
+      const verb = nextActive ? "reactivate" : "deactivate";
+      if (!window.confirm(`Are you sure you want to ${verb} ${t.name}'s account?`)) return;
+      toggleBtn.disabled = true;
+      try {
+        await api.patch(`/staff/trainers/${t.id}/`, { is_active: nextActive });
+        await loadTrainers();
+        say(`${t.name} is now ${nextActive ? "Active" : "Inactive"}.`);
+      } catch (err) {
+        say(err.message || `Could not ${verb} trainer.`, true);
+      } finally {
+        toggleBtn.disabled = false;
+      }
+      return;
+    }
     const editBtn = e.target.closest("[data-edit]");
     if (editBtn) {
       const t = trainers.find(x => String(x.id) === editBtn.dataset.edit);

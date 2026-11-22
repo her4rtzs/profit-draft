@@ -960,8 +960,8 @@ body[data-page="cashier"] .badge.processing::before { background: var(--pf-st-pr
 }
 
 .fn-table--tx {
-  --fn-cols: minmax(115px, 1.15fr) minmax(100px, 1fr) minmax(200px, 2.1fr) minmax(120px, 1fr) minmax(155px, 1.45fr) minmax(100px, 1fr);
-  --fn-min-w: 790px;
+  --fn-cols: minmax(120px, 1.1fr) minmax(110px, 1fr) minmax(160px, 1.35fr) minmax(120px, 1fr) minmax(110px, .95fr) minmax(100px, .9fr);
+  --fn-min-w: 760px;
 }
 
 .fn-table--review {
@@ -1897,4 +1897,21 @@ body[data-page="reports"] .fn-card {
   html body.pf-staff[data-page="payments"] #pane-review .fn-table-scroll {
     overflow-x: hidden !important;
   }
+/* Equal-height (pantay) Record a payment + Today's payments grid */
+.fn-daily-grid {
+  align-items: stretch !important;
+}
+
+.fn-daily-right {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px;
+  height: 100%;
+}
+
+.fn-daily-right > .fn-card {
+  flex: 1 1 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  margin: 0 !important;
 }

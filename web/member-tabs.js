@@ -744,10 +744,17 @@
     } catch { /* ignore */ }
     return null;
   }
+  function formatUniqueMemberId(raw) {
+    const s = String(raw ?? "").trim();
+    if (!s) return "";
+    if (/^M\d{4,}$/i.test(s)) return s.toUpperCase();
+    if (/^\d+$/.test(s)) return "M" + (202600 + Number(s));
+    return s;
+  }
   function serverMember() {
     const me = window.__pfMemberMe;
     if (me && me.user) {
-      const mid = me.user.memberId || me.user.id || "";
+      const mid = formatUniqueMemberId(me.user.memberId || me.user.id || "");
       let emg = {};
       if (mid) {
         try { emg = JSON.parse(localStorage.getItem(EMG_KEY(mid)) || "{}") || {}; } catch { /* ignore */ }
@@ -761,7 +768,7 @@
     }
     const authUser = verifiedAuthUser();
     if (authUser) {
-      const mid = authUser.memberId || authUser.id || "";
+      const mid = formatUniqueMemberId(authUser.memberId || authUser.id || "");
       let emg = {};
       if (mid) {
         try { emg = JSON.parse(localStorage.getItem(EMG_KEY(mid)) || "{}") || {}; } catch { /* ignore */ }
@@ -845,59 +852,167 @@
     if (sidePlanEl && plan && (!sidePlanEl.textContent || sidePlanEl.textContent.trim() === "Membership")) {
       sidePlanEl.textContent = plan;
     }
-    root.innerHTML = `<div class="pp-profile">
-      <aside class="pp-card pp-profile-card">
-        <div class="pp-avatar xl has-photo" aria-hidden="true">${fallbackAva ? `<img src="${esc(fallbackAva)}" alt="">` : esc(initialsOf(m.name))}${m.photoId && !m.photoData ? `<img data-photo-id="${esc(m.photoId)}" alt="" hidden>` : ""}</div>
-        <h3>${esc(m.name)}</h3>
-        <p class="pp-muted">${esc(m.id)}</p>
-        <div class="pp-chips pp-center"><span class="pp-chip">${esc(plan)}</span><span class="pp-status ${status[0]}">${status[1]}</span></div>
-        <dl class="pp-dl">
-          <dt>Membership ends</dt><dd>${hasEnd ? esc(fmt(m.end)) : "—"}</dd>
-          <dt>Member since</dt><dd>${m.start && !Number.isNaN(new Date(m.start).getTime()) ? esc(fmt(m.start)) : "—"}</dd>
-        </dl>
-        <div class="mb-ava-picker">
-          <div class="mb-ava-head"><strong>Avatar</strong><span>Change anytime</span></div>
-          <div class="mb-ava-grid" role="radiogroup" aria-label="Choose an avatar">
-            ${["av-1", "av-2", "av-3", "av-4", "av-5", "av-6"].map(pid => {
-              const pSrc = window.ProFitAvatar ? window.ProFitAvatar.resolve(pid, pid) : "";
-              const isSel = String(m.photoData || "") === pid;
-              return `<button type="button" class="mb-ava-opt${isSel ? " sel" : ""}" data-pick-avatar="${pid}" aria-pressed="${isSel}" title="Use avatar ${pid.slice(-1)}">${pSrc ? `<img src="${esc(pSrc)}" alt="Avatar ${pid.slice(-1)}">` : pid}</button>`;
-            }).join("")}
+    const hasName = String(m.name || "").trim().split(/\s+/).filter(Boolean).length >= 2;
+    const hasPhoto = Boolean(m.photoId || m.photoData);
+    const hasPhone = String(m.phone || "").trim().length >= 7;
+    const hasEmg = String(m.emergencyName || "").trim().length >= 2 || String(m.emergencyPhone || "").trim().length >= 7;
+    const checks = [
+      { ok: hasName, label: "Add your name" },
+      { ok: hasPhoto, label: "Upload a photo" },
+      { ok: hasPhone, label: "Add a mobile number" },
+      { ok: hasEmg, label: "Add emergency contact" }
+    ];
+    const pct = Math.round((checks.filter(c => c.ok).length / checks.length) * 100);
+    const circ = 201.06;
+    const offset = (circ * (1 - pct / 100)).toFixed(2);
+    const avaInner = `${fallbackAva ? `<img src="${esc(fallbackAva)}" alt="">` : `<span>${esc(initialsOf(m.name))}</span>`}${m.photoId && !m.photoData ? `<img data-photo-id="${esc(m.photoId)}" alt="" hidden>` : ""}`;
+
+    root.innerHTML = `<div class="mb-prof-shell">
+      <section class="mb-prof-hero" aria-label="Profile overview">
+        <div class="mb-prof-hero-left">
+          <label class="mb-prof-ava-wrap" for="profilePhotoInput" title="Change photo" tabindex="0">
+            <div class="mb-prof-ava">${avaInner}</div>
+            <span class="mb-prof-ava-badge" aria-hidden="true"><i class="fa-solid fa-camera"></i></span>
+          </label>
+          <input type="file" id="profilePhotoInput" accept="image/*" hidden>
+          <div class="mb-prof-hero-copy">
+            <span class="mb-prof-eyebrow">SIGNED IN AS</span>
+            <h2 id="mbProfHeroName">${esc(m.name)}</h2>
+            <span class="mb-prof-role-pill"><i class="fa-solid fa-check" aria-hidden="true"></i> ${esc(plan)} &middot; ${status[1]}</span>
+            <p class="mb-prof-meta">
+              <span><i class="fa-regular fa-id-badge" aria-hidden="true"></i> ${esc(m.id)}</span>
+              <span><i class="fa-regular fa-calendar" aria-hidden="true"></i> ${hasEnd ? `Ends ${esc(fmt(m.end))}` : "No active expiry"}</span>
+            </p>
+            <div class="mb-prof-hero-btns">
+              <button type="button" class="mb-prof-pw-btn" id="mbProfChangePwBtn"><i class="fa-solid fa-lock" aria-hidden="true"></i> Change password</button>
+              ${hasPhoto ? `<button type="button" class="mb-prof-pw-btn" id="profilePhotoRemove"><i class="fa-solid fa-trash-can" aria-hidden="true"></i> Remove photo</button>` : ""}
+            </div>
           </div>
         </div>
-        <div class="pp-actions pp-center">
-          <label class="pp-btn" for="profilePhotoInput" tabindex="0"><i class="fa-solid fa-camera" aria-hidden="true"></i> ${m.photoId || (m.photoData && !String(m.photoData).startsWith("av-")) ? "Change own photo" : "Upload own photo"}</label>
-          <input type="file" id="profilePhotoInput" accept="image/*" hidden>
-          ${m.photoId || m.photoData ? `<button type="button" class="pp-btn" id="profilePhotoRemove"><i class="fa-solid fa-trash-can" aria-hidden="true"></i> Remove</button>` : ""}
+        <div class="mb-prof-hero-right">
+          <div class="mb-prof-ring-wrap">
+            <svg class="mb-prof-ring-svg" viewBox="0 0 80 80" aria-hidden="true">
+              <circle class="mb-prof-ring-track" cx="40" cy="40" r="32"></circle>
+              <circle class="mb-prof-ring-arc" id="mbProfRingArc" cx="40" cy="40" r="32" stroke-dasharray="${circ}" stroke-dashoffset="${offset}"></circle>
+            </svg>
+            <div class="mb-prof-ring-center">
+              <strong id="mbProfRingPct">${pct}%</strong>
+              <small>complete</small>
+            </div>
+          </div>
+          <ul class="mb-prof-checks" id="mbProfChecks">
+            ${checks.map(c => `<li class="${c.ok ? "is-done" : ""}"><i class="fa-${c.ok ? "solid fa-check" : "regular fa-clock"}" aria-hidden="true"></i> ${c.label}</li>`).join("")}
+          </ul>
         </div>
-        <p class="pp-small pp-muted">Plan and payment changes are handled by the gym team.</p>
-      </aside>
-      <form class="pp-card" id="profileForm" novalidate>
-        <div class="pp-card-head"><div><h3>Personal details</h3><p class="pp-muted">Keep your contact details up to date so the gym can reach you.</p></div>
-          <span class="pp-unsaved" id="profileDirty" hidden><i class="fa-solid fa-circle" aria-hidden="true"></i> Unsaved changes</span></div>
-        <div class="pp-form-grid">
-          <div class="pp-field"><label for="pfName">Full name</label><input id="pfName" maxlength="80" value="${esc(m.name)}"${m.__server ? " readonly" : ""}><small class="pp-err" id="pfName-err" hidden></small></div>
-          <div class="pp-field"><label for="pfEmail">Email (for sign-in)</label><input id="pfEmail" type="email" maxlength="120" value="${esc(m.email)}"${m.__server ? " readonly" : ""}><small class="pp-err" id="pfEmail-err" hidden></small></div>
-          <div class="pp-field"><label for="pfPhone">Mobile number</label><input id="pfPhone" type="tel" maxlength="20" value="${esc(m.phone)}" placeholder="09XX XXX XXXX"><small class="pp-err" id="pfPhone-err" hidden></small></div>
-          <div class="pp-field"><label for="pfAddress">Home address</label><input id="pfAddress" maxlength="160" value="${esc(m.address)}" placeholder="Street, barangay, city"></div>
-          <div class="pp-field"><label for="pfEmgName">Emergency contact name</label><input id="pfEmgName" maxlength="80" value="${esc(m.emergencyName)}"></div>
-          <div class="pp-field"><label for="pfEmgPhone">Emergency contact phone</label><input id="pfEmgPhone" type="tel" maxlength="20" value="${esc(m.emergencyPhone)}"><small class="pp-err" id="pfEmgPhone-err" hidden></small></div>
-        </div>
-        <div class="pp-actions pp-actions-end">
-          <button type="button" class="pp-btn" id="profileDiscard">Discard changes</button>
-          <button type="submit" class="pp-btn pp-btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save profile</button>
-        </div>
-      </form>
+      </section>
+
+      <div class="mb-prof-grid">
+        <form class="pp-card mb-prof-form-card" id="profileForm" novalidate>
+          <div class="pp-card-head">
+            <div>
+              <h3><i class="fa-regular fa-id-card" aria-hidden="true" style="color:#e8b93a;margin-right:6px"></i> Your details</h3>
+              <p class="pp-muted">Shown in the sidebar, the header avatar, and your gym check-in pass.</p>
+            </div>
+            <span class="pp-unsaved" id="profileDirty" hidden><i class="fa-solid fa-circle" aria-hidden="true"></i> Unsaved changes</span>
+          </div>
+          <div class="pp-form-grid">
+            <div class="pp-field"><label for="pfName">Full name</label><input id="pfName" maxlength="80" value="${esc(m.name)}" placeholder="First and last name"><small class="pp-err" id="pfName-err" hidden></small></div>
+            <div class="pp-field"><label for="pfEmail">Email (for sign-in)</label><input id="pfEmail" type="email" maxlength="120" value="${esc(m.email)}"${m.__server ? " readonly" : ""}><small class="pp-err" id="pfEmail-err" hidden></small></div>
+            <div class="pp-field"><label for="pfPhone">Mobile number</label><input id="pfPhone" type="tel" maxlength="20" value="${esc(m.phone)}" placeholder="09XX XXX XXXX"><small class="pp-err" id="pfPhone-err" hidden></small></div>
+            <div class="pp-field"><label for="pfAddress">Home address</label><input id="pfAddress" maxlength="160" value="${esc(m.address)}" placeholder="Street, barangay, city"></div>
+            <div class="pp-field"><label for="pfEmgName">Emergency contact name</label><input id="pfEmgName" maxlength="80" value="${esc(m.emergencyName)}" placeholder="Contact person"></div>
+            <div class="pp-field"><label for="pfEmgPhone">Emergency contact phone</label><input id="pfEmgPhone" type="tel" maxlength="20" value="${esc(m.emergencyPhone)}" placeholder="09XX XXX XXXX"><small class="pp-err" id="pfEmgPhone-err" hidden></small></div>
+          </div>
+          <div class="pp-actions pp-actions-end" style="margin-top:auto;padding-top:16px">
+            <button type="button" class="pp-btn" id="profileDiscard">Discard changes</button>
+            <button type="submit" class="pp-btn pp-btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save profile</button>
+          </div>
+        </form>
+
+        <aside class="pp-card mb-prof-preview-card" aria-label="How you appear">
+          <div class="pp-card-head">
+            <div>
+              <h3><i class="fa-regular fa-eye" aria-hidden="true" style="color:#e8b93a;margin-right:6px"></i> How you appear</h3>
+              <p class="pp-muted">Updates live as you edit.</p>
+            </div>
+          </div>
+          <div class="mb-prev-block">
+            <span class="mb-prev-lbl">SIDEBAR</span>
+            <div class="mb-prev-chip">
+              <div class="mb-prev-mini-ava">${avaInner}</div>
+              <div>
+                <strong id="mbPrevName">${esc(m.name)}</strong>
+                <small>${esc(plan)}</small>
+              </div>
+            </div>
+          </div>
+          <div class="mb-prev-block">
+            <span class="mb-prev-lbl">CHECK-IN PASS</span>
+            <div class="mb-prev-pass">
+              <div>
+                <strong id="mbPrevPassName">${esc(m.name)}</strong>
+                <small id="mbPrevPhone">${esc(m.phone || m.id)}</small>
+              </div>
+              <span class="pp-status ${status[0]}">${status[1]}</span>
+            </div>
+          </div>
+          <div class="mb-ava-picker" style="margin-top:auto;padding-top:10px">
+            <div class="mb-ava-head"><strong>Quick avatar</strong><span>Change anytime</span></div>
+            <div class="mb-ava-grid" role="radiogroup" aria-label="Choose an avatar">
+              ${["av-1", "av-2", "av-3", "av-4", "av-5", "av-6"].map(pid => {
+                const pSrc = window.ProFitAvatar ? window.ProFitAvatar.resolve(pid, pid) : "";
+                const isSel = String(m.photoData || "") === pid;
+                return `<button type="button" class="mb-ava-opt${isSel ? " sel" : ""}" data-pick-avatar="${pid}" aria-pressed="${isSel}" title="Use avatar ${pid.slice(-1)}">${pSrc ? `<img src="${esc(pSrc)}" alt="Avatar ${pid.slice(-1)}">` : pid}</button>`;
+              }).join("")}
+            </div>
+          </div>
+        </aside>
+      </div>
     </div>`;
     hydrate(root);
     bindProfile(root);
+    root.querySelector("#mbProfChangePwBtn")?.addEventListener("click", () => {
+      if (window.PFChangePassword && typeof window.PFChangePassword.open === "function") {
+        window.PFChangePassword.open();
+      } else {
+        toast("Change password is available after signing in.", true);
+      }
+    });
+    const syncLivePreview = () => {
+      const f = root.querySelector("#profileForm");
+      if (!f) return;
+      const nm = f.pfName.value.trim() || m.name || "Member";
+      const ph = f.pfPhone.value.trim();
+      const emg = f.pfEmgName.value.trim() || f.pfEmgPhone.value.trim();
+      if ($("mbProfHeroName")) $("mbProfHeroName").textContent = nm;
+      if ($("mbPrevName")) $("mbPrevName").textContent = nm;
+      if ($("mbPrevPassName")) $("mbPrevPassName").textContent = nm;
+      if ($("mbPrevPhone")) $("mbPrevPhone").textContent = ph || m.id;
+      const liveChecks = [
+        nm.split(/\s+/).filter(Boolean).length >= 2,
+        hasPhoto,
+        ph.length >= 7,
+        emg.length >= 2
+      ];
+      const livePct = Math.round((liveChecks.filter(Boolean).length / 4) * 100);
+      if ($("mbProfRingPct")) $("mbProfRingPct").textContent = `${livePct}%`;
+      if ($("mbProfRingArc")) $("mbProfRingArc").style.strokeDashoffset = (circ * (1 - livePct / 100)).toFixed(2);
+      const listEl = $("mbProfChecks");
+      if (listEl) {
+        const labels = ["Add your name", "Upload a photo", "Add a mobile number", "Add emergency contact"];
+        listEl.innerHTML = labels.map((lbl, idx) =>
+          `<li class="${liveChecks[idx] ? "is-done" : ""}"><i class="fa-${liveChecks[idx] ? "solid fa-check" : "regular fa-clock"}" aria-hidden="true"></i> ${lbl}</li>`
+        ).join("");
+      }
+    };
+    root.querySelector("#profileForm")?.addEventListener("input", syncLivePreview);
   }
   function bindProfile(root) {
     const form = root.querySelector("#profileForm");
     const dirty = root.querySelector("#profileDirty");
     form.addEventListener("input", () => { dirty.hidden = false; });
     root.querySelector("#profileDiscard").addEventListener("click", renderProfile);
-    form.addEventListener("submit", e => {
+    form.addEventListener("submit", async e => {
       e.preventDefault();
       const m = profileMember();
       if (!m) return;
@@ -908,31 +1023,55 @@
       root.querySelectorAll(".pp-err").forEach(el => { el.hidden = true; el.textContent = ""; });
       const fail = (id, msg) => { const el = root.querySelector(`#${id}-err`); el.textContent = msg; el.hidden = false; };
       let ok = true;
-      if (v.name.length < 2) { fail("pfName", "Enter your full name."); ok = false; }
+      if (v.name.split(/\s+/).filter(Boolean).length < 2) { fail("pfName", "Enter your first and last name."); ok = false; }
       if (!validEmail(v.email)) { fail("pfEmail", "Enter a valid email address."); ok = false; }
       else if (hasDB && DB.members.some(x => x.id !== m.id && x.email.toLowerCase() === v.email.toLowerCase())) { fail("pfEmail", "Another account already uses this email."); ok = false; }
       if (!validPhone(v.phone)) { fail("pfPhone", "Enter a valid mobile number."); ok = false; }
       if (!validPhone(v.emergencyPhone)) { fail("pfEmgPhone", "Enter a valid phone number."); ok = false; }
       if (!ok) return toast("Please fix the highlighted fields.", true);
-      Object.assign(m, v);
-      persistProfileMember(m);
-      if (m.__server) {
-        window.ProFitAPI.patch("/member/me/", { phone: v.phone, address: v.address }).then(r => {
-          if (window.__pfMemberMe?.user) { window.__pfMemberMe.user.phone = r.phone; window.__pfMemberMe.user.address = r.address; }
+
+      const submitBtn = form.querySelector('button[type="submit"]');
+      if (submitBtn) submitBtn.disabled = true;
+      try {
+        if (m.__server) {
+          const r = await window.ProFitAPI.patch("/member/me/", { name: v.name, phone: v.phone, address: v.address });
+          if (r?.name) v.name = r.name;
+          if (window.__pfMemberMe?.user) {
+            window.__pfMemberMe.user.name = v.name;
+            window.__pfMemberMe.user.phone = r?.phone ?? v.phone;
+            window.__pfMemberMe.user.address = r?.address ?? v.address;
+          }
           window.__pfRefreshProfileCard?.();
-        }).catch(err => toast(err.message || "Phone and address could not be saved.", true));
+        }
+        Object.assign(m, v);
+        persistProfileMember(m);
+        if (!m.__local) {
+          const session = sessionMember() || {};
+          try {
+            localStorage.setItem("profit-member-logged-in", JSON.stringify({ ...session, name: v.name, email: v.email, phone: v.phone, address: v.address, emergencyName: v.emergencyName, emergencyPhone: v.emergencyPhone }));
+            const verified = JSON.parse(sessionStorage.getItem("profit-verified-session") || "null");
+            if (verified) sessionStorage.setItem("profit-verified-session", JSON.stringify({ ...verified, name: v.name }));
+          } catch { /* ignore */ }
+        }
+        const firstRaw = v.name.split(/\s+/)[0] || "Member";
+        const firstCap = firstRaw.charAt(0).toUpperCase() + firstRaw.slice(1);
+        const greeting = $("memberGreeting");
+        if (greeting) greeting.innerHTML = `${esc(firstCap)},<br>let's get<br>to work.`;
+        const head = $("memberName");
+        if (head) head.textContent = v.name;
+        const initials = initialsOf(v.name);
+        [$("memberInitials"), $("memberTopInitials")].forEach(el => {
+          if (el && !el.querySelector("img")) el.textContent = initials;
+        });
+        const profSub = $("mbStProfSub");
+        if (profSub) profSub.textContent = `${v.name} · ${v.email}`;
+        toast("Profile updated.");
+        renderProfile();
+      } catch (err) {
+        toast(err.message || "Could not save your profile.", true);
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
       }
-      if (!m.__local) {
-        const session = sessionMember() || {};
-        try { localStorage.setItem("profit-member-logged-in", JSON.stringify({ ...session, name: v.name, email: v.email, phone: v.phone, address: v.address, emergencyName: v.emergencyName, emergencyPhone: v.emergencyPhone })); } catch { /* ignore */ }
-      }
-      const greeting = $("memberGreeting");
-      if (greeting) greeting.textContent = `Welcome, ${v.name.split(" ")[0]}!`;
-      const initials = initialsOf(v.name);
-      const face = $("memberInitials"); if (face) face.textContent = initials;
-      const head = $("memberName"); if (head) head.textContent = v.name.split(" ")[0];
-      toast("Profile updated.");
-      renderProfile();
     });
     root.querySelectorAll("[data-pick-avatar]").forEach(btn => {
       btn.addEventListener("click", async () => {
@@ -1233,11 +1372,13 @@
   function initSchedule() {
     const root = $("scheduleRoot");
     if (!root) return;
-    root.innerHTML = `<div class="pp-card" style="margin-bottom:16px">
-        <div class="pp-card-head"><div><h3>Book a class</h3><p class="pp-muted">Tap a day to see what is running. Cancel any time.</p></div></div>
-        <div id="scheduleCal" class="pp-cal"></div>
+    root.innerHTML = `<div class="mb-sched-split">
+        <div class="pp-card mb-sched-cal">
+          <div class="pp-card-head"><div><h3>Book a class</h3><p class="pp-muted">Tap a day to see what is running. Cancel any time.</p></div></div>
+          <div id="scheduleCal" class="pp-cal"></div>
+        </div>
+        <div class="pp-card mb-sched-day" id="scheduleDayCard"></div>
       </div>
-      <div class="pp-card" id="scheduleDayCard"></div>
       <div class="pp-card" id="myPlanCard"></div>`;
     let anchor = new Date(), selected = todayISO();
     const cal = $("scheduleCal");
@@ -1344,82 +1485,259 @@
     if (!root) return;
     const prefs = readPrefs();
     const dark = document.body.classList.contains("dark");
-    let session = null;
-    try { session = JSON.parse(localStorage.getItem("profit-member-logged-in") || "null"); } catch { /* ignore */ }
-    root.innerHTML = `<div class="pp-two">
-      <div class="pp-card">
-        <div class="pp-card-head"><div><h3>Appearance</h3><p class="pp-muted">Pick how ProFit looks on this device.</p></div></div>
-        <div class="pp-segment" role="radiogroup" aria-label="Theme">
-          <button type="button" role="radio" class="${dark ? "active" : ""}" data-theme-pick="dark" aria-checked="${dark}"><i class="fa-solid fa-moon"></i> Dark</button>
-          <button type="button" role="radio" class="${dark ? "" : "active"}" data-theme-pick="light" aria-checked="${!dark}">${SUN_SVG} Light</button>
-        </div>
-        <div class="pp-field" style="margin-top:18px">
-          <span class="pp-label" id="lblMemberAccent">Accent colour</span>
-          <div class="pp-swatches" role="radiogroup" aria-labelledby="lblMemberAccent">${ACCENT_SWATCHES.map(a => `<button type="button" class="pp-swatch" role="radio" data-accent="${a.id}" aria-checked="false" style="--sw:${a.hex}"><span class="pp-swatch-dot"></span><span class="pp-swatch-label">${esc(a.label)}</span></button>`).join("")}</div>
-          <p class="pp-small pp-muted">Your favourite colour, everywhere in the app.</p>
-        </div>
-      </div>
-      <div class="pp-card">
-        <div class="pp-card-head"><div><h3>Notifications</h3><p class="pp-muted">What the gym can nudge you about.</p></div></div>
-        <label class="pp-check"><input type="checkbox" data-pref="classReminders" ${prefs.classReminders ? "checked" : ""}><span>Class reminders an hour before I am booked in</span></label>
-        <label class="pp-check"><input type="checkbox" data-pref="weeklyRecap" ${prefs.weeklyRecap ? "checked" : ""}><span>A weekly recap of my visits and progress</span></label>
-        <div id="memberAnnounceList" class="pp-announce-list" style="padding:0;margin-top:14px"></div>
-      </div>
-    </div>
-    <div class="pp-two">
-      <div class="pp-card">
-        <div class="pp-card-head"><div><h3>Account</h3><p class="pp-muted">Your membership details.</p></div></div>
-        <dl class="pp-dl">
-          <dt>Name</dt><dd id="acctName">${esc(session?.name || "Demo Member")}</dd>
-          <dt>Email</dt><dd id="acctEmail">${esc(session?.email || "member@profit.test")}</dd>
-          <dt>Phone</dt><dd id="acctPhone">${esc(session?.phone || "—")}</dd>
-        </dl>
-        <div class="pp-actions">
-          <button class="pp-btn pp-btn-primary" type="button" data-member-goto="profile"><i class="fa-solid fa-pen"></i> Edit my profile</button>
-          <button class="pp-btn" type="button" data-member-goto="profile"><i class="fa-solid fa-camera"></i> Change photo</button>
-        </div>
-      </div>
-      <div class="pp-card pp-note">
-        <div class="pp-card-head"><div><h3>My data</h3><p class="pp-muted">Diary, goals, weights and bookings stored in this browser.</p></div></div>
-        <p>Nothing here leaves your device. You can clear it whenever you want a fresh start.</p>
-        <div class="pp-actions"><button class="pp-btn pp-btn-danger" type="button" id="resetMemberTools"><i class="fa-solid fa-trash-can"></i> Reset my training data</button></div>
-      </div>
-    </div>`;
+    const m = profileMember() || {};
+    const displayName = m.name || window.__pfMemberMe?.user?.name || "Member";
+    const displayEmail = m.email || window.__pfMemberMe?.user?.email || "";
+    const profSubText = displayEmail ? `${displayName} · ${displayEmail}` : "Manage your name, photo, and contact info";
+    let savedFont = "md";
+    let badgeOn = true;
+    try {
+      savedFont = localStorage.getItem("pf-font-size") || "md";
+      badgeOn = localStorage.getItem("pref-badge") !== "off";
+    } catch { /* ignore */ }
 
-    const accent = readAccent();
-    const paintAccents = () => root.querySelectorAll("[data-accent]").forEach(b => {
-      const on = b.dataset.accent === accent.value;
-      b.setAttribute("aria-checked", String(on));
-      b.classList.toggle("is-on", on);
-    });
-    paintAccents();
-    root.querySelectorAll("[data-accent]").forEach(btn => btn.addEventListener("click", () => {
-      accent.value = btn.dataset.accent;
-      writeAccent(accent.value);
-      paintAccents();
-      toast("Accent colour saved.");
+    root.innerHTML = `<section class="mb-st-shell" aria-label="Member settings">
+      <nav class="mb-st-sidenav" id="mbStSideNav" aria-label="Settings sections">
+        <button type="button" data-st-jump="mbStAccount" class="on"><i class="fa-regular fa-user" aria-hidden="true"></i> Account</button>
+        <button type="button" data-st-jump="mbStNotifications"><i class="fa-regular fa-bell" aria-hidden="true"></i> Notifications</button>
+        <button type="button" data-st-jump="mbStAppearance"><i class="fa-regular fa-sun" aria-hidden="true"></i> Appearance</button>
+        <button type="button" data-st-jump="mbStGeneral"><i class="fa-solid fa-globe" aria-hidden="true"></i> General</button>
+        <button type="button" data-st-jump="mbStInstall"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i> Install the app</button>
+        <button type="button" data-st-jump="mbStData"><i class="fa-solid fa-database" aria-hidden="true"></i> My Data</button>
+      </nav>
+      <div class="mb-st-stack">
+      <!-- Account (Member-allowed items only; Change Password lives inside Settings) -->
+      <article class="mb-st-card" id="mbStAccount">
+        <div class="mb-st-head"><i class="fa-regular fa-user" aria-hidden="true"></i> Account</div>
+        <button class="mb-st-row" type="button" data-member-goto="profile">
+          <div class="mb-st-lead">
+            <span class="mb-st-ico" aria-hidden="true"><i class="fa-regular fa-user"></i></span>
+            <div class="mb-st-copy"><span>Edit Profile</span><small id="mbStProfSub">${esc(profSubText)}</small></div>
+          </div>
+          <span class="mb-st-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
+        </button>
+        <button class="mb-st-row" type="button" id="mbStChangePwBtn">
+          <div class="mb-st-lead">
+            <span class="mb-st-ico" aria-hidden="true"><i class="fa-solid fa-lock"></i></span>
+            <div class="mb-st-copy"><span>Change Password</span><small>Update your account sign-in password</small></div>
+          </div>
+          <span class="mb-st-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
+        </button>
+      </article>
+
+      <!-- Notifications -->
+      <article class="mb-st-card" id="mbStNotifications">
+        <div class="mb-st-head"><i class="fa-regular fa-bell" aria-hidden="true"></i> Notifications</div>
+        <label class="mb-st-row mb-st-toggle-row">
+          <div class="mb-st-copy"><span>Unread Badge</span><small>Show unread count on the bell icon</small></div>
+          <input type="checkbox" id="mbPrefBadge" ${badgeOn ? "checked" : ""}>
+        </label>
+        <label class="mb-st-row mb-st-toggle-row">
+          <div class="mb-st-copy"><span>Class Reminders</span><small>Remind me an hour before a booked class</small></div>
+          <input type="checkbox" data-pref="classReminders" ${prefs.classReminders ? "checked" : ""}>
+        </label>
+        <label class="mb-st-row mb-st-toggle-row">
+          <div class="mb-st-copy"><span>Weekly Recap</span><small>Summary of my weekly visits and streak</small></div>
+          <input type="checkbox" data-pref="weeklyRecap" ${prefs.weeklyRecap ? "checked" : ""}>
+        </label>
+        <button class="mb-st-row" type="button" data-member-goto="announcements">
+          <span>All Notifications</span>
+          <span class="mb-st-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
+        </button>
+      </article>
+
+      <!-- Appearance -->
+      <article class="mb-st-card" id="mbStAppearance">
+        <div class="mb-st-head"><i class="fa-regular fa-sun" aria-hidden="true"></i> Appearance</div>
+        <label class="mb-st-row mb-st-toggle-row">
+          <div class="mb-st-copy"><span>Dark Mode</span><small>Switch between dark obsidian and warm ivory</small></div>
+          <input type="checkbox" id="mbPrefDark" ${dark ? "checked" : ""}>
+        </label>
+        <div class="mb-st-font-row">
+          <span>Font Size</span>
+          <div class="mb-st-pills" role="radiogroup" aria-label="Font size">
+            <button type="button" role="radio" data-mb-font="sm" class="${savedFont === "sm" ? "active" : ""}" aria-checked="${savedFont === "sm"}">Small</button>
+            <button type="button" role="radio" data-mb-font="md" class="${savedFont === "md" ? "active" : ""}" aria-checked="${savedFont === "md"}">Medium</button>
+            <button type="button" role="radio" data-mb-font="lg" class="${savedFont === "lg" ? "active" : ""}" aria-checked="${savedFont === "lg"}">Large</button>
+          </div>
+        </div>
+        <div class="mb-st-font-prev" id="mbStFontPrev">
+          <strong>Preview</strong>
+          <span>Your Monthly Plan is active. Show your QR at the front desk to check in.</span>
+        </div>
+      </article>
+
+      <!-- General -->
+      <article class="mb-st-card" id="mbStGeneral">
+        <div class="mb-st-head"><i class="fa-solid fa-globe" aria-hidden="true"></i> General</div>
+        <div class="mb-st-row">
+          <span>Language</span>
+          <span class="mb-st-end">English</span>
+        </div>
+        <button class="mb-st-row" type="button" id="mbStHelpBtn">
+          <span>Help &amp; Support</span>
+          <span class="mb-st-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
+        </button>
+      </article>
+
+      <!-- Install the app -->
+      <article class="mb-st-card" id="mbStInstall">
+        <div class="mb-st-head"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i> Install the app</div>
+        <div class="mb-st-install-body">
+          <p id="installHelpStatus" role="status" style="margin:0 0 10px;font-weight:600">You can add ProFit to your home screen.</p>
+          <div data-install-steps>
+            <p style="margin:0 0 6px;font-weight:700">iPhone (Safari)</p>
+            <ol style="margin:0 0 12px 18px;padding:0">
+              <li>Open ProFit in Safari.</li>
+              <li>Tap the Share button.</li>
+              <li>Tap Add to Home Screen, then Add.</li>
+            </ol>
+            <p style="margin:0 0 6px;font-weight:700">Android (Chrome)</p>
+            <ol style="margin:0 0 0 18px;padding:0">
+              <li>Open ProFit in Chrome.</li>
+              <li>Tap the three-dot menu.</li>
+              <li>Tap Install app (or Add to Home screen), then Install.</li>
+            </ol>
+          </div>
+        </div>
+      </article>
+
+      <!-- My data & Logout -->
+      <article class="mb-st-card" id="mbStData">
+        <div class="mb-st-head"><i class="fa-solid fa-database" aria-hidden="true"></i> My Data</div>
+        <button class="mb-st-row mb-st-danger-row" type="button" id="resetMemberTools">
+          <div class="mb-st-copy"><span>Reset local training data</span><small>Clears diary, goals, and bookings saved in this browser</small></div>
+          <span class="mb-st-end"><i class="fa-solid fa-trash-can" aria-hidden="true"></i></span>
+        </button>
+      </article>
+
+      <article class="mb-st-card mb-st-logout-card">
+        <button class="mb-st-logout-btn" type="button" data-logout>
+          <i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i> Logout
+        </button>
+      </article>
+      </div>
+    </section>`;
+
+    // Side section jump-nav
+    const navBtns = [...root.querySelectorAll("[data-st-jump]")];
+    navBtns.forEach(btn => btn.addEventListener("click", () => {
+      navBtns.forEach(b => b.classList.toggle("on", b === btn));
+      const target = document.getElementById(btn.dataset.stJump);
+      target?.scrollIntoView({ behavior: "smooth", block: "start" });
     }));
 
-    const announceBox = $("memberAnnounceList");
-    if (announceBox && window.ProFitAnnouncements) {
-      const items = window.ProFitAnnouncements.forAudience("Members");
-      announceBox.innerHTML = items.length ? items.slice(0, 4).map(item => `<article class="pp-announce">
-        <div class="pp-announce-head"><span class="pp-chip">From the gym</span><small>${esc(window.ProFitAnnouncements.timeAgo(item.at))}</small></div>
-        <strong>${esc(item.title)}</strong><p>${esc(item.message)}</p></article>`).join("")
-        : `<p class="pp-muted pp-small">No announcements right now.</p>`;
-    }
+    // Change Password modal trigger inside Settings
+    root.querySelector("#mbStChangePwBtn")?.addEventListener("click", () => {
+      if (window.PFChangePassword && typeof window.PFChangePassword.open === "function") {
+        window.PFChangePassword.open();
+      } else {
+        toast("Change password is available after signing in.", true);
+      }
+    });
 
-    root.querySelectorAll("[data-theme-pick]").forEach(btn => btn.addEventListener("click", () => {
-      const d = btn.dataset.themePick === "dark";
+    // Dark Mode toggle
+    const darkToggle = root.querySelector("#mbPrefDark");
+    darkToggle?.addEventListener("change", () => {
+      const d = darkToggle.checked;
       document.body.classList.toggle("dark", d);
       try { localStorage.setItem("theme", d ? "dark" : "light"); } catch { /* ignore */ }
-      root.querySelectorAll("[data-theme-pick]").forEach(b => {
-        const on = (b.dataset.themePick === "dark") === d;
-        b.classList.toggle("active", on);
-        b.setAttribute("aria-checked", String(on));
-      });
       window.__pfPaintThemeIcon?.();
-    }));
+    });
+
+    // Unread Badge toggle
+    const badgeToggle = root.querySelector("#mbPrefBadge");
+    badgeToggle?.addEventListener("change", () => {
+      const on = badgeToggle.checked;
+      try { localStorage.setItem("pref-badge", on ? "on" : "off"); } catch { /* ignore */ }
+      document.body.classList.toggle("hide-notif-badge", !on);
+      toast("Preference saved.");
+    });
+
+    // Font Size selector (scales both preview text and portal content)
+    const FONT_SCALE = { sm: "13px", md: "15px", lg: "17.5px" };
+    const PREVIEW_SIZE = { sm: "12px", md: "14px", lg: "17px" };
+    const applyFont = size => {
+      const key = FONT_SCALE[size] ? size : "md";
+      document.documentElement.dataset.fontSize = key;
+      document.documentElement.style.fontSize = FONT_SCALE[key];
+      const prevEl = root.querySelector("#mbStFontPrev span");
+      if (prevEl) prevEl.style.fontSize = PREVIEW_SIZE[key];
+      try { localStorage.setItem("pf-font-size", key); } catch { /* ignore */ }
+      root.querySelectorAll("[data-mb-font]").forEach(btn => {
+        const on = btn.dataset.mbFont === key;
+        btn.classList.toggle("active", on);
+        btn.setAttribute("aria-checked", String(on));
+      });
+    };
+    applyFont(savedFont);
+    root.querySelectorAll("[data-mb-font]").forEach(btn => btn.addEventListener("click", () => applyFont(btn.dataset.mbFont)));
+
+    // Help & Support modal with interactive Contact / FAQs / Terms / Privacy tabs (exact OG info)
+    root.querySelector("#mbStHelpBtn")?.addEventListener("click", () => {
+      modal({
+        title: "Help & Support",
+        confirmText: "Close",
+        body: `<div class="mb-help-modal-body">
+          <div class="mb-st-pills" role="tablist" aria-label="Help topics" style="margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap">
+            <button type="button" role="tab" class="active" data-mb-help="contact" aria-selected="true" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px"><i class="fa-solid fa-headset" aria-hidden="true"></i> Contact</button>
+            <button type="button" role="tab" data-mb-help="faqs" aria-selected="false" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px"><i class="fa-regular fa-circle-question" aria-hidden="true"></i> FAQs</button>
+            <button type="button" role="tab" data-mb-help="terms" aria-selected="false" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px"><i class="fa-solid fa-file-contract" aria-hidden="true"></i> Terms</button>
+            <button type="button" role="tab" data-mb-help="privacy" aria-selected="false" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Privacy</button>
+          </div>
+          <div style="max-height:50vh;overflow-y:auto;padding-right:4px">
+            <div data-mb-help-pane="contact" style="display:grid;gap:10px">
+              <a href="tel:+639060536064" style="display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.1);text-decoration:none;color:inherit">
+                <span class="mb-st-ico"><i class="fa-solid fa-phone" aria-hidden="true"></i></span>
+                <div><strong style="display:block;font-size:13.5px">Call Functional Performance</strong><small style="opacity:.75">0906 053 6064</small></div>
+              </a>
+              <a href="mailto:FunctionalPerformance.2022@gmail.com" style="display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.1);text-decoration:none;color:inherit">
+                <span class="mb-st-ico"><i class="fa-regular fa-envelope" aria-hidden="true"></i></span>
+                <div><strong style="display:block;font-size:13.5px">Email</strong><small style="opacity:.75">FunctionalPerformance.2022@gmail.com</small></div>
+              </a>
+              <div style="display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.1)">
+                <span class="mb-st-ico"><i class="fa-solid fa-location-dot" aria-hidden="true"></i></span>
+                <div><strong style="display:block;font-size:13.5px">Address</strong><small style="opacity:.75">Luksuhin - Mangas Rd., Saray, Mangas 1, Alfonso, Cavite, Philippines</small></div>
+              </div>
+            </div>
+            <div data-mb-help-pane="faqs" hidden style="display:grid;gap:10px;font-size:13px">
+              <div style="padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.1)"><strong style="display:block;margin-bottom:4px">How do I sign in?</strong><span style="opacity:.8">Use the email or username and password you set when joining online, or the account details provided by the Gym.</span></div>
+              <div style="padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.1)"><strong style="display:block;margin-bottom:4px">I forgot my password. What do I do?</strong><span style="opacity:.8">Use the Forgot password? link on the Sign in page to receive a 6-digit verification code, or contact the gym front desk.</span></div>
+              <div style="padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.1)"><strong style="display:block;margin-bottom:4px">How do I check my membership, payments, and attendance?</strong><span style="opacity:.8">After you sign in, your member home shows your membership status, expiry date, recent paid invoices, and recent gym check-ins.</span></div>
+              <div style="padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.1)"><strong style="display:block;margin-bottom:4px">How do I request a trainer?</strong><span style="opacity:.8">You can request a trainer from your member home. The Gym reviews every request and may approve, change, or decline it.</span></div>
+            </div>
+            <div data-mb-help-pane="terms" hidden style="display:grid;gap:10px;font-size:13px">
+              <div style="padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.1)"><strong style="display:block;margin-bottom:4px">Terms of Service (Last updated: October 2026)</strong><span style="opacity:.8">By using ProFit, the gym management system used by Functional Performance (the "Gym"), you agree to keep your login private, provide accurate details, and report unauthorized access immediately.</span></div>
+              <div style="padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.1)"><strong style="display:block;margin-bottom:4px">Memberships, Attendance &amp; Payments</strong><span style="opacity:.8">Sign-up is free and starts a seven-day trial with app access only. To activate a gym membership, pay cash at the desk or submit a GCash claim with a reference number and screenshot link for staff review. Memberships automatically expire at the end of the plan period unless renewed.</span></div>
+            </div>
+            <div data-mb-help-pane="privacy" hidden style="display:grid;gap:10px;font-size:13px">
+              <div style="padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.1)"><strong style="display:block;margin-bottom:4px">Privacy Policy (Last updated: October 2026)</strong><span style="opacity:.8">Data controller: Functional Performance. Passwords and one-time verification codes are stored only as secure hashes, traffic runs over HTTPS, and access is limited by role (Data Privacy Act of 2012 / Republic Act No. 10173).</span></div>
+              <div style="padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.1)"><strong style="display:block;margin-bottom:4px">Retention &amp; Contact</strong><span style="opacity:.8">Attendance and payment history remain stored so you can renew without losing records. For privacy requests, contact 0906 053 6064 or FunctionalPerformance.2022@gmail.com.</span></div>
+            </div>
+          </div>
+        </div>`
+      });
+      setTimeout(() => {
+        const wrap = document.querySelector(".mb-help-modal-body");
+        if (!wrap) return;
+        const cancelBtn = wrap.closest(".pp-modal, dialog, [role='dialog']")?.querySelector("[data-cancel], .pp-btn:not(.pp-btn-primary)");
+        if (cancelBtn && /cancel/i.test(cancelBtn.textContent || "")) cancelBtn.hidden = true;
+        wrap.querySelectorAll("[data-mb-help]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const key = btn.dataset.mbHelp;
+            wrap.querySelectorAll("[data-mb-help]").forEach(b => {
+              const on = b === btn;
+              b.classList.toggle("active", on);
+              b.setAttribute("aria-selected", String(on));
+            });
+            wrap.querySelectorAll("[data-mb-help-pane]").forEach(p => {
+              p.hidden = p.dataset.mbHelpPane !== key;
+            });
+          });
+        });
+      }, 0);
+    });
+
     root.querySelectorAll("[data-pref]").forEach(input => input.addEventListener("change", () => {
       const next = readPrefs();
       next[input.dataset.pref] = input.checked;
