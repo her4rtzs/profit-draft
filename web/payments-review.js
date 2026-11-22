@@ -48,23 +48,48 @@
             const id = esc(c.id);
             const link = esc(c.proof_link);
             const member = esc(c.member_name);
-            const plan = c.plan ? c.plan.charAt(0).toUpperCase() + c.plan.slice(1) : "Membership";
+            const reference = esc(c.reference_number);
+            const plan = esc(c.plan ? c.plan.charAt(0).toUpperCase() + c.plan.slice(1) : "Membership");
+            const amount = "\u20b1" + esc((c.amount_centavos / 100).toFixed(2));
+            const submitted = esc(String(c.created_at).slice(0, 10));
+            const waiting = Math.max(1, Math.min(7, Math.floor((Date.now() - new Date(submitted).getTime()) / 86400000) + 1));
+            const dayWord = waiting === 1 ? "day" : "days";
             return '<tr>'
               + '<td><strong>' + member + '</strong></td>'
-              + '<td>' + esc(plan) + '</td>'
-              + '<td class="num">\u20b1' + esc((c.amount_centavos / 100).toFixed(2)) + '</td>'
-              + '<td>' + esc(c.reference_number) + '</td>'
+              + '<td>' + plan + '</td>'
+              + '<td class="num">' + amount + '</td>'
+              + '<td>' + reference + '</td>'
               + '<td><button type="button" class="fn-btn-dark fn-btn-sm" data-preview="' + link + '">Preview</button> '
               + '<a href="' + link + '" target="_blank" rel="noopener noreferrer">Open proof <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a></td>'
-              + '<td>' + esc(String(c.created_at).slice(0, 10)) + '</td>'
+              + '<td>' + submitted + '</td>'
               + '<td class="fn-right">'
               + '<button type="button" class="fn-btn-gold" data-confirm="' + id + '">Confirm</button> '
               + '<button type="button" class="fn-btn-dark" data-reject="' + id + '" data-member="' + member + '">Reject</button>'
-              + '</td></tr>';
+              + '</td>'
+              + '<td class="review-card-cell" colspan="7">'
+              + '<div class="review-card">'
+              + '<header class="review-card-head">'
+              + '<span class="review-avatar" aria-hidden="true"><i class="fa-regular fa-user"></i></span>'
+              + '<div class="review-card-title"><h3>' + member + '</h3><span>' + reference + '</span></div>'
+              + '<span class="review-status"><i class="fa-solid fa-circle" aria-hidden="true"></i> PENDING</span>'
+              + '</header>'
+              + '<dl class="review-kv">'
+              + '<div><dt>Plan</dt><dd>' + plan + '</dd></div>'
+              + '<div><dt>Amount</dt><dd>' + amount + '</dd></div>'
+              + '</dl>'
+              + '<p class="review-expiry">Submitted ' + submitted + ' &middot; waiting ' + waiting + ' ' + dayWord + '</p>'
+              + '<div class="review-actions">'
+              + '<button type="button" class="fn-btn-dark fn-btn-sm" data-preview="' + link + '">Preview</button> '
+              + '<a href="' + link + '" target="_blank" rel="noopener noreferrer">Open proof <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a> '
+              + '<button type="button" class="fn-btn-gold fn-btn-sm" data-confirm="' + id + '">Confirm</button> '
+              + '<button type="button" class="fn-btn-dark fn-btn-sm" data-reject="' + id + '" data-member="' + member + '">Reject</button>'
+              + '</div>'
+              + '<div class="review-meter" title="Waiting ' + waiting + ' ' + dayWord + '"><span style="width:' + Math.round(waiting / 7 * 100) + '%"></span></div>'
+              + '</div></td></tr>';
           }).join("")
-        : '<tr><td colspan="7">No payments are waiting for review.</td></tr>';
+        : '<tr class="fn-review-empty"><td colspan="7">No payments are waiting for review.</td></tr>';
     } catch (e) {
-      tbody.innerHTML = '<tr><td colspan="7">' + esc(e.message || "Could not load payments.") + '</td></tr>';
+      tbody.innerHTML = '<tr class="fn-review-empty"><td colspan="7">' + esc(e.message || "Could not load payments.") + '</td></tr>';
     }
   }
 
