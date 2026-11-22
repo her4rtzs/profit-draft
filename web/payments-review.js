@@ -50,21 +50,21 @@
             const member = esc(c.member_name);
             const plan = c.plan ? c.plan.charAt(0).toUpperCase() + c.plan.slice(1) : "Membership";
             return '<tr>'
-              + '<td data-label="Member"><strong>' + member + '</strong></td>'
-              + '<td data-label="Plan">' + esc(plan) + '</td>'
-              + '<td class="num" data-label="Amount">\u20b1' + esc((c.amount_centavos / 100).toFixed(2)) + '</td>'
-              + '<td data-label="Reference">' + esc(c.reference_number) + '</td>'
-              + '<td data-label="Proof"><button type="button" class="fn-btn-dark fn-btn-sm" data-preview="' + link + '">Preview</button> '
+              + '<td><strong>' + member + '</strong></td>'
+              + '<td>' + esc(plan) + '</td>'
+              + '<td class="num">\u20b1' + esc((c.amount_centavos / 100).toFixed(2)) + '</td>'
+              + '<td>' + esc(c.reference_number) + '</td>'
+              + '<td><button type="button" class="fn-btn-dark fn-btn-sm" data-preview="' + link + '">Preview</button> '
               + '<a href="' + link + '" target="_blank" rel="noopener noreferrer">Open proof <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a></td>'
-              + '<td data-label="Date">' + esc(String(c.created_at).slice(0, 10)) + '</td>'
-              + '<td class="fn-right" data-label="Actions">'
+              + '<td>' + esc(String(c.created_at).slice(0, 10)) + '</td>'
+              + '<td class="fn-right">'
               + '<button type="button" class="fn-btn-gold" data-confirm="' + id + '">Confirm</button> '
               + '<button type="button" class="fn-btn-dark" data-reject="' + id + '" data-member="' + member + '">Reject</button>'
               + '</td></tr>';
           }).join("")
-        : '<tr class="fn-review-empty"><td colspan="7">No payments are waiting for review.</td></tr>';
+        : '<tr><td colspan="7">No payments are waiting for review.</td></tr>';
     } catch (e) {
-      tbody.innerHTML = '<tr class="fn-review-empty"><td colspan="7">' + esc(e.message || "Could not load payments.") + '</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7">' + esc(e.message || "Could not load payments.") + '</td></tr>';
     }
   }
 

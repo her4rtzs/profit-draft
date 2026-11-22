@@ -219,8 +219,4 @@ class ReviewPageMarkupTests(TestCase):
         self.assertIn('id="rejectPaymentModal"', html)
         self.assertIn('data-confirm="', script)
         self.assertIn('data-preview="', script)
-        self.assertIn('data-label="Member"', script)
-        self.assertIn('data-label="Actions"', script)
         self.assertIn('target="_blank" rel="noopener noreferrer"', script)
-        self.assertIn("@media (max-width: 700px)", css)
-        self.assertIn(".fn-table--review tbody td::before", css)
