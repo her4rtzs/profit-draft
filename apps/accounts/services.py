@@ -30,6 +30,16 @@ logger = logging.getLogger("apps.accounts.services")
 MAX_EMAIL_LENGTH = 150
 
 
+def role_home_url(user):
+    """Server-side role home, matching web/auth.js homeForRole."""
+    return {
+        Role.OWNER: "/index",
+        Role.CASHIER: "/cashier",
+        Role.TRAINER: "/trainer/index",
+        Role.MEMBER: "/member-home",
+    }.get(getattr(user, "role", ""), "/index")
+
+
 class EmailDeliveryError(Exception):
     """Raised when an email backend cannot deliver a message.
 

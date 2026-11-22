@@ -7,8 +7,9 @@ database access and exposes no member, payment, or financial data.
 """
 
 from django.conf import settings
+from django.contrib.auth.views import redirect_to_login
 from django.http import Http404, HttpResponse, HttpResponseForbidden
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 
 from apps.membership.models import MemberProfile
 from apps.membership.services import (
@@ -19,6 +20,7 @@ from apps.membership.services import (
 )
 
 PUBLIC_PAGES = frozenset({"welcome", "login", "join", "forgot", "faq", "terms", "privacy"})
+ROLE_HOME_PAGES = frozenset({"index", "cashier", "member-home"})
 OWNER_ONLY_PAGES = frozenset({"reports", "trainers", "cashiers", "announcements"})
 CASHIER_OR_OWNER_PAGES = frozenset({"cashier", "payments", "members", "attendance", "index", "profile", "settings", "notifications"})
 
@@ -33,8 +35,13 @@ def _serve_web_page(relative):
 
 def web_page(request, page):
     """Serve a top-level web/ page at an extensionless URL, with RBAC checks for signed-in users."""
+    if page == "login" and request.user.is_authenticated:
+        from apps.accounts.services import role_home_url
+        return redirect(role_home_url(request.user))
     if page in PUBLIC_PAGES:
         return _serve_web_page(page)
+    if page in ROLE_HOME_PAGES and not request.user.is_authenticated:
+        return redirect_to_login(request.get_full_path(), settings.LOGIN_URL)
     if request.user.is_authenticated:
         from apps.accounts.google_auth import ensure_google_user_columns
 
@@ -66,6 +73,8 @@ def web_page(request, page):
 
 def web_page_group(request, group, page):
     """Serve a grouped web/ page, e.g. /trainer/index -> web/trainer/index.html."""
+    if group == "trainer" and page == "index" and not request.user.is_authenticated:
+        return redirect_to_login(request.get_full_path(), settings.LOGIN_URL)
     return _serve_web_page(f"{group}/{page}")
 
 

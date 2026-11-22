@@ -27,6 +27,7 @@ from .services import (
     normalize_email,
     register_member,
     resend_otp,
+    role_home_url,
     verify_otp,
 )
 
@@ -174,7 +175,7 @@ def resend_otp_view(request):
 @require_http_methods(["GET", "POST"])
 def login_view(request):
     if request.user.is_authenticated:
-        return redirect(settings.LOGIN_REDIRECT_URL)
+        return redirect(role_home_url(request.user))
 
     if request.method == "POST":
         form = LoginForm(request.POST)

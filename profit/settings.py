@@ -214,7 +214,7 @@ EMAIL_TIMEOUT = 10
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="ProFit <noreply@functionalfitnessgym.site>")
 SITE_BASE_URL = env(
     "SITE_BASE_URL",
-    default="http://localhost:8000" if DEBUG else "https://www.functionalfitnessgym.site",
+    default="http://localhost:8000" if DEBUG else "https://functionalfitnessgym.site",
 )
 EMAIL_BACKEND = select_email_backend(
     RESEND_API_KEY,

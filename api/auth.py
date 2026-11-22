@@ -25,6 +25,7 @@ from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model, login, logout, update_session_auth_hash
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.db import DatabaseError
 from django.http import HttpResponseRedirect, JsonResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -40,6 +41,7 @@ from apps.accounts.google_auth import (
     verify_google_access_token,
     verify_google_id_token,
 )
+from apps.accounts.services import role_home_url
 from apps.accounts.validators import validate_real_email
 
 # Backend roles -> the four web portal shells.
@@ -95,8 +97,18 @@ def login_view(request):
         return JsonResponse({"detail": "Invalid credentials."}, status=401)
 
     login(request, user)
+    next_url = payload.get("next")
+    if next_url and url_has_allowed_host_and_scheme(
+        next_url,
+        allowed_hosts={request.get_host()},
+        require_https=request.is_secure(),
+    ):
+        redirect_url = next_url
+    else:
+        redirect_url = role_home_url(user)
     return JsonResponse({
         "detail": "Logged in.",
+        "redirect": redirect_url,
         "role": user.role,
         "must_change_password": bool(getattr(user, "must_change_password", False)),
     })

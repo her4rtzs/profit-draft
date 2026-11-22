@@ -1,11 +1,14 @@
 """Notification services. Other apps call these; they never write rows directly."""
 
 import logging
+from urllib.parse import urlparse
 
 from django.conf import settings
 from django.core.mail import send_mail
 from django.utils import timezone
 from django.utils.html import escape
+
+from apps.accounts.services import role_home_url
 
 from .models import Notification
 
@@ -19,6 +22,9 @@ def _portal_url(link):
     if clean.startswith(("http://", "https://")):
         return clean
     base = (getattr(settings, "SITE_BASE_URL", "") or "").rstrip("/")
+    host = (urlparse(base).hostname or "").lower()
+    if host == "www.functionalfitnessgym.site" or host.endswith(".vercel.app"):
+        base = "https://functionalfitnessgym.site"
     if not base:
         return ""
     return f"{base}/{clean.lstrip('/')}"
@@ -35,7 +41,7 @@ def _send_notification_emails(notifications):
         if "@" not in email:
             continue
 
-        target_url = _portal_url(note.link)
+        target_url = _portal_url(role_home_url(recipient))
         text_lines = [note.title]
         if note.body:
             text_lines.extend(["", note.body])

@@ -476,7 +476,8 @@
         message('Signed in successfully. Opening your workspace…', false);
         setTimeout(() => location.replace(HOME[role]), 350);
       } else {
-        await window.ProFitAPI.post('/auth/login', { identity, password });
+        const next = new URLSearchParams(location.search).get('next') || '';
+        const loginResult = await window.ProFitAPI.post('/auth/login', { identity, password, next });
         const session = await window.ProFitAPI.get('/auth/session');
         const user = session.user;
         const r = String(user?.role || '').toUpperCase();
@@ -491,7 +492,7 @@
         if (home) {
           sessionStorage.setItem('profit-verified-session', JSON.stringify(user));
           sessionStorage.setItem('pf-auth-just-logged-in', '1');
-          location.replace(home);
+          location.replace(loginResult.redirect || home);
         } else {
           message('Your account role could not be verified. Contact the gym administrator.', true);
           setBusy(false);

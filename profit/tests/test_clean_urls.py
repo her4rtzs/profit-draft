@@ -18,16 +18,29 @@ class CleanUrlTests(SimpleTestCase):
         self.assertIn(b"Functional Fitness Gym", response.content)
 
     def test_top_level_pages_serve_at_extensionless_urls(self):
-        for url in ("/login", "/join", "/members", "/index", "/settings", "/member-home"):
+        for url in ("/login", "/join", "/members", "/settings"):
             with self.subTest(url=url):
                 response = self.client.get(url)
                 self.assertEqual(response.status_code, 200)
                 self.assertEqual(response["Content-Type"], "text/html; charset=utf-8")
 
+    def test_role_home_pages_redirect_anonymous_users_to_login(self):
+        for url in ("/index", "/member-home"):
+            with self.subTest(url=url):
+                response = self.client.get(url)
+                self.assertEqual(response.status_code, 302)
+                self.assertIn("next=", response.url)
+                self.assertIn(url, response.url)
+
     def test_grouped_pages_serve_at_extensionless_urls(self):
-        for url in ("/trainer/index", "/trainer/attendance", "/trainer/settings"):
+        for url in ("/trainer/attendance", "/trainer/settings"):
             with self.subTest(url=url):
                 self.assertEqual(self.client.get(url).status_code, 200)
+
+    def test_trainer_home_redirects_anonymous_users_to_login(self):
+        response = self.client.get("/trainer/index")
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("next=", response.url)
 
     def test_unknown_page_is_404(self):
         self.assertEqual(self.client.get("/does-not-exist").status_code, 404)

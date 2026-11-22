@@ -93,7 +93,7 @@ class NotificationApiTests(TestCase):
         self.assertEqual(Notification.objects.filter(recipient=self.member).count(), 0)
 
     @override_settings(
-        SITE_BASE_URL="https://www.functionalfitnessgym.site",
+        SITE_BASE_URL="https://functionalfitnessgym.site",
         DEFAULT_FROM_EMAIL="ProFit <noreply@functionalfitnessgym.site>",
     )
     def test_notify_and_notify_many_send_email_to_active_recipients(self):
@@ -118,7 +118,8 @@ class NotificationApiTests(TestCase):
         self.assertEqual(first.to, ["m@gym.test"])
         self.assertIn("Gym update", first.subject)
         self.assertIn("New equipment has arrived.", first.body)
-        self.assertIn("https://www.functionalfitnessgym.site/member-home.html#announcements", first.body)
+        self.assertIn("https://functionalfitnessgym.site/member-home", first.body)
+        self.assertNotIn("www.functionalfitnessgym.site", first.body)
         self.assertEqual(mail.outbox[1].to, ["m@gym.test"])
         self.assertEqual(mail.outbox[2].to, ["o@gym.test"])
 
