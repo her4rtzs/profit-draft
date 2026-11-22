@@ -1866,17 +1866,15 @@ body[data-page="reports"] .fn-card {
   }
 
   .review-proof-actions {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    display: grid; grid-template-columns: 1fr; gap: 10px;
     border-top: 1px solid var(--border); padding-top: 14px;
   }
   .review-decision-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .review-proof-actions .fn-btn-dark,
-  .review-proof-actions a,
   .review-decision-actions .fn-btn-gold,
   .review-decision-actions .fn-btn-dark {
     width: 100%; min-height: 44px; height: 44px; box-sizing: border-box;
   }
-  .review-proof-actions a { text-decoration: none; }
 
   .fn-table--review tbody tr.fn-review-empty { display: block; padding: 20px 0; }
   .fn-table--review tbody tr.fn-review-empty td { display: block !important; color: var(--muted); }
@@ -1892,10 +1890,12 @@ body[data-page="reports"] .fn-card {
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
+    height: auto !important;
+    border-bottom: 0 !important;
     box-sizing: border-box !important;
   }
   html body.pf-staff[data-page="payments"] #pane-review .fn-table-scroll {
-    overflow-x: hidden !important;
+    overflow: visible !important;
   }
 /* Equal-height (pantay) Record a payment + Today's payments grid */
 .fn-daily-grid {

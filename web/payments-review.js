@@ -6,27 +6,7 @@
 
   const modal = $("rejectPaymentModal");
   const reason = $("rejectPaymentReason");
-  const previewModal = $("proofPreviewModal");
-  const previewFrame = $("proofPreviewFrame");
-  const previewOpen = $("proofPreviewOpen");
   let rejectId = null;
-
-  function previewUrl(raw) {
-    try {
-      const url = new URL(raw);
-      const file = url.pathname.match(/\/file\/d\/([^/]+)/);
-      if (url.hostname === "drive.google.com" && file) {
-        return "https://drive.google.com/file/d/" + file[1] + "/preview";
-      }
-      const doc = url.pathname.match(/\/document\/d\/([^/]+)/);
-      if (url.hostname === "docs.google.com" && doc) {
-        return "https://docs.google.com/document/d/" + doc[1] + "/preview";
-      }
-    } catch (e) {
-      /* keep the submitted link as-is */
-    }
-    return raw;
-  }
 
   function esc(value) {
     return String(value ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -61,8 +41,7 @@
               + '<td>' + plan + '</td>'
               + '<td class="num">' + amount + '</td>'
               + '<td>' + reference + '</td>'
-              + '<td><button type="button" class="fn-btn-dark fn-btn-sm" data-preview="' + link + '">Preview</button> '
-              + '<a href="' + link + '" target="_blank" rel="noopener noreferrer">Open proof <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a></td>'
+              + '<td><button type="button" class="fn-btn-dark fn-btn-sm" data-preview="' + link + '">Open proof</button></td>'
               + '<td>' + submitted + '</td>'
               + '<td class="fn-right">'
               + '<button type="button" class="fn-btn-gold" data-confirm="' + id + '">Confirm</button> '
@@ -73,7 +52,6 @@
               + '<header>'
               + '<span class="pp-avatar" aria-hidden="true">' + esc(initials) + '</span>'
               + '<div class="pp-member-title"><h3>' + member + '</h3><span>' + submitted + '</span></div>'
-              + '<span class="pp-status pending">Pending</span>'
               + '</header>'
               + '<dl class="pp-kv">'
               + '<div><dt>Plan</dt><dd>' + plan + '</dd></div>'
@@ -82,8 +60,7 @@
               + '<div><dt>Waiting</dt><dd>' + waiting + ' ' + dayWord + '</dd></div>'
               + '</dl>'
               + '<div class="review-proof-actions">'
-              + '<button type="button" class="fn-btn-dark" data-preview="' + link + '">Preview</button> '
-              + '<a class="fn-btn-dark" href="' + link + '" target="_blank" rel="noopener noreferrer">Open proof <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>'
+              + '<button type="button" class="fn-btn-dark" data-preview="' + link + '">Open proof</button>'
               + '</div>'
               + '<div class="review-decision-actions">'
               + '<button type="button" class="fn-btn-gold" data-confirm="' + id + '">Confirm</button> '
