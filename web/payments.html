@@ -50,12 +50,12 @@
                 <span class="fn-tab-full">Payment history</span>
                 <span class="fn-tab-short">History</span>
             </button>
-            <button class="tab" type="button" role="tab" id="tab-claims" aria-selected="false" aria-controls="pane-claims" data-tab="claims">
+            <button class="tab" type="button" role="tab" id="tab-review" aria-selected="false" aria-controls="pane-review" data-tab="review">
                 <span class="fn-tab-icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
                 </span>
-                <span class="fn-tab-full">GCash claims</span>
-                <span class="fn-tab-short">Claims</span>
+                <span class="fn-tab-full">Payments for review</span>
+                <span class="fn-tab-short">Review</span>
             </button>
         </div>
     </section>
@@ -127,7 +127,7 @@
                             </span>
                             <div>
                                 <h2 class="fn-card-title">Today's payments</h2>
-                                <p class="fn-card-sub">Desk payments and approved GCash claims for today.</p>
+                                <p class="fn-card-sub">Desk payments and confirmed GCash payments for today.</p>
                             </div>
                         </div>
                     </header>
@@ -228,7 +228,7 @@
         </article>
     </section>
 
-    <section class="pane" id="pane-claims" role="tabpanel" aria-labelledby="tab-claims" data-pane="claims">
+    <section class="pane" id="pane-review" role="tabpanel" aria-labelledby="tab-review" data-pane="review">
         <article class="fn-card fn-card--amber">
             <header class="fn-card-head">
                 <div class="fn-card-head-left">
@@ -236,17 +236,18 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
                     </span>
                     <div>
-                        <h2 class="fn-card-title">GCash claims for review</h2>
-                        <p class="fn-card-sub">Open the proof in a new tab, check it against the reference, then approve or reject.</p>
+                        <h2 class="fn-card-title">Payments for review</h2>
+                        <p class="fn-card-sub">Open the proof in a new tab, check it against the reference, then confirm or reject.</p>
                     </div>
                 </div>
-                <span class="fn-card-meta" id="claimsCount">0 claims</span>
+                <span class="fn-card-meta" id="reviewCount">0 payments</span>
             </header>
             <div class="fn-table-scroll">
                 <table class="fn-table">
                     <thead>
                         <tr>
                             <th>Member</th>
+                            <th>Plan</th>
                             <th class="num">Amount</th>
                             <th>Reference</th>
                             <th>Proof</th>
@@ -254,7 +255,7 @@
                             <th class="fn-right">Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="claimsRows"></tbody>
+                    <tbody id="reviewRows"></tbody>
                 </table>
             </div>
         </article>
@@ -291,14 +292,14 @@
     </div>
 </div>
 
-<div class="pay-modal" id="claimRejectModal" hidden role="dialog" aria-modal="true" aria-labelledby="claimRejectTitle">
-    <form class="pay-modal-card" id="claimRejectForm">
-        <h3 id="claimRejectTitle">Reject this claim?</h3>
-        <p class="pay-note" id="claimRejectInfo">The member can see the reason and submit a new claim.</p>
-        <div class="fn-field"><label for="claimRejectReason">Reason for rejection</label><textarea class="fn-input" id="claimRejectReason" rows="3" maxlength="500" required></textarea></div>
+<div class="pay-modal" id="rejectPaymentModal" hidden role="dialog" aria-modal="true" aria-labelledby="rejectPaymentTitle">
+    <form class="pay-modal-card" id="rejectPaymentForm">
+        <h3 id="rejectPaymentTitle">Reject this payment?</h3>
+        <p class="pay-note" id="rejectPaymentInfo">The member can see the reason and submit a new payment.</p>
+        <div class="fn-field"><label for="rejectPaymentReason">Reason for rejection</label><textarea class="fn-input" id="rejectPaymentReason" rows="3" maxlength="500" required></textarea></div>
         <div class="pay-modal-actions">
-            <button class="fn-btn-dark" type="button" id="claimRejectCancel">Cancel</button>
-            <button class="fn-danger" type="submit">Reject claim</button>
+            <button class="fn-btn-dark" type="button" id="rejectPaymentCancel">Cancel</button>
+            <button class="fn-danger" type="submit">Reject payment</button>
         </div>
     </form>
 </div>
@@ -307,7 +308,7 @@
 <script src="sidebar.js?v=21"></script>
 <script src="data.js"></script>
 <script src="pages.js?v=4"></script>
-<script src="claims-review.js?v=1"></script>
+<script src="payments-review.js?v=1"></script>
 <script src="portal-fx.js?v=2"></script>
 <script src="change-password.js?v=2" defer></script>
 <script src="notifications-live.js?v=2" defer></script>

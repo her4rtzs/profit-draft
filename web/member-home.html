@@ -37,6 +37,7 @@
   <script src="api.js"></script>
   <script src="auth.js?v=4"></script>
   <link rel="stylesheet" href="pro-theme.css">
+  <link rel="stylesheet" href="finance-ui.css?v=13">
   <link rel="stylesheet" href="spotify.css?v=14">
   <link rel="stylesheet" href="portal-ui.css?v=13">
   <script>document.documentElement.dataset.accent = 'gold'</script>
@@ -1208,13 +1209,61 @@
             <div id="membershipTabBody" hidden></div>
           </section>
 
+          <article class="fn-card fn-card--amber" id="memberPayCard">
+            <header class="fn-card-head">
+              <div class="fn-card-head-left">
+                <span class="fn-icon-box" aria-hidden="true">
+                  <i class="fa-solid fa-mobile-screen-button"></i>
+                </span>
+                <div>
+                  <h2 class="fn-card-title">Pay for membership</h2>
+                  <p class="fn-card-sub">GCash only. Cash is paid at the desk.</p>
+                </div>
+              </div>
+            </header>
+            <form class="fn-form" id="memberPayForm" novalidate>
+              <div class="fn-field-row">
+                <div class="fn-field">
+                  <label for="memberPayPlan">Plan</label>
+                  <select class="fn-input" id="memberPayPlan" required>
+                    <option value="">Loading plans&hellip;</option>
+                  </select>
+                </div>
+                <div class="fn-field">
+                  <label for="memberPayMethod">Payment method</label>
+                  <input class="fn-input" id="memberPayMethod" value="GCash" readonly>
+                </div>
+              </div>
+              <div class="fn-field">
+                <label for="memberPayAmount">Amount (PHP)</label>
+                <input class="fn-input" id="memberPayAmount" value="&mdash;" readonly>
+              </div>
+              <div class="fn-field">
+                <label for="memberPayReference">GCash reference number</label>
+                <input class="fn-input" id="memberPayReference" inputmode="numeric" maxlength="25"
+                  autocomplete="off" placeholder="6028 871 884223" required>
+                <small>10 to 13 digits; spaces are okay.</small>
+              </div>
+              <div class="fn-field">
+                <label for="memberPayProof">Google Drive link (proof of payment)</label>
+                <input class="fn-input" id="memberPayProof" type="url" maxlength="500"
+                  autocomplete="off" placeholder="https://drive.google.com/..." required>
+                <small>Set sharing to &ldquo;Anyone with the link can view&rdquo; and crop out private details.</small>
+              </div>
+              <p class="fn-status-msg" id="memberPayStatus" role="status" aria-live="polite" hidden></p>
+              <button class="fn-btn-gold" type="submit" id="memberPaySubmit">
+                <i class="fa-solid fa-paper-plane" aria-hidden="true"></i><span>Submit payment</span>
+              </button>
+            </form>
+          </article>
+
           <section class="panel member-panel" style="margin-top:18px">
             <div class="pf-panel-head">
               <div>
                 <h2><i class="fa-solid fa-receipt"></i> Payment History</h2>
-                <p>Membership payments, GCash claims, and receipts.</p>
+                <p>Cash and GCash payments, with their status and receipts.</p>
               </div>
-              <a class="btn btn-soft" href="/claim"><i class="fa-solid fa-mobile-screen"></i> Submit GCash claim</a>
+              <button type="button" class="btn btn-soft" data-renew-membership><i class="fa-solid fa-mobile-screen"></i> Pay for membership</button>
             </div>
             <div class="pf-sk-wrap" data-skeleton="payments" style="display:grid;gap:8px">
               <div class="pf-sk-row">
@@ -1474,9 +1523,9 @@
         }
         function statusBadgeClass(st) {
           const s = String(st || "").toUpperCase();
-          if (s === "ACTIVE" || s === "PAID") return "is-active";
+          if (s === "ACTIVE" || s === "PAID" || s === "CONFIRMED") return "is-active";
           if (s === "EXPIRING_SOON" || s === "PENDING") return "is-expiring";
-          if (s === "EXPIRED" || s === "FAILED") return "is-expired";
+          if (s === "EXPIRED" || s === "FAILED" || s === "REJECTED") return "is-expired";
           return "is-pending";
         }
 
@@ -1585,7 +1634,7 @@
           const payRoot = $("paymentsHistoryRoot");
           if (payRoot) {
             if (!paymentItems.length) {
-              payRoot.innerHTML = `<div class="pf-state-box"><i class="fa-solid fa-receipt" style="font-size:22px"></i><strong>No payment history yet</strong><span>Completed cash payments and approved GCash claims will appear here.</span></div>`;
+              payRoot.innerHTML = `<div class="pf-state-box"><i class="fa-solid fa-receipt" style="font-size:22px"></i><strong>No payment history yet</strong><span>Cash and GCash payments appear here as Pending, Confirmed, or Rejected.</span></div>`;
             } else {
               payRoot.innerHTML = `<div class="pf-table-wrap"><table class="pf-table"><thead><tr><th>Reference</th><th>Plan</th><th>Date</th><th>Method</th><th>Amount</th><th>Status</th><th>Receipt</th></tr></thead><tbody>${paymentItems.map(x => `<tr><td><strong>${eh(x.reference || "Payment")}</strong></td><td>${eh(x.plan || "Membership")}</td><td>${eh(date(x.date))}</td><td>${eh(x.method || "Online")}</td><td><strong>${eh(x.amountFormatted || x.amount)}</strong></td><td><span class="pf-status-badge ${statusBadgeClass(x.status || "PAID")}">${eh(formatStatusLabel(x.status || "PAID"))}</span></td><td><button type="button" class="member-receipt" data-receipt="${eh(x.reference || "Payment")}" data-when="${eh(x.date)}" data-method="${eh(x.method || "Online")}" data-amount="${eh(x.amountFormatted || x.amount || "")}"><i class="fa-solid fa-receipt" aria-hidden="true"></i> Receipt</button></td></tr>`).join("")}</tbody></table></div>`;
             }
@@ -1594,7 +1643,7 @@
           // Attendance dates from the API are already "YYYY-MM-DD" strings; use date()
           // which calls localDateStr() internally to avoid the UTC midnight shift.
           list("attendanceList", attendanceItems, "No attendance records yet.", x => `<span><b>${date(localDateStr(x.date))}</b><small>${safe(x.location || "Gym check-in")}</small></span><i class="fa-solid fa-arrow-right"></i>`);
-          list("paymentList", paymentItems, "No payment records yet.", x => `<span><b>${safe(x.reference || "Payment")}</b><small>${date(x.date)} · ${safe(x.method)}</small></span><strong>${safe(x.amountFormatted || x.amount)}</strong><button type="button" class="member-receipt" data-receipt="${safe(x.reference || "Payment")}" data-when="${safe(x.date)}" data-method="${safe(x.method)}" data-amount="${safe(x.amountFormatted || x.amount || "")}"><i class="fa-solid fa-receipt" aria-hidden="true"></i> Receipt</button>`);
+          list("paymentList", paymentItems, "No payment records yet.", x => `<span><b>${safe(x.reference || "Payment")}</b><small>${date(x.date)} · ${safe(x.method)} · ${safe(formatStatusLabel(x.status || "PAID"))}</small></span><strong>${safe(x.amountFormatted || x.amount)}</strong><button type="button" class="member-receipt" data-receipt="${safe(x.reference || "Payment")}" data-when="${safe(x.date)}" data-method="${safe(x.method)}" data-amount="${safe(x.amountFormatted || x.amount || "")}"><i class="fa-solid fa-receipt" aria-hidden="true"></i> Receipt</button>`);
           // Store attendance days as local YYYY-MM-DD strings so the calendar and
           // syncMemberChrome todayKey comparison are timezone-consistent.
           window.__pfAttendanceDays = attendanceItems.map(x => localDateStr(x.date));
@@ -1602,6 +1651,106 @@
           syncMemberChrome(data);
           window.__pfRefreshMemberSpace?.();
         }
+        const payPlans = {};
+
+        function payMoney(value) {
+          return "₱" + Number(value || 0).toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function showPayStatus(kind, message) {
+          const status = $("memberPayStatus");
+          if (!status) return;
+          status.hidden = !message;
+          status.textContent = message || "";
+          status.classList.toggle("is-error", kind === "error");
+          status.classList.toggle("is-success", kind === "success");
+        }
+
+        function updatePayAmount() {
+          const select = $("memberPayPlan");
+          const amount = $("memberPayAmount");
+          if (!select || !amount) return;
+          const plan = payPlans[select.value];
+          amount.value = plan ? payMoney(plan.price) : "—";
+        }
+
+        function fillPayPlans(next) {
+          Object.keys(payPlans).forEach(key => delete payPlans[key]);
+          Object.assign(payPlans, next || {});
+          const select = $("memberPayPlan");
+          if (!select) return;
+          const current = select.value;
+          select.innerHTML = Object.entries(payPlans)
+            .map(([key, plan]) => `<option value="${key}">${plan.label} — ${payMoney(plan.price)}</option>`)
+            .join("");
+          if (current && payPlans[current]) select.value = current;
+          updatePayAmount();
+        }
+
+        async function loadPayPlans() {
+          try {
+            const data = await ProFitAPI.get("/plans/");
+            fillPayPlans(data.plans);
+          } catch (e) {
+            const select = $("memberPayPlan");
+            if (select) select.innerHTML = '<option value="">Plans unavailable</option>';
+            showPayStatus("error", "Could not load plan prices. Refresh the page and try again.");
+          }
+        }
+
+        function openPayCard() {
+          document.querySelector('.member-sidebar .nav-link[data-tab="membership"]')?.click();
+          const card = $("memberPayCard");
+          if (!card) return;
+          card.scrollIntoView({ behavior: "smooth", block: "center" });
+          $("memberPayPlan")?.focus({ preventScroll: true });
+        }
+
+        $("memberPayPlan")?.addEventListener("change", updatePayAmount);
+
+        $("memberPayForm")?.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const button = $("memberPaySubmit");
+          if (!button || button.disabled) return;
+          const plan = $("memberPayPlan")?.value || "";
+          const reference = ($("memberPayReference")?.value || "").trim();
+          const proof = ($("memberPayProof")?.value || "").trim();
+
+          if (!plan || !payPlans[plan]) return showPayStatus("error", "Choose a plan.");
+          if (!/^\d{10,13}$/.test(reference.replace(/ /g, ""))) {
+            return showPayStatus("error", "Enter a 10 to 13 digit GCash reference number.");
+          }
+          try {
+            const url = new URL(proof);
+            if (url.protocol !== "https:" || !["drive.google.com", "docs.google.com"].includes(url.hostname.toLowerCase())) {
+              return showPayStatus("error", "Use an https link from drive.google.com or docs.google.com.");
+            }
+          } catch (e) {
+            return showPayStatus("error", "Use an https link from drive.google.com or docs.google.com.");
+          }
+
+          button.disabled = true;
+          const original = button.innerHTML;
+          button.innerHTML = '<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i><span>Submitting…</span>';
+          showPayStatus("", "");
+          try {
+            await ProFitAPI.post("/member/claims", {
+              plan: plan,
+              reference_number: reference,
+              proof_link: proof,
+            });
+            $("memberPayForm").reset();
+            updatePayAmount();
+            showPayStatus("success", "Payment submitted. It is pending staff confirmation.");
+            await load();
+          } catch (e) {
+            showPayStatus("error", e.message || "Could not submit your payment. Please try again.");
+          } finally {
+            button.disabled = false;
+            button.innerHTML = original;
+          }
+        });
+
         async function load() {
           setLoadingState(true);
           const notice = $("memberNotice");
@@ -1788,7 +1937,7 @@
             if (m.status === "EXPIRED" && endIso) {
               heroLine.textContent = `Your ${m.planName || "membership"} ended ${date(endIso)}. Renew to keep training.`;
             } else if (m.status === "TRIAL") {
-              heroLine.textContent = "Your 7-day free trial is active. Pay at the desk or submit a GCash claim anytime to unlock full gym access.";
+              heroLine.textContent = "Your 7-day free trial is active. Pay at the desk or submit a GCash payment anytime to unlock full gym access.";
             } else if (endIso) {
               heroLine.textContent = `Your ${m.planName || "membership"} is active until ${date(endIso)}${rem != null ? ` (${rem} day${rem === 1 ? "" : "s"} left)` : ""}.`;
             } else {
@@ -1917,9 +2066,10 @@
         });
         document.addEventListener("click", e => {
           if (e.target.closest("[data-renew-membership]")) {
-            window.location.href = "/claim";
+            openPayCard();
           }
         });
+        loadPayPlans();
         load();
       })();
   </script>

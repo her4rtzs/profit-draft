@@ -94,3 +94,7 @@ One note per decision, oldest first; entries with an `Unknown` date are listed l
 - [[2026-11-22 Warm light mode notification popover and mobile tabs]]: Apply warm cream/gold light mode, prototype notification popover, and role-aware mobile bottom tabs across staff pages while keeping original fonts, RBAC rules, and live data.
 
 - [[2026-11-22 Owner-editable membership plan prices in Settings]]: Store live plan prices in `finance.PlanPrice` (integer centavos) with public `GET /api/plans/` and Owner-only `PATCH /api/staff/plans/`, and redesign Settings into clean grouped cards.
+- [[2026-11-22 Member payment card replaces claim page]]: Member GCash payment moved into My Membership with a stored plan, 10-13 digit references, trial access, status history, and submit/reject emails.
+- [[2026-11-22 Payments for review replaces GCash claims]]: Cashier review table renamed with a Plan column, Confirm/Reject actions and a safe proof link.
+- [[2026-11-22 Remove claim wording from the portals]]: All visible claim wording replaced with payment wording and dead claim page/script deleted.
+- [[2026-11-22 Only staff and admin enroll members]]: AGENTS.md now names cash desk recording and payment confirmation as the only enrollment paths.

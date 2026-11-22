@@ -40,14 +40,14 @@
       intro: "Your gym. One platform. Let's set up your member profile in a few quick steps.",
       homeHref: "/member-home",
       homeLabel: "Open my dashboard",
-      does: "Explore your profile now, then pay in cash at the desk or submit a GCash claim whenever you are ready."
+      does: "Explore your profile now, then pay in cash at the desk or submit a GCash payment whenever you are ready."
     },
     CASHIER: {
       pill: "Cashier onboarding",
       intro: "You were invited to the front desk team at Functional Fitness Gym. Complete your quick setup below.",
       homeHref: "/cashier",
       homeLabel: "Open cashier desk",
-      does: "Record cash payments at the desk and review GCash payment claims."
+      does: "Record cash payments at the desk and review GCash payments."
     },
     TRAINER: {
       pill: "Trainer onboarding",
@@ -293,7 +293,7 @@
         <span class="ob-err" id="obShiftErr"></span>
         <label class="ob-chk">
           <input type="checkbox" id="obAck" ${state.ack ? "checked" : ""}>
-          <span>I will log every cash payment and review each GCash payment claim at the desk.</span>
+          <span>I will log every cash payment and review each GCash payment at the desk.</span>
         </label>
         <span class="ob-err" id="obAckErr"></span>`;
       footEl.innerHTML = `<button type="button" class="ob-btn" id="obNextBtn">${state.returnToReview ? "Back to review" : "Review"}</button>`;
@@ -634,7 +634,7 @@
       const avaSrc = window.ProFitAvatar ? window.ProFitAvatar.resolve(state.avatarId, state.name) : "";
       const firstName = (state.name.split(" ")[0] || "Team").trim();
       const summaryBox = state.role === "MEMBER"
-        ? `<b>Your free trial is live.</b><br>${esc(formatTrialEnd())} Open your dashboard to explore your profile or submit a GCash payment claim anytime.`
+        ? `<b>Your free trial is live.</b><br>${esc(formatTrialEnd())} Open your dashboard to explore your profile or submit a GCash payment anytime.`
         : `<b>You're all set.</b><br>${esc(m.does)}`;
       mainEl.innerHTML = `
         <div class="ob-big">

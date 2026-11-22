@@ -69,7 +69,7 @@
       diary: ["Your training log", "Workout diary"],
       health: ["Track your progress", "Health & goals"],
       attendance: ["Your gym visits", "Attendance History"],
-      payments: ["Billing & GCash claims", "Payment History"],
+      payments: ["Billing & payments", "Payment History"],
       membership: ["Your gym plan", "My Membership"],
       profile: ["Your account details", "My Profile"],
       settings: ["App preferences", "Settings"]

@@ -1968,3 +1968,43 @@ body.member-home .pp-check span {
 body.member-home:not(.dark) .pp-check span {
   color: #2a2418 !important;
 }
+
+/* Pay for membership card - reuses the cashier .fn-* classes from finance-ui.css. */
+body.member-home {
+  --fn-bg-card: linear-gradient(160deg, #111a2e 0%, #0d1424 60%, #090f1d 100%);
+  --fn-bg-inset: rgba(8, 13, 24, .72);
+  --fn-border: rgba(148, 163, 184, .14);
+  --fn-divider: rgba(255, 255, 255, .06);
+  --fn-text: #f8fafc;
+  --fn-muted: #94a3b8;
+  --fn-eyebrow: #fbbf24;
+  --fn-input-bg: rgba(11, 17, 32, .85);
+  --fn-input-border: rgba(148, 163, 184, .2);
+  --fn-shadow: 0 14px 34px -14px rgba(0, 0, 0, .65);
+}
+
+body.member-home:not(.dark) {
+  --fn-bg-card: linear-gradient(155deg, #fffdf9 0%, #faf6ee 65%, #f5efe4 100%);
+  --fn-bg-inset: rgba(255, 255, 255, .86);
+  --fn-border: rgba(217, 170, 82, .42);
+  --fn-divider: rgba(15, 23, 42, .08);
+  --fn-text: #0f172a;
+  --fn-muted: #64748b;
+  --fn-eyebrow: #b45309;
+  --fn-input-bg: #ffffff;
+  --fn-input-border: rgba(148, 163, 184, .42);
+  --fn-shadow: 0 12px 28px -8px rgba(45, 35, 20, .09), 0 0 18px rgba(245, 158, 11, .06);
+}
+
+#memberPayCard {
+  margin-top: 18px;
+}
+
+#memberPayCard .fn-btn-gold:disabled {
+  opacity: .65;
+  cursor: not-allowed;
+}
+
+#memberPayCard .fn-status-msg.is-success {
+  color: #4ade80;
+}

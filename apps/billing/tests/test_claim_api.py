@@ -1,4 +1,4 @@
-"""Member claim API: two fields in, everything else set by the server."""
+"""Member GCash payments: three fields in, everything else set by the server."""
 
 from datetime import timedelta
 from unittest import mock
@@ -8,14 +8,17 @@ from django.test import TestCase
 from django.utils import timezone
 from rest_framework.test import APIClient
 
-from apps.billing.models import PaymentClaim, Subscription
+from apps.billing.models import PaymentClaim
+from apps.finance.models import ManualPayment
 from apps.finance.services import PLAN_PRICE_CENTAVOS
 from apps.membership.models import MemberProfile
 from apps.membership.services import enroll_member, start_trial
+from apps.notifications.models import Notification
 
 User = get_user_model()
 URL = "/api/member/claims/"
 VALID = {
+    "plan": "monthly",
     "reference_number": "0917 123 4567",
     "proof_link": "https://drive.google.com/file/d/abc/view?usp=sharing",
 }
@@ -42,6 +45,7 @@ class MemberClaimApiTests(TestCase):
         self.assertEqual(res.status_code, 201, res.content)
         claim = PaymentClaim.objects.get()
         self.assertEqual(claim.member, self.profile)
+        self.assertEqual(claim.plan, "monthly")
         self.assertEqual(claim.amount_centavos, PLAN_PRICE_CENTAVOS["monthly"])
         self.assertEqual(claim.method, "GCASH")
         self.assertEqual(claim.status, PaymentClaim.Status.PENDING_REVIEW)
@@ -51,16 +55,26 @@ class MemberClaimApiTests(TestCase):
         self.assertIsNone(claim.reviewed_at)
         self.assertEqual(res.data["status"], "pending_review")
 
-    def test_amount_comes_from_the_latest_subscription_plan(self):
-        Subscription.objects.create(
-            member=self.profile, plan="quarterly",
-            amount_centavos=PLAN_PRICE_CENTAVOS["quarterly"],
-        )
-        res = self.api.post(URL, VALID, format="json")
+    def test_amount_comes_from_the_chosen_plan(self):
+        res = self.api.post(URL, {**VALID, "plan": "quarterly"}, format="json")
         self.assertEqual(res.status_code, 201)
-        self.assertEqual(
-            PaymentClaim.objects.get().amount_centavos, PLAN_PRICE_CENTAVOS["quarterly"]
-        )
+        claim = PaymentClaim.objects.get()
+        self.assertEqual(claim.plan, "quarterly")
+        self.assertEqual(claim.amount_centavos, PLAN_PRICE_CENTAVOS["quarterly"])
+
+    def test_sample_reference_formats_are_accepted(self):
+        for reference, stored in (
+            ("6028871884223", "6028871884223"),
+            ("6028 871 884224", "6028871884224"),
+        ):
+            with self.subTest(reference=reference):
+                res = self.api.post(
+                    URL, {**VALID, "reference_number": reference}, format="json"
+                )
+                self.assertEqual(res.status_code, 201, res.content)
+                self.assertTrue(
+                    PaymentClaim.objects.filter(reference_number=stored).exists()
+                )
 
     def test_client_cannot_set_status_amount_or_member(self):
         for extra in (
@@ -77,7 +91,14 @@ class MemberClaimApiTests(TestCase):
                 self.assertEqual(PaymentClaim.objects.count(), 0)
 
     def test_bad_reference_numbers_are_rejected(self):
-        for reference in ("0917123", "0917abc4567", "0917-123-4567", "1" * 21):
+        for reference in (
+            "123456789",  # 9 digits
+            "12345678901234",  # 14 digits
+            "0917123",
+            "0917abc4567",
+            "0917-123-4567",
+            "1" * 21,
+        ):
             with self.subTest(reference=reference):
                 res = self.api.post(
                     URL, {**VALID, "reference_number": reference}, format="json"
@@ -96,6 +117,29 @@ class MemberClaimApiTests(TestCase):
                 res = self.api.post(URL, {**VALID, "proof_link": link}, format="json")
                 self.assertEqual(res.status_code, 400)
         self.assertEqual(PaymentClaim.objects.count(), 0)
+
+    def test_duplicate_reference_is_rejected(self):
+        self.assertEqual(self.api.post(URL, VALID, format="json").status_code, 201)
+        res = self.api.post(
+            URL, {**VALID, "reference_number": "09171234567"}, format="json"
+        )
+        self.assertEqual(res.status_code, 400)
+        self.assertIn("already in use", str(res.data["reference_number"]))
+
+        ManualPayment.objects.create(
+            member=self.profile,
+            plan="monthly",
+            method=ManualPayment.Method.GCASH,
+            amount_centavos=PLAN_PRICE_CENTAVOS["monthly"],
+            reference_number="6028871884223",
+            paid_on=timezone.localdate(),
+            recorded_by=self.staff,
+        )
+        res = self.api.post(
+            URL, {**VALID, "reference_number": "6028 871 884223"}, format="json"
+        )
+        self.assertEqual(res.status_code, 400)
+        self.assertIn("already in use", str(res.data["reference_number"]))
 
     def test_at_most_three_pending_claims_and_rejected_can_resubmit(self):
         for i in range(3):
@@ -138,12 +182,61 @@ class MemberClaimApiTests(TestCase):
         self.assertEqual(res.data["items"][0]["id"], own.data["id"])
         self.assertEqual(res.data["items"][0]["status"], "pending_review")
 
-    def test_trial_member_cannot_submit_a_claim(self):
+    def test_trial_member_can_submit(self):
         self.profile.expiry_date = None
         self.profile.save(update_fields=["expiry_date"])
         start_trial(self.profile)
 
         res = self.api.post(URL, VALID, format="json")
-        self.assertEqual(res.status_code, 403)
-        self.assertIn("profile only", str(res.data["detail"]))
-        self.assertEqual(PaymentClaim.objects.count(), 0)
+        self.assertEqual(res.status_code, 201, res.content)
+        self.assertEqual(PaymentClaim.objects.count(), 1)
+
+    def test_expired_trial_member_can_submit(self):
+        self.profile.expiry_date = None
+        self.profile.save(update_fields=["expiry_date"])
+        start_trial(self.profile, now=timezone.now() - timedelta(days=8))
+
+        res = self.api.post(URL, VALID, format="json")
+        self.assertEqual(res.status_code, 201, res.content)
+
+    def test_submit_notifies_member_and_sends_email(self):
+        with mock.patch("apps.notifications.services.send_mail") as send, \
+                self.captureOnCommitCallbacks(execute=True):
+            res = self.api.post(URL, VALID, format="json")
+
+        self.assertEqual(res.status_code, 201)
+        note = Notification.objects.get(recipient=self.user)
+        self.assertEqual(note.kind, Notification.Kind.MEMBERSHIP)
+        self.assertIn("pending", note.title.lower())
+        self.assertEqual(note.link, "member-home.html")
+        self.assertEqual(send.call_count, 1)
+        self.assertEqual(send.call_args.kwargs["recipient_list"], [self.user.email])
+        contents = send.call_args.kwargs["message"] + send.call_args.kwargs["html_message"]
+        self.assertNotIn("09171234567", contents)
+        self.assertNotIn("drive.google.com", contents)
+
+    def test_payment_history_shows_claim_status_and_plan(self):
+        self.api.post(URL, {**VALID, "plan": "quarterly"}, format="json")
+
+        res = self.api.get("/api/member/me/")
+        rows = [r for r in res.data["payments"] if str(r["reference"]).startswith("G-")]
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["status"], "Pending")
+        self.assertEqual(rows[0]["plan"], "Quarterly")
+        self.assertEqual(rows[0]["method"], "GCash")
+
+    def test_staff_review_list_shows_every_form_submission_field(self):
+        self.assertEqual(self.api.post(URL, VALID, format="json").status_code, 201)
+        self.api.post(URL, {**VALID, "reference_number": "09171234568"}, format="json")
+
+        staff = APIClient()
+        staff.force_authenticate(self.staff)
+        res = staff.get("/api/staff/claims/")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(len(res.data["items"]), 2)
+        row = next(r for r in res.data["items"] if r["reference_number"] == "09171234567")
+        self.assertEqual(row["plan"], "monthly")
+        self.assertEqual(row["amount_centavos"], PLAN_PRICE_CENTAVOS["monthly"])
+        self.assertEqual(row["proof_link"], VALID["proof_link"])
+        self.assertTrue(row["member_name"])
+        self.assertTrue(row["created_at"])

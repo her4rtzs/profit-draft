@@ -32,6 +32,11 @@ def _ensure_pending_migrations():
                 if "finance_manualpayment" in tables
                 else set()
             )
+            claim_cols = (
+                {c.name for c in connection.introspection.get_table_description(cursor, "billing_paymentclaim")}
+                if "billing_paymentclaim" in tables
+                else set()
+            )
 
         needs_migrate = (
             "must_change_password" not in user_cols
@@ -42,6 +47,7 @@ def _ensure_pending_migrations():
             or ("membership_memberprofile" in tables and "trial_ends_at" not in member_cols)
             or ("membership_memberprofile" in tables and "onboarding_data" not in member_cols)
             or "billing_paymentclaim" not in tables
+            or ("billing_paymentclaim" in tables and "plan" not in claim_cols)
             or ("finance_manualpayment" in tables and "reference_number" not in manual_pay_cols)
         )
         if needs_migrate:
@@ -68,6 +74,10 @@ def _ensure_pending_migrations():
                     if "finance_manualpayment" in tables and "reference_number" not in manual_pay_cols:
                         cursor.execute(
                             "ALTER TABLE finance_manualpayment ADD COLUMN IF NOT EXISTS reference_number varchar(64) NULL;"
+                        )
+                    if "billing_paymentclaim" in tables and "plan" not in claim_cols:
+                        cursor.execute(
+                            "ALTER TABLE billing_paymentclaim ADD COLUMN IF NOT EXISTS plan varchar(20) NOT NULL DEFAULT '';"
                         )
 
         from django.contrib.auth import get_user_model

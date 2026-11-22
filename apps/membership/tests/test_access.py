@@ -110,7 +110,7 @@ class MemberPageAccessTests(_MemberFixture):
 
         self.assertEqual(self.web.get("/member-home").status_code, 200)
         self.assertEqual(self.web.get("/profile").status_code, 200)
-        res = self.web.get("/claim")
+        res = self.web.get("/payments")
         self.assertEqual(res.status_code, 403)
         self.assertIn(b"free trial has ended", res.content)
 
@@ -122,8 +122,6 @@ class MemberPageAccessTests(_MemberFixture):
         self.assertEqual(self.web.get("/profile").status_code, 200)
         res = self.web.get("/payments")
         self.assertEqual(res.status_code, 403)
-        res = self.web.get("/claim")
-        self.assertEqual(res.status_code, 403)
         self.assertIn(b"profile only", res.content)
 
     def test_active_member_pages_are_unchanged(self):
@@ -134,4 +132,3 @@ class MemberPageAccessTests(_MemberFixture):
         )
         self.web.force_login(self.user)
         self.assertEqual(self.web.get("/member-home").status_code, 200)
-        self.assertEqual(self.web.get("/claim").status_code, 200)

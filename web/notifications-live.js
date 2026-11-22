@@ -126,7 +126,7 @@
             <i class="fa-solid fa-chevron-right notif-chev" aria-hidden="true"></i>
           </button>`;
         }).join("")
-      : `<div class="notification-empty"><i class="fa-regular fa-bell-slash" aria-hidden="true"></i><strong>No notifications</strong><p>New announcements, GCash claims, and membership updates show up here.</p></div>`;
+      : `<div class="notification-empty"><i class="fa-regular fa-bell-slash" aria-hidden="true"></i><strong>No notifications</strong><p>New announcements, GCash payments, and membership updates show up here.</p></div>`;
   }
 
   async function load(force = false) {

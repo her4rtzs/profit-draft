@@ -24,7 +24,7 @@ Phase 4 (Financial Dashboard) is in progress. Phase 4.5 (Installable Web App) is
 - Backend: Django + Django REST Framework (the JSON API used by the `web/` pages), deployed as serverless functions on Vercel
 - Database: Supabase PostgreSQL, accessed through the Django ORM
 - Files: Supabase Storage via `django-storages` (PDFs, profile images)
-- Payments: **cash and GCash only**, with no online payment gateway. Cash is taken at the desk; a GCash payment is a claim (reference number plus a screenshot link) that the Owner or Cashier must approve before it enrolls anyone (see Payments section)
+- Payments: **cash and GCash only**, with no online payment gateway. Cash is taken at the desk; a GCash payment (reference number plus a screenshot link) must be confirmed by staff or admin before it enrolls anyone (see Payments section)
 - Scheduled jobs: Supabase `pg_cron`
 - Free tier only (Vercel and Supabase free plans). Do not suggest paid services.
 - There is no native mobile app. Do not add React Native, Expo, or a `mobile/` folder.
@@ -57,7 +57,7 @@ Each of these exists to prevent a real, costly mistake. Do not bend them.
 - `manage.py`, `requirements.txt`, `vercel.json`: backend entry points and deploy config
 - `profit/`: Django project (settings, urls, wsgi)
 - `apps/membership/`: enrollment (staff-assisted and self-service), attendance, member profiles (Module 1)
-- `apps/billing/`: subscriptions, GCash payment claims and their staff review, cash desk payments; approval enrolls the member through the shared membership service (Module 2)
+- `apps/billing/`: subscriptions, GCash payments and their staff review, cash desk payments; confirmation enrolls the member through the shared membership service (Module 2)
 - `apps/finance/`: transaction history and reports (Module 3)
 - `apps/accounts/`: users, roles, RBAC permissions
 - `api/`: DRF serializers and viewsets for the `web/` pages
@@ -68,27 +68,27 @@ Each of these exists to prevent a real, costly mistake. Do not bend them.
 - `PROJECT-LOG.md`, `ROADMAP.md`, `Architecture.md`: session log, work checklist, and design plan
 
 ## Modules
-1. **Membership**: enrollment, attendance records, member profiles. Sign-up is free and starts a 7-day `trial` with app access only (no gym membership, no attendance). Enrollment then happens two ways: staff enroll a member who pays cash at the desk, or a GCash payment claim is approved and the system enrolls the member through the same service. Members use the same portal to view their own profile, attendance, and membership status.
-2. **Billing & Subscription**: cash and GCash subscription payments (2.2). A GCash payment is a claim with a reference number and a screenshot link, reviewed by the Owner or Cashier; approval enrolls the member. Cash is recorded by staff at the desk. A `pg_cron` job (2.1) expires memberships automatically. There is no online payment gateway.
+1. **Membership**: enrollment, attendance records, member profiles. Sign-up is free and starts a 7-day `trial` with app access only (no gym membership, no attendance). Enrollment then happens two ways: staff enroll a member who pays cash at the desk, or a GCash payment is confirmed and the system enrolls the member through the same service. Members use the same portal to view their own profile, attendance, and membership status.
+2. **Billing & Subscription**: cash and GCash subscription payments (2.2). A GCash payment has a reference number and a screenshot link, reviewed by the Owner or Cashier; confirmation enrolls the member. Cash is recorded by staff at the desk. A `pg_cron` job (2.1) expires memberships automatically. There is no online payment gateway.
 3. **Financial Dashboard**: transaction history (3.1) and financial reports (3.2). Owner only.
 
 ## Request flow
 - Pages call DRF endpoints (`web/` pages) or are rendered by Django views. Neither creates an online checkout: there is no payment gateway.
 - Free sign-up flow:
   1. A visitor signs up on the web portal. This creates a user with the Member role and a member profile in `trial` status, which lasts 7 days and gives app access only (no gym membership, no attendance).
-  2. The member can pay by GCash or in cash at the desk. Submitting a claim changes nothing about access.
-- GCash claim flow:
-  1. The member submits the GCash reference number and an https Google Drive link to the transaction screenshot. The claim is stored against the plan's server-side price with status `pending_review`.
-  2. The Owner or Cashier opens the claim, checks the screenshot against the reference, then approves or rejects it.
-  3. On approval, one database transaction marks the claim `approved` and enrolls the member (status `active`, expiry set) through the shared membership service.
-  4. A rejected claim is marked `rejected` and leaves the member exactly as they were. A second approval of the same claim changes nothing.
+  2. The member can pay by GCash or in cash at the desk. Submitting a payment changes nothing about access.
+- GCash payment flow:
+  1. The member submits the GCash reference number and an https Google Drive link to the transaction screenshot. The payment is stored against the plan's server-side price with status `pending_review`.
+  2. The Owner or Cashier opens the payment, checks the screenshot against the reference, then confirms or rejects it.
+  3. On confirmation, one database transaction marks the payment `approved` and enrolls the member (status `active`, expiry set) through the shared membership service.
+  4. A rejected payment is marked `rejected` and leaves the member exactly as they were. A second confirmation of the same payment changes nothing.
 - Cash flow: staff take the cash at the desk, record the payment as `paid`, and enroll (or renew) the member through the same membership service.
 - `pg_cron` updates membership expiry directly in the database and bypasses Django. This is the one exception to "everything goes through the ORM".
 
 ## Rules
 - Use the Django ORM for all application database access. No raw SQL in app code.
 - Keep business logic out of views and serializers where practical; put it in services or models.
-- Enrollment logic (creating or activating a membership, setting expiry) lives in one service in `apps/membership/`. Cash payments and GCash claim approval both call it. Do not duplicate it.
+- Enrollment logic (creating or activating a membership, setting expiry) lives in one service in `apps/membership/`. Only staff and admin (Cashier or Owner) enroll members: by recording cash at the desk or confirming a member-submitted GCash payment. Members and the retired payment-gateway webhook never enroll anyone. Do not duplicate it.
 - Add or update tests for any change to billing, auth, permissions, or enrollment.
 - Never log PII (names, contact details) or payment details.
 - Never commit secrets. Read them from environment variables.
@@ -150,15 +150,15 @@ tags: [decision]
 - Amounts are in centavos (PHP 100.00 = `10000`).
 - Exactly two payment methods: **cash** and **GCash**. There is no PayMongo, no online payment gateway, and no card, bank-transfer, Maya, or wallet option. Do not add one.
 - Cash is paid at the desk and recorded by staff (`status = paid`, `recorded_by` set).
-- A GCash payment is a **claim**, not a payment: the member submits the GCash reference number and an https Google Drive link to the screenshot of the transaction. It starts as `pending_review` and grants no access.
-- The claim amount always comes from the plan price on the server. Never accept an amount from the member's form.
+- A GCash payment is submitted for staff review, not settled immediately: the member submits the GCash reference number and an https Google Drive link to the screenshot of the transaction. It starts as `pending_review` and grants no access.
+- The payment amount always comes from the plan price on the server. Never accept an amount from the member's form.
 - Accept only `https://drive.google.com/...` or `https://docs.google.com/...` links for the screenshot; store the link and let staff open it. The server never downloads or follows it.
-- Only the Owner or Cashier may approve or reject a claim, checked on the server. A member may submit a claim and see their own claims only.
-- Submitting a claim never enrolls anyone. Only approval enrolls, and it does so through the shared membership service in `apps/membership/` in one database transaction: mark the claim `approved`, activate the membership, set the expiry.
-- Approval must be idempotent. Approving an already-approved claim must not create a second enrollment or extend the expiry twice.
+- Only the Owner or Cashier may confirm or reject a payment, checked on the server. A member may submit a payment and see their own payments only.
+- Submitting a payment never enrolls anyone. Only staff or admin confirmation enrolls, and it does so through the shared membership service in `apps/membership/` in one database transaction: mark the payment `approved`, activate the membership, set the expiry.
+- Confirmation must be idempotent. Confirming an already-confirmed payment must not create a second enrollment or extend the expiry twice.
 - Rejection sets `rejected`, records the reviewer and the reason, and leaves the member unchanged.
 - Old payment rows, including the retired PayMongo history, are never edited or deleted. A mistake is fixed by `voided` plus a reason and a new record.
-- Only approved GCash claims and existing `paid` rows count in the Financial Dashboard. `pending_review` and `rejected` claims never count.
+- Only confirmed GCash payments and existing `paid` rows count in the Financial Dashboard. `pending_review` and `rejected` payments never count.
 
 ## Auth & roles (RBAC)
 Roles: Owner, Cashier, Personal Trainer, Member. Enforce permissions server-side on both views and DRF endpoints. There is **one portal and one login**: after logging in, the user's role decides which pages and menu items they get.
@@ -167,14 +167,14 @@ Roles: Owner, Cashier, Personal Trainer, Member. Enforce permissions server-side
 |---|---|---|---|---|
 | Financial Dashboard / reports | Yes | No | No | No |
 | Record cash payments at the desk | Yes | Yes | No | No |
-| Review GCash payment claims (approve or reject) | Yes | Yes | No | No |
-| View payment claims | All | All | No | Own only |
-| Submit a GCash payment claim | n/a | n/a | n/a | Own only |
-| Membership enrollment (cash at desk, or claim approval) | Yes | Yes | No | No |
+| Review GCash payments (confirm or reject) | Yes | Yes | No | No |
+| View payments for review | All | All | No | Own only |
+| Submit a GCash payment | n/a | n/a | n/a | Own only |
+| Membership enrollment (cash at desk, or payment confirmation) | Yes | Yes | No | No |
 | Attendance records | Yes | Yes | Yes | View own |
 | Own profile | Yes | Yes | Yes | Yes |
 
-Public sign-up may only create the Member role. It must never allow choosing or escalating to Owner, Cashier, or Personal Trainer; the Owner assigns staff roles. A member who has signed up is `trial` for 7 days: app access only, no gym membership and no attendance. Submitting a GCash claim never grants access; only approval or a recorded cash payment enrolls the member.
+Public sign-up may only create the Member role. It must never allow choosing or escalating to Owner, Cashier, or Personal Trainer; the Owner assigns staff roles. A member who has signed up is `trial` for 7 days: app access only, no gym membership and no attendance. Submitting a GCash payment never grants access; only staff/admin confirmation or a recorded cash payment enrolls the member.
 
 Every staff-only view and DRF endpoint must check, on the server: the user is logged in, has the correct role, **and is active**. Never assume a layout, menu, or parent template already protected the page. A member may only read and change their own records (always filter by the logged-in user, never by an id from the request alone).
 

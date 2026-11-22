@@ -330,7 +330,7 @@
 
     var today = (overview && overview.today) || state.today || '';
     if (shiftDate) {
-      shiftDate.textContent = today ? 'Shift date: ' + today : 'Desk payments and approved claims for today.';
+      shiftDate.textContent = today ? 'Shift date: ' + today : 'Desk payments and confirmed GCash payments for today.';
     }
 
     var todays = state.payments.filter(function (p) {

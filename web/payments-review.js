@@ -1,11 +1,11 @@
-/* Owner/Cashier GCash claim review on the Payments page. */
+/* Owner/Cashier review of member-submitted GCash payments on the Payments page. */
 (function () {
   const $ = (id) => document.getElementById(id);
-  const tbody = $("claimsRows");
+  const tbody = $("reviewRows");
   if (!tbody) return;
 
-  const modal = $("claimRejectModal");
-  const reason = $("claimRejectReason");
+  const modal = $("rejectPaymentModal");
+  const reason = $("rejectPaymentReason");
   let rejectId = null;
 
   function esc(value) {
@@ -22,40 +22,42 @@
     try {
       const data = await window.ProFitAPI.get("/staff/claims");
       const items = Array.isArray(data.items) ? data.items : [];
-      $("claimsCount").textContent = items.length + (items.length === 1 ? " claim" : " claims");
+      $("reviewCount").textContent = items.length + (items.length === 1 ? " payment" : " payments");
       tbody.innerHTML = items.length
         ? items.map((c) => {
             const id = esc(c.id);
             const link = esc(c.proof_link);
+            const plan = c.plan ? c.plan.charAt(0).toUpperCase() + c.plan.slice(1) : "Membership";
             return '<tr>'
               + '<td><strong>' + esc(c.member_name) + '</strong></td>'
+              + '<td>' + esc(plan) + '</td>'
               + '<td class="num">\u20b1' + esc((c.amount_centavos / 100).toFixed(2)) + '</td>'
               + '<td>' + esc(c.reference_number) + '</td>'
               + '<td><a href="' + link + '" target="_blank" rel="noopener noreferrer">Open proof <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a></td>'
               + '<td>' + esc(String(c.created_at).slice(0, 10)) + '</td>'
               + '<td class="fn-right">'
-              + '<button type="button" class="fn-btn-gold" data-approve="' + id + '">Approve</button> '
+              + '<button type="button" class="fn-btn-gold" data-confirm="' + id + '">Confirm</button> '
               + '<button type="button" class="fn-btn-dark" data-reject="' + id + '">Reject</button>'
               + '</td></tr>';
           }).join("")
-        : '<tr><td colspan="6">No claims are waiting for review.</td></tr>';
+        : '<tr><td colspan="7">No payments are waiting for review.</td></tr>';
     } catch (e) {
-      tbody.innerHTML = '<tr><td colspan="6">' + esc(e.message || "Could not load claims.") + '</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7">' + esc(e.message || "Could not load payments.") + '</td></tr>';
     }
   }
 
   tbody.addEventListener("click", async (event) => {
-    const approve = event.target.closest("[data-approve]");
+    const confirm = event.target.closest("[data-confirm]");
     const reject = event.target.closest("[data-reject]");
-    if (approve) {
-      approve.disabled = true;
+    if (confirm) {
+      confirm.disabled = true;
       try {
-        await window.ProFitAPI.post("/staff/claims/" + approve.dataset.approve + "/approve/", {});
+        await window.ProFitAPI.post("/staff/claims/" + confirm.dataset.confirm + "/approve/", {});
         await load();
       } catch (e) {
-        window.alert(e.message || "Could not approve this claim.");
+        window.alert(e.message || "Could not confirm this payment.");
       } finally {
-        approve.disabled = false;
+        confirm.disabled = false;
       }
     } else if (reject) {
       rejectId = reject.dataset.reject;
@@ -64,8 +66,8 @@
     }
   });
 
-  $("claimRejectCancel").addEventListener("click", closeModal);
-  $("claimRejectForm").addEventListener("submit", async (event) => {
+  $("rejectPaymentCancel").addEventListener("click", closeModal);
+  $("rejectPaymentForm").addEventListener("submit", async (event) => {
     event.preventDefault();
     const text = reason.value.trim();
     if (!text) return;
@@ -76,7 +78,7 @@
       closeModal();
       await load();
     } catch (e) {
-      window.alert(e.message || "Could not reject this claim.");
+      window.alert(e.message || "Could not reject this payment.");
     } finally {
       button.disabled = false;
     }

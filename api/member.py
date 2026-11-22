@@ -11,7 +11,7 @@ from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.billing.models import Payment, Subscription
+from apps.billing.models import Payment, PaymentClaim, Subscription
 from apps.membership.models import Attendance, Enrollment, MemberProfile
 from apps.membership.services import PLAN_DAYS
 
@@ -203,6 +203,34 @@ class MemberMeView(APIView):
         user = request.user
         full_name = f"{user.first_name} {user.last_name}".strip()
         onboarding = profile.onboarding_data or {}
+
+        claim_status = {
+            PaymentClaim.Status.PENDING_REVIEW: "Pending",
+            PaymentClaim.Status.APPROVED: "Confirmed",
+            PaymentClaim.Status.REJECTED: "Rejected",
+        }
+        payment_history = [{
+            "reference": f"PF-{p.pk:06d}",
+            "date": timezone.localdate(p.created_at).isoformat(),
+            "method": "Online",
+            "status": p.status,
+            "plan": (p.subscription.plan.title() if p.subscription and p.subscription.plan else "Membership"),
+            "durationDays": PLAN_DAYS.get((p.subscription.plan or "").lower()) if p.subscription else None,
+            "amount_centavos": p.amount_centavos,
+            "amountFormatted": f"₱{p.amount_centavos / 100:,.2f}",
+        } for p in all_payments]
+        payment_history += [{
+            "reference": f"G-{c.pk:06d}",
+            "date": timezone.localdate(c.created_at).isoformat(),
+            "method": "GCash",
+            "status": claim_status.get(c.status, c.status),
+            "plan": c.plan.title() if c.plan else "Membership",
+            "durationDays": PLAN_DAYS.get(c.plan) if c.plan else None,
+            "amount_centavos": c.amount_centavos,
+            "amountFormatted": f"₱{c.amount_centavos / 100:,.2f}",
+        } for c in PaymentClaim.objects.filter(member=profile).order_by("-created_at", "-id")[:30]]
+        payment_history.sort(key=lambda row: row["date"], reverse=True)
+
         return Response({
             "user": {
                 "name": full_name, "email": user.email,
@@ -232,16 +260,7 @@ class MemberMeView(APIView):
             # have to recalculate from an incomplete 30-record window
             "streak": streak,
             "weeklyVisits": weekly_visits,
-            "payments": [{
-                "reference": f"PF-{p.pk:06d}",
-                "date": timezone.localdate(p.created_at).isoformat(),
-                "method": "Online",
-                "status": p.status,
-                "plan": (p.subscription.plan.title() if p.subscription and p.subscription.plan else "Membership"),
-                "durationDays": PLAN_DAYS.get((p.subscription.plan or "").lower()) if p.subscription else None,
-                "amount_centavos": p.amount_centavos,
-                "amountFormatted": f"₱{p.amount_centavos / 100:,.2f}",
-            } for p in all_payments],
+            "payments": payment_history,
         })
 
 

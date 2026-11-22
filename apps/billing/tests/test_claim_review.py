@@ -1,5 +1,6 @@
 """Owner/Cashier claim review: permissions, one-time approval and rejection."""
 
+from pathlib import Path
 from unittest import mock
 
 from django.contrib.auth import get_user_model
@@ -38,6 +39,7 @@ class ClaimReviewTests(TestCase):
     def _claim(self, reference, status=PaymentClaim.Status.PENDING_REVIEW):
         return PaymentClaim.objects.create(
             member=self.member,
+            plan="monthly",
             amount_centavos=80_000,
             reference_number=reference,
             proof_link="https://drive.google.com/file/d/abc/view",
@@ -59,6 +61,7 @@ class ClaimReviewTests(TestCase):
                 row = res.data["items"][0]
                 self.assertEqual(row["id"], self.claim.pk)
                 self.assertEqual(row["reference_number"], "09171234567")
+                self.assertEqual(row["plan"], "monthly")
                 self.assertEqual(row["amount_centavos"], 80_000)
                 self.assertEqual(row["proof_link"], self.claim.proof_link)
                 self.assertTrue(row["member_name"])
@@ -125,6 +128,21 @@ class ClaimReviewTests(TestCase):
         self.assertEqual(self.member.membership_status, "PENDING")
         self.assertEqual(Enrollment.objects.count(), 0)
 
+    def test_reject_notifies_member_with_the_reason(self):
+        self._as(self.owner)
+        with mock.patch("apps.notifications.services.send_mail") as send:
+            res = self.api.post(
+                f"{LIST}{self.claim.pk}/reject/",
+                {"reason": "Receipt did not match"},
+                format="json",
+            )
+
+        self.assertEqual(res.status_code, 200)
+        note = Notification.objects.get(recipient=self.member_user)
+        self.assertEqual(note.title, "GCash payment rejected")
+        self.assertIn("Receipt did not match", note.body)
+        self.assertEqual(send.call_count, 1)
+
     def test_no_payment_details_are_logged(self):
         self._as(self.cashier)
         with mock.patch("logging.Logger.info") as info, mock.patch("logging.Logger.warning") as warn:
@@ -182,3 +200,16 @@ class ClaimReviewTests(TestCase):
         self.assertEqual(
             Notification.objects.filter(recipient=self.member_user).count(), 1
         )
+
+
+class ReviewPageMarkupTests(TestCase):
+    def test_review_table_shows_plan_and_opens_proof_safely(self):
+        web = Path(__file__).resolve().parents[3] / "web"
+        html = (web / "payments.html").read_text(encoding="utf-8")
+        script = (web / "payments-review.js").read_text(encoding="utf-8")
+
+        self.assertIn("Payments for review", html)
+        self.assertIn('data-tab="review"', html)
+        self.assertIn("<th>Plan</th>", html)
+        self.assertIn('data-confirm="', script)
+        self.assertIn('target="_blank" rel="noopener noreferrer"', script)

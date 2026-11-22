@@ -53,6 +53,31 @@ def get_plan_price_centavos(plan):
     return prices[plan]
 
 
+GCASH_REFERENCE_RE = re.compile(r"^\d{10,13}$")
+
+
+def normalize_gcash_reference(raw):
+    """Return the digits-only GCash reference, or raise if it is not 10-13 digits."""
+    digits = str(raw or "").replace(" ", "")
+    if not GCASH_REFERENCE_RE.fullmatch(digits):
+        raise ValidationError(
+            "Enter a 10 to 13 digit GCash reference number. Spaces are okay."
+        )
+    return digits
+
+
+def reference_in_use(reference):
+    """True when a live claim or a desk payment already uses this reference."""
+    from apps.billing.models import PaymentClaim
+
+    return PaymentClaim.objects.filter(
+        reference_number=reference,
+        status__in=(PaymentClaim.Status.PENDING_REVIEW, PaymentClaim.Status.APPROVED),
+    ).exists() or ManualPayment.objects.filter(
+        method=ManualPayment.Method.GCASH, reference_number=reference
+    ).exists()
+
+
 def update_plan_prices(prices_pesos, *, updated_by=None):
     """Persist Owner-updated plan prices (input in whole pesos, stored in centavos)."""
     if not isinstance(prices_pesos, dict) or not prices_pesos:
@@ -102,21 +127,8 @@ def record_desk_payment(*, member, plan, method, recorded_by, paid_on=None, refe
 
     reference = ""
     if method == ManualPayment.Method.GCASH:
-        raw = str(reference_number or "")
-        if not re.fullmatch(r"[0-9 ]{10,20}", raw):
-            raise ValidationError(
-                "Enter a GCash reference number: 10 to 20 digits and spaces."
-            )
-        reference = raw.replace(" ", "")
-        from apps.billing.models import PaymentClaim
-
-        already_used = PaymentClaim.objects.filter(
-            reference_number=reference,
-            status__in=(PaymentClaim.Status.PENDING_REVIEW, PaymentClaim.Status.APPROVED),
-        ).exists() or ManualPayment.objects.filter(
-            method=ManualPayment.Method.GCASH, reference_number=reference
-        ).exists()
-        if already_used:
+        reference = normalize_gcash_reference(reference_number)
+        if reference_in_use(reference):
             raise ValidationError("This GCash reference number is already in use.")
 
     today = timezone.localdate()

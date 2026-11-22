@@ -30,7 +30,7 @@ def _plan_for_amount(amount_centavos):
     for plan, price in PLAN_PRICE_CENTAVOS.items():
         if price == amount_centavos:
             return plan
-    raise ValidationError("This claim has no matching plan price.")
+    raise ValidationError("This payment has no matching plan price.")
 
 
 def _locked_claim(pk):
@@ -41,7 +41,7 @@ def _locked_claim(pk):
         .first()
     )
     if claim is None:
-        raise NotFound("Claim not found.")
+        raise NotFound("Payment not found.")
     return claim
 
 
@@ -50,6 +50,7 @@ def _claim_row(claim):
     return {
         "id": claim.pk,
         "member_name": user.get_full_name() or user.username,
+        "plan": claim.plan,
         "amount_centavos": claim.amount_centavos,
         "reference_number": claim.reference_number,
         "proof_link": claim.proof_link,
@@ -83,10 +84,14 @@ class ClaimApproveView(APIView):
             if claim.status == PaymentClaim.Status.APPROVED:
                 return Response({"status": "approved", "already_approved": True})
             if claim.status != PaymentClaim.Status.PENDING_REVIEW:
-                raise ValidationError("Only a pending claim can be approved.")
+                raise ValidationError("Only a pending payment can be confirmed.")
 
             member = MemberProfile.objects.select_for_update().get(pk=claim.member_id)
-            plan = _plan_for_amount(claim.amount_centavos)
+            plan = (
+                claim.plan
+                if claim.plan in PLAN_PRICE_CENTAVOS
+                else _plan_for_amount(claim.amount_centavos)
+            )
             today = timezone.localdate()
             start = (
                 member.expiry_date
@@ -122,14 +127,14 @@ class ClaimRejectView(APIView):
     def post(self, request, pk):
         reason = str(request.data.get("reason") or "").strip()
         if not reason:
-            raise ValidationError("A reason is required to reject a claim.")
+            raise ValidationError("A reason is required to reject a payment.")
         if len(reason) > 500:
             raise ValidationError("The reason must be 500 characters or fewer.")
 
         with transaction.atomic():
             claim = _locked_claim(pk)
             if claim.status != PaymentClaim.Status.PENDING_REVIEW:
-                raise ValidationError("Only a pending claim can be rejected.")
+                raise ValidationError("Only a pending payment can be rejected.")
             claim.status = PaymentClaim.Status.REJECTED
             claim.reviewed_by = request.user
             claim.reviewed_at = timezone.now()
@@ -137,4 +142,11 @@ class ClaimRejectView(APIView):
             claim.save(
                 update_fields=["status", "reviewed_by", "reviewed_at", "reject_reason"]
             )
+        notify(
+            claim.member.user,
+            "GCash payment rejected",
+            kind=Notification.Kind.MEMBERSHIP,
+            body=f"Your GCash payment was not approved. Reason: {reason}",
+            link="member-home.html",
+        )
         return Response({"status": "rejected"})

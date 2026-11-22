@@ -93,7 +93,7 @@
     overview: "Your gym overview",
     membership: "Plan & renewal",
     attendance: "Your check-in log",
-    payments: "Receipts & GCash claims",
+    payments: "Receipts & payments",
     schedule: "Classes & bookings",
     announcements: "Gym notices & updates",
     diary: "Your training log",

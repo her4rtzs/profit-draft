@@ -3077,3 +3077,26 @@ Fix the "Authentication credentials were not provided" error banner showing acro
 - Updated `load()` in `web/member-home.html` so a `401`/`403` redirects unauthenticated visitors to `/login` in production, while locally on `127.0.0.1` / `localhost` it renders the local preview cleanly with a dismissible notice linking to `/login` instead of showing a red error banner on every tab.
 ### Decision-log skill
 Distinguish unauthenticated `401`/`403` responses from network errors in portal loaders: redirect to `/login` in production and provide a clean local preview banner on `localhost`.
+
+## 2026-11-22 15:42 (Asia/Manila): Member payment card replaces the claim page
+### What I asked for
+Replace "Submit GCash claim" with a "Pay for membership" card on My Membership, using server plan prices, GCash-only, Drive proof links, trial access, Payment History statuses, and submit/reject notifications.
+### What the agent decided and why
+- Put the form on `web/member-home.html` as a cashier-style `.fn-*` card; the old `/claim` page and its links are gone.
+- Added `plan` to `PaymentClaim` (migration `0006`, not applied) so the member picks the plan and the server still supplies the amount, method and pending status.
+- Allowed trial and trial-ended members to submit through `TrialAllowedMemberAccess`; every other member feature stays blocked.
+- Normalised GCash references to 10-13 digits in one shared helper used by the desk and member paths; duplicates are checked against live claims and desk payments.
+- Payment History now merges claims with Pending/Confirmed/Rejected labels; submitting or rejecting a payment sends the existing in-app plus email notification.
+### Decision-log skill
+When a form moves from its own page into a portal tab, update the page guard, the API permission, every trigger button and the history read in the same change, or one of them will silently block the member.
+
+## 2026-11-22 16:06 (Asia/Manila): Payments for review replaces GCash claims
+### What I asked for
+Rename the cashier "GCash claims" section to "Payments for review", reuse the existing review list with every pending payment, show member/plan/amount/reference/Drive link and Confirm/Reject, then remove "claim" from all visible text, delete dead claim pages, update AGENTS.md, and add tests and decision notes.
+### What the agent decided and why
+- Reused the Payments page review table, added a Plan column and renamed the action to Confirm; the database status stays `approved` and the API paths stay as they are so existing data and migrations are untouched.
+- Removed "claim" from every visible string in `web/` and `templates/` and from staff-facing validation messages; deleted the dead `web/claim.html` and `claims-review.js`.
+- Updated `AGENTS.md` so only staff and admin (Cashier or Owner) enroll members, by cash at the desk or confirming a member payment; no webhook enrollment.
+- Added tests for the review list fields, confirming twice enrolling once, rejection with a reason, and the review markup's Plan column and safe proof link.
+### Decision-log skill
+When renaming a user-facing concept, change the labels, notices, empty states, dead pages and rules in one pass, but keep the stored names and migrations intact.

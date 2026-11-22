@@ -1,42 +1,48 @@
-"""Member GCash claims: submit only a reference number and a Drive link.
+"""Member GCash payments: submit a plan, a reference number and a Drive link.
 
 The server supplies the member, amount, method and status. The Drive link is
 stored as text and never opened by this server.
 """
 
-import re
 from urllib.parse import urlparse
 
-from django.db import transaction
+from django.core.exceptions import ValidationError as DjangoValidationError
+from django.db import IntegrityError, transaction
 from rest_framework import serializers
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.billing.models import PaymentClaim, Subscription
-from apps.finance.models import ManualPayment
-from apps.finance.services import get_plan_prices_centavos
+from apps.billing.models import PaymentClaim
+from apps.finance.services import (
+    PLAN_PRICE_CENTAVOS,
+    get_plan_price_centavos,
+    normalize_gcash_reference,
+    reference_in_use,
+)
 from apps.membership.models import MemberProfile
+from apps.notifications.models import Notification
+from apps.notifications.services import notify
 
-from .permissions import MemberAccess
+from .permissions import TrialAllowedMemberAccess
 
 ALLOWED_HOSTS = {"drive.google.com", "docs.google.com"}
 MAX_PENDING_CLAIMS = 3
-SUBMIT_FIELDS = {"reference_number", "proof_link"}
+SUBMIT_FIELDS = {"plan", "reference_number", "proof_link"}
 
 
 class ClaimSubmitSerializer(serializers.Serializer):
+    plan = serializers.ChoiceField(choices=sorted(PLAN_PRICE_CENTAVOS))
     reference_number = serializers.CharField(
-        min_length=10, max_length=20, trim_whitespace=False
+        min_length=10, max_length=25, trim_whitespace=False
     )
     proof_link = serializers.URLField(max_length=500)
 
     def validate_reference_number(self, value):
-        if not re.fullmatch(r"[0-9 ]{10,20}", value):
-            raise serializers.ValidationError(
-                "Use 10 to 20 characters: digits and spaces only."
-            )
-        return value
+        try:
+            return normalize_gcash_reference(value)
+        except DjangoValidationError as exc:
+            raise serializers.ValidationError(" ".join(exc.messages)) from exc
 
     def validate_proof_link(self, value):
         parsed = urlparse(value)
@@ -50,22 +56,15 @@ class ClaimSubmitSerializer(serializers.Serializer):
         extra = set(self.initial_data) - SUBMIT_FIELDS
         if extra:
             raise serializers.ValidationError(
-                "Only reference_number and proof_link can be submitted."
+                "Only plan, reference_number and proof_link can be submitted."
             )
         return attrs
-
-
-def _amount_centavos(profile):
-    """Use the member's latest plan price; never a value from the request."""
-    sub = Subscription.objects.filter(member=profile).order_by("-created_at", "-id").first()
-    plan = ((sub.plan if sub else "") or "monthly").strip().lower()
-    prices = get_plan_prices_centavos()
-    return prices.get(plan, prices["monthly"])
 
 
 def _claim_json(claim):
     return {
         "id": claim.pk,
+        "plan": claim.plan,
         "reference_number": claim.reference_number,
         "proof_link": claim.proof_link,
         "amount_centavos": claim.amount_centavos,
@@ -76,9 +75,9 @@ def _claim_json(claim):
 
 
 class MemberClaimView(APIView):
-    """GET the caller's claims, POST a new GCash claim."""
+    """GET the caller's payments, POST a new GCash payment for staff review."""
 
-    permission_classes = [MemberAccess]
+    permission_classes = [TrialAllowedMemberAccess]
 
     def get(self, request):
         profile = MemberProfile.objects.filter(user=request.user).first()
@@ -96,28 +95,47 @@ class MemberClaimView(APIView):
             raise NotFound("No member profile.")
         serializer = ClaimSubmitSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        reference = serializer.validated_data["reference_number"].replace(" ", "")
-        if ManualPayment.objects.filter(
-            method=ManualPayment.Method.GCASH, reference_number=reference
-        ).exists():
+        plan = serializer.validated_data["plan"]
+        reference = serializer.validated_data["reference_number"]
+        if reference_in_use(reference):
             raise serializers.ValidationError(
                 {"reference_number": "This GCash reference is already in use."}
             )
 
-        with transaction.atomic():
-            member = MemberProfile.objects.select_for_update().get(pk=profile.pk)
-            pending = PaymentClaim.objects.filter(
-                member=member, status=PaymentClaim.Status.PENDING_REVIEW
-            ).count()
-            if pending >= MAX_PENDING_CLAIMS:
-                return Response(
-                    {"detail": "You can have at most 3 claims under review."},
-                    status=400,
+        try:
+            with transaction.atomic():
+                member = MemberProfile.objects.select_for_update().get(pk=profile.pk)
+                pending = PaymentClaim.objects.filter(
+                    member=member, status=PaymentClaim.Status.PENDING_REVIEW
+                ).count()
+                if pending >= MAX_PENDING_CLAIMS:
+                    return Response(
+                        {"detail": "You can have at most 3 payments under review."},
+                        status=400,
+                    )
+                claim = PaymentClaim.objects.create(
+                    member=member,
+                    plan=plan,
+                    amount_centavos=get_plan_price_centavos(plan),
+                    reference_number=reference,
+                    proof_link=serializer.validated_data["proof_link"],
                 )
-            claim = PaymentClaim.objects.create(
-                member=member,
-                amount_centavos=_amount_centavos(member),
-                reference_number=serializer.validated_data["reference_number"],
-                proof_link=serializer.validated_data["proof_link"],
+                amount = claim.amount_centavos
+                transaction.on_commit(
+                    lambda: notify(
+                        request.user,
+                        "GCash payment received — pending review",
+                        kind=Notification.Kind.MEMBERSHIP,
+                        body=(
+                            f"Your {plan} GCash payment of ₱{amount / 100:,.2f} is waiting "
+                            "for staff confirmation. Your membership activates only after "
+                            "approval."
+                        ),
+                        link="member-home.html",
+                    )
+                )
+        except IntegrityError:
+            raise serializers.ValidationError(
+                {"reference_number": "This GCash reference is already in use."}
             )
         return Response(_claim_json(claim), status=201)
