@@ -225,3 +225,7 @@ class ReviewPageMarkupTests(TestCase):
         self.assertIn('target="_blank" rel="noopener noreferrer"', script)
         self.assertIn(".review-card {", css)
         self.assertIn("@media (max-width: 699px)", css)
+        self.assertGreater(
+            css.index("@media (max-width: 699px)"),
+            css.index(".fn-table tbody tr {"),
+        )
