@@ -118,7 +118,7 @@ class NotificationApiTests(TestCase):
         self.assertEqual(first.to, ["m@gym.test"])
         self.assertIn("Gym update", first.subject)
         self.assertIn("New equipment has arrived.", first.body)
-        self.assertIn("https://functionalfitnessgym.site/member-home", first.body)
+        self.assertIn("https://functionalfitnessgym.site/dashboard", first.body)
         self.assertNotIn("www.functionalfitnessgym.site", first.body)
         self.assertEqual(mail.outbox[1].to, ["m@gym.test"])
         self.assertEqual(mail.outbox[2].to, ["o@gym.test"])
