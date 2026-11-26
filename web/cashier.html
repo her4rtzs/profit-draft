@@ -14,7 +14,7 @@
     href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Figtree:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="dashboard.css?v=18">
-  <link rel="stylesheet" href="finance-ui.css?v=30">
+  <link rel="stylesheet" href="finance-ui.css?v=31">
   <script src="config.js?v=9"></script>
   <script src="api.js?v=5"></script>
   <script src="auth.js?v=6"></script>
@@ -589,19 +589,10 @@
               <aside class="pf-gcash-qr-panel" id="cashierGcashQrCard" aria-label="GCash payment QR code">
                 <span class="pf-gcash-qr-kicker">Scan to pay</span>
                 <button type="button" class="pf-gcash-qr-thumb" data-gcash-qr-open
-                  aria-label="Enlarge GCash payment QR code">
+                  title="Click to enlarge QR" aria-label="Enlarge GCash payment QR code">
                   <img src="img/gcash-qr.jpg" alt="ProFit GCash payment QR code" loading="lazy">
                 </button>
-                <ol class="pf-gcash-steps">
-                  <li><strong>1.</strong><span>Show or enlarge this QR for walk-in GCash payments.</span></li>
-                  <li><strong>2.</strong><span>Verify the member sent the exact plan amount.</span></li>
-                  <li><strong>3.</strong><span>Enter the reference number and issue the receipt.</span></li>
-                </ol>
                 <div class="pf-gcash-qr-actions">
-                  <button type="button" class="pf-qr-ghost-btn" data-gcash-qr-open>
-                    <i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i>
-                    <span>Enlarge</span>
-                  </button>
                   <a class="pf-qr-ghost-btn" href="img/gcash-qr.jpg" download="profit-gcash-qr.jpg">
                     <i class="fa-solid fa-download" aria-hidden="true"></i>
                     <span>Save QR</span>

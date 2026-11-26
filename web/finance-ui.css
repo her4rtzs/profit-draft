@@ -2451,7 +2451,7 @@ body:not(.dark) .pf-gcash-qr-panel {
   border-radius: 16px;
   overflow: hidden;
   background: #ffffff;
-  cursor: pointer;
+  cursor: zoom-in;
   box-shadow: 0 10px 24px rgba(0, 38, 102, 0.28);
   transition: transform 0.16s ease, box-shadow 0.16s ease;
 }
@@ -2471,37 +2471,12 @@ body:not(.dark) .pf-gcash-qr-panel {
   margin-left: -9.5%;
 }
 
-.pf-gcash-steps {
-  margin: 0;
-  padding: 0 2px;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  width: 100%;
-  text-align: left;
-  font-size: 12.5px;
-  line-height: 1.45;
-  color: rgba(255, 255, 255, 0.94);
-}
-
-.pf-gcash-steps li {
-  display: flex;
-  gap: 6px;
-  align-items: baseline;
-}
-
-.pf-gcash-steps li strong {
-  color: #ffffff;
-  font-weight: 800;
-  flex-shrink: 0;
-}
-
 .pf-gcash-qr-actions {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 8px;
   width: 100%;
+  max-width: 232px;
   margin-top: 2px;
 }
 
