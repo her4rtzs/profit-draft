@@ -528,3 +528,54 @@
     delete: (path, options) => request(path, { ...options, method: "DELETE" })
   };
 })();
+
+/* Installability: register the app-shell worker and hint phone users who open
+   the site inside an in-app browser (the green browser bar cannot be hidden
+   by page CSS). */
+(function () {
+  var standaloneQuery = window.matchMedia("(display-mode: standalone)");
+  function isStandalone() {
+    return standaloneQuery.matches || window.navigator.standalone === true;
+  }
+
+  if ("serviceWorker" in navigator && location.protocol === "https:") {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker
+        .register("/sw.js", { scope: "/" })
+        .catch(function () {});
+    });
+  }
+
+  function showHint() {
+    if (isStandalone() || !window.matchMedia("(max-width: 768px)").matches) return;
+    try {
+      if (localStorage.getItem("profit-pwa-hint-dismissed") === "1") return;
+    } catch (_) {}
+
+    var style = document.createElement("style");
+    style.textContent =
+      '.pf-pwa-hint{position:fixed;left:12px;right:12px;bottom:76px;z-index:9998;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:12px;background:var(--card,#111827);border:1px solid var(--border,#334155);color:var(--text,#f8fafc);font:500 12px/1.35 Inter,system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.25)}' +
+      '.pf-pwa-hint button{flex:none;min-height:32px;padding:0 12px;border-radius:9px;border:1px solid var(--border,#334155);background:transparent;color:inherit;font:inherit;cursor:pointer}';
+    document.head.appendChild(style);
+
+    var hint = document.createElement("div");
+    hint.className = "pf-pwa-hint";
+    hint.setAttribute("role", "status");
+    hint.innerHTML =
+      "<span>For full screen: browser menu → Add to Home screen.</span>" +
+      '<button type="button" aria-label="Dismiss">Got it</button>';
+    document.body.appendChild(hint);
+    hint.querySelector("button").addEventListener("click", function () {
+      hint.remove();
+      try {
+        localStorage.setItem("profit-pwa-hint-dismissed", "1");
+      } catch (_) {}
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", showHint);
+  } else {
+    showHint();
+  }
+})();

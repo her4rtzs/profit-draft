@@ -46,3 +46,16 @@ Checked by reading the repo, then confirmed with `python manage.py collectstatic
 ### Still open
 
 - Owner phone checklist in `ROADMAP.md` Phase 4.5 (iPhone Safari and Android Chrome, roles, sign-out, deactivated account, installed-card text).
+
+
+## 2026-11-27 06:38 — Owner real-phone PWA checklist (not yet run)
+The app-shell service worker and standalone hint are implemented, but the real-phone gate still needs the owner to verify:
+
+1. Android Chrome: open the live HTTPS site, use the browser menu, choose **Install app / Add to Home screen**, then launch from the home-screen icon.
+2. Confirm the green browser bar is gone and the app opens full screen.
+3. Sign in as Owner, Cashier, Trainer and Member; confirm each role reaches its correct home.
+4. Sign out and back in; confirm the 3-day session still works.
+5. iOS Safari: use **Share → Add to Home Screen**, launch from the icon, and confirm only the normal status bar remains.
+6. Open a link from email or social app; confirm the hint asks to add to home screen and is dismissible.
+
+Do not mark Phase 4.5 complete until these checks are recorded here.
