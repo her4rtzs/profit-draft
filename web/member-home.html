@@ -38,7 +38,7 @@
   <script src="api.js"></script>
   <script src="auth.js?v=4"></script>
   <link rel="stylesheet" href="pro-theme.css">
-  <link rel="stylesheet" href="finance-ui.css?v=28">
+  <link rel="stylesheet" href="finance-ui.css?v=30">
   <link rel="stylesheet" href="spotify.css?v=14">
   <link rel="stylesheet" href="portal-ui.css?v=13">
   <script>document.documentElement.dataset.accent = 'gold'</script>
@@ -47,7 +47,7 @@
   <link rel="stylesheet" href="ui-polish.css?v=2">
   <link rel="stylesheet" href="ui-fixes.css?v=1">
   <link rel="stylesheet" href="pf-modern.css?v=2">
-  <link rel="stylesheet" href="member-shell.css?v=38">
+  <link rel="stylesheet" href="member-shell.css?v=39">
   <style>
     @keyframes mbDashRise {
       from {
@@ -619,7 +619,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="ProFit">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="stylesheet" href="pf-system.css?v=20">
+  <link rel="stylesheet" href="pf-system.css?v=21">
 </head>
 
 <body class="member-home">
@@ -1222,8 +1222,8 @@
                   <i class="fa-solid fa-mobile-screen-button"></i>
                 </span>
                 <div>
-                  <h2 class="fn-card-title">Renew via GCash <span class="member-gcash-pill">GCash only</span></h2>
-                  <p class="fn-card-sub">Submit the details staff verify before activating. Cash is paid at the desk.</p>
+                  <h2 class="fn-card-title">Renew with GCash <span class="member-gcash-pill">GCash only</span></h2>
+                  <p class="fn-card-sub">Pay the exact plan amount, then send us your reference number and proof. Cash payments are made at the front desk.</p>
                 </div>
               </div>
               <button type="button" class="member-pay-close" id="memberPayClose" aria-label="Close renewal form"
@@ -1231,20 +1231,42 @@
                 <i class="fa-solid fa-xmark" aria-hidden="true"></i>
               </button>
             </header>
+
+            <div class="pf-pay-steps" id="memberPaySteps" aria-label="Payment steps">
+              <div class="pf-pay-step is-active" data-step="1">
+                <span class="pf-pay-step-num">1</span>
+                <span>Pay in GCash</span>
+              </div>
+              <span class="pf-pay-step-line" aria-hidden="true"></span>
+              <div class="pf-pay-step" data-step="2">
+                <span class="pf-pay-step-num">2</span>
+                <span>Enter reference</span>
+              </div>
+              <span class="pf-pay-step-line" aria-hidden="true"></span>
+              <div class="pf-pay-step" data-step="3">
+                <span class="pf-pay-step-num">3</span>
+                <span>Attach proof</span>
+              </div>
+            </div>
+
             <div class="pf-gcash-pay-layout">
               <aside class="pf-gcash-qr-panel" aria-label="GCash payment QR code">
-                <span class="pf-gcash-qr-kicker"><i class="fa-solid fa-qrcode" aria-hidden="true"></i> Scan to pay</span>
+                <span class="pf-gcash-qr-kicker">Scan to pay</span>
                 <button type="button" class="pf-gcash-qr-thumb" data-gcash-qr-open
                   aria-label="Enlarge GCash payment QR code">
                   <img src="img/gcash-qr.jpg" alt="ProFit GCash payment QR code" loading="lazy">
                 </button>
-                <p class="pf-gcash-qr-caption">Scan this QR in your GCash app (or save it to upload in GCash), send the exact plan amount, then submit your reference and proof link.</p>
+                <ol class="pf-gcash-steps">
+                  <li><strong>1.</strong><span>Scan this QR in GCash, or save the image and upload it there.</span></li>
+                  <li><strong>2.</strong><span>Send exactly the plan amount.</span></li>
+                  <li><strong>3.</strong><span>Enter the reference number and paste your proof link.</span></li>
+                </ol>
                 <div class="pf-gcash-qr-actions">
-                  <button type="button" class="fn-btn-dark" data-gcash-qr-open>
+                  <button type="button" class="pf-qr-ghost-btn" data-gcash-qr-open>
                     <i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i>
                     <span>Enlarge</span>
                   </button>
-                  <a class="fn-btn-dark" href="img/gcash-qr.jpg" download="profit-gcash-qr.jpg">
+                  <a class="pf-qr-ghost-btn" href="img/gcash-qr.jpg" download="profit-gcash-qr.jpg">
                     <i class="fa-solid fa-download" aria-hidden="true"></i>
                     <span>Save QR</span>
                   </a>
@@ -1259,21 +1281,32 @@
                     </select>
                   </div>
                   <div class="fn-field">
-                    <label for="memberPayAmount">Amount (PHP)</label>
-                    <input class="fn-input" id="memberPayAmount" value="&mdash;" readonly>
+                    <label for="memberPayAmount">Amount to send</label>
+                    <input class="fn-input pf-pay-amount-input" id="memberPayAmount" value="&mdash;" readonly>
                   </div>
                 </div>
                 <div class="fn-field">
                   <label for="memberPayReference">GCash reference number</label>
                   <input class="fn-input" id="memberPayReference" inputmode="numeric" maxlength="25" autocomplete="off"
-                    placeholder="6028 871 884223" required>
-                  <small>10 to 13 digits; spaces are okay.</small>
+                    placeholder="Enter the number from your receipt" required>
+                  <small>10 to 13 digits. Spaces are okay.</small>
                 </div>
                 <div class="fn-field">
                   <label for="memberPayProof">Google Drive link (proof of payment)</label>
                   <input class="fn-input" id="memberPayProof" type="url" maxlength="500" autocomplete="off"
                     placeholder="https://drive.google.com/..." required>
                   <small>Set sharing to &ldquo;Anyone with the link can view&rdquo; and crop out private details.</small>
+                </div>
+                <div class="pf-pay-checklist">
+                  <span class="pf-pay-checklist-label">Before you submit</span>
+                  <label class="pf-pay-check" for="memberPayConfirmAmt">
+                    <input type="checkbox" id="memberPayConfirmAmt">
+                    <span>I sent exactly <strong id="memberPayConfirmAmtVal">the plan amount</strong> to the GCash account shown in the QR.</span>
+                  </label>
+                  <label class="pf-pay-check" for="memberPayConfirmShare">
+                    <input type="checkbox" id="memberPayConfirmShare">
+                    <span>My Drive file is shared with &ldquo;Anyone with the link can view&rdquo;.</span>
+                  </label>
                 </div>
                 <p class="fn-status-msg" id="memberPayStatus" role="status" aria-live="polite" hidden></p>
                 <div class="member-pay-actions">
@@ -1912,12 +1945,40 @@
           status.classList.toggle("is-success", kind === "success");
         }
 
+        function syncMemberPaySteps() {
+          const steps = document.querySelectorAll("#memberPaySteps .pf-pay-step");
+          if (!steps.length) return;
+          const refOk = /^\d{10,13}$/.test(($("memberPayReference")?.value || "").replace(/ /g, ""));
+          const proofVal = ($("memberPayProof")?.value || "").trim();
+          let proofOk = false;
+          try {
+            const u = new URL(proofVal);
+            proofOk = u.protocol === "https:" && ["drive.google.com", "docs.google.com"].includes(u.hostname.toLowerCase());
+          } catch {}
+          steps.forEach((el) => {
+            const n = Number(el.dataset.step);
+            el.classList.remove("is-active", "is-done");
+            if (n === 1) {
+              el.classList.add(refOk ? "is-done" : "is-active");
+            } else if (n === 2) {
+              if (refOk && proofOk) el.classList.add("is-done");
+              else if (refOk) el.classList.add("is-active");
+            } else if (n === 3) {
+              if (proofOk) el.classList.add("is-done");
+              else if (refOk) el.classList.add("is-active");
+            }
+          });
+        }
+
         function updatePayAmount() {
           const select = $("memberPayPlan");
           const amount = $("memberPayAmount");
           if (!select || !amount) return;
           const plan = payPlans[select.value];
-          amount.value = plan ? payMoney(plan.price) : "—";
+          const formatted = plan ? payMoney(plan.price) : "—";
+          amount.value = formatted;
+          const amtSpan = $("memberPayConfirmAmtVal");
+          if (amtSpan) amtSpan.textContent = plan ? formatted : "the plan amount";
         }
 
         function fillPayPlans(next) {
@@ -2010,6 +2071,8 @@
         });
 
         $("memberPayPlan")?.addEventListener("change", updatePayAmount);
+        $("memberPayReference")?.addEventListener("input", syncMemberPaySteps);
+        $("memberPayProof")?.addEventListener("input", syncMemberPaySteps);
 
         $("memberPayForm")?.addEventListener("submit", async (event) => {
           event.preventDefault();
@@ -2018,6 +2081,8 @@
           const plan = $("memberPayPlan")?.value || "";
           const reference = ($("memberPayReference")?.value || "").trim();
           const proof = ($("memberPayProof")?.value || "").trim();
+          const amtChecked = $("memberPayConfirmAmt")?.checked;
+          const shareChecked = $("memberPayConfirmShare")?.checked;
 
           if (!plan || !payPlans[plan]) return showPayStatus("error", "Choose a plan.");
           if (!/^\d{10,13}$/.test(reference.replace(/ /g, ""))) {
@@ -2030,6 +2095,14 @@
             }
           } catch (e) {
             return showPayStatus("error", "Use an https link from drive.google.com or docs.google.com.");
+          }
+          if (!amtChecked) {
+            $("memberPayConfirmAmt")?.focus();
+            return showPayStatus("error", "Confirm that you sent the exact plan amount to the GCash account shown in the QR.");
+          }
+          if (!shareChecked) {
+            $("memberPayConfirmShare")?.focus();
+            return showPayStatus("error", 'Confirm that your Drive file is shared with "Anyone with the link can view".');
           }
 
           button.disabled = true;

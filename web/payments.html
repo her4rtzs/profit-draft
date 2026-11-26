@@ -16,7 +16,7 @@
         href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Figtree:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="dashboard.css?v=18">
-    <link rel="stylesheet" href="finance-ui.css?v=28">
+    <link rel="stylesheet" href="finance-ui.css?v=30">
     <script>(function () { try { var t = localStorage.getItem('theme'); if (t === 'light' && !localStorage.getItem('pf-staff-explicit-light')) { t = 'dark'; try { localStorage.setItem('theme', 'dark'); } catch (_) { } } var d = t !== 'light'; var h = document.documentElement; h.style.background = d ? '#0a0e16' : '#fbf6ee'; h.style.colorScheme = d ? 'dark' : 'light'; h.dataset.theme = d ? 'dark' : 'light'; if (d) { h.classList.add('dark'); } else { h.classList.remove('dark'); } } catch (e) { } })();</script>
     <style>
         html.dark,
@@ -38,7 +38,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="ProFit">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="stylesheet" href="pf-system.css?v=20">
+  <link rel="stylesheet" href="pf-system.css?v=21">
 </head>
 
 <body class="pf-staff" data-page="payments" data-title="Payments" data-welcome="Record and track payments">
@@ -128,48 +128,91 @@
                                     </svg>
                                 </span>
                                 <div>
-                                    <h2 class="fn-card-title">Record a payment</h2>
-                                    <p class="fn-card-sub">Paying also extends the member's membership.</p>
+                                    <h2 class="fn-card-title">Record a payment <span class="pf-pay-method-pill">Cash &amp; GCash</span></h2>
+                                    <p class="fn-card-sub">Collect desk cash or GCash payments. Recording a payment also extends the member's membership.</p>
                                 </div>
                             </div>
                         </header>
-                        <form class="fn-form" id="payForm">
-                            <div class="fn-field">
-                                <label for="payMember">Member</label>
-                                <select class="fn-input" id="payMember"></select>
+
+                        <div class="pf-pay-steps" id="dailyPaySteps" aria-label="Payment recording steps">
+                            <div class="pf-pay-step is-active" data-step="1">
+                                <span class="pf-pay-step-num">1</span>
+                                <span>Select member &amp; plan</span>
                             </div>
-                            <div class="fn-field-row">
-                                <div class="fn-field">
-                                    <label for="payPlan">Plan</label>
-                                    <select class="fn-input" id="payPlan"></select>
-                                </div>
-                                <div class="fn-field">
-                                    <label for="payMethod">Payment method</label>
-                                    <select class="fn-input" id="payMethod"></select>
-                                </div>
+                            <span class="pf-pay-step-line" aria-hidden="true"></span>
+                            <div class="pf-pay-step" data-step="2">
+                                <span class="pf-pay-step-num">2</span>
+                                <span>Collect payment</span>
                             </div>
-                            <div class="fn-field">
-                                <label for="payAmount">Amount</label>
-                                <input class="fn-input" id="payAmount" type="text" readonly>
+                            <span class="pf-pay-step-line" aria-hidden="true"></span>
+                            <div class="pf-pay-step" data-step="3">
+                                <span class="pf-pay-step-num">3</span>
+                                <span>Record &amp; extend</span>
                             </div>
-                            <div class="fn-field">
-                                <label for="payReference">GCash reference number</label>
-                                <input class="fn-input" id="payReference" maxlength="20" inputmode="numeric"
-                                    placeholder="0917 123 4567 (GCash only)">
-                                <small>Required for GCash. Digits and spaces only.</small>
-                                <button type="button" class="pf-gcash-inline-trigger" data-gcash-qr-open>
-                                    <i class="fa-solid fa-qrcode" aria-hidden="true"></i>
-                                    <span>Show GCash QR</span>
+                        </div>
+
+                        <div class="pf-gcash-pay-layout">
+                            <aside class="pf-gcash-qr-panel" id="dailyGcashQrCard" aria-label="GCash payment QR code">
+                                <span class="pf-gcash-qr-kicker">Scan to pay</span>
+                                <button type="button" class="pf-gcash-qr-thumb" data-gcash-qr-open
+                                    aria-label="Enlarge GCash payment QR code">
+                                    <img src="img/gcash-qr.jpg" alt="ProFit GCash payment QR code" loading="lazy">
                                 </button>
-                            </div>
-                            <button class="fn-btn-gold" type="submit">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
-                                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                    <polyline points="20 6 9 17 4 12" />
-                                </svg>
-                                Record payment
-                            </button>
-                        </form>
+                                <ol class="pf-gcash-steps">
+                                    <li><strong>1.</strong><span>Show or enlarge this QR for walk-in GCash payments.</span></li>
+                                    <li><strong>2.</strong><span>Verify the member sent the exact plan amount.</span></li>
+                                    <li><strong>3.</strong><span>Enter the reference number and click Record payment.</span></li>
+                                </ol>
+                                <div class="pf-gcash-qr-actions">
+                                    <button type="button" class="pf-qr-ghost-btn" data-gcash-qr-open>
+                                        <i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i>
+                                        <span>Enlarge</span>
+                                    </button>
+                                    <a class="pf-qr-ghost-btn" href="img/gcash-qr.jpg" download="profit-gcash-qr.jpg">
+                                        <i class="fa-solid fa-download" aria-hidden="true"></i>
+                                        <span>Save QR</span>
+                                    </a>
+                                </div>
+                            </aside>
+
+                            <form class="fn-form" id="payForm">
+                                <div class="fn-field">
+                                    <label for="payMember">Member</label>
+                                    <select class="fn-input" id="payMember"></select>
+                                </div>
+                                <div class="fn-field-row">
+                                    <div class="fn-field">
+                                        <label for="payPlan">Plan</label>
+                                        <select class="fn-input" id="payPlan"></select>
+                                    </div>
+                                    <div class="fn-field">
+                                        <label for="payAmount">Amount to collect</label>
+                                        <input class="fn-input pf-pay-amount-input" id="payAmount" type="text" readonly>
+                                    </div>
+                                </div>
+                                <div class="fn-field-row">
+                                    <div class="fn-field">
+                                        <label for="payMethod">Payment method</label>
+                                        <select class="fn-input" id="payMethod"></select>
+                                    </div>
+                                    <div class="fn-field">
+                                        <label for="payReference">GCash reference number</label>
+                                        <input class="fn-input" id="payReference" maxlength="20" inputmode="numeric"
+                                            placeholder="Enter reference (GCash only)">
+                                        <small>Required for GCash. Digits and spaces only.</small>
+                                    </div>
+                                </div>
+                                <div class="pf-pay-submit-row">
+                                    <button class="fn-btn-gold" type="submit">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+                                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                            <polyline points="20 6 9 17 4 12" />
+                                        </svg>
+                                        Record payment
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </article>
 
                     <div class="fn-daily-right">
@@ -188,40 +231,6 @@
                             <h2 class="fn-kpi-val" id="todayTotal">&#8369;0</h2>
                             <div class="fn-kpi-foot">
                                 <span class="fn-kpi-cap" id="todayCount">0 payments received today</span>
-                            </div>
-                        </article>
-
-                        <article class="fn-card fn-card--gcash" id="dailyGcashQrCard" aria-label="GCash payment QR code">
-                            <header class="fn-card-head">
-                                <div class="fn-card-head-left">
-                                    <span class="fn-icon-box" aria-hidden="true">
-                                        <i class="fa-solid fa-qrcode"></i>
-                                    </span>
-                                    <div>
-                                        <h2 class="fn-card-title">GCash Payment QR</h2>
-                                        <p class="fn-card-sub">Let walk-in members scan this QR at the desk.</p>
-                                    </div>
-                                </div>
-                                <span class="pf-gcash-qr-kicker">GCash</span>
-                            </header>
-                            <div class="pf-gcash-desk-body">
-                                <button type="button" class="pf-gcash-qr-thumb" data-gcash-qr-open
-                                    aria-label="Enlarge GCash payment QR code">
-                                    <img src="img/gcash-qr.jpg" alt="ProFit GCash payment QR code" loading="lazy">
-                                </button>
-                                <div class="pf-gcash-desk-copy">
-                                    <p>Have the member scan this QR code in their GCash app, verify the paid amount, then enter the GCash reference number on the left.</p>
-                                    <div class="pf-gcash-qr-actions">
-                                        <button type="button" class="fn-btn-gold" data-gcash-qr-open>
-                                            <i class="fa-solid fa-expand" aria-hidden="true"></i>
-                                            <span>Show large QR</span>
-                                        </button>
-                                        <a class="fn-btn-dark" href="img/gcash-qr.jpg" download="profit-gcash-qr.jpg">
-                                            <i class="fa-solid fa-download" aria-hidden="true"></i>
-                                            <span>Save QR</span>
-                                        </a>
-                                    </div>
-                                </div>
                             </div>
                         </article>
 

@@ -3920,3 +3920,14 @@ Fix the `Receipts you send` preview card on the My Profile page (`web/profile.ht
 - Preserved the warm cream paper appearance (`#f6f1e3` / `#2a2418` / `#8a6212`) explicitly under `body:not(.dark) .pf-pv-paper` for Light Mode.
 ### Decision-log skill
 Style decorative preview widgets (like `.pf-pv-paper`) with dark inset tokens by default and scope light-paper colors strictly to `body:not(.dark)` so every preview widget blends naturally with both themes.
+
+## 2026-11-26 18:27 (Asia/Manila): Redesign GCash & Record Payment forms with 3-step bar and blue QR card
+### What I asked for
+Redesign both the Member GCash payment form and the Staff/Cashier Record a payment form to match the attached reference layout (3-step stepper bar, vibrant GCash blue left QR card with framed white QR box, numbered steps, Enlarge/Save QR buttons, bold gold amount readout, and pre-submission checklist).
+### What the agent decided and why
+- Built a single shared `.pf-pay-steps` + `.pf-gcash-pay-layout` + `.pf-gcash-qr-panel` + `.pf-pay-checklist` system in `web/finance-ui.css` (`?v=30`), `web/pf-system.css` (`?v=21`), and `web/member-shell.css` (`?v=39`) so `web/member-home.html`, `web/claim.html`, `web/payments.html`, and `web/cashier.html` all share the exact same card hierarchy in both Dark Mode and Light Mode.
+- Framed `web/img/gcash-qr.jpg` inside `.pf-gcash-qr-thumb` so only the crisp white rounded QR box floats cleanly inside the vibrant GCash blue panel (with zero half-cut top logo), while keeping the full unmodified `gcash-qr.jpg` for the `#gcashQrModal` enlarge popup and `Save QR` download.
+- Added live 3-step highlight progress and the two `Before you submit` confirmation checkboxes (including live plan amount sync) in `web/member-home.html`, and expanded `.fn-daily-grid` / `.fn-daily-right` so **Record a payment** spans full width with `Collected today` + `Today's payments` / `Today's receipts` spanning cleanly below it.
+- Verified Dark Mode and Light Mode live in the browser across `payments.html`, `cashier.html`, and `member-home.html`.
+### Decision-log skill
+When visually framing a tall vertical QR image inside a compact blue card, calculate CSS vertical percentage margins relative to the image width (not height) so only the clean white QR box is displayed inline while preserving the full original image for zoom and download.

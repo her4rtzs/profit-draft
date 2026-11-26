@@ -2994,3 +2994,19 @@ html body.member-home:not(.dark) .mb-hero-book-btn:hover {
   background: rgba(255, 255, 255, 0.14) !important;
   color: #ffffff !important;
 }
+
+/* Keep payment form amount readout crisp bold gold in Dark and Light modes */
+html body input.pf-pay-amount-input,
+html body input.pf-pay-amount-input[readonly] {
+  font-size: 18px !important;
+  font-weight: 800 !important;
+  color: #f5b800 !important;
+  -webkit-text-fill-color: #f5b800 !important;
+  opacity: 1 !important;
+}
+
+html body:not(.dark) input.pf-pay-amount-input,
+html body:not(.dark) input.pf-pay-amount-input[readonly] {
+  color: #b45309 !important;
+  -webkit-text-fill-color: #b45309 !important;
+}
