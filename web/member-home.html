@@ -845,8 +845,7 @@
                 <div class="mb-ticket-info">
                   <span class="mb-status-pill" id="mbHeroStatusPill"><span class="mb-status-dot"
                       aria-hidden="true"></span> <span id="mbHeroStatusText">Active</span></span>
-                  <h3 id="mbHeroPlanTitle">Monthly plan</h3>
-                  <span class="mb-ticket-sub" id="mbHeroStart">&mdash;</span>
+                  <h3 id="mbHeroPlanTitle">Gym access</h3>
                 </div>
                 <div class="mb-ticket-ring" aria-label="Days remaining">
                   <svg class="mb-ticket-ring-svg" viewBox="0 0 88 88" aria-hidden="true">
@@ -2288,7 +2287,7 @@
               rem = Math.max(0, Math.round((new Date(by, bm - 1, bd) - new Date(ay, am - 1, ad)) / 86400000));
             }
             if (m.status === "EXPIRED" && endIso) {
-              heroLine.textContent = `Your ${m.planName || "membership"} ended ${date(endIso)}. Reactivate to keep training.`;
+              heroLine.textContent = `Your membership ended ${date(endIso)}. Reactivate to keep training.`;
             } else if (m.status === "TRIAL") {
               heroLine.textContent = "Your 7-day free trial is active. Pay at the desk or submit a GCash payment anytime to unlock full gym access.";
             } else if (endIso) {
@@ -2301,7 +2300,6 @@
             const pill = $("mbHeroStatusPill");
             const statusTxt = $("mbHeroStatusText");
             const planTitle = $("mbHeroPlanTitle");
-            const startEl = $("mbHeroStart");
             const endLbl = $("mbHeroEndLabel");
             const endEl = $("mbHeroEndDate");
             const daysEl = $("mbHeroDaysVal");
@@ -2313,11 +2311,12 @@
               pill.classList.toggle("is-expired", st === "EXPIRED" || st === "PENDING");
             }
             if (statusTxt) statusTxt.textContent = st === "TRIAL" ? "Free trial" : st === "EXPIRED" ? "Expired" : st === "PENDING" ? "Pending" : "Active";
-            const cleanPlan = m.planName
-              ? (/plan$/i.test(m.planName.trim()) ? m.planName.trim() : `${m.planName.trim()} plan`)
-              : "Membership";
-            if (planTitle) planTitle.textContent = st === "TRIAL" ? "7-day free trial" : cleanPlan;
-            if (startEl) startEl.textContent = m.startDate ? `Started ${date(m.startDate)}` : (st === "TRIAL" ? "Profile access active" : "No active period");
+            if (planTitle) {
+              planTitle.textContent =
+                st === "TRIAL" ? "7-day free trial"
+                : st === "EXPIRED" ? "Membership expired"
+                : "Gym access";
+            }
 
             let displayDays = rem || 0;
             let totalDays = m.durationDays || 30;
@@ -2343,14 +2342,12 @@
               };
               requestAnimationFrame(tick);
             }
-            const hasValidPlan = Boolean(m.planName && (st === "ACTIVE" || st === "EXPIRING_SOON" || st === "TRIAL"));
-            if (statusTxt) statusTxt.textContent = st === "TRIAL" ? "Free trial" : st === "EXPIRED" ? "Expired" : hasValidPlan ? "Active" : "No plan";
-            if (planTitle) planTitle.textContent = st === "TRIAL" ? "7-day free trial" : (hasValidPlan ? cleanPlan : "No active plan");
+            const hasActiveAccess = st === "ACTIVE" || st === "EXPIRING_SOON" || st === "TRIAL";
             const daysInline = $("mbHeroDaysInline");
             const daysSep = $("mbHeroDaysSep");
             const renewBtn = $("mbHeroRenewBtn");
             if (daysInline) {
-              if (hasValidPlan && Number.isFinite(displayDays)) {
+              if (hasActiveAccess && Number.isFinite(displayDays)) {
                 daysInline.textContent = `${displayDays} day${displayDays === 1 ? "" : "s"} left`;
                 if (daysSep) daysSep.hidden = false;
               } else {
