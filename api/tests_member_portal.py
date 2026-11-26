@@ -8,8 +8,9 @@ from django.utils import timezone
 from rest_framework.test import APIClient
 
 from apps.accounts.models import Role
-from apps.billing.models import Payment, Subscription
+from apps.billing.models import Payment, PaymentClaim, Subscription
 from apps.billing.services import activate_paid_payment, mark_payment_paid
+from apps.finance.models import ManualPayment
 from apps.membership.models import Attendance, Enrollment, MemberProfile
 from apps.membership.services import enroll_member, start_trial
 
@@ -111,7 +112,7 @@ class MemberPortalApiTests(TestCase):
         self.assertEqual(len(res.data["payments"]), 1)
         self.assertEqual(len(res.data["attendance"]), 0)
 
-    def test_expired_membership_is_locked(self):
+    def test_expired_membership_can_still_read_own_portal_as_expired(self):
         today = timezone.localdate()
         yesterday = today - timedelta(days=1)
         self.profile.membership_status = MemberProfile.MembershipStatus.ACTIVE
@@ -126,8 +127,8 @@ class MemberPortalApiTests(TestCase):
 
         self.client.force_authenticate(user=self.user)
         res = self.client.get("/api/member/me/")
-        self.assertEqual(res.status_code, 403)
-        self.assertIn("no active membership", str(res.data["detail"]))
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data["membership"]["status"], "EXPIRED")
 
     def test_expiring_soon_membership_flags_within_seven_days(self):
         today = timezone.localdate()
@@ -193,3 +194,77 @@ class MemberPortalApiTests(TestCase):
         mark_payment_paid(payment)
         self.profile.refresh_from_db()
         self.assertEqual(self.profile.expiry_date, expected)
+
+    def test_plan_name_falls_back_to_approved_gcash_claim(self):
+        today = timezone.localdate()
+        enroll_member(
+            self.profile,
+            start_date=today,
+            end_date=today + timedelta(days=30),
+            created_by=self.user,
+        )
+        PaymentClaim.objects.create(
+            member=self.profile,
+            plan="monthly",
+            amount_centavos=PLAN_AMOUNTS["monthly"],
+            reference_number="09171234567",
+            proof_link="https://drive.google.com/file/d/abc/view",
+            status=PaymentClaim.Status.APPROVED,
+            reviewed_at=timezone.now(),
+        )
+        self.client.force_authenticate(self.user)
+        res = self.client.get("/api/member/me/")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data["membership"]["plan"], "monthly")
+        self.assertEqual(res.data["membership"]["planName"], "Monthly")
+
+    def test_rejected_claim_does_not_override_approved_plan(self):
+        today = timezone.localdate()
+        enroll_member(
+            self.profile,
+            start_date=today,
+            end_date=today + timedelta(days=30),
+            created_by=self.user,
+        )
+        PaymentClaim.objects.create(
+            member=self.profile,
+            plan="monthly",
+            amount_centavos=PLAN_AMOUNTS["monthly"],
+            reference_number="09171234567",
+            proof_link="https://drive.google.com/file/d/abc/view",
+            status=PaymentClaim.Status.APPROVED,
+            reviewed_at=timezone.now(),
+        )
+        PaymentClaim.objects.create(
+            member=self.profile,
+            plan="annual",
+            amount_centavos=PLAN_AMOUNTS["annual"],
+            reference_number="09179990001",
+            proof_link="https://drive.google.com/file/d/def/view",
+            status=PaymentClaim.Status.REJECTED,
+            reviewed_at=timezone.now(),
+        )
+        self.client.force_authenticate(self.user)
+        res = self.client.get("/api/member/me/")
+        self.assertEqual(res.data["membership"]["plan"], "monthly")
+
+    def test_plan_name_falls_back_to_manual_payment(self):
+        today = timezone.localdate()
+        enroll_member(
+            self.profile,
+            start_date=today,
+            end_date=today + timedelta(days=1),
+            created_by=self.user,
+        )
+        ManualPayment.objects.create(
+            member=self.profile,
+            plan="daily",
+            method=ManualPayment.Method.CASH,
+            amount_centavos=PLAN_AMOUNTS["daily"],
+            paid_on=today,
+            recorded_by=self.user,
+        )
+        self.client.force_authenticate(self.user)
+        res = self.client.get("/api/member/me/")
+        self.assertEqual(res.data["membership"]["plan"], "daily")
+        self.assertEqual(res.data["membership"]["planName"], "Daily")

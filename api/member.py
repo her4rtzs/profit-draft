@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.billing.models import Payment, PaymentClaim, Subscription
+from apps.finance.models import ManualPayment
 from apps.membership.models import Attendance, Enrollment, MemberProfile
 from apps.membership.services import PLAN_DAYS
 
@@ -21,6 +22,45 @@ from .permissions import MemberAccess, TrialAllowedMemberAccess
 PHOTO_PREFIX = "data:image/jpeg;base64,"
 MAX_PHOTO_CHARS = 260_000  # about 190 KB of image
 AVATAR_PRESET_IDS = frozenset({"av-1", "av-2", "av-3", "av-4", "av-5", "av-6"})
+
+
+def _current_plan_key(profile):
+    """Return the member's plan key from the newest real payment record.
+
+    GCash approvals and desk payments create Enrollment rows, not Subscription
+    rows, so the portal must also read approved claims and manual payments.
+    """
+    subscription = (
+        Subscription.objects.filter(member=profile)
+        .exclude(plan="")
+        .order_by("-created_at", "-id")
+        .first()
+    )
+    if subscription and subscription.plan:
+        return subscription.plan.strip().lower()
+
+    candidates = []
+    claim = (
+        PaymentClaim.objects.filter(
+            member=profile, status=PaymentClaim.Status.APPROVED
+        )
+        .exclude(plan="")
+        .order_by("-reviewed_at", "-created_at", "-id")
+        .first()
+    )
+    if claim and claim.plan:
+        candidates.append((claim.reviewed_at or claim.created_at, claim.plan))
+    manual = (
+        ManualPayment.objects.filter(member=profile)
+        .exclude(plan="")
+        .order_by("-created_at", "-id")
+        .first()
+    )
+    if manual and manual.plan:
+        candidates.append((manual.created_at, manual.plan))
+    if not candidates:
+        return None
+    return max(candidates, key=lambda item: item[0])[1].strip().lower()
 
 
 def _clean_photo(value):
@@ -157,11 +197,6 @@ class MemberMeView(APIView):
         weekly_visits = sum(1 for d in visit_set if d >= week_monday)
 
         visits_for_display = all_visits[:30]
-        latest_sub = (
-            Subscription.objects.filter(member=profile)
-            .order_by("-created_at")
-            .first()
-        )
         latest_enrollment = (
             Enrollment.objects.filter(member=profile)
             .order_by("-end_date", "-created_at")
@@ -174,7 +209,7 @@ class MemberMeView(APIView):
         )
         latest_payment = all_payments[0] if all_payments else None
 
-        plan_key = (latest_sub.plan or "").strip().lower() if latest_sub and latest_sub.plan else None
+        plan_key = _current_plan_key(profile)
         plan_name = plan_key.title() if plan_key else "No active plan"
         start_date = latest_enrollment.start_date if latest_enrollment else None
         end_date = profile.expiry_date or (latest_enrollment.end_date if latest_enrollment else None)
