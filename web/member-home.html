@@ -862,10 +862,10 @@
               </div>
               <div class="mb-ticket-foot">
                 <div>
-                  <span id="mbHeroEndLabel">Renews on</span>
+                  <span id="mbHeroEndLabel">Expires on</span>
                   <strong id="mbHeroEndDate">&mdash;</strong>
                 </div>
-                <button type="button" class="mb-ticket-renew" id="mbHeroRenewBtn" data-renew-membership>Renew</button>
+                <button type="button" class="mb-ticket-renew" id="mbHeroRenewBtn" data-renew-membership>Choose a plan</button>
               </div>
             </aside>
           </section>
@@ -1170,11 +1170,11 @@
             <div class="pf-panel-head">
               <div>
                 <h2><i class="fa-solid fa-id-card"></i> Current plan</h2>
-                <p>Your active plan, coverage dates, and renewal status.</p>
+                <p>Your active plan, coverage dates, and status.</p>
               </div>
               <button type="button" class="btn btn-primary" id="renewMembershipBtn" data-renew-membership
                 aria-expanded="false" aria-controls="memberPayCard"><i class="fa-solid fa-rotate"></i>
-                Renew membership</button>
+                <span id="renewMembershipLabel">Choose a plan</span></button>
             </div>
             <div class="pf-sk-wrap" data-skeleton="membership" style="display:grid;gap:14px">
               <div class="pf-meta-grid">
@@ -1203,12 +1203,12 @@
                   <i class="fa-solid fa-mobile-screen-button"></i>
                 </span>
                 <div>
-                  <h2 class="fn-card-title">Renew with GCash <span class="member-gcash-pill">GCash only</span></h2>
+                  <h2 class="fn-card-title">Pay with GCash <span class="member-gcash-pill">GCash only</span></h2>
                   <p class="fn-card-sub">Pay the exact plan amount, then send us your reference number and proof. Cash
                     payments are made at the front desk.</p>
                 </div>
               </div>
-              <button type="button" class="member-pay-close" id="memberPayClose" aria-label="Close renewal form"
+              <button type="button" class="member-pay-close" id="memberPayClose" aria-label="Close payment form"
                 title="Close">
                 <i class="fa-solid fa-xmark" aria-hidden="true"></i>
               </button>
@@ -2288,7 +2288,7 @@
               rem = Math.max(0, Math.round((new Date(by, bm - 1, bd) - new Date(ay, am - 1, ad)) / 86400000));
             }
             if (m.status === "EXPIRED" && endIso) {
-              heroLine.textContent = `Your ${m.planName || "membership"} ended ${date(endIso)}. Renew to keep training.`;
+              heroLine.textContent = `Your ${m.planName || "membership"} ended ${date(endIso)}. Reactivate to keep training.`;
             } else if (m.status === "TRIAL") {
               heroLine.textContent = "Your 7-day free trial is active. Pay at the desk or submit a GCash payment anytime to unlock full gym access.";
             } else if (endIso) {
@@ -2328,7 +2328,7 @@
               displayDays = Math.max(0, diff);
               totalDays = 7;
             }
-            if (endLbl) endLbl.textContent = st === "TRIAL" ? "Trial ends on" : st === "EXPIRED" ? "Ended on" : "Renews on";
+            if (endLbl) endLbl.textContent = st === "TRIAL" ? "Trial ends on" : st === "EXPIRED" ? "Ended on" : "Expires on";
             if (endEl) endEl.textContent = targetEnd ? date(targetEnd) : "Not enrolled";
 
             if (daysEl) {
@@ -2358,7 +2358,19 @@
                 if (daysSep) daysSep.hidden = true;
               }
             }
-            if (renewBtn) renewBtn.textContent = hasValidPlan ? "Renew" : "Choose a plan";
+            const payAction =
+              st === "TRIAL" ? "Choose a plan"
+              : st === "EXPIRED" ? "Reactivate membership"
+              : (st === "ACTIVE" || st === "EXPIRING_SOON") ? "Extend membership"
+              : "Choose a plan";
+            const payActionShort =
+              st === "TRIAL" ? "Choose a plan"
+              : st === "EXPIRED" ? "Reactivate"
+              : (st === "ACTIVE" || st === "EXPIRING_SOON") ? "Extend"
+              : "Choose a plan";
+            if (renewBtn) renewBtn.textContent = payActionShort;
+            const payLabel = $("renewMembershipLabel");
+            if (payLabel) payLabel.textContent = payAction;
             if (arcEl) {
               const circ = 226.19;
               const frac = displayDays > 0 ? Math.max(0.06, Math.min(1, displayDays / Math.max(totalDays, 1))) : 0;
@@ -2503,8 +2515,8 @@
           if (wrap) wrap.style.display = "none";
           if (hint) {
             hint.textContent = st === "TRIAL"
-              ? "Your 7-day free trial includes app access only. Activate a gym membership (cash at desk or GCash claim) to unlock QR check-in."
-              : "An active gym membership is required for QR check-in. Renew at the desk or submit a GCash claim.";
+              ? "Your 7-day free trial includes app access only. Choose a plan at the desk or by GCash to unlock QR check-in."
+              : "An active gym membership is required for QR check-in. Reactivate at the desk or by GCash.";
           }
         } else {
           if (wrap) wrap.style.display = "inline-grid";
