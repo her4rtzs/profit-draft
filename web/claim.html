@@ -416,6 +416,7 @@ a { color: inherit; text-decoration: none; }
   border-radius: 16px;
   overflow: hidden;
   background: #ffffff;
+  cursor: zoom-in;
   box-shadow: 0 10px 24px rgba(0, 38, 102, 0.28);
 }
 .gcash-qr-thumb img {
@@ -427,34 +428,12 @@ a { color: inherit; text-decoration: none; }
   margin-bottom: -68%;
   margin-left: -9.5%;
 }
-.gcash-qr-steps {
-  margin: 0;
-  padding: 0 2px;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  width: 100%;
-  text-align: left;
-  font-size: 12.5px;
-  line-height: 1.45;
-  color: rgba(255, 255, 255, 0.94);
-}
-.gcash-qr-steps li {
-  display: flex;
-  gap: 6px;
-  align-items: baseline;
-}
-.gcash-qr-steps li strong {
-  color: #ffffff;
-  font-weight: 800;
-  flex-shrink: 0;
-}
 .gcash-qr-actions {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 8px;
   width: 100%;
+  max-width: 232px;
 }
 .gcash-qr-btn {
   display: inline-flex;
@@ -903,19 +882,10 @@ button, .cb {
     <div class="gcash-pay-layout">
       <aside class="gcash-qr-panel" aria-label="GCash payment QR code">
         <span class="gcash-qr-kicker">Scan to pay</span>
-        <button type="button" class="gcash-qr-thumb" data-gcash-qr-open aria-label="Enlarge GCash payment QR code">
+        <button type="button" class="gcash-qr-thumb" data-gcash-qr-open title="Click to enlarge QR" aria-label="Enlarge GCash payment QR code">
           <img src="img/gcash-qr.jpg" alt="ProFit GCash payment QR code" loading="lazy">
         </button>
-        <ol class="gcash-qr-steps">
-          <li><strong>1.</strong><span>Scan this QR in GCash, or save the image and upload it there.</span></li>
-          <li><strong>2.</strong><span>Send exactly the plan amount.</span></li>
-          <li><strong>3.</strong><span>Enter the reference number and paste your proof link.</span></li>
-        </ol>
         <div class="gcash-qr-actions">
-          <button type="button" class="gcash-qr-btn" data-gcash-qr-open>
-            <i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i>
-            <span>Enlarge</span>
-          </button>
           <a class="gcash-qr-btn" href="img/gcash-qr.jpg" download="profit-gcash-qr.jpg">
             <i class="fa-solid fa-download" aria-hidden="true"></i>
             <span>Save QR</span>

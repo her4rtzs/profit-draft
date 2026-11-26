@@ -4002,3 +4002,12 @@ Make the Google first-login Terms of Service & Privacy Policy modal match the `/
 - Updated `#pfOnboardingConsentDialog` in `web/google-auth.js` (`?v=6`) and fallback `templates/accounts/onboarding_consent.html` to mirror the exact `.jn-legal-*` design from `web/join.html` (fetching `/terms` and `/privacy` `.legal-card` content, displaying `0 of 2 documents reviewed`, locking each checkbox until scrolled to the bottom of its respective document, and disabling `I agree` until both documents are read and both boxes checked).
 ### Decision-log skill
 Wait to run `checkScrolledToEnd()` until after fetched document HTML is inserted (never on placeholder loading text) and disable each legal checkbox independently until its matching document has been scrolled to the bottom.
+
+## 2026-11-26 18:36 (Asia/Manila): Simplify GCash QR card (click QR to enlarge, Save QR only)
+### What I asked for
+Remove the 1–2–3 instruction list and the separate Enlarge button from the GCash QR card while keeping click-to-enlarge on the QR image itself.
+### What the agent decided and why
+- Removed `<ol class="pf-gcash-steps">` / `<ol class="gcash-qr-steps">` and the separate `Enlarge` button across `web/member-home.html`, `web/claim.html`, `web/payments.html`, and `web/cashier.html`.
+- Kept `data-gcash-qr-open` on the clickable `.pf-gcash-qr-thumb` / `.gcash-qr-thumb` QR button (`cursor: zoom-in`, `title="Click to enlarge QR"`) so clicking/tapping the QR still opens `#gcashQrModal`, and made `Save QR` a clean full-width button in `web/finance-ui.css` (`?v=31`) and `web/claim.html`.
+### Decision-log skill
+When a visual preview itself acts as the zoom trigger (`cursor: zoom-in` + `data-gcash-qr-open`), removing redundant instruction text and a separate Enlarge button keeps the QR card compact and uncluttered without losing functionality.
