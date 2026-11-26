@@ -107,3 +107,4 @@ One note per decision, oldest first; entries with an `Unknown` date are listed l
 - [[2026-11-26 Allow new Google members on login via OTP gate]]: Route `/login` Google Sign-In through `authenticate_google_member` so brand-new Google users connect & enter `OTP -> Terms & Privacy` while unlinked Staff/Owner emails still redirect to `/login?error=not-linked`.
 
 - [[2026-11-26 Enforce strict portal RBAC and unified dashboard URL]]: Block unauthenticated and cross-role access across all portals (including raw `.html` files via `ProtectedWhiteNoiseMiddleware`), redirect anonymous visitors to `/login`, and serve every role's workspace at `/dashboard`.
+- [[Use noindex instead of robots.txt Disallow]]: Private pages are noindex by default while robots.txt stays permissive.

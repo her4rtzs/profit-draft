@@ -4002,3 +4002,14 @@ Make the Google first-login Terms of Service & Privacy Policy modal match the `/
 - Updated `#pfOnboardingConsentDialog` in `web/google-auth.js` (`?v=6`) and fallback `templates/accounts/onboarding_consent.html` to mirror the exact `.jn-legal-*` design from `web/join.html` (fetching `/terms` and `/privacy` `.legal-card` content, displaying `0 of 2 documents reviewed`, locking each checkbox until scrolled to the bottom of its respective document, and disabling `I agree` until both documents are read and both boxes checked).
 ### Decision-log skill
 Wait to run `checkScrolledToEnd()` until after fetched document HTML is inserted (never on placeholder loading text) and disable each legal checkbox independently until its matching document has been scrolled to the bottom.
+
+## 2026-11-26 23:23 (Asia/Manila): SEO-1 crawl control and canonical pages
+### What I asked for
+Add robots.txt and sitemap.xml, make noindex the default for private pages, redirect /welcome to /, add canonical and social tags to public pages, remove orphan HTML pages, and report public-page metadata issues.
+### What the agent decided and why
+- Kept robots.txt permissive and used X-Robots-Tag noindex for private pages so crawlers can see the noindex signal; see [[Use noindex instead of robots.txt Disallow]].
+- Raw .html URLs already pass through Django via ProtectedWhiteNoiseMiddleware, so no WhiteNoise header hook was added.
+- Deleted claim.html and member-portal.html after confirming no live links, and updated the tests that referenced them.
+- Added canonical, Open Graph and Twitter tags plus HealthClub structured data to the five public pages, and a 301 from /welcome to /.
+### Decision-log skill
+Use noindex headers, not robots.txt Disallow, when you want crawlers to see and honor the signal.
