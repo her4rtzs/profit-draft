@@ -34,16 +34,27 @@ class User(AbstractUser):
         null=True,
         blank=True,
     )
+    google_email = models.EmailField(blank=True, default="")
     google_linked_at = models.DateTimeField(null=True, blank=True)
+    needs_first_login_otp = models.BooleanField(default=False)
+    first_login_otp_verified_at = models.DateTimeField(null=True, blank=True)
+    needs_legal_consent = models.BooleanField(default=False)
+    tos_accepted_at = models.DateTimeField(null=True, blank=True)
+    privacy_accepted_at = models.DateTimeField(null=True, blank=True)
     avatar_data = models.TextField(blank=True, default="")
     onboarding_data = models.JSONField(default=dict, blank=True)
 
+    @property
+    def requires_first_login_gate(self) -> bool:
+        return bool(self.needs_first_login_otp or self.needs_legal_consent)
+
 
 class OTPPurpose(models.TextChoices):
-    """What an issued one-time code is for. Reserved for future reuse."""
+    """What an issued one-time code is for."""
 
     SIGNUP = "SIGNUP", "Signup"
     PASSWORD_RESET = "PASSWORD_RESET", "Password reset"
+    FIRST_LOGIN = "FIRST_LOGIN", "First login verification"
 
 
 class EmailOTP(models.Model):
@@ -119,6 +130,7 @@ class StaffInvite(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     expires_at = models.DateTimeField()
     used_at = models.DateTimeField(null=True, blank=True)
+    revoked_at = models.DateTimeField(null=True, blank=True)
     accepted_user = models.ForeignKey(
         User,
         null=True,
@@ -147,6 +159,10 @@ class StaffInvite(models.Model):
         """True when the invite has already been accepted (single-use)."""
         return self.used_at is not None
 
+    def is_revoked(self):
+        """True when the invite was revoked before acceptance."""
+        return self.revoked_at is not None
+
     def is_usable(self, now):
         """True when the invite can still be accepted."""
-        return not self.is_expired(now) and not self.is_used()
+        return not self.is_expired(now) and not self.is_used() and not self.is_revoked()

@@ -152,6 +152,10 @@ html:not([data-theme="dark"]) body[data-portal="trainer"] {
    ========================================================= */
 
 /* Desktop Sidebar Active Links (Staff/Owner/Cashier, Member, Trainer) */
+html body.pf-staff.dark nav.sidebar .menulist a.active,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a.active,
+html body.pf-staff.dark nav.sidebar .menulist a[aria-current="page"],
+html body.pf-staff:not(.dark) nav.sidebar .menulist a[aria-current="page"],
 html body.pf-staff .sidebar .menulist a.active,
 html body.pf-staff .sidebar .menulist a[aria-current="page"],
 html body.member-home .member-sidebar .nav-link.active,
@@ -167,25 +171,193 @@ html body[data-portal="trainer"] .sidebar .nav-link[aria-current="page"] {
   box-shadow: none !important;
 }
 
+html body.pf-staff.dark nav.sidebar .menulist a.active i,
+html body.pf-staff.dark nav.sidebar .menulist a.active i.icon,
+html body.pf-staff.dark nav.sidebar .menulist a.active .icon,
+html body.pf-staff.dark nav.sidebar .menulist a.active svg,
+html body.pf-staff.dark nav.sidebar .menulist a.active span,
+html body.pf-staff.dark nav.sidebar .menulist a.active .text,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a.active i,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a.active i.icon,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a.active .icon,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a.active svg,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a.active span,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a.active .text,
+html body.pf-staff.dark nav.sidebar .menulist a.active:hover i,
+html body.pf-staff.dark nav.sidebar .menulist a.active:hover i.icon,
+html body.pf-staff.dark nav.sidebar .menulist a.active:hover .icon,
+html body.pf-staff.dark nav.sidebar .menulist a.active:hover svg,
+html body.pf-staff.dark nav.sidebar .menulist a.active:hover span,
+html body.pf-staff.dark nav.sidebar .menulist a.active:hover .text,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a.active:hover i,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a.active:hover i.icon,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a.active:hover .icon,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a.active:hover svg,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a.active:hover span,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a.active:hover .text,
+html body.pf-staff.dark nav.sidebar .menulist a.active:focus-visible i,
+html body.pf-staff.dark nav.sidebar .menulist a.active:focus-visible .icon,
+html body.pf-staff.dark nav.sidebar .menulist a.active:focus-visible svg,
+html body.pf-staff.dark nav.sidebar .menulist a.active:focus-visible span,
+html body.pf-staff.dark nav.sidebar .menulist a.active:focus-visible .text,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a.active:focus-visible i,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a.active:focus-visible .icon,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a.active:focus-visible svg,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a.active:focus-visible span,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a.active:focus-visible .text,
+html body.pf-staff.dark nav.sidebar .menulist a.active:active i,
+html body.pf-staff.dark nav.sidebar .menulist a.active:active .icon,
+html body.pf-staff.dark nav.sidebar .menulist a.active:active svg,
+html body.pf-staff.dark nav.sidebar .menulist a.active:active span,
+html body.pf-staff.dark nav.sidebar .menulist a.active:active .text,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a.active:active i,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a.active:active .icon,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a.active:active svg,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a.active:active span,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a.active:active .text,
+html body.pf-staff.dark nav.sidebar .menulist a[aria-current="page"] i,
+html body.pf-staff.dark nav.sidebar .menulist a[aria-current="page"] .icon,
+html body.pf-staff.dark nav.sidebar .menulist a[aria-current="page"] svg,
+html body.pf-staff.dark nav.sidebar .menulist a[aria-current="page"] span,
+html body.pf-staff.dark nav.sidebar .menulist a[aria-current="page"] .text,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a[aria-current="page"] i,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a[aria-current="page"] .icon,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a[aria-current="page"] svg,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a[aria-current="page"] span,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a[aria-current="page"] .text,
+html body.pf-staff.dark nav.sidebar .menulist a[aria-current="page"]:hover i,
+html body.pf-staff.dark nav.sidebar .menulist a[aria-current="page"]:hover .icon,
+html body.pf-staff.dark nav.sidebar .menulist a[aria-current="page"]:hover svg,
+html body.pf-staff.dark nav.sidebar .menulist a[aria-current="page"]:hover span,
+html body.pf-staff.dark nav.sidebar .menulist a[aria-current="page"]:hover .text,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a[aria-current="page"]:hover i,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a[aria-current="page"]:hover .icon,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a[aria-current="page"]:hover svg,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a[aria-current="page"]:hover span,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a[aria-current="page"]:hover .text,
+html body.pf-staff.dark nav.sidebar .menulist a[aria-current="page"]:focus-visible i,
+html body.pf-staff.dark nav.sidebar .menulist a[aria-current="page"]:focus-visible .icon,
+html body.pf-staff.dark nav.sidebar .menulist a[aria-current="page"]:focus-visible svg,
+html body.pf-staff.dark nav.sidebar .menulist a[aria-current="page"]:focus-visible span,
+html body.pf-staff.dark nav.sidebar .menulist a[aria-current="page"]:focus-visible .text,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a[aria-current="page"]:focus-visible i,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a[aria-current="page"]:focus-visible .icon,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a[aria-current="page"]:focus-visible svg,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a[aria-current="page"]:focus-visible span,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a[aria-current="page"]:focus-visible .text,
+html body.pf-staff.dark nav.sidebar .menulist a[aria-current="page"]:active i,
+html body.pf-staff.dark nav.sidebar .menulist a[aria-current="page"]:active .icon,
+html body.pf-staff.dark nav.sidebar .menulist a[aria-current="page"]:active svg,
+html body.pf-staff.dark nav.sidebar .menulist a[aria-current="page"]:active span,
+html body.pf-staff.dark nav.sidebar .menulist a[aria-current="page"]:active .text,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a[aria-current="page"]:active i,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a[aria-current="page"]:active .icon,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a[aria-current="page"]:active svg,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a[aria-current="page"]:active span,
+html body.pf-staff:not(.dark) nav.sidebar .menulist a[aria-current="page"]:active .text,
 html body.pf-staff .sidebar .menulist a.active i,
+html body.pf-staff .sidebar .menulist a.active .icon,
 html body.pf-staff .sidebar .menulist a.active svg,
 html body.pf-staff .sidebar .menulist a.active span,
+html body.pf-staff .sidebar .menulist a.active .text,
 html body.pf-staff .sidebar .menulist a[aria-current="page"] i,
+html body.pf-staff .sidebar .menulist a[aria-current="page"] .icon,
+html body.pf-staff .sidebar .menulist a[aria-current="page"] svg,
 html body.pf-staff .sidebar .menulist a[aria-current="page"] span,
+html body.pf-staff .sidebar .menulist a[aria-current="page"] .text,
 html body.member-home .member-sidebar .nav-link.active i,
+html body.member-home .member-sidebar .nav-link.active .icon,
 html body.member-home .member-sidebar .nav-link.active svg,
 html body.member-home .member-sidebar .nav-link.active span,
+html body.member-home .member-sidebar .nav-link.active:hover i,
+html body.member-home .member-sidebar .nav-link.active:hover .icon,
+html body.member-home .member-sidebar .nav-link.active:hover svg,
+html body.member-home .member-sidebar .nav-link.active:hover span,
+html body.member-home .member-sidebar .nav-link.active:focus-visible i,
+html body.member-home .member-sidebar .nav-link.active:focus-visible .icon,
+html body.member-home .member-sidebar .nav-link.active:focus-visible svg,
+html body.member-home .member-sidebar .nav-link.active:focus-visible span,
+html body.member-home .member-sidebar .nav-link.active:active i,
+html body.member-home .member-sidebar .nav-link.active:active .icon,
+html body.member-home .member-sidebar .nav-link.active:active svg,
+html body.member-home .member-sidebar .nav-link.active:active span,
 html body.member-home .member-sidebar .nav-link[aria-selected="true"] i,
+html body.member-home .member-sidebar .nav-link[aria-selected="true"] .icon,
+html body.member-home .member-sidebar .nav-link[aria-selected="true"] svg,
 html body.member-home .member-sidebar .nav-link[aria-selected="true"] span,
+html body.member-home .member-sidebar .nav-link[aria-selected="true"]:hover i,
+html body.member-home .member-sidebar .nav-link[aria-selected="true"]:hover .icon,
+html body.member-home .member-sidebar .nav-link[aria-selected="true"]:hover svg,
+html body.member-home .member-sidebar .nav-link[aria-selected="true"]:hover span,
+html body.member-home .member-sidebar .nav-link[aria-selected="true"]:focus-visible i,
+html body.member-home .member-sidebar .nav-link[aria-selected="true"]:focus-visible .icon,
+html body.member-home .member-sidebar .nav-link[aria-selected="true"]:focus-visible svg,
+html body.member-home .member-sidebar .nav-link[aria-selected="true"]:focus-visible span,
+html body.member-home .member-sidebar .nav-link[aria-selected="true"]:active i,
+html body.member-home .member-sidebar .nav-link[aria-selected="true"]:active .icon,
+html body.member-home .member-sidebar .nav-link[aria-selected="true"]:active svg,
+html body.member-home .member-sidebar .nav-link[aria-selected="true"]:active span,
+html body.member-home .member-sidebar .nav-link[aria-current="page"] i,
+html body.member-home .member-sidebar .nav-link[aria-current="page"] .icon,
+html body.member-home .member-sidebar .nav-link[aria-current="page"] svg,
+html body.member-home .member-sidebar .nav-link[aria-current="page"] span,
+html body.member-home .member-sidebar .nav-link[aria-current="page"]:hover i,
+html body.member-home .member-sidebar .nav-link[aria-current="page"]:hover .icon,
+html body.member-home .member-sidebar .nav-link[aria-current="page"]:hover svg,
+html body.member-home .member-sidebar .nav-link[aria-current="page"]:hover span,
+html body.member-home .member-sidebar .nav-link[aria-current="page"]:focus-visible i,
+html body.member-home .member-sidebar .nav-link[aria-current="page"]:focus-visible .icon,
+html body.member-home .member-sidebar .nav-link[aria-current="page"]:focus-visible svg,
+html body.member-home .member-sidebar .nav-link[aria-current="page"]:focus-visible span,
+html body.member-home .member-sidebar .nav-link[aria-current="page"]:active i,
+html body.member-home .member-sidebar .nav-link[aria-current="page"]:active .icon,
+html body.member-home .member-sidebar .nav-link[aria-current="page"]:active svg,
+html body.member-home .member-sidebar .nav-link[aria-current="page"]:active span,
 html body[data-portal="trainer"] .sidebar .nav-link.active i,
+html body[data-portal="trainer"] .sidebar .nav-link.active .icon,
 html body[data-portal="trainer"] .sidebar .nav-link.active .ico,
+html body[data-portal="trainer"] .sidebar .nav-link.active svg,
 html body[data-portal="trainer"] .sidebar .nav-link.active span,
+html body[data-portal="trainer"] .sidebar .nav-link.active:hover i,
+html body[data-portal="trainer"] .sidebar .nav-link.active:hover .icon,
+html body[data-portal="trainer"] .sidebar .nav-link.active:hover .ico,
+html body[data-portal="trainer"] .sidebar .nav-link.active:hover svg,
+html body[data-portal="trainer"] .sidebar .nav-link.active:hover span,
+html body[data-portal="trainer"] .sidebar .nav-link.active:focus-visible i,
+html body[data-portal="trainer"] .sidebar .nav-link.active:focus-visible .icon,
+html body[data-portal="trainer"] .sidebar .nav-link.active:focus-visible .ico,
+html body[data-portal="trainer"] .sidebar .nav-link.active:focus-visible svg,
+html body[data-portal="trainer"] .sidebar .nav-link.active:focus-visible span,
+html body[data-portal="trainer"] .sidebar .nav-link.active:active i,
+html body[data-portal="trainer"] .sidebar .nav-link.active:active .icon,
+html body[data-portal="trainer"] .sidebar .nav-link.active:active .ico,
+html body[data-portal="trainer"] .sidebar .nav-link.active:active svg,
+html body[data-portal="trainer"] .sidebar .nav-link.active:active span,
 html body[data-portal="trainer"] .sidebar .nav-link[aria-current="page"] i,
+html body[data-portal="trainer"] .sidebar .nav-link[aria-current="page"] .icon,
 html body[data-portal="trainer"] .sidebar .nav-link[aria-current="page"] .ico,
-html body[data-portal="trainer"] .sidebar .nav-link[aria-current="page"] span {
+html body[data-portal="trainer"] .sidebar .nav-link[aria-current="page"] svg,
+html body[data-portal="trainer"] .sidebar .nav-link[aria-current="page"] span,
+html body[data-portal="trainer"] .sidebar .nav-link[aria-current="page"]:hover i,
+html body[data-portal="trainer"] .sidebar .nav-link[aria-current="page"]:hover .icon,
+html body[data-portal="trainer"] .sidebar .nav-link[aria-current="page"]:hover .ico,
+html body[data-portal="trainer"] .sidebar .nav-link[aria-current="page"]:hover svg,
+html body[data-portal="trainer"] .sidebar .nav-link[aria-current="page"]:hover span,
+html body[data-portal="trainer"] .sidebar .nav-link[aria-current="page"]:focus-visible i,
+html body[data-portal="trainer"] .sidebar .nav-link[aria-current="page"]:focus-visible .icon,
+html body[data-portal="trainer"] .sidebar .nav-link[aria-current="page"]:focus-visible .ico,
+html body[data-portal="trainer"] .sidebar .nav-link[aria-current="page"]:focus-visible svg,
+html body[data-portal="trainer"] .sidebar .nav-link[aria-current="page"]:focus-visible span,
+html body[data-portal="trainer"] .sidebar .nav-link[aria-current="page"]:active i,
+html body[data-portal="trainer"] .sidebar .nav-link[aria-current="page"]:active .icon,
+html body[data-portal="trainer"] .sidebar .nav-link[aria-current="page"]:active .ico,
+html body[data-portal="trainer"] .sidebar .nav-link[aria-current="page"]:active svg,
+html body[data-portal="trainer"] .sidebar .nav-link[aria-current="page"]:active span {
   color: var(--pf-state-gold-ink) !important;
+  opacity: 1 !important;
   box-shadow: none !important;
   background-color: transparent !important;
+  transform: none !important;
 }
 
 /* Count badges inside active solid gold items */
@@ -339,6 +511,10 @@ html body .pp-picker-item.is-selected {
   }
 
   /* Active items remain solid gold on hover without jumping or glowing */
+  html body.pf-staff.dark nav.sidebar .menulist a.active:hover,
+  html body.pf-staff:not(.dark) nav.sidebar .menulist a.active:hover,
+  html body.pf-staff.dark nav.sidebar .menulist a[aria-current="page"]:hover,
+  html body.pf-staff:not(.dark) nav.sidebar .menulist a[aria-current="page"]:hover,
   html body.pf-staff .sidebar .menulist a.active:hover,
   html body.member-home .member-sidebar .nav-link.active:hover,
   html body.member-home .member-sidebar .nav-link[aria-selected="true"]:hover,
@@ -368,6 +544,7 @@ html body .pp-picker-item.is-selected {
   html body .pager button.active:hover,
   html body .seg button.active:hover,
   html body .tr-view-btn.is-on:hover {
+    background: var(--pf-state-gold) !important;
     background-color: var(--pf-state-gold) !important;
     color: var(--pf-state-gold-ink) !important;
     box-shadow: none !important;
@@ -2618,40 +2795,108 @@ html body[data-page="trainers"] .tr-modal {
   overscroll-behavior: contain;
 }
 
-html body[data-page="trainers"] .tr-modal.tr-modal-wide:has(#trAccessSection[hidden]) {
+html body[data-page="trainers"] .tr-modal.tr-modal-wide:has(#trAccessSection[hidden]),
+html body[data-page="trainers"] .tr-modal.tr-modal-wide:has(#trSuccessView:not([hidden])) {
   width: min(580px, 94vw) !important;
   max-width: 580px !important;
 }
 
-html body[data-page="trainers"] .tr-modal.tr-modal-wide:has(#trAccessSection:not([hidden])) {
+html body[data-page="trainers"] .tr-modal.tr-modal-wide:has(#trForm:not([hidden]) #trAccessSection:not([hidden])) {
   width: min(880px, 94vw) !important;
   max-width: 880px !important;
 }
 
-html body[data-page="trainers"] #trForm:has(#trAccessSection[hidden]) {
+html body[data-page="trainers"] #trForm[hidden],
+html body[data-page="trainers"] #trModalHead[hidden],
+html body[data-page="trainers"] #trSuccessView[hidden],
+html body[data-page="trainers"] #trCreateFields[hidden],
+html body[data-page="trainers"] #trAccessSection[hidden],
+html body[data-page="trainers"] #trTempPwWrap[hidden] {
+  display: none !important;
+}
+
+html body[data-page="trainers"] #trForm:not([hidden]):has(#trAccessSection[hidden]) {
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) !important;
   gap: 14px !important;
 }
 
-html body[data-page="trainers"] #trForm:has(#trAccessSection:not([hidden])) {
+html body[data-page="trainers"] #trForm:not([hidden]):has(#trAccessSection:not([hidden])) {
   display: grid !important;
-  grid-template-columns: minmax(0, 1.06fr) minmax(0, 0.94fr) !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
   gap: 16px !important;
-  align-items: start !important;
+  align-items: stretch !important;
 }
 
 @media (max-width: 860px) {
-  html body[data-page="trainers"] #trForm:has(#trAccessSection:not([hidden])) {
+  html body[data-page="trainers"] #trForm:not([hidden]):has(#trAccessSection:not([hidden])) {
     grid-template-columns: minmax(0, 1fr) !important;
   }
 }
 
 html body[data-page="trainers"] #trForm>.tr-modal-section {
   width: 100% !important;
+  height: 100% !important;
   min-width: 0 !important;
+  display: grid !important;
+  align-content: start !important;
   overflow: visible !important;
   box-sizing: border-box !important;
+}
+
+html body[data-page="trainers"] .tr-modal-section :is(input:not([type="radio"]):not([type="checkbox"]), textarea) {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  background: rgba(10, 14, 23, 0.72) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  border-radius: 10px !important;
+  color: #F8FAFC !important;
+}
+
+html body:not(.dark)[data-page="trainers"] .tr-modal-section :is(input:not([type="radio"]):not([type="checkbox"]), textarea) {
+  background: #FFFFFF !important;
+  border-color: #CBD5E1 !important;
+  color: #0F172A !important;
+}
+
+html body[data-page="trainers"] .tr-temp-pw-box .tr-temp-pw-row {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+}
+
+html body[data-page="trainers"] .tr-temp-pw-box .tr-temp-pw-row input {
+  grid-column: 1 / -1 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+html body[data-page="trainers"] .tr-temp-pw-box .tr-temp-pw-row button {
+  width: 100% !important;
+  justify-content: center !important;
+}
+
+html body[data-page="trainers"] .tr-succ-link-box .tr-temp-pw-row {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+html body[data-page="trainers"] .tr-succ-link-box .tr-temp-pw-row input {
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+}
+
+html body[data-page="trainers"] .tr-succ-link-box .tr-temp-pw-row button {
+  flex: 0 0 auto !important;
+}
+
+@media (max-width: 480px) {
+  html body[data-page="trainers"] .tr-succ-link-box .tr-temp-pw-row {
+    flex-wrap: wrap !important;
+  }
 }
 
 html body[data-page="trainers"] #trForm>.tr-check-wrap,
@@ -2880,4 +3125,618 @@ html body .tr-grid>* {
   html body .revenue-panel .panel-header #revenuePeriods {
     flex-wrap: wrap !important;
   }
+}
+
+/* =========================================================
+   ADD CASHIER MODAL — Match Add Trainer 2-Column Design
+   ========================================================= */
+html body[data-page="cashiers"] .csh-backdrop {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 9999 !important;
+  background: rgba(5, 8, 15, 0.72) !important;
+  backdrop-filter: blur(6px);
+  display: grid !important;
+  place-items: center !important;
+  padding: 16px !important;
+  overflow-y: auto !important;
+  box-sizing: border-box !important;
+}
+
+html body[data-page="cashiers"] .csh-backdrop[hidden],
+html body[data-page="cashiers"] #cshModalHead[hidden],
+html body[data-page="cashiers"] #inviteCashierForm[hidden],
+html body[data-page="cashiers"] #cshSuccessView[hidden],
+html body[data-page="cashiers"] #cshTempPwWrap[hidden],
+html body[data-page="cashiers"] #cshSuccInviteBox[hidden],
+html body[data-page="cashiers"] #cshSuccTempBox[hidden] {
+  display: none !important;
+}
+
+html body[data-page="cashiers"] .csh-modal {
+  width: min(880px, 94vw) !important;
+  max-width: 880px !important;
+  max-height: calc(100dvh - 32px) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box !important;
+  border-radius: 22px !important;
+  background: linear-gradient(180deg, #161F30 0%, #0F1623 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-top: 2px solid rgba(245, 158, 11, 0.45) !important;
+  padding: 22px 24px 24px !important;
+  box-shadow: 0 28px 64px rgba(0, 0, 0, 0.65) !important;
+  overscroll-behavior: contain;
+}
+
+html body[data-page="cashiers"] .csh-modal.csh-modal-wide:has(#cshSuccessView:not([hidden])) {
+  width: min(560px, 94vw) !important;
+  max-width: 560px !important;
+}
+
+html body[data-page="cashiers"] .csh-modal-head {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  margin-bottom: 18px !important;
+}
+
+html body[data-page="cashiers"] .csh-modal-head h2 {
+  margin: 0 !important;
+  font-size: 18px !important;
+  font-weight: 800 !important;
+}
+
+html body[data-page="cashiers"] .csh-modal-head p {
+  margin: 3px 0 0 !important;
+  font-size: 12.5px !important;
+  color: var(--muted, #94a3b8) !important;
+}
+
+html body[data-page="cashiers"] .csh-modal-close {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: var(--muted, #94a3b8);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+html body[data-page="cashiers"] .csh-modal-close:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text, #fff);
+}
+
+html body[data-page="cashiers"] #inviteCashierForm:not([hidden]) {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  gap: 16px !important;
+  align-items: stretch !important;
+}
+
+@media (max-width: 860px) {
+  html body[data-page="cashiers"] #inviteCashierForm:not([hidden]) {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+
+html body[data-page="cashiers"] .csh-modal-section {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding: 18px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(12, 18, 30, 0.72) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-top: 2px solid rgba(245, 158, 11, 0.38);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  box-sizing: border-box;
+}
+
+html body[data-page="cashiers"] .csh-modal-sec-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #F59E0B;
+}
+
+html body[data-page="cashiers"] .csh-req {
+  color: #F59E0B;
+}
+
+html body[data-page="cashiers"] .csh-modal-form .csh-field {
+  margin-bottom: 0 !important;
+}
+
+html body[data-page="cashiers"] .csh-modal-form .csh-field label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted, #94a3b8);
+}
+
+html body[data-page="cashiers"] .csh-modal-form .csh-field input {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  background: rgba(10, 14, 23, 0.72) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  border-radius: 10px !important;
+  height: 40px;
+  min-height: 40px;
+  padding: 0 12px;
+  font-size: 13px;
+  color: #F8FAFC !important;
+}
+
+html body[data-page="cashiers"] .csh-role-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 4px;
+  padding: 12px 13px;
+  border-radius: 12px;
+  background: rgba(245, 158, 11, 0.06);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+html body[data-page="cashiers"] .csh-role-note i {
+  margin-top: 2px;
+  color: #F59E0B;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+html body[data-page="cashiers"] .csh-role-note strong {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text, #fff);
+}
+
+html body[data-page="cashiers"] .csh-role-note p {
+  margin: 3px 0 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--muted, #94a3b8);
+}
+
+html body[data-page="cashiers"] .csh-access-options {
+  display: grid;
+  gap: 10px;
+}
+
+html body[data-page="cashiers"] .csh-access-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(10, 14, 23, 0.55);
+  cursor: pointer;
+  transition: border-color 0.16s ease, background-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+html body[data-page="cashiers"] .csh-access-card input[type="radio"] {
+  margin-top: 3px;
+  accent-color: #F59E0B;
+  flex-shrink: 0;
+}
+
+html body[data-page="cashiers"] .csh-access-card.is-selected {
+  border-color: rgba(245, 158, 11, 0.55);
+  background: rgba(245, 158, 11, 0.08);
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.12);
+}
+
+html body[data-page="cashiers"] .csh-access-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+html body[data-page="cashiers"] .csh-access-top strong {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text, #fff);
+}
+
+html body[data-page="cashiers"] .csh-rec-badge {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  background: rgba(16, 185, 129, 0.16);
+  color: #10B981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+html body[data-page="cashiers"] .csh-access-body p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--muted, #94a3b8);
+  line-height: 1.45;
+}
+
+html body[data-page="cashiers"] .csh-temp-pw-box {
+  display: grid;
+  gap: 7px;
+  padding-top: 4px;
+}
+
+html body[data-page="cashiers"] .csh-temp-pw-box label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted, #94a3b8);
+}
+
+html body[data-page="cashiers"] .csh-temp-pw-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+html body[data-page="cashiers"] .csh-temp-pw-row input {
+  flex: 1 1 160px;
+  min-width: 0;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(10, 14, 23, 0.72);
+  color: #F8FAFC;
+  font-size: 13px;
+  padding: 0 12px;
+  box-sizing: border-box;
+}
+
+html body[data-page="cashiers"] .csh-temp-pw-box .csh-temp-pw-row {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+}
+
+html body[data-page="cashiers"] .csh-temp-pw-box .csh-temp-pw-row input {
+  grid-column: 1 / -1 !important;
+  width: 100% !important;
+}
+
+html body[data-page="cashiers"] .csh-temp-pw-box .csh-temp-pw-row button {
+  width: 100% !important;
+  justify-content: center !important;
+}
+
+html body[data-page="cashiers"] .csh-succ-link-box .csh-temp-pw-row {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+html body[data-page="cashiers"] .csh-succ-link-box .csh-temp-pw-row input {
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+}
+
+html body[data-page="cashiers"] .csh-succ-link-box .csh-temp-pw-row button {
+  flex: 0 0 auto !important;
+}
+
+@media (max-width: 480px) {
+  html body[data-page="cashiers"] .csh-succ-link-box .csh-temp-pw-row {
+    flex-wrap: wrap !important;
+  }
+}
+
+html body[data-page="cashiers"] #inviteCashierForm>.csh-modal-err,
+html body[data-page="cashiers"] #inviteCashierForm>.csh-modal-actions {
+  grid-column: 1 / -1;
+}
+
+html body[data-page="cashiers"] .csh-modal-err {
+  margin: 0 !important;
+  min-height: 0 !important;
+}
+
+html body[data-page="cashiers"] .csh-modal-err:empty {
+  display: none;
+}
+
+html body[data-page="cashiers"] .csh-modal-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+  margin-top: 4px !important;
+  padding-top: 12px !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  flex-wrap: wrap !important;
+}
+
+html body[data-page="cashiers"] .csh-btn-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 18px;
+  border-radius: 11px;
+  border: 0;
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  color: #0B101B;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+html body[data-page="cashiers"] .csh-btn-gold:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+html body[data-page="cashiers"] .csh-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text, #fff);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+html body[data-page="cashiers"] .csh-btn-sm {
+  height: 40px;
+  padding: 0 12px;
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+
+html body[data-page="cashiers"] .csh-success-view:not([hidden]) {
+  display: grid;
+  gap: 16px;
+  text-align: center;
+}
+
+html body[data-page="cashiers"] .csh-success-ico {
+  width: 56px;
+  height: 56px;
+  margin: 4px auto 0;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.16);
+  border: 1px solid rgba(16, 185, 129, 0.38);
+  color: #10B981;
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+}
+
+html body[data-page="cashiers"] .csh-success-view h3 {
+  margin: 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+html body[data-page="cashiers"] .csh-success-sub {
+  margin: -8px 0 0;
+  font-size: 13px;
+  color: var(--muted, #94a3b8);
+}
+
+html body[data-page="cashiers"] .csh-succ-card {
+  text-align: left;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: grid;
+  gap: 10px;
+}
+
+html body[data-page="cashiers"] .csh-succ-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+}
+
+html body[data-page="cashiers"] .csh-succ-row span:first-child {
+  color: var(--muted, #94a3b8);
+}
+
+html body[data-page="cashiers"] .csh-succ-link-box {
+  text-align: left;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(245, 158, 11, 0.06);
+  border: 1px solid rgba(245, 158, 11, 0.24);
+  display: grid;
+  gap: 8px;
+}
+
+html body[data-page="cashiers"] .csh-succ-link-box label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #F59E0B;
+}
+
+html body[data-page="cashiers"] .csh-succ-note {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted, #cbd5e1);
+  line-height: 1.45;
+}
+
+html body:not(.dark)[data-page="cashiers"] .csh-modal {
+  background: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  border-top: 2px solid #D97706 !important;
+  color: #0F172A !important;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.16) !important;
+}
+
+html body:not(.dark)[data-page="cashiers"] .csh-modal-head p,
+html body:not(.dark)[data-page="cashiers"] .csh-modal-form .csh-field label,
+html body:not(.dark)[data-page="cashiers"] .csh-access-body p,
+html body:not(.dark)[data-page="cashiers"] .csh-temp-pw-box label,
+html body:not(.dark)[data-page="cashiers"] .csh-success-sub,
+html body:not(.dark)[data-page="cashiers"] .csh-succ-row span:first-child,
+html body:not(.dark)[data-page="cashiers"] .csh-role-note p {
+  color: #64748B !important;
+}
+
+html body:not(.dark)[data-page="cashiers"] .csh-modal-section,
+html body:not(.dark)[data-page="cashiers"] .csh-succ-card {
+  background: #F8FAFC !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: none !important;
+}
+
+html body:not(.dark)[data-page="cashiers"] .csh-access-card,
+html body:not(.dark)[data-page="cashiers"] .csh-modal-form .csh-field input,
+html body:not(.dark)[data-page="cashiers"] .csh-temp-pw-row input {
+  background: #FFFFFF !important;
+  border-color: #CBD5E1 !important;
+  color: #0F172A !important;
+}
+
+html body:not(.dark)[data-page="cashiers"] .csh-access-card.is-selected {
+  background: rgba(245, 158, 11, 0.08) !important;
+  border-color: rgba(217, 119, 6, 0.55) !important;
+}
+
+html body:not(.dark)[data-page="cashiers"] .csh-access-top strong,
+html body:not(.dark)[data-page="cashiers"] .csh-succ-row strong,
+html body:not(.dark)[data-page="cashiers"] .csh-success-view h3,
+html body:not(.dark)[data-page="cashiers"] .csh-role-note strong {
+  color: #0F172A !important;
+}
+
+html body:not(.dark)[data-page="cashiers"] .csh-succ-note {
+  color: #475569 !important;
+}
+
+html body:not(.dark)[data-page="cashiers"] .csh-btn-secondary {
+  background: #F1F5F9 !important;
+  color: #0F172A !important;
+  border-color: #CBD5E1 !important;
+}
+
+html body:not(.dark)[data-page="cashiers"] .csh-modal-close {
+  border-color: #E2E8F0;
+  color: #64748B;
+}
+
+html body:not(.dark)[data-page="cashiers"] .csh-modal-close:hover {
+  background: #F1F5F9;
+  color: #0F172A;
+}
+
+html body:not(.dark)[data-page="cashiers"] .csh-modal-actions {
+  border-top-color: #ECE7DC;
+}
+
+
+/* =========================================================
+   Settings Google Account Connect / Disconnect Row
+   ========================================================= */
+html body .pf-google-row {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+
+html body .pf-google-row .pf-gc-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+html body .pf-google-row .pf-gc-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+html body .pf-gc-btn {
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.06);
+  color: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+html body .pf-gc-btn.pf-gc-conn {
+  border-color: transparent;
+  background: var(--pf-state-gold);
+  color: var(--pf-state-gold-ink);
+}
+
+html body .pf-gc-btn.pf-gc-disc:hover:not(:disabled) {
+  border-color: rgba(248, 113, 113, 0.55);
+  color: #FCA5A5;
+}
+
+html body:not(.dark) .pf-gc-btn:not(.pf-gc-conn) {
+  border-color: #CBD5E1;
+  background: #F8FAFC;
+  color: #0F172A;
+}
+
+html body:not(.dark) .pf-gc-btn.pf-gc-disc:hover:not(:disabled) {
+  border-color: #DC2626;
+  color: #DC2626;
+}
+
+html body .pf-gc-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+html body .pf-gc-msg {
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: #34D399;
+}
+
+html body .pf-gc-msg.is-err {
+  color: #F87171;
+}
+
+html body:not(.dark) .pf-gc-msg {
+  color: #047857;
+}
+
+html body:not(.dark) .pf-gc-msg.is-err {
+  color: #DC2626;
+}
+
+html body .pf-gc-msg[hidden] {
+  display: none !important;
 }

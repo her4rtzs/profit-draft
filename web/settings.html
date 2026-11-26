@@ -832,7 +832,7 @@
       color: #2a2418;
     }
   </style>
-  <link rel="stylesheet" href="pf-system.css?v=19">
+  <link rel="stylesheet" href="pf-system.css?v=24">
 </head>
 
 <body class="pf-staff" data-page="settings" data-title="Settings" data-welcome="Manage your account and preferences">
@@ -878,6 +878,19 @@
               </div>
               <span class="st-row-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
             </button>
+            <div class="st-row pf-google-row" id="pfGoogleAccountRow">
+              <div class="pf-gc-top">
+                <div class="st-row-lead">
+                  <span class="st-row-ico" aria-hidden="true"><i class="fa-brands fa-google"></i></span>
+                  <div class="st-row-copy">
+                    <span>Google Account</span>
+                    <small data-gc-sub>Checking Google connection…</small>
+                  </div>
+                </div>
+                <div class="pf-gc-actions" data-gc-actions></div>
+              </div>
+              <div class="pf-gc-msg" data-gc-msg role="status" aria-live="polite" hidden></div>
+            </div>
 
             <!-- Owner-only: Subscription Prices -->
             <button class="st-row" type="button" id="stPricesToggle" aria-expanded="false"
@@ -1193,6 +1206,7 @@
   <script src="portal-fx.js?v=2"></script>
   <script src="/static/js/install-help.js" defer></script>
   <script src="change-password.js?v=2" defer></script>
+  <script src="google-connect.js?v=1" defer></script>
   <script src="notifications-live.js?v=2" defer></script>
   <script src="site-footer.js?v=2" defer></script>
 </body>

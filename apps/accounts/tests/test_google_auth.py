@@ -172,13 +172,13 @@ class GoogleAuthTests(TestCase):
         with (
             patch("api.auth.verify_google_id_token", return_value=claims),
             patch(
-                "api.auth.authenticate_google_member",
+                "api.auth.authenticate_google_login",
                 return_value=GoogleAuthOutcome(
                     status="authenticated", user=self.member_pw
                 ),
             ),
         ):
-            resp = self._post_google({"credential": "token"})
+            resp = self._post_google({"credential": "token", "source": "login"})
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.cookies["sessionid"]["max-age"], 3 * 24 * 60 * 60)
 
@@ -198,7 +198,7 @@ class GoogleAuthTests(TestCase):
             patch("api.auth.authenticate_google_member", side_effect=error),
             patch("api.auth.logger.error") as log,
         ):
-            resp = self._post_google({"credential": "any-token"})
+            resp = self._post_google({"credential": "any-token", "source": "join"})
 
         self.assertEqual(resp.status_code, 503)
         self.assertEqual(resp.json()["code"], "db_error")
@@ -255,16 +255,19 @@ class GoogleAuthTests(TestCase):
 
     @override_settings(GOOGLE_CLIENT_ID=TEST_CLIENT_ID)
     def test_new_member_registers_via_google_and_session_works(self):
+        import re
+        from django.core import mail
+
         token = self._sign_jwt(self._claims_payload())
         with patch("apps.accounts.google_auth._get_jwk", return_value=self.jwks["keys"][0]):
-            resp = self._post_google({"credential": token})
+            resp = self._post_google({"credential": token, "source": "join"})
 
         self.assertEqual(resp.status_code, 200)
         data = resp.json()
         self.assertEqual(data["status"], "authenticated")
         self.assertTrue(data["created"])
         self.assertEqual(data["role"], "MEMBER")
-        self.assertEqual(data["redirect"], "member-home.html")
+        self.assertEqual(data["redirect"], "/accounts/onboarding/")
 
         user = User.objects.get(email="newmember@gmail.com")
         self.assertEqual(user.role, Role.MEMBER)
@@ -277,6 +280,20 @@ class GoogleAuthTests(TestCase):
         self.assertEqual(user.last_name, "Santos")
         self.assertEqual(user.member_profile.membership_status, MemberProfile.MembershipStatus.TRIAL)
         self.assertIsNotNone(user.member_profile.trial_ends_at)
+
+        # Onboarding gate blocks /member-home until OTP + Terms/Privacy consent complete
+        blocked = self.client.get("/member-home")
+        self.assertEqual(blocked.status_code, 302)
+        self.assertEqual(blocked["Location"], "/accounts/onboarding/")
+
+        self.client.get("/accounts/onboarding/otp/")
+        code = re.search(r"\b(\d{6})\b", mail.outbox[-1].body).group(1)
+        self.client.post("/accounts/onboarding/otp/", {"code": code}, HTTP_X_CSRFTOKEN=self._csrf())
+        self.client.post(
+            "/accounts/onboarding/consent/",
+            {"accept_terms": "on", "accept_privacy": "on"},
+            HTTP_X_CSRFTOKEN=self._csrf(),
+        )
         self.assertEqual(self.client.get("/member-home").status_code, 200)
 
         # Session endpoint reflects authenticated MEMBER
@@ -296,13 +313,25 @@ class GoogleAuthTests(TestCase):
 
     @override_settings(GOOGLE_CLIENT_ID=TEST_CLIENT_ID)
     def test_existing_linked_member_logs_in_without_duplicate(self):
+        now = timezone.now()
         self.member_pw.google_sub = "google-sub-linked-1"
-        self.member_pw.google_linked_at = timezone.now()
-        self.member_pw.save(update_fields=["google_sub", "google_linked_at"])
+        self.member_pw.google_linked_at = now
+        self.member_pw.first_login_otp_verified_at = now
+        self.member_pw.tos_accepted_at = now
+        self.member_pw.privacy_accepted_at = now
+        self.member_pw.save(
+            update_fields=[
+                "google_sub",
+                "google_linked_at",
+                "first_login_otp_verified_at",
+                "tos_accepted_at",
+                "privacy_accepted_at",
+            ]
+        )
 
         token = self._sign_jwt(self._claims_payload(sub="google-sub-linked-1", email="changed.alias@gmail.com"))
         with patch("apps.accounts.google_auth._get_jwk", return_value=self.jwks["keys"][0]):
-            resp = self._post_google({"credential": token})
+            resp = self._post_google({"credential": token, "source": "login"})
 
         self.assertEqual(resp.status_code, 200)
         data = resp.json()
@@ -315,7 +344,7 @@ class GoogleAuthTests(TestCase):
     def test_unlinked_existing_member_requires_password_verification(self):
         token = self._sign_jwt(self._claims_payload(sub="google-sub-match-1", email="existing@profit.test"))
         with patch("apps.accounts.google_auth._get_jwk", return_value=self.jwks["keys"][0]):
-            resp = self._post_google({"credential": token})
+            resp = self._post_google({"credential": token, "source": "join"})
 
         self.assertEqual(resp.status_code, 200)
         body = resp.json()
@@ -364,13 +393,28 @@ class GoogleAuthTests(TestCase):
         self.assertEqual(normal.status_code, 200)
 
     @override_settings(GOOGLE_CLIENT_ID=TEST_CLIENT_ID)
-    def test_staff_and_trainer_blocked_from_google_signin_but_keep_normal_login(self):
+    def test_unlinked_staff_blocked_from_google_signin_while_linked_owner_succeeds(self):
         for privileged in (self.owner, self.trainer):
             token = self._sign_jwt(self._claims_payload(sub=f"sub-{privileged.pk}", email=privileged.email))
             with patch("apps.accounts.google_auth._get_jwk", return_value=self.jwks["keys"][0]):
-                resp = self._post_google({"credential": token})
+                resp = self._post_google({"credential": token, "source": "login"})
             self.assertEqual(resp.status_code, 403)
-            self.assertEqual(resp.json()["code"], "staff_forbidden")
+            self.assertEqual(resp.json()["code"], "not_linked")
+            self.assertEqual(resp.json()["redirect"], "/login?error=not-linked")
+
+        # Linked Owner logs in with Google cleanly
+        now = timezone.now()
+        self.owner.google_sub = "owner-linked-sub"
+        self.owner.google_linked_at = now
+        self.owner.first_login_otp_verified_at = now
+        self.owner.tos_accepted_at = now
+        self.owner.privacy_accepted_at = now
+        self.owner.save()
+        owner_tok = self._sign_jwt(self._claims_payload(sub="owner-linked-sub", email=self.owner.email))
+        with patch("apps.accounts.google_auth._get_jwk", return_value=self.jwks["keys"][0]):
+            resp = self._post_google({"credential": owner_tok, "source": "login"})
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.json()["role"], "ADMIN")
 
         # Owner still logs in normally with gym password
         csrf = self._csrf()
@@ -388,10 +432,10 @@ class GoogleAuthTests(TestCase):
         self.member_pw.google_sub = "google-sub-original"
         self.member_pw.save(update_fields=["google_sub"])
 
-        # Same email, different google_sub -> 409 conflict
+        # Same email, different google_sub -> 409 conflict on /join linking
         other_sub_token = self._sign_jwt(self._claims_payload(sub="google-sub-other", email="existing@profit.test"))
         with patch("apps.accounts.google_auth._get_jwk", return_value=self.jwks["keys"][0]):
-            resp = self._post_google({"credential": other_sub_token})
+            resp = self._post_google({"credential": other_sub_token, "source": "join"})
         self.assertEqual(resp.status_code, 409)
 
         # Another member trying to link a google_sub already owned by member_pw -> 409 conflict
@@ -429,17 +473,29 @@ class GoogleAuthTests(TestCase):
         self.assertEqual(cancelled.status_code, 302)
         self.assertIn("/join.html?google_error=cancelled", cancelled["Location"])
 
-        # Restart flow for state check + valid code exchange
+        # Bad state on /login returns /login?google_error=invalid_state
         start2 = self.client.get("/api/auth/google/login/?source=login")
-        state2 = urllib.parse.parse_qs(urllib.parse.urlparse(start2["Location"]).query)["state"][0]
         bad_state = self.client.get("/api/auth/google/callback/?code=abc&state=wrong-state")
         self.assertEqual(bad_state.status_code, 302)
-        self.assertIn("/login.html?google_error=invalid_state", bad_state["Location"])
+        self.assertIn("/login?google_error=invalid_state", bad_state["Location"])
 
-        # Fresh start -> valid callback creates & logs in Member
-        start3 = self.client.get("/api/auth/google/login/?source=login")
+        # Unlinked Google account on /login redirects to /login?error=not-linked
+        start_unlinked = self.client.get("/api/auth/google/login/?source=login")
+        state_unlinked = urllib.parse.parse_qs(urllib.parse.urlparse(start_unlinked["Location"]).query)["state"][0]
+        unlinked_claims = GoogleClaims(
+            sub="google-sub-unlinked-99",
+            email="unlinkeduser@gmail.com",
+            email_verified=True,
+            name="Unlinked User",
+        )
+        with patch("api.auth.exchange_google_code", return_value=unlinked_claims):
+            cb_unlinked = self.client.get(f"/api/auth/google/callback/?code=valid-code&state={state_unlinked}")
+        self.assertEqual(cb_unlinked.status_code, 302)
+        self.assertEqual(cb_unlinked["Location"], "/login?error=not-linked")
+
+        # /join creates & logs in Member and sends them to /accounts/onboarding/
+        start3 = self.client.get("/api/auth/google/login/?source=join")
         state3 = urllib.parse.parse_qs(urllib.parse.urlparse(start3["Location"]).query)["state"][0]
-        from apps.accounts.google_auth import GoogleClaims
 
         mock_claims = GoogleClaims(
             sub="google-sub-redirect-99",
@@ -450,7 +506,7 @@ class GoogleAuthTests(TestCase):
         with patch("api.auth.exchange_google_code", return_value=mock_claims):
             cb = self.client.get(f"/api/auth/google/callback/?code=valid-code&state={state3}")
         self.assertEqual(cb.status_code, 302)
-        self.assertIn("/login.html?google_authenticated=1", cb["Location"])
+        self.assertEqual(cb["Location"], "/accounts/onboarding/")
         self.assertEqual(self.client.get("/api/auth/session/").json()["user"]["role"], "MEMBER")
 
     @override_settings(ALLOWED_HOSTS=["www.functionalfitnessgym.site", "testserver"])
@@ -512,9 +568,9 @@ class GoogleAuthTests(TestCase):
                 http_get=lambda u, h: {"aud": TEST_CLIENT_ID, "expires_in": "0"},
             )
 
-        # POST /api/auth/google/ accepts {access_token} and logs in as MEMBER
+        # POST /api/auth/google/ with source=join accepts {access_token} and logs in as MEMBER
         with patch("apps.accounts.google_auth._google_get_json", side_effect=fake_get):
-            resp = self._post_google({"access_token": "ya29.test-access-token"})
+            resp = self._post_google({"access_token": "ya29.test-access-token", "source": "join"})
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.json()["status"], "authenticated")
         self.assertEqual(resp.json()["role"], "MEMBER")

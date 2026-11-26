@@ -95,16 +95,107 @@
     rowMenu.style.top = `${Math.round(top)}px`;
   }
 
+  function randomTempPassword() {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@#$";
+    let out = "Pf!";
+    for (let i = 0; i < 9; i++) out += chars[Math.floor(Math.random() * chars.length)];
+    return out;
+  }
+
+  async function copyText(text, btn) {
+    if (!text) return;
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+    }
+    if (btn) {
+      const orig = btn.innerHTML;
+      btn.innerHTML = `<i class="fa-solid fa-check" aria-hidden="true"></i> Copied`;
+      setTimeout(() => { btn.innerHTML = orig; }, 1800);
+    }
+  }
+
+  function syncAccessModeUI() {
+    const mode = document.querySelector('input[name="cshAccessMode"]:checked')?.value || "invite";
+    document.querySelectorAll(".csh-access-card").forEach(card => {
+      const r = card.querySelector('input[type="radio"]');
+      card.classList.toggle("is-selected", !!r?.checked);
+    });
+    const pwWrap = $("cshTempPwWrap");
+    if (pwWrap) pwWrap.hidden = mode !== "temp_password";
+    const pwInput = $("cshTempPw");
+    if (mode === "temp_password" && pwInput && !pwInput.value) {
+      pwInput.value = randomTempPassword();
+    }
+  }
+
   function openModal() {
     closeRowMenu();
     modalErr.textContent = "";
     form.reset();
+    const head = $("cshModalHead");
+    const sv = $("cshSuccessView");
+    if (head) head.hidden = false;
+    form.hidden = false;
+    if (sv) sv.hidden = true;
+    const inviteRadio = document.querySelector('input[name="cshAccessMode"][value="invite"]');
+    if (inviteRadio) inviteRadio.checked = true;
+    const pwInput = $("cshTempPw");
+    if (pwInput) pwInput.value = "";
+    syncAccessModeUI();
     backdrop.hidden = false;
+    backdrop.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+    backdrop.querySelector(".csh-modal")?.scrollTo({ top: 0 });
     nameInput.focus();
   }
 
   function closeModal() {
     backdrop.hidden = true;
+    backdrop.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+  }
+
+  function showSuccessScreen(res) {
+    const head = $("cshModalHead");
+    const sv = $("cshSuccessView");
+    if (head) head.hidden = true;
+    form.hidden = true;
+    if (sv) sv.hidden = false;
+    backdrop.querySelector(".csh-modal")?.scrollTo({ top: 0 });
+
+    $("cshSuccName").textContent = (res?.name || nameInput.value || "").trim() || "—";
+    $("cshSuccEmail").textContent = res?.email || emailInput.value.trim() || "—";
+
+    const stEl = $("cshSuccStatus");
+    const invBox = $("cshSuccInviteBox");
+    const tmpBox = $("cshSuccTempBox");
+    if (res?.access_mode === "temp_password") {
+      stEl.textContent = "Active · Temp Password";
+      stEl.className = "csh-badge is-active";
+      invBox.hidden = true;
+      tmpBox.hidden = false;
+      $("cshSuccCreds").value = `Email: ${res.email} | Password: ${res.temp_password}`;
+      $("cshSuccSub").textContent = "Cashier profile and active login account have been created.";
+    } else {
+      stEl.textContent = "Invite Pending";
+      stEl.className = "csh-badge is-pending";
+      tmpBox.hidden = true;
+      invBox.hidden = false;
+      $("cshSuccLink").value = res?.invite_url || "";
+      $("cshSuccEmailNote").textContent = res?.email_status_note || "";
+      $("cshSuccSub").textContent = res?.email_sent
+        ? "Cashier profile created and invitation email sent."
+        : "Cashier profile created. Share the invitation link below.";
+    }
   }
 
   function badgeClass(key) {
@@ -173,6 +264,19 @@
   $("openInviteCashierEmpty")?.addEventListener("click", openModal);
   $("closeInviteModal")?.addEventListener("click", closeModal);
   $("cancelInviteModal")?.addEventListener("click", closeModal);
+  $("cshAddAnother")?.addEventListener("click", openModal);
+  $("cshSuccessDone")?.addEventListener("click", async () => {
+    closeModal();
+    await loadCashiers();
+  });
+  document.querySelectorAll('input[name="cshAccessMode"]').forEach(r => r.addEventListener("change", syncAccessModeUI));
+  $("cshGenPwBtn")?.addEventListener("click", () => {
+    const inp = $("cshTempPw");
+    if (inp) inp.value = randomTempPassword();
+  });
+  $("cshCopyTempBtn")?.addEventListener("click", e => copyText($("cshTempPw")?.value, e.currentTarget));
+  $("cshCopyLinkBtn")?.addEventListener("click", e => copyText($("cshSuccLink")?.value, e.currentTarget));
+  $("cshCopyCredsBtn")?.addEventListener("click", e => copyText($("cshSuccCreds")?.value, e.currentTarget));
   backdrop?.addEventListener("click", e => {
     if (e.target === backdrop) closeModal();
   });
@@ -205,6 +309,7 @@
     modalErr.textContent = "";
     const fullName = nameInput.value.trim();
     const email = emailInput.value.trim();
+    const accessMode = document.querySelector('input[name="cshAccessMode"]:checked')?.value || "invite";
 
     if (!validFullName(fullName)) {
       modalErr.textContent = "Enter your first and last name.";
@@ -218,19 +323,34 @@
       return;
     }
 
+    const payload = { full_name: fullName, email, access_mode: accessMode };
+    if (accessMode === "temp_password") {
+      const tempPw = ($("cshTempPw")?.value || "").trim();
+      if (tempPw.length < 8) {
+        modalErr.textContent = "Temporary password must be at least 8 characters.";
+        $("cshTempPw")?.focus();
+        return;
+      }
+      payload.temp_password = tempPw;
+    }
+
     submitBtn.disabled = true;
-    submitBtn.textContent = "Sending...";
+    submitBtn.textContent = "Creating...";
     try {
-      const res = await window.ProFitAPI.post("/staff/cashiers", { full_name: fullName, email });
-      closeModal();
+      const res = await window.ProFitAPI.post("/staff/cashiers", payload);
       showInviteResult(res);
-      setStatus(res.email_sent ? `Invitation sent to ${res.email}.` : (res.email_status_note || "Cashier invited."));
+      showSuccessScreen(res);
+      setStatus(
+        res.access_mode === "temp_password"
+          ? `Cashier ${res.name || res.email} created with temporary password.`
+          : (res.email_sent ? `Invitation sent to ${res.email}.` : (res.email_status_note || "Cashier added."))
+      );
       await loadCashiers();
     } catch (err) {
-      modalErr.textContent = err.message || "Could not invite cashier.";
+      modalErr.textContent = err.message || "Could not add cashier.";
     } finally {
       submitBtn.disabled = false;
-      submitBtn.textContent = "Send invite";
+      submitBtn.textContent = "Add Cashier";
     }
   });
 

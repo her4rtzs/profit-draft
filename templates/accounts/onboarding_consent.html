@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0A0E17">
+<title>Terms &amp; Privacy Consent · ProFit</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0E17;--surface:#111726;--surface-2:#171F33;--line:rgba(255,255,255,.11);
+    --field:#0C111E;--field-line:rgba(255,255,255,.22);--tx:#F6EFDC;--mu:#9EA7B8;
+    --gold:#E8B93A;--gold-hi:#F2C94C;--gold-ink:#141005;--err:#F87171;--ok:#34D399;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;background:radial-gradient(900px 520px at 14% -8%,rgba(232,185,58,.14),transparent 62%),var(--bg);color:var(--tx);font-family:Inter,system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+  .ob-wrap{min-height:100dvh;display:grid;place-items:center;padding:24px 16px}
+  .ob-card{width:min(520px,100%);background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:28px;box-shadow:0 28px 70px rgba(0,0,0,.55)}
+  .ob-steps{display:flex;gap:8px;margin-bottom:20px}
+  .ob-step{flex:1;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);font-size:12px;font-weight:600;color:var(--mu);text-align:center}
+  .ob-step.is-done{border-color:rgba(52,211,153,.35);background:rgba(52,211,153,.1);color:var(--ok)}
+  .ob-step.is-on{border-color:rgba(232,185,58,.5);background:rgba(232,185,58,.12);color:var(--gold)}
+  h1{margin:0 0 6px;font-family:"Plus Jakarta Sans",Inter,sans-serif;font-size:23px;letter-spacing:-.02em}
+  .ob-sub{margin:0 0 18px;font-size:13.5px;line-height:1.55;color:var(--mu)}
+  .ob-summary{display:grid;gap:10px;margin-bottom:16px}
+  .ob-box{padding:12px 14px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line);font-size:13px;line-height:1.55;color:var(--mu)}
+  .ob-box strong{display:block;color:var(--tx);margin-bottom:3px;font-size:13.5px}
+  .ob-box a{color:var(--gold);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+  .ob-checks{display:grid;gap:12px;margin:16px 0}
+  .ob-chk{display:flex;align-items:flex-start;gap:11px;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--field);cursor:pointer;font-size:13.5px;line-height:1.45}
+  .ob-chk input{width:18px;height:18px;margin-top:2px;accent-color:var(--gold);flex:none;cursor:pointer}
+  .ob-chk a{color:var(--gold);font-weight:600}
+  .ob-err-box{padding:11px 13px;border-radius:12px;font-size:13px;margin-bottom:14px;border:1px solid rgba(248,113,113,.38);background:rgba(248,113,113,.1);color:#FECACA}
+  .ob-btn{width:100%;height:46px;border-radius:999px;border:0;background:var(--gold);color:var(--gold-ink);font:700 14.5px/1 "Plus Jakarta Sans",Inter,sans-serif;cursor:pointer}
+  .ob-btn:hover{background:var(--gold-hi)}
+  .ob-foot{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:14px;border-top:1px solid var(--line);font-size:12.5px;color:var(--mu)}
+  .ob-link-btn{background:transparent;border:0;color:var(--mu);font:600 12.5px/1 Inter,sans-serif;cursor:pointer;text-decoration:underline;padding:4px 0}
+  .ob-link-btn:hover{color:var(--tx)}
+</style>
+</head>
+<body>
+<main class="ob-wrap">
+  <section class="ob-card" aria-labelledby="consentTitle">
+    <div class="ob-steps">
+      <div class="ob-step is-done">&#10003; Email Verified</div>
+      <div class="ob-step is-on">2. Terms &amp; Privacy</div>
+    </div>
+
+    <h1 id="consentTitle">Review Terms &amp; Privacy</h1>
+    <p class="ob-sub">Before opening your ProFit dashboard for the first time with Google, please confirm our Terms of Service and Privacy Policy.</p>
+
+    <div class="ob-summary">
+      <div class="ob-box">
+        <strong>Terms of Service</strong>
+        Use ProFit only for Functional Fitness Gym operations and your personal membership or assigned staff role. <a href="/terms" target="_blank" rel="noopener">Read full Terms of Service</a>
+      </div>
+      <div class="ob-box">
+        <strong>Privacy Policy (R.A. No. 10173 · Data Privacy Act)</strong>
+        Functional Fitness Gym collects only the account, attendance, and billing records needed to run your gym membership or staff duties. <a href="/privacy" target="_blank" rel="noopener">Read full Privacy Policy</a>
+      </div>
+    </div>
+
+    {% if form.errors %}
+      <div class="ob-err-box" role="alert">
+        {% for field, errs in form.errors.items %}
+          {% for err in errs %}<div>{{ err }}</div>{% endfor %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="post" action="{% url 'accounts:onboarding_consent' %}" novalidate>
+      {% csrf_token %}
+      <div class="ob-checks">
+        <label class="ob-chk" for="id_accept_terms">
+          <input type="checkbox" id="id_accept_terms" name="accept_terms" value="on" {% if form.accept_terms.value %}checked{% endif %} required>
+          <span>I have read and agree to the <a href="/terms" target="_blank" rel="noopener">Terms of Service</a>.</span>
+        </label>
+        <label class="ob-chk" for="id_accept_privacy">
+          <input type="checkbox" id="id_accept_privacy" name="accept_privacy" value="on" {% if form.accept_privacy.value %}checked{% endif %} required>
+          <span>I have read and agree to the <a href="/privacy" target="_blank" rel="noopener">Privacy Policy</a>.</span>
+        </label>
+      </div>
+      <button type="submit" class="ob-btn">I Agree &amp; Continue</button>
+    </form>
+
+    <div class="ob-foot">
+      <span>Functional Fitness Gym</span>
+      <form method="post" action="{% url 'accounts:logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="ob-link-btn">Sign out</button>
+      </form>
+    </div>
+  </section>
+</main>
+</body>
+</html>

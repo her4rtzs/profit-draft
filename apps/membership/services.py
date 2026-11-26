@@ -276,6 +276,11 @@ def register_trial_member(*, name, email, password, phone=""):
             phone=phone or "",
             confirm_duplicate_phone=True,
         )
+        now = timezone.now()
+        profile.user.tos_accepted_at = now
+        profile.user.privacy_accepted_at = now
+        profile.user.needs_legal_consent = False
+        profile.user.save(update_fields=["tos_accepted_at", "privacy_accepted_at", "needs_legal_consent"])
         return start_trial(profile)
 
 

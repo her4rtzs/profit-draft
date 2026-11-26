@@ -7,10 +7,11 @@
   const FALLBACK_CLIENT_ID = "752296461739-tpcmop84u41b31bo3eer33uv2v6fkauq.apps.googleusercontent.com";
   const ERROR_MESSAGES = {
     cancelled: "Google sign-in was cancelled.",
-    staff_forbidden: "Google Sign-In is only available for Member accounts. Staff and trainers must sign in with their gym password.",
-    account_disabled: "This member account is not active yet. Contact the gym or verify your email first.",
-    already_linked_other: "This member account is already linked to a different Google account.",
-    google_sub_in_use: "This Google account is already linked to another ProFit member.",
+    not_linked: "This Google account is not connected to a ProFit account. Sign in with your email and password first, then connect Google in Settings.",
+    staff_forbidden: "This Google account is not connected to a ProFit account.",
+    account_disabled: "This account is not active yet. Contact the gym administrator.",
+    already_linked_other: "This account is already linked to a different Google account.",
+    google_sub_in_use: "This Google account is already linked to another ProFit user.",
     email_not_verified: "Your Google account email is not verified. Verify it in Google first.",
     token_expired: "Your Google sign-in session expired. Please try again.",
     invalid_token: "Google credential could not be verified. Please try again.",
@@ -76,15 +77,24 @@
     }
   }
 
-  function finishMemberLogin(user, msgText) {
+  function defaultRedirectForRole(role) {
+    const r = String(role || "").toUpperCase();
+    if (r === "ADMIN" || r === "OWNER") return "/index";
+    if (r === "CASHIER") return "/cashier";
+    if (r === "TRAINER" || r === "COACH") return "/trainer/index";
+    return "/member-home";
+  }
+
+  function finishLogin(user, targetRedirect, msgText) {
     try {
       sessionStorage.removeItem("profit-logged-out");
       sessionStorage.setItem("profit-verified-session", JSON.stringify(user));
       sessionStorage.setItem("pf-auth-just-logged-in", "1");
     } catch (_) {}
-    showMsg(msgText || "Signed in with Google. Opening your member portal…", false);
+    const dest = targetRedirect || defaultRedirectForRole(user?.role);
+    showMsg(msgText || "Signed in with Google. Redirecting…", false);
     setTimeout(() => {
-      location.replace("/member-home");
+      location.replace(dest);
     }, 250);
   }
 
@@ -176,7 +186,7 @@
         });
         pwInput.value = "";
         dlg.close();
-        finishMemberLogin(res.user, "Google account linked. Signing you in…");
+        finishLogin(res.user, res.redirect, "Google account linked. Signing you in…");
       } catch (err) {
         errBox.hidden = false;
         errBox.textContent = err?.message || "Could not verify your password. Please try again.";
@@ -215,16 +225,17 @@
     clearMsg();
     setBusy(true, "Connecting…");
     try {
-      const res = await window.ProFitAPI.post("/auth/google", payload);
+      const res = await window.ProFitAPI.post("/auth/google", { ...payload, source: sourceName });
       if (res && res.status === "link_required") {
         setBusy(false);
         openLinkPrompt(res.email, res.link_token);
         return;
       }
       if (res && res.status === "authenticated" && res.user) {
-        finishMemberLogin(
+        finishLogin(
           res.user,
-          res.created ? "Welcome to ProFit! Opening your member portal…" : "Signed in with Google. Opening your member portal…"
+          res.redirect,
+          res.created ? "Welcome to ProFit! Opening verification…" : "Signed in with Google. Redirecting…"
         );
         return;
       }
@@ -373,20 +384,27 @@
 
   async function handleQueryCallback() {
     const q = new URLSearchParams(location.search);
-    const hasCallbackParams = q.has("google_authenticated") || q.has("google_link") || q.has("google_error");
+    const hasCallbackParams = q.has("google_authenticated") || q.has("google_link") || q.has("google_error") || q.has("error");
     if (!hasCallbackParams) return;
 
     const cleanUrl = location.pathname;
+    if (q.get("error") === "not-linked") {
+      history.replaceState(null, "", cleanUrl);
+      showMsg(ERROR_MESSAGES.not_linked, true);
+      return;
+    }
+
     if (q.get("google_authenticated") === "1") {
       history.replaceState(null, "", cleanUrl);
       setBusy(true, "Opening portal…");
       try {
         const session = await window.ProFitAPI.get("/auth/session");
-        if (session && session.user && String(session.user.role || "").toUpperCase() === "MEMBER") {
-          finishMemberLogin(session.user);
+        if (session && session.user) {
+          const redirectTarget = session.user.requires_first_login_gate ? "/accounts/onboarding/" : defaultRedirectForRole(session.user.role);
+          finishLogin(session.user, redirectTarget);
           return;
         }
-        throw new Error("Session role mismatch.");
+        throw new Error("Session missing.");
       } catch (_) {
         setBusy(false);
         showMsg("Could not verify your Google session. Please try signing in again.", true);

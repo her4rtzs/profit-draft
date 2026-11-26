@@ -54,3 +54,16 @@ class AcceptInviteForm(forms.Form):
         if password and confirm and password != confirm:
             raise forms.ValidationError("Passwords do not match.")
         return cleaned
+
+
+class OnboardingConsentForm(forms.Form):
+    """Explicit acceptance of Terms of Service and Privacy Policy on first login."""
+
+    accept_terms = forms.BooleanField(
+        required=True,
+        error_messages={"required": "You must read and agree to the Terms of Service."},
+    )
+    accept_privacy = forms.BooleanField(
+        required=True,
+        error_messages={"required": "You must read and agree to the Privacy Policy."},
+    )

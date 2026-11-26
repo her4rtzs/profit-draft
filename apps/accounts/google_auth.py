@@ -109,7 +109,40 @@ def ensure_google_user_columns() -> None:
                 cursor.execute(
                     "ALTER TABLE accounts_user ADD COLUMN IF NOT EXISTS onboarding_data jsonb NOT NULL DEFAULT '{}'::jsonb;"
                 )
+            if "google_email" not in cols:
+                cursor.execute(
+                    "ALTER TABLE accounts_user ADD COLUMN IF NOT EXISTS google_email varchar(254) NOT NULL DEFAULT '';"
+                )
+            if "needs_first_login_otp" not in cols:
+                cursor.execute(
+                    "ALTER TABLE accounts_user ADD COLUMN IF NOT EXISTS needs_first_login_otp boolean NOT NULL DEFAULT false;"
+                )
+            if "first_login_otp_verified_at" not in cols:
+                cursor.execute(
+                    "ALTER TABLE accounts_user ADD COLUMN IF NOT EXISTS first_login_otp_verified_at timestamp with time zone NULL;"
+                )
+            if "needs_legal_consent" not in cols:
+                cursor.execute(
+                    "ALTER TABLE accounts_user ADD COLUMN IF NOT EXISTS needs_legal_consent boolean NOT NULL DEFAULT false;"
+                )
+            if "tos_accepted_at" not in cols:
+                cursor.execute(
+                    "ALTER TABLE accounts_user ADD COLUMN IF NOT EXISTS tos_accepted_at timestamp with time zone NULL;"
+                )
+            if "privacy_accepted_at" not in cols:
+                cursor.execute(
+                    "ALTER TABLE accounts_user ADD COLUMN IF NOT EXISTS privacy_accepted_at timestamp with time zone NULL;"
+                )
             tables = set(connection.introspection.table_names(cursor))
+            if "accounts_staffinvite" in tables:
+                invite_cols = {
+                    c.name
+                    for c in connection.introspection.get_table_description(cursor, "accounts_staffinvite")
+                }
+                if "revoked_at" not in invite_cols:
+                    cursor.execute(
+                        "ALTER TABLE accounts_staffinvite ADD COLUMN IF NOT EXISTS revoked_at timestamp with time zone NULL;"
+                    )
             if "membership_memberprofile" in tables:
                 member_cols = {
                     c.name
@@ -482,9 +515,9 @@ def exchange_google_code(
 def _assert_member_eligible(user: User) -> None:
     if user.role != Role.MEMBER or user.is_staff or user.is_superuser:
         raise GoogleAuthError(
-            "Google Sign-In is only available for Member accounts. Staff and trainers must sign in with their gym password.",
+            "This Google account is not connected to a ProFit account. Sign in with your email and password first, then connect Google in Settings.",
             status_code=403,
-            code="staff_forbidden",
+            code="not_linked",
         )
     if not user.is_active:
         raise GoogleAuthError(
@@ -492,6 +525,19 @@ def _assert_member_eligible(user: User) -> None:
             status_code=403,
             code="account_disabled",
         )
+
+
+def _apply_first_login_gate_flags(user: User) -> None:
+    """Require first-login OTP and/or Terms+Privacy consent if not yet recorded."""
+    update_fields = []
+    if user.first_login_otp_verified_at is None and not user.needs_first_login_otp:
+        user.needs_first_login_otp = True
+        update_fields.append("needs_first_login_otp")
+    if (user.tos_accepted_at is None or user.privacy_accepted_at is None) and not user.needs_legal_consent:
+        user.needs_legal_consent = True
+        update_fields.append("needs_legal_consent")
+    if update_fields:
+        user.save(update_fields=update_fields)
 
 
 def _issue_link_token(user: User, sub: str) -> str:
@@ -517,13 +563,35 @@ def _ensure_google_member_trial(user: User) -> MemberProfile:
     return profile
 
 
+def authenticate_google_login(claims: GoogleClaims) -> GoogleAuthOutcome:
+    """Authenticate any active ProFit account (Owner, Cashier, Trainer, Member) ONLY if Google is linked."""
+    linked_user = User.objects.filter(google_sub=claims.sub).first()
+    if linked_user is None:
+        raise GoogleAuthError(
+            "This Google account is not connected to a ProFit account. Sign in with your email and password first, then connect Google in Settings.",
+            status_code=403,
+            code="not_linked",
+        )
+    if not linked_user.is_active:
+        raise GoogleAuthError(
+            "This account is not active. Please contact the gym administrator.",
+            status_code=403,
+            code="account_disabled",
+        )
+    if linked_user.google_email != claims.email:
+        linked_user.google_email = claims.email
+        linked_user.save(update_fields=["google_email"])
+    if linked_user.role == Role.MEMBER:
+        _ensure_google_member_trial(linked_user)
+    _apply_first_login_gate_flags(linked_user)
+    return GoogleAuthOutcome(status="authenticated", user=linked_user, created=False)
+
+
 def authenticate_google_member(claims: GoogleClaims) -> GoogleAuthOutcome:
-    """Authenticate an existing Google-linked member, request verified linking, or register a new Member."""
+    """Authenticate an existing Google-linked user or register a new Member via /join."""
     linked_user = User.objects.filter(google_sub=claims.sub).first()
     if linked_user is not None:
-        _assert_member_eligible(linked_user)
-        _ensure_google_member_trial(linked_user)
-        return GoogleAuthOutcome(status="authenticated", user=linked_user, created=False)
+        return authenticate_google_login(claims)
 
     existing = User.objects.filter(Q(email__iexact=claims.email) | Q(username__iexact=claims.email)).first()
     if existing is not None:
@@ -557,7 +625,10 @@ def authenticate_google_member(claims: GoogleClaims) -> GoogleAuthOutcome:
                 role=Role.MEMBER,
                 is_active=True,
                 google_sub=claims.sub,
+                google_email=claims.email,
                 google_linked_at=timezone.now(),
+                needs_first_login_otp=True,
+                needs_legal_consent=True,
             )
             user.set_unusable_password()
             user.save()
@@ -567,9 +638,7 @@ def authenticate_google_member(claims: GoogleClaims) -> GoogleAuthOutcome:
         # Race condition: inspect whether google_sub or email was created concurrently
         raced_sub = User.objects.filter(google_sub=claims.sub).first()
         if raced_sub is not None:
-            _assert_member_eligible(raced_sub)
-            _ensure_google_member_trial(raced_sub)
-            return GoogleAuthOutcome(status="authenticated", user=raced_sub, created=False)
+            return authenticate_google_login(claims)
         raced_email = User.objects.filter(Q(email__iexact=claims.email) | Q(username__iexact=claims.email)).first()
         if raced_email is not None:
             _assert_member_eligible(raced_email)
@@ -620,10 +689,69 @@ def verify_and_link_google_account(link_token: str, password: str) -> User:
         if user.google_sub and user.google_sub != sub:
             raise GoogleAuthError("This ProFit account is already linked to a different Google account.", status_code=409, code="already_linked_other")
         if User.objects.filter(google_sub=sub).exclude(pk=user.pk).exists():
-            raise GoogleAuthError("This Google account is already linked to another ProFit member.", status_code=409, code="google_sub_in_use")
+            raise GoogleAuthError("This Google account is already linked to another ProFit user.", status_code=409, code="google_sub_in_use")
         if not user.google_sub:
             user.google_sub = sub
             user.google_linked_at = timezone.now()
             user.save(update_fields=["google_sub", "google_linked_at"])
         MemberProfile.objects.get_or_create(user=user)
+        _apply_first_login_gate_flags(user)
         return user
+
+
+def connect_google_account(user: User, claims: GoogleClaims) -> User:
+    """Link a Google account to an already authenticated, active user (any role)."""
+    if not user or not user.is_authenticated or not user.is_active:
+        raise GoogleAuthError("Sign in to an active account first.", status_code=401, code="not_authenticated")
+
+    with transaction.atomic():
+        locked = User.objects.select_for_update().filter(pk=user.pk).first()
+        if locked is None or not locked.is_active:
+            raise GoogleAuthError("Account is not active.", status_code=403, code="account_disabled")
+        if locked.google_sub and locked.google_sub != claims.sub:
+            raise GoogleAuthError(
+                "This ProFit account is already connected to a different Google account. Disconnect it first.",
+                status_code=409,
+                code="already_linked_other",
+            )
+        if User.objects.filter(google_sub=claims.sub).exclude(pk=locked.pk).exists():
+            raise GoogleAuthError(
+                "This Google account is already connected to another ProFit account.",
+                status_code=409,
+                code="google_sub_in_use",
+            )
+        update_fields = []
+        if locked.google_sub != claims.sub:
+            locked.google_sub = claims.sub
+            locked.google_linked_at = timezone.now()
+            update_fields.extend(["google_sub", "google_linked_at"])
+        if locked.google_email != claims.email:
+            locked.google_email = claims.email
+            update_fields.append("google_email")
+        if update_fields:
+            locked.save(update_fields=update_fields)
+        return locked
+
+
+def disconnect_google_account(user: User) -> User:
+    """Disconnect Google from an authenticated user, refusing if it would lock them out."""
+    if not user or not user.is_authenticated or not user.is_active:
+        raise GoogleAuthError("Sign in to an active account first.", status_code=401, code="not_authenticated")
+
+    with transaction.atomic():
+        locked = User.objects.select_for_update().filter(pk=user.pk).first()
+        if locked is None or not locked.is_active:
+            raise GoogleAuthError("Account is not active.", status_code=403, code="account_disabled")
+        if not locked.google_sub:
+            return locked
+        if not locked.has_usable_password():
+            raise GoogleAuthError(
+                "Set a password before disconnecting Google so you do not get locked out of your account.",
+                status_code=400,
+                code="lockout_prevented",
+            )
+        locked.google_sub = None
+        locked.google_email = ""
+        locked.google_linked_at = None
+        locked.save(update_fields=["google_sub", "google_email", "google_linked_at"])
+        return locked

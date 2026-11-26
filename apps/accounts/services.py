@@ -67,6 +67,14 @@ class InvalidInviteError(Exception):
     """Raised when a staff-invite token/link is invalid, expired, or used."""
 
 
+class InviteEmailMismatchError(Exception):
+    """Raised when Google email does not match the invited email."""
+
+
+class InviteGoogleInUseError(Exception):
+    """Raised when the Google account is already linked to another user."""
+
+
 @dataclass(frozen=True)
 class RegisterResult:
     """Outcome of ``register_member`` handed to the view (never the raw code)."""
@@ -319,6 +327,77 @@ def resend_otp(user):
     _issue_and_send_otp(user, OTPPurpose.SIGNUP, send_otp_email)
 
 
+def issue_first_login_otp(user, *, force_resend: bool = False):
+    """Issue and email a FIRST_LOGIN OTP unless an active one already exists (unless forced)."""
+    ensure_otp_schema()
+    now = timezone.now()
+    if not force_resend:
+        existing_usable = (
+            EmailOTP.objects.filter(
+                user=user,
+                purpose=OTPPurpose.FIRST_LOGIN,
+                consumed_at__isnull=True,
+                expires_at__gt=now,
+                attempts__lt=EmailOTP.MAX_ATTEMPTS,
+            )
+            .order_by("-created_at")
+            .first()
+        )
+        if existing_usable is not None:
+            return None
+    return _issue_and_send_otp(user, OTPPurpose.FIRST_LOGIN, send_otp_email)
+
+
+def verify_first_login_otp(user, code) -> VerifyResult:
+    """Verify ``code`` against the latest FIRST_LOGIN OTP for an authenticated user."""
+    code = code.strip() if isinstance(code, str) else ""
+    now = timezone.now()
+    with transaction.atomic():
+        row = (
+            EmailOTP.objects.select_for_update()
+            .filter(user=user, purpose=OTPPurpose.FIRST_LOGIN)
+            .order_by("-created_at")
+            .first()
+        )
+        if row is None:
+            return VerifyResult(ok=False, reason="no_pending")
+        if row.is_consumed():
+            return VerifyResult(ok=False, reason="consumed")
+        if row.is_expired(now):
+            return VerifyResult(ok=False, reason="expired")
+        if row.attempts >= EmailOTP.MAX_ATTEMPTS:
+            return VerifyResult(ok=False, reason="capped")
+
+        if check_password(code, row.code_hash):
+            row.consumed_at = now
+            row.save(update_fields=["consumed_at"])
+            user.needs_first_login_otp = False
+            user.first_login_otp_verified_at = now
+            user.save(update_fields=["needs_first_login_otp", "first_login_otp_verified_at"])
+            return VerifyResult(ok=True, reason="ok")
+
+        row.attempts += 1
+        row.save(update_fields=["attempts"])
+        if row.attempts >= EmailOTP.MAX_ATTEMPTS:
+            logger.info("event=first_login_otp_attempts_exceeded user_id=%s", user.id)
+            return VerifyResult(ok=False, reason="capped")
+        return VerifyResult(ok=False, reason="bad_code")
+
+
+def resend_first_login_otp(user):
+    """Force-resend a FIRST_LOGIN OTP, enforcing cooldown and rolling window caps."""
+    return issue_first_login_otp(user, force_resend=True)
+
+
+def record_legal_consent(user) -> None:
+    """Record explicit ToS + Privacy Policy acceptance and clear the consent gate."""
+    now = timezone.now()
+    user.tos_accepted_at = now
+    user.privacy_accepted_at = now
+    user.needs_legal_consent = False
+    user.save(update_fields=["tos_accepted_at", "privacy_accepted_at", "needs_legal_consent"])
+
+
 def _find_active_user_by_email(email: str):
     norm = normalize_email(email or "")
     if not norm:
@@ -468,6 +547,22 @@ def create_staff_invite(*, owner, email, role):
     return invite, raw_token
 
 
+def get_valid_staff_invite(*, raw_token, invite_id, lock: bool = False) -> StaffInvite:
+    """Validate an invite id + raw token (checking expiry, use, and revocation)."""
+    if not raw_token or not isinstance(raw_token, str):
+        raise InvalidInviteError("This invite link is invalid or expired.")
+    now = timezone.now()
+    qs = StaffInvite.objects.filter(pk=invite_id)
+    if lock:
+        qs = qs.select_for_update()
+    invite = qs.first()
+    if invite is None or not invite.is_usable(now):
+        raise InvalidInviteError("This invite link is invalid or expired.")
+    if not check_password(raw_token, invite.token_hash):
+        raise InvalidInviteError("This invite link is invalid or expired.")
+    return invite
+
+
 def accept_invite(*, raw_token, invite_id, password):
     """Accept a staff invite: set password, create+activate the staff account.
 
@@ -476,19 +571,14 @@ def accept_invite(*, raw_token, invite_id, password):
     check.
     """
     now = timezone.now()
-    invite = StaffInvite.objects.filter(pk=invite_id).first()
-    if invite is None or not invite.is_usable(now):
-        raise InvalidInviteError("This invite link is invalid or expired.")
-    if not check_password(raw_token, invite.token_hash):
-        raise InvalidInviteError("This invite link is invalid or expired.")
-
-    username = invite.email  # already normalized at issue time
-    existing = User.objects.filter(username=username).first()
-    if existing is not None and (existing.is_active or existing.has_usable_password() or existing.role != invite.role):
-        # Invites provision NEW accounts (or activate a pending pre-created staff invite account).
-        raise InvalidInviteError("This invite link is invalid or expired.")
-
     with transaction.atomic():
+        invite = get_valid_staff_invite(raw_token=raw_token, invite_id=invite_id, lock=True)
+        username = invite.email  # already normalized at issue time
+        existing = User.objects.select_for_update().filter(username=username).first()
+        if existing is not None and (existing.is_active or existing.has_usable_password() or existing.role != invite.role):
+            # Invites provision NEW accounts (or activate a pending pre-created staff invite account).
+            raise InvalidInviteError("This invite link is invalid or expired.")
+
         if existing is not None:
             user = existing
             user.email = username
@@ -504,6 +594,62 @@ def accept_invite(*, raw_token, invite_id, password):
         user.set_password(password)
         user.must_change_password = False
         user.save()
+        invite.used_at = now
+        invite.accepted_user = user
+        invite.save(update_fields=["used_at", "accepted_user"])
+    return user
+
+
+def accept_invite_with_google(*, raw_token, invite_id, claims):
+    """Accept a staff invite using Google Sign-In; invited email must match Google claims.email."""
+    now = timezone.now()
+    with transaction.atomic():
+        invite = get_valid_staff_invite(raw_token=raw_token, invite_id=invite_id, lock=True)
+        invited_email = normalize_email(invite.email)
+        claims_email = normalize_email(getattr(claims, "email", "") or "")
+        if not claims_email or claims_email != invited_email:
+            raise InviteEmailMismatchError(
+                "Your Google email must match the invited email address."
+            )
+
+        username = invited_email
+        if User.objects.filter(google_sub=claims.sub).exclude(username=username).exists():
+            raise InviteGoogleInUseError(
+                "This Google account is already connected to another ProFit account."
+            )
+
+        existing = User.objects.select_for_update().filter(username=username).first()
+        if existing is not None and (existing.is_active or existing.has_usable_password() or existing.role != invite.role):
+            raise InvalidInviteError("This invite link is invalid or expired.")
+
+        if existing is not None:
+            user = existing
+            user.email = username
+            user.is_active = True
+        else:
+            user = User(
+                username=username,
+                email=username,
+                role=invite.role,
+                is_active=True,
+            )
+            user.set_unusable_password()
+            raw_name = (getattr(claims, "name", "") or "").strip()
+            if raw_name:
+                parts = raw_name.split(None, 1)
+                user.first_name = parts[0][:150]
+                user.last_name = (parts[1] if len(parts) > 1 else "")[:150]
+
+        user.google_sub = claims.sub
+        user.google_email = claims_email
+        user.google_linked_at = now
+        user.must_change_password = False
+        if user.first_login_otp_verified_at is None:
+            user.needs_first_login_otp = True
+        if user.tos_accepted_at is None or user.privacy_accepted_at is None:
+            user.needs_legal_consent = True
+        user.save()
+
         invite.used_at = now
         invite.accepted_user = user
         invite.save(update_fields=["used_at", "accepted_user"])

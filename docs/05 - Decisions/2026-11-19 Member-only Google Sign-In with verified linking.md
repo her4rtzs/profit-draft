@@ -1,7 +1,8 @@
 ---
 date: 2026-11-19
-status: accepted
+status: superseded
 tags: [decision]
+Superseded by: [[2026-11-26 Linked Google login and first-login gate]]
 ---
 # Member-only Google Sign-In with verified linking
 - Decision: Add Member-only Google Sign-In using Google Identity Services (ID tokens) plus an OAuth 2.0 authorization code redirect fallback (`/api/auth/google/login/` and `/api/auth/google/callback/`), verifying RS256 ID tokens in Python's standard library (`apps/accounts/google_auth.py`), storing `google_sub` and `google_linked_at` on `User` (`0005_user_google_linked_at_user_google_sub`), and requiring password verification before linking an existing email-matched Member account.

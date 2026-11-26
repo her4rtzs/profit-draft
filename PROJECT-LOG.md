@@ -3889,3 +3889,49 @@ Fix the `Request failed (500)` error on Add Trainer (`https://functionalfitnessg
 - Gave the owner step-by-step instructions to apply the new migrations (`0003_trainerprofile_status` and `0004_trainersession`) to Prod Supabase and enable RLS with no policies on `trainers_trainersession`.
 ### Decision-log skill
 Vercel deploys run `collectstatic` only and never `migrate`, so every `POST` handler creating rows on recently migrated models should check column readiness upfront and return an actionable 503 instead of a 500.
+
+## 2026-11-26 17:12 (Asia/Manila): Hide Add Trainer Form Cleanly When Showing Success Screen
+### What I asked for
+Ensure clicking Add Trainer replaces the form with the Trainer Added Successfully view instead of appending the success view beneath the form.
+### What the agent decided and why
+- Scoped `#trForm` grid rules in `web/pf-system.css` (`?v=20`) with `:not([hidden])`, added explicit `[hidden] { display: none !important; }` guards for `#trForm`, `#trModalHead`, `#trSuccessView`, and modal sections, and sized the success view compactly at `580px`.
+- Scrolled `.tr-modal` to the top in `showSuccessScreen()` (`web/trainers-staff.js?v=16`).
+### Decision-log skill
+Whenever overriding `display: grid !important` or `display: flex !important` on toggleable elements, always include `:not([hidden])` and an explicit `[hidden] { display: none !important; }` rule so setting `.hidden = true` actually hides the element.
+
+## 2026-11-26 17:23 (Asia/Manila): Match Add Cashier Modal & Access Modes to Add Trainer
+### What I asked for
+Make the Add Cashier modal match the same 2-column design and flow as Add Trainer.
+### What the agent decided and why
+- Extended `StaffCashierListView.post()` in `api/cashiers.py` to support both `access_mode="invite"` (default 72-hour invite link) and `access_mode="temp_password"` (immediate active cashier with `must_change_password=True` and password validation).
+- Rebuilt `#inviteModalBackdrop` in `web/cashiers.html`, `web/cashiers.js` (`?v=3`), and `web/pf-system.css` (`?v=21`) with the exact 2-column Add Trainer modal styling (Cashier Information + Account Access for Cashier cards) and the compact "Cashier Added Successfully" confirmation screen (copyable link or credentials, Add Another, Done) in both Dark and Light Mode.
+- Added `test_owner_can_add_cashier_with_temp_password_mode` in `apps/membership/tests/test_name_phone_and_cashiers.py`.
+### Decision-log skill
+Keep dual staff-onboarding flows (email invite vs temporary password) consistent between Owner -> Trainers and Owner -> Cashiers while preserving backward-compatible `access_mode="invite"` defaults on the API.
+
+## 2026-11-26 17:36 (Asia/Manila): Align Modal Section Heights & Temp Password Button Grid (Trainers & Cashiers)
+### What I asked for
+Fix the Add Trainer and Add Cashier modal containers so both columns align cleanly and the Generate / Copy buttons don't wrap unevenly.
+### What the agent decided and why
+- Set both `#trForm` (Add mode) and `#inviteCashierForm` in `web/pf-system.css` (`?v=22`) to `minmax(0, 1fr) minmax(0, 1fr)` with `align-items: stretch` and `height: 100%` on `.tr-modal-section` / `.csh-modal-section`.
+- Switched `.tr-temp-pw-box .tr-temp-pw-row` and `.csh-temp-pw-box .csh-temp-pw-row` to a full-width password field over two even 50/50 `Generate` and `Copy` buttons, kept success-view copy rows single-line on desktop, and unified input borders/surfaces in Dark and Light Mode.
+### Decision-log skill
+Use a full-span input over a 2-column button grid inside narrow side-by-side cards instead of `flex-wrap` so action buttons never leave an orphan button wrapped alone on a second line.
+
+## 2026-11-26 17:53 (Asia/Manila): Fix Active Sidebar Icon Contrast on Gold Pills
+### What I asked for
+Fix the active sidebar icon color where the icon blended into the gold active pill instead of showing dark contrast.
+### What the agent decided and why
+- Raised CSS selector specificity in `web/pf-system.css` (`?v=23`) for active sidebar links and their child icons (`.icon`, `i.icon`, `i`, `.ico`, `svg`, `span`, `.text`) across Staff/Owner/Cashier, Member, and Trainer portals in both Dark and Light Mode (resting, `:hover`, `:focus-visible`, and `:active` states) so they beat legacy `#F4C542` / `#F7D36B` rules in `web/dashboard.css`.
+- Added `background: var(--pf-state-gold) !important` on active sidebar hover so the solid gold pill stays uniform instead of falling back to `dashboard.css` gradient hover styles.
+### Decision-log skill
+When overriding legacy component CSS that uses deep theme selectors (`body.dark nav.sidebar ... .icon:hover`) and shorthand properties (`background: ... !important`), match or exceed that full selector specificity across all interaction states and override both `background` and `background-color`.
+
+## 2026-11-26 18:35 (Asia/Manila): Linked Google Login (All Roles), First-Login OTP+Consent Gate, Branded Invite & Settings Connect
+### What I asked for
+Allow Owner/Staff/Member Google login only for linked accounts (`?error=not-linked` otherwise), enforce Email OTP then Terms/Privacy consent on first Google login, redesign the staff invite acceptance page with Google email-match activation, and add Connect/Disconnect Google in Settings with lockout protection.
+### What the agent decided and why
+- Updated `apps/accounts/models.py` (`0008_google_onboarding_and_invite_revoke`), `apps/accounts/google_auth.py`, `apps/accounts/services.py`, `api/auth.py`, and `apps/accounts/middleware.py` (`FirstLoginOnboardingGateMiddleware`) so Google login works for all linked roles (`OWNER`, `CASHIER`, `TRAINER`, `MEMBER`) while blocking unlinked accounts (`?error=not-linked`) and gating first-time Google sessions behind Email OTP (`FIRST_LOGIN`) followed by dual-checkbox Terms/Privacy consent; see [[2026-11-26 Linked Google login and first-login gate]].
+- Redesigned `templates/accounts/accept_invite.html` in ProFit obsidian/gold with password setup, matching-email Google activation, and explicit `revoked_at` checking, and added `web/google-connect.js` + passwordless disconnect lockout protection in Owner/Cashier, Trainer, and Member Settings.
+### Decision-log skill
+Keep first-login security gates on `User` flags defaulted to `False` and enforced by a single middleware so existing password users stay undisturbed while every new Google-based entry path (signup, invite, linked login) is uniformly gated before dashboards or `/api/` endpoints respond.

@@ -549,6 +549,7 @@
     trForm.hidden = true;
     const sv = document.getElementById("trSuccessView");
     sv.hidden = false;
+    trModal?.querySelector(".tr-modal")?.scrollTo({ top: 0 });
     document.getElementById("trSuccName").textContent = res.name || "—";
     document.getElementById("trSuccSpec").textContent = res.specialization || "General Fitness & Training";
     document.getElementById("trSuccCap").textContent = `${res.load ?? 0} / ${res.max_members ?? 20} members`;

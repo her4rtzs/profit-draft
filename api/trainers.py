@@ -94,7 +94,7 @@ def _invite_status_for(user):
         return "ACTIVE"
     now = timezone.now()
     latest = StaffInvite.objects.filter(email=normalize_email(user.email), role=Role.TRAINER).order_by("-created_at", "-id").first()
-    if latest and latest.used_at is None:
+    if latest and latest.used_at is None and latest.revoked_at is None:
         if latest.is_usable(now):
             return "INVITE_PENDING"
         if latest.is_expired(now):
@@ -331,7 +331,8 @@ class StaffTrainerDetailView(APIView):
                             email__iexact=profile.user.email,
                             role=Role.TRAINER,
                             used_at__isnull=True,
-                        ).update(used_at=timezone.now())
+                            revoked_at__isnull=True,
+                        ).update(revoked_at=timezone.now())
                     fields["is_active"] = False
                     if _has_status_column():
                         fields["status"] = TrainerProfile.Status.INACTIVE
@@ -359,7 +360,12 @@ class StaffTrainerResendInviteView(APIView):
             return Response({"detail": "This trainer account is already active."}, status=400)
         now = timezone.now()
         email = normalize_email(profile.user.email)
-        StaffInvite.objects.filter(email=email, role=Role.TRAINER, used_at__isnull=True, expires_at__gt=now).update(expires_at=now)
+        StaffInvite.objects.filter(
+            email=email,
+            role=Role.TRAINER,
+            used_at__isnull=True,
+            revoked_at__isnull=True,
+        ).update(revoked_at=now)
         invite, raw_token = create_staff_invite(owner=request.user, email=email, role=Role.TRAINER)
         accept_url, email_sent, email_note = _try_send_invite(request, invite, raw_token)
         return Response({

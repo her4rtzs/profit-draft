@@ -25,6 +25,7 @@ from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model, login, logout, update_session_auth_hash
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.db import DatabaseError
 from django.http import HttpResponseRedirect, JsonResponse
@@ -34,14 +35,23 @@ from django.views.decorators.http import require_GET, require_POST
 from apps.accounts.google_auth import (
     GOOGLE_SCOPES,
     GoogleAuthError,
+    authenticate_google_login,
     authenticate_google_member,
+    connect_google_account,
+    disconnect_google_account,
     ensure_google_user_columns,
     exchange_google_code,
     verify_and_link_google_account,
     verify_google_access_token,
     verify_google_id_token,
 )
-from apps.accounts.services import role_home_url
+from apps.accounts.services import (
+    InvalidInviteError,
+    InviteEmailMismatchError,
+    InviteGoogleInUseError,
+    accept_invite_with_google,
+    role_home_url,
+)
 from apps.accounts.validators import validate_real_email
 
 # Backend roles -> the four web portal shells.
@@ -139,6 +149,12 @@ def _session_user_dict(user):
         "onboarding_completed": onboarding_completed,
         "onboarding": user_ob,
         "must_change_password": bool(getattr(user, "must_change_password", False)),
+        "google_connected": bool(getattr(user, "google_sub", None)),
+        "google_email": getattr(user, "google_email", "") or "",
+        "has_password": bool(user.has_usable_password()),
+        "needs_first_login_otp": bool(getattr(user, "needs_first_login_otp", False)),
+        "needs_legal_consent": bool(getattr(user, "needs_legal_consent", False)),
+        "requires_first_login_gate": bool(getattr(user, "requires_first_login_gate", False)),
     }
 
 
@@ -490,7 +506,35 @@ def _google_callback_url(request):
 
 
 def _google_page_for_source(source):
-    return "/join.html" if source == "join" else "/login.html"
+    return "/join.html" if source == "join" else "/login"
+
+
+def _default_settings_url_for(user):
+    role = getattr(user, "role", "")
+    if role == "TRAINER":
+        return "/trainer/settings"
+    if role == "MEMBER":
+        return "/member-home#settings"
+    return "/settings"
+
+
+def _append_query_preserving_hash(url: str, params: dict[str, str]) -> str:
+    parsed = urllib.parse.urlparse(url)
+    existing = urllib.parse.parse_qs(parsed.query, keep_blank_values=True)
+    for k, v in params.items():
+        existing[k] = [v]
+    new_query = urllib.parse.urlencode(existing, doseq=True)
+    return urllib.parse.urlunparse(parsed._replace(query=new_query))
+
+
+def _post_google_redirect_for(user):
+    if getattr(user, "requires_first_login_gate", False):
+        return "/accounts/onboarding/"
+    if getattr(user, "role", "") in ("CASHIER", "TRAINER") and not (
+        getattr(user, "onboarding_data", None) or {}
+    ).get("completed"):
+        return "/onboarding"
+    return role_home_url(user)
 
 
 @ensure_csrf_cookie
@@ -511,7 +555,7 @@ def google_config_view(request):
 
 @require_POST
 def google_auth_view(request):
-    """POST /api/auth/google/: verify Google ID token or access token and sign in or create Member."""
+    """POST /api/auth/google/: verify Google credential for linked login or /join Member signup."""
     ensure_google_user_columns()
     data = _json_body(request)
     if data is None:
@@ -523,15 +567,23 @@ def google_auth_view(request):
     if not has_cred and not has_access:
         return JsonResponse({"detail": "Missing Google credential."}, status=400)
 
+    source = str(data.get("source") or "login").strip().lower()
     try:
         claims = (
             verify_google_id_token(credential.strip())
             if has_cred
             else verify_google_access_token(access_token.strip())
         )
-        outcome = authenticate_google_member(claims)
+        outcome = (
+            authenticate_google_member(claims)
+            if source == "join"
+            else authenticate_google_login(claims)
+        )
     except GoogleAuthError as exc:
-        return JsonResponse({"detail": exc.message, "code": exc.code}, status=exc.status_code)
+        body = {"detail": exc.message, "code": exc.code}
+        if exc.code == "not_linked":
+            body["redirect"] = "/login?error=not-linked"
+        return JsonResponse(body, status=exc.status_code)
     except DatabaseError as exc:
         _log_google_db_error("sign_in", exc)
         return JsonResponse(
@@ -553,8 +605,9 @@ def google_auth_view(request):
     return JsonResponse({
         "status": "authenticated",
         "created": outcome.created,
-        "role": "MEMBER",
-        "redirect": "member-home.html",
+        "role": WEB_ROLE.get(getattr(user, "role", ""), "MEMBER"),
+        "redirect": _post_google_redirect_for(user),
+        "requires_onboarding_gate": bool(getattr(user, "requires_first_login_gate", False)),
         "user": _session_user_dict(user),
     })
 
@@ -585,20 +638,137 @@ def google_link_view(request):
     return JsonResponse({
         "status": "authenticated",
         "linked": True,
-        "role": "MEMBER",
-        "redirect": "member-home.html",
+        "role": WEB_ROLE.get(getattr(user, "role", ""), "MEMBER"),
+        "redirect": _post_google_redirect_for(user),
+        "requires_onboarding_gate": bool(getattr(user, "requires_first_login_gate", False)),
         "user": _session_user_dict(user),
     })
 
 
+@require_POST
+def google_connect_view(request):
+    """POST /api/auth/google/connect/: connect Google to an authenticated, active account."""
+    ensure_google_user_columns()
+    user = request.user
+    if not user.is_authenticated or not user.is_active:
+        return JsonResponse({"detail": "Not signed in."}, status=401)
+    data = _json_body(request)
+    if data is None:
+        return JsonResponse({"detail": "Invalid request body."}, status=400)
+
+    credential = data.get("credential")
+    access_token = data.get("access_token")
+    has_cred = isinstance(credential, str) and bool(credential.strip())
+    has_access = isinstance(access_token, str) and bool(access_token.strip())
+    if not has_cred and not has_access:
+        return JsonResponse({"detail": "Missing Google credential."}, status=400)
+
+    try:
+        claims = (
+            verify_google_id_token(credential.strip())
+            if has_cred
+            else verify_google_access_token(access_token.strip())
+        )
+        updated = connect_google_account(user, claims)
+    except GoogleAuthError as exc:
+        return JsonResponse({"detail": exc.message, "code": exc.code}, status=exc.status_code)
+    except DatabaseError as exc:
+        _log_google_db_error("connect", exc)
+        return JsonResponse(
+            {"detail": "A database error occurred while connecting Google. Please try again.", "code": "db_error"},
+            status=503,
+        )
+
+    return JsonResponse({
+        "status": "connected",
+        "user": _session_user_dict(updated),
+    })
+
+
+@require_POST
+def google_disconnect_view(request):
+    """POST /api/auth/google/disconnect/: unlink Google unless doing so would lock the user out."""
+    ensure_google_user_columns()
+    user = request.user
+    if not user.is_authenticated or not user.is_active:
+        return JsonResponse({"detail": "Not signed in."}, status=401)
+
+    try:
+        updated = disconnect_google_account(user)
+    except GoogleAuthError as exc:
+        return JsonResponse({"detail": exc.message, "code": exc.code}, status=exc.status_code)
+
+    return JsonResponse({
+        "status": "disconnected",
+        "user": _session_user_dict(updated),
+    })
+
+
+@require_POST
+def set_password_view(request):
+    """POST /api/auth/set-password/: let a Google-only user set an initial password."""
+    user = request.user
+    if not user.is_authenticated or not user.is_active:
+        return JsonResponse({"detail": "Not signed in."}, status=401)
+    if user.has_usable_password():
+        return JsonResponse(
+            {"detail": "Your account already has a password. Use Change Password instead."},
+            status=400,
+        )
+    data = _json_body(request)
+    if data is None:
+        return JsonResponse({"detail": "Invalid request body."}, status=400)
+
+    new_pw = data.get("new_password")
+    confirm_pw = data.get("confirm_password")
+    if not isinstance(new_pw, str) or not new_pw:
+        return JsonResponse({"detail": "Enter a new password."}, status=400)
+    if confirm_pw is not None and new_pw != confirm_pw:
+        return JsonResponse({"detail": "Passwords do not match."}, status=400)
+    try:
+        validate_password(new_pw, user)
+    except ValidationError as exc:
+        return JsonResponse({"detail": " ".join(exc.messages)}, status=400)
+
+    user.set_password(new_pw)
+    user.must_change_password = False
+    user.save(update_fields=["password", "must_change_password"])
+    update_session_auth_hash(request, user)
+    return JsonResponse({"detail": "Password saved.", "user": _session_user_dict(user)})
+
+
 @require_GET
 def google_oauth_login_view(request):
-    """GET /api/auth/google/login/: redirect to Google OAuth 2.0 consent screen (fallback flow)."""
+    """GET /api/auth/google/login/: redirect to Google OAuth 2.0 consent screen (login/join/connect)."""
     ensure_google_user_columns()
-    source = "join" if request.GET.get("source") == "join" else "login"
+    raw_source = str(request.GET.get("source") or "login").strip().lower()
+    source = raw_source if raw_source in {"login", "join", "connect"} else "login"
+
+    if source == "connect":
+        if not request.user.is_authenticated or not request.user.is_active:
+            return HttpResponseRedirect("/login")
+        default_next = _default_settings_url_for(request.user)
+        raw_next = request.GET.get("next") or ""
+        safe_next = (
+            raw_next
+            if raw_next
+            and url_has_allowed_host_and_scheme(
+                raw_next,
+                allowed_hosts={request.get_host()},
+                require_https=request.is_secure(),
+            )
+            else default_next
+        )
+        request.session["google_oauth_connect_uid"] = request.user.pk
+        request.session["google_oauth_connect_next"] = safe_next
+
     client_id = (getattr(settings, "GOOGLE_CLIENT_ID", "") or "").strip()
     client_secret = (getattr(settings, "GOOGLE_CLIENT_SECRET", "") or "").strip()
     if not client_id or not client_secret:
+        if source == "connect":
+            target = request.session.pop("google_oauth_connect_next", _default_settings_url_for(request.user))
+            request.session.pop("google_oauth_connect_uid", None)
+            return HttpResponseRedirect(_append_query_preserving_hash(target, {"google_error": "not_configured"}))
         return HttpResponseRedirect(f"{_google_page_for_source(source)}?google_error=not_configured")
 
     state = secrets.token_urlsafe(24)
@@ -617,37 +787,97 @@ def google_oauth_login_view(request):
 
 @require_GET
 def google_oauth_callback_view(request):
-    """GET /api/auth/google/callback/: verify state + exchange code + log in Member."""
+    """GET /api/auth/google/callback/: verify state + exchange code + dispatch login/join/connect/invite."""
     ensure_google_user_columns()
-    source = "join" if request.session.pop("google_oauth_source", "login") == "join" else "login"
-    page = _google_page_for_source(source)
+    raw_source = str(request.session.pop("google_oauth_source", "login") or "login").lower()
+    source = raw_source if raw_source in {"login", "join", "connect", "invite"} else "login"
+    connect_uid = request.session.pop("google_oauth_connect_uid", None)
+    connect_next = request.session.pop("google_oauth_connect_next", "/settings")
+    invite_id = request.session.pop("google_oauth_invite_id", None)
+    invite_token = request.session.pop("google_oauth_invite_token", "")
     expected_state = request.session.pop("google_oauth_state", None)
+
+    def _error_redirect(code: str, msg: str = ""):
+        if source == "connect":
+            return HttpResponseRedirect(_append_query_preserving_hash(connect_next, {"google_error": code}))
+        if source == "invite" and invite_id and invite_token:
+            back = reverse("accounts:accept_invite", kwargs={"invite_id": invite_id, "token": invite_token})
+            params = {"google_error": code}
+            if msg:
+                params["google_msg"] = msg
+            return HttpResponseRedirect(f"{back}?{urllib.parse.urlencode(params)}")
+        if source == "login" and code == "not_linked":
+            return HttpResponseRedirect("/login?error=not-linked")
+        page = _google_page_for_source(source)
+        params = {"google_error": code}
+        if msg:
+            params["google_msg"] = msg
+        return HttpResponseRedirect(f"{page}?{urllib.parse.urlencode(params)}")
 
     error = (request.GET.get("error") or "").strip()
     if error:
-        code = "cancelled" if error == "access_denied" else "oauth_error"
-        return HttpResponseRedirect(f"{page}?google_error={code}")
+        return _error_redirect("cancelled" if error == "access_denied" else "oauth_error")
 
     state = (request.GET.get("state") or "").strip()
     if not expected_state or not state or not hmac.compare_digest(str(expected_state), state):
-        return HttpResponseRedirect(f"{page}?google_error=invalid_state")
+        return _error_redirect("invalid_state")
 
     auth_code = (request.GET.get("code") or "").strip()
     try:
         claims = exchange_google_code(auth_code, redirect_uri=_google_callback_url(request))
-        outcome = authenticate_google_member(claims)
     except GoogleAuthError as exc:
-        q = urllib.parse.urlencode({"google_error": exc.code, "google_msg": exc.message})
-        return HttpResponseRedirect(f"{page}?{q}")
+        return _error_redirect(exc.code, exc.message)
+
+    if source == "connect":
+        if not request.user.is_authenticated or request.user.pk != connect_uid:
+            return HttpResponseRedirect("/login")
+        try:
+            connect_google_account(request.user, claims)
+        except GoogleAuthError as exc:
+            return _error_redirect(exc.code, exc.message)
+        except DatabaseError as exc:
+            _log_google_db_error("callback_connect", exc)
+            return _error_redirect("db_error")
+        return HttpResponseRedirect(_append_query_preserving_hash(connect_next, {"google_connected": "1"}))
+
+    if source == "invite":
+        if not invite_id or not invite_token:
+            return HttpResponseRedirect("/login")
+        try:
+            user = accept_invite_with_google(
+                raw_token=invite_token,
+                invite_id=invite_id,
+                claims=claims,
+            )
+        except InviteEmailMismatchError as exc:
+            return _error_redirect("invite_email_mismatch", str(exc))
+        except InviteGoogleInUseError as exc:
+            return _error_redirect("google_sub_in_use", str(exc))
+        except InvalidInviteError:
+            return _error_redirect("invalid_invite", "This invite link is invalid, expired, or revoked.")
+        except GoogleAuthError as exc:
+            return _error_redirect(exc.code, exc.message)
+        user.backend = "django.contrib.auth.backends.ModelBackend"
+        login(request, user)
+        return HttpResponseRedirect("/accounts/onboarding/")
+
+    try:
+        outcome = (
+            authenticate_google_member(claims)
+            if source == "join"
+            else authenticate_google_login(claims)
+        )
+    except GoogleAuthError as exc:
+        return _error_redirect("not_linked" if exc.code == "not_linked" else exc.code, exc.message)
     except DatabaseError as exc:
         _log_google_db_error("callback", exc)
-        return HttpResponseRedirect(f"{page}?google_error=db_error")
+        return _error_redirect("db_error")
 
     if outcome.status == "link_required":
         q = urllib.parse.urlencode({"google_link": outcome.link_token, "email": outcome.email})
-        return HttpResponseRedirect(f"{page}?{q}")
+        return HttpResponseRedirect(f"{_google_page_for_source(source)}?{q}")
 
     user = outcome.user
     user.backend = "django.contrib.auth.backends.ModelBackend"
     login(request, user)
-    return HttpResponseRedirect(f"{page}?google_authenticated=1")
+    return HttpResponseRedirect(_post_google_redirect_for(user))

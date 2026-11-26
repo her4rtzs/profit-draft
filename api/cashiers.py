@@ -5,8 +5,12 @@ with ``role=Role.CASHIER``. Users are never deleted, only deactivated
 (``is_active = False``).
 """
 
+import secrets
+import string
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
 from django.db.models import Q
@@ -37,6 +41,18 @@ class IsActiveOwner(BasePermission):
         )
 
 
+def _generate_temp_password():
+    alphabet = string.ascii_letters + string.digits + "!@#$%"
+    core = [
+        secrets.choice(string.ascii_uppercase),
+        secrets.choice(string.ascii_lowercase),
+        secrets.choice(string.digits),
+        secrets.choice("!@#$%"),
+    ] + [secrets.choice(alphabet) for _ in range(8)]
+    secrets.SystemRandom().shuffle(core)
+    return "".join(core)
+
+
 def _try_send_cashier_invite(request, invite, raw_token):
     accept_url = request.build_absolute_uri(
         reverse("accounts:accept_invite", kwargs={"invite_id": invite.pk, "token": raw_token})
@@ -63,6 +79,7 @@ def _pending_invite_emails():
         for email in StaffInvite.objects.filter(
             role=Role.CASHIER,
             used_at__isnull=True,
+            revoked_at__isnull=True,
             expires_at__gt=now,
         ).values_list("email", flat=True)
     }
@@ -138,6 +155,44 @@ class StaffCashierListView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        access_mode = str(data.get("access_mode") or "invite").strip()
+        if access_mode not in ("invite", "temp_password"):
+            return Response(
+                {"detail": "Invalid account access mode."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if access_mode == "temp_password":
+            temp_password = str(data.get("temp_password") or "").strip() or _generate_temp_password()
+            with transaction.atomic():
+                user = User(
+                    username=email,
+                    email=email,
+                    first_name=first_name[:150],
+                    last_name=last_name[:150],
+                    role=Role.CASHIER,
+                    is_active=True,
+                    must_change_password=True,
+                )
+                try:
+                    validate_password(temp_password, user)
+                except DjangoValidationError as exc:
+                    return Response(
+                        {"detail": " ".join(exc.messages)},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+                user.set_password(temp_password)
+                user.save()
+            payload = _cashier_json(user, set())
+            payload.update(
+                {
+                    "access_mode": "temp_password",
+                    "temp_password": temp_password,
+                    "must_change_password": True,
+                }
+            )
+            return Response(payload, status=status.HTTP_201_CREATED)
+
         with transaction.atomic():
             user = User(
                 username=email,
@@ -159,7 +214,9 @@ class StaffCashierListView(APIView):
         payload = _cashier_json(user, {email.lower()})
         payload.update(
             {
+                "access_mode": "invite",
                 "invite_url": invite_url,
+                "invite_expires_hours": 72,
                 "email_sent": email_sent,
                 "email_status_note": email_note,
             }
@@ -187,6 +244,14 @@ class StaffCashierResendInviteView(APIView):
                 {"detail": "This cashier account does not have an email address."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+        now = timezone.now()
+        if user.email:
+            StaffInvite.objects.filter(
+                email__iexact=user.email,
+                role=Role.CASHIER,
+                used_at__isnull=True,
+                revoked_at__isnull=True,
+            ).update(revoked_at=now)
         invite, raw_token = create_staff_invite(
             owner=request.user,
             email=user.email,
@@ -224,6 +289,7 @@ class StaffCashierDeactivateView(APIView):
                     email__iexact=user.email,
                     role=Role.CASHIER,
                     used_at__isnull=True,
-                ).update(used_at=timezone.now())
+                    revoked_at__isnull=True,
+                ).update(revoked_at=timezone.now())
 
         return Response(_cashier_json(user, set()), status=status.HTTP_200_OK)

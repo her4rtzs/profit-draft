@@ -426,3 +426,54 @@ class OwnerCashierManagementTests(TestCase):
         self.assertEqual(finish.status_code, 200)
         self.assertTrue(finish.json()["user"]["onboarding_completed"])
         self.assertEqual(web.get("/cashier").status_code, 200)
+
+    def test_owner_can_add_cashier_with_temp_password_mode(self):
+        self.client.force_authenticate(user=self.owner)
+
+        bad_mode = self.client.post(
+            "/api/staff/cashiers/",
+            {"full_name": "Bad Mode", "email": "badmode@gmail.com", "access_mode": "unknown"},
+            format="json",
+        )
+        self.assertEqual(bad_mode.status_code, 400)
+
+        weak_pw = self.client.post(
+            "/api/staff/cashiers/",
+            {
+                "full_name": "Weak Pass",
+                "email": "weakpass@gmail.com",
+                "access_mode": "temp_password",
+                "temp_password": "123",
+            },
+            format="json",
+        )
+        self.assertEqual(weak_pw.status_code, 400)
+
+        res = self.client.post(
+            "/api/staff/cashiers/",
+            {
+                "full_name": "Clara Gomez",
+                "email": "clara.gomez@gmail.com",
+                "access_mode": "temp_password",
+            },
+            format="json",
+        )
+        self.assertEqual(res.status_code, 201)
+        data = res.json()
+        self.assertEqual(data["access_mode"], "temp_password")
+        self.assertEqual(data["status_key"], "active")
+        self.assertTrue(data["is_active"])
+        self.assertTrue(data["must_change_password"])
+        temp_pw = data["temp_password"]
+        self.assertTrue(len(temp_pw) >= 8)
+
+        web = self.client
+        web.force_authenticate(user=None)
+        login_res = web.post(
+            "/api/auth/login/",
+            {"identity": "clara.gomez@gmail.com", "password": temp_pw},
+            format="json",
+        )
+        self.assertEqual(login_res.status_code, 200)
+        self.assertEqual(login_res.json()["role"], Role.CASHIER)
+        self.assertTrue(login_res.json()["must_change_password"])

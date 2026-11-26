@@ -24,7 +24,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="ProFit">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="stylesheet" href="../pf-system.css?v=19">
+  <link rel="stylesheet" href="../pf-system.css?v=24">
 </head>
 
 <body data-page="settings" data-portal="trainer" data-head="none" data-eyebrow="App Preferences" data-title="Settings">
@@ -69,6 +69,19 @@
                 </div>
                 <span class="tr-st-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
               </button>
+              <div class="tr-st-row pf-google-row" id="pfGoogleAccountRow">
+                <div class="pf-gc-top">
+                  <div class="tr-st-lead">
+                    <span class="tr-st-ico" aria-hidden="true"><i class="fa-brands fa-google"></i></span>
+                    <div class="tr-st-copy">
+                      <span>Google Account</span>
+                      <small data-gc-sub>Checking Google connection…</small>
+                    </div>
+                  </div>
+                  <div class="pf-gc-actions" data-gc-actions></div>
+                </div>
+                <div class="pf-gc-msg" data-gc-msg role="status" aria-live="polite" hidden></div>
+              </div>
             </article>
 
             <!-- Notifications -->
@@ -237,6 +250,7 @@
   <script src="../api.js?v=5"></script>
   <script src="../auth.js?v=5"></script>
   <script src="../change-password.js?v=1"></script>
+  <script src="../google-connect.js?v=1" defer></script>
   <script src="../assets/js/staff-icons.js?v=5"></script>
   <script src="../assets/js/staff-data.js?v=12"></script>
   <script src="../assets/js/staff.js?v=17"></script>
