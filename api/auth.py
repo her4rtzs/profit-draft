@@ -225,12 +225,13 @@ def update_profile_view(request):
     # Keep TrainerProfile contact/specialization in sync if the user is a Trainer.
     if getattr(user, "role", "") == "TRAINER" and "onboarding" in data:
         from apps.trainers.models import TrainerProfile
+        from apps.trainers.services import defer_missing_trainer_fields, has_trainer_phone_column
 
-        tp = TrainerProfile.objects.filter(user=user).first()
+        tp = defer_missing_trainer_fields(TrainerProfile.objects.filter(user=user)).first()
         if tp is not None:
             ob = user.onboarding_data or {}
             tp_fields = []
-            if ob.get("phone"):
+            if ob.get("phone") and has_trainer_phone_column():
                 tp.phone = ob["phone"][:40]
                 tp_fields.append("phone")
             if ob.get("specialties"):

@@ -3447,6 +3447,7 @@ body:not(.dark) .chart-stepper .stepper-label.is-editable:focus-visible {
   box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.35) !important;
   font-variant-numeric: tabular-nums !important;
   -moz-appearance: textfield !important;
+  appearance: textfield !important;
 }
 
 .chart-stepper .stepper-input::-webkit-inner-spin-button,

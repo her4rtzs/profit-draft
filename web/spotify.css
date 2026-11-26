@@ -382,7 +382,7 @@ body .dashboard .sidebar li a.active:hover {
   background: var(--gold-grad) !important;
   color: var(--on-accent) !important;
   box-shadow: none !important;
-  inset auto;
+  inset: auto;
 }
 body .dashboard .sidebar li a.active .icon { color: var(--on-accent) !important; }
 body .dashboard .sidebar li a.active .text { color: var(--on-accent); font-weight: 700; }
@@ -3283,7 +3283,7 @@ html.auth-checking::before { display: none !important; content: none !important;
 .year-stepper[hidden]{display:none}
 .year-stepper button{width:28px;height:28px;border:0;border-radius:50%;background:transparent;color:var(--text);font-size:18px;cursor:pointer}
 .year-stepper button:hover{background:var(--card)}
-.year-stepper input{width:64px;border:0;background:transparent;color:var(--text);font-weight:700;text-align:center;font-size:13px;-moz-appearance:textfield}
+.year-stepper input{width:64px;border:0;background:transparent;color:var(--text);font-weight:700;text-align:center;font-size:13px;-moz-appearance:textfield;appearance:textfield}
 .year-stepper input::-webkit-outer-spin-button,.year-stepper input::-webkit-inner-spin-button{-webkit-appearance:none}
 @media (max-width:560px){
   .portal-tabs{flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}

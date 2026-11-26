@@ -1,620 +1,868 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script>(function(){try{var d=localStorage.getItem('theme')!=='light';var h=document.documentElement;h.style.background=d?'#0a0e16':'#f0f2f5';h.style.colorScheme=d?'dark':'light';}catch(e){}})();</script><script src="splash.js?v=2"></script>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ProFit | My profile</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<script>document.documentElement.dataset.accent='gold'</script>
-<link rel="stylesheet" href="global.css?v=13">
-<style>
-  .pf-hero-v2 {
-    display: grid !important;
-    grid-template-columns: auto minmax(0, 1fr) auto !important;
-    align-items: center !important;
-    gap: 24px !important;
-    padding: 26px 28px !important;
-  }
-  .pf-ava-trigger-wrap {
-    position: relative;
-    flex: none;
-  }
-  .pf-ava-trigger {
-    position: relative;
-    width: 116px;
-    height: 116px;
-    padding: 0;
-    border-radius: 50%;
-    border: 3px solid #e8b93a;
-    background: #161f30;
-    cursor: pointer;
-    overflow: hidden;
-    display: grid;
-    place-items: center;
-  }
-  body:not(.dark) .pf-ava-trigger {
-    border-color: #d9a425;
-    background: #f6ecd9;
-  }
-  .pf-ava-trigger .pp-avatar-photo {
-    width: 100% !important;
-    height: 100% !important;
-    border-radius: 50% !important;
-    border: 0 !important;
-    margin: 0 !important;
-    display: grid;
-    place-items: center;
-  }
-  .pf-ava-trigger .pp-avatar-photo img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  .pf-ava-cam {
-    position: absolute;
-    inset: 0;
-    background: rgba(10, 14, 23, .68);
-    color: #ffffff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    font-size: 11.5px;
-    font-weight: 700;
-    opacity: 0;
-    transition: opacity .16s ease;
-    pointer-events: none;
-  }
-  .pf-ava-cam i {
-    font-size: 18px;
-    color: #e8b93a;
-  }
-  .pf-ava-trigger:hover .pf-ava-cam,
-  .pf-ava-trigger:focus-visible .pf-ava-cam {
-    opacity: 1;
-  }
-  .pf-ava-menu {
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 0;
-    min-width: 176px;
-    padding: 6px;
-    border-radius: 14px;
-    background: var(--card, #111827);
-    border: 1px solid var(--border, #263246);
-    box-shadow: 0 14px 32px rgba(0, 0, 0, .35);
-    display: grid;
-    gap: 4px;
-    z-index: 30;
-  }
-  body:not(.dark) .pf-ava-menu {
-    background: #ffffff;
-    border-color: #eadfc8;
-    box-shadow: 0 12px 28px rgba(42, 36, 24, .14);
-  }
-  .pf-ava-menu[hidden] {
-    display: none !important;
-  }
-  .pf-ava-menu button {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    width: 100%;
-    padding: 9px 12px;
-    border: 0;
-    border-radius: 9px;
-    background: transparent;
-    color: var(--text, #f3f4f6);
-    font-size: 13px;
-    font-weight: 600;
-    text-align: left;
-    cursor: pointer;
-  }
-  body:not(.dark) .pf-ava-menu button {
-    color: #2a2418;
-  }
-  .pf-ava-menu button:hover:not(:disabled) {
-    background: rgba(232, 185, 58, .14);
-  }
-  .pf-ava-menu button.is-danger {
-    color: #f87171;
-  }
-  body:not(.dark) .pf-ava-menu button.is-danger {
-    color: #dc2626;
-  }
-  .pf-ava-menu button:disabled {
-    opacity: .4;
-    cursor: not-allowed;
-  }
-  .pf-hero-id {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-    min-width: 0;
-  }
-  .pf-hero-id .pp-eyebrow {
-    margin: 0;
-    color: #e8b93a;
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: .09em;
-    text-transform: uppercase;
-  }
-  body:not(.dark) .pf-hero-id .pp-eyebrow {
-    color: #8a6212;
-  }
-  .pf-hero-id h2 {
-    margin: 0;
-    font-size: 28px;
-    font-weight: 800;
-    line-height: 1.15;
-    color: var(--text, #f3f4f6);
-  }
-  body:not(.dark) .pf-hero-id h2 {
-    color: #2a2418;
-  }
-  .pf-role-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 5px 12px;
-    border-radius: 99px;
-    background: rgba(232, 185, 58, .14);
-    border: 1px solid rgba(232, 185, 58, .28);
-    color: #e8b93a;
-    font-size: 12.5px;
-    font-weight: 700;
-  }
-  body:not(.dark) .pf-role-pill {
-    background: #fef9eb;
-    border-color: #ebd594;
-    color: #8a6212;
-  }
-  .pf-hero-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 14px;
-    font-size: 12.5px;
-    color: var(--muted, #94a3b8);
-    margin: 2px 0 4px;
-  }
-  .pf-hero-meta span {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .pf-pw-outline {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    height: 38px;
-    padding: 0 16px;
-    border-radius: 10px;
-    border: 1px solid var(--border, #263246);
-    background: transparent;
-    color: var(--text, #f3f4f6);
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: border-color .15s ease, background .15s ease;
-  }
-  .pf-pw-outline:hover {
-    border-color: #e8b93a;
-    background: rgba(232, 185, 58, .1);
-  }
-  body:not(.dark) .pf-pw-outline {
-    border-color: #eadfc8;
-    color: #2a2418;
-    background: #ffffff;
-  }
-  .pf-comp-box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    min-width: 175px;
-  }
-  .pf-comp-ring {
-    position: relative;
-    width: 84px;
-    height: 84px;
-    display: grid;
-    place-items: center;
-  }
-  .pf-comp-ring svg {
-    width: 84px;
-    height: 84px;
-    transform: rotate(-90deg);
-  }
-  .pf-comp-track {
-    fill: none;
-    stroke: rgba(255, 255, 255, .1);
-    stroke-width: 6;
-  }
-  body:not(.dark) .pf-comp-track {
-    stroke: #efe6d4;
-  }
-  .pf-comp-arc {
-    fill: none;
-    stroke: #e8b93a;
-    stroke-width: 6;
-    stroke-linecap: round;
-    transition: stroke-dashoffset .35s ease;
-  }
-  .pf-comp-val {
-    position: absolute;
-    text-align: center;
-    line-height: 1.05;
-  }
-  .pf-comp-val strong {
-    display: block;
-    font-size: 17px;
-    font-weight: 800;
-    color: var(--text, #f3f4f6);
-  }
-  body:not(.dark) .pf-comp-val strong {
-    color: #2a2418;
-  }
-  .pf-comp-val small {
-    font-size: 10px;
-    color: var(--muted, #94a3b8);
-  }
-  .pf-comp-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 6px;
-    font-size: 12.5px;
-    color: var(--muted, #94a3b8);
-  }
-  .pf-comp-list li {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-  }
-  .pf-comp-list li.done {
-    color: #4ade80;
-    font-weight: 600;
-  }
-  body:not(.dark) .pf-comp-list li.done {
-    color: #15803d;
-  }
-  @media (max-width: 780px) {
+
+<head>
+  <script>(function () { try { var d = localStorage.getItem('theme') !== 'light'; var h = document.documentElement; h.style.background = d ? '#0a0e16' : '#f0f2f5'; h.style.colorScheme = d ? 'dark' : 'light'; } catch (e) { } })();</script>
+  <script src="splash.js?v=2"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <title>ProFit | My profile</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <script>document.documentElement.dataset.accent = 'gold'</script>
+  <link rel="stylesheet" href="global.css?v=18">
+  <style>
     .pf-hero-v2 {
-      grid-template-columns: 1fr !important;
-      justify-items: start !important;
-      gap: 18px !important;
+      display: grid !important;
+      grid-template-columns: auto minmax(0, 1fr) auto !important;
+      align-items: center !important;
+      gap: 24px !important;
+      padding: 26px 28px !important;
     }
-    .pf-comp-box {
-      flex-direction: row;
-      align-items: center;
+
+    .pf-ava-trigger-wrap {
+      position: relative;
+      flex: none;
+    }
+
+    .pf-ava-trigger {
+      position: relative;
+      width: 116px;
+      height: 116px;
+      padding: 0;
+      border-radius: 50%;
+      border: 3px solid #e8b93a;
+      background: #161f30;
+      cursor: pointer;
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+    }
+
+    body:not(.dark) .pf-ava-trigger {
+      border-color: #d9a425;
+      background: #f6ecd9;
+    }
+
+    .pf-ava-trigger .pp-avatar-photo {
+      width: 100% !important;
+      height: 100% !important;
+      border-radius: 50% !important;
+      border: 0 !important;
+      margin: 0 !important;
+      display: grid;
+      place-items: center;
+    }
+
+    .pf-ava-trigger .pp-avatar-photo img {
       width: 100%;
-      padding-top: 12px;
-      border-top: 1px solid var(--border, rgba(255, 255, 255, .08));
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
-    body:not(.dark) .pf-comp-box {
-      border-top-color: #f1e8d6;
+
+    .pf-ava-cam {
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 14, 23, .68);
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      font-size: 11.5px;
+      font-weight: 700;
+      opacity: 0;
+      transition: opacity .16s ease;
+      pointer-events: none;
     }
-  }
-  /* Subtle entrance animations, avatar tilt, 2-col Live Preview & Unsaved Bar */
-  @keyframes pfRise {
-    from { opacity: 0; transform: translateY(14px); }
-    to { opacity: 1; transform: none; }
-  }
-  @keyframes pfShimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-  }
-  .pf-rv {
-    animation: pfRise .48s cubic-bezier(.2, .8, .2, 1) both;
-    animation-delay: calc(var(--i, 0) * 70ms);
-  }
-  .pf-skel {
-    background: linear-gradient(90deg, rgba(255,255,255,.05) 25%, rgba(255,255,255,.11) 50%, rgba(255,255,255,.05) 75%);
-    background-size: 200% 100%;
-    animation: pfShimmer 1.3s ease-in-out infinite;
-    border-radius: 8px;
-    color: transparent !important;
-  }
-  body:not(.dark) .pf-skel {
-    background: linear-gradient(90deg, #f3ebdb 25%, #faf5e9 50%, #f3ebdb 75%);
-    background-size: 200% 100%;
-  }
-  .pf-ava-trigger {
-    transition: transform .35s cubic-bezier(.3, 1.4, .5, 1);
-  }
-  .pf-ava-trigger:hover {
-    transform: rotate(-3deg) scale(1.03);
-  }
-  .pf-comp-arc {
-    transition: stroke-dashoffset 1s cubic-bezier(.2, .8, .2, 1);
-  }
-  .pf-ava-badge {
-    position: absolute;
-    right: 2px;
-    bottom: 2px;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: #e8b93a;
-    color: #161209;
-    border: 2.5px solid var(--card, #111827);
-    display: grid;
-    place-items: center;
-    font-size: 12px;
-    pointer-events: none;
-    z-index: 2;
-  }
-  body:not(.dark) .pf-ava-badge { border-color: #ffffff; }
-  .pf-grid-2 {
-    display: grid;
-    grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
-    gap: 20px;
-    align-items: stretch;
-  }
-  .pf-grid-2 > .pp-section-card {
-    display: flex;
-    flex-direction: column;
-    margin: 0 !important;
-  }
-  .pf-ava-picker { margin-top: auto; padding-top: 16px; }
-  .pf-ava-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-  .pf-ava-head strong { font-size: 13.5px; font-weight: 800; color: var(--text, #f3f4f6); }
-  body:not(.dark) .pf-ava-head strong { color: #2a2418; }
-  .pf-ava-head span { font-size: 12px; color: var(--muted, #94a3b8); }
-  .pf-ava-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-  .pf-ava-opt {
-    height: 62px;
-    border-radius: 14px;
-    border: 1.5px solid var(--border, #263246);
-    background: var(--bg, #0a0e17);
-    display: grid;
-    place-items: center;
-    cursor: pointer;
-    transition: border-color .16s ease, transform .16s ease;
-  }
-  body:not(.dark) .pf-ava-opt { background: #fdfaf3; border-color: #eadfc8; }
-  .pf-ava-opt:hover { border-color: #e8b93a; transform: translateY(-2px); }
-  .pf-ava-opt.sel { border-color: #e8b93a; background: rgba(232, 185, 58, .12); }
-  .pf-ava-opt img { width: 42px; height: 42px; border-radius: 50%; display: block; object-fit: cover; }
-  input[readonly] { opacity: .68; cursor: not-allowed; }
-  @media (max-width: 900px) {
+
+    .pf-ava-cam i {
+      font-size: 18px;
+      color: #e8b93a;
+    }
+
+    .pf-ava-trigger:hover .pf-ava-cam,
+    .pf-ava-trigger:focus-visible .pf-ava-cam {
+      opacity: 1;
+    }
+
+    .pf-ava-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      min-width: 176px;
+      padding: 6px;
+      border-radius: 14px;
+      background: var(--card, #111827);
+      border: 1px solid var(--border, #263246);
+      box-shadow: 0 14px 32px rgba(0, 0, 0, .35);
+      display: grid;
+      gap: 4px;
+      z-index: 30;
+    }
+
+    body:not(.dark) .pf-ava-menu {
+      background: #ffffff;
+      border-color: #eadfc8;
+      box-shadow: 0 12px 28px rgba(42, 36, 24, .14);
+    }
+
+    .pf-ava-menu[hidden] {
+      display: none !important;
+    }
+
+    .pf-ava-menu button {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      width: 100%;
+      padding: 9px 12px;
+      border: 0;
+      border-radius: 9px;
+      background: transparent;
+      color: var(--text, #f3f4f6);
+      font-size: 13px;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    body:not(.dark) .pf-ava-menu button {
+      color: #2a2418;
+    }
+
+    .pf-ava-menu button:hover:not(:disabled) {
+      background: rgba(232, 185, 58, .14);
+    }
+
+    .pf-ava-menu button.is-danger {
+      color: #f87171;
+    }
+
+    body:not(.dark) .pf-ava-menu button.is-danger {
+      color: #dc2626;
+    }
+
+    .pf-ava-menu button:disabled {
+      opacity: .4;
+      cursor: not-allowed;
+    }
+
+    .pf-hero-id {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .pf-hero-id .pp-eyebrow {
+      margin: 0;
+      color: #e8b93a;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+    }
+
+    body:not(.dark) .pf-hero-id .pp-eyebrow {
+      color: #8a6212;
+    }
+
+    .pf-hero-id h2 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.15;
+      color: var(--text, #f3f4f6);
+    }
+
+    body:not(.dark) .pf-hero-id h2 {
+      color: #2a2418;
+    }
+
+    .pf-role-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 99px;
+      background: rgba(232, 185, 58, .14);
+      border: 1px solid rgba(232, 185, 58, .28);
+      color: #e8b93a;
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+
+    body:not(.dark) .pf-role-pill {
+      background: #fef9eb;
+      border-color: #ebd594;
+      color: #8a6212;
+    }
+
+    .pf-hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      font-size: 12.5px;
+      color: var(--muted, #94a3b8);
+      margin: 2px 0 4px;
+    }
+
+    .pf-hero-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pf-pw-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 38px;
+      padding: 0 16px;
+      border-radius: 10px;
+      border: 1px solid var(--border, #263246);
+      background: transparent;
+      color: var(--text, #f3f4f6);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color .15s ease;
+    }
+
+    .pf-pw-outline:hover {
+      background: rgba(255, 255, 255, .06);
+    }
+
+    .pf-pw-outline:active {
+      background: rgba(255, 255, 255, .11);
+    }
+
+    body:not(.dark) .pf-pw-outline {
+      border-color: #eadfc8;
+      color: #2a2418;
+      background: #ffffff;
+    }
+
+    .pf-comp-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      min-width: 175px;
+    }
+
+    .pf-comp-ring {
+      position: relative;
+      width: 84px;
+      height: 84px;
+      display: grid;
+      place-items: center;
+    }
+
+    .pf-comp-ring svg {
+      width: 84px;
+      height: 84px;
+      transform: rotate(-90deg);
+    }
+
+    .pf-comp-track {
+      fill: none;
+      stroke: rgba(255, 255, 255, .1);
+      stroke-width: 6;
+    }
+
+    body:not(.dark) .pf-comp-track {
+      stroke: #efe6d4;
+    }
+
+    .pf-comp-arc {
+      fill: none;
+      stroke: #e8b93a;
+      stroke-width: 6;
+      stroke-linecap: round;
+      transition: stroke-dashoffset .35s ease;
+    }
+
+    .pf-comp-val {
+      position: absolute;
+      text-align: center;
+      line-height: 1.05;
+    }
+
+    .pf-comp-val strong {
+      display: block;
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--text, #f3f4f6);
+    }
+
+    body:not(.dark) .pf-comp-val strong {
+      color: #2a2418;
+    }
+
+    .pf-comp-val small {
+      font-size: 10px;
+      color: var(--muted, #94a3b8);
+    }
+
+    .pf-comp-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 6px;
+      font-size: 12.5px;
+      color: var(--muted, #94a3b8);
+    }
+
+    .pf-comp-list li {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .pf-comp-list li.done {
+      color: #4ade80;
+      font-weight: 600;
+    }
+
+    body:not(.dark) .pf-comp-list li.done {
+      color: #15803d;
+    }
+
+    @media (max-width: 780px) {
+      .pf-hero-v2 {
+        grid-template-columns: 1fr !important;
+        justify-items: start !important;
+        gap: 18px !important;
+      }
+
+      .pf-comp-box {
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        padding-top: 12px;
+        border-top: 1px solid var(--border, rgba(255, 255, 255, .08));
+      }
+
+      body:not(.dark) .pf-comp-box {
+        border-top-color: #f1e8d6;
+      }
+    }
+
+    /* Subtle entrance animations, avatar tilt, 2-col Live Preview & Unsaved Bar */
+    @keyframes pfRise {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    @keyframes pfShimmer {
+      0% {
+        background-position: 200% 0;
+      }
+
+      100% {
+        background-position: -200% 0;
+      }
+    }
+
+    .pf-rv {
+      animation: pfRise .48s cubic-bezier(.2, .8, .2, 1) both;
+      animation-delay: calc(var(--i, 0) * 70ms);
+    }
+
+    .pf-skel {
+      background: linear-gradient(90deg, rgba(255, 255, 255, .05) 25%, rgba(255, 255, 255, .11) 50%, rgba(255, 255, 255, .05) 75%);
+      background-size: 200% 100%;
+      animation: pfShimmer 1.3s ease-in-out infinite;
+      border-radius: 8px;
+      color: transparent !important;
+    }
+
+    body:not(.dark) .pf-skel {
+      background: linear-gradient(90deg, #f3ebdb 25%, #faf5e9 50%, #f3ebdb 75%);
+      background-size: 200% 100%;
+    }
+
+    .pf-ava-trigger {
+      transition: background-color .15s ease;
+    }
+
+    .pf-ava-trigger:hover {
+      transform: none;
+    }
+
+    .pf-comp-arc {
+      transition: stroke-dashoffset 1s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .pf-ava-badge {
+      position: absolute;
+      right: 2px;
+      bottom: 2px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #e8b93a;
+      color: #161209;
+      border: 2.5px solid var(--card, #111827);
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    body:not(.dark) .pf-ava-badge {
+      border-color: #ffffff;
+    }
+
     .pf-grid-2 {
-      grid-template-columns: 1fr;
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+      gap: 20px;
+      align-items: stretch;
     }
-  }
-  .pf-pv-stack {
-    display: grid;
-    gap: 16px;
-  }
-  .pf-pv-lab {
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: .07em;
-    text-transform: uppercase;
-    color: var(--muted, #94a3b8);
-    margin-bottom: 6px;
-  }
-  .pf-pv-mini {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 12px;
-    border-radius: 13px;
-    border: 1px solid var(--border, #263246);
-    background: var(--bg, #0a0e17);
-  }
-  body:not(.dark) .pf-pv-mini {
-    background: #fdfaf3;
-    border-color: #eadfc8;
-  }
-  .pf-pv-mini .pf-pv-ava {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    overflow: hidden;
-    flex: none;
-    display: grid;
-    place-items: center;
-    background: #1b2433;
-  }
-  .pf-pv-mini .pf-pv-ava img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  .pf-pv-mini strong {
-    display: block;
-    font-size: 13.5px;
-    font-weight: 700;
-    line-height: 1.2;
-  }
-  .pf-pv-mini small {
-    display: block;
-    font-size: 12px;
-    color: var(--muted, #94a3b8);
-  }
-  .pf-pv-paper {
-    background: #f6f1e3;
-    color: #2a2418;
-    border-radius: 6px 6px 2px 2px;
-    padding: 13px 14px 18px;
-    font-size: 13px;
-    line-height: 1.5;
-    clip-path: polygon(0 0,100% 0,100% calc(100% - 6px),95% 100%,90% calc(100% - 6px),85% 100%,80% calc(100% - 6px),75% 100%,70% calc(100% - 6px),65% 100%,60% calc(100% - 6px),55% 100%,50% calc(100% - 6px),45% 100%,40% calc(100% - 6px),35% 100%,30% calc(100% - 6px),25% 100%,20% calc(100% - 6px),15% 100%,10% calc(100% - 6px),5% 100%,0 calc(100% - 6px));
-  }
-  .pf-pv-paper b {
-    font-weight: 800;
-  }
-  .pf-pv-paper em {
-    font-style: normal;
-    font-weight: 800;
-    color: #8a6212;
-  }
-  .pf-dirty-bar {
-    position: fixed;
-    left: 50%;
-    bottom: 22px;
-    transform: translate(-50%, 150%);
-    background: var(--card, #111827);
-    border: 1.5px solid #e8b93a;
-    border-radius: 16px;
-    padding: 10px 14px 10px 18px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    z-index: 80;
-    box-shadow: 0 14px 36px rgba(0, 0, 0, .38);
-    transition: transform .4s cubic-bezier(.3, 1.3, .5, 1);
-    max-width: calc(100vw - 24px);
-  }
-  body:not(.dark) .pf-dirty-bar {
-    background: #ffffff;
-    border-color: #d9a425;
-    box-shadow: 0 12px 30px rgba(42, 36, 24, .16);
-  }
-  .pf-dirty-bar.on {
-    transform: translate(-50%, 0);
-  }
-  .pf-dirty-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #e8b93a;
-    flex: none;
-  }
-  .pf-dirty-bar span {
-    font-size: 13.5px;
-    font-weight: 700;
-    white-space: nowrap;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .pf-rv, .pf-skel, .pf-ava-trigger, .pf-comp-arc, .pf-dirty-bar {
-      animation: none !important;
-      transition: none !important;
+
+    .pf-grid-2>.pp-section-card {
+      display: flex;
+      flex-direction: column;
+      margin: 0 !important;
     }
-  }
-</style>
-<script src="config.js?v=4"></script><script src="api.js"></script><script src="auth.js?v=4"></script>
-<script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script><link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
+
+    .pf-ava-picker {
+      margin-top: auto;
+      padding-top: 16px;
+    }
+
+    .pf-ava-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .pf-ava-head strong {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--text, #f3f4f6);
+    }
+
+    body:not(.dark) .pf-ava-head strong {
+      color: #2a2418;
+    }
+
+    .pf-ava-head span {
+      font-size: 12px;
+      color: var(--muted, #94a3b8);
+    }
+
+    .pf-ava-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .pf-ava-opt {
+      height: 62px;
+      border-radius: 14px;
+      border: 1.5px solid var(--border, #263246);
+      background: var(--bg, #0a0e17);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: background-color .15s ease, border-color .15s ease;
+    }
+
+    body:not(.dark) .pf-ava-opt {
+      background: #fdfaf3;
+      border-color: #eadfc8;
+    }
+
+    .pf-ava-opt:hover:not(.sel) {
+      background: rgba(255, 255, 255, .06);
+      transform: none;
+    }
+
+    body:not(.dark) .pf-ava-opt:hover:not(.sel) {
+      background: #f5ecdc;
+    }
+
+    .pf-ava-opt.sel {
+      border-color: #e8b93a;
+      background: rgba(232, 185, 58, .12);
+    }
+
+    .pf-ava-opt img {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: block;
+      object-fit: cover;
+    }
+
+    input[readonly] {
+      opacity: .68;
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 900px) {
+      .pf-grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .pf-pv-stack {
+      display: grid;
+      gap: 16px;
+    }
+
+    .pf-pv-lab {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--muted, #94a3b8);
+      margin-bottom: 6px;
+    }
+
+    .pf-pv-mini {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 13px;
+      border: 1px solid var(--border, #263246);
+      background: var(--bg, #0a0e17);
+    }
+
+    body:not(.dark) .pf-pv-mini {
+      background: #fdfaf3;
+      border-color: #eadfc8;
+    }
+
+    .pf-pv-mini .pf-pv-ava {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex: none;
+      display: grid;
+      place-items: center;
+      background: #1b2433;
+    }
+
+    .pf-pv-mini .pf-pv-ava img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .pf-pv-mini strong {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .pf-pv-mini small {
+      display: block;
+      font-size: 12px;
+      color: var(--muted, #94a3b8);
+    }
+
+    .pf-pv-paper {
+      background: #f6f1e3;
+      color: #2a2418;
+      border-radius: 6px 6px 2px 2px;
+      padding: 13px 14px 18px;
+      font-size: 13px;
+      line-height: 1.5;
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 6px), 95% 100%, 90% calc(100% - 6px), 85% 100%, 80% calc(100% - 6px), 75% 100%, 70% calc(100% - 6px), 65% 100%, 60% calc(100% - 6px), 55% 100%, 50% calc(100% - 6px), 45% 100%, 40% calc(100% - 6px), 35% 100%, 30% calc(100% - 6px), 25% 100%, 20% calc(100% - 6px), 15% 100%, 10% calc(100% - 6px), 5% 100%, 0 calc(100% - 6px));
+    }
+
+    .pf-pv-paper b {
+      font-weight: 800;
+    }
+
+    .pf-pv-paper em {
+      font-style: normal;
+      font-weight: 800;
+      color: #8a6212;
+    }
+
+    .pf-dirty-bar {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      transform: translate(-50%, 220%);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      background: var(--card, #111827);
+      border: 1.5px solid #e8b93a;
+      border-radius: 16px;
+      padding: 10px 14px 10px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 950;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, .38);
+      transition: transform .35s cubic-bezier(.3, 1.2, .5, 1), opacity .22s ease, visibility .22s ease;
+      max-width: calc(100vw - 24px);
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 980px) {
+      .pf-dirty-bar {
+        bottom: calc(82px + env(safe-area-inset-bottom, 0px));
+        padding: 10px 12px;
+        gap: 8px;
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 520px) {
+      #profileForm .pp-actions {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 10px !important;
+        width: 100% !important;
+      }
+
+      #profileForm .pp-actions .pp-btn {
+        width: 100% !important;
+        min-height: 44px !important;
+        justify-content: center !important;
+        border: 1px solid var(--border, #263246);
+      }
+    }
+
+    body:not(.dark) .pf-dirty-bar {
+      background: #ffffff;
+      border-color: #d9a425;
+      box-shadow: 0 12px 30px rgba(42, 36, 24, .16);
+    }
+
+    .pf-dirty-bar.on {
+      transform: translate(-50%, 0);
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .pf-dirty-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #e8b93a;
+      flex: none;
+    }
+
+    .pf-dirty-bar span {
+      font-size: 13.5px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      .pf-rv,
+      .pf-skel,
+      .pf-ava-trigger,
+      .pf-comp-arc,
+      .pf-dirty-bar {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+  <script src="config.js?v=9"></script>
+  <script src="api.js"></script>
+  <script src="auth.js?v=4"></script>
+  <script
+    type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#0a0e17">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17">
+  <meta name="color-scheme" content="light dark">
+  <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="ProFit">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="stylesheet" href="pf-system.css?v=18">
+</head>
+
 <body class="pf-staff" data-page="profile" data-title="My profile" data-welcome="Your staff account">
-<div class="dashboard"><nav class="sidebar" id="sidebar"></nav><main class="main-content"><header class="topbar" id="topbar"><h1>My profile</h1></header>
-<section class="pp-settings" aria-label="My profile">
-<div class="portal-result" id="profileNotice" role="status" hidden></div>
+  <div class="dashboard">
+    <nav class="sidebar" id="sidebar"></nav>
+    <main class="main-content">
+      <header class="topbar" id="topbar">
+        <h1>My profile</h1>
+      </header>
+      <section class="pp-settings" aria-label="My profile">
+        <div class="portal-result" id="profileNotice" role="status" hidden></div>
 
-  <article id="identity" class="pp-section-card pp-profile-hero pf-hero-v2 pf-rv" style="--i:0">
-    <div class="pf-ava-trigger-wrap">
-      <button class="pf-ava-trigger" type="button" id="profileAvaTrigger" aria-haspopup="menu" aria-expanded="false" title="Change profile photo">
-        <span class="pp-avatar-photo" id="profilePhotoBox"><i class="fa-solid fa-user"></i></span>
-        <span class="pf-ava-cam" aria-hidden="true"><i class="fa-solid fa-camera"></i><span>Change photo</span></span>
-      </button>
-      <span class="pf-ava-badge" aria-hidden="true"><i class="fa-solid fa-camera"></i></span>
-      <div class="pf-ava-menu" id="profileAvaMenu" role="menu" hidden>
-        <button type="button" role="menuitem" id="profilePhotoPick"><i class="fa-solid fa-camera" aria-hidden="true"></i> Upload photo</button>
-        <button type="button" role="menuitem" class="is-danger" id="profilePhotoClear"><i class="fa-regular fa-trash-can" aria-hidden="true"></i> Remove photo</button>
-      </div>
-      <input type="file" id="profilePhoto" accept="image/*" hidden>
-    </div>
-
-    <div class="pf-hero-id">
-      <p class="pp-eyebrow">Signed in as</p>
-      <h2 id="identityName">Administrator</h2>
-      <span class="pf-role-pill"><i class="fa-solid fa-check" aria-hidden="true"></i> <span id="identityRole">Gym administrator</span></span>
-      <div class="pf-hero-meta">
-        <span><i class="fa-regular fa-calendar" aria-hidden="true"></i> <span id="identityJoined">ProFit Staff</span></span>
-        <span><i class="fa-regular fa-clock" aria-hidden="true"></i> <span id="identityLastSign">Active session</span></span>
-      </div>
-      <button class="pf-pw-outline" type="button" id="profileChangePwBtn"><i class="fa-solid fa-lock" aria-hidden="true"></i> Change password</button>
-    </div>
-
-    <div class="pf-comp-box" aria-label="Profile completeness">
-      <div class="pf-comp-ring">
-        <svg viewBox="0 0 84 84" aria-hidden="true">
-          <circle class="pf-comp-track" cx="42" cy="42" r="35"></circle>
-          <circle class="pf-comp-arc" id="pfCompArc" cx="42" cy="42" r="35" stroke-dasharray="219.91" stroke-dashoffset="219.91"></circle>
-        </svg>
-        <div class="pf-comp-val"><strong id="pfCompPct">0%</strong><small>complete</small></div>
-      </div>
-      <ul class="pf-comp-list" id="pfCompList">
-        <li data-chk="name"><i class="fa-regular fa-clock" aria-hidden="true"></i> Add your name</li>
-        <li data-chk="photo"><i class="fa-regular fa-clock" aria-hidden="true"></i> Upload a photo</li>
-        <li data-chk="phone"><i class="fa-regular fa-clock" aria-hidden="true"></i> Add a mobile number</li>
-        <li data-chk="bio"><i class="fa-regular fa-clock" aria-hidden="true"></i> Write a short note</li>
-      </ul>
-    </div>
-  </article>
-
-  <div class="pf-grid-2">
-    <article class="pp-section-card pf-rv" style="--i:1">
-      <div class="pp-card-head"><div><h2><i class="fa-regular fa-id-card"></i> Your details</h2><p>Shown in the sidebar, the header avatar and on receipts you send.</p></div></div>
-      <form id="profileForm" class="pp-form-grid" novalidate style="flex:1 1 auto">
-        <div class="pp-field"><label for="profileName">Full name</label><input id="profileName" maxlength="60" placeholder="Administrator"></div>
-        <div class="pp-field"><label for="profileEmail">Email (for sign-in)</label><input id="profileEmail" type="email" maxlength="90" readonly placeholder="admin@profit.test"></div>
-        <div class="pp-field"><label for="profileRole">Role</label><input id="profileRole" maxlength="40" readonly placeholder="Gym administrator"></div>
-        <div class="pp-field"><label for="profilePhone">Mobile number</label><input id="profilePhone" maxlength="30" placeholder="09XX XXX XXXX"></div>
-        <div class="pp-field" style="grid-column:1/-1"><label for="profileBio" style="display:flex;justify-content:space-between"><span>Short note</span><small id="profileBioCount" style="font-weight:600;opacity:.75">0 / 140</small></label><textarea id="profileBio" rows="3" maxlength="140" placeholder="Anything your team should know about you."></textarea></div>
-        <div class="pp-field pp-actions" style="grid-column:1/-1;display:flex;justify-content:flex-end;gap:12px;margin-top:auto">
-          <button class="pp-btn" type="button" id="profileDiscardInline">Discard changes</button>
-          <button class="pp-btn pp-btn-primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save profile</button>
-        </div>
-      </form>
-    </article>
-
-    <article class="pp-section-card pf-rv" style="--i:2">
-      <div class="pp-card-head"><div><h2><i class="fa-regular fa-eye"></i> How you appear</h2><p>Updates live as you edit.</p></div></div>
-      <div class="pf-pv-stack" style="flex:1 1 auto">
-        <div>
-          <div class="pf-pv-lab">Sidebar</div>
-          <div class="pf-pv-mini">
-            <span class="pf-pv-ava" id="pvSideAva"></span>
-            <div><strong id="pvSideName">Administrator</strong><small id="pvSideRole">Gym administrator</small></div>
+        <article id="identity" class="pp-section-card pp-profile-hero pf-hero-v2 pf-rv" style="--i:0">
+          <div class="pf-ava-trigger-wrap">
+            <button class="pf-ava-trigger" type="button" id="profileAvaTrigger" aria-haspopup="menu"
+              aria-expanded="false" title="Change profile photo">
+              <span class="pp-avatar-photo" id="profilePhotoBox"><i class="fa-solid fa-user"></i></span>
+              <span class="pf-ava-cam" aria-hidden="true"><i class="fa-solid fa-camera"></i><span>Change
+                  photo</span></span>
+            </button>
+            <span class="pf-ava-badge" aria-hidden="true"><i class="fa-solid fa-camera"></i></span>
+            <div class="pf-ava-menu" id="profileAvaMenu" role="menu" hidden>
+              <button type="button" role="menuitem" id="profilePhotoPick"><i class="fa-solid fa-camera"
+                  aria-hidden="true"></i> Upload photo</button>
+              <button type="button" role="menuitem" class="is-danger" id="profilePhotoClear"><i
+                  class="fa-regular fa-trash-can" aria-hidden="true"></i> Remove photo</button>
+            </div>
+            <input type="file" id="profilePhoto" accept="image/*" hidden>
           </div>
-        </div>
-        <div>
-          <div class="pf-pv-lab">Receipts you send</div>
-          <div class="pf-pv-paper">
-            <b>Official Payment Receipt</b><br>
-            Monthly plan &middot; <span id="pvReceiptPrice">&#8369;800</span><br>
-            Received by <em id="pvReceiptName">Administrator</em>
+
+          <div class="pf-hero-id">
+            <p class="pp-eyebrow">Signed in as</p>
+            <h2 id="identityName">Administrator</h2>
+            <span class="pf-role-pill"><i class="fa-solid fa-check" aria-hidden="true"></i> <span id="identityRole">Gym
+                administrator</span></span>
+            <div class="pf-hero-meta">
+              <span><i class="fa-regular fa-calendar" aria-hidden="true"></i> <span id="identityJoined">ProFit
+                  Staff</span></span>
+              <span><i class="fa-regular fa-clock" aria-hidden="true"></i> <span id="identityLastSign">Active
+                  session</span></span>
+            </div>
+            <button class="pf-pw-outline" type="button" id="profileChangePwBtn"><i class="fa-solid fa-lock"
+                aria-hidden="true"></i> Change password</button>
           </div>
-        </div>
-        <div class="pf-ava-picker">
-          <div class="pf-ava-head"><strong>Quick avatar</strong><span>Change anytime</span></div>
-          <div class="pf-ava-grid" id="staffQuickAvaGrid" role="radiogroup" aria-label="Choose an avatar"></div>
-        </div>
-      </div>
-    </article>
-  </div>
 
-  <div class="pf-dirty-bar" id="pfDirtyBar" role="status" aria-live="polite">
-    <span class="pf-dirty-dot" aria-hidden="true"></span>
-    <span>Unsaved changes</span>
-    <button type="button" class="pp-btn" id="pfDiscardBtn" style="height:34px;padding:0 12px;font-size:12.5px">Discard</button>
-    <button type="button" class="pp-btn pp-btn-primary" id="pfQuickSaveBtn" style="height:34px;padding:0 14px;font-size:12.5px">Save</button>
-  </div>
+          <div class="pf-comp-box" aria-label="Profile completeness">
+            <div class="pf-comp-ring">
+              <svg viewBox="0 0 84 84" aria-hidden="true">
+                <circle class="pf-comp-track" cx="42" cy="42" r="35"></circle>
+                <circle class="pf-comp-arc" id="pfCompArc" cx="42" cy="42" r="35" stroke-dasharray="219.91"
+                  stroke-dashoffset="219.91"></circle>
+              </svg>
+              <div class="pf-comp-val"><strong id="pfCompPct">0%</strong><small>complete</small></div>
+            </div>
+            <ul class="pf-comp-list" id="pfCompList">
+              <li data-chk="name"><i class="fa-regular fa-clock" aria-hidden="true"></i> Add your name</li>
+              <li data-chk="photo"><i class="fa-regular fa-clock" aria-hidden="true"></i> Upload a photo</li>
+              <li data-chk="phone"><i class="fa-regular fa-clock" aria-hidden="true"></i> Add a mobile number</li>
+              <li data-chk="bio"><i class="fa-regular fa-clock" aria-hidden="true"></i> Write a short note</li>
+            </ul>
+          </div>
+        </article>
 
-</section>
-</main></div>
-<script>
-document.addEventListener("click", function (e) {
-  if (!e.target.closest("#profileChangePwBtn")) return;
-  if (typeof window.openChangePasswordModal === "function") {
-    window.openChangePasswordModal();
-  } else {
-    document.querySelector("[data-change-password]")?.click();
-  }
-});
-</script>
-<script src="layout.js?v=25"></script><script src="sidebar.js?v=21"></script><script src="data.js"></script><script src="profile.js?v=16"></script>
-<script src="portal-fx.js?v=2"></script>
-<script src="change-password.js?v=2" defer></script>
-<script src="notifications-live.js?v=2" defer></script>
-<script src="site-footer.js?v=2" defer></script>
+        <div class="pf-grid-2">
+          <article class="pp-section-card pf-rv" style="--i:1">
+            <div class="pp-card-head">
+              <div>
+                <h2><i class="fa-regular fa-id-card"></i> Your details</h2>
+                <p>Shown in the sidebar, the header avatar and on receipts you send.</p>
+              </div>
+            </div>
+            <form id="profileForm" class="pp-form-grid" novalidate style="flex:1 1 auto">
+              <div class="pp-field"><label for="profileName">Full name</label><input id="profileName" maxlength="60"
+                  placeholder="Administrator"></div>
+              <div class="pp-field"><label for="profileEmail">Email (for sign-in)</label><input id="profileEmail"
+                  type="email" maxlength="90" readonly placeholder="admin@profit.test"></div>
+              <div class="pp-field"><label for="profileRole">Role</label><input id="profileRole" maxlength="40" readonly
+                  placeholder="Gym administrator"></div>
+              <div class="pp-field"><label for="profilePhone">Mobile number</label><input id="profilePhone"
+                  maxlength="30" placeholder="09XX XXX XXXX"></div>
+              <div class="pp-field" style="grid-column:1/-1"><label for="profileBio"
+                  style="display:flex;justify-content:space-between"><span>Short note</span><small id="profileBioCount"
+                    style="font-weight:600;opacity:.75">0 / 140</small></label><textarea id="profileBio" rows="3"
+                  maxlength="140" placeholder="Anything your team should know about you."></textarea></div>
+              <div class="pp-field pp-actions"
+                style="grid-column:1/-1;display:flex;justify-content:flex-end;gap:12px;margin-top:auto">
+                <button class="pp-btn" type="button" id="profileDiscardInline">Discard changes</button>
+                <button class="pp-btn pp-btn-primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save
+                  profile</button>
+              </div>
+            </form>
+          </article>
+
+          <article class="pp-section-card pf-rv" style="--i:2">
+            <div class="pp-card-head">
+              <div>
+                <h2><i class="fa-regular fa-eye"></i> How you appear</h2>
+                <p>Updates live as you edit.</p>
+              </div>
+            </div>
+            <div class="pf-pv-stack" style="flex:1 1 auto">
+              <div>
+                <div class="pf-pv-lab">Sidebar</div>
+                <div class="pf-pv-mini">
+                  <span class="pf-pv-ava" id="pvSideAva"></span>
+                  <div><strong id="pvSideName">Administrator</strong><small id="pvSideRole">Gym administrator</small>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="pf-pv-lab">Receipts you send</div>
+                <div class="pf-pv-paper">
+                  <b>Official Payment Receipt</b><br>
+                  Monthly plan &middot; <span id="pvReceiptPrice">&#8369;800</span><br>
+                  Received by <em id="pvReceiptName">Administrator</em>
+                </div>
+              </div>
+              <div class="pf-ava-picker">
+                <div class="pf-ava-head"><strong>Quick avatar</strong><span>Change anytime</span></div>
+                <div class="pf-ava-grid" id="staffQuickAvaGrid" role="radiogroup" aria-label="Choose an avatar"></div>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="pf-dirty-bar" id="pfDirtyBar" role="status" aria-live="polite">
+          <span class="pf-dirty-dot" aria-hidden="true"></span>
+          <span>Unsaved changes</span>
+          <button type="button" class="pp-btn" id="pfDiscardBtn"
+            style="height:34px;padding:0 12px;font-size:12.5px">Discard</button>
+          <button type="button" class="pp-btn pp-btn-primary" id="pfQuickSaveBtn"
+            style="height:34px;padding:0 14px;font-size:12.5px">Save</button>
+        </div>
+
+      </section>
+    </main>
+  </div>
+  <script>
+    document.addEventListener("click", function (e) {
+      if (!e.target.closest("#profileChangePwBtn")) return;
+      if (typeof window.openChangePasswordModal === "function") {
+        window.openChangePasswordModal();
+      } else {
+        document.querySelector("[data-change-password]")?.click();
+      }
+    });
+  </script>
+  <script src="layout.js?v=25"></script>
+  <script src="sidebar.js?v=21"></script>
+  <script src="data.js"></script>
+  <script src="profile.js?v=16"></script>
+  <script src="portal-fx.js?v=2"></script>
+  <script src="change-password.js?v=2" defer></script>
+  <script src="notifications-live.js?v=2" defer></script>
+  <script src="site-footer.js?v=2" defer></script>
 </body>
+
 </html>

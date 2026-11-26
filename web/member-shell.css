@@ -2005,6 +2005,65 @@ body.member-home:not(.dark) {
   margin-top: 18px;
 }
 
+#memberPayCard[hidden] {
+  display: none !important;
+}
+
+#memberPayCard .member-gcash-pill {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 8px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: rgba(0, 125, 254, .16);
+  border: 1px solid rgba(0, 125, 254, .34);
+  color: #38bdf8;
+  font-size: 11px;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+body.member-home:not(.dark) #memberPayCard .member-gcash-pill {
+  background: rgba(0, 125, 254, .10);
+  border-color: rgba(0, 125, 254, .28);
+  color: #0066d6;
+}
+
+#memberPayCard .member-pay-close {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--fn-border);
+  background: transparent;
+  color: var(--fn-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+
+#memberPayCard .member-pay-close:hover {
+  color: var(--fn-text);
+  border-color: rgba(245, 158, 11, .45);
+  background: rgba(245, 158, 11, .08);
+}
+
+#memberPayCard .member-pay-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+#memberPayCard .member-pay-actions .fn-btn-gold,
+#memberPayCard .member-pay-actions .fn-btn-dark {
+  min-height: 44px;
+}
+
 #memberPayCard .fn-btn-gold:disabled {
   opacity: .65;
   cursor: not-allowed;
@@ -4727,4 +4786,422 @@ body.member-home .pf-mob-sheet:not(.on) {
   display: none !important;
   visibility: hidden !important;
   pointer-events: none !important;
+}
+
+
+/* ============================================================================
+   Mobile-Native Baseline (Member Portal: dvh, touch, 16px inputs, safe areas)
+   ============================================================================ */
+html {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior: none;
+}
+body.member-home { overscroll-behavior: none; }
+body.member-home .member-app-shell { min-height: 100dvh; }
+@media (pointer: coarse) {
+  body.member-home input,
+  body.member-home textarea,
+  body.member-home select {
+    font-size: 16px !important;
+  }
+}
+body.member-home button,
+body.member-home a,
+body.member-home [role="button"],
+body.member-home .pf-mob-tab,
+body.member-home .pf-mob-chip {
+  touch-action: manipulation;
+}
+body.member-home button,
+body.member-home [role="button"],
+body.member-home .pf-mob-tab,
+body.member-home .pf-mob-chip,
+body.member-home .pf-mob-sheet-bar {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+body.member-home .pf-mob-tab:active,
+body.member-home .pf-mob-chip:active,
+body.member-home .pp-btn:active:not(:disabled),
+body.member-home .mb-mini-btn:active:not(:disabled) {
+  transform: scale(0.97);
+  transition: transform 100ms ease-out;
+}
+body.member-home .pf-mob-sheet { overscroll-behavior: contain; }
+body.member-home .pf-mob-sheet-bar { touch-action: pan-x; }
+@media (max-width: 768px) {
+  body.member-home .member-top {
+    padding-top: calc(12px + env(safe-area-inset-top, 0px)) !important;
+  }
+}
+@media (hover: none) {
+  body.member-home .mb-mini-btn:hover,
+  body.member-home .mb-ava-opt:hover,
+  body.member-home .pf-mob-chip:hover,
+  body.member-home .mb-strip-btn:hover,
+  body.member-home .mb-ticket-card:hover {
+    transform: none !important;
+  }
+}
+
+/* ============================================================================
+   Cross-Device Responsive Polish Across All Member Tabs (Phone & Tablet)
+   ============================================================================ */
+@media (max-width: 1024px) {
+  body.member-home .member-content {
+    overflow-x: clip;
+  }
+
+  body.member-home .mb-st-sidenav {
+    touch-action: pan-x;
+    scrollbar-width: none;
+  }
+
+  body.member-home .mb-st-sidenav::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  body.member-home .member-content {
+    padding: 14px 12px calc(96px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  /* Guarantee tables (Payment History, Attendance, Schedule) never clip or push viewport wide */
+  body.member-home .pf-table-wrap,
+  body.member-home .pp-table-wrap,
+  body.member-home #paymentsHistoryRoot .fn-table-scroll,
+  body.member-home #paymentsHistoryRoot {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+  }
+
+  /* Attendance KPIs, split panels & calendar fit cleanly on narrow phones */
+  body.member-home .mb-att-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+
+  body.member-home .mb-att-split,
+  body.member-home .pp-two,
+  body.member-home .pp-profile {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  body.member-home .pp-field-row,
+  body.member-home .pp-inline-form {
+    grid-template-columns: 1fr !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  body.member-home .pp-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+}
+
+@media (max-width: 520px) {
+  body.member-home .mb-hero-ticket-layout {
+    padding: 18px 16px !important;
+    gap: 16px !important;
+  }
+
+  body.member-home .mb-ticket-card {
+    padding: 16px !important;
+  }
+
+  body.member-home .mb-ticket-top,
+  body.member-home .mb-ticket-foot {
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+  }
+
+  body.member-home .mb-ticket-renew {
+    width: 100%;
+  }
+
+  /* Settings Font Size row wraps cleanly on narrow phones */
+  body.member-home .mb-st-font-row {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+    padding: 14px 16px !important;
+  }
+
+  body.member-home .mb-st-pills {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    width: 100% !important;
+  }
+
+  body.member-home .mb-st-pills button {
+    width: 100% !important;
+    padding: 8px 6px !important;
+    text-align: center !important;
+  }
+
+  body.member-home .mb-st-row {
+    padding: 14px 16px !important;
+  }
+
+  body.member-home .mb-st-font-prev {
+    margin: 0 16px 14px !important;
+  }
+
+  body.member-home .mb-att-kpis,
+  body.member-home .pp-stats {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.member-home .mb-bento-card {
+    padding: 16px !important;
+  }
+
+  body.member-home .mb-goal-foot-row {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+}
+
+@media (max-width: 440px) {
+  body.member-home .member-top {
+    gap: 8px !important;
+    padding: calc(10px + env(safe-area-inset-top, 0px)) 12px 10px !important;
+  }
+
+  body.member-home .member-top-title {
+    font-size: clamp(14px, 4.1vw, 17px) !important;
+  }
+
+  body.member-home .member-top-actions {
+    gap: 6px !important;
+  }
+
+  body.member-home .member-top-actions button,
+  body.member-home .member-top-actions a {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  body.member-home .pf-mob-tab {
+    font-size: 10px !important;
+  }
+}
+
+@media (min-width: 1560px) {
+  body.member-home .member-content {
+    max-width: 1520px;
+    margin-inline: auto;
+  }
+}
+
+/* ============================================================================
+   Root-Cause Bottom Scroll Clearance, Unified Header, Circular Avatars &
+   Compact Mobile Container Sizing (Member Portal)
+   ============================================================================ */
+
+/* 1. Root-cause fix: shell grows naturally and clears fixed mobile nav bar completely */
+body.member-home,
+body.member-home .member-app-shell,
+body.member-home .member-main {
+  height: auto !important;
+  min-height: 100dvh !important;
+  overflow-y: visible !important;
+}
+
+body.member-home .member-content {
+  height: auto !important;
+  padding-bottom: 56px !important;
+  overflow-x: clip !important;
+  overflow-y: visible !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 768px) {
+  body.member-home .member-content {
+    padding: 12px 12px calc(112px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+/* 2. Unified Portal Header Parity (matches Owner, Cashier & Trainer 1:1 — motionless 76px PC / 60px mobile) */
+body.member-home .member-top {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 60 !important;
+  height: 76px !important;
+  min-height: 76px !important;
+  padding: 0 clamp(24px, 3vw, 40px) !important;
+  gap: 16px !important;
+  background: #0B0F18 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+body.member-home:not(.dark) .member-top {
+  background: #FAF6EE !important;
+  border-bottom: 1px solid #E8DFCE !important;
+}
+
+body.member-home .member-top-eyebrow {
+  display: none !important;
+}
+
+body.member-home .member-top-left {
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+}
+
+body.member-home .member-top-title {
+  font-size: 21px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+body.member-home .member-top-actions {
+  gap: 12px !important;
+  flex: none !important;
+}
+
+body.member-home .member-top .theme-toggle,
+body.member-home .member-top .notification,
+body.member-home .member-top-avatar {
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+  flex: 0 0 42px !important;
+  border-radius: 50% !important;
+  aspect-ratio: 1 / 1 !important;
+  overflow: hidden !important;
+}
+
+@media (max-width: 768px) {
+  body.member-home .member-top {
+    flex-wrap: nowrap !important;
+    height: calc(62px + env(safe-area-inset-top, 0px)) !important;
+    min-height: calc(62px + env(safe-area-inset-top, 0px)) !important;
+    max-height: calc(62px + env(safe-area-inset-top, 0px)) !important;
+    padding: env(safe-area-inset-top, 0px) 14px 0 !important;
+    gap: 10px !important;
+  }
+
+  body.member-home .member-top-title {
+    font-size: clamp(16px, 4.4vw, 19px) !important;
+  }
+
+  body.member-home .member-top-actions {
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+  }
+
+  body.member-home .member-top .theme-toggle,
+  body.member-home .member-top .notification,
+  body.member-home .member-top-avatar {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    flex: 0 0 38px !important;
+  }
+}
+
+@media (max-width: 380px) {
+  body.member-home .member-top {
+    padding: calc(10px + env(safe-area-inset-top, 0px)) 10px 10px !important;
+  }
+
+  body.member-home .member-top-actions {
+    gap: 6px !important;
+  }
+
+  body.member-home .member-top .theme-toggle,
+  body.member-home .member-top .notification,
+  body.member-home .member-top-avatar {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    flex: 0 0 36px !important;
+  }
+}
+
+/* 3. Standardized Perfectly Circular Avatars */
+body.member-home .member-avatar,
+body.member-home .member-top-avatar,
+body.member-home .member-avatar-face,
+body.member-home .mb-prof-ava,
+body.member-home .mb-prev-mini-ava,
+body.member-home .pp-avatar,
+body.member-home .pp-avatar-photo {
+  border-radius: 50% !important;
+  aspect-ratio: 1 / 1 !important;
+  overflow: hidden !important;
+  flex-shrink: 0 !important;
+}
+
+body.member-home .member-avatar img,
+body.member-home .member-top-avatar img,
+body.member-home .member-avatar-face img,
+body.member-home .mb-prof-ava img,
+body.member-home .mb-prev-mini-ava img,
+body.member-home .mb-ava-opt img,
+body.member-home .pp-avatar img,
+body.member-home .pp-avatar-photo img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: 50% !important;
+  display: block !important;
+}
+
+body.member-home .mb-ava-opt img {
+  width: 42px !important;
+  height: 42px !important;
+  aspect-ratio: 1 / 1 !important;
+}
+
+/* 4. Compact Mobile Container & Box Sizing (desktop untouched) */
+@media (max-width: 640px) {
+  body.member-home .mb-bento-card,
+  body.member-home .mb-strip-card,
+  body.member-home .mb-st-card,
+  body.member-home .pp-card {
+    padding: 14px !important;
+    border-radius: 14px !important;
+  }
+
+  body.member-home .mb-hero-ticket-layout,
+  body.member-home .mb-bento-hero-photo {
+    min-height: 0 !important;
+    padding: 16px 14px !important;
+    border-radius: 16px !important;
+    gap: 14px !important;
+  }
+
+  body.member-home .mb-hero-left-col h1 {
+    font-size: clamp(24px, 7vw, 32px) !important;
+  }
+
+  body.member-home .mb-strip-val strong {
+    font-size: clamp(21px, 6vw, 26px) !important;
+  }
+
+  body.member-home .mb-strip-3,
+  body.member-home .mb-bento-mid-2,
+  body.member-home .mb-bento-bottom,
+  body.member-home .mb-st-stack {
+    gap: 10px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  body.member-home .member-content {
+    padding: 10px 10px calc(112px + env(safe-area-inset-bottom, 0px)) !important;
+  }
 }

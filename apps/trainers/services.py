@@ -2,15 +2,77 @@
 
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
-from django.db import transaction
+from django.db import connection, transaction
 from django.utils import timezone
 
 from apps.notifications.models import Notification
 from apps.notifications.services import notify, notify_many
 
-from .models import TrainerAssignment, TrainerRequest
+from .models import TrainerAssignment, TrainerProfile, TrainerRequest, TrainerSession
 
 KIND = Notification.Kind.TRAINER
+
+_SCHEMA_CACHE = {}
+
+
+def _db_cache_key(item: str) -> tuple:
+    return (
+        connection.alias,
+        str(connection.settings_dict.get("NAME") or ""),
+        item,
+    )
+
+
+def _table_has_column(model, column: str, cache_name: str) -> bool:
+    key = _db_cache_key(cache_name)
+    if _SCHEMA_CACHE.get(key) is True:
+        return True
+    try:
+        with connection.cursor() as cursor:
+            cols = {
+                c.name
+                for c in connection.introspection.get_table_description(
+                    cursor, model._meta.db_table
+                )
+            }
+        has_col = column in cols
+        if has_col:
+            _SCHEMA_CACHE[key] = True
+        return has_col
+    except Exception:
+        return False
+
+
+def has_trainer_phone_column() -> bool:
+    return _table_has_column(TrainerProfile, "phone", "trainer_phone")
+
+
+def has_trainer_status_column() -> bool:
+    return _table_has_column(TrainerProfile, "status", "trainer_status")
+
+
+def has_trainer_session_table() -> bool:
+    key = _db_cache_key("trainer_session_table")
+    if _SCHEMA_CACHE.get(key) is True:
+        return True
+    try:
+        with connection.cursor() as cursor:
+            tables = set(connection.introspection.table_names(cursor))
+        exists = TrainerSession._meta.db_table in tables
+        if exists:
+            _SCHEMA_CACHE[key] = True
+        return exists
+    except Exception:
+        return False
+
+
+def defer_missing_trainer_fields(qs, prefix: str = ""):
+    deferred = []
+    if not has_trainer_phone_column():
+        deferred.append(f"{prefix}phone")
+    if not has_trainer_status_column():
+        deferred.append(f"{prefix}status")
+    return qs.defer(*deferred) if deferred else qs
 
 
 def _name(user):
@@ -22,11 +84,11 @@ def member_name(member):
 
 
 def current_assignment(member):
-    return (
+    qs = (
         TrainerAssignment.objects.filter(member=member, ended_at__isnull=True)
         .select_related("trainer__user")
-        .first()
     )
+    return defer_missing_trainer_fields(qs, prefix="trainer__").first()
 
 
 def load(trainer):
@@ -58,13 +120,13 @@ def assign_trainer(member, trainer, *, actor):
         new = TrainerAssignment.objects.create(member=member, trainer=trainer, assigned_by=actor)
         if previous:
             notify(previous.user, f"{member_name(member)} was reassigned", kind=KIND,
-                   body="They now train with another coach.", link="members.html")
+                   body="They now train with another coach.", link="/trainer/members")
             body = f"Your trainer changed from {_name(previous.user)} to {_name(trainer.user)}."
         else:
             body = f"{_name(trainer.user)} is now your trainer."
-        notify(member.user, "Trainer assignment updated", kind=KIND, body=body, link="member-home.html#profile")
+        notify(member.user, "Trainer assignment updated", kind=KIND, body=body, link="/member-home#profile")
         notify(trainer.user, f"New member: {member_name(member)}", kind=KIND,
-               body="Check their goals in the trainer portal.", link="members.html")
+               body="Check their goals in the trainer portal.", link="/trainer/members")
     return new
 
 
@@ -76,9 +138,9 @@ def remove_trainer(member, *, actor):
         current.ended_at = timezone.now()
         current.save(update_fields=["ended_at"])
         notify(member.user, "Trainer removed", kind=KIND,
-               body=f"{_name(current.trainer.user)} is no longer your trainer.", link="member-home.html#profile")
+               body=f"{_name(current.trainer.user)} is no longer your trainer.", link="/member-home#profile")
         notify(current.trainer.user, f"{member_name(member)} is no longer assigned to you", kind=KIND,
-               body="The member has been removed from your list.", link="members.html")
+               body="The member has been removed from your list.", link="/trainer/members")
     return current
 
 

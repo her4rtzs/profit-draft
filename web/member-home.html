@@ -24,7 +24,8 @@
   </style>
   <script src="splash.js?v=3"></script>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
   <title>My membership &middot; ProFit</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,20 +34,20 @@
     rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="styles.css">
-  <script src="config.js?v=4"></script>
+  <script src="config.js?v=9"></script>
   <script src="api.js"></script>
   <script src="auth.js?v=4"></script>
   <link rel="stylesheet" href="pro-theme.css">
-  <link rel="stylesheet" href="finance-ui.css?v=13">
+  <link rel="stylesheet" href="finance-ui.css?v=24">
   <link rel="stylesheet" href="spotify.css?v=14">
   <link rel="stylesheet" href="portal-ui.css?v=13">
   <script>document.documentElement.dataset.accent = 'gold'</script>
-  <link rel="stylesheet" href="hover-fx.css?v=1">
-  <link rel="stylesheet" href="announcements.css?v=2">
+  <link rel="stylesheet" href="hover-fx.css?v=3">
+  <link rel="stylesheet" href="announcements.css?v=7">
   <link rel="stylesheet" href="ui-polish.css?v=2">
   <link rel="stylesheet" href="ui-fixes.css?v=1">
   <link rel="stylesheet" href="pf-modern.css?v=2">
-  <link rel="stylesheet" href="member-shell.css?v=31">
+  <link rel="stylesheet" href="member-shell.css?v=37">
   <style>
     @keyframes mbDashRise {
       from {
@@ -283,15 +284,20 @@
       border-radius: 10px;
       border: 0;
       background: #e8b93a;
-      color: #141006;
+      color: #0b0f19;
       font: 700 12.5px/1 "Plus Jakarta Sans", Inter, sans-serif;
       cursor: pointer;
-      transition: transform .15s ease, background .15s ease;
+      transition: background-color .15s ease;
     }
 
-    .mb-mini-btn:hover {
-      transform: translateY(-1px);
-      background: #f1c856
+    .mb-mini-btn:hover:not(:disabled) {
+      background: #f0c44b;
+      transform: none;
+    }
+
+    .mb-mini-btn:active:not(:disabled) {
+      background: #b8860b;
+      transform: none;
     }
 
     .member-welcome.member-hero.pf-app-hero[hidden] {
@@ -496,38 +502,49 @@
       border: 1px solid #eadfc8 !important;
       color: #2a2418 !important;
     }
+
     body.member-home:not(.dark) .mb-tab-banner::before {
       opacity: .42 !important;
     }
+
     body.member-home:not(.dark) .mb-tab-banner::after {
       background: linear-gradient(90deg, rgba(255, 250, 240, .96) 0%, rgba(255, 250, 240, .78) 52%, rgba(255, 250, 240, .18) 100%) !important;
     }
+
     body.member-home:not(.dark) .mb-tab-eyebrow {
       color: #8a6212 !important;
     }
+
     body.member-home:not(.dark) .mb-tab-banner h2 {
       color: #2a2418 !important;
     }
+
     body.member-home:not(.dark) .pp-cal-head strong {
       color: #2a2418 !important;
     }
+
     body.member-home:not(.dark) .pp-cal-dow {
       color: #6f6450 !important;
     }
+
     body.member-home:not(.dark) .pp-cal-day {
       color: #2a2418 !important;
     }
+
     body.member-home:not(.dark) .pp-cal-day:hover {
       background: #f6ecd9 !important;
     }
+
     body.member-home:not(.dark) .pp-cal-day.is-today {
       border-color: #b8860b !important;
       color: #8a6212 !important;
     }
+
     body.member-home:not(.dark) .pp-cal-day.is-today.is-checkin {
       border-color: #8a6212 !important;
       color: #2a1d04 !important;
     }
+
     body.member-home:not(.dark) .pp-cal-day.is-checkin,
     body.member-home:not(.dark) .pp-cal-day.is-selected:not(.is-today) {
       background: #f4c430 !important;
@@ -535,23 +552,29 @@
       color: #141006 !important;
       font-weight: 800 !important;
     }
+
     body.member-home:not(.dark) .pp-cal-stats {
       border-top-color: #eadfc8 !important;
     }
+
     body.member-home:not(.dark) .pp-cal-stat:not(:first-child)::before {
       background: #eadfc8 !important;
     }
+
     body.member-home:not(.dark) .pp-cal-stat strong {
       color: #2a2418 !important;
     }
+
     body.member-home:not(.dark) .pp-cal-stat span {
       color: #6f6450 !important;
     }
+
     body.member-home:not(.dark) .pp-cal-summary {
       background: #faf6ee !important;
       border: 1px solid #eadfc8 !important;
       color: #2a2418 !important;
     }
+
     body.member-home:not(.dark) .pp-cal-summary strong,
     body.member-home:not(.dark) .pp-cal-summary span {
       color: #2a2418 !important;
@@ -589,10 +612,14 @@
     type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script>
   <link rel="manifest" href="/manifest.webmanifest">
   <meta name="theme-color" content="#0a0e17">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17">
+  <meta name="color-scheme" content="light dark">
   <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="ProFit">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="stylesheet" href="pf-system.css?v=18">
 </head>
 
 <body class="member-home">
@@ -780,20 +807,24 @@
           <button class="theme-toggle" id="memberTheme" type="button" aria-label="Toggle theme" title="Toggle theme"><i
               class="fa-solid fa-moon"></i></button>
           <div class="notification-wrap">
-            <button class="notification" id="notificationToggle" type="button" aria-label="Notifications" aria-haspopup="dialog" aria-expanded="false">
+            <button class="notification" id="notificationToggle" type="button" aria-label="Notifications"
+              aria-haspopup="dialog" aria-expanded="false">
               <i class="fa-regular fa-bell"></i>
               <span class="notification-badge" id="notificationBadge" hidden>0</span>
             </button>
-            <section class="notification-panel np" id="notificationPanel" role="dialog" aria-label="Notifications" hidden>
+            <section class="notification-panel np" id="notificationPanel" role="dialog" aria-label="Notifications"
+              hidden>
               <div class="notification-head nph">
                 <div class="nph-title"><strong>Notifications</strong><em id="notificationSummary"></em></div>
                 <button type="button" id="markAllRead">Mark all read</button>
               </div>
               <div class="notification-list npl" id="notificationList"></div>
-              <a class="notification-foot npf" id="allNotificationsLink" href="#announcements">All notifications &rarr;</a>
+              <a class="notification-foot npf" id="allNotificationsLink" href="#announcements">All notifications
+                &rarr;</a>
             </section>
           </div>
-          <button class="member-top-avatar" id="memberTopAvatar" type="button" data-member-goto="profile" title="My profile" aria-label="My profile">
+          <button class="member-top-avatar" id="memberTopAvatar" type="button" data-member-goto="profile"
+            title="My profile" aria-label="My profile">
             <span class="member-avatar-face" id="memberTopInitials" aria-hidden="true">M</span>
           </button>
         </div>
@@ -810,11 +841,12 @@
         <div class="portal-result" id="memberNotice" role="status" hidden></div>
         <div class="pp-tool-panel mb-bento-overview" data-panel="overview">
           <!-- Row 1: Full-width Hero Banner with Floating Membership Ticket Card -->
-          <section class="mb-bento-card mb-bento-hero-photo mb-hero-ticket-layout" aria-label="Welcome">
+          <section class="mb-bento-card mb-bento-hero-photo mb-hero-ticket-layout has-hero-dock" aria-label="Welcome">
             <div class="mb-hero-photo-bg" aria-hidden="true"></div>
             <div class="mb-hero-left-col">
               <h1 id="memberGreeting"><span id="heroFirstName">Member</span>,<br>let's get<br>to work.</h1>
-              <p id="heroMembershipLine">Your coach or the front desk checks you in when you arrive. Show your QR to speed things up.</p>
+              <p id="heroMembershipLine">Your coach or the front desk checks you in when you arrive. Show your QR to
+                speed things up.</p>
               <div class="mb-hero-cta-row">
                 <button class="mb-bento-btn is-gold is-rect" id="showMemberQrBtn" type="button">
                   <i class="fa-solid fa-qrcode" aria-hidden="true"></i> My check-in QR
@@ -830,14 +862,16 @@
             <aside class="mb-ticket-card" aria-label="Membership plan status">
               <div class="mb-ticket-top">
                 <div class="mb-ticket-info">
-                  <span class="mb-status-pill" id="mbHeroStatusPill"><span class="mb-status-dot" aria-hidden="true"></span> <span id="mbHeroStatusText">Active</span></span>
+                  <span class="mb-status-pill" id="mbHeroStatusPill"><span class="mb-status-dot"
+                      aria-hidden="true"></span> <span id="mbHeroStatusText">Active</span></span>
                   <h3 id="mbHeroPlanTitle">Monthly plan</h3>
                   <span class="mb-ticket-sub" id="mbHeroStart">&mdash;</span>
                 </div>
                 <div class="mb-ticket-ring" aria-label="Days remaining">
                   <svg class="mb-ticket-ring-svg" viewBox="0 0 88 88" aria-hidden="true">
                     <circle class="mb-ticket-ring-track" cx="44" cy="44" r="36"></circle>
-                    <circle class="mb-ticket-ring-arc" id="mbHeroRingArc" cx="44" cy="44" r="36" stroke-dasharray="226.19" stroke-dashoffset="226.19"></circle>
+                    <circle class="mb-ticket-ring-arc" id="mbHeroRingArc" cx="44" cy="44" r="36"
+                      stroke-dasharray="226.19" stroke-dashoffset="226.19"></circle>
                   </svg>
                   <div class="mb-ticket-ring-center">
                     <strong id="mbHeroDaysVal">0</strong>
@@ -885,7 +919,8 @@
                 <div class="mb-single-ring-box">
                   <svg class="mb-single-ring-svg" viewBox="0 0 96 96" aria-hidden="true">
                     <circle class="mb-ring-outer-track" cx="48" cy="48" r="40"></circle>
-                    <circle class="mb-ring-outer-arc" id="mbWeekOuterArc" cx="48" cy="48" r="40" stroke-dasharray="251.33" stroke-dashoffset="251.33"></circle>
+                    <circle class="mb-ring-outer-arc" id="mbWeekOuterArc" cx="48" cy="48" r="40"
+                      stroke-dasharray="251.33" stroke-dashoffset="251.33"></circle>
                   </svg>
                   <div class="mb-dual-ring-center">
                     <small>Visits</small>
@@ -897,7 +932,8 @@
                     <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
                   </div>
                   <div class="mb-week-mini-chart">
-                    <svg id="mbWeekChartSvg" class="mb-week-chart-svg is-compact" viewBox="0 0 280 76" preserveAspectRatio="none" aria-label="Weekly check-in rhythm"></svg>
+                    <svg id="mbWeekChartSvg" class="mb-week-chart-svg is-compact" viewBox="0 0 280 76"
+                      preserveAspectRatio="none" aria-label="Weekly check-in rhythm"></svg>
                   </div>
                 </div>
               </div>
@@ -1095,7 +1131,8 @@
                       <circle cx="110" cy="106" r="7" class="mb-g-hub"></circle>
                     </g>
                   </svg>
-                  <div class="mb-gauge-meta"><strong id="bcBmiNum">&mdash;</strong><small id="bcBmiLbl">Log height &amp; weight</small></div>
+                  <div class="mb-gauge-meta"><strong id="bcBmiNum">&mdash;</strong><small id="bcBmiLbl">Log height &amp;
+                      weight</small></div>
                 </div>
                 <div class="mb-bc-form">
                   <label for="bcWeightInput">Log today's weight (kg)</label>
@@ -1105,13 +1142,18 @@
                   </div>
                 </div>
                 <div class="mb-bc-notes">
-                  <label for="bcHealthNotes">Health notes <span class="mb-bc-staff-note">&middot; visible to gym staff only</span></label>
-                  <textarea id="bcHealthNotes" rows="3" maxlength="400" placeholder="Allergies, past injuries, or conditions your trainer should know about..."></textarea>
+                  <label for="bcHealthNotes">Health notes <span class="mb-bc-staff-note">&middot; visible to gym staff
+                      only</span></label>
+                  <textarea id="bcHealthNotes" rows="3" maxlength="400"
+                    placeholder="Allergies, past injuries, or conditions your trainer should know about..."></textarea>
                 </div>
                 <form id="weightForm" hidden novalidate>
                   <input type="date" id="weightDate" aria-label="Weight date">
                   <input type="number" id="weightKg" min="20" max="660" step="0.1" aria-label="Weight">
-                  <select id="weightUnit" aria-label="Weight unit"><option value="kg">kg</option><option value="lb">lb</option></select>
+                  <select id="weightUnit" aria-label="Weight unit">
+                    <option value="kg">kg</option>
+                    <option value="lb">lb</option>
+                  </select>
                 </form>
                 <div id="weightList" class="pp-mini-list" style="margin-top:12px"></div>
               </div>
@@ -1146,10 +1188,11 @@
           <section class="panel member-panel" id="membershipPanel">
             <div class="pf-panel-head">
               <div>
-                <h2><i class="fa-solid fa-id-card"></i> My Membership</h2>
+                <h2><i class="fa-solid fa-id-card"></i> Current plan</h2>
                 <p>Your active plan, coverage dates, and renewal status.</p>
               </div>
-              <button type="button" class="btn btn-primary" data-renew-membership><i class="fa-solid fa-rotate"></i>
+              <button type="button" class="btn btn-primary" id="renewMembershipBtn" data-renew-membership
+                aria-expanded="false" aria-controls="memberPayCard"><i class="fa-solid fa-rotate"></i>
                 Renew membership</button>
             </div>
             <div class="pf-sk-wrap" data-skeleton="membership" style="display:grid;gap:14px">
@@ -1172,17 +1215,21 @@
             <div id="membershipTabBody" hidden></div>
           </section>
 
-          <article class="fn-card fn-card--amber" id="memberPayCard">
+          <article class="fn-card fn-card--amber" id="memberPayCard" hidden>
             <header class="fn-card-head">
               <div class="fn-card-head-left">
                 <span class="fn-icon-box" aria-hidden="true">
                   <i class="fa-solid fa-mobile-screen-button"></i>
                 </span>
                 <div>
-                  <h2 class="fn-card-title">Pay for membership</h2>
-                  <p class="fn-card-sub">GCash only. Cash is paid at the desk.</p>
+                  <h2 class="fn-card-title">Renew via GCash <span class="member-gcash-pill">GCash only</span></h2>
+                  <p class="fn-card-sub">Submit the details staff verify before activating. Cash is paid at the desk.</p>
                 </div>
               </div>
+              <button type="button" class="member-pay-close" id="memberPayClose" aria-label="Close renewal form"
+                title="Close">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+              </button>
             </header>
             <form class="fn-form" id="memberPayForm" novalidate>
               <div class="fn-field-row">
@@ -1193,30 +1240,29 @@
                   </select>
                 </div>
                 <div class="fn-field">
-                  <label for="memberPayMethod">Payment method</label>
-                  <input class="fn-input" id="memberPayMethod" value="GCash" readonly>
+                  <label for="memberPayAmount">Amount (PHP)</label>
+                  <input class="fn-input" id="memberPayAmount" value="&mdash;" readonly>
                 </div>
               </div>
               <div class="fn-field">
-                <label for="memberPayAmount">Amount (PHP)</label>
-                <input class="fn-input" id="memberPayAmount" value="&mdash;" readonly>
-              </div>
-              <div class="fn-field">
                 <label for="memberPayReference">GCash reference number</label>
-                <input class="fn-input" id="memberPayReference" inputmode="numeric" maxlength="25"
-                  autocomplete="off" placeholder="6028 871 884223" required>
+                <input class="fn-input" id="memberPayReference" inputmode="numeric" maxlength="25" autocomplete="off"
+                  placeholder="6028 871 884223" required>
                 <small>10 to 13 digits; spaces are okay.</small>
               </div>
               <div class="fn-field">
                 <label for="memberPayProof">Google Drive link (proof of payment)</label>
-                <input class="fn-input" id="memberPayProof" type="url" maxlength="500"
-                  autocomplete="off" placeholder="https://drive.google.com/..." required>
+                <input class="fn-input" id="memberPayProof" type="url" maxlength="500" autocomplete="off"
+                  placeholder="https://drive.google.com/..." required>
                 <small>Set sharing to &ldquo;Anyone with the link can view&rdquo; and crop out private details.</small>
               </div>
               <p class="fn-status-msg" id="memberPayStatus" role="status" aria-live="polite" hidden></p>
-              <button class="fn-btn-gold" type="submit" id="memberPaySubmit">
-                <i class="fa-solid fa-paper-plane" aria-hidden="true"></i><span>Submit payment</span>
-              </button>
+              <div class="member-pay-actions">
+                <button class="fn-btn-gold" type="submit" id="memberPaySubmit">
+                  <i class="fa-solid fa-paper-plane" aria-hidden="true"></i><span>Submit payment</span>
+                </button>
+                <button class="fn-btn-dark" type="button" id="memberPayCancel">Cancel</button>
+              </div>
             </form>
           </article>
 
@@ -1226,7 +1272,6 @@
                 <h2><i class="fa-solid fa-receipt"></i> Payment History</h2>
                 <p>Cash and GCash payments, with their status and receipts.</p>
               </div>
-              <button type="button" class="btn btn-soft" data-renew-membership><i class="fa-solid fa-mobile-screen"></i> Pay for membership</button>
             </div>
             <div class="pf-sk-wrap" data-skeleton="payments" style="display:grid;gap:8px">
               <div class="pf-sk-row">
@@ -1254,7 +1299,8 @@
               <p class="mb-kpi-sub" id="attKpiMonthSub">Monthly goal: 12 visits</p>
             </article>
             <article class="member-panel mb-kpi-card">
-              <div class="mb-kpi-head"><i class="fa-solid fa-fire" style="color:#e8b93a" aria-hidden="true"></i><span>Best streak</span></div>
+              <div class="mb-kpi-head"><i class="fa-solid fa-fire" style="color:#e8b93a"
+                  aria-hidden="true"></i><span>Best streak</span></div>
               <div class="mb-kpi-val"><strong id="attKpiStreak">0</strong><small>days</small></div>
               <p class="mb-kpi-sub">Consecutive gym days</p>
             </article>
@@ -1630,8 +1676,8 @@
           if (badgeGrid) {
             badgeGrid.innerHTML = badges.map(b =>
               `<div class="mb-badge-item${b.unlocked ? " is-unlocked" : ""}">` +
-                `<span class="mb-badge-circle"><i class="fa-solid ${b.icon}"></i></span>` +
-                `<span class="mb-badge-name">${b.title}</span>` +
+              `<span class="mb-badge-circle"><i class="fa-solid ${b.icon}"></i></span>` +
+              `<span class="mb-badge-name">${b.title}</span>` +
               `</div>`
             ).join("");
           }
@@ -1878,13 +1924,44 @@
           }
         }
 
-        function openPayCard() {
-          document.querySelector('.member-sidebar .nav-link[data-tab="membership"]')?.click();
+        function syncPayCardToggle(isOpen) {
+          const btn = $("renewMembershipBtn");
+          if (btn) btn.setAttribute("aria-expanded", String(!!isOpen));
+        }
+
+        function openPayCard({ toggle = false } = {}) {
+          const membershipPanel = document.querySelector('[data-panel="membership"]');
+          const wasOnMembership = membershipPanel && !membershipPanel.hidden;
           const card = $("memberPayCard");
           if (!card) return;
-          card.scrollIntoView({ behavior: "smooth", block: "center" });
+          if (toggle && wasOnMembership && !card.hidden) {
+            closePayCard();
+            return;
+          }
+          document.querySelector('.member-sidebar .nav-link[data-tab="membership"]')?.click();
+          card.hidden = false;
+          syncPayCardToggle(true);
+          if (!Object.keys(payPlans).length) loadPayPlans();
+          card.scrollIntoView({ behavior: "smooth", block: "nearest" });
           $("memberPayPlan")?.focus({ preventScroll: true });
         }
+
+        function closePayCard() {
+          const card = $("memberPayCard");
+          if (!card) return;
+          card.hidden = true;
+          syncPayCardToggle(false);
+          showPayStatus("", "");
+        }
+
+        $("memberPayClose")?.addEventListener("click", closePayCard);
+        $("memberPayCancel")?.addEventListener("click", closePayCard);
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") {
+            const card = $("memberPayCard");
+            if (card && !card.hidden) closePayCard();
+          }
+        });
 
         $("memberPayPlan")?.addEventListener("change", updatePayAmount);
 
@@ -2259,8 +2336,9 @@
           } catch (e) { }
         });
         document.addEventListener("click", e => {
-          if (e.target.closest("[data-renew-membership]")) {
-            openPayCard();
+          const renewBtn = e.target.closest("[data-renew-membership]");
+          if (renewBtn) {
+            openPayCard({ toggle: renewBtn.id === "renewMembershipBtn" });
           }
         });
         loadPayPlans();
@@ -2270,23 +2348,40 @@
   <!-- Member Check-in QR Pass Modal -->
   <div id="mbQrModal" role="dialog" aria-modal="true" aria-labelledby="mbQrTitle" hidden
     style="position:fixed;inset:0;z-index:9600;background:rgba(6,10,18,.72);backdrop-filter:blur(4px);display:grid;place-items:center;padding:18px">
-    <div style="width:min(360px,100%);background:var(--card,#111827);border:1px solid var(--border,#263246);border-radius:20px;padding:24px;text-align:center;color:var(--text,#f3f4f6)">
+    <div
+      style="width:min(360px,100%);background:var(--card,#111827);border:1px solid var(--border,#263246);border-radius:20px;padding:24px;text-align:center;color:var(--text,#f3f4f6)">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-        <h2 id="mbQrTitle" style="margin:0;font-size:18px;font-weight:800;display:inline-flex;align-items:center;gap:8px"><i class="fa-solid fa-qrcode" style="color:#e8b93a" aria-hidden="true"></i> Check-in QR Pass</h2>
-        <button type="button" id="mbQrClose" aria-label="Close QR pass" style="width:34px;height:34px;border-radius:10px;border:1px solid var(--border,#263246);background:transparent;color:inherit;cursor:pointer;display:grid;place-items:center"><i class="fa-solid fa-xmark"></i></button>
+        <h2 id="mbQrTitle"
+          style="margin:0;font-size:18px;font-weight:800;display:inline-flex;align-items:center;gap:8px"><i
+            class="fa-solid fa-qrcode" style="color:#e8b93a" aria-hidden="true"></i> Check-in QR Pass</h2>
+        <button type="button" id="mbQrClose" aria-label="Close QR pass"
+          style="width:34px;height:34px;border-radius:10px;border:1px solid var(--border,#263246);background:transparent;color:inherit;cursor:pointer;display:grid;place-items:center"><i
+            class="fa-solid fa-xmark"></i></button>
       </div>
-      <div id="mbQrCanvasWrap" style="background:#ffffff;padding:18px;border-radius:16px;display:inline-grid;place-items:center;margin:4px auto 14px;border:1px solid #eadfc8">
+      <div id="mbQrCanvasWrap"
+        style="background:#ffffff;padding:18px;border-radius:16px;display:inline-grid;place-items:center;margin:4px auto 14px;border:1px solid #eadfc8">
         <div id="mbQrCodeBox"></div>
       </div>
       <p id="mbQrName" style="margin:0 0 2px;font-size:16px;font-weight:800">&mdash;</p>
-      <p id="mbQrId" style="margin:0 0 10px;font-size:13px;color:var(--muted,#94a3b8);font-weight:700;letter-spacing:.04em">&mdash;</p>
-      <p id="mbQrHint" style="margin:0 0 16px;font-size:12.5px;color:var(--muted,#94a3b8);line-height:1.45">Show this QR code to the front desk or coach to check in.</p>
-      <button type="button" id="mbQrDone" class="btn btn-primary" style="width:100%;justify-content:center;border-radius:12px">Done</button>
+      <p id="mbQrId"
+        style="margin:0 0 10px;font-size:13px;color:var(--muted,#94a3b8);font-weight:700;letter-spacing:.04em">&mdash;
+      </p>
+      <p id="mbQrHint" style="margin:0 0 16px;font-size:12.5px;color:var(--muted,#94a3b8);line-height:1.45">Show this QR
+        code to the front desk or coach to check in.</p>
+      <button type="button" id="mbQrDone" class="btn btn-primary"
+        style="width:100%;justify-content:center;border-radius:12px">Done</button>
     </div>
   </div>
   <style>
-    #mbQrModal[hidden] { display: none !important; }
-    body.member-home:not(.dark) #mbQrModal > div { background: #ffffff !important; border-color: #eadfc8 !important; color: #2a2418 !important; }
+    #mbQrModal[hidden] {
+      display: none !important;
+    }
+
+    body.member-home:not(.dark) #mbQrModal>div {
+      background: #ffffff !important;
+      border-color: #eadfc8 !important;
+      color: #2a2418 !important;
+    }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
   <script>
@@ -2344,13 +2439,6 @@
   <script src="member-shell.js?v=4"></script>
   <script src="change-password.js?v=1"></script>
   <script src="portal-fx.js?v=2"></script>
-  <style>
-    @media (max-width:760px) {
-      body {
-        padding-bottom: 92px
-      }
-    }
-  </style>
   <nav class="pf-bottomnav" aria-label="Member sections">
     <button type="button" data-go-tab="overview"><i class="fa-solid fa-house"
         aria-hidden="true"></i><span>Home</span></button>
@@ -2388,7 +2476,7 @@
       sync();
     })();
   </script>
-  <script src="announcements-member.js?v=1" defer></script>
+  <script src="announcements-member.js?v=2" defer></script>
   <script src="notifications-live.js?v=2" defer></script>
   <script src="trainer-member.js?v=2" defer></script>
   <script>
@@ -2442,10 +2530,10 @@
         try {
           const saved = localStorage.getItem("pf-member-health-notes") || "";
           if (saved && !notesEl.value) notesEl.value = saved;
-        } catch {}
+        } catch { }
         notesEl.addEventListener("blur", () => {
           const v = notesEl.value.trim();
-          try { localStorage.setItem("pf-member-health-notes", v); } catch {}
+          try { localStorage.setItem("pf-member-health-notes", v); } catch { }
         });
       }
 

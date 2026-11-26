@@ -21,6 +21,7 @@ from apps.membership.models import Attendance, MemberProfile
 from apps.billing.models import Payment, PaymentClaim, Subscription
 from apps.finance.models import ManualPayment
 from apps.trainers.models import TrainerAssignment
+from apps.trainers.services import defer_missing_trainer_fields
 from apps.finance.services import monthly_summary, record_desk_payment, revenue_analytics
 from apps.membership.services import (
     check_in_member,
@@ -73,7 +74,10 @@ class StaffMemberViewSet(viewsets.ModelViewSet):
             .prefetch_related(
                 Prefetch(
                     "trainer_assignments",
-                    queryset=TrainerAssignment.objects.filter(ended_at__isnull=True).select_related("trainer__user"),
+                    queryset=defer_missing_trainer_fields(
+                        TrainerAssignment.objects.filter(ended_at__isnull=True).select_related("trainer__user"),
+                        prefix="trainer__",
+                    ),
                     to_attr="_active_assignments",
                 ),
                 Prefetch(

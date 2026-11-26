@@ -1546,9 +1546,9 @@
         </button>
       </article>
 
-      <!-- Appearance -->
+      <!-- Appearance & Accessibility -->
       <article class="mb-st-card" id="mbStAppearance">
-        <div class="mb-st-head"><i class="fa-regular fa-sun" aria-hidden="true"></i> Appearance</div>
+        <div class="mb-st-head"><i class="fa-regular fa-sun" aria-hidden="true"></i> Appearance &amp; Accessibility</div>
         <label class="mb-st-row mb-st-toggle-row">
           <div class="mb-st-copy"><span>Dark Mode</span><small>Switch between dark obsidian and warm ivory</small></div>
           <input type="checkbox" id="mbPrefDark" ${dark ? "checked" : ""}>
@@ -1565,6 +1565,14 @@
           <strong>Preview</strong>
           <span>Your Monthly Plan is active. Show your QR at the front desk to check in.</span>
         </div>
+        <label class="mb-st-row mb-st-toggle-row">
+          <div class="mb-st-copy"><span>High Contrast Mode</span><small>Increase contrast for text, borders, inputs, and buttons in both Light and Dark themes.</small></div>
+          <input type="checkbox" id="mbPrefHighContrast" data-a11y="contrast">
+        </label>
+        <label class="mb-st-row mb-st-toggle-row">
+          <div class="mb-st-copy"><span>Enhanced Focus Indicators</span><small>Show a prominent orange focus outline around the currently focused button, input, link, or menu item.</small></div>
+          <input type="checkbox" id="mbPrefEnhancedFocus" data-a11y="focus">
+        </label>
       </article>
 
       <!-- General -->
@@ -1672,6 +1680,7 @@
     };
     applyFont(savedFont);
     root.querySelectorAll("[data-mb-font]").forEach(btn => btn.addEventListener("click", () => applyFont(btn.dataset.mbFont)));
+    window.ProFitA11y?.sync();
 
     // Help & Support modal with interactive Contact / FAQs / Terms / Privacy tabs (exact OG info)
     root.querySelector("#mbStHelpBtn")?.addEventListener("click", () => {

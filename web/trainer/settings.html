@@ -1,329 +1,391 @@
 <!DOCTYPE html>
 <html lang="en" data-default-theme="dark">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ProFit — Settings (Trainer Portal)</title>
-<script>try{var t=localStorage.getItem('pf-theme')||localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);document.documentElement.setAttribute('data-accent','gold');}catch(e){}</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link rel="stylesheet" href="../assets/css/staff.css?v=12">
-<link rel="stylesheet" href="trainer.css?v=20">
-<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <title>ProFit — Settings (Trainer Portal)</title>
+  <script>try { var t = localStorage.getItem('pf-theme') || localStorage.getItem('theme') || 'dark'; document.documentElement.setAttribute('data-theme', t); document.documentElement.setAttribute('data-accent', 'gold'); } catch (e) { }</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/staff.css?v=12">
+  <link rel="stylesheet" href="trainer.css?v=30">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#0a0e17">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17">
+  <meta name="color-scheme" content="light dark">
+  <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="ProFit">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="stylesheet" href="../pf-system.css?v=18">
+</head>
+
 <body data-page="settings" data-portal="trainer" data-head="none" data-eyebrow="App Preferences" data-title="Settings">
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="scrim" id="scrim"></div>
-  <div class="main">
-    <header class="topbar" id="topbar"></header>
-    <main class="content" id="content">
+  <div class="app">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="scrim" id="scrim"></div>
+    <div class="main">
+      <header class="topbar" id="topbar"></header>
+      <main class="content" id="content">
 
-      <section class="tr-st-shell" aria-label="Trainer settings">
-        <nav class="tr-st-sidenav" id="trStSideNav" aria-label="Settings sections">
-          <button type="button" data-st-jump="trStAccount" class="on"><i class="fa-regular fa-user" aria-hidden="true"></i> Account</button>
-          <button type="button" data-st-jump="trStNotifications"><i class="fa-regular fa-bell" aria-hidden="true"></i> Notifications</button>
-          <button type="button" data-st-jump="trStAppearance"><i class="fa-regular fa-sun" aria-hidden="true"></i> Appearance</button>
-          <button type="button" data-st-jump="trStGeneral"><i class="fa-solid fa-globe" aria-hidden="true"></i> General</button>
-          <button type="button" data-st-jump="install"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i> Install the app</button>
-        </nav>
+        <section class="tr-st-shell" aria-label="Trainer settings">
+          <nav class="tr-st-sidenav" id="trStSideNav" aria-label="Settings sections">
+            <button type="button" data-st-jump="trStAccount" class="on"><i class="fa-regular fa-user"
+                aria-hidden="true"></i> Account</button>
+            <button type="button" data-st-jump="trStNotifications"><i class="fa-regular fa-bell" aria-hidden="true"></i>
+              Notifications</button>
+            <button type="button" data-st-jump="trStAppearance"><i class="fa-regular fa-sun" aria-hidden="true"></i>
+              Appearance</button>
+            <button type="button" data-st-jump="trStGeneral"><i class="fa-solid fa-globe" aria-hidden="true"></i>
+              General</button>
+            <button type="button" data-st-jump="install"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i>
+              Install the app</button>
+          </nav>
 
-        <div class="tr-st-stack">
-          <!-- Account -->
-          <article class="tr-st-card" id="trStAccount">
-            <div class="tr-st-head"><i class="fa-regular fa-user" aria-hidden="true"></i> Account</div>
-            <a class="tr-st-row" href="/trainer/profile">
-              <div class="tr-st-lead">
-                <span class="tr-st-ico" aria-hidden="true"><i class="fa-regular fa-user"></i></span>
-                <div class="tr-st-copy"><span>Edit Profile</span><small>Manage your name, specialization, schedule, and bio</small></div>
+          <div class="tr-st-stack">
+            <!-- Account -->
+            <article class="tr-st-card" id="trStAccount">
+              <div class="tr-st-head"><i class="fa-regular fa-user" aria-hidden="true"></i> Account</div>
+              <a class="tr-st-row" href="/trainer/profile">
+                <div class="tr-st-lead">
+                  <span class="tr-st-ico" aria-hidden="true"><i class="fa-regular fa-user"></i></span>
+                  <div class="tr-st-copy"><span>Edit Profile</span><small>Manage your name, specialization, schedule,
+                      and bio</small></div>
+                </div>
+                <span class="tr-st-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
+              </a>
+              <button class="tr-st-row" type="button" id="trStChangePwBtn">
+                <div class="tr-st-lead">
+                  <span class="tr-st-ico" aria-hidden="true"><i class="fa-solid fa-lock"></i></span>
+                  <div class="tr-st-copy"><span>Change Password</span><small>Update your account sign-in
+                      password</small></div>
+                </div>
+                <span class="tr-st-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
+              </button>
+            </article>
+
+            <!-- Notifications -->
+            <article class="tr-st-card" id="trStNotifications">
+              <div class="tr-st-head"><i class="fa-regular fa-bell" aria-hidden="true"></i> Notifications</div>
+              <label class="tr-st-row tr-st-toggle-row">
+                <div class="tr-st-copy"><span>Unread Badge</span><small>Show unread count on the bell icon</small></div>
+                <input type="checkbox" id="prefTrainerBadge" checked>
+              </label>
+              <a class="tr-st-row" href="/trainer/notifications">
+                <span>All Notifications</span>
+                <span class="tr-st-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
+              </a>
+            </article>
+
+            <!-- Appearance & Accessibility -->
+            <article class="tr-st-card" id="trStAppearance">
+              <div class="tr-st-head"><i class="fa-regular fa-sun" aria-hidden="true"></i> Appearance &amp; Accessibility</div>
+              <label class="tr-st-row tr-st-toggle-row">
+                <div class="tr-st-copy"><span>Dark Mode</span><small>Switch between dark obsidian and warm ivory</small>
+                </div>
+                <input type="checkbox" id="trPrefDark" checked>
+              </label>
+              <div class="tr-st-font-row">
+                <span>Font Size</span>
+                <div class="tr-st-pills" role="radiogroup" aria-label="Font size">
+                  <button type="button" role="radio" data-tr-font="sm" aria-checked="false">Small</button>
+                  <button type="button" role="radio" data-tr-font="md" class="active"
+                    aria-checked="true">Medium</button>
+                  <button type="button" role="radio" data-tr-font="lg" aria-checked="false">Large</button>
+                </div>
               </div>
-              <span class="tr-st-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
-            </a>
-            <button class="tr-st-row" type="button" id="trStChangePwBtn">
-              <div class="tr-st-lead">
-                <span class="tr-st-ico" aria-hidden="true"><i class="fa-solid fa-lock"></i></span>
-                <div class="tr-st-copy"><span>Change Password</span><small>Update your account sign-in password</small></div>
+              <div class="tr-st-font-prev" id="trStFontPrev">
+                <strong>Preview</strong>
+                <span>Your assigned athletes' check-ins and schedule updates appear here.</span>
               </div>
-              <span class="tr-st-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
-            </button>
-          </article>
+              <label class="tr-st-row tr-st-toggle-row">
+                <div class="tr-st-copy"><span>High Contrast Mode</span><small>Increase contrast for text, borders, inputs, and buttons in both Light and Dark themes.</small></div>
+                <input type="checkbox" id="trPrefHighContrast" data-a11y="contrast">
+              </label>
+              <label class="tr-st-row tr-st-toggle-row">
+                <div class="tr-st-copy"><span>Enhanced Focus Indicators</span><small>Show a prominent orange focus outline around the currently focused button, input, link, or menu item.</small></div>
+                <input type="checkbox" id="trPrefEnhancedFocus" data-a11y="focus">
+              </label>
+            </article>
 
-          <!-- Notifications -->
-          <article class="tr-st-card" id="trStNotifications">
-            <div class="tr-st-head"><i class="fa-regular fa-bell" aria-hidden="true"></i> Notifications</div>
-            <label class="tr-st-row tr-st-toggle-row">
-              <div class="tr-st-copy"><span>Unread Badge</span><small>Show unread count on the bell icon</small></div>
-              <input type="checkbox" id="prefTrainerBadge" checked>
-            </label>
-            <a class="tr-st-row" href="/trainer/notifications">
-              <span>All Notifications</span>
-              <span class="tr-st-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
-            </a>
-          </article>
+            <!-- General -->
+            <article class="tr-st-card" id="trStGeneral">
+              <div class="tr-st-head"><i class="fa-solid fa-globe" aria-hidden="true"></i> General</div>
+              <div class="tr-st-row">
+                <span>Language</span>
+                <span class="tr-st-end">English</span>
+              </div>
+              <button class="tr-st-row" type="button" id="trStHelpBtn">
+                <span>Help &amp; Support</span>
+                <span class="tr-st-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
+              </button>
+            </article>
 
-          <!-- Appearance -->
-          <article class="tr-st-card" id="trStAppearance">
-            <div class="tr-st-head"><i class="fa-regular fa-sun" aria-hidden="true"></i> Appearance</div>
-            <label class="tr-st-row tr-st-toggle-row">
-              <div class="tr-st-copy"><span>Dark Mode</span><small>Switch between dark obsidian and warm ivory</small></div>
-              <input type="checkbox" id="trPrefDark" checked>
-            </label>
-            <div class="tr-st-font-row">
-              <span>Font Size</span>
-              <div class="tr-st-pills" role="radiogroup" aria-label="Font size">
-                <button type="button" role="radio" data-tr-font="sm" aria-checked="false">Small</button>
-                <button type="button" role="radio" data-tr-font="md" class="active" aria-checked="true">Medium</button>
-                <button type="button" role="radio" data-tr-font="lg" aria-checked="false">Large</button>
+            <!-- Install the app -->
+            <article class="tr-st-card" id="install">
+              <div class="tr-st-head"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i> Install the app</div>
+              <div class="tr-st-install-body">
+                <p id="installHelpStatus" role="status" style="margin:0 0 10px;font-weight:600">Checking...</p>
+                <div data-install-steps>
+                  <p style="margin:0 0 6px;font-weight:700">iPhone (Safari)</p>
+                  <ol style="margin:0 0 12px 18px;padding:0">
+                    <li>Open ProFit in Safari.</li>
+                    <li>Tap the Share button.</li>
+                    <li>Tap Add to Home Screen, then Add.</li>
+                  </ol>
+                  <p style="margin:0 0 6px;font-weight:700">Android (Chrome)</p>
+                  <ol style="margin:0 0 0 18px;padding:0">
+                    <li>Open ProFit in Chrome.</li>
+                    <li>Tap the three-dot menu.</li>
+                    <li>Tap Install app (or Add to Home screen), then Install.</li>
+                  </ol>
+                </div>
+              </div>
+            </article>
+
+            <!-- Logout -->
+            <article class="tr-st-card">
+              <button type="button" class="tr-st-logout-btn" id="trainerSignOutBtn">
+                <i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i> Logout
+              </button>
+            </article>
+          </div>
+        </section>
+
+        <!-- Help & Support Modal (exact OG Functional Performance info) -->
+        <div class="tr-help-backdrop" id="trHelpModal" role="dialog" aria-modal="true" aria-labelledby="trHelpTitle"
+          hidden>
+          <div class="tr-help-modal">
+            <div class="tr-help-head">
+              <h2 id="trHelpTitle"><i class="fa-regular fa-circle-question" style="color:#e8b93a"
+                  aria-hidden="true"></i> Help &amp; Support</h2>
+              <button type="button" id="trHelpClose" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="tr-st-pills" role="tablist" aria-label="Help topics"
+              style="margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap">
+              <button type="button" role="tab" class="active" data-tr-help="contact"
+                aria-selected="true">Contact</button>
+              <button type="button" role="tab" data-tr-help="faqs" aria-selected="false">FAQs</button>
+              <button type="button" role="tab" data-tr-help="terms" aria-selected="false">Terms</button>
+              <button type="button" role="tab" data-tr-help="privacy" aria-selected="false">Privacy</button>
+            </div>
+            <div style="max-height:50vh;overflow-y:auto;display:grid;gap:10px;font-size:13px">
+              <div data-tr-help-pane="contact" style="display:grid;gap:10px">
+                <a class="tr-help-item" href="tel:+639060536064"><span class="tr-st-ico"><i
+                      class="fa-solid fa-phone"></i></span>
+                  <div><strong>Call Functional Performance</strong><small>0906 053 6064</small></div>
+                </a>
+                <a class="tr-help-item" href="mailto:FunctionalPerformance.2022@gmail.com"><span class="tr-st-ico"><i
+                      class="fa-regular fa-envelope"></i></span>
+                  <div><strong>Email</strong><small>FunctionalPerformance.2022@gmail.com</small></div>
+                </a>
+                <div class="tr-help-item"><span class="tr-st-ico"><i class="fa-solid fa-location-dot"></i></span>
+                  <div><strong>Address</strong><small>Luksuhin - Mangas Rd., Saray, Mangas 1, Alfonso, Cavite,
+                      Philippines</small></div>
+                </div>
+              </div>
+              <div data-tr-help-pane="faqs" hidden style="display:grid;gap:10px">
+                <div class="tr-help-item"><span class="tr-st-ico"><i class="fa-regular fa-circle-question"></i></span>
+                  <div><strong>How do I record attendance?</strong><small>Open Attendance from the sidebar to check in
+                      assigned athletes and review check-in logs.</small></div>
+                </div>
+                <div class="tr-help-item"><span class="tr-st-ico"><i class="fa-solid fa-lock"></i></span>
+                  <div><strong>How do I change my password?</strong><small>Open Settings &rarr; Account &rarr; Change
+                      Password anytime.</small></div>
+                </div>
+              </div>
+              <div data-tr-help-pane="terms" hidden style="display:grid;gap:10px">
+                <div class="tr-help-item"><span class="tr-st-ico"><i class="fa-solid fa-file-contract"></i></span>
+                  <div><strong>Terms of Service (Last updated: October 2026)</strong><small>By using ProFit, the gym
+                      management system used by Functional Performance (the "Gym"), you agree to keep your login details
+                      private and provide accurate personal details. Staff accounts are created by invitation from the
+                      gym owner.</small></div>
+                </div>
+              </div>
+              <div data-tr-help-pane="privacy" hidden style="display:grid;gap:10px">
+                <div class="tr-help-item"><span class="tr-st-ico"><i class="fa-solid fa-shield-halved"></i></span>
+                  <div><strong>Privacy Policy (Last updated: October 2026)</strong><small>Data controller: Functional
+                      Performance. Passwords are stored only as secure hashes, traffic runs over HTTPS, and gym staff
+                      see only what their role allows (Data Privacy Act of 2012 / RA 10173).</small></div>
+                </div>
               </div>
             </div>
-            <div class="tr-st-font-prev" id="trStFontPrev">
-              <strong>Preview</strong>
-              <span>Your assigned athletes' check-ins and schedule updates appear here.</span>
+            <div style="display:flex;justify-content:flex-end;margin-top:14px">
+              <button type="button" class="tw-btn-primary" id="trHelpDone"
+                style="min-height:38px;padding:0 20px;border-radius:10px">Close</button>
             </div>
-          </article>
-
-          <!-- General -->
-          <article class="tr-st-card" id="trStGeneral">
-            <div class="tr-st-head"><i class="fa-solid fa-globe" aria-hidden="true"></i> General</div>
-            <div class="tr-st-row">
-              <span>Language</span>
-              <span class="tr-st-end">English</span>
-            </div>
-            <button class="tr-st-row" type="button" id="trStHelpBtn">
-              <span>Help &amp; Support</span>
-              <span class="tr-st-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
-            </button>
-          </article>
-
-          <!-- Install the app -->
-          <article class="tr-st-card" id="install">
-            <div class="tr-st-head"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i> Install the app</div>
-            <div class="tr-st-install-body">
-              <p id="installHelpStatus" role="status" style="margin:0 0 10px;font-weight:600">Checking...</p>
-              <div data-install-steps>
-                <p style="margin:0 0 6px;font-weight:700">iPhone (Safari)</p>
-                <ol style="margin:0 0 12px 18px;padding:0">
-                  <li>Open ProFit in Safari.</li>
-                  <li>Tap the Share button.</li>
-                  <li>Tap Add to Home Screen, then Add.</li>
-                </ol>
-                <p style="margin:0 0 6px;font-weight:700">Android (Chrome)</p>
-                <ol style="margin:0 0 0 18px;padding:0">
-                  <li>Open ProFit in Chrome.</li>
-                  <li>Tap the three-dot menu.</li>
-                  <li>Tap Install app (or Add to Home screen), then Install.</li>
-                </ol>
-              </div>
-            </div>
-          </article>
-
-          <!-- Logout -->
-          <article class="tr-st-card">
-            <button type="button" class="tr-st-logout-btn" id="trainerSignOutBtn">
-              <i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i> Logout
-            </button>
-          </article>
+          </div>
         </div>
-      </section>
 
-      <!-- Help & Support Modal (exact OG Functional Performance info) -->
-      <div class="tr-help-backdrop" id="trHelpModal" role="dialog" aria-modal="true" aria-labelledby="trHelpTitle" hidden>
-        <div class="tr-help-modal">
-          <div class="tr-help-head">
-            <h2 id="trHelpTitle"><i class="fa-regular fa-circle-question" style="color:#e8b93a" aria-hidden="true"></i> Help &amp; Support</h2>
-            <button type="button" id="trHelpClose" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
-          </div>
-          <div class="tr-st-pills" role="tablist" aria-label="Help topics" style="margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap">
-            <button type="button" role="tab" class="active" data-tr-help="contact" aria-selected="true">Contact</button>
-            <button type="button" role="tab" data-tr-help="faqs" aria-selected="false">FAQs</button>
-            <button type="button" role="tab" data-tr-help="terms" aria-selected="false">Terms</button>
-            <button type="button" role="tab" data-tr-help="privacy" aria-selected="false">Privacy</button>
-          </div>
-          <div style="max-height:50vh;overflow-y:auto;display:grid;gap:10px;font-size:13px">
-            <div data-tr-help-pane="contact" style="display:grid;gap:10px">
-              <a class="tr-help-item" href="tel:+639060536064"><span class="tr-st-ico"><i class="fa-solid fa-phone"></i></span><div><strong>Call Functional Performance</strong><small>0906 053 6064</small></div></a>
-              <a class="tr-help-item" href="mailto:FunctionalPerformance.2022@gmail.com"><span class="tr-st-ico"><i class="fa-regular fa-envelope"></i></span><div><strong>Email</strong><small>FunctionalPerformance.2022@gmail.com</small></div></a>
-              <div class="tr-help-item"><span class="tr-st-ico"><i class="fa-solid fa-location-dot"></i></span><div><strong>Address</strong><small>Luksuhin - Mangas Rd., Saray, Mangas 1, Alfonso, Cavite, Philippines</small></div></div>
-            </div>
-            <div data-tr-help-pane="faqs" hidden style="display:grid;gap:10px">
-              <div class="tr-help-item"><span class="tr-st-ico"><i class="fa-regular fa-circle-question"></i></span><div><strong>How do I record attendance?</strong><small>Open Attendance from the sidebar to check in assigned athletes and review check-in logs.</small></div></div>
-              <div class="tr-help-item"><span class="tr-st-ico"><i class="fa-solid fa-lock"></i></span><div><strong>How do I change my password?</strong><small>Open Settings &rarr; Account &rarr; Change Password anytime.</small></div></div>
-            </div>
-            <div data-tr-help-pane="terms" hidden style="display:grid;gap:10px">
-              <div class="tr-help-item"><span class="tr-st-ico"><i class="fa-solid fa-file-contract"></i></span><div><strong>Terms of Service (Last updated: October 2026)</strong><small>By using ProFit, the gym management system used by Functional Performance (the "Gym"), you agree to keep your login details private and provide accurate personal details. Staff accounts are created by invitation from the gym owner.</small></div></div>
-            </div>
-            <div data-tr-help-pane="privacy" hidden style="display:grid;gap:10px">
-              <div class="tr-help-item"><span class="tr-st-ico"><i class="fa-solid fa-shield-halved"></i></span><div><strong>Privacy Policy (Last updated: October 2026)</strong><small>Data controller: Functional Performance. Passwords are stored only as secure hashes, traffic runs over HTTPS, and gym staff see only what their role allows (Data Privacy Act of 2012 / RA 10173).</small></div></div>
-            </div>
-          </div>
-          <div style="display:flex;justify-content:flex-end;margin-top:14px">
-            <button type="button" class="tw-btn-primary" id="trHelpDone" style="min-height:38px;padding:0 20px;border-radius:10px">Close</button>
-          </div>
-        </div>
-      </div>
+        <!-- Hidden compatibility hooks for legacy theme/accent script -->
+        <div id="themeOptGroup" hidden></div>
+        <div id="accentOptGroup" hidden></div>
 
-      <!-- Hidden compatibility hooks for legacy theme/accent script -->
-      <div id="themeOptGroup" hidden></div>
-      <div id="accentOptGroup" hidden></div>
-
-    </main>
+      </main>
+    </div>
+    <nav class="bottom-nav" id="bottomNav" aria-label="Quick navigation"></nav>
   </div>
-  <nav class="bottom-nav" id="bottomNav" aria-label="Quick navigation"></nav>
-</div>
 
-<script src="../config.js?v=5"></script>
-<script src="../api.js?v=5"></script>
-<script src="../auth.js?v=5"></script>
-<script src="../change-password.js?v=1"></script>
-<script src="../assets/js/staff-icons.js?v=5"></script>
-<script src="../assets/js/staff-data.js?v=12"></script>
-<script src="../assets/js/staff.js?v=15"></script>
-<script src="trainer.js?v=12"></script>
-<script>
-(function(){
-  var navBtns = Array.prototype.slice.call(document.querySelectorAll('[data-st-jump]'));
-  navBtns.forEach(function(btn){
-    btn.addEventListener('click', function(){
-      navBtns.forEach(function(b){ b.classList.toggle('on', b === btn); });
-      var t = document.getElementById(btn.getAttribute('data-st-jump'));
-      if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  });
-  var cpBtn = document.getElementById('trStChangePwBtn');
-  if (cpBtn) cpBtn.addEventListener('click', function(){
-    if (window.PFChangePassword && typeof window.PFChangePassword.open === 'function') window.PFChangePassword.open();
-  });
-  var darkInput = document.getElementById('trPrefDark');
-  if (darkInput) {
-    var cur = localStorage.getItem('pf-theme') || localStorage.getItem('theme') || 'dark';
-    darkInput.checked = cur !== 'light';
-    darkInput.addEventListener('change', function(){
-      var next = darkInput.checked ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', next);
-      try { localStorage.setItem('pf-theme', next); localStorage.setItem('theme', next); } catch(e){}
-    });
-  }
-  var FONT_SCALE = { sm: '13px', md: '15px', lg: '17.5px' };
-  var PREV_SIZE = { sm: '12px', md: '14px', lg: '17px' };
-  function applyFont(sz){
-    var k = FONT_SCALE[sz] ? sz : 'md';
-    document.documentElement.dataset.fontSize = k;
-    document.documentElement.style.fontSize = FONT_SCALE[k];
-    var ps = document.querySelector('#trStFontPrev span');
-    if (ps) ps.style.fontSize = PREV_SIZE[k];
-    try { localStorage.setItem('pf-font-size', k); } catch(e){}
-    document.querySelectorAll('[data-tr-font]').forEach(function(b){
-      var on = b.getAttribute('data-tr-font') === k;
-      b.classList.toggle('active', on);
-      b.setAttribute('aria-checked', String(on));
-    });
-  }
-  try { applyFont(localStorage.getItem('pf-font-size') || 'md'); } catch(e){}
-  document.querySelectorAll('[data-tr-font]').forEach(function(b){
-    b.addEventListener('click', function(){ applyFont(b.getAttribute('data-tr-font')); });
-  });
-  var hm = document.getElementById('trHelpModal');
-  var openH = function(){ if (hm) hm.hidden = false; };
-  var closeH = function(){ if (hm) hm.hidden = true; };
-  document.getElementById('trStHelpBtn')?.addEventListener('click', openH);
-  document.getElementById('trHelpClose')?.addEventListener('click', closeH);
-  document.getElementById('trHelpDone')?.addEventListener('click', closeH);
-  hm?.addEventListener('click', function(e){ if (e.target === hm) closeH(); });
-  hm?.querySelectorAll('[data-tr-help]').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      var k = btn.getAttribute('data-tr-help');
-      hm.querySelectorAll('[data-tr-help]').forEach(function(b){
-        var on = b === btn;
-        b.classList.toggle('active', on);
-        b.setAttribute('aria-selected', String(on));
+  <script src="../config.js?v=9"></script>
+  <script src="../api.js?v=5"></script>
+  <script src="../auth.js?v=5"></script>
+  <script src="../change-password.js?v=1"></script>
+  <script src="../assets/js/staff-icons.js?v=5"></script>
+  <script src="../assets/js/staff-data.js?v=12"></script>
+  <script src="../assets/js/staff.js?v=17"></script>
+  <script src="trainer.js?v=12"></script>
+  <script>
+    (function () {
+      var navBtns = Array.prototype.slice.call(document.querySelectorAll('[data-st-jump]'));
+      navBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          navBtns.forEach(function (b) { b.classList.toggle('on', b === btn); });
+          var t = document.getElementById(btn.getAttribute('data-st-jump'));
+          if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
       });
-      hm.querySelectorAll('[data-tr-help-pane]').forEach(function(p){
-        p.hidden = p.getAttribute('data-tr-help-pane') !== k;
+      var cpBtn = document.getElementById('trStChangePwBtn');
+      if (cpBtn) cpBtn.addEventListener('click', function () {
+        if (window.PFChangePassword && typeof window.PFChangePassword.open === 'function') window.PFChangePassword.open();
+      });
+      var darkInput = document.getElementById('trPrefDark');
+      if (darkInput) {
+        var cur = localStorage.getItem('pf-theme') || localStorage.getItem('theme') || 'dark';
+        darkInput.checked = cur !== 'light';
+        darkInput.addEventListener('change', function () {
+          var next = darkInput.checked ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', next);
+          try { localStorage.setItem('pf-theme', next); localStorage.setItem('theme', next); } catch (e) { }
+        });
+      }
+      var FONT_SCALE = { sm: '13px', md: '15px', lg: '17.5px' };
+      var PREV_SIZE = { sm: '12px', md: '14px', lg: '17px' };
+      function applyFont(sz) {
+        var k = FONT_SCALE[sz] ? sz : 'md';
+        document.documentElement.dataset.fontSize = k;
+        document.documentElement.style.fontSize = FONT_SCALE[k];
+        var ps = document.querySelector('#trStFontPrev span');
+        if (ps) ps.style.fontSize = PREV_SIZE[k];
+        try { localStorage.setItem('pf-font-size', k); } catch (e) { }
+        document.querySelectorAll('[data-tr-font]').forEach(function (b) {
+          var on = b.getAttribute('data-tr-font') === k;
+          b.classList.toggle('active', on);
+          b.setAttribute('aria-checked', String(on));
+        });
+      }
+      try { applyFont(localStorage.getItem('pf-font-size') || 'md'); } catch (e) { }
+      document.querySelectorAll('[data-tr-font]').forEach(function (b) {
+        b.addEventListener('click', function () { applyFont(b.getAttribute('data-tr-font')); });
+      });
+      var hm = document.getElementById('trHelpModal');
+      var openH = function () { if (hm) hm.hidden = false; };
+      var closeH = function () { if (hm) hm.hidden = true; };
+      document.getElementById('trStHelpBtn')?.addEventListener('click', openH);
+      document.getElementById('trHelpClose')?.addEventListener('click', closeH);
+      document.getElementById('trHelpDone')?.addEventListener('click', closeH);
+      hm?.addEventListener('click', function (e) { if (e.target === hm) closeH(); });
+      hm?.querySelectorAll('[data-tr-help]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var k = btn.getAttribute('data-tr-help');
+          hm.querySelectorAll('[data-tr-help]').forEach(function (b) {
+            var on = b === btn;
+            b.classList.toggle('active', on);
+            b.setAttribute('aria-selected', String(on));
+          });
+          hm.querySelectorAll('[data-tr-help-pane]').forEach(function (p) {
+            p.hidden = p.getAttribute('data-tr-help-pane') !== k;
+          });
+        });
+      });
+    })();
+  </script>
+  <script>
+    PF.ready(() => {
+      const VALID_ACCENTS = ['gold', 'spotify', 'ocean', 'indigo', 'coral', 'emerald', 'sunset'];
+      const getSavedTheme = () => {
+        const raw = localStorage.getItem('pf-theme') || localStorage.getItem('theme') || 'dark';
+        return raw === 'light' ? 'light' : 'dark';
+      };
+      const getSavedAccent = () => {
+        let raw = localStorage.getItem('pp-accent') || localStorage.getItem('pf-accent') || localStorage.getItem('accent') || 'gold';
+        if (raw === 'blue') raw = 'ocean';
+        return VALID_ACCENTS.includes(raw) ? raw : 'gold';
+      };
+
+      function paintThemeButtons(mode) {
+        document.querySelectorAll('[data-theme-pick]').forEach(btn => {
+          const on = btn.dataset.themePick === mode;
+          btn.classList.toggle('active', on);
+          btn.setAttribute('aria-checked', String(on));
+        });
+      }
+
+      function paintAccentButtons(accent) {
+        document.querySelectorAll('[data-accent]').forEach(btn => {
+          const on = btn.dataset.accent === accent;
+          btn.classList.toggle('is-on', on);
+          btn.classList.toggle('active', on);
+          btn.setAttribute('aria-checked', String(on));
+        });
+      }
+
+      function applyThemeChoice(val) {
+        const resolved = val === 'light' ? 'light' : 'dark';
+        if (PF.setTheme) PF.setTheme(resolved);
+        paintThemeButtons(resolved);
+      }
+
+      function applyAccentChoice(val) {
+        const norm = VALID_ACCENTS.includes(val) ? val : 'gold';
+        if (PF.setAccent) PF.setAccent(norm);
+        paintAccentButtons(norm);
+      }
+
+      applyThemeChoice(getSavedTheme());
+      applyAccentChoice(getSavedAccent());
+
+      document.querySelectorAll('button[data-theme-pick]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          applyThemeChoice(btn.dataset.themePick);
+          PF.toast(`Theme set to ${btn.dataset.themePick === 'light' ? 'Light' : 'Dark'}.`, 'success');
+        });
+      });
+
+      document.addEventListener('pf:theme', () => {
+        const current = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+        paintThemeButtons(current);
+      });
+
+      const badgeCheck = document.getElementById('prefTrainerBadge');
+      if (badgeCheck) {
+        badgeCheck.checked = localStorage.getItem('pref-badge') !== 'off';
+        badgeCheck.addEventListener('change', () => {
+          localStorage.setItem('pref-badge', badgeCheck.checked ? 'on' : 'off');
+          const bellBadge = document.getElementById('bellBadge');
+          if (bellBadge) bellBadge.style.display = badgeCheck.checked ? '' : 'none';
+          PF.toast('Notification preference saved.', 'success');
+        });
+      }
+
+      document.getElementById('trainerSignOutBtn').addEventListener('click', async () => {
+        if (PF.logout) {
+          await PF.logout();
+        } else if (window.ProFitAPI && window.ProFitAPI.logout) {
+          await window.ProFitAPI.logout();
+        } else {
+          window.location.href = '/login';
+        }
       });
     });
-  });
-})();
-</script>
-<script>
-PF.ready(() => {
-  const VALID_ACCENTS = ['gold', 'spotify', 'ocean', 'indigo', 'coral', 'emerald', 'sunset'];
-  const getSavedTheme = () => {
-    const raw = localStorage.getItem('pf-theme') || localStorage.getItem('theme') || 'dark';
-    return raw === 'light' ? 'light' : 'dark';
-  };
-  const getSavedAccent = () => {
-    let raw = localStorage.getItem('pp-accent') || localStorage.getItem('pf-accent') || localStorage.getItem('accent') || 'gold';
-    if (raw === 'blue') raw = 'ocean';
-    return VALID_ACCENTS.includes(raw) ? raw : 'gold';
-  };
-
-  function paintThemeButtons(mode) {
-    document.querySelectorAll('[data-theme-pick]').forEach(btn => {
-      const on = btn.dataset.themePick === mode;
-      btn.classList.toggle('active', on);
-      btn.setAttribute('aria-checked', String(on));
-    });
-  }
-
-  function paintAccentButtons(accent) {
-    document.querySelectorAll('[data-accent]').forEach(btn => {
-      const on = btn.dataset.accent === accent;
-      btn.classList.toggle('is-on', on);
-      btn.classList.toggle('active', on);
-      btn.setAttribute('aria-checked', String(on));
-    });
-  }
-
-  function applyThemeChoice(val) {
-    const resolved = val === 'light' ? 'light' : 'dark';
-    if (PF.setTheme) PF.setTheme(resolved);
-    paintThemeButtons(resolved);
-  }
-
-  function applyAccentChoice(val) {
-    const norm = VALID_ACCENTS.includes(val) ? val : 'gold';
-    if (PF.setAccent) PF.setAccent(norm);
-    paintAccentButtons(norm);
-  }
-
-  applyThemeChoice(getSavedTheme());
-  applyAccentChoice(getSavedAccent());
-
-  document.querySelectorAll('button[data-theme-pick]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      applyThemeChoice(btn.dataset.themePick);
-      PF.toast(`Theme set to ${btn.dataset.themePick === 'light' ? 'Light' : 'Dark'}.`, 'success');
-    });
-  });
-
-  document.addEventListener('pf:theme', () => {
-    const current = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-    paintThemeButtons(current);
-  });
-
-  const badgeCheck = document.getElementById('prefTrainerBadge');
-  if (badgeCheck) {
-    badgeCheck.checked = localStorage.getItem('pref-badge') !== 'off';
-    badgeCheck.addEventListener('change', () => {
-      localStorage.setItem('pref-badge', badgeCheck.checked ? 'on' : 'off');
-      const bellBadge = document.getElementById('bellBadge');
-      if (bellBadge) bellBadge.style.display = badgeCheck.checked ? '' : 'none';
-      PF.toast('Notification preference saved.', 'success');
-    });
-  }
-
-  document.getElementById('trainerSignOutBtn').addEventListener('click', async () => {
-    if (PF.logout) {
-      await PF.logout();
-    } else if (window.ProFitAPI && window.ProFitAPI.logout) {
-      await window.ProFitAPI.logout();
-    } else {
-      window.location.href = '/login';
-    }
-  });
-});
-</script>
-<script src="/static/js/install-help.js" defer></script>
+  </script>
+  <script src="/static/js/install-help.js" defer></script>
 </body>
+
 </html>

@@ -74,11 +74,19 @@
     if (elUsage) elUsage.textContent = `${usagePct}%`;
   }
 
+  function resolvedTrainerStatus(t) {
+    if (t.on_leave || t.status === "on_leave") return "on_leave";
+    if (t.status === "inactive" || !t.is_active) return "inactive";
+    return "active";
+  }
+
   function trainerStatus(t) {
     if (t.invite_status === "INVITE_PENDING") return { key: "pending", label: "Invite Pending", cls: "is-pending" };
     if (t.invite_status === "INVITE_EXPIRED") return { key: "inactive", label: "Invite Expired", cls: "is-inactive" };
-    if (t.on_leave || t.status === "on_leave") return { key: "on_leave", label: "On Leave", cls: "is-leave" };
-    if (!t.is_active) return { key: "inactive", label: "Inactive", cls: "is-inactive" };
+    if (t.invite_status === "DEACTIVATED" || t.account_active === false) return { key: "inactive", label: "Deactivated", cls: "is-deactivated" };
+    const stKey = resolvedTrainerStatus(t);
+    if (stKey === "on_leave") return { key: "on_leave", label: "On Leave", cls: "is-leave" };
+    if (stKey === "inactive") return { key: "inactive", label: "Inactive", cls: "is-inactive" };
     if (t.is_full) return { key: "full", label: "Full", cls: "is-full" };
     return { key: "active", label: "Active", cls: "is-active" };
   }
@@ -100,7 +108,7 @@
     if (labelEl) labelEl.textContent = specFilter === "all" ? "All Specializations" : specFilter;
     const items = [{ value: "all", label: "All Specializations" }, ...merged.map(s => ({ value: s, label: s }))];
     menu.innerHTML = items.map(it =>
-      `<button type="button" class="tr-combo-item${it.value === specFilter ? " is-selected" : ""}" role="option" aria-selected="${it.value === specFilter}" data-spec-val="${esc(it.value)}">${esc(it.label)}</button>`
+      `<button type="button" class="tr-combo-item${it.value === specFilter ? " is-selected" : ""}" role="option" aria-selected="${it.value === specFilter}" data-spec-val="${esc(it.value)}"><i class="fa-solid ${it.value === "all" ? "fa-users" : "fa-dumbbell"} pfc-opt-ico ${it.value === "all" ? "is-gold" : "is-cyan"}" aria-hidden="true"></i><span>${esc(it.label)}</span></button>`
     ).join("");
   }
 
@@ -144,7 +152,6 @@
       <div class="tr-card-actions">
         <button type="button" class="tr-btn-outline" data-profile="${t.id}"><i class="fa-regular fa-eye" aria-hidden="true"></i> View Profile</button>
         <button type="button" class="tr-btn-edit" data-edit="${t.id}"><i class="fa-solid fa-pen" aria-hidden="true"></i> Edit</button>
-        <button type="button" class="tr-btn-outline" data-toggle-active="${t.id}" title="${t.is_active ? "Deactivate trainer account" : "Reactivate trainer account"}" style="${t.is_active ? "color:#f87171;border-color:rgba(248,113,113,.32)" : "color:#4ade80;border-color:rgba(74,222,128,.32)"}"><i class="fa-solid ${t.is_active ? "fa-user-slash" : "fa-user-check"}" aria-hidden="true"></i> ${t.is_active ? "Deactivate" : "Set Active"}</button>
       </div>
     </article>`;
   }
@@ -354,15 +361,15 @@
       </thead>
       <tbody>
         ${requests.map(r => {
-          const trainerOptions = activeTrainers.length
-            ? activeTrainers.map(t => {
-                const selected = r.trainer_id && String(r.trainer_id) === String(t.id) ? "selected" : "";
-                const disabled = t.is_full ? "disabled" : "";
-                return opt(t.id, `${t.name}${t.is_full ? " (full)" : ""}`, `${selected} ${disabled}`);
-              }).join("")
-            : opt("", "No active trainers");
+      const trainerOptions = activeTrainers.length
+        ? activeTrainers.map(t => {
+          const selected = r.trainer_id && String(r.trainer_id) === String(t.id) ? "selected" : "";
+          const disabled = t.is_full ? "disabled" : "";
+          return opt(t.id, `${t.name}${t.is_full ? " (full)" : ""}`, `${selected} ${disabled}`);
+        }).join("")
+        : opt("", "No active trainers");
 
-          return `<tr>
+      return `<tr>
             <td>
               <div class="tr-req-member">
                 <div class="tr-req-ava">${esc(initials(r.member_name))}</div>
@@ -386,7 +393,7 @@
               </div>
             </td>
           </tr>`;
-        }).join("")}
+    }).join("")}
       </tbody>
     </table>`;
   }
@@ -479,7 +486,10 @@
     document.getElementById("trSuccessView").hidden = true;
     document.getElementById("trCreateFields").hidden = false;
     document.getElementById("trAccessSection").hidden = false;
-    document.getElementById("trActiveWrap").hidden = true;
+    const statusWrap = document.getElementById("trEditStatusWrap");
+    if (statusWrap) statusWrap.hidden = true;
+    const deactBtn = document.getElementById("trDeactivateBtn");
+    if (deactBtn) deactBtn.hidden = true;
     document.getElementById("trModalTitle").textContent = "Add Trainer";
     document.getElementById("trModalSub").textContent = "Create a trainer profile and configure their account access.";
     document.getElementById("trSave").textContent = "Add Trainer";
@@ -503,10 +513,33 @@
     document.getElementById("trAvail").value = t.availability || "";
     document.getElementById("trCap").value = t.max_members;
     document.getElementById("trBio").value = t.bio || "";
-    document.getElementById("trActive").checked = !!t.is_active;
-    document.getElementById("trActiveWrap").hidden = false;
+    const statusKey = resolvedTrainerStatus(t);
+    const isDeactivated = t.invite_status === "DEACTIVATED" || t.account_active === false;
+    const statusSel = document.getElementById("trEditStatus");
+    const statusWrap = document.getElementById("trEditStatusWrap");
+    const statusHint = document.getElementById("trStatusHint");
+    if (statusSel) {
+      statusSel.value = isDeactivated ? "inactive" : statusKey;
+      statusSel.disabled = isDeactivated;
+      statusSel.dispatchEvent(new Event("change"));
+    }
+    if (statusHint) {
+      statusHint.textContent = isDeactivated
+        ? "Account access is deactivated. Click Reactivate Account below to restore login and set them Active."
+        : "Only Active trainers can receive new member assignments.";
+    }
+    if (statusWrap) statusWrap.hidden = false;
+    const deactBtn = document.getElementById("trDeactivateBtn");
+    if (deactBtn) {
+      deactBtn.hidden = false;
+      deactBtn.classList.toggle("is-reactivate", isDeactivated);
+      deactBtn.innerHTML = isDeactivated
+        ? `<i class="fa-solid fa-user-check" aria-hidden="true"></i> <span>Reactivate Account</span>`
+        : `<i class="fa-solid fa-user-slash" aria-hidden="true"></i> <span>Deactivate Account</span>`;
+      deactBtn.title = isDeactivated ? "Restore trainer login and portal access" : "Revoke trainer login and portal access";
+    }
     document.getElementById("trModalTitle").textContent = `Edit ${t.name}`;
-    document.getElementById("trModalSub").textContent = "Update contact, specialization, schedule, capacity, or active status.";
+    document.getElementById("trModalSub").textContent = "Update contact, specialization, schedule, capacity, or trainer status.";
     document.getElementById("trSave").textContent = "Save Changes";
     openModal(trModal);
   }
@@ -569,7 +602,9 @@
         ? "Invite Expired"
         : t.invite_status === "INVITE_PENDING"
           ? "Invite Pending"
-          : "Active";
+          : (t.invite_status === "DEACTIVATED" || t.account_active === false)
+            ? "Deactivated"
+            : "Active";
     }
     if (resendBtn) resendBtn.hidden = !isPending;
 
@@ -666,6 +701,10 @@
     btn.addEventListener("click", () => {
       statusFilter = btn.dataset.statusTab || "all";
       if (statusLabel) statusLabel.textContent = btn.textContent.trim();
+      const icoBox = document.getElementById("trStatusIcoBox");
+      const icoEl = document.getElementById("trStatusIco");
+      if (icoBox && btn.dataset.tone) icoBox.className = "pfc-trig-ico " + btn.dataset.tone;
+      if (icoEl && btn.dataset.ico) icoEl.className = "fa-solid " + btn.dataset.ico;
       document.querySelectorAll("[data-status-tab]").forEach(b => {
         const on = b === btn;
         b.classList.toggle("is-on", on);
@@ -735,26 +774,7 @@
   });
 
   // Directory card interactions
-  list.addEventListener("click", async e => {
-    const toggleBtn = e.target.closest("[data-toggle-active]");
-    if (toggleBtn) {
-      const t = trainers.find(x => String(x.id) === toggleBtn.dataset.toggleActive);
-      if (!t) return;
-      const nextActive = !t.is_active;
-      const verb = nextActive ? "reactivate" : "deactivate";
-      if (!window.confirm(`Are you sure you want to ${verb} ${t.name}'s account?`)) return;
-      toggleBtn.disabled = true;
-      try {
-        await api.patch(`/staff/trainers/${t.id}/`, { is_active: nextActive });
-        await loadTrainers();
-        say(`${t.name} is now ${nextActive ? "Active" : "Inactive"}.`);
-      } catch (err) {
-        say(err.message || `Could not ${verb} trainer.`, true);
-      } finally {
-        toggleBtn.disabled = false;
-      }
-      return;
-    }
+  list.addEventListener("click", e => {
     const editBtn = e.target.closest("[data-edit]");
     if (editBtn) {
       const t = trainers.find(x => String(x.id) === editBtn.dataset.edit);
@@ -765,6 +785,36 @@
     if (profBtn) {
       const t = trainers.find(x => String(x.id) === profBtn.dataset.profile);
       if (t) openProfileModal(t);
+    }
+  });
+
+  // Deactivate / Reactivate Account inside Edit Trainer modal
+  document.getElementById("trDeactivateBtn")?.addEventListener("click", async e => {
+    const id = document.getElementById("trId")?.value;
+    const t = trainers.find(x => String(x.id) === String(id));
+    if (!t) return;
+    const isDeactivated = t.invite_status === "DEACTIVATED" || t.account_active === false;
+    const nextAcc = isDeactivated;
+    const confirmText = isDeactivated
+      ? `Reactivate ${t.name}'s account? They will be able to log in to the Trainer Portal again and receive new member assignments.`
+      : `Deactivate ${t.name}'s account? They will immediately lose login and portal access, while their coaching history stays preserved.`;
+    if (!window.confirm(confirmText)) return;
+    const btn = e.currentTarget;
+    btn.disabled = true;
+    sayModal("");
+    try {
+      await api.patch(`/staff/trainers/${t.id}/`, {
+        account_active: nextAcc,
+        status: nextAcc ? "active" : "inactive",
+        is_active: nextAcc,
+      });
+      closeModal(trModal);
+      await refreshAll();
+      say(`${t.name}'s account has been ${nextAcc ? "reactivated" : "deactivated"}.`);
+    } catch (err) {
+      sayModal(err.message || `Could not ${nextAcc ? "reactivate" : "deactivate"} account.`, true);
+    } finally {
+      btn.disabled = false;
     }
   });
 
@@ -800,7 +850,12 @@
     saveBtn.textContent = id ? "Saving..." : "Creating...";
     try {
       if (id) {
-        body.is_active = document.getElementById("trActive").checked;
+        const statusEl = document.getElementById("trEditStatus");
+        if (statusEl && !statusEl.disabled) {
+          const statusVal = statusEl.value || "active";
+          body.status = statusVal;
+          body.is_active = statusVal === "active";
+        }
         await api.patch(`/staff/trainers/${id}/`, body);
         say("Trainer profile updated.");
         closeModal(trModal);

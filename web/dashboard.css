@@ -1279,7 +1279,7 @@ body.dark .mini-avatar {
 .bar-container {
   gap: 2px;
 }
-}
+
 
 @media (max-width: 480px) {
   .stats {
@@ -9483,7 +9483,7 @@ body .dashboard .sidebar li a.active:hover {
   background: var(--gold-grad) !important;
   color: var(--on-accent) !important;
   box-shadow: none !important;
-  inset auto;
+  inset: auto;
 }
 
 body .dashboard .sidebar li a.active .icon {
@@ -14994,7 +14994,8 @@ html.auth-checking::before {
   font-weight: 700;
   text-align: center;
   font-size: 13px;
-  -moz-appearance: textfield
+  -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 .year-stepper input::-webkit-outer-spin-button,
@@ -17850,7 +17851,9 @@ html body.dark .theme-toggle {
   html body .topbar-right .theme-toggle,
   html body .topbar-right .notification,
   html body .topbar-right .topbar-avatar {
-    border-radius: 10px !important;
+    border-radius: 50% !important;
+    aspect-ratio: 1 / 1;
+    overflow: hidden !important;
     display: grid !important;
     place-items: center !important;
     border: 1px solid var(--border) !important;
@@ -18057,13 +18060,12 @@ html body.dark .theme-toggle {
     border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent) !important;
   }
 
-  /* Touch Form Controls - 16px font prevents iOS auto-zoom */
+  /* Touch Form Controls - 16px font prevents iOS auto-zoom without clobbering icon padding */
   html body .main-content :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
-    font-size: 15px !important;
+    font-size: 16px !important;
     height: 44px !important;
     min-height: 44px !important;
     border-radius: 12px !important;
-    padding: 0 14px !important;
     width: 100% !important;
     box-sizing: border-box !important;
   }
@@ -24279,6 +24281,7 @@ body:not(.dark) .chart-stepper .stepper-label.is-editable:focus-visible {
   box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.35) !important;
   font-variant-numeric: tabular-nums !important;
   -moz-appearance: textfield !important;
+  appearance: textfield !important;
 }
 
 .chart-stepper .stepper-input::-webkit-inner-spin-button,
@@ -30365,4 +30368,1291 @@ body.pf-staff .pf-mob-sheet:not(.on) {
   display: none !important;
   visibility: hidden !important;
   pointer-events: none !important;
+}
+
+
+/* ============================================================================
+   Mobile-Native Baseline & Cross-Device Responsive Fixes (Owner & Cashier Tabs)
+   ============================================================================ */
+html {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior: none;
+}
+
+body.pf-staff {
+  overscroll-behavior: none;
+}
+
+.dashboard {
+  min-height: 100dvh;
+}
+
+@media (pointer: coarse) {
+  html body.pf-staff .main-content :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select) {
+    font-size: 16px !important;
+  }
+}
+
+button,
+a,
+[role="button"],
+.pf-mob-tab,
+.pf-mob-chip,
+.chip {
+  touch-action: manipulation;
+}
+
+button,
+[role="button"],
+.pf-mob-tab,
+.pf-mob-chip,
+.chip,
+.pf-mob-sheet-bar {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.pf-mob-tab:active,
+.pf-mob-chip:active,
+.pp-btn:active:not(:disabled),
+.chip:active:not(:disabled) {
+  transform: scale(0.97);
+  transition: transform 100ms ease-out;
+}
+
+.pf-mob-sheet,
+.notification-panel {
+  overscroll-behavior: contain;
+}
+
+.pf-mob-sheet-bar {
+  touch-action: pan-x;
+}
+
+@media (hover: none) {
+
+  .pp-btn:hover,
+  .pf-ava-opt:hover,
+  .pf-mob-chip:hover,
+  .stat-card:hover,
+  .quick-action-btn:hover,
+  .tr-card:hover,
+  .tr-kpi:hover {
+    transform: none !important;
+  }
+}
+
+/* Guarantee bottom nav clearance at all mobile/tablet widths (including <= 440px) */
+@media (max-width: 980px) {
+  html body.pf-staff .main-content {
+    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important;
+    overflow-x: clip;
+  }
+}
+
+@media (max-width: 768px) {
+  body.pf-staff .topbar {
+    padding-top: calc(12px + env(safe-area-inset-top, 0px)) !important;
+  }
+
+  /* Fix Monthly Revenue & Attendance period selector clipping off the left edge */
+  html body.pf-staff .panel-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+
+  html body.pf-staff #revenuePeriods,
+  html body.pf-staff #attendancePeriods,
+  html body.pf-staff .revenue-panel .panel-header .chip-row,
+  html body.pf-staff .revenue-panel .panel-header #revenuePeriods,
+  html body.pf-staff .panel-header .chip-row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    border-radius: 14px !important;
+    padding: 6px !important;
+    gap: 6px !important;
+    overflow: visible !important;
+  }
+
+  html body.pf-staff #revenuePeriods .chip,
+  html body.pf-staff #attendancePeriods .chip,
+  html body.pf-staff .panel-header .chip-row .chip {
+    flex: 1 1 calc(25% - 6px) !important;
+    min-width: 60px !important;
+    height: 34px !important;
+    padding: 0 10px !important;
+    justify-content: center !important;
+    text-align: center !important;
+    font-size: 12px !important;
+  }
+
+  html body.pf-staff #revenuePeriods .chart-stepper,
+  html body.pf-staff #attendancePeriods .chart-stepper,
+  html body.pf-staff .panel-header .chart-stepper {
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-top: 2px !important;
+    justify-content: space-between !important;
+    padding: 4px 8px !important;
+    border-top: 1px solid var(--border, rgba(255, 255, 255, .08)) !important;
+    border-radius: 0 !important;
+  }
+
+  /* Fix Owner Dashboard — Recent registrations mobile cards (2-row layout prevents name/badge overlap) */
+  html body.pf-staff[data-page="dashboard"] .registrations-panel .table-wrapper {
+    overflow: visible !important;
+  }
+
+  html body.pf-staff[data-page="dashboard"] .registrations-panel table,
+  html body.pf-staff[data-page="dashboard"] .registrations-panel table tbody {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  html body.pf-staff[data-page="dashboard"] .registrations-panel table thead {
+    display: none !important;
+  }
+
+  html body.pf-staff[data-page="dashboard"] .registrations-panel table tbody tr {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: 8px 10px !important;
+    padding: 13px 14px !important;
+    margin: 0 !important;
+    border-radius: 14px !important;
+    border: 1px solid var(--border, rgba(255, 255, 255, .10)) !important;
+    background: var(--card-2, rgba(255, 255, 255, .03)) !important;
+    box-sizing: border-box !important;
+  }
+
+  html body.pf-staff:not(.dark)[data-page="dashboard"] .registrations-panel table tbody tr {
+    background: #faf6ee !important;
+    border-color: #eadfc8 !important;
+  }
+
+  html body.pf-staff[data-page="dashboard"] .registrations-panel table tbody td {
+    padding: 0 !important;
+    border: 0 !important;
+    min-width: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    grid-column: auto !important;
+    grid-row: auto !important;
+    justify-self: stretch !important;
+  }
+
+  html body.pf-staff[data-page="dashboard"] .registrations-panel table tbody td::before {
+    display: none !important;
+    content: none !important;
+  }
+
+  /* Hide ID (1st) and Registration date (3rd) on compact dashboard card */
+  html body.pf-staff[data-page="dashboard"] .registrations-panel table tbody td[data-label="ID"],
+  html body.pf-staff[data-page="dashboard"] .registrations-panel table tbody td[data-label="Registration date"],
+  html body.pf-staff[data-page="dashboard"] .registrations-panel table tbody td:nth-child(1),
+  html body.pf-staff[data-page="dashboard"] .registrations-panel table tbody td:nth-child(3) {
+    display: none !important;
+  }
+
+  /* Row 1: Member identity (left) + Action trigger (right); Row 2: Status pill aligned under name */
+  html body.pf-staff[data-page="dashboard"] .registrations-panel table tbody td:nth-child(2) {
+    grid-column: 1 / 2 !important;
+    grid-row: 1 !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+
+  html body.pf-staff[data-page="dashboard"] .registrations-panel table tbody td:nth-child(2) .member-cell {
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  html body.pf-staff[data-page="dashboard"] .registrations-panel table tbody td:nth-child(2) .member-cell>div {
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+  }
+
+  html body.pf-staff[data-page="dashboard"] .registrations-panel table tbody td:nth-child(5) {
+    grid-column: 2 / 3 !important;
+    grid-row: 1 !important;
+    justify-content: flex-end !important;
+    justify-self: end !important;
+  }
+
+  html body.pf-staff[data-page="dashboard"] .registrations-panel table tbody td:nth-child(4) {
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+    justify-content: flex-start !important;
+    padding-left: 44px !important;
+  }
+
+  html body.pf-staff[data-page="dashboard"] .registrations-panel table tbody tr:has(td[colspan]) {
+    display: block !important;
+    border: 0 !important;
+    background: transparent !important;
+    text-align: center !important;
+  }
+
+  html body.pf-staff[data-page="dashboard"] .registrations-panel table tbody td[colspan] {
+    display: block !important;
+    width: 100% !important;
+    text-align: center !important;
+  }
+
+  /* Trainers page mobile layout polish & icon-input padding protection */
+  body[data-page="trainers"] .tr-dir-head,
+  body[data-page="trainers"] .tr-dir-toolbar {
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+  }
+
+  body[data-page="trainers"] .tr-search-wrap,
+  body[data-page="trainers"] .tr-search,
+  body[data-page="trainers"] .tr-spec-dd,
+  body[data-page="trainers"] #openAddTrainer {
+    flex: 1 1 100% !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  html body.pf-staff[data-page="trainers"] .tr-search-wrap input,
+  html body.pf-staff[data-page="trainers"] .tr-member-search-wrap input,
+  html body.pf-staff[data-page="trainers"] .tr-select-wrap select {
+    padding-left: 38px !important;
+    padding-right: 14px !important;
+  }
+
+  html body.pf-staff[data-page="trainers"] .tr-member-search-wrap input {
+    padding-right: 36px !important;
+  }
+
+  body[data-page="trainers"] .tr-card-actions> :nth-child(3):last-child {
+    grid-column: 1 / -1;
+  }
+
+  body[data-page="trainers"] .tr-req-table-wrap {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+  }
+
+  body[data-page="trainers"] .tr-modal {
+    max-height: calc(100dvh - 32px) !important;
+    padding: 18px !important;
+  }
+
+  /* Cashiers page table as clean 2-row cards on mobile (Name + Status + Actions on Row 1, Email on Row 2) */
+  body[data-page="cashiers"] .csh-toolbar {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  body[data-page="cashiers"] .csh-toolbar>button,
+  body[data-page="cashiers"] .csh-search {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  html body.pf-staff[data-page="cashiers"] .csh-table-wrap {
+    overflow: visible !important;
+    padding: 12px !important;
+  }
+
+  html body.pf-staff[data-page="cashiers"] .csh-table,
+  html body.pf-staff[data-page="cashiers"] .csh-table tbody {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  html body.pf-staff[data-page="cashiers"] .csh-table thead {
+    display: none !important;
+  }
+
+  html body.pf-staff[data-page="cashiers"] .csh-table tbody tr {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto auto !important;
+    gap: 10px 10px !important;
+    align-items: center !important;
+    padding: 14px !important;
+    border-radius: 14px !important;
+    border: 1px solid var(--border, rgba(255, 255, 255, .10)) !important;
+    background: var(--card-2, rgba(255, 255, 255, .03)) !important;
+    box-sizing: border-box !important;
+  }
+
+  html body.pf-staff:not(.dark)[data-page="cashiers"] .csh-table tbody tr {
+    background: #faf6ee !important;
+    border-color: #eadfc8 !important;
+  }
+
+  html body.pf-staff[data-page="cashiers"] .csh-table tbody td {
+    padding: 0 !important;
+    border: 0 !important;
+    min-width: 0 !important;
+    width: auto !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  html body.pf-staff[data-page="cashiers"] .csh-table tbody td::before {
+    display: none !important;
+    content: none !important;
+  }
+
+  html body.pf-staff[data-page="cashiers"] .csh-table tbody td:nth-child(1) {
+    grid-column: 1 / 2 !important;
+    grid-row: 1 !important;
+  }
+
+  html body.pf-staff[data-page="cashiers"] .csh-table tbody td:nth-child(3) {
+    grid-column: 2 / 3 !important;
+    grid-row: 1 !important;
+    justify-self: end !important;
+  }
+
+  html body.pf-staff[data-page="cashiers"] .csh-table tbody td:nth-child(4) {
+    grid-column: 3 / 4 !important;
+    grid-row: 1 !important;
+    justify-self: end !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+  }
+
+  html body.pf-staff[data-page="cashiers"] .csh-table tbody td:nth-child(2) {
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+    font-size: 12.5px !important;
+    color: var(--muted, #94a3b8) !important;
+    padding-top: 8px !important;
+    border-top: 1px solid var(--border, rgba(255, 255, 255, .08)) !important;
+  }
+
+  html body.pf-staff[data-page="cashiers"] .csh-table tbody tr:has(td[colspan]) {
+    display: block !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
+
+  /* Notifications filter tabs swipe cleanly on mobile */
+  body[data-page="notifications"] .ntf-seg {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+    scrollbar-width: none;
+  }
+
+  body[data-page="notifications"] .ntf-seg::-webkit-scrollbar {
+    display: none;
+  }
+
+  body[data-page="notifications"] .ntf-head {
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+  }
+}
+
+/* Fix bar chart X-axis labels on phones (crisp horizontal ticks, smart thinning for 12-month & 14-day views) */
+@media (max-width: 640px) {
+  html body.pf-staff .chart-area {
+    padding: 14px 8px 14px 4px !important;
+    min-height: 240px !important;
+  }
+
+  html body.pf-staff .chart {
+    gap: 6px !important;
+    padding-bottom: 6px !important;
+  }
+
+  html body.pf-staff .chart-y {
+    width: 36px !important;
+    font-size: 10px !important;
+  }
+
+  html body.pf-staff .bar-container {
+    gap: 2px !important;
+    padding-left: 2px !important;
+    padding-right: 2px !important;
+  }
+
+  html body.pf-staff .bar-column {
+    min-width: 0 !important;
+  }
+
+  html body.pf-staff .bar-column label {
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+    transform: none !important;
+    padding-top: 6px !important;
+    height: 22px !important;
+    opacity: 1 !important;
+    color: var(--muted, #94a3b8) !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: visible !important;
+  }
+
+  /* 9-12 columns (e.g. Jan-Dec): show every 2nd label cleanly */
+  html body.pf-staff .bar-container:has(.bar-column:nth-child(9)):not(:has(.bar-column:nth-child(13))) .bar-column:nth-child(even) label {
+    visibility: hidden !important;
+  }
+
+  /* 13+ columns (e.g. 14-day Days view): show every 3rd label cleanly */
+  html body.pf-staff .bar-container:has(.bar-column:nth-child(13)) .bar-column:not(:nth-child(3n+1)) label {
+    visibility: hidden !important;
+  }
+}
+
+/* Tablet Landscape (769px - 1024px) smooth grid balance */
+@media (min-width: 769px) and (max-width: 1024px) {
+
+  html body.pf-staff .stats.four,
+  body[data-page="trainers"] .tr-kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+/* Compact topbar & bottom nav for narrow phones (320px - 440px) so long page titles never clip */
+@media (max-width: 480px) {
+
+  body[data-page="trainers"] .tr-prof-stats,
+  body[data-page="trainers"] .tr-kpi-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.pf-staff .topbar {
+    gap: 8px !important;
+    padding: calc(10px + env(safe-area-inset-top, 0px)) 12px 10px !important;
+  }
+
+  body.pf-staff .topbar-title h1 {
+    font-size: clamp(14px, 4.1vw, 17px) !important;
+  }
+
+  body.pf-staff .topbar-actions {
+    gap: 6px !important;
+  }
+
+  body.pf-staff .topbar-actions .theme-toggle,
+  body.pf-staff .topbar-actions .notification,
+  body.pf-staff .topbar-avatar {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  body.pf-staff .pf-mob-tab {
+    font-size: 10px !important;
+  }
+}
+
+
+/* ============================================================================
+   Root-Cause Bottom Scroll Clearance, Unified Header, Circular Avatars &
+   Compact Mobile Container Sizing (Owner & Cashier Portals)
+   ============================================================================ */
+
+/* 1. Root-cause fix: never lock shell height or let 48px/24px rules beat bottom nav clearance */
+html body.pf-staff,
+html body.pf-staff .dashboard {
+  height: auto !important;
+  min-height: 100dvh !important;
+  overflow-y: visible !important;
+}
+
+html body.pf-staff .dashboard>main.main-content {
+  height: auto !important;
+  min-height: 100dvh !important;
+  overflow-x: clip !important;
+  overflow-y: visible !important;
+  padding-bottom: 56px !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 980px) {
+  html body.pf-staff .dashboard>main.main-content {
+    padding-bottom: calc(112px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+/* 2. Consistent Unified Portal Header (matches Member & Trainer portals 1:1) */
+html body.pf-staff .topbar {
+  min-height: 68px !important;
+  padding: 12px 24px !important;
+  gap: 12px !important;
+}
+
+html body.pf-staff .topbar-title {
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+}
+
+html body.pf-staff .topbar-title h1 {
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+html body.pf-staff .topbar-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  flex: none !important;
+}
+
+html body.pf-staff .topbar-actions .theme-toggle,
+html body.pf-staff .topbar-actions .notification,
+html body.pf-staff .topbar-actions .topbar-avatar,
+html body.pf-staff .topbar-right .theme-toggle,
+html body.pf-staff .topbar-right .notification,
+html body.pf-staff .topbar-right .topbar-avatar {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  flex: 0 0 40px !important;
+  border-radius: 50% !important;
+  aspect-ratio: 1 / 1 !important;
+  overflow: hidden !important;
+}
+
+html body.pf-staff .topbar-actions .notification-wrap,
+html body.pf-staff .topbar-right .notification-wrap {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  flex: 0 0 40px !important;
+}
+
+@media (max-width: 480px) {
+  html body.pf-staff .topbar {
+    min-height: 58px !important;
+    padding: calc(10px + env(safe-area-inset-top, 0px)) 12px 10px !important;
+    gap: 8px !important;
+    margin-bottom: 12px !important;
+  }
+
+  html body.pf-staff .topbar-title h1 {
+    font-size: clamp(15px, 4.1vw, 17px) !important;
+  }
+
+  html body.pf-staff .topbar-actions {
+    gap: 8px !important;
+  }
+
+  html body.pf-staff .topbar-actions .theme-toggle,
+  html body.pf-staff .topbar-actions .notification,
+  html body.pf-staff .topbar-actions .topbar-avatar,
+  html body.pf-staff .topbar-actions .notification-wrap,
+  html body.pf-staff .topbar-right .theme-toggle,
+  html body.pf-staff .topbar-right .notification,
+  html body.pf-staff .topbar-right .topbar-avatar,
+  html body.pf-staff .topbar-right .notification-wrap {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    flex: 0 0 36px !important;
+  }
+}
+
+/* 3. Standardize ALL avatars to be ALWAYS perfectly circular (never square or oval) */
+html body.pf-staff .topbar-avatar,
+html body.pf-staff .sidebar-avatar,
+html body.pf-staff .mini-avatar,
+html body.pf-staff .registrations-panel .mini-avatar,
+html body.pf-staff .pp-avatar,
+html body.pf-staff .pp-avatar.xl,
+html body.pf-staff .pp-av,
+html body.pf-staff .pp-avatar-photo,
+html body.pf-staff .tr-avatar,
+html body.pf-staff .tr-prof-avatar,
+html body.pf-staff .tr-req-ava,
+html body.pf-staff .tr-prof-mem-chip span,
+html body.pf-staff .csh-avatar,
+html body.pf-staff .ci-avatar,
+html body.pf-staff .review-card-cell .pp-avatar,
+html body.pf-staff .member-cell .avatar,
+html body.pf-staff .member-cell .mini-avatar {
+  border-radius: 50% !important;
+  aspect-ratio: 1 / 1 !important;
+  overflow: hidden !important;
+  flex-shrink: 0 !important;
+}
+
+html body.pf-staff .topbar-avatar img,
+html body.pf-staff .sidebar-avatar img,
+html body.pf-staff .mini-avatar img,
+html body.pf-staff .pp-avatar img,
+html body.pf-staff .pp-av img,
+html body.pf-staff .pp-avatar-photo img,
+html body.pf-staff .tr-avatar img,
+html body.pf-staff .tr-prof-avatar img,
+html body.pf-staff .tr-req-ava img,
+html body.pf-staff .csh-avatar img,
+html body.pf-staff .ci-avatar img,
+html body.pf-staff .member-cell .avatar img,
+html body.pf-staff .member-cell .mini-avatar img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: 50% !important;
+  display: block !important;
+}
+
+/* 4. Compact, proportional mobile container & box sizing (desktop untouched) */
+@media (max-width: 640px) {
+  html body.pf-staff .dashboard>main.main-content {
+    padding: 8px 12px calc(112px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  html body.pf-staff .panel,
+  html body.pf-staff .card,
+  html body.pf-staff .fn-card,
+  html body.pf-staff .pp-browse-card,
+  html body.pf-staff .tr-assign-panel,
+  html body.pf-staff .tr-requests-panel,
+  html body.pf-staff .csh-panel {
+    padding: 14px !important;
+    border-radius: 14px !important;
+    margin-bottom: 12px !important;
+  }
+
+  html body.pf-staff .stats,
+  html body.pf-staff .tr-kpi-grid,
+  html body.pf-staff .ann-kpi-grid,
+  html body.pf-staff .csh-kpi-grid,
+  html body.pf-staff .quick-actions,
+  html body.pf-staff .tr-bottom-grid,
+  html body.pf-staff .dashboard-grid {
+    gap: 10px !important;
+    margin-bottom: 12px !important;
+  }
+
+  html body.pf-staff .stat-card,
+  html body.pf-staff .tr-kpi,
+  html body.pf-staff .ann-kpi-card,
+  html body.pf-staff .csh-kpi {
+    padding: 12px 14px !important;
+    min-height: 0 !important;
+    border-radius: 14px !important;
+  }
+
+  html body.pf-staff .stat-content h2,
+  html body.pf-staff .tr-kpi-info strong,
+  html body.pf-staff .ann-kpi-info strong,
+  html body.pf-staff .csh-kpi-val {
+    font-size: clamp(20px, 6vw, 26px) !important;
+  }
+
+  html body.pf-staff .quick-action {
+    min-height: 60px !important;
+    padding: 11px 13px !important;
+    border-radius: 14px !important;
+  }
+
+  html body.pf-staff .panel-header h2,
+  html body.pf-staff .panel-header h3 {
+    font-size: 15.5px !important;
+  }
+
+  html body.pf-staff .pp-members-topbar {
+    min-height: 0 !important;
+    padding: 14px !important;
+    border-radius: 14px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  html body.pf-staff .dashboard>main.main-content {
+    padding: 0 10px calc(112px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  html body.pf-staff .topbar-actions {
+    gap: 6px !important;
+  }
+}
+
+
+/* ============================================================================
+   Motionless Edge-to-Edge Member-Portal-Style Header (PC & Mobile) +
+   ProFit Admin Dashboard 60 / 30 / 10 Cohesive SaaS Refinement
+   ============================================================================ */
+
+/* A. Motionless Edge-to-Edge Member-Portal-Style Header across ALL Owner & Cashier Pages */
+html body.pf-staff .dashboard>main.main-content {
+  padding-top: 0 !important;
+}
+
+html body.pf-staff .topbar,
+html body.pf-staff .topbar.is-scrolled {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 60 !important;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  width: calc(100% + clamp(20px, 3vw, 40px) * 2) !important;
+  max-width: none !important;
+  height: 76px !important;
+  min-height: 76px !important;
+  max-height: 76px !important;
+  margin: 0 calc(clamp(20px, 3vw, 40px) * -1) 24px !important;
+  padding: 0 clamp(24px, 3vw, 40px) !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+  background: #0B0F18 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+  box-shadow: none !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+html body.pf-staff:not(.dark) .topbar,
+html body.pf-staff:not(.dark) .topbar.is-scrolled {
+  background: #FAF6EE !important;
+  border-bottom: 1px solid #E8DFCE !important;
+}
+
+html body.pf-staff .topbar-heading {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  flex: 1 1 auto !important;
+  width: auto !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+html body.pf-staff .topbar-title {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+html body.pf-staff .topbar-title h1 {
+  font-size: 21px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.2 !important;
+  margin: 0 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+html body.pf-staff .topbar-right {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  flex: 0 0 auto !important;
+  width: auto !important;
+  max-width: none !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+html body.pf-staff .topbar-actions {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  flex: 0 0 auto !important;
+  width: auto !important;
+  gap: 12px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+html body.pf-staff .topbar-actions .theme-toggle,
+html body.pf-staff .topbar-actions .notification,
+html body.pf-staff .topbar-actions .topbar-avatar,
+html body.pf-staff .topbar-actions .notification-wrap,
+html body.pf-staff .topbar-right .theme-toggle,
+html body.pf-staff .topbar-right .notification,
+html body.pf-staff .topbar-right .topbar-avatar,
+html body.pf-staff .topbar-right .notification-wrap {
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+  flex: 0 0 42px !important;
+}
+
+@media (max-width: 768px) {
+  html body.pf-staff .dashboard>main.main-content {
+    padding: 0 14px calc(112px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  html body.pf-staff .topbar,
+  html body.pf-staff .topbar.is-scrolled {
+    width: calc(100% + 28px) !important;
+    max-width: none !important;
+    height: calc(62px + env(safe-area-inset-top, 0px)) !important;
+    min-height: calc(62px + env(safe-area-inset-top, 0px)) !important;
+    max-height: calc(62px + env(safe-area-inset-top, 0px)) !important;
+    margin: 0 -14px 16px !important;
+    padding: env(safe-area-inset-top, 0px) 14px 0 !important;
+    gap: 10px !important;
+    flex-wrap: nowrap !important;
+  }
+
+  html body.pf-staff .topbar-title h1 {
+    font-size: clamp(16px, 4.4vw, 19px) !important;
+  }
+
+  html body.pf-staff .topbar-actions {
+    gap: 8px !important;
+  }
+
+  html body.pf-staff .topbar-actions .theme-toggle,
+  html body.pf-staff .topbar-actions .notification,
+  html body.pf-staff .topbar-actions .topbar-avatar,
+  html body.pf-staff .topbar-actions .notification-wrap,
+  html body.pf-staff .topbar-right .theme-toggle,
+  html body.pf-staff .topbar-right .notification,
+  html body.pf-staff .topbar-right .topbar-avatar,
+  html body.pf-staff .topbar-right .notification-wrap {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    flex: 0 0 38px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  html body.pf-staff .dashboard>main.main-content {
+    padding: 0 12px calc(112px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  html body.pf-staff .topbar,
+  html body.pf-staff .topbar.is-scrolled {
+    width: calc(100% + 24px) !important;
+    margin: 0 -12px 14px !important;
+    padding: env(safe-area-inset-top, 0px) 12px 0 !important;
+  }
+}
+
+@media (max-width: 380px) {
+  html body.pf-staff .dashboard>main.main-content {
+    padding: 0 10px calc(112px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  html body.pf-staff .topbar,
+  html body.pf-staff .topbar.is-scrolled {
+    width: calc(100% + 20px) !important;
+    margin: 0 -10px 12px !important;
+    padding: env(safe-area-inset-top, 0px) 10px 0 !important;
+  }
+
+  html body.pf-staff .topbar-actions {
+    gap: 6px !important;
+  }
+
+  html body.pf-staff .topbar-actions .theme-toggle,
+  html body.pf-staff .topbar-actions .notification,
+  html body.pf-staff .topbar-actions .topbar-avatar,
+  html body.pf-staff .topbar-actions .notification-wrap,
+  html body.pf-staff .topbar-right .theme-toggle,
+  html body.pf-staff .topbar-right .notification,
+  html body.pf-staff .topbar-right .topbar-avatar,
+  html body.pf-staff .topbar-right .notification-wrap {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    flex: 0 0 36px !important;
+  }
+}
+
+/* B. ProFit Admin Dashboard (index.html) — 60 / 30 / 10 Cohesive SaaS Hierarchy */
+/* 60% Canvas (#0A0E16) | 30% Calm Elevated Surface (#111622) | 10% Brand Gold (#E8B93A) */
+html body.dark.pf-staff[data-page="dashboard"] {
+  background: #0A0E16 !important;
+}
+
+/* 1. Compact, Lightweight Quick Actions Strip (less boxy, calm 30% surface, gold on hover) */
+html body.pf-staff[data-page="dashboard"] .quick-actions {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  margin-bottom: 18px !important;
+}
+
+@media (max-width: 1024px) {
+  html body.pf-staff[data-page="dashboard"] .quick-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+}
+
+@media (max-width: 560px) {
+  html body.pf-staff[data-page="dashboard"] .quick-actions {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+}
+
+html body.dark.pf-staff[data-page="dashboard"] .quick-action {
+  min-height: 54px !important;
+  padding: 10px 14px !important;
+  border-radius: 12px !important;
+  background: #111622 !important;
+  border: 0 !important;
+  gap: 12px !important;
+  box-shadow: none !important;
+}
+
+html body.dark.pf-staff[data-page="dashboard"] .quick-action:hover {
+  background: #171E2E !important;
+  transform: translateY(-1px) !important;
+}
+
+html body:not(.dark).pf-staff[data-page="dashboard"] .quick-action {
+  min-height: 54px !important;
+  padding: 10px 14px !important;
+  border-radius: 12px !important;
+  background: #FFFFFF !important;
+  border: 1px solid rgba(42, 36, 24, 0.06) !important;
+  gap: 12px !important;
+  box-shadow: 0 1px 2px rgba(42, 36, 24, 0.03) !important;
+}
+
+html body:not(.dark).pf-staff[data-page="dashboard"] .quick-action:hover {
+  background: #FDF9F0 !important;
+  border-color: rgba(232, 185, 58, 0.45) !important;
+}
+
+html body.pf-staff[data-page="dashboard"] .quick-action .quick-action-icon {
+  flex: 0 0 34px !important;
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 10px !important;
+  font-size: 14px !important;
+  border: 0 !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #CBD5E1 !important;
+  transition: background-color 0.18s ease, color 0.18s ease !important;
+}
+
+html body:not(.dark).pf-staff[data-page="dashboard"] .quick-action .quick-action-icon {
+  background: #F4EFE4 !important;
+  color: #4A4030 !important;
+}
+
+html body.pf-staff[data-page="dashboard"] .quick-action:hover .quick-action-icon {
+  background: rgba(232, 185, 58, 0.16) !important;
+  color: #E8B93A !important;
+  transform: none !important;
+}
+
+html body.pf-staff[data-page="dashboard"] .quick-action strong {
+  font-size: 13.5px !important;
+  font-weight: 700 !important;
+}
+
+html body.pf-staff[data-page="dashboard"] .quick-action small {
+  font-size: 11.5px !important;
+}
+
+html body.pf-staff[data-page="dashboard"] .quick-action .action-arrow {
+  width: 24px !important;
+  height: 24px !important;
+  flex: 0 0 24px !important;
+  background: transparent !important;
+  border: 0 !important;
+  color: #64748B !important;
+  font-size: 11px !important;
+  opacity: 0.85 !important;
+}
+
+html body.pf-staff[data-page="dashboard"] .quick-action:hover .action-arrow {
+  color: #E8B93A !important;
+  transform: translateX(2px) !important;
+}
+
+/* 2. Uniform 4 KPI Cards (no boxy borders; surface elevation + strict 60/30/10 color discipline) */
+html body.pf-staff[data-page="dashboard"] #dashStats {
+  gap: 16px !important;
+  margin-bottom: 20px !important;
+  align-items: stretch !important;
+}
+
+html body.dark.pf-staff[data-page="dashboard"] #dashStats .stat-card.kpi-card {
+  background: #111622 !important;
+  border: 0 !important;
+  border-radius: 16px !important;
+  padding: 18px 20px !important;
+  min-height: 126px !important;
+  height: 100% !important;
+  box-shadow: none !important;
+  transition: background-color 0.2s ease, transform 0.2s ease !important;
+}
+
+html body.dark.pf-staff[data-page="dashboard"] #dashStats .stat-card.kpi-card:hover {
+  background: #151C2B !important;
+  border: 0 !important;
+}
+
+html body:not(.dark).pf-staff[data-page="dashboard"] #dashStats .stat-card.kpi-card {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(42, 36, 24, 0.06) !important;
+  border-radius: 16px !important;
+  padding: 18px 20px !important;
+  min-height: 126px !important;
+  height: 100% !important;
+  box-shadow: 0 1px 3px rgba(42, 36, 24, 0.04) !important;
+}
+
+html body.pf-staff[data-page="dashboard"] #dashStats .stat-top {
+  gap: 10px !important;
+  margin-bottom: 10px !important;
+}
+
+html body.pf-staff[data-page="dashboard"] #dashStats .stat-icon {
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 50% !important;
+  border: 0 !important;
+  font-size: 14px !important;
+}
+
+/* 60/30/10 KPI icon colors: neutral default, status colors only for status, gold only for revenue highlight */
+html body.dark.pf-staff[data-page="dashboard"] #kpiTotalMembersCard .stat-icon {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: #CBD5E1 !important;
+}
+
+html body:not(.dark).pf-staff[data-page="dashboard"] #kpiTotalMembersCard .stat-icon {
+  background: #F4EFE4 !important;
+  color: #4A4030 !important;
+}
+
+html body.pf-staff[data-page="dashboard"] #kpiExpiredCard .stat-icon {
+  background: rgba(255, 92, 92, 0.12) !important;
+  color: #FF5C5C !important;
+}
+
+html body.pf-staff[data-page="dashboard"] #kpiExpiringCard .stat-icon {
+  background: rgba(255, 159, 67, 0.14) !important;
+  color: #FF9F43 !important;
+}
+
+html body.pf-staff[data-page="dashboard"] #kpiRevenueCard .stat-icon {
+  background: rgba(232, 185, 58, 0.16) !important;
+  color: #E8B93A !important;
+}
+
+html body.pf-staff[data-page="dashboard"] #dashStats .kpi-title {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #9AA3B5 !important;
+}
+
+html body:not(.dark).pf-staff[data-page="dashboard"] #dashStats .kpi-title {
+  color: #6F6450 !important;
+}
+
+html body.pf-staff[data-page="dashboard"] #dashStats .stat-content h2 {
+  font-size: clamp(26px, 2.2vw, 32px) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.025em !important;
+  line-height: 1.1 !important;
+}
+
+html body.pf-staff[data-page="dashboard"] #dashStats .kpi-sub {
+  font-size: 12px !important;
+}
+
+/* 3. Two-Column Revenue & Membership Type + Recent Registrations (subtle surface hierarchy, zero box clutter) */
+html body.pf-staff[data-page="dashboard"] .content-grid {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr) !important;
+  gap: 18px !important;
+  align-items: stretch !important;
+  margin-bottom: 20px !important;
+}
+
+@media (max-width: 1024px) {
+  html body.pf-staff[data-page="dashboard"] .content-grid {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+}
+
+html body.dark.pf-staff[data-page="dashboard"] .revenue-panel,
+html body.dark.pf-staff[data-page="dashboard"] .membership-type-panel,
+html body.dark.pf-staff[data-page="dashboard"] .registrations-panel {
+  background: #111622 !important;
+  border: 0 !important;
+  border-radius: 16px !important;
+  padding: 22px 24px !important;
+  box-shadow: none !important;
+}
+
+html body:not(.dark).pf-staff[data-page="dashboard"] .revenue-panel,
+html body:not(.dark).pf-staff[data-page="dashboard"] .membership-type-panel,
+html body:not(.dark).pf-staff[data-page="dashboard"] .registrations-panel {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(42, 36, 24, 0.06) !important;
+  border-radius: 16px !important;
+  padding: 22px 24px !important;
+  box-shadow: 0 1px 3px rgba(42, 36, 24, 0.04) !important;
+}
+
+/* Quiet borderless section icons (no glowing boxes around every title icon) */
+html body.pf-staff[data-page="dashboard"] .rev-title-ico,
+html body.pf-staff[data-page="dashboard"] .mt-title-ico,
+html body.pf-staff[data-page="dashboard"] .reg-title-ico {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 10px !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: #E8B93A !important;
+  font-size: 15px !important;
+}
+
+html body:not(.dark).pf-staff[data-page="dashboard"] .rev-title-ico,
+html body:not(.dark).pf-staff[data-page="dashboard"] .mt-title-ico,
+html body:not(.dark).pf-staff[data-page="dashboard"] .reg-title-ico {
+  background: #F6EFE0 !important;
+  color: #9A6B0D !important;
+}
+
+/* Remove nested inner box around the bar chart */
+html body.pf-staff[data-page="dashboard"] .revenue-panel .chart-area {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding-left: 0 !important;
+  padding-right: 4px !important;
+}
+
+/* Clean pill period selector (gold strictly for active chip) */
+html body.dark.pf-staff[data-page="dashboard"] .revenue-panel .chip-row {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 0 !important;
+}
+
+html body.pf-staff[data-page="dashboard"] .revenue-panel .chip.active {
+  background: #E8B93A !important;
+  color: #0B0F19 !important;
+  border-color: transparent !important;
+}
+
+/* Membership Type: remove decorative wave & boxes-inside-boxes around legend items */
+html body.pf-staff[data-page="dashboard"] .mt-decor-wave {
+  display: none !important;
+}
+
+html body.dark.pf-staff[data-page="dashboard"] .mt-legend li {
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+  border-radius: 0 !important;
+  padding: 9px 2px !important;
+  box-shadow: none !important;
+}
+
+html body.dark.pf-staff[data-page="dashboard"] .mt-legend li:last-child {
+  border-bottom: 0 !important;
+}
+
+html body:not(.dark).pf-staff[data-page="dashboard"] .mt-legend li {
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 1px solid #EFE7D8 !important;
+  border-radius: 0 !important;
+  padding: 9px 2px !important;
+  box-shadow: none !important;
+}
+
+html body:not(.dark).pf-staff[data-page="dashboard"] .mt-legend li:last-child {
+  border-bottom: 0 !important;
+}
+
+html body.pf-staff[data-page="dashboard"] .mt-footer-note {
+  background: transparent !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+  border-radius: 0 !important;
+  padding: 12px 0 0 !important;
+  margin-top: 10px !important;
+}
+
+/* Recent Registrations: calm seamless rows instead of heavy boxed rows on desktop */
+@media (min-width: 769px) {
+  html body.dark.pf-staff[data-page="dashboard"] .registrations-panel table {
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+  }
+
+  html body.dark.pf-staff[data-page="dashboard"] .registrations-panel tbody tr {
+    background: transparent !important;
+    border: 0 !important;
+  }
+
+  html body.dark.pf-staff[data-page="dashboard"] .registrations-panel tbody td {
+    background: transparent !important;
+    border: 0 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    border-radius: 0 !important;
+  }
+
+  html body.dark.pf-staff[data-page="dashboard"] .registrations-panel tbody tr:hover td {
+    background: rgba(255, 255, 255, 0.025) !important;
+  }
+
+  html body.dark.pf-staff[data-page="dashboard"] .registrations-panel tbody tr:last-child td {
+    border-bottom: 0 !important;
+  }
+}
+
+@media (max-width: 640px) {
+  html body.pf-staff[data-page="dashboard"] #dashStats .stat-card.kpi-card {
+    min-height: 0 !important;
+    padding: 14px 16px !important;
+  }
+
+  html body.pf-staff[data-page="dashboard"] .revenue-panel,
+  html body.pf-staff[data-page="dashboard"] .membership-type-panel,
+  html body.pf-staff[data-page="dashboard"] .registrations-panel {
+    padding: 16px 14px !important;
+  }
+
+  html body.dark.pf-staff[data-page="dashboard"] .registrations-panel table tbody tr {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: 0 !important;
+  }
 }

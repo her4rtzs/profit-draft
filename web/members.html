@@ -1,160 +1,249 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script>(function(){try{var d=localStorage.getItem('theme')!=='light';var h=document.documentElement;h.style.background=d?'#0a0e16':'#f0f2f5';h.style.colorScheme=d?'dark':'light';}catch(e){}})();</script><script src="splash.js?v=2"></script>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ProFit | Members</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Figtree:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link rel="stylesheet" href="dashboard.css?v=13">
-<link rel="stylesheet" href="members-ui.css?v=24">
-<script src="config.js?v=4"></script><script src="api.js"></script><script src="auth.js?v=4"></script>
-<script>document.documentElement.dataset.accent='gold'</script>
-<script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script><link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
+
+<head>
+  <script>(function () { try { var d = localStorage.getItem('theme') !== 'light'; var h = document.documentElement; h.style.background = d ? '#0a0e16' : '#f0f2f5'; h.style.colorScheme = d ? 'dark' : 'light'; } catch (e) { } })();</script>
+  <script src="splash.js?v=2"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <title>ProFit | Members</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Figtree:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="dashboard.css?v=18">
+  <link rel="stylesheet" href="members-ui.css?v=30">
+  <script src="config.js?v=9"></script>
+  <script src="api.js"></script>
+  <script src="auth.js?v=4"></script>
+  <script>document.documentElement.dataset.accent = 'gold'</script>
+  <script
+    type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#0a0e17">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17">
+  <meta name="color-scheme" content="light dark">
+  <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="ProFit">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="stylesheet" href="pf-system.css?v=18">
+</head>
+
 <body class="pf-staff" data-page="members" data-title="Members" data-welcome="Memberships and enrollment">
-<div class="dashboard"><nav class="sidebar" id="sidebar"></nav><main class="main-content"><header class="topbar" id="topbar"><h1>Members</h1></header>
+  <div class="dashboard">
+    <nav class="sidebar" id="sidebar"></nav>
+    <main class="main-content">
+      <header class="topbar" id="topbar">
+        <h1>Members</h1>
+      </header>
 
-<div class="pp-members-topbar">
-  <div class="pp-browse-title" id="membersHeaderBlock">
-    <span class="pp-browse-ico is-amber" id="membersHeaderIco" aria-hidden="true"><i class="fa-solid fa-users"></i></span>
-    <div class="pp-header-copy" id="membersHeaderCopy">
-      <h2 id="membersHeaderTitle" aria-live="polite">Browse Members <span class="pp-browse-badge" id="browseTotalBadge">0</span></h2>
-      <p id="membersHeaderSub">View and manage all registered gym members.</p>
-    </div>
-  </div>
-  <nav class="pp-page-tabs" role="tablist" aria-label="Members sections">
-    <button class="pp-page-tab active" type="button" role="tab" aria-selected="true" data-tab="browse">
-      <span class="pp-count" id="countBrowse">0</span>
-      <span class="pp-tab-ico is-amber" aria-hidden="true"><i class="fa-solid fa-users"></i></span>
-      <span class="pp-tab-lbl">Browse members</span>
-    </button>
-    <button class="pp-page-tab" type="button" role="tab" aria-selected="false" data-tab="detail">
-      <span class="pp-tab-ico is-cyan" aria-hidden="true"><i class="fa-solid fa-id-card"></i></span>
-      <span class="pp-tab-lbl">Member detail</span>
-    </button>
-    <button class="pp-page-tab" type="button" role="tab" aria-selected="false" data-tab="enroll">
-      <span class="pp-tab-ico is-emerald" aria-hidden="true"><i class="fa-solid fa-user-plus"></i></span>
-      <span class="pp-tab-lbl">New enrollment</span>
-    </button>
-  </nav>
-  <div class="pp-header-bg" aria-hidden="true"></div>
-</div>
-
-<section class="pp-pane active" data-pane="browse">
-  <div class="pp-browse-card">
-    <div class="pp-toolbar pp-members-toolbar">
-      <label class="pp-search">
-        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-        <input id="memberSearch" type="search" placeholder="Search by name, ID, or contact..." aria-label="Search members">
-      </label>
-
-      <div class="pp-status-dd" id="memberStatusWrap">
-        <button type="button" class="pp-status-btn" id="memberStatusBtn" aria-haspopup="listbox" aria-expanded="false">
-          <span class="pp-status-btn-inner">
-            <span class="pp-dd-ico is-amber" aria-hidden="true"><i class="fa-solid fa-users pp-st-ico is-all" id="memberStatusIco"></i></span>
-            <span id="memberStatusLabel">All members</span>
-          </span>
-          <i class="fa-solid fa-chevron-down pp-dd-caret" aria-hidden="true"></i>
-        </button>
-        <div class="pp-status-menu" id="memberStatusMenu" role="listbox" hidden>
-          <button type="button" class="pp-status-opt is-selected" role="option" aria-selected="true" data-filter="all" data-ico="fa-users" data-cls="is-all" data-label="All members">
-            <i class="fa-solid fa-users pp-st-ico is-all" aria-hidden="true"></i><span>All members</span>
-          </button>
-          <button type="button" class="pp-status-opt" role="option" aria-selected="false" data-filter="active" data-ico="fa-circle-check" data-cls="is-active" data-label="Active">
-            <i class="fa-solid fa-circle-check pp-st-ico is-active" aria-hidden="true"></i><span>Active</span>
-          </button>
-          <button type="button" class="pp-status-opt" role="option" aria-selected="false" data-filter="expired" data-ico="fa-circle-xmark" data-cls="is-expired" data-label="Expired">
-            <i class="fa-solid fa-circle-xmark pp-st-ico is-expired" aria-hidden="true"></i><span>Expired</span>
-          </button>
-          <button type="button" class="pp-status-opt" role="option" aria-selected="false" data-filter="expiring" data-ico="fa-clock" data-cls="is-expiring" data-label="Expiring soon">
-            <i class="fa-solid fa-clock pp-st-ico is-expiring" aria-hidden="true"></i><span>Expiring soon</span>
-          </button>
-          <button type="button" class="pp-status-opt" role="option" aria-selected="false" data-filter="inactive" data-ico="fa-circle-pause" data-cls="is-inactive" data-label="Inactive">
-            <i class="fa-solid fa-circle-pause pp-st-ico is-inactive" aria-hidden="true"></i><span>Inactive</span>
-          </button>
+      <div class="pp-members-topbar">
+        <div class="pp-browse-title" id="membersHeaderBlock">
+          <span class="pp-browse-ico is-amber" id="membersHeaderIco" aria-hidden="true"><i
+              class="fa-solid fa-users"></i></span>
+          <div class="pp-header-copy" id="membersHeaderCopy">
+            <h2 id="membersHeaderTitle" aria-live="polite">Browse Members <span class="pp-browse-badge"
+                id="browseTotalBadge">0</span></h2>
+            <p id="membersHeaderSub">View and manage all registered gym members.</p>
+          </div>
         </div>
+        <nav class="pp-page-tabs" role="tablist" aria-label="Members sections">
+          <button class="pp-page-tab active" type="button" role="tab" aria-selected="true" data-tab="browse">
+            <span class="pp-count" id="countBrowse">0</span>
+            <span class="pp-tab-ico is-amber" aria-hidden="true"><i class="fa-solid fa-users"></i></span>
+            <span class="pp-tab-lbl">Browse members</span>
+          </button>
+          <button class="pp-page-tab" type="button" role="tab" aria-selected="false" data-tab="detail">
+            <span class="pp-tab-ico is-cyan" aria-hidden="true"><i class="fa-solid fa-id-card"></i></span>
+            <span class="pp-tab-lbl">Member detail</span>
+          </button>
+          <button class="pp-page-tab" type="button" role="tab" aria-selected="false" data-tab="enroll">
+            <span class="pp-tab-ico is-emerald" aria-hidden="true"><i class="fa-solid fa-user-plus"></i></span>
+            <span class="pp-tab-lbl">New enrollment</span>
+          </button>
+        </nav>
+        <div class="pp-header-bg" aria-hidden="true"></div>
       </div>
 
-      <div class="pp-status-dd" id="memberSortWrap">
-        <button type="button" class="pp-status-btn" id="memberSortBtn" aria-haspopup="listbox" aria-expanded="false">
-          <span class="pp-status-btn-inner">
-            <span class="pp-dd-ico is-cyan" aria-hidden="true"><i class="fa-solid fa-arrow-up-a-z pp-st-ico is-cyan" id="memberSortIco"></i></span>
-            <span id="memberSortLabel">Sort: A&ndash;Z</span>
-          </span>
-          <i class="fa-solid fa-chevron-down pp-dd-caret" aria-hidden="true"></i>
-        </button>
-        <div class="pp-status-menu" id="memberSortMenu" role="listbox" hidden>
-          <button type="button" class="pp-status-opt is-selected" role="option" aria-selected="true" data-sort="name_asc" data-ico="fa-arrow-up-a-z" data-label="Sort: A&ndash;Z">
-            <i class="fa-solid fa-arrow-up-a-z pp-st-ico is-cyan" aria-hidden="true"></i><span>Name (A&ndash;Z)</span>
-          </button>
-          <button type="button" class="pp-status-opt" role="option" aria-selected="false" data-sort="name_desc" data-ico="fa-arrow-down-z-a" data-label="Sort: Z&ndash;A">
-            <i class="fa-solid fa-arrow-down-z-a pp-st-ico is-cyan" aria-hidden="true"></i><span>Name (Z&ndash;A)</span>
-          </button>
-          <button type="button" class="pp-status-opt" role="option" aria-selected="false" data-sort="newest" data-ico="fa-calendar-plus" data-label="Sort: Newest">
-            <i class="fa-solid fa-calendar-plus pp-st-ico is-active" aria-hidden="true"></i><span>Newest joined</span>
-          </button>
-          <button type="button" class="pp-status-opt" role="option" aria-selected="false" data-sort="expiring" data-ico="fa-hourglass-half" data-label="Sort: Expiring">
-            <i class="fa-solid fa-hourglass-half pp-st-ico is-expiring" aria-hidden="true"></i><span>Expiring soonest</span>
-          </button>
+      <section class="pp-pane active" data-pane="browse">
+        <div class="pp-browse-card">
+          <div class="pp-toolbar pp-members-toolbar">
+            <label class="pp-search">
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+              <input id="memberSearch" type="search" placeholder="Search by name, ID, or contact..."
+                aria-label="Search members">
+            </label>
+
+            <div class="pp-status-dd" id="memberStatusWrap">
+              <button type="button" class="pp-status-btn" id="memberStatusBtn" aria-haspopup="listbox"
+                aria-expanded="false">
+                <span class="pp-status-btn-inner">
+                  <span class="pp-dd-ico is-amber" aria-hidden="true"><i class="fa-solid fa-users pp-st-ico is-all"
+                      id="memberStatusIco"></i></span>
+                  <span id="memberStatusLabel">All members</span>
+                </span>
+                <i class="fa-solid fa-chevron-down pp-dd-caret" aria-hidden="true"></i>
+              </button>
+              <div class="pp-status-menu" id="memberStatusMenu" role="listbox" hidden>
+                <button type="button" class="pp-status-opt is-selected" role="option" aria-selected="true"
+                  data-filter="all" data-ico="fa-users" data-cls="is-all" data-label="All members">
+                  <i class="fa-solid fa-users pp-st-ico is-all" aria-hidden="true"></i><span>All members</span>
+                </button>
+                <button type="button" class="pp-status-opt" role="option" aria-selected="false" data-filter="active"
+                  data-ico="fa-circle-check" data-cls="is-active" data-label="Active">
+                  <i class="fa-solid fa-circle-check pp-st-ico is-active" aria-hidden="true"></i><span>Active</span>
+                </button>
+                <button type="button" class="pp-status-opt" role="option" aria-selected="false" data-filter="expired"
+                  data-ico="fa-circle-xmark" data-cls="is-expired" data-label="Expired">
+                  <i class="fa-solid fa-circle-xmark pp-st-ico is-expired" aria-hidden="true"></i><span>Expired</span>
+                </button>
+                <button type="button" class="pp-status-opt" role="option" aria-selected="false" data-filter="expiring"
+                  data-ico="fa-clock" data-cls="is-expiring" data-label="Expiring soon">
+                  <i class="fa-solid fa-clock pp-st-ico is-expiring" aria-hidden="true"></i><span>Expiring soon</span>
+                </button>
+                <button type="button" class="pp-status-opt" role="option" aria-selected="false" data-filter="inactive"
+                  data-ico="fa-circle-pause" data-cls="is-inactive" data-label="Inactive">
+                  <i class="fa-solid fa-circle-pause pp-st-ico is-inactive" aria-hidden="true"></i><span>Inactive</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="pp-status-dd" id="memberSortWrap">
+              <button type="button" class="pp-status-btn" id="memberSortBtn" aria-haspopup="listbox"
+                aria-expanded="false">
+                <span class="pp-status-btn-inner">
+                  <span class="pp-dd-ico is-cyan" aria-hidden="true"><i
+                      class="fa-solid fa-arrow-up-a-z pp-st-ico is-cyan" id="memberSortIco"></i></span>
+                  <span id="memberSortLabel">Sort: A&ndash;Z</span>
+                </span>
+                <i class="fa-solid fa-chevron-down pp-dd-caret" aria-hidden="true"></i>
+              </button>
+              <div class="pp-status-menu" id="memberSortMenu" role="listbox" hidden>
+                <button type="button" class="pp-status-opt is-selected" role="option" aria-selected="true"
+                  data-sort="name_asc" data-ico="fa-arrow-up-a-z" data-label="Sort: A&ndash;Z">
+                  <i class="fa-solid fa-arrow-up-a-z pp-st-ico is-cyan" aria-hidden="true"></i><span>Name
+                    (A&ndash;Z)</span>
+                </button>
+                <button type="button" class="pp-status-opt" role="option" aria-selected="false" data-sort="name_desc"
+                  data-ico="fa-arrow-down-z-a" data-label="Sort: Z&ndash;A">
+                  <i class="fa-solid fa-arrow-down-z-a pp-st-ico is-cyan" aria-hidden="true"></i><span>Name
+                    (Z&ndash;A)</span>
+                </button>
+                <button type="button" class="pp-status-opt" role="option" aria-selected="false" data-sort="newest"
+                  data-ico="fa-calendar-plus" data-label="Sort: Newest">
+                  <i class="fa-solid fa-calendar-plus pp-st-ico is-active" aria-hidden="true"></i><span>Newest
+                    joined</span>
+                </button>
+                <button type="button" class="pp-status-opt" role="option" aria-selected="false" data-sort="expiring"
+                  data-ico="fa-hourglass-half" data-label="Sort: Expiring">
+                  <i class="fa-solid fa-hourglass-half pp-st-ico is-expiring" aria-hidden="true"></i><span>Expiring
+                    soonest</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="pp-view-toggle" role="group" aria-label="How to show members">
+              <button type="button" data-view-mode="table" aria-pressed="true" class="active"><i
+                  class="fa-solid fa-table-list" aria-hidden="true"></i> Table</button>
+              <button type="button" data-view-mode="cards" aria-pressed="false"><i class="fa-solid fa-table-cells-large"
+                  aria-hidden="true"></i> Cards</button>
+            </div>
+          </div>
+
+          <p class="pp-muted pp-summary" id="memberSummary" aria-live="polite"></p>
+          <div class="pp-table-wrap pp-members-wrap" id="memberTableWrap">
+            <table aria-hidden="true">
+              <tbody>
+                <tr class="pf-skel">
+                  <td><span></span></td>
+                  <td><span></span></td>
+                  <td><span></span></td>
+                  <td><span></span></td>
+                  <td><span></span></td>
+                </tr>
+                <tr class="pf-skel">
+                  <td><span></span></td>
+                  <td><span></span></td>
+                  <td><span></span></td>
+                  <td><span></span></td>
+                  <td><span></span></td>
+                </tr>
+                <tr class="pf-skel">
+                  <td><span></span></td>
+                  <td><span></span></td>
+                  <td><span></span></td>
+                  <td><span></span></td>
+                  <td><span></span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="pp-member-grid" id="memberGrid"></div>
+          <nav class="pp-pager" id="memberPager" aria-label="Pages"></nav>
         </div>
-      </div>
+      </section>
 
-      <div class="pp-view-toggle" role="group" aria-label="How to show members">
-        <button type="button" data-view-mode="table" aria-pressed="true" class="active"><i class="fa-solid fa-table-list" aria-hidden="true"></i> Table</button>
-        <button type="button" data-view-mode="cards" aria-pressed="false"><i class="fa-solid fa-table-cells-large" aria-hidden="true"></i> Cards</button>
-      </div>
-    </div>
+      <section class="pp-pane" data-pane="detail">
+        <div id="detailRoot"></div>
+      </section>
 
-    <p class="pp-muted pp-summary" id="memberSummary" aria-live="polite"></p>
-    <div class="pp-table-wrap pp-members-wrap" id="memberTableWrap">
-      <table aria-hidden="true"><tbody>
-        <tr class="pf-skel"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr>
-        <tr class="pf-skel"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr>
-        <tr class="pf-skel"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr>
-      </tbody></table>
-    </div>
-    <div class="pp-member-grid" id="memberGrid"></div>
-    <nav class="pp-pager" id="memberPager" aria-label="Pages"></nav>
+      <section class="pp-pane" data-pane="enroll">
+        <form class="pp-card pp-enroll" id="enrollForm" novalidate>
+          <div class="pp-card-head pp-enroll-head">
+            <span class="pp-browse-ico is-emerald" aria-hidden="true"><i class="fa-solid fa-user-plus"></i></span>
+            <div>
+              <h2>Enroll a new member</h2>
+              <p>Creates the member record and, if you choose, records the first payment.</p>
+            </div>
+          </div>
+          <div class="pp-form-grid">
+            <div class="pp-field"><label for="eName">Full name <span class="req"
+                  aria-hidden="true">*</span></label><input id="eName" maxlength="80" autocomplete="off"
+                placeholder="e.g. Juan Dela Cruz"><small class="pp-err" id="eName-err" hidden></small></div>
+            <div class="pp-field"><label for="eEmail">Email (used to sign in) <span class="req"
+                  aria-hidden="true">*</span></label><input id="eEmail" type="email" maxlength="120"
+                placeholder="name@example.com"><small class="pp-err" id="eEmail-err" hidden></small></div>
+            <div class="pp-field"><label for="ePhone">Mobile number</label><input id="ePhone" type="tel" maxlength="20"
+                placeholder="09XX XXX XXXX"><small class="pp-err" id="ePhone-err" hidden></small></div>
+            <div class="pp-field"><label for="eStart">Membership start</label><input id="eStart" type="date"><small
+                class="pp-err" id="eStart-err" hidden></small></div>
+            <div class="pp-field pp-span-2"><label for="eAddress">Home address</label><input id="eAddress"
+                maxlength="160" placeholder="Street, barangay, city"></div>
+          </div>
+          <fieldset class="pp-fieldset">
+            <legend>Plan <span class="req" aria-hidden="true">*</span></legend>
+            <div class="pp-plan-cards" id="ePlans"></div>
+            <small class="pp-err" id="ePlan-err" hidden></small>
+          </fieldset>
+          <div class="pp-form-grid">
+            <div class="pp-field"><label for="eMethod">Payment method</label><select id="eMethod"></select></div>
+            <div class="pp-field"><label for="eAmount">Amount due</label><input id="eAmount" readonly></div>
+          </div>
+          <label class="pp-check pp-switch-row"><input id="eRecord" type="checkbox" checked><span
+              class="pp-switch-track" aria-hidden="true"></span><span>Record the first payment now</span></label>
+          <div class="pp-actions pp-actions-end">
+            <button class="pp-btn" type="reset">Clear form</button>
+            <button class="pp-btn pp-btn-primary" type="submit"><i class="fa-solid fa-user-plus"></i> Enroll
+              member</button>
+          </div>
+        </form>
+      </section>
+
+    </main>
   </div>
-</section>
-
-<section class="pp-pane" data-pane="detail"><div id="detailRoot"></div></section>
-
-<section class="pp-pane" data-pane="enroll">
-  <form class="pp-card pp-enroll" id="enrollForm" novalidate>
-    <div class="pp-card-head pp-enroll-head">
-      <span class="pp-browse-ico is-emerald" aria-hidden="true"><i class="fa-solid fa-user-plus"></i></span>
-      <div><h2>Enroll a new member</h2><p>Creates the member record and, if you choose, records the first payment.</p></div>
-    </div>
-    <div class="pp-form-grid">
-      <div class="pp-field"><label for="eName">Full name <span class="req" aria-hidden="true">*</span></label><input id="eName" maxlength="80" autocomplete="off" placeholder="e.g. Juan Dela Cruz"><small class="pp-err" id="eName-err" hidden></small></div>
-      <div class="pp-field"><label for="eEmail">Email (used to sign in) <span class="req" aria-hidden="true">*</span></label><input id="eEmail" type="email" maxlength="120" placeholder="name@example.com"><small class="pp-err" id="eEmail-err" hidden></small></div>
-      <div class="pp-field"><label for="ePhone">Mobile number</label><input id="ePhone" type="tel" maxlength="20" placeholder="09XX XXX XXXX"><small class="pp-err" id="ePhone-err" hidden></small></div>
-      <div class="pp-field"><label for="eStart">Membership start</label><input id="eStart" type="date"><small class="pp-err" id="eStart-err" hidden></small></div>
-      <div class="pp-field pp-span-2"><label for="eAddress">Home address</label><input id="eAddress" maxlength="160" placeholder="Street, barangay, city"></div>
-    </div>
-    <fieldset class="pp-fieldset">
-      <legend>Plan <span class="req" aria-hidden="true">*</span></legend>
-      <div class="pp-plan-cards" id="ePlans"></div>
-      <small class="pp-err" id="ePlan-err" hidden></small>
-    </fieldset>
-    <div class="pp-form-grid">
-      <div class="pp-field"><label for="eMethod">Payment method</label><select id="eMethod"></select></div>
-      <div class="pp-field"><label for="eAmount">Amount due</label><input id="eAmount" readonly></div>
-    </div>
-    <label class="pp-check pp-switch-row"><input id="eRecord" type="checkbox" checked><span class="pp-switch-track" aria-hidden="true"></span><span>Record the first payment now</span></label>
-    <div class="pp-actions pp-actions-end">
-      <button class="pp-btn" type="reset">Clear form</button>
-      <button class="pp-btn pp-btn-primary" type="submit"><i class="fa-solid fa-user-plus"></i> Enroll member</button>
-    </div>
-  </form>
-</section>
-
-</main></div>
-<script src="layout.js?v=25"></script><script src="sidebar.js?v=21"></script><script src="data.js"></script><script src="pf-common.js"></script><script src="members.js?v=11"></script>
-<script src="portal-fx.js?v=2"></script>
-<script src="change-password.js?v=2" defer></script>
-<script src="notifications-live.js?v=2" defer></script>
-<script src="site-footer.js?v=2" defer></script>
+  <script src="layout.js?v=25"></script>
+  <script src="sidebar.js?v=21"></script>
+  <script src="data.js"></script>
+  <script src="pf-common.js"></script>
+  <script src="members.js?v=11"></script>
+  <script src="portal-fx.js?v=2"></script>
+  <script src="change-password.js?v=2" defer></script>
+  <script src="notifications-live.js?v=2" defer></script>
+  <script src="site-footer.js?v=2" defer></script>
 </body>
+
 </html>

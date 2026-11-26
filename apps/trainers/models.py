@@ -5,6 +5,11 @@ from django.db import models
 class TrainerProfile(models.Model):
     """A trainer's public profile and capacity. The login is a user with role TRAINER."""
 
+    class Status(models.TextChoices):
+        ACTIVE = "active", "Active"
+        ON_LEAVE = "on_leave", "On Leave"
+        INACTIVE = "inactive", "Inactive"
+
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -16,6 +21,7 @@ class TrainerProfile(models.Model):
     bio = models.TextField(blank=True, default="")
     availability = models.CharField(max_length=160, blank=True, default="")
     max_members = models.PositiveSmallIntegerField(default=20)
+    status = models.CharField(max_length=20, choices=Status.choices, default=Status.ACTIVE)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -67,3 +73,42 @@ class TrainerRequest(models.Model):
 
     class Meta:
         ordering = ["-created_at", "-id"]
+
+
+class TrainerSession(models.Model):
+    """A recurring weekly coaching class or session scheduled by a trainer."""
+
+    DAY_CHOICES = [
+        (0, "Sunday"),
+        (1, "Monday"),
+        (2, "Tuesday"),
+        (3, "Wednesday"),
+        (4, "Thursday"),
+        (5, "Friday"),
+        (6, "Saturday"),
+    ]
+
+    trainer = models.ForeignKey(
+        TrainerProfile,
+        on_delete=models.CASCADE,
+        related_name="sessions",
+    )
+    name = models.CharField(max_length=120)
+    day_of_week = models.PositiveSmallIntegerField(choices=DAY_CHOICES)
+    start_time = models.CharField(max_length=5)
+    duration_mins = models.PositiveSmallIntegerField(default=45)
+    capacity = models.PositiveSmallIntegerField(default=12)
+    room = models.CharField(max_length=80, blank=True, default="Main Floor")
+    notes = models.CharField(max_length=300, blank=True, default="")
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["day_of_week", "start_time", "id"]
+        indexes = [
+            models.Index(fields=["trainer", "day_of_week"], name="trainer_sess_dow_idx"),
+        ]
+
+    def __str__(self):
+        return f"TrainerSession<{self.pk}:{self.name}>"

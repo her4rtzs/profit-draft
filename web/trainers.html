@@ -1,377 +1,471 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script>(function(){try{var t=localStorage.getItem('theme');if(t==='light'&&!localStorage.getItem('pf-staff-explicit-light')){t='dark';try{localStorage.setItem('theme','dark');}catch(_){}}var d=t!=='light';var h=document.documentElement;h.style.background=d?'#0a0e16':'#F7F4EE';h.style.colorScheme=d?'dark':'light';if(d){h.classList.add('dark');}else{h.classList.remove('dark');}}catch(e){}})();</script><script src="splash.js?v=3"></script>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trainers · ProFit</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Figtree:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link rel="stylesheet" href="dashboard.css?v=13">
-<link rel="stylesheet" href="announcements.css?v=1">
-<script src="config.js?v=4"></script><script src="api.js"></script><script src="auth.js?v=4"></script>
-<script>document.documentElement.dataset.accent='gold'</script>
-<script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script><link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
-<body class="pf-staff" data-page="trainers" data-title="Trainers Management" data-welcome="Manage gym trainers and assignments">
-<div class="dashboard"><nav class="sidebar" id="sidebar"></nav><main class="main-content" id="main" tabindex="-1">
-  <header class="topbar" id="topbar"><h1>Trainers Management</h1></header>
 
-  <p class="ann-msg" id="trMsg" role="status" aria-live="polite" style="margin-bottom:14px"></p>
+<head>
+    <script>(function () { try { var t = localStorage.getItem('theme'); if (t === 'light' && !localStorage.getItem('pf-staff-explicit-light')) { t = 'dark'; try { localStorage.setItem('theme', 'dark'); } catch (_) { } } var d = t !== 'light'; var h = document.documentElement; h.style.background = d ? '#0a0e16' : '#F7F4EE'; h.style.colorScheme = d ? 'dark' : 'light'; if (d) { h.classList.add('dark'); } else { h.classList.remove('dark'); } } catch (e) { } })();</script>
+    <script src="splash.js?v=3"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+    <title>Trainers · ProFit</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Figtree:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="dashboard.css?v=18">
+    <link rel="stylesheet" href="announcements.css?v=7">
+    <script src="config.js?v=9"></script>
+    <script src="api.js"></script>
+    <script src="auth.js?v=4"></script>
+    <script>document.documentElement.dataset.accent = 'gold'</script>
+    <script
+        type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script>
+    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="theme-color" content="#0a0e17">
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17">
+    <meta name="color-scheme" content="light dark">
+    <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="ProFit">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="stylesheet" href="pf-system.css?v=18">
+</head>
 
-  <!-- 4 KPI Cards -->
-  <section class="tr-kpi-grid" aria-label="Trainer statistics">
-    <article class="tr-kpi tr-kpi-gold">
-      <div class="tr-kpi-ico"><i class="fa-solid fa-users" aria-hidden="true"></i></div>
-      <div class="tr-kpi-info">
-        <strong id="kpiTotalTrainers">—</strong>
-        <span>Total Trainers</span>
-      </div>
-      <i class="fa-solid fa-dumbbell tr-kpi-wm" aria-hidden="true"></i>
-    </article>
-    <article class="tr-kpi tr-kpi-cyan">
-      <div class="tr-kpi-ico"><i class="fa-solid fa-user-check" aria-hidden="true"></i></div>
-      <div class="tr-kpi-info">
-        <strong id="kpiAvailableTrainers">—</strong>
-        <span>Available Trainers</span>
-      </div>
-      <i class="fa-solid fa-users tr-kpi-wm" aria-hidden="true"></i>
-    </article>
-    <article class="tr-kpi tr-kpi-emerald">
-      <div class="tr-kpi-ico"><i class="fa-solid fa-dumbbell" aria-hidden="true"></i></div>
-      <div class="tr-kpi-info">
-        <strong id="kpiOnAssignment">—</strong>
-        <span>On Assignment</span>
-      </div>
-      <i class="fa-solid fa-calendar-check tr-kpi-wm" aria-hidden="true"></i>
-    </article>
-    <article class="tr-kpi tr-kpi-violet">
-      <div class="tr-kpi-ico"><i class="fa-solid fa-chart-pie" aria-hidden="true"></i></div>
-      <div class="tr-kpi-info">
-        <strong id="kpiCapacityUsage">—</strong>
-        <span>Capacity Usage</span>
-      </div>
-      <i class="fa-solid fa-arrow-trend-up tr-kpi-wm" aria-hidden="true"></i>
-    </article>
-  </section>
+<body class="pf-staff" data-page="trainers" data-title="Trainers Management"
+    data-welcome="Manage gym trainers and assignments">
+    <div class="dashboard">
+        <nav class="sidebar" id="sidebar"></nav>
+        <main class="main-content" id="main" tabindex="-1">
+            <header class="topbar" id="topbar">
+                <h1>Trainers Management</h1>
+            </header>
 
-  <!-- Toolbar Bar -->
-  <section class="panel tr-toolbar-panel" aria-label="Trainer filters and actions">
-    <div class="tr-dir-toolbar">
-      <div class="tr-search-wrap">
-        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-        <input type="search" id="trSearch" placeholder="Search trainers..." aria-label="Search trainers">
-      </div>
-      <div class="tr-spec-dd" id="trStatusWrap">
-        <button type="button" class="tr-spec-btn" id="trStatusBtn" aria-haspopup="listbox" aria-expanded="false">
-          <span id="trStatusLabel">All Trainers</span>
-          <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
-        </button>
-        <div class="tr-combo-menu tr-spec-menu" id="trStatusMenu" role="listbox" hidden>
-          <button type="button" class="tr-combo-item is-selected" data-status-tab="all" role="option" aria-selected="true">All Trainers</button>
-          <button type="button" class="tr-combo-item" data-status-tab="active" role="option" aria-selected="false">Active</button>
-          <button type="button" class="tr-combo-item" data-status-tab="on_leave" role="option" aria-selected="false">On Leave</button>
-          <button type="button" class="tr-combo-item" data-status-tab="inactive" role="option" aria-selected="false">Inactive</button>
-        </div>
-      </div>
-      <div class="tr-spec-dd" id="trSpecWrap">
-        <button type="button" class="tr-spec-btn" id="trSpecBtn" aria-haspopup="listbox" aria-expanded="false">
-          <span id="trSpecLabel">All Specializations</span>
-          <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
-        </button>
-        <div class="tr-combo-menu tr-spec-menu" id="trSpecMenu" role="listbox" hidden></div>
-      </div>
-      <div class="tr-view-toggle" role="group" aria-label="Directory layout">
-        <button type="button" class="tr-view-btn is-on" id="trViewGrid" title="Grid view" aria-pressed="true"><i class="fa-solid fa-grip"></i></button>
-        <button type="button" class="tr-view-btn" id="trViewList" title="List view" aria-pressed="false"><i class="fa-solid fa-list"></i></button>
-      </div>
-      <button type="button" class="tr-add-btn tr-toolbar-add" id="openAddTrainer">
-        <i class="fa-solid fa-plus" aria-hidden="true"></i> Add Trainer
-      </button>
-    </div>
-  </section>
+            <p class="ann-msg" id="trMsg" role="status" aria-live="polite" style="margin-bottom:14px"></p>
 
-  <!-- Trainer Directory -->
-  <section class="panel tr-dir-panel">
-    <div class="tr-dir-summary">
-      <div class="tr-dir-count" id="trCountLabel">Trainers (—)</div>
-      <p class="tr-dir-sub">Browse and manage all trainers in your gym.</p>
-    </div>
+            <!-- 4 KPI Cards -->
+            <section class="tr-kpi-grid" aria-label="Trainer statistics">
+                <article class="tr-kpi tr-kpi-gold">
+                    <div class="tr-kpi-ico"><i class="fa-solid fa-users" aria-hidden="true"></i></div>
+                    <div class="tr-kpi-info">
+                        <strong id="kpiTotalTrainers">—</strong>
+                        <span>Total Trainers</span>
+                    </div>
+                    <i class="fa-solid fa-dumbbell tr-kpi-wm" aria-hidden="true"></i>
+                </article>
+                <article class="tr-kpi tr-kpi-cyan">
+                    <div class="tr-kpi-ico"><i class="fa-solid fa-user-check" aria-hidden="true"></i></div>
+                    <div class="tr-kpi-info">
+                        <strong id="kpiAvailableTrainers">—</strong>
+                        <span>Available Trainers</span>
+                    </div>
+                    <i class="fa-solid fa-users tr-kpi-wm" aria-hidden="true"></i>
+                </article>
+                <article class="tr-kpi tr-kpi-emerald">
+                    <div class="tr-kpi-ico"><i class="fa-solid fa-dumbbell" aria-hidden="true"></i></div>
+                    <div class="tr-kpi-info">
+                        <strong id="kpiOnAssignment">—</strong>
+                        <span>On Assignment</span>
+                    </div>
+                    <i class="fa-solid fa-calendar-check tr-kpi-wm" aria-hidden="true"></i>
+                </article>
+                <article class="tr-kpi tr-kpi-violet">
+                    <div class="tr-kpi-ico"><i class="fa-solid fa-chart-pie" aria-hidden="true"></i></div>
+                    <div class="tr-kpi-info">
+                        <strong id="kpiCapacityUsage">—</strong>
+                        <span>Capacity Usage</span>
+                    </div>
+                    <i class="fa-solid fa-arrow-trend-up tr-kpi-wm" aria-hidden="true"></i>
+                </article>
+            </section>
 
-    <div class="tr-grid" id="trList">
-      <div class="pf-skel-block tr-skel-card" aria-hidden="true"><span class="pf-sk"></span><span class="pf-sk"></span><span class="pf-sk"></span></div>
-      <div class="pf-skel-block tr-skel-card" aria-hidden="true"><span class="pf-sk"></span><span class="pf-sk"></span><span class="pf-sk"></span></div>
-      <div class="pf-skel-block tr-skel-card" aria-hidden="true"><span class="pf-sk"></span><span class="pf-sk"></span><span class="pf-sk"></span></div>
-      <div class="pf-skel-block tr-skel-card" aria-hidden="true"><span class="pf-sk"></span><span class="pf-sk"></span><span class="pf-sk"></span></div>
-    </div>
-  </section>
+            <!-- Toolbar Bar -->
+            <section class="panel tr-toolbar-panel" aria-label="Trainer filters and actions">
+                <div class="tr-dir-toolbar">
+                    <div class="tr-search-wrap">
+                        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                        <input type="search" id="trSearch" placeholder="Search trainers..."
+                            aria-label="Search trainers">
+                    </div>
+                    <div class="tr-spec-dd" id="trStatusWrap">
+                        <button type="button" class="tr-spec-btn" id="trStatusBtn" aria-haspopup="listbox"
+                            aria-expanded="false">
+                            <span class="pp-status-btn-inner">
+                                <span class="pfc-trig-ico is-gold" id="trStatusIcoBox" aria-hidden="true"><i
+                                        class="fa-solid fa-users" id="trStatusIco"></i></span>
+                                <span id="trStatusLabel">All Trainers</span>
+                            </span>
+                            <i class="fa-solid fa-chevron-down pp-dd-caret" aria-hidden="true"></i>
+                        </button>
+                        <div class="tr-combo-menu tr-spec-menu" id="trStatusMenu" role="listbox" hidden>
+                            <button type="button" class="tr-combo-item is-selected" data-status-tab="all"
+                                data-ico="fa-users" data-tone="is-gold" role="option" aria-selected="true"><i
+                                    class="fa-solid fa-users pfc-opt-ico is-gold" aria-hidden="true"></i><span>All
+                                    Trainers</span></button>
+                            <button type="button" class="tr-combo-item" data-status-tab="active"
+                                data-ico="fa-circle-check" data-tone="is-green" role="option" aria-selected="false"><i
+                                    class="fa-solid fa-circle-check pfc-opt-ico is-green"
+                                    aria-hidden="true"></i><span>Active</span></button>
+                            <button type="button" class="tr-combo-item" data-status-tab="on_leave" data-ico="fa-clock"
+                                data-tone="is-gold" role="option" aria-selected="false"><i
+                                    class="fa-solid fa-clock pfc-opt-ico is-gold" aria-hidden="true"></i><span>On
+                                    Leave</span></button>
+                            <button type="button" class="tr-combo-item" data-status-tab="inactive"
+                                data-ico="fa-circle-pause" data-tone="is-slate" role="option" aria-selected="false"><i
+                                    class="fa-solid fa-circle-pause pfc-opt-ico is-slate"
+                                    aria-hidden="true"></i><span>Inactive</span></button>
+                        </div>
+                    </div>
+                    <div class="tr-spec-dd" id="trSpecWrap">
+                        <button type="button" class="tr-spec-btn" id="trSpecBtn" aria-haspopup="listbox"
+                            aria-expanded="false">
+                            <span class="pp-status-btn-inner">
+                                <span class="pfc-trig-ico is-cyan" id="trSpecIcoBox" aria-hidden="true"><i
+                                        class="fa-solid fa-dumbbell"></i></span>
+                                <span id="trSpecLabel">All Specializations</span>
+                            </span>
+                            <i class="fa-solid fa-chevron-down pp-dd-caret" aria-hidden="true"></i>
+                        </button>
+                        <div class="tr-combo-menu tr-spec-menu" id="trSpecMenu" role="listbox" hidden></div>
+                    </div>
+                    <div class="tr-view-toggle" role="group" aria-label="Directory layout">
+                        <button type="button" class="tr-view-btn is-on" id="trViewGrid" title="Grid view"
+                            aria-pressed="true"><i class="fa-solid fa-grip"></i></button>
+                        <button type="button" class="tr-view-btn" id="trViewList" title="List view"
+                            aria-pressed="false"><i class="fa-solid fa-list"></i></button>
+                    </div>
+                    <button type="button" class="tr-add-btn tr-toolbar-add" id="openAddTrainer">
+                        <i class="fa-solid fa-plus" aria-hidden="true"></i> Add Trainer
+                    </button>
+                </div>
+            </section>
 
-  <!-- Bottom Two-Column Section: Assign Trainer + Member Requests -->
-  <div class="tr-bottom-grid">
-    <!-- Assign Trainer -->
-    <section class="panel tr-assign-panel">
-      <i class="fa-solid fa-dumbbell tr-assign-wm" aria-hidden="true"></i>
-      <div class="tr-sec-head">
-        <span class="tr-sec-ico tr-ico-gold" aria-hidden="true"><i class="fa-solid fa-link"></i></span>
-        <div>
-          <h2>Assign Trainer</h2>
-          <p>Assign a trainer to a member</p>
-        </div>
-      </div>
-      <div class="tr-assign-form">
-        <div class="tr-assign-row">
-          <div class="tr-field">
-            <label for="asMemberSearch">Select Member</label>
-            <div class="tr-member-search-wrap" id="asMemberWrap">
-              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-              <input type="text" id="asMemberSearch" placeholder="Search member..." autocomplete="off" aria-label="Search and select member">
-              <button type="button" class="tr-member-clear" id="asMemberClear" hidden aria-label="Clear selected member">
-                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-              </button>
-              <input type="hidden" id="asMember" value="">
-              <div class="tr-combo-menu" id="asMemberMenu" role="listbox" hidden></div>
+            <!-- Trainer Directory -->
+            <section class="panel tr-dir-panel">
+                <div class="tr-dir-summary">
+                    <div class="tr-dir-count" id="trCountLabel">Trainers (—)</div>
+                    <p class="tr-dir-sub">Browse and manage all trainers in your gym.</p>
+                </div>
+
+                <div class="tr-grid" id="trList">
+                    <div class="pf-skel-block tr-skel-card" aria-hidden="true"><span class="pf-sk"></span><span
+                            class="pf-sk"></span><span class="pf-sk"></span></div>
+                    <div class="pf-skel-block tr-skel-card" aria-hidden="true"><span class="pf-sk"></span><span
+                            class="pf-sk"></span><span class="pf-sk"></span></div>
+                    <div class="pf-skel-block tr-skel-card" aria-hidden="true"><span class="pf-sk"></span><span
+                            class="pf-sk"></span><span class="pf-sk"></span></div>
+                    <div class="pf-skel-block tr-skel-card" aria-hidden="true"><span class="pf-sk"></span><span
+                            class="pf-sk"></span><span class="pf-sk"></span></div>
+                </div>
+            </section>
+
+            <!-- Bottom Two-Column Section: Assign Trainer + Member Requests -->
+            <div class="tr-bottom-grid">
+                <!-- Assign Trainer -->
+                <section class="panel tr-assign-panel">
+                    <i class="fa-solid fa-dumbbell tr-assign-wm" aria-hidden="true"></i>
+                    <div class="tr-sec-head">
+                        <span class="tr-sec-ico tr-ico-gold" aria-hidden="true"><i class="fa-solid fa-link"></i></span>
+                        <div>
+                            <h2>Assign Trainer</h2>
+                            <p>Assign a trainer to a member</p>
+                        </div>
+                    </div>
+                    <div class="tr-assign-form">
+                        <div class="tr-assign-row">
+                            <div class="tr-field">
+                                <label for="asMemberSearch">Select Member</label>
+                                <div class="tr-member-search-wrap" id="asMemberWrap">
+                                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                                    <input type="text" id="asMemberSearch" placeholder="Search member..."
+                                        autocomplete="off" aria-label="Search and select member">
+                                    <button type="button" class="tr-member-clear" id="asMemberClear" hidden
+                                        aria-label="Clear selected member">
+                                        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                                    </button>
+                                    <input type="hidden" id="asMember" value="">
+                                    <div class="tr-combo-menu" id="asMemberMenu" role="listbox" hidden></div>
+                                </div>
+                            </div>
+                            <div class="tr-field">
+                                <label for="asTrainer">Select Trainer</label>
+                                <div class="tr-select-wrap">
+                                    <i class="fa-solid fa-dumbbell" aria-hidden="true"></i>
+                                    <select id="asTrainer">
+                                        <option value="">Choose trainer...</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tr-current-info" id="asCurrent" aria-live="polite" hidden></div>
+                        <div class="tr-assign-actions">
+                            <button class="tr-btn-secondary" type="button" id="asRemove" hidden>
+                                <i class="fa-solid fa-user-minus" aria-hidden="true"></i> Remove Trainer
+                            </button>
+                            <button class="tr-btn-gold" type="button" id="asAssign">
+                                <i class="fa-solid fa-link" aria-hidden="true"></i> Assign Trainer
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Member Requests -->
+                <section class="panel tr-requests-panel">
+                    <div class="tr-sec-head tr-sec-head-between">
+                        <div class="tr-sec-title-group">
+                            <span class="tr-sec-ico tr-ico-gold" aria-hidden="true"><i
+                                    class="fa-solid fa-bell"></i></span>
+                            <div>
+                                <h2>Member Requests</h2>
+                                <p>Pending trainer requests from members</p>
+                            </div>
+                        </div>
+                        <span class="tr-req-count" id="reqCountBadge" hidden>0 pending</span>
+                    </div>
+
+                    <div class="tr-req-table-wrap" id="reqList">
+                        <div class="pf-skel-block" aria-hidden="true"><span class="pf-sk"></span><span
+                                class="pf-sk"></span></div>
+                        <div class="pf-skel-block" aria-hidden="true"><span class="pf-sk"></span><span
+                                class="pf-sk"></span></div>
+                    </div>
+                </section>
             </div>
-          </div>
-          <div class="tr-field">
-            <label for="asTrainer">Select Trainer</label>
-            <div class="tr-select-wrap">
-              <i class="fa-solid fa-dumbbell" aria-hidden="true"></i>
-              <select id="asTrainer">
-                <option value="">Choose trainer...</option>
-              </select>
+        </main>
+    </div>
+
+    <!-- Add / Edit Trainer Modal -->
+    <div class="tr-modal-backdrop" id="trModal" hidden aria-hidden="true">
+        <div class="tr-modal tr-modal-wide" role="dialog" aria-modal="true" aria-labelledby="trModalTitle">
+            <div class="tr-modal-head" id="trModalHead">
+                <div>
+                    <h3 id="trModalTitle">Add Trainer</h3>
+                    <p id="trModalSub">Create a trainer profile and configure their account access.</p>
+                </div>
+                <button type="button" class="tr-modal-close" id="closeTrModal" aria-label="Close modal">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
             </div>
-          </div>
-        </div>
-        <div class="tr-current-info" id="asCurrent" aria-live="polite" hidden></div>
-        <div class="tr-assign-actions">
-          <button class="tr-btn-secondary" type="button" id="asRemove" hidden>
-            <i class="fa-solid fa-user-minus" aria-hidden="true"></i> Remove Trainer
-          </button>
-          <button class="tr-btn-gold" type="button" id="asAssign">
-            <i class="fa-solid fa-link" aria-hidden="true"></i> Assign Trainer
-          </button>
-        </div>
-      </div>
-    </section>
 
-    <!-- Member Requests -->
-    <section class="panel tr-requests-panel">
-      <div class="tr-sec-head tr-sec-head-between">
-        <div class="tr-sec-title-group">
-          <span class="tr-sec-ico tr-ico-gold" aria-hidden="true"><i class="fa-solid fa-bell"></i></span>
-          <div>
-            <h2>Member Requests</h2>
-            <p>Pending trainer requests from members</p>
-          </div>
-        </div>
-        <span class="tr-req-count" id="reqCountBadge" hidden>0 pending</span>
-      </div>
+            <form class="tr-modal-form" id="trForm" novalidate>
+                <input type="hidden" id="trId">
 
-      <div class="tr-req-table-wrap" id="reqList">
-        <div class="pf-skel-block" aria-hidden="true"><span class="pf-sk"></span><span class="pf-sk"></span></div>
-        <div class="pf-skel-block" aria-hidden="true"><span class="pf-sk"></span><span class="pf-sk"></span></div>
-      </div>
-    </section>
-  </div>
-</main></div>
+                <div class="tr-modal-section">
+                    <div class="tr-modal-sec-title">Trainer Information</div>
+                    <div id="trCreateFields" class="tr-modal-grid-2">
+                        <div class="tr-field">
+                            <label for="trFullName">Full Name <span class="tr-req">*</span></label>
+                            <input id="trFullName" maxlength="150" placeholder="e.g. Marcus Tan" required>
+                        </div>
+                        <div class="tr-field">
+                            <label for="trEmail">Email Address <span class="tr-req">*</span></label>
+                            <input id="trEmail" type="email" maxlength="254" placeholder="trainer@profitgym.ph"
+                                required>
+                        </div>
+                    </div>
+                    <div class="tr-modal-grid-2">
+                        <div class="tr-field">
+                            <label for="trPhone">Phone Number</label>
+                            <input id="trPhone" type="tel" maxlength="40" placeholder="09XX XXX XXXX">
+                        </div>
+                        <div class="tr-field">
+                            <label for="trSpec">Specializations</label>
+                            <input id="trSpec" maxlength="120" placeholder="e.g. Strength, HIIT, Conditioning" required>
+                        </div>
+                    </div>
+                    <div class="tr-modal-row">
+                        <div class="tr-field">
+                            <label for="trAvail">Availability Schedule</label>
+                            <input id="trAvail" maxlength="160" placeholder="e.g. Mon-Sat, 6AM-10PM">
+                        </div>
+                        <div class="tr-field">
+                            <label for="trCap">Member Capacity</label>
+                            <input id="trCap" type="number" min="1" max="200" value="20" required>
+                        </div>
+                    </div>
+                    <div class="tr-field">
+                        <label for="trBio">Bio / Notes</label>
+                        <textarea id="trBio" rows="2" maxlength="500"
+                            placeholder="Short coach bio or coaching focus..."></textarea>
+                    </div>
+                    <div class="tr-field tr-status-field" id="trEditStatusWrap" hidden>
+                        <label for="trEditStatus">Status &amp; Availability</label>
+                        <select id="trEditStatus">
+                            <option value="active">Active — Accepting new members</option>
+                            <option value="on_leave">On Leave — Temporarily away</option>
+                            <option value="inactive">Inactive — Not accepting members</option>
+                        </select>
+                        <small class="tr-field-hint" id="trStatusHint">Only Active trainers can receive new member
+                            assignments.</small>
+                    </div>
+                </div>
 
-<!-- Add / Edit Trainer Modal -->
-<div class="tr-modal-backdrop" id="trModal" hidden aria-hidden="true">
-  <div class="tr-modal tr-modal-wide" role="dialog" aria-modal="true" aria-labelledby="trModalTitle">
-    <div class="tr-modal-head" id="trModalHead">
-      <div>
-        <h3 id="trModalTitle">Add Trainer</h3>
-        <p id="trModalSub">Create a trainer profile and configure their account access.</p>
-      </div>
-      <button type="button" class="tr-modal-close" id="closeTrModal" aria-label="Close modal">
-        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-      </button>
-    </div>
+                <div class="tr-modal-section" id="trAccessSection">
+                    <div class="tr-modal-sec-title">Account Access for Trainer</div>
+                    <div class="tr-access-options" role="radiogroup" aria-label="Account access setup">
+                        <label class="tr-access-card is-selected">
+                            <input type="radio" name="trAccessMode" value="invite" checked>
+                            <div class="tr-access-body">
+                                <div class="tr-access-top">
+                                    <strong>Send Email Invitation</strong>
+                                    <span class="tr-rec-badge">Recommended</span>
+                                </div>
+                                <p>Generates a secure 72-hour link so the trainer can create their own password. Status
+                                    stays Pending
+                                    until accepted.</p>
+                            </div>
+                        </label>
+                        <label class="tr-access-card">
+                            <input type="radio" name="trAccessMode" value="temp_password">
+                            <div class="tr-access-body">
+                                <div class="tr-access-top">
+                                    <strong>Generate Temporary Password</strong>
+                                </div>
+                                <p>Creates the account immediately with a one-time password. Trainer must change it on
+                                    first login.</p>
+                            </div>
+                        </label>
+                    </div>
 
-    <form class="tr-modal-form" id="trForm" novalidate>
-      <input type="hidden" id="trId">
+                    <div class="tr-temp-pw-box" id="trTempPwWrap" hidden>
+                        <label for="trTempPw">Temporary Password</label>
+                        <div class="tr-temp-pw-row">
+                            <input id="trTempPw" type="text" autocomplete="off"
+                                placeholder="Auto-generated or enter custom (8+ chars)">
+                            <button type="button" class="tr-btn-secondary tr-btn-sm" id="trGenPwBtn"><i
+                                    class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Generate</button>
+                            <button type="button" class="tr-btn-secondary tr-btn-sm" id="trCopyTempBtn"><i
+                                    class="fa-regular fa-copy" aria-hidden="true"></i> Copy</button>
+                        </div>
+                    </div>
+                </div>
 
-      <div class="tr-modal-section">
-        <div class="tr-modal-sec-title">Trainer Information</div>
-        <div id="trCreateFields" class="tr-modal-grid-2">
-          <div class="tr-field">
-            <label for="trFullName">Full Name <span class="tr-req">*</span></label>
-            <input id="trFullName" maxlength="150" placeholder="e.g. Marcus Tan" required>
-          </div>
-          <div class="tr-field">
-            <label for="trEmail">Email Address <span class="tr-req">*</span></label>
-            <input id="trEmail" type="email" maxlength="254" placeholder="trainer@profitgym.ph" required>
-          </div>
-        </div>
-        <div class="tr-modal-grid-2">
-          <div class="tr-field">
-            <label for="trPhone">Phone Number</label>
-            <input id="trPhone" type="tel" maxlength="40" placeholder="09XX XXX XXXX">
-          </div>
-          <div class="tr-field">
-            <label for="trSpec">Specializations</label>
-            <input id="trSpec" maxlength="120" placeholder="e.g. Strength, HIIT, Conditioning" required>
-          </div>
-        </div>
-        <div class="tr-modal-row">
-          <div class="tr-field">
-            <label for="trAvail">Availability Schedule</label>
-            <input id="trAvail" maxlength="160" placeholder="e.g. Mon-Sat, 6AM-10PM">
-          </div>
-          <div class="tr-field">
-            <label for="trCap">Member Capacity</label>
-            <input id="trCap" type="number" min="1" max="200" value="20" required>
-          </div>
-        </div>
-        <div class="tr-field">
-          <label for="trBio">Bio / Notes</label>
-          <textarea id="trBio" rows="2" maxlength="500" placeholder="Short coach bio or coaching focus..."></textarea>
-        </div>
-      </div>
+                <p class="ann-msg" id="trModalMsg" role="alert"></p>
+                <div class="tr-modal-actions">
+                    <button type="button" class="tr-btn-danger-outline" id="trDeactivateBtn" hidden>
+                        <i class="fa-solid fa-user-slash" aria-hidden="true"></i> <span>Deactivate Account</span>
+                    </button>
+                    <div class="tr-modal-actions-right">
+                        <button class="tr-btn-secondary" type="button" id="trReset">Cancel</button>
+                        <button class="tr-btn-gold" type="submit" id="trSave">Add Trainer</button>
+                    </div>
+                </div>
+            </form>
 
-      <div class="tr-modal-section" id="trAccessSection">
-        <div class="tr-modal-sec-title">Account Access for Trainer</div>
-        <div class="tr-access-options" role="radiogroup" aria-label="Account access setup">
-          <label class="tr-access-card is-selected">
-            <input type="radio" name="trAccessMode" value="invite" checked>
-            <div class="tr-access-body">
-              <div class="tr-access-top">
-                <strong>Send Email Invitation</strong>
-                <span class="tr-rec-badge">Recommended</span>
-              </div>
-              <p>Generates a secure 72-hour link so the trainer can create their own password. Status stays Pending until accepted.</p>
+            <!-- Trainer Creation Success Screen -->
+            <div class="tr-success-view" id="trSuccessView" hidden>
+                <div class="tr-success-ico"><i class="fa-solid fa-circle-check" aria-hidden="true"></i></div>
+                <h3>Trainer Added Successfully</h3>
+                <p class="tr-success-sub" id="trSuccSub">The trainer profile and account access have been created.</p>
+
+                <div class="tr-succ-card">
+                    <div class="tr-succ-row"><span>Trainer Name</span><strong id="trSuccName">—</strong></div>
+                    <div class="tr-succ-row"><span>Specializations</span><strong id="trSuccSpec">—</strong></div>
+                    <div class="tr-succ-row"><span>Member Capacity</span><strong id="trSuccCap">—</strong></div>
+                    <div class="tr-succ-row"><span>Account Status</span><span class="tr-status is-pending"
+                            id="trSuccStatus">Invite Pending</span></div>
+                </div>
+
+                <div class="tr-succ-link-box" id="trSuccInviteBox" hidden>
+                    <label for="trSuccLink">Invitation Link</label>
+                    <div class="tr-temp-pw-row">
+                        <input id="trSuccLink" type="text" readonly>
+                        <button type="button" class="tr-btn-gold tr-btn-sm" id="trCopyLinkBtn"><i
+                                class="fa-regular fa-copy" aria-hidden="true"></i> Copy Link</button>
+                    </div>
+                    <p class="tr-succ-note"><i class="fa-regular fa-clock" aria-hidden="true"></i> This invitation link
+                        expires
+                        after 72 hours. <span id="trSuccEmailNote"></span></p>
+                </div>
+
+                <div class="tr-succ-link-box" id="trSuccTempBox" hidden>
+                    <label for="trSuccCreds">Temporary Login Credentials (shown once)</label>
+                    <div class="tr-temp-pw-row">
+                        <input id="trSuccCreds" type="text" readonly>
+                        <button type="button" class="tr-btn-gold tr-btn-sm" id="trCopyCredsBtn"><i
+                                class="fa-regular fa-copy" aria-hidden="true"></i> Copy Credentials</button>
+                    </div>
+                    <p class="tr-succ-note"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> The trainer
+                        will be
+                        required to change this password upon their first login.</p>
+                </div>
+
+                <div class="tr-modal-actions">
+                    <button class="tr-btn-secondary" type="button" id="trAddAnother"><i class="fa-solid fa-plus"
+                            aria-hidden="true"></i> Add Another</button>
+                    <button class="tr-btn-gold" type="button" id="trSuccessDone">Done</button>
+                </div>
             </div>
-          </label>
-          <label class="tr-access-card">
-            <input type="radio" name="trAccessMode" value="temp_password">
-            <div class="tr-access-body">
-              <div class="tr-access-top">
-                <strong>Generate Temporary Password</strong>
-              </div>
-              <p>Creates the account immediately with a one-time password. Trainer must change it on first login.</p>
+        </div>
+    </div>
+
+    <!-- View Trainer Profile Modal -->
+    <div class="tr-modal-backdrop" id="trProfileModal" hidden aria-hidden="true">
+        <div class="tr-modal tr-modal-wide" role="dialog" aria-modal="true" aria-labelledby="trProfName">
+            <div class="tr-modal-head">
+                <div class="tr-prof-head-wrap">
+                    <div class="tr-prof-avatar" id="trProfAvatar">TR</div>
+                    <div>
+                        <div class="tr-prof-title-row">
+                            <h3 id="trProfName">Trainer Profile</h3>
+                            <span class="tr-status is-active" id="trProfStatusPill">Active</span>
+                        </div>
+                        <p id="trProfSpec">Specialization</p>
+                    </div>
+                </div>
+                <button type="button" class="tr-modal-close" id="closeProfModal" aria-label="Close profile">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
             </div>
-          </label>
+
+            <div class="tr-prof-body">
+                <div class="tr-prof-card">
+                    <div class="tr-prof-row"><span>Email</span><strong id="trProfEmail">—</strong></div>
+                    <div class="tr-prof-row"><span>Phone</span><strong id="trProfPhone">—</strong></div>
+                    <div class="tr-prof-row"><span>Capacity</span><strong id="trProfLoad">0 / 20 members</strong></div>
+                    <div class="tr-prof-row"><span>Schedule</span><strong id="trProfAvail">—</strong></div>
+                    <div class="tr-prof-row">
+                        <span>Account Access</span>
+                        <div class="tr-prof-acc-actions">
+                            <strong id="trProfAccStatus">Active</strong>
+                            <button type="button" class="tr-btn-edit tr-btn-xs" id="trProfResendBtn" hidden>
+                                <i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Resend Invite
+                            </button>
+                        </div>
+                    </div>
+                    <p class="ann-msg" id="trProfInviteMsg" role="status" style="margin:6px 0 0"></p>
+                </div>
+
+                <div class="tr-prof-card tr-prof-bio">
+                    <h4>About Coach</h4>
+                    <p id="trProfBio">No bio added yet.</p>
+                </div>
+
+                <div class="tr-prof-card tr-prof-members">
+                    <h4>Assigned Members (<span id="trProfMemCount">0</span>)</h4>
+                    <div id="trProfMemList" class="tr-prof-mem-list"></div>
+                </div>
+            </div>
+
+            <div class="tr-modal-actions">
+                <button class="tr-btn-secondary" type="button" id="closeProfBtn">Close</button>
+                <button class="tr-btn-gold" type="button" id="profEditBtn"><i class="fa-solid fa-pen"
+                        aria-hidden="true"></i>
+                    Edit Trainer</button>
+            </div>
         </div>
-
-        <div class="tr-temp-pw-box" id="trTempPwWrap" hidden>
-          <label for="trTempPw">Temporary Password</label>
-          <div class="tr-temp-pw-row">
-            <input id="trTempPw" type="text" autocomplete="off" placeholder="Auto-generated or enter custom (8+ chars)">
-            <button type="button" class="tr-btn-secondary tr-btn-sm" id="trGenPwBtn"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Generate</button>
-            <button type="button" class="tr-btn-secondary tr-btn-sm" id="trCopyTempBtn"><i class="fa-regular fa-copy" aria-hidden="true"></i> Copy</button>
-          </div>
-        </div>
-      </div>
-
-      <label class="tr-check-wrap" id="trActiveWrap" hidden>
-        <input type="checkbox" id="trActive" checked>
-        <span>Accepting new members (Active)</span>
-      </label>
-
-      <p class="ann-msg" id="trModalMsg" role="alert"></p>
-      <div class="tr-modal-actions">
-        <button class="tr-btn-secondary" type="button" id="trReset">Cancel</button>
-        <button class="tr-btn-gold" type="submit" id="trSave">Add Trainer</button>
-      </div>
-    </form>
-
-    <!-- Trainer Creation Success Screen -->
-    <div class="tr-success-view" id="trSuccessView" hidden>
-      <div class="tr-success-ico"><i class="fa-solid fa-circle-check" aria-hidden="true"></i></div>
-      <h3>Trainer Added Successfully</h3>
-      <p class="tr-success-sub" id="trSuccSub">The trainer profile and account access have been created.</p>
-
-      <div class="tr-succ-card">
-        <div class="tr-succ-row"><span>Trainer Name</span><strong id="trSuccName">—</strong></div>
-        <div class="tr-succ-row"><span>Specializations</span><strong id="trSuccSpec">—</strong></div>
-        <div class="tr-succ-row"><span>Member Capacity</span><strong id="trSuccCap">—</strong></div>
-        <div class="tr-succ-row"><span>Account Status</span><span class="tr-status is-pending" id="trSuccStatus">Invite Pending</span></div>
-      </div>
-
-      <div class="tr-succ-link-box" id="trSuccInviteBox" hidden>
-        <label for="trSuccLink">Invitation Link</label>
-        <div class="tr-temp-pw-row">
-          <input id="trSuccLink" type="text" readonly>
-          <button type="button" class="tr-btn-gold tr-btn-sm" id="trCopyLinkBtn"><i class="fa-regular fa-copy" aria-hidden="true"></i> Copy Link</button>
-        </div>
-        <p class="tr-succ-note"><i class="fa-regular fa-clock" aria-hidden="true"></i> This invitation link expires after 72 hours. <span id="trSuccEmailNote"></span></p>
-      </div>
-
-      <div class="tr-succ-link-box" id="trSuccTempBox" hidden>
-        <label for="trSuccCreds">Temporary Login Credentials (shown once)</label>
-        <div class="tr-temp-pw-row">
-          <input id="trSuccCreds" type="text" readonly>
-          <button type="button" class="tr-btn-gold tr-btn-sm" id="trCopyCredsBtn"><i class="fa-regular fa-copy" aria-hidden="true"></i> Copy Credentials</button>
-        </div>
-        <p class="tr-succ-note"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> The trainer will be required to change this password upon their first login.</p>
-      </div>
-
-      <div class="tr-modal-actions">
-        <button class="tr-btn-secondary" type="button" id="trAddAnother"><i class="fa-solid fa-plus" aria-hidden="true"></i> Add Another</button>
-        <button class="tr-btn-gold" type="button" id="trSuccessDone">Done</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- View Trainer Profile Modal -->
-<div class="tr-modal-backdrop" id="trProfileModal" hidden aria-hidden="true">
-  <div class="tr-modal tr-modal-wide" role="dialog" aria-modal="true" aria-labelledby="trProfName">
-    <div class="tr-modal-head">
-      <div class="tr-prof-head-wrap">
-        <div class="tr-prof-avatar" id="trProfAvatar">TR</div>
-        <div>
-          <div class="tr-prof-title-row">
-            <h3 id="trProfName">Trainer Profile</h3>
-            <span class="tr-status is-active" id="trProfStatusPill">Active</span>
-          </div>
-          <p id="trProfSpec">Specialization</p>
-        </div>
-      </div>
-      <button type="button" class="tr-modal-close" id="closeProfModal" aria-label="Close profile">
-        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-      </button>
     </div>
 
-    <div class="tr-prof-body">
-      <div class="tr-prof-card">
-        <div class="tr-prof-row"><span>Email</span><strong id="trProfEmail">—</strong></div>
-        <div class="tr-prof-row"><span>Phone</span><strong id="trProfPhone">—</strong></div>
-        <div class="tr-prof-row"><span>Capacity</span><strong id="trProfLoad">0 / 20 members</strong></div>
-        <div class="tr-prof-row"><span>Schedule</span><strong id="trProfAvail">—</strong></div>
-        <div class="tr-prof-row">
-          <span>Account Access</span>
-          <div class="tr-prof-acc-actions">
-            <strong id="trProfAccStatus">Active</strong>
-            <button type="button" class="tr-btn-edit tr-btn-xs" id="trProfResendBtn" hidden>
-              <i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Resend Invite
-            </button>
-          </div>
-        </div>
-        <p class="ann-msg" id="trProfInviteMsg" role="status" style="margin:6px 0 0"></p>
-      </div>
-
-      <div class="tr-prof-card tr-prof-bio">
-        <h4>About Coach</h4>
-        <p id="trProfBio">No bio added yet.</p>
-      </div>
-
-      <div class="tr-prof-card tr-prof-members">
-        <h4>Assigned Members (<span id="trProfMemCount">0</span>)</h4>
-        <div id="trProfMemList" class="tr-prof-mem-list"></div>
-      </div>
-    </div>
-
-    <div class="tr-modal-actions">
-      <button class="tr-btn-secondary" type="button" id="closeProfBtn">Close</button>
-      <button class="tr-btn-gold" type="button" id="profEditBtn"><i class="fa-solid fa-pen" aria-hidden="true"></i> Edit Trainer</button>
-    </div>
-  </div>
-</div>
-
-<script src="layout.js?v=25"></script><script src="sidebar.js?v=21"></script><script src="data.js"></script><script src="settings.js?v=17"></script>
-<script src="portal-fx.js?v=2"></script>
-<script src="change-password.js?v=2" defer></script>
-<script src="notifications-live.js?v=2" defer></script>
-<script src="trainers-staff.js?v=11" defer></script>
-<script src="site-footer.js?v=2" defer></script>
+    <script src="layout.js?v=25"></script>
+    <script src="sidebar.js?v=21"></script>
+    <script src="data.js"></script>
+    <script src="settings.js?v=17"></script>
+    <script src="portal-fx.js?v=2"></script>
+    <script src="change-password.js?v=2" defer></script>
+    <script src="notifications-live.js?v=2" defer></script>
+    <script src="trainers-staff.js?v=15" defer></script>
+    <script src="site-footer.js?v=2" defer></script>
 </body>
+
 </html>

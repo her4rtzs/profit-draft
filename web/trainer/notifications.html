@@ -1,175 +1,192 @@
 <!DOCTYPE html>
 <html lang="en" data-default-theme="dark">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ProFit — Notifications (Trainer Portal)</title>
-<script>try{var t=localStorage.getItem('pf-theme')||localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);document.documentElement.setAttribute('data-accent','gold');}catch(e){}</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/staff.css?v=12">
-<link rel="stylesheet" href="trainer.css?v=20">
-<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <title>ProFit — Notifications (Trainer Portal)</title>
+  <script>try { var t = localStorage.getItem('pf-theme') || localStorage.getItem('theme') || 'dark'; document.documentElement.setAttribute('data-theme', t); document.documentElement.setAttribute('data-accent', 'gold'); } catch (e) { }</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/staff.css?v=12">
+  <link rel="stylesheet" href="trainer.css?v=30">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#0a0e17">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17">
+  <meta name="color-scheme" content="light dark">
+  <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="ProFit">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="stylesheet" href="../pf-system.css?v=18">
+</head>
+
 <body data-page="notifications" data-portal="trainer" data-head="none">
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="scrim" id="scrim"></div>
-  <div class="main">
-    <header class="topbar" id="topbar"></header>
-    <main class="content" id="content">
+  <div class="app">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="scrim" id="scrim"></div>
+    <div class="main">
+      <header class="topbar" id="topbar"></header>
+      <main class="content" id="content">
 
-      <!-- Page Hero Banner -->
-      <section class="tw-page-hero tw-anim" style="--i:0">
-        <div class="tw-hero-left">
-          <div class="tw-hero-ico" data-ico="bell"></div>
-          <div class="tw-hero-text">
-            <span class="tw-hero-eyebrow">Coach Inbox · Real-Time Activity</span>
-            <h1 class="tw-hero-title">Notifications &amp; Assignment Alerts</h1>
-            <p class="tw-hero-sub">Stay updated on new athlete assignments, coaching requests, schedule broadcasts, and gym notices.</p>
+        <!-- Page Hero Banner -->
+        <section class="tw-page-hero tw-anim" style="--i:0">
+          <div class="tw-hero-left">
+            <div class="tw-hero-ico" data-ico="bell"></div>
+            <div class="tw-hero-text">
+              <span class="tw-hero-eyebrow">Coach Inbox · Real-Time Activity</span>
+              <h1 class="tw-hero-title">Notifications &amp; Assignment Alerts</h1>
+              <p class="tw-hero-sub">Stay updated on new athlete assignments, coaching requests, schedule broadcasts,
+                and gym notices.</p>
+            </div>
           </div>
-        </div>
-        <div class="tw-hero-actions">
-          <button type="button" class="tw-btn" id="clearAllNotifsBtn">
-            <span data-ico="trash"></span> Clear All
-          </button>
-          <button type="button" class="tw-btn-primary" id="markAllReadBtn">
-            <span data-ico="check"></span> Mark All as Read
-          </button>
-        </div>
-      </section>
-
-      <!-- Filter & Search Toolbar -->
-      <section class="tw-toolbar tw-anim" style="--i:2">
-        <div class="tw-toolbar-left">
-          <div class="tw-filter-pills" id="notifFilterSeg" role="tablist">
-            <button type="button" class="tw-filter-pill active" data-filter="all">
-              All Alerts <span class="tw-filter-count" id="cntNotifAll">0</span>
+          <div class="tw-hero-actions">
+            <button type="button" class="tw-btn" id="clearAllNotifsBtn">
+              <span data-ico="trash"></span> Clear All
             </button>
-            <button type="button" class="tw-filter-pill" data-filter="unread">
-              Unread <span class="tw-filter-count" id="cntNotifUnread">0</span>
-            </button>
-            <button type="button" class="tw-filter-pill" data-filter="trainer">
-              Coaching <span class="tw-filter-count" id="cntNotifTrainer">0</span>
-            </button>
-            <button type="button" class="tw-filter-pill" data-filter="announcement">
-              Bulletins <span class="tw-filter-count" id="cntNotifAnn">0</span>
+            <button type="button" class="tw-btn-primary" id="markAllReadBtn">
+              <span data-ico="check"></span> Mark All as Read
             </button>
           </div>
-        </div>
-        <div class="tw-toolbar-right">
-          <div class="tw-search-box">
-            <span data-ico="search"></span>
-            <input type="search" id="notifSearch" class="tw-search-input" placeholder="Search notification title or body...">
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- Notifications Feed Card -->
-      <section class="tw-card tw-anim" style="--i:3">
-        <div class="tw-card-head">
-          <div>
-            <h2 class="tw-card-title">Activity Feed</h2>
-            <p class="tw-card-sub">Click any unread alert to mark it as read.</p>
+        <!-- Filter & Search Toolbar -->
+        <section class="tw-toolbar tw-anim" style="--i:2">
+          <div class="tw-toolbar-left">
+            <div class="tw-filter-pills" id="notifFilterSeg" role="tablist">
+              <button type="button" class="tw-filter-pill active" data-filter="all">
+                All Alerts <span class="tw-filter-count" id="cntNotifAll">0</span>
+              </button>
+              <button type="button" class="tw-filter-pill" data-filter="unread">
+                Unread <span class="tw-filter-count" id="cntNotifUnread">0</span>
+              </button>
+              <button type="button" class="tw-filter-pill" data-filter="trainer">
+                Coaching <span class="tw-filter-count" id="cntNotifTrainer">0</span>
+              </button>
+              <button type="button" class="tw-filter-pill" data-filter="announcement">
+                Bulletins <span class="tw-filter-count" id="cntNotifAnn">0</span>
+              </button>
+            </div>
           </div>
-        </div>
-        <div id="notifFeed" class="tw-notif-list">
-          <span class="tw-skel tw-skel-row"></span>
-          <span class="tw-skel tw-skel-row"></span>
-        </div>
-      </section>
+          <div class="tw-toolbar-right">
+            <div class="tw-search-box">
+              <span data-ico="search"></span>
+              <input type="search" id="notifSearch" class="tw-search-input"
+                placeholder="Search notification title or body...">
+            </div>
+          </div>
+        </section>
 
-    </main>
+        <!-- Notifications Feed Card -->
+        <section class="tw-card tw-anim" style="--i:3">
+          <div class="tw-card-head">
+            <div>
+              <h2 class="tw-card-title">Activity Feed</h2>
+              <p class="tw-card-sub">Click any unread alert to mark it as read.</p>
+            </div>
+          </div>
+          <div id="notifFeed" class="tw-notif-list">
+            <span class="tw-skel tw-skel-row"></span>
+            <span class="tw-skel tw-skel-row"></span>
+          </div>
+        </section>
+
+      </main>
+    </div>
+    <nav class="bottom-nav" id="bottomNav" aria-label="Quick navigation"></nav>
   </div>
-  <nav class="bottom-nav" id="bottomNav" aria-label="Quick navigation"></nav>
-</div>
 
-<script src="../config.js?v=5"></script>
-<script src="../api.js?v=5"></script>
-<script src="../auth.js?v=5"></script>
-<script src="../assets/js/staff-icons.js?v=5"></script>
-<script src="../assets/js/staff-data.js?v=12"></script>
-<script src="../assets/js/staff.js?v=15"></script>
-<script src="trainer.js?v=12"></script>
-<script>
-PF.ready(async () => {
-  let allNotifs = [];
-  let currentFilter = 'all';
-  const searchInput = document.getElementById('notifSearch');
+  <script src="../config.js?v=9"></script>
+  <script src="../api.js?v=5"></script>
+  <script src="../auth.js?v=5"></script>
+  <script src="../assets/js/staff-icons.js?v=5"></script>
+  <script src="../assets/js/staff-data.js?v=12"></script>
+  <script src="../assets/js/staff.js?v=17"></script>
+  <script src="trainer.js?v=12"></script>
+  <script>
+    PF.ready(async () => {
+      let allNotifs = [];
+      let currentFilter = 'all';
+      const searchInput = document.getElementById('notifSearch');
 
-  function isUnread(n) {
-    return !n.read && !n.read_at;
-  }
-
-  function isTrainerKind(n) {
-    return String(n.kind || '').toUpperCase() === 'TRAINER';
-  }
-
-  function isAnnKind(n) {
-    return String(n.kind || '').toUpperCase() === 'ANNOUNCEMENT';
-  }
-
-  function updateKPIs(list) {
-    const total = list.length;
-    const unread = list.filter(isUnread).length;
-    const trainer = list.filter(isTrainerKind).length;
-    const ann = list.filter(isAnnKind).length;
-
-    const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-    setTxt('kpiNotifUnread', unread);
-    setTxt('kpiNotifTotal', total);
-    setTxt('kpiNotifTrainer', trainer);
-    setTxt('kpiNotifAnn', ann);
-
-    setTxt('cntNotifAll', total);
-    setTxt('cntNotifUnread', unread);
-    setTxt('cntNotifTrainer', trainer);
-    setTxt('cntNotifAnn', ann);
-  }
-
-  function getIconConfig(n) {
-    const k = String(n.kind || '').toUpperCase();
-    if (k === 'TRAINER') return { ico: 'dumbbell', cls: '', badge: '<span class="tw-pill is-amber">Coaching</span>' };
-    if (k === 'ANNOUNCEMENT') return { ico: 'megaphone', cls: 'is-blue', badge: '<span class="tw-pill is-blue">Bulletin</span>' };
-    if (k === 'MEMBERSHIP') return { ico: 'shield', cls: 'is-green', badge: '<span class="tw-pill is-green">Membership</span>' };
-    return { ico: 'bell', cls: 'is-purple', badge: '<span class="tw-pill is-purple">System</span>' };
-  }
-
-  function render() {
-    const feed = document.getElementById('notifFeed');
-    const q = (searchInput.value || '').trim().toLowerCase();
-
-    const rows = allNotifs.filter(n => {
-      if (currentFilter === 'unread' && !isUnread(n)) return false;
-      if (currentFilter === 'trainer' && !isTrainerKind(n)) return false;
-      if (currentFilter === 'announcement' && !isAnnKind(n)) return false;
-      if (q) {
-        const hay = `${n.title || ''} ${n.body || ''}`.toLowerCase();
-        if (!hay.includes(q)) return false;
+      function isUnread(n) {
+        return !n.read && !n.read_at;
       }
-      return true;
-    });
 
-    if (!rows.length) {
-      feed.innerHTML = `
+      function isTrainerKind(n) {
+        return String(n.kind || '').toUpperCase() === 'TRAINER';
+      }
+
+      function isAnnKind(n) {
+        return String(n.kind || '').toUpperCase() === 'ANNOUNCEMENT';
+      }
+
+      function updateKPIs(list) {
+        const total = list.length;
+        const unread = list.filter(isUnread).length;
+        const trainer = list.filter(isTrainerKind).length;
+        const ann = list.filter(isAnnKind).length;
+
+        const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+        setTxt('kpiNotifUnread', unread);
+        setTxt('kpiNotifTotal', total);
+        setTxt('kpiNotifTrainer', trainer);
+        setTxt('kpiNotifAnn', ann);
+
+        setTxt('cntNotifAll', total);
+        setTxt('cntNotifUnread', unread);
+        setTxt('cntNotifTrainer', trainer);
+        setTxt('cntNotifAnn', ann);
+      }
+
+      function getIconConfig(n) {
+        const k = String(n.kind || '').toUpperCase();
+        if (k === 'TRAINER') return { ico: 'dumbbell', cls: '', badge: '<span class="tw-pill is-amber">Coaching</span>' };
+        if (k === 'ANNOUNCEMENT') return { ico: 'megaphone', cls: 'is-blue', badge: '<span class="tw-pill is-blue">Bulletin</span>' };
+        if (k === 'MEMBERSHIP') return { ico: 'shield', cls: 'is-green', badge: '<span class="tw-pill is-green">Membership</span>' };
+        return { ico: 'bell', cls: 'is-purple', badge: '<span class="tw-pill is-purple">System</span>' };
+      }
+
+      function render() {
+        const feed = document.getElementById('notifFeed');
+        const q = (searchInput.value || '').trim().toLowerCase();
+
+        const rows = allNotifs.filter(n => {
+          if (currentFilter === 'unread' && !isUnread(n)) return false;
+          if (currentFilter === 'trainer' && !isTrainerKind(n)) return false;
+          if (currentFilter === 'announcement' && !isAnnKind(n)) return false;
+          if (q) {
+            const hay = `${n.title || ''} ${n.body || ''}`.toLowerCase();
+            if (!hay.includes(q)) return false;
+          }
+          return true;
+        });
+
+        if (!rows.length) {
+          feed.innerHTML = `
         <div class="tw-empty">
           <div class="tw-empty-ico">${PF.icon('bell')}</div>
           <strong>All caught up!</strong>
           <p>${allNotifs.length ? 'No notifications match your current filter or search.' : 'You have no notifications in your inbox right now.'}</p>
         </div>
       `;
-      return;
-    }
+          return;
+        }
 
-    feed.innerHTML = rows.map(n => {
-      const unread = isUnread(n);
-      const cfg = getIconConfig(n);
-      const ts = n.created_at || n.time || n.at;
-      const bodyText = n.body !== undefined ? n.body : (n.text || '');
-      let linkTarget = String(n.link || n.href || '').trim();
-      if (linkTarget === '/trainer-portal') linkTarget = '/members';
-      if (linkTarget.startsWith('trainer/')) linkTarget = linkTarget.slice('trainer/'.length);
-      return `
+        feed.innerHTML = rows.map(n => {
+          const unread = isUnread(n);
+          const cfg = getIconConfig(n);
+          const ts = n.created_at || n.time || n.at;
+          const bodyText = n.body !== undefined ? n.body : (n.text || '');
+          let linkTarget = String(n.link || n.href || '').trim();
+          if (linkTarget === '/trainer-portal') linkTarget = '/members';
+          if (linkTarget.startsWith('trainer/')) linkTarget = linkTarget.slice('trainer/'.length);
+          return `
         <article class="tw-notif-item ${unread ? 'is-unread' : ''}" data-notif-id="${n.id}">
           <div class="tw-notif-left">
             <div class="tw-notif-ico ${cfg.cls}">${PF.icon(cfg.ico)}</div>
@@ -198,83 +215,84 @@ PF.ready(async () => {
           </div>
         </article>
       `;
-    }).join('');
+        }).join('');
 
-    feed.querySelectorAll('[data-delete-notif]').forEach(btn => {
-      btn.addEventListener('click', async ev => {
-        ev.stopPropagation();
-        const id = btn.dataset.deleteNotif;
-        await Trainer.api.deleteNotif(id);
-        allNotifs = allNotifs.filter(x => String(x.id) !== String(id));
+        feed.querySelectorAll('[data-delete-notif]').forEach(btn => {
+          btn.addEventListener('click', async ev => {
+            ev.stopPropagation();
+            const id = btn.dataset.deleteNotif;
+            await Trainer.api.deleteNotif(id);
+            allNotifs = allNotifs.filter(x => String(x.id) !== String(id));
+            updateKPIs(allNotifs);
+            render();
+            PF.toast('Notification removed.', 'info');
+          });
+        });
+
+        feed.querySelectorAll('[data-notif-id]').forEach(el => {
+          el.addEventListener('click', async (ev) => {
+            if (ev.target.closest('[data-delete-notif]')) return;
+            const id = el.dataset.notifId;
+            const item = allNotifs.find(x => String(x.id) === String(id));
+            if (item && isUnread(item)) {
+              item.read = true;
+              item.read_at = new Date().toISOString();
+              await Trainer.api.markNotifRead(id);
+              updateKPIs(allNotifs);
+              render();
+            }
+          });
+        });
+      }
+
+      async function loadNotifs() {
+        allNotifs = await Trainer.api.getNotifications();
         updateKPIs(allNotifs);
         render();
-        PF.toast('Notification removed.', 'info');
-      });
-    });
+      }
 
-    feed.querySelectorAll('[data-notif-id]').forEach(el => {
-      el.addEventListener('click', async (ev) => {
-        if (ev.target.closest('[data-delete-notif]')) return;
-        const id = el.dataset.notifId;
-        const item = allNotifs.find(x => String(x.id) === String(id));
-        if (item && isUnread(item)) {
-          item.read = true;
-          item.read_at = new Date().toISOString();
-          await Trainer.api.markNotifRead(id);
+      document.addEventListener('pf:notifications-updated', ev => {
+        const updated = ev && ev.detail && Array.isArray(ev.detail.items) ? ev.detail.items : (PF.db ? PF.db.notifications() : []);
+        allNotifs = updated;
+        updateKPIs(allNotifs);
+        render();
+      });
+
+      document.querySelectorAll('#notifFilterSeg [data-filter]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#notifFilterSeg [data-filter]').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentFilter = btn.dataset.filter;
+          render();
+        });
+      });
+
+      document.getElementById('markAllReadBtn').addEventListener('click', async () => {
+        await Trainer.api.markAllNotifsRead();
+        allNotifs.forEach(n => {
+          n.read = true;
+          n.read_at = new Date().toISOString();
+        });
+        updateKPIs(allNotifs);
+        render();
+        PF.toast('All notifications marked as read.', 'success');
+      });
+
+      document.getElementById('clearAllNotifsBtn').addEventListener('click', async () => {
+        if (!allNotifs.length) return;
+        if (await PF.confirm({ title: 'Clear all notifications?', message: 'This will remove all notifications from your inbox.', confirm: 'Clear all', danger: true })) {
+          await Trainer.api.clearNotifs(false);
+          allNotifs = [];
           updateKPIs(allNotifs);
           render();
+          PF.toast('All notifications cleared.', 'info');
         }
       });
+
+      searchInput.addEventListener('input', render);
+      await loadNotifs();
     });
-  }
-
-  async function loadNotifs() {
-    allNotifs = await Trainer.api.getNotifications();
-    updateKPIs(allNotifs);
-    render();
-  }
-
-  document.addEventListener('pf:notifications-updated', ev => {
-    const updated = ev && ev.detail && Array.isArray(ev.detail.items) ? ev.detail.items : (PF.db ? PF.db.notifications() : []);
-    allNotifs = updated;
-    updateKPIs(allNotifs);
-    render();
-  });
-
-  document.querySelectorAll('#notifFilterSeg [data-filter]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('#notifFilterSeg [data-filter]').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentFilter = btn.dataset.filter;
-      render();
-    });
-  });
-
-  document.getElementById('markAllReadBtn').addEventListener('click', async () => {
-    await Trainer.api.markAllNotifsRead();
-    allNotifs.forEach(n => {
-      n.read = true;
-      n.read_at = new Date().toISOString();
-    });
-    updateKPIs(allNotifs);
-    render();
-    PF.toast('All notifications marked as read.', 'success');
-  });
-
-  document.getElementById('clearAllNotifsBtn').addEventListener('click', async () => {
-    if (!allNotifs.length) return;
-    if (await PF.confirm({ title: 'Clear all notifications?', message: 'This will remove all notifications from your inbox.', confirm: 'Clear all', danger: true })) {
-      await Trainer.api.clearNotifs(false);
-      allNotifs = [];
-      updateKPIs(allNotifs);
-      render();
-      PF.toast('All notifications cleared.', 'info');
-    }
-  });
-
-  searchInput.addEventListener('input', render);
-  await loadNotifs();
-});
-</script>
+  </script>
 </body>
+
 </html>

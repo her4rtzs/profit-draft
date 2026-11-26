@@ -485,3 +485,143 @@ class TrainerOnboardingTests(TestCase):
             content_type="application/json",
         )
         self.assertEqual(res_bad.status_code, 400)
+
+    def test_trainer_status_active_on_leave_inactive_transitions(self):
+        t_user = User.objects.create_user(
+            username="statuscoach@example.com",
+            email="statuscoach@example.com",
+            password=PASSWORD,
+            role="TRAINER",
+            first_name="Kai",
+        )
+        trainer = TrainerProfile.objects.create(user=t_user, specialization="Mobility", max_members=8)
+        m_user = User.objects.create_user(
+            username="statusmember@example.com",
+            email="statusmember@example.com",
+            password=PASSWORD,
+            role="MEMBER",
+            first_name="Leo",
+        )
+        member = MemberProfile.objects.create(user=m_user, membership_status="ACTIVE")
+
+        res = self.client.patch(
+            f"/api/staff/trainers/{trainer.pk}/",
+            data={"status": "on_leave"},
+            content_type="application/json",
+        )
+        self.assertEqual(res.status_code, 200)
+        body = res.json()
+        self.assertEqual(body["status"], "on_leave")
+        self.assertTrue(body["on_leave"])
+        self.assertFalse(body["is_active"])
+        trainer.refresh_from_db()
+
+        with self.assertRaises(Exception):
+            services.assign_trainer(member, trainer, actor=self.owner)
+
+        res = self.client.patch(
+            f"/api/staff/trainers/{trainer.pk}/",
+            data={"status": "inactive"},
+            content_type="application/json",
+        )
+        self.assertEqual(res.status_code, 200)
+        body = res.json()
+        self.assertEqual(body["status"], "inactive")
+        self.assertFalse(body["on_leave"])
+        self.assertFalse(body["is_active"])
+
+        res = self.client.patch(
+            f"/api/staff/trainers/{trainer.pk}/",
+            data={"status": "active"},
+            content_type="application/json",
+        )
+        self.assertEqual(res.status_code, 200)
+        body = res.json()
+        self.assertEqual(body["status"], "active")
+        self.assertFalse(body["on_leave"])
+        self.assertTrue(body["is_active"])
+        trainer.refresh_from_db()
+        services.assign_trainer(member, trainer, actor=self.owner)
+        self.assertEqual(services.current_assignment(member).trainer, trainer)
+
+        bad_res = self.client.patch(
+            f"/api/staff/trainers/{trainer.pk}/",
+            data={"status": "vacation"},
+            content_type="application/json",
+        )
+        self.assertEqual(bad_res.status_code, 400)
+
+        legacy_off = self.client.patch(
+            f"/api/staff/trainers/{trainer.pk}/",
+            data={"is_active": False},
+            content_type="application/json",
+        )
+        self.assertEqual(legacy_off.status_code, 200)
+        self.assertEqual(legacy_off.json()["status"], "inactive")
+
+        legacy_on = self.client.patch(
+            f"/api/staff/trainers/{trainer.pk}/",
+            data={"is_active": True},
+            content_type="application/json",
+        )
+        self.assertEqual(legacy_on.status_code, 200)
+        self.assertEqual(legacy_on.json()["status"], "active")
+
+    def test_deactivate_trainer_account_terminates_portal_access(self):
+        t_user = User.objects.create_user(
+            username="deactcoach@example.com",
+            email="deactcoach@example.com",
+            password=PASSWORD,
+            role="TRAINER",
+            first_name="Nia",
+        )
+        trainer = TrainerProfile.objects.create(user=t_user, specialization="HIIT", max_members=10)
+
+        deact_res = self.client.patch(
+            f"/api/staff/trainers/{trainer.pk}/",
+            data={"account_active": False, "status": "inactive", "is_active": False},
+            content_type="application/json",
+        )
+        self.assertEqual(deact_res.status_code, 200)
+        body = deact_res.json()
+        self.assertFalse(body["account_active"])
+        self.assertFalse(body["is_active"])
+        self.assertEqual(body["status"], "inactive")
+        self.assertEqual(body["invite_status"], "DEACTIVATED")
+        t_user.refresh_from_db()
+        self.assertFalse(t_user.is_active)
+
+        # Deactivated trainer cannot log in or access trainer portal API
+        self.client.logout()
+        bad_login = self.client.post(
+            "/api/auth/login/",
+            data={"identity": "deactcoach@example.com", "password": PASSWORD},
+            content_type="application/json",
+        )
+        self.assertIn(bad_login.status_code, (400, 401, 403))
+
+        self.client.force_login(t_user)
+        portal_res = self.client.get("/api/trainer/profile/")
+        self.assertEqual(portal_res.status_code, 403)
+
+        # Owner can reactivate account access cleanly
+        self.client.force_login(self.owner)
+        react_res = self.client.patch(
+            f"/api/staff/trainers/{trainer.pk}/",
+            data={"account_active": True, "status": "active", "is_active": True},
+            content_type="application/json",
+        )
+        self.assertEqual(react_res.status_code, 200)
+        rbody = react_res.json()
+        self.assertTrue(rbody["account_active"])
+        self.assertTrue(rbody["is_active"])
+        self.assertEqual(rbody["status"], "active")
+        self.assertEqual(rbody["invite_status"], "ACTIVE")
+
+        self.client.logout()
+        ok_login = self.client.post(
+            "/api/auth/login/",
+            data={"identity": "deactcoach@example.com", "password": PASSWORD},
+            content_type="application/json",
+        )
+        self.assertEqual(ok_login.status_code, 200)

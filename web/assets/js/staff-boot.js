@@ -6,8 +6,10 @@
     var def = h.getAttribute('data-default-theme') || 'light';
     var t = qTheme || localStorage.getItem('pf-theme') || localStorage.getItem('theme') || def;
     if (t === 'system') t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    h.setAttribute('data-theme', t === 'dark' ? 'dark' : 'light');
+    var isDark = t === 'dark';
+    h.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    h.classList.toggle('dark', isDark);
     h.setAttribute('data-accent', 'gold');
     if (localStorage.getItem('pf-mini') === '1') h.classList.add('pre-mini');
-  } catch (e) { h.setAttribute('data-theme', 'light'); }
+  } catch (e) { h.setAttribute('data-theme', 'light'); h.classList.remove('dark'); }
 })();

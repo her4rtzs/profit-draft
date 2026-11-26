@@ -1,129 +1,145 @@
 <!DOCTYPE html>
 <html lang="en" data-default-theme="dark">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ProFit — Gym Announcements (Trainer Portal)</title>
-<script>try{var t=localStorage.getItem('pf-theme')||localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);document.documentElement.setAttribute('data-accent','gold');}catch(e){}</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/staff.css?v=12">
-<link rel="stylesheet" href="trainer.css?v=20">
-<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <title>ProFit — Gym Announcements (Trainer Portal)</title>
+  <script>try { var t = localStorage.getItem('pf-theme') || localStorage.getItem('theme') || 'dark'; document.documentElement.setAttribute('data-theme', t); document.documentElement.setAttribute('data-accent', 'gold'); } catch (e) { }</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/staff.css?v=12">
+  <link rel="stylesheet" href="trainer.css?v=30">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#0a0e17">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17">
+  <meta name="color-scheme" content="light dark">
+  <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="ProFit">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="stylesheet" href="../pf-system.css?v=18">
+</head>
+
 <body data-page="announcements" data-portal="trainer" data-head="none">
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="scrim" id="scrim"></div>
-  <div class="main">
-    <header class="topbar" id="topbar"></header>
-    <main class="content" id="content">
+  <div class="app">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="scrim" id="scrim"></div>
+    <div class="main">
+      <header class="topbar" id="topbar"></header>
+      <main class="content" id="content">
 
-      <!-- Page Hero Banner -->
-      <section class="tw-page-hero tw-anim" style="--i:0">
-        <div class="tw-hero-left">
-          <div class="tw-hero-ico" data-ico="megaphone"></div>
-          <div class="tw-hero-text">
-            <span class="tw-hero-eyebrow">Functional Fitness Gym · Bulletin</span>
-            <h1 class="tw-hero-title">Gym Announcements &amp; Briefings</h1>
-            <p class="tw-hero-sub">Official notices, coach briefings, equipment updates, and facility schedules from management.</p>
+        <!-- Page Hero Banner -->
+        <section class="tw-page-hero tw-anim" style="--i:0">
+          <div class="tw-hero-left">
+            <div class="tw-hero-ico" data-ico="megaphone"></div>
+            <div class="tw-hero-text">
+              <span class="tw-hero-eyebrow">Functional Fitness Gym · Bulletin</span>
+              <h1 class="tw-hero-title">Gym Announcements &amp; Briefings</h1>
+              <p class="tw-hero-sub">Official notices, coach briefings, equipment updates, and facility schedules from
+                management.</p>
+            </div>
           </div>
-        </div>
-        <div class="tw-hero-actions">
-          <span class="tw-updated-badge" id="annUpdatedBadge">Live Feed</span>
-          <a href="/trainer/notifications" class="tw-btn"><span data-ico="bell"></span> Alerts</a>
-        </div>
-      </section>
-
-      <!-- Filter & Search Toolbar -->
-      <section class="tw-toolbar tw-anim" style="--i:2">
-        <div class="tw-toolbar-left">
-          <div class="tw-filter-pills" role="tablist" aria-label="Filter announcements">
-            <button type="button" class="tw-filter-pill active" data-filter="all">
-              All Notices <span class="tw-filter-count" id="cntAll">0</span>
-            </button>
-            <button type="button" class="tw-filter-pill" data-filter="pinned">
-              Pinned <span class="tw-filter-count" id="cntPinned">0</span>
-            </button>
-            <button type="button" class="tw-filter-pill" data-filter="trainers">
-              Trainers Only <span class="tw-filter-count" id="cntTrainers">0</span>
-            </button>
-            <button type="button" class="tw-filter-pill" data-filter="events">
-              Events <span class="tw-filter-count" id="cntEvents">0</span>
-            </button>
+          <div class="tw-hero-actions">
+            <span class="tw-updated-badge" id="annUpdatedBadge">Live Feed</span>
+            <a href="/trainer/notifications" class="tw-btn"><span data-ico="bell"></span> Alerts</a>
           </div>
-        </div>
-        <div class="tw-toolbar-right">
-          <div class="tw-search-box">
-            <span data-ico="search"></span>
-            <input type="search" id="annSearchInput" class="tw-search-input" placeholder="Search title or message...">
+        </section>
+
+        <!-- Filter & Search Toolbar -->
+        <section class="tw-toolbar tw-anim" style="--i:2">
+          <div class="tw-toolbar-left">
+            <div class="tw-filter-pills" role="tablist" aria-label="Filter announcements">
+              <button type="button" class="tw-filter-pill active" data-filter="all">
+                All Notices <span class="tw-filter-count" id="cntAll">0</span>
+              </button>
+              <button type="button" class="tw-filter-pill" data-filter="pinned">
+                Pinned <span class="tw-filter-count" id="cntPinned">0</span>
+              </button>
+              <button type="button" class="tw-filter-pill" data-filter="trainers">
+                Trainers Only <span class="tw-filter-count" id="cntTrainers">0</span>
+              </button>
+              <button type="button" class="tw-filter-pill" data-filter="events">
+                Events <span class="tw-filter-count" id="cntEvents">0</span>
+              </button>
+            </div>
           </div>
-        </div>
-      </section>
+          <div class="tw-toolbar-right">
+            <div class="tw-search-box">
+              <span data-ico="search"></span>
+              <input type="search" id="annSearchInput" class="tw-search-input" placeholder="Search title or message...">
+            </div>
+          </div>
+        </section>
 
-      <!-- Announcements Grid -->
-      <section class="tw-anim" style="--i:3">
-        <div id="annFeed" class="tw-ann-grid">
-          <div class="tw-card"><span class="tw-skel tw-skel-row"></span></div>
-          <div class="tw-card"><span class="tw-skel tw-skel-row"></span></div>
-        </div>
-      </section>
+        <!-- Announcements Grid -->
+        <section class="tw-anim" style="--i:3">
+          <div id="annFeed" class="tw-ann-grid">
+            <div class="tw-card"><span class="tw-skel tw-skel-row"></span></div>
+            <div class="tw-card"><span class="tw-skel tw-skel-row"></span></div>
+          </div>
+        </section>
 
-    </main>
+      </main>
+    </div>
+    <nav class="bottom-nav" id="bottomNav" aria-label="Quick navigation"></nav>
   </div>
-  <nav class="bottom-nav" id="bottomNav" aria-label="Quick navigation"></nav>
-</div>
 
-<script src="../config.js?v=5"></script>
-<script src="../api.js?v=5"></script>
-<script src="../auth.js?v=5"></script>
-<script src="../assets/js/staff-icons.js?v=5"></script>
-<script src="../assets/js/staff-data.js?v=12"></script>
-<script src="../assets/js/staff.js?v=15"></script>
-<script src="trainer.js?v=12"></script>
-<script>
-PF.ready(async () => {
-  let allAnns = [];
-  let activeFilter = 'all';
-  let searchQuery = '';
+  <script src="../config.js?v=9"></script>
+  <script src="../api.js?v=5"></script>
+  <script src="../auth.js?v=5"></script>
+  <script src="../assets/js/staff-icons.js?v=5"></script>
+  <script src="../assets/js/staff-data.js?v=12"></script>
+  <script src="../assets/js/staff.js?v=17"></script>
+  <script src="trainer.js?v=12"></script>
+  <script>
+    PF.ready(async () => {
+      let allAnns = [];
+      let activeFilter = 'all';
+      let searchQuery = '';
 
-  const feedEl = document.getElementById('annFeed');
-  const searchInput = document.getElementById('annSearchInput');
+      const feedEl = document.getElementById('annFeed');
+      const searchInput = document.getElementById('annSearchInput');
 
-  function updateStats(list) {
-    const total = list.length;
-    const pinned = list.filter(a => a.pinned).length;
-    const trainers = list.filter(a => String(a.audience || '').toLowerCase() === 'trainers').length;
-    const events = list.filter(a => Boolean(a.event_date)).length;
+      function updateStats(list) {
+        const total = list.length;
+        const pinned = list.filter(a => a.pinned).length;
+        const trainers = list.filter(a => String(a.audience || '').toLowerCase() === 'trainers').length;
+        const events = list.filter(a => Boolean(a.event_date)).length;
 
-    const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-    setTxt('kpiAnnTotal', total);
-    setTxt('kpiAnnPinned', pinned);
-    setTxt('kpiAnnTrainers', trainers);
-    setTxt('kpiAnnEvents', events);
+        const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+        setTxt('kpiAnnTotal', total);
+        setTxt('kpiAnnPinned', pinned);
+        setTxt('kpiAnnTrainers', trainers);
+        setTxt('kpiAnnEvents', events);
 
-    setTxt('cntAll', total);
-    setTxt('cntPinned', pinned);
-    setTxt('cntTrainers', trainers);
-    setTxt('cntEvents', events);
-  }
-
-  function render() {
-    const q = searchQuery.trim().toLowerCase();
-    const filtered = allAnns.filter(a => {
-      if (activeFilter === 'pinned' && !a.pinned) return false;
-      if (activeFilter === 'trainers' && String(a.audience || '').toLowerCase() !== 'trainers') return false;
-      if (activeFilter === 'events' && !a.event_date) return false;
-      if (q) {
-        const hay = `${a.title || ''} ${a.message || a.body || ''} ${a.audience || ''}`.toLowerCase();
-        if (!hay.includes(q)) return false;
+        setTxt('cntAll', total);
+        setTxt('cntPinned', pinned);
+        setTxt('cntTrainers', trainers);
+        setTxt('cntEvents', events);
       }
-      return true;
-    });
 
-    if (!filtered.length) {
-      feedEl.className = '';
-      feedEl.innerHTML = `
+      function render() {
+        const q = searchQuery.trim().toLowerCase();
+        const filtered = allAnns.filter(a => {
+          if (activeFilter === 'pinned' && !a.pinned) return false;
+          if (activeFilter === 'trainers' && String(a.audience || '').toLowerCase() !== 'trainers') return false;
+          if (activeFilter === 'events' && !a.event_date) return false;
+          if (q) {
+            const hay = `${a.title || ''} ${a.message || a.body || ''} ${a.audience || ''}`.toLowerCase();
+            if (!hay.includes(q)) return false;
+          }
+          return true;
+        });
+
+        if (!filtered.length) {
+          feedEl.className = '';
+          feedEl.innerHTML = `
         <div class="tw-card">
           <div class="tw-empty">
             <div class="tw-empty-ico">${PF.icon('megaphone')}</div>
@@ -132,24 +148,24 @@ PF.ready(async () => {
           </div>
         </div>
       `;
-      return;
-    }
+          return;
+        }
 
-    feedEl.className = 'tw-ann-grid';
-    feedEl.innerHTML = filtered.map(a => {
-      const isTrainerOnly = String(a.audience || '').toLowerCase() === 'trainers';
-      const audBadge = isTrainerOnly
-        ? `<span class="tw-pill is-purple">Trainers Only</span>`
-        : `<span class="tw-pill is-blue">All Gym</span>`;
-      const pinBadge = a.pinned
-        ? `<span class="tw-pill is-amber">Pinned</span>`
-        : '';
-      const eventBadge = a.event_date
-        ? `<span class="tw-pill is-green">Event · ${Trainer.format.date(a.event_date)}</span>`
-        : '';
-      const pubDate = Trainer.format.date(a.publish_on || a.published_at || a.created_at);
+        feedEl.className = 'tw-ann-grid';
+        feedEl.innerHTML = filtered.map(a => {
+          const isTrainerOnly = String(a.audience || '').toLowerCase() === 'trainers';
+          const audBadge = isTrainerOnly
+            ? `<span class="tw-pill is-purple">Trainers Only</span>`
+            : `<span class="tw-pill is-blue">All Gym</span>`;
+          const pinBadge = a.pinned
+            ? `<span class="tw-pill is-amber">Pinned</span>`
+            : '';
+          const eventBadge = a.event_date
+            ? `<span class="tw-pill is-green">Event · ${Trainer.format.date(a.event_date)}</span>`
+            : '';
+          const pubDate = Trainer.format.date(a.publish_on || a.published_at || a.created_at);
 
-      return `
+          return `
         <article class="tw-ann-card ${a.pinned ? 'is-pinned' : ''}">
           <div>
             <div class="tw-ann-top">
@@ -169,29 +185,30 @@ PF.ready(async () => {
           </div>
         </article>
       `;
-    }).join('');
-  }
+        }).join('');
+      }
 
-  document.querySelectorAll('[data-filter]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeFilter = btn.dataset.filter;
+      document.querySelectorAll('[data-filter]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeFilter = btn.dataset.filter;
+          render();
+        });
+      });
+
+      if (searchInput) {
+        searchInput.addEventListener('input', () => {
+          searchQuery = searchInput.value || '';
+          render();
+        });
+      }
+
+      allAnns = await Trainer.api.getAnnouncements();
+      updateStats(allAnns);
       render();
     });
-  });
-
-  if (searchInput) {
-    searchInput.addEventListener('input', () => {
-      searchQuery = searchInput.value || '';
-      render();
-    });
-  }
-
-  allAnns = await Trainer.api.getAnnouncements();
-  updateStats(allAnns);
-  render();
-});
-</script>
+  </script>
 </body>
+
 </html>

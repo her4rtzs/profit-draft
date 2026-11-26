@@ -1,925 +1,1200 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<script>(function(){try{var t=localStorage.getItem('theme');if(t==='light'&&!localStorage.getItem('pf-staff-explicit-light')){t='dark';try{localStorage.setItem('theme','dark');}catch(_){}}var d=t!=='light';var h=document.documentElement;h.style.background=d?'#0a0e16':'#fbf6ee';h.style.colorScheme=d?'dark':'light';h.dataset.theme=d?'dark':'light';if(d){h.classList.add('dark');}else{h.classList.remove('dark');}}catch(e){}})();</script>
-<script src="splash.js?v=3"></script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>ProFit | Settings</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<script>document.documentElement.dataset.accent='gold'</script>
-<link rel="stylesheet" href="global.css?v=13">
-<script src="config.js?v=4"></script>
-<script src="api.js"></script>
-<script src="auth.js?v=4"></script>
-<link rel="manifest" href="/manifest.webmanifest">
-<meta name="theme-color" content="#0a0e17">
-<link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="ProFit">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<style>
-  .st-shell {
-    max-width: 980px;
-    margin: 0 auto;
-    padding: 8px 0 48px;
-    display: grid;
-    grid-template-columns: 190px minmax(0, 1fr);
-    gap: 26px;
-    align-items: start;
-  }
-  .st-sidenav {
-    position: sticky;
-    top: 94px;
-    display: grid;
-    gap: 4px;
-  }
-  .st-sidenav a {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 14px;
-    border-radius: 12px;
-    color: var(--muted, #94a3b8);
-    font-size: 13.5px;
-    font-weight: 700;
-    text-decoration: none;
-    position: relative;
-    transition: background .16s ease, color .16s ease;
-  }
-  .st-sidenav a:hover {
-    background: rgba(255, 255, 255, .05);
-    color: var(--text, #f3f4f6);
-  }
-  body:not(.dark) .st-sidenav a {
-    color: #6f6450;
-  }
-  body:not(.dark) .st-sidenav a:hover {
-    background: #f5ecdc;
-    color: #2a2418;
-  }
-  .st-sidenav a.on {
-    background: rgba(232, 185, 58, .16);
-    color: #e8b93a;
-  }
-  body:not(.dark) .st-sidenav a.on {
-    background: #fef6df;
-    color: #8a6212;
-  }
-  .st-sidenav a.on::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 8px;
-    bottom: 8px;
-    width: 3px;
-    border-radius: 4px;
-    background: #e8b93a;
-  }
-  .st-stack {
-    display: grid;
-    gap: 18px;
-    min-width: 0;
-  }
-  @media (max-width: 860px) {
+  <script>(function () { try { var t = localStorage.getItem('theme'); if (t === 'light' && !localStorage.getItem('pf-staff-explicit-light')) { t = 'dark'; try { localStorage.setItem('theme', 'dark'); } catch (_) { } } var d = t !== 'light'; var h = document.documentElement; h.style.background = d ? '#0a0e16' : '#fbf6ee'; h.style.colorScheme = d ? 'dark' : 'light'; h.dataset.theme = d ? 'dark' : 'light'; if (d) { h.classList.add('dark'); } else { h.classList.remove('dark'); } } catch (e) { } })();</script>
+  <script src="splash.js?v=3"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <title>ProFit | Settings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <script>document.documentElement.dataset.accent = 'gold'</script>
+  <link rel="stylesheet" href="global.css?v=18">
+  <script src="config.js?v=9"></script>
+  <script src="api.js"></script>
+  <script src="auth.js?v=4"></script>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#0a0e17">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17">
+  <meta name="color-scheme" content="light dark">
+  <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="ProFit">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <style>
     .st-shell {
-      grid-template-columns: 1fr;
-      gap: 14px;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 8px 0 48px;
+      display: grid;
+      grid-template-columns: 190px minmax(0, 1fr);
+      gap: 26px;
+      align-items: start;
     }
+
     .st-sidenav {
-      position: static;
-      display: flex;
-      overflow-x: auto;
-      gap: 8px;
-      padding-bottom: 4px;
+      position: sticky;
+      top: 94px;
+      display: grid;
+      gap: 4px;
     }
+
     .st-sidenav a {
-      white-space: nowrap;
-      border: 1px solid var(--border, #263246);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      color: var(--muted, #94a3b8);
+      font-size: 13.5px;
+      font-weight: 700;
+      text-decoration: none;
+      position: relative;
+      transition: background .16s ease, color .16s ease;
     }
+
+    .st-sidenav a:hover:not(.on) {
+      background: rgba(232, 185, 58, .12);
+      color: var(--text, #f3f4f6);
+    }
+
     body:not(.dark) .st-sidenav a {
-      border-color: #eadfc8;
-      background: #ffffff;
+      color: #6f6450;
     }
+
+    body:not(.dark) .st-sidenav a:hover:not(.on) {
+      background: #f5ecdc;
+      color: #2a2418;
+    }
+
+    .st-sidenav a.on,
+    body:not(.dark) .st-sidenav a.on {
+      background: #e8b93a;
+      color: #0b0f19;
+    }
+
+    .st-sidenav a.on:active,
+    body:not(.dark) .st-sidenav a.on:active {
+      background: #b8860b;
+      color: #0b0f19;
+    }
+
     .st-sidenav a.on::before {
       display: none;
     }
-  }
-  @keyframes stRise {
-    from { opacity: 0; transform: translateY(14px); }
-    to { opacity: 1; transform: none; }
-  }
-  @keyframes stShimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-  }
-  .st-rv {
-    animation: stRise .45s cubic-bezier(.2, .8, .2, 1) both;
-    animation-delay: calc(var(--i, 0) * 65ms);
-  }
-  .st-skel {
-    background: linear-gradient(90deg, rgba(255,255,255,.06) 25%, rgba(255,255,255,.14) 50%, rgba(255,255,255,.06) 75%) !important;
-    background-size: 200% 100% !important;
-    animation: stShimmer 1.2s ease-in-out infinite;
-    color: transparent !important;
-    border-radius: 6px;
-  }
-  body:not(.dark) .st-skel {
-    background: linear-gradient(90deg, #f3ebdb 25%, #faf5e9 50%, #f3ebdb 75%) !important;
-    background-size: 200% 100% !important;
-  }
-  .st-row-ico {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    background: rgba(232, 185, 58, .12);
-    color: #e8b93a;
-    display: grid;
-    place-items: center;
-    flex: none;
-    font-size: 14px;
-  }
-  body:not(.dark) .st-row-ico {
-    background: #fdf4da;
-    color: #9a6b0d;
-  }
-  .st-row-lead {
-    display: flex;
-    align-items: center;
-    gap: 13px;
-    min-width: 0;
-  }
-  .st-open-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 2px 8px;
-    border-radius: 99px;
-    font-size: 11px;
-    font-weight: 700;
-    background: rgba(34, 197, 94, .16);
-    color: #4ade80;
-    margin-right: 6px;
-  }
-  body:not(.dark) .st-open-pill {
-    background: #e3f8ec;
-    color: #15803d;
-  }
-  .st-open-pill.is-closed {
-    background: rgba(245, 158, 11, .16);
-    color: #fbbf24;
-  }
-  body:not(.dark) .st-open-pill.is-closed {
-    background: #fef3c7;
-    color: #b45309;
-  }
-  .st-font-prev {
-    margin: 0 18px 16px;
-    padding: 13px 15px;
-    border-radius: 12px;
-    border: 1px dashed var(--border, #263246);
-    font-size: 13.5px;
-    color: var(--muted, #94a3b8);
-  }
-  body:not(.dark) .st-font-prev {
-    border-color: #dfd2b6;
-    background: #fdfaf3;
-    color: #6f6450;
-  }
-  .st-font-prev strong {
-    display: block;
-    color: var(--text, #f3f4f6);
-    margin-bottom: 2px;
-  }
-  body:not(.dark) .st-font-prev strong {
-    color: #2a2418;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .st-rv, .st-skel { animation: none !important; }
-  }
-  .st-notice {
-    padding: 12px 16px;
-    border-radius: 12px;
-    font-size: 13.5px;
-    font-weight: 600;
-    background: rgba(61, 220, 132, .12);
-    border: 1px solid rgba(61, 220, 132, .35);
-    color: #3ddc84;
-  }
-  .st-notice.error {
-    background: rgba(255, 123, 138, .12);
-    border-color: rgba(255, 123, 138, .35);
-    color: #ff7b8a;
-  }
-  body:not(.dark) .st-notice {
-    background: #eefaf2;
-    border-color: #b7e6c8;
-    color: #166534;
-  }
-  body:not(.dark) .st-notice.error {
-    background: #fef2f2;
-    border-color: #fecaca;
-    color: #b91c1c;
-  }
-  .st-card {
-    background: var(--card, #111827);
-    border: 1px solid var(--border, #263246);
-    border-radius: 16px;
-    overflow: hidden;
-  }
-  body:not(.dark) .st-card {
-    background: #ffffff;
-    border-color: #eadfc8;
-    box-shadow: 0 1px 3px rgba(15, 23, 42, .04);
-  }
-  .st-head {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 14px 18px 10px;
-    font-size: 12.5px;
-    font-weight: 700;
-    color: var(--muted, #94a3b8);
-    border-bottom: 1px solid var(--border, rgba(255, 255, 255, .07));
-  }
-  body:not(.dark) .st-head {
-    color: #6f6450;
-    border-bottom-color: #f1e8d6;
-  }
-  .st-head i {
-    width: 16px;
-    text-align: center;
-    color: #e8b93a;
-  }
-  body:not(.dark) .st-head i {
-    color: #8a6212;
-  }
-  .st-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 14px;
-    width: 100%;
-    padding: 15px 18px;
-    border: 0;
-    border-top: 1px solid var(--border, rgba(255, 255, 255, .07));
-    background: transparent;
-    color: var(--text, #f3f4f6);
-    text-decoration: none;
-    text-align: left;
-    font-size: 14.5px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background .15s ease;
-  }
-  .st-head + .st-row,
-  .st-row:first-child {
-    border-top: 0;
-  }
-  a.st-row:hover,
-  button.st-row:hover {
-    background: rgba(255, 255, 255, .04);
-  }
-  body:not(.dark) .st-row {
-    color: #2a2418;
-    border-top-color: #f1e8d6;
-  }
-  body:not(.dark) a.st-row:hover,
-  body:not(.dark) button.st-row:hover {
-    background: #faf6ee;
-  }
-  .st-row-copy {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    min-width: 0;
-  }
-  .st-row-copy small {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--muted, #94a3b8);
-  }
-  body:not(.dark) .st-row-copy small {
-    color: #6f6450;
-  }
-  .st-row-end {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--muted, #94a3b8);
-    font-size: 13px;
-    font-weight: 600;
-    flex: none;
-  }
-  /* Clean pill toggle switch */
-  .st-switch {
-    position: relative;
-    display: inline-block;
-    width: 46px;
-    height: 26px;
-    flex: none;
-  }
-  .st-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-    position: absolute;
-  }
-  .st-switch span {
-    position: absolute;
-    inset: 0;
-    border-radius: 99px;
-    background: #334155;
-    cursor: pointer;
-    transition: background .18s ease;
-  }
-  body:not(.dark) .st-switch span {
-    background: #e2d9c8;
-  }
-  .st-switch span::after {
-    content: "";
-    position: absolute;
-    left: 3px;
-    top: 3px;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #ffffff;
-    transition: transform .18s ease;
-  }
-  .st-switch input:checked + span {
-    background: #e8b93a;
-  }
-  .st-switch input:checked + span::after {
-    transform: translateX(20px);
-  }
-  /* Font Size 3-pill selector */
-  .st-font-row {
-    padding: 14px 18px 16px;
-    border-top: 1px solid var(--border, rgba(255, 255, 255, .07));
-  }
-  body:not(.dark) .st-font-row {
-    border-top-color: #f1e8d6;
-  }
-  .st-font-row > span {
-    display: block;
-    font-size: 13.5px;
-    font-weight: 600;
-    margin-bottom: 10px;
-  }
-  .st-pills {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-  }
-  .st-pills button {
-    height: 38px;
-    border-radius: 99px;
-    border: 1px solid var(--border, #263246);
-    background: transparent;
-    color: var(--muted, #94a3b8);
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background .16s ease, border-color .16s ease, color .16s ease, transform .14s ease;
-  }
-  .st-pills button:hover:not(.active) {
-    background: rgba(232, 185, 58, .12);
-    border-color: rgba(232, 185, 58, .48);
-    color: var(--text, #f3f4f6);
-  }
-  body:not(.dark) .st-pills button {
-    background: #f6ecd9;
-    border-color: #eadfc8;
-    color: #6f6450;
-  }
-  body:not(.dark) .st-pills button:hover:not(.active) {
-    background: #efe1c2;
-    border-color: #d6b25e;
-    color: #2a2418;
-  }
-  .st-pills button.active,
-  body:not(.dark) .st-pills button.active {
-    background: linear-gradient(135deg, #f2cb5c, #d9a425) !important;
-    border-color: transparent !important;
-    color: #141006 !important;
-  }
-  /* Help & Support Modal Popup */
-  .st-modal-backdrop {
-    position: fixed;
-    inset: 0;
-    z-index: 9500;
-    background: rgba(6, 10, 18, .66);
-    backdrop-filter: blur(4px);
-    display: grid;
-    place-items: center;
-    padding: 18px;
-  }
-  .st-modal-backdrop[hidden] {
-    display: none !important;
-  }
-  .st-modal {
-    width: min(460px, 100%);
-    background: var(--card, #111827);
-    border: 1px solid var(--border, #263246);
-    border-radius: 18px;
-    padding: 22px;
-    color: var(--text, #f3f4f6);
-  }
-  body:not(.dark) .st-modal {
-    background: #ffffff;
-    border-color: #eadfc8;
-    color: #2a2418;
-  }
-  .st-modal-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 14px;
-  }
-  .st-modal-head h2 {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 800;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .st-modal-close {
-    width: 34px;
-    height: 34px;
-    border-radius: 10px;
-    border: 1px solid var(--border, #263246);
-    background: transparent;
-    color: inherit;
-    cursor: pointer;
-    display: grid;
-    place-items: center;
-  }
-  body:not(.dark) .st-modal-close {
-    border-color: #eadfc8;
-  }
-  .st-help-list {
-    display: grid;
-    gap: 10px;
-    margin: 0 0 16px;
-  }
-  .st-help-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 14px;
-    border-radius: 12px;
-    border: 1px solid var(--border, #263246);
-    background: var(--bg, #0a0e17);
-    text-decoration: none;
-    color: inherit;
-  }
-  body:not(.dark) .st-help-item {
-    background: #fdfaf3;
-    border-color: #eadfc8;
-  }
-  .st-help-item i {
-    color: #e8b93a;
-    width: 18px;
-    text-align: center;
-  }
-  body:not(.dark) .st-help-item i {
-    color: #b8860b;
-  }
-  .st-help-item strong {
-    display: block;
-    font-size: 13.5px;
-    font-weight: 700;
-  }
-  .st-help-item small {
-    display: block;
-    font-size: 12px;
-    color: var(--muted, #94a3b8);
-  }
-  .st-modal-foot {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-  }
-  /* Owner Plan Prices Editor */
-  .st-price-list {
-    padding: 4px 18px 16px;
-    display: grid;
-    gap: 10px;
-  }
-  .st-price-row {
-    display: grid;
-    grid-template-columns: 1fr 140px;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border, rgba(255, 255, 255, .07));
-  }
-  body:not(.dark) .st-price-row {
-    border-bottom-color: #f1e8d6;
-  }
-  .st-price-row:last-of-type {
-    border-bottom: 0;
-  }
-  .st-price-row label {
-    font-size: 14px;
-    font-weight: 700;
-    display: block;
-  }
-  .st-price-row small {
-    display: block;
-    font-size: 12px;
-    color: var(--muted, #94a3b8);
-  }
-  body:not(.dark) .st-price-row small {
-    color: #6f6450;
-  }
-  .st-peso-wrap {
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
-  .st-peso-wrap span {
-    position: absolute;
-    left: 12px;
-    font-weight: 700;
-    color: var(--muted, #94a3b8);
-    pointer-events: none;
-  }
-  .st-peso-wrap input {
-    width: 100%;
-    height: 40px;
-    padding: 0 12px 0 28px;
-    border-radius: 10px;
-    border: 1px solid var(--border, #263246);
-    background: var(--bg, #0a0e17);
-    color: var(--text, #f3f4f6);
-    font-size: 14px;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-  }
-  body:not(.dark) .st-peso-wrap input {
-    background: #faf6ee;
-    border-color: #eadfc8;
-    color: #2a2418;
-  }
-  .st-save-btn {
-    width: 100%;
-    height: 42px;
-    margin-top: 6px;
-    border: 0;
-    border-radius: 12px;
-    background: #e8b93a;
-    color: #141006;
-    font-size: 14px;
-    font-weight: 800;
-    cursor: pointer;
-  }
-  .st-save-btn:disabled {
-    opacity: .6;
-    cursor: default;
-  }
-  /* Logout card (keep only Logout, hide auto-injected Change password row) */
-  .st-logout-card .pf-cp-item,
-  .st-logout-card [data-change-password] {
-    display: none !important;
-  }
-  .st-logout-btn {
-    width: 100%;
-    padding: 15px 18px;
-    border: 0;
-    background: transparent;
-    color: #ef4444;
-    font-size: 14.5px;
-    font-weight: 700;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    cursor: pointer;
-  }
-  .st-logout-btn:hover {
-    background: rgba(239, 68, 68, .08);
-  }
-  .st-foot {
-    text-align: center;
-    font-size: 12px;
-    color: var(--muted, #94a3b8);
-    padding-top: 4px;
-  }
-  .st-row[aria-expanded="true"] .st-row-end i {
-    transform: rotate(90deg);
-  }
-  .st-row-end i {
-    transition: transform .18s ease;
-  }
-  .st-drawer {
-    padding: 16px 18px 18px;
-    border-top: 1px solid var(--border, rgba(255, 255, 255, .07));
-    background: rgba(255, 255, 255, .02);
-  }
-  body:not(.dark) .st-drawer {
-    border-top-color: #f1e8d6;
-    background: #fdfaf3;
-  }
-  .st-drawer[hidden] {
-    display: none !important;
-  }
-  .st-drawer-note {
-    margin: 0 0 12px;
-    font-size: 12.5px;
-    color: var(--muted, #94a3b8);
-    line-height: 1.45;
-  }
-  .st-field-grid {
-    display: grid;
-    gap: 12px;
-  }
-  .st-field {
-    display: grid;
-    gap: 6px;
-  }
-  .st-field label {
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--muted, #94a3b8);
-  }
-  .st-field input {
-    height: 40px;
-    padding: 0 12px;
-    border-radius: 10px;
-    border: 1px solid var(--border, #263246);
-    background: var(--bg, #0a0e17);
-    color: var(--text, #f3f4f6);
-    font-size: 14px;
-    font-weight: 600;
-  }
-  body:not(.dark) .st-field input {
-    background: #ffffff;
-    border-color: #eadfc8;
-    color: #2a2418;
-  }
-</style>
+
+    .st-stack {
+      display: grid;
+      gap: 18px;
+      min-width: 0;
+    }
+
+    @media (max-width: 860px) {
+      .st-shell {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .st-sidenav {
+        position: static;
+        display: flex;
+        overflow-x: auto;
+        gap: 8px;
+        padding-bottom: 4px;
+      }
+
+      .st-sidenav a {
+        white-space: nowrap;
+        border: 1px solid var(--border, #263246);
+      }
+
+      body:not(.dark) .st-sidenav a {
+        border-color: #eadfc8;
+        background: #ffffff;
+      }
+
+      .st-sidenav a.on::before {
+        display: none;
+      }
+    }
+
+    @keyframes stRise {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    @keyframes stShimmer {
+      0% {
+        background-position: 200% 0;
+      }
+
+      100% {
+        background-position: -200% 0;
+      }
+    }
+
+    .st-rv {
+      animation: stRise .45s cubic-bezier(.2, .8, .2, 1) both;
+      animation-delay: calc(var(--i, 0) * 65ms);
+    }
+
+    .st-skel {
+      background: linear-gradient(90deg, rgba(255, 255, 255, .06) 25%, rgba(255, 255, 255, .14) 50%, rgba(255, 255, 255, .06) 75%) !important;
+      background-size: 200% 100% !important;
+      animation: stShimmer 1.2s ease-in-out infinite;
+      color: transparent !important;
+      border-radius: 6px;
+    }
+
+    body:not(.dark) .st-skel {
+      background: linear-gradient(90deg, #f3ebdb 25%, #faf5e9 50%, #f3ebdb 75%) !important;
+      background-size: 200% 100% !important;
+    }
+
+    .st-row-ico {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(232, 185, 58, .12);
+      color: #e8b93a;
+      display: grid;
+      place-items: center;
+      flex: none;
+      font-size: 14px;
+    }
+
+    body:not(.dark) .st-row-ico {
+      background: #fdf4da;
+      color: #9a6b0d;
+    }
+
+    .st-row-lead {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      min-width: 0;
+    }
+
+    .st-open-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 2px 8px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(34, 197, 94, .16);
+      color: #4ade80;
+      margin-right: 6px;
+    }
+
+    body:not(.dark) .st-open-pill {
+      background: #e3f8ec;
+      color: #15803d;
+    }
+
+    .st-open-pill.is-closed {
+      background: rgba(245, 158, 11, .16);
+      color: #fbbf24;
+    }
+
+    body:not(.dark) .st-open-pill.is-closed {
+      background: #fef3c7;
+      color: #b45309;
+    }
+
+    .st-font-prev {
+      margin: 0 18px 16px;
+      padding: 13px 15px;
+      border-radius: 12px;
+      border: 1px dashed var(--border, #263246);
+      font-size: 13.5px;
+      color: var(--muted, #94a3b8);
+    }
+
+    body:not(.dark) .st-font-prev {
+      border-color: #dfd2b6;
+      background: #fdfaf3;
+      color: #6f6450;
+    }
+
+    .st-font-prev strong {
+      display: block;
+      color: var(--text, #f3f4f6);
+      margin-bottom: 2px;
+    }
+
+    body:not(.dark) .st-font-prev strong {
+      color: #2a2418;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      .st-rv,
+      .st-skel {
+        animation: none !important;
+      }
+    }
+
+    .st-notice {
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 13.5px;
+      font-weight: 600;
+      background: rgba(61, 220, 132, .12);
+      border: 1px solid rgba(61, 220, 132, .35);
+      color: #3ddc84;
+    }
+
+    .st-notice.error {
+      background: rgba(255, 123, 138, .12);
+      border-color: rgba(255, 123, 138, .35);
+      color: #ff7b8a;
+    }
+
+    body:not(.dark) .st-notice {
+      background: #eefaf2;
+      border-color: #b7e6c8;
+      color: #166534;
+    }
+
+    body:not(.dark) .st-notice.error {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #b91c1c;
+    }
+
+    .st-card {
+      background: var(--card, #111827);
+      border: 1px solid var(--border, #263246);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    body:not(.dark) .st-card {
+      background: #ffffff;
+      border-color: #eadfc8;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, .04);
+    }
+
+    .st-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 18px 10px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--muted, #94a3b8);
+      border-bottom: 1px solid var(--border, rgba(255, 255, 255, .07));
+    }
+
+    body:not(.dark) .st-head {
+      color: #6f6450;
+      border-bottom-color: #f1e8d6;
+    }
+
+    .st-head i {
+      width: 16px;
+      text-align: center;
+      color: #e8b93a;
+    }
+
+    body:not(.dark) .st-head i {
+      color: #8a6212;
+    }
+
+    .st-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      width: 100%;
+      padding: 15px 18px;
+      border: 0;
+      border-top: 1px solid var(--border, rgba(255, 255, 255, .07));
+      background: transparent;
+      color: var(--text, #f3f4f6);
+      text-decoration: none;
+      text-align: left;
+      font-size: 14.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s ease;
+    }
+
+    .st-head+.st-row,
+    .st-row:first-child {
+      border-top: 0;
+    }
+
+    a.st-row:hover,
+    button.st-row:hover {
+      background: rgba(255, 255, 255, .04);
+    }
+
+    body:not(.dark) .st-row {
+      color: #2a2418;
+      border-top-color: #f1e8d6;
+    }
+
+    body:not(.dark) a.st-row:hover,
+    body:not(.dark) button.st-row:hover {
+      background: #faf6ee;
+    }
+
+    .st-row-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .st-row-copy small {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted, #94a3b8);
+    }
+
+    body:not(.dark) .st-row-copy small {
+      color: #6f6450;
+    }
+
+    .st-row-end {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted, #94a3b8);
+      font-size: 13px;
+      font-weight: 600;
+      flex: none;
+    }
+
+    /* Clean pill toggle switch */
+    .st-switch {
+      position: relative;
+      display: inline-block;
+      width: 46px;
+      height: 26px;
+      flex: none;
+    }
+
+    .st-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      position: absolute;
+    }
+
+    .st-switch span {
+      position: absolute;
+      inset: 0;
+      border-radius: 99px;
+      background: #334155;
+      cursor: pointer;
+      transition: background .18s ease;
+    }
+
+    body:not(.dark) .st-switch span {
+      background: #e2d9c8;
+    }
+
+    .st-switch span::after {
+      content: "";
+      position: absolute;
+      left: 3px;
+      top: 3px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #ffffff;
+      transition: transform .18s ease;
+    }
+
+    .st-switch input:checked+span {
+      background: #e8b93a;
+    }
+
+    .st-switch input:checked+span::after {
+      transform: translateX(20px);
+    }
+
+    /* Font Size 3-pill selector */
+    .st-font-row {
+      padding: 14px 18px 16px;
+      border-top: 1px solid var(--border, rgba(255, 255, 255, .07));
+    }
+
+    body:not(.dark) .st-font-row {
+      border-top-color: #f1e8d6;
+    }
+
+    .st-font-row>span {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .st-pills {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .st-pills button {
+      height: 38px;
+      border-radius: 99px;
+      border: 1px solid var(--border, #263246);
+      background: transparent;
+      color: var(--muted, #94a3b8);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .16s ease, border-color .16s ease, color .16s ease, transform .14s ease;
+    }
+
+    .st-pills button:hover:not(.active):not(:disabled) {
+      background: rgba(232, 185, 58, .12);
+      color: var(--text, #f3f4f6);
+    }
+
+    body:not(.dark) .st-pills button {
+      background: #f6ecd9;
+      border-color: #eadfc8;
+      color: #6f6450;
+    }
+
+    body:not(.dark) .st-pills button:hover:not(.active):not(:disabled) {
+      background: #efe1c2;
+      color: #2a2418;
+    }
+
+    .st-pills button.active,
+    body:not(.dark) .st-pills button.active {
+      background: #e8b93a !important;
+      border-color: #e8b93a !important;
+      color: #0b0f19 !important;
+    }
+
+    .st-pills button.active:active,
+    body:not(.dark) .st-pills button.active:active {
+      background: #b8860b !important;
+      border-color: #b8860b !important;
+      color: #0b0f19 !important;
+    }
+
+    /* Help & Support Modal Popup */
+    .st-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 9500;
+      background: rgba(6, 10, 18, .66);
+      backdrop-filter: blur(4px);
+      display: grid;
+      place-items: center;
+      padding: 18px;
+    }
+
+    .st-modal-backdrop[hidden] {
+      display: none !important;
+    }
+
+    .st-modal {
+      width: min(460px, 100%);
+      background: var(--card, #111827);
+      border: 1px solid var(--border, #263246);
+      border-radius: 18px;
+      padding: 22px;
+      color: var(--text, #f3f4f6);
+    }
+
+    body:not(.dark) .st-modal {
+      background: #ffffff;
+      border-color: #eadfc8;
+      color: #2a2418;
+    }
+
+    .st-modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .st-modal-head h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .st-modal-close {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      border: 1px solid var(--border, #263246);
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+    }
+
+    body:not(.dark) .st-modal-close {
+      border-color: #eadfc8;
+    }
+
+    .st-help-list {
+      display: grid;
+      gap: 10px;
+      margin: 0 0 16px;
+    }
+
+    .st-help-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border, #263246);
+      background: var(--bg, #0a0e17);
+      text-decoration: none;
+      color: inherit;
+    }
+
+    body:not(.dark) .st-help-item {
+      background: #fdfaf3;
+      border-color: #eadfc8;
+    }
+
+    .st-help-item i {
+      color: #e8b93a;
+      width: 18px;
+      text-align: center;
+    }
+
+    body:not(.dark) .st-help-item i {
+      color: #b8860b;
+    }
+
+    .st-help-item strong {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 700;
+    }
+
+    .st-help-item small {
+      display: block;
+      font-size: 12px;
+      color: var(--muted, #94a3b8);
+    }
+
+    .st-modal-foot {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* Owner Plan Prices Editor */
+    .st-price-list {
+      padding: 4px 18px 16px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .st-price-row {
+      display: grid;
+      grid-template-columns: 1fr 140px;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border, rgba(255, 255, 255, .07));
+    }
+
+    @media (max-width: 480px) {
+      .st-price-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .st-row {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .st-sidenav {
+        touch-action: pan-x;
+        scrollbar-width: none;
+      }
+
+      .st-sidenav::-webkit-scrollbar {
+        display: none;
+      }
+    }
+
+    body:not(.dark) .st-price-row {
+      border-bottom-color: #f1e8d6;
+    }
+
+    .st-price-row:last-of-type {
+      border-bottom: 0;
+    }
+
+    .st-price-row label {
+      font-size: 14px;
+      font-weight: 700;
+      display: block;
+    }
+
+    .st-price-row small {
+      display: block;
+      font-size: 12px;
+      color: var(--muted, #94a3b8);
+    }
+
+    body:not(.dark) .st-price-row small {
+      color: #6f6450;
+    }
+
+    .st-peso-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .st-peso-wrap span {
+      position: absolute;
+      left: 12px;
+      font-weight: 700;
+      color: var(--muted, #94a3b8);
+      pointer-events: none;
+    }
+
+    .st-peso-wrap input {
+      width: 100%;
+      height: 40px;
+      padding: 0 12px 0 28px;
+      border-radius: 10px;
+      border: 1px solid var(--border, #263246);
+      background: var(--bg, #0a0e17);
+      color: var(--text, #f3f4f6);
+      font-size: 14px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    body:not(.dark) .st-peso-wrap input {
+      background: #faf6ee;
+      border-color: #eadfc8;
+      color: #2a2418;
+    }
+
+    .st-save-btn {
+      width: 100%;
+      height: 42px;
+      margin-top: 6px;
+      border: 0;
+      border-radius: 12px;
+      background: #e8b93a;
+      color: #0b0f19;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .st-save-btn:hover:not(:disabled) {
+      background: #f0c44b;
+    }
+
+    .st-save-btn:active:not(:disabled) {
+      background: #b8860b;
+      color: #0b0f19;
+    }
+
+    .st-save-btn:disabled {
+      opacity: .48;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* Logout card (keep only Logout, hide auto-injected Change password row) */
+    .st-logout-card .pf-cp-item,
+    .st-logout-card [data-change-password] {
+      display: none !important;
+    }
+
+    .st-logout-btn {
+      width: 100%;
+      padding: 15px 18px;
+      border: 0;
+      background: transparent;
+      color: #ef4444;
+      font-size: 14.5px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .st-logout-btn:hover {
+      background: rgba(239, 68, 68, .12);
+    }
+
+    .st-logout-btn:active {
+      background: rgba(239, 68, 68, .22);
+    }
+
+    .st-foot {
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted, #94a3b8);
+      padding-top: 4px;
+    }
+
+    .st-row[aria-expanded="true"] .st-row-end i {
+      transform: rotate(90deg);
+    }
+
+    .st-row-end i {
+      transition: transform .18s ease;
+    }
+
+    .st-drawer {
+      padding: 16px 18px 18px;
+      border-top: 1px solid var(--border, rgba(255, 255, 255, .07));
+      background: rgba(255, 255, 255, .02);
+    }
+
+    body:not(.dark) .st-drawer {
+      border-top-color: #f1e8d6;
+      background: #fdfaf3;
+    }
+
+    .st-drawer[hidden] {
+      display: none !important;
+    }
+
+    .st-drawer-note {
+      margin: 0 0 12px;
+      font-size: 12.5px;
+      color: var(--muted, #94a3b8);
+      line-height: 1.45;
+    }
+
+    .st-field-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .st-field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .st-field label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted, #94a3b8);
+    }
+
+    .st-field input {
+      height: 40px;
+      padding: 0 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border, #263246);
+      background: var(--bg, #0a0e17);
+      color: var(--text, #f3f4f6);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    body:not(.dark) .st-field input {
+      background: #ffffff;
+      border-color: #eadfc8;
+      color: #2a2418;
+    }
+  </style>
+  <link rel="stylesheet" href="pf-system.css?v=18">
 </head>
+
 <body class="pf-staff" data-page="settings" data-title="Settings" data-welcome="Manage your account and preferences">
-<div class="dashboard">
-  <nav class="sidebar" id="sidebar"></nav>
-  <main class="main-content">
-    <header class="topbar" id="topbar"><h1>Settings</h1></header>
+  <div class="dashboard">
+    <nav class="sidebar" id="sidebar"></nav>
+    <main class="main-content">
+      <header class="topbar" id="topbar">
+        <h1>Settings</h1>
+      </header>
 
-    <section class="st-shell" aria-label="Settings">
-      <nav class="st-sidenav" id="stSideNav" aria-label="Settings sections">
-        <a href="#account" data-sec="account" class="on"><i class="fa-regular fa-user" aria-hidden="true"></i> Account</a>
-        <a href="#notifications" data-sec="notifications"><i class="fa-regular fa-bell" aria-hidden="true"></i> Notifications</a>
-        <a href="#appearance" data-sec="appearance"><i class="fa-regular fa-sun" aria-hidden="true"></i> Appearance</a>
-        <a href="#general" data-sec="general"><i class="fa-solid fa-globe" aria-hidden="true"></i> General</a>
-        <a href="#install" data-sec="install"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i> Install the app</a>
-      </nav>
+      <section class="st-shell" aria-label="Settings">
+        <nav class="st-sidenav" id="stSideNav" aria-label="Settings sections">
+          <a href="#account" data-sec="account" class="on"><i class="fa-regular fa-user" aria-hidden="true"></i>
+            Account</a>
+          <a href="#notifications" data-sec="notifications"><i class="fa-regular fa-bell" aria-hidden="true"></i>
+            Notifications</a>
+          <a href="#appearance" data-sec="appearance"><i class="fa-regular fa-sun" aria-hidden="true"></i>
+            Appearance</a>
+          <a href="#general" data-sec="general"><i class="fa-solid fa-globe" aria-hidden="true"></i> General</a>
+          <a href="#install" data-sec="install"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i> Install the
+            app</a>
+        </nav>
 
-      <div class="st-stack">
-      <div class="st-notice" id="settingsNotice" role="status" hidden></div>
+        <div class="st-stack">
+          <div class="st-notice" id="settingsNotice" role="status" hidden></div>
 
-      <!-- Account -->
-      <article class="st-card st-rv" id="account" style="--i:0">
-        <div class="st-head"><i class="fa-regular fa-user" aria-hidden="true"></i> Account</div>
-        <a class="st-row" href="/profile">
-          <div class="st-row-lead">
-            <span class="st-row-ico" aria-hidden="true"><i class="fa-regular fa-user"></i></span>
-            <div class="st-row-copy"><span>Edit Profile</span><small id="stProfSub">Manage your name, photo, and contact info</small></div>
-          </div>
-          <span class="st-row-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
-        </a>
-        <button class="st-row" type="button" id="stChangePwBtn">
-          <div class="st-row-lead">
-            <span class="st-row-ico" aria-hidden="true"><i class="fa-solid fa-lock"></i></span>
-            <div class="st-row-copy"><span>Change Password</span><small>Update your account sign-in password</small></div>
-          </div>
-          <span class="st-row-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
-        </button>
-
-        <!-- Owner-only: Subscription Prices -->
-        <button class="st-row" type="button" id="stPricesToggle" aria-expanded="false" aria-controls="planPricesDrawer" hidden>
-          <div class="st-row-lead">
-            <span class="st-row-ico" aria-hidden="true"><i class="fa-solid fa-tag"></i></span>
-            <div class="st-row-copy"><span>Subscription Prices</span><small id="stPricesSub" class="st-skel">Loading live plan prices...</small></div>
-          </div>
-          <span class="st-row-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
-        </button>
-        <div class="st-drawer" id="planPricesDrawer" hidden>
-          <p class="st-drawer-note" id="stPriceSavings">Saving updates membership prices across the landing page, enrollment, cashier desk, and payments.</p>
-          <form class="st-price-list" id="planPricesForm" style="padding:0" novalidate>
-            <div class="st-price-row">
-              <div><label for="priceDaily">Daily</label><small>1 day pass</small></div>
-              <div class="st-peso-wrap"><span>&#8369;</span><input type="number" id="priceDaily" min="1" max="500000" step="1" required></div>
-            </div>
-            <div class="st-price-row">
-              <div><label for="priceMonthly">Monthly</label><small>30 days</small></div>
-              <div class="st-peso-wrap"><span>&#8369;</span><input type="number" id="priceMonthly" min="1" max="500000" step="1" required></div>
-            </div>
-            <div class="st-price-row">
-              <div><label for="priceQuarterly">Quarterly</label><small>90 days</small></div>
-              <div class="st-peso-wrap"><span>&#8369;</span><input type="number" id="priceQuarterly" min="1" max="500000" step="1" required></div>
-            </div>
-            <div class="st-price-row">
-              <div><label for="priceAnnual">Annual</label><small>365 days</small></div>
-              <div class="st-peso-wrap"><span>&#8369;</span><input type="number" id="priceAnnual" min="1" max="500000" step="1" required></div>
-            </div>
-            <button type="submit" class="st-save-btn" id="savePlanPricesBtn">Save subscription prices</button>
-          </form>
-        </div>
-
-        <!-- Owner-only: Edit Gym Profile -->
-        <button class="st-row" type="button" id="stGymToggle" aria-expanded="false" aria-controls="gymProfileDrawer" hidden>
-          <div class="st-row-lead">
-            <span class="st-row-ico" aria-hidden="true"><i class="fa-solid fa-building"></i></span>
-            <div class="st-row-copy"><span>Edit Gym Profile</span><small><span class="st-open-pill" id="stGymOpenPill">Open now</span><span id="stGymSub">Functional Fitness Gym</span></small></div>
-          </div>
-          <span class="st-row-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
-        </button>
-        <div class="st-drawer" id="gymProfileDrawer" hidden>
-          <p class="st-drawer-note">Updates your gym name, tagline, hours, and contact details shown in the portal.</p>
-          <form class="st-field-grid" id="gymProfileForm" novalidate>
-            <div class="st-field">
-              <label for="gymNameInput">Gym name</label>
-              <input type="text" id="gymNameInput" maxlength="80" placeholder="Functional Fitness Gym" required>
-            </div>
-            <div class="st-field">
-              <label for="gymTaglineInput">Tagline</label>
-              <input type="text" id="gymTaglineInput" maxlength="80" placeholder="FUNCTIONAL FITNESS">
-            </div>
-            <div class="st-field">
-              <label for="gymPhoneInput">Contact number</label>
-              <input type="tel" id="gymPhoneInput" maxlength="30" placeholder="0912 261 7663">
-            </div>
-            <div class="st-field">
-              <label for="gymAddressInput">Address</label>
-              <input type="text" id="gymAddressInput" maxlength="160" placeholder="Alfonso, Calabarzon · Luksuhin-Mangas Road">
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-              <div class="st-field">
-                <label for="gymOpensInput">Opens</label>
-                <input type="time" id="gymOpensInput" value="07:00">
+          <!-- Account -->
+          <article class="st-card st-rv" id="account" style="--i:0">
+            <div class="st-head"><i class="fa-regular fa-user" aria-hidden="true"></i> Account</div>
+            <a class="st-row" href="/profile">
+              <div class="st-row-lead">
+                <span class="st-row-ico" aria-hidden="true"><i class="fa-regular fa-user"></i></span>
+                <div class="st-row-copy"><span>Edit Profile</span><small id="stProfSub">Manage your name, photo, and
+                    contact info</small></div>
               </div>
-              <div class="st-field">
-                <label for="gymClosesInput">Closes</label>
-                <input type="time" id="gymClosesInput" value="21:00">
+              <span class="st-row-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
+            </a>
+            <button class="st-row" type="button" id="stChangePwBtn">
+              <div class="st-row-lead">
+                <span class="st-row-ico" aria-hidden="true"><i class="fa-solid fa-lock"></i></span>
+                <div class="st-row-copy"><span>Change Password</span><small>Update your account sign-in password</small>
+                </div>
               </div>
+              <span class="st-row-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
+            </button>
+
+            <!-- Owner-only: Subscription Prices -->
+            <button class="st-row" type="button" id="stPricesToggle" aria-expanded="false"
+              aria-controls="planPricesDrawer" hidden>
+              <div class="st-row-lead">
+                <span class="st-row-ico" aria-hidden="true"><i class="fa-solid fa-tag"></i></span>
+                <div class="st-row-copy"><span>Subscription Prices</span><small id="stPricesSub" class="st-skel">Loading
+                    live plan prices...</small></div>
+              </div>
+              <span class="st-row-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
+            </button>
+            <div class="st-drawer" id="planPricesDrawer" hidden>
+              <p class="st-drawer-note" id="stPriceSavings">Saving updates membership prices across the landing page,
+                enrollment, cashier desk, and payments.</p>
+              <form class="st-price-list" id="planPricesForm" style="padding:0" novalidate>
+                <div class="st-price-row">
+                  <div><label for="priceDaily">Daily</label><small>1 day pass</small></div>
+                  <div class="st-peso-wrap"><span>&#8369;</span><input type="number" id="priceDaily" min="1"
+                      max="500000" step="1" required></div>
+                </div>
+                <div class="st-price-row">
+                  <div><label for="priceMonthly">Monthly</label><small>30 days</small></div>
+                  <div class="st-peso-wrap"><span>&#8369;</span><input type="number" id="priceMonthly" min="1"
+                      max="500000" step="1" required></div>
+                </div>
+                <div class="st-price-row">
+                  <div><label for="priceQuarterly">Quarterly</label><small>90 days</small></div>
+                  <div class="st-peso-wrap"><span>&#8369;</span><input type="number" id="priceQuarterly" min="1"
+                      max="500000" step="1" required></div>
+                </div>
+                <div class="st-price-row">
+                  <div><label for="priceAnnual">Annual</label><small>365 days</small></div>
+                  <div class="st-peso-wrap"><span>&#8369;</span><input type="number" id="priceAnnual" min="1"
+                      max="500000" step="1" required></div>
+                </div>
+                <button type="submit" class="st-save-btn" id="savePlanPricesBtn">Save subscription prices</button>
+              </form>
             </div>
-            <button type="submit" class="st-save-btn" id="saveGymProfileBtn">Save gym profile</button>
-          </form>
-        </div>
-      </article>
 
-      <!-- Notifications -->
-      <article class="st-card st-rv" id="notifications" style="--i:1">
-        <div class="st-head"><i class="fa-regular fa-bell" aria-hidden="true"></i> Notifications</div>
-        <div class="st-row">
-          <div class="st-row-copy">
-            <label for="prefBadge">Unread Badge</label>
-            <small>Show unread count on the bell icon</small>
-          </div>
-          <label class="st-switch"><input type="checkbox" id="prefBadge" aria-label="Show unread badge"><span></span></label>
-        </div>
-        <a class="st-row" href="/notifications">
-          <span>All Notifications</span>
-          <span class="st-row-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
-        </a>
-      </article>
+            <!-- Owner-only: Edit Gym Profile -->
+            <button class="st-row" type="button" id="stGymToggle" aria-expanded="false" aria-controls="gymProfileDrawer"
+              hidden>
+              <div class="st-row-lead">
+                <span class="st-row-ico" aria-hidden="true"><i class="fa-solid fa-building"></i></span>
+                <div class="st-row-copy"><span>Edit Gym Profile</span><small><span class="st-open-pill"
+                      id="stGymOpenPill">Open now</span><span id="stGymSub">Functional Fitness Gym</span></small></div>
+              </div>
+              <span class="st-row-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
+            </button>
+            <div class="st-drawer" id="gymProfileDrawer" hidden>
+              <p class="st-drawer-note">Updates your gym name, tagline, hours, and contact details shown in the portal.
+              </p>
+              <form class="st-field-grid" id="gymProfileForm" novalidate>
+                <div class="st-field">
+                  <label for="gymNameInput">Gym name</label>
+                  <input type="text" id="gymNameInput" maxlength="80" placeholder="Functional Fitness Gym" required>
+                </div>
+                <div class="st-field">
+                  <label for="gymTaglineInput">Tagline</label>
+                  <input type="text" id="gymTaglineInput" maxlength="80" placeholder="FUNCTIONAL FITNESS">
+                </div>
+                <div class="st-field">
+                  <label for="gymPhoneInput">Contact number</label>
+                  <input type="tel" id="gymPhoneInput" maxlength="30" placeholder="0912 261 7663">
+                </div>
+                <div class="st-field">
+                  <label for="gymAddressInput">Address</label>
+                  <input type="text" id="gymAddressInput" maxlength="160"
+                    placeholder="Alfonso, Calabarzon · Luksuhin-Mangas Road">
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                  <div class="st-field">
+                    <label for="gymOpensInput">Opens</label>
+                    <input type="time" id="gymOpensInput" value="07:00">
+                  </div>
+                  <div class="st-field">
+                    <label for="gymClosesInput">Closes</label>
+                    <input type="time" id="gymClosesInput" value="21:00">
+                  </div>
+                </div>
+                <button type="submit" class="st-save-btn" id="saveGymProfileBtn">Save gym profile</button>
+              </form>
+            </div>
+          </article>
 
-      <!-- Appearance -->
-      <article class="st-card st-rv" id="appearance" style="--i:2">
-        <div class="st-head"><i class="fa-regular fa-sun" aria-hidden="true"></i> Appearance</div>
-        <div class="st-row">
-          <label for="prefDark">Dark Mode</label>
-          <label class="st-switch"><input type="checkbox" id="prefDark" aria-label="Toggle dark mode"><span></span></label>
-        </div>
-        <div class="st-font-row">
-          <span>Font Size</span>
-          <div class="st-pills" role="radiogroup" aria-label="Font size">
-            <button type="button" role="radio" data-font-size="sm" aria-checked="false">Small</button>
-            <button type="button" role="radio" data-font-size="md" class="active" aria-checked="true">Medium</button>
-            <button type="button" role="radio" data-font-size="lg" aria-checked="false">Large</button>
-          </div>
-        </div>
-        <div class="st-font-prev">
-          <strong>Preview</strong>
-          Cashier recorded a &#8369;800 monthly payment for Angelo Metillo.
-        </div>
-      </article>
+          <!-- Notifications -->
+          <article class="st-card st-rv" id="notifications" style="--i:1">
+            <div class="st-head"><i class="fa-regular fa-bell" aria-hidden="true"></i> Notifications</div>
+            <div class="st-row">
+              <div class="st-row-copy">
+                <label for="prefBadge">Unread Badge</label>
+                <small>Show unread count on the bell icon</small>
+              </div>
+              <label class="st-switch"><input type="checkbox" id="prefBadge"
+                  aria-label="Show unread badge"><span></span></label>
+            </div>
+            <a class="st-row" href="/notifications">
+              <span>All Notifications</span>
+              <span class="st-row-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
+            </a>
+          </article>
 
-      <!-- General -->
-      <article class="st-card st-rv" id="general" style="--i:3">
-        <div class="st-head"><i class="fa-solid fa-globe" aria-hidden="true"></i> General</div>
-        <div class="st-row">
-          <span>Language</span>
-          <span class="st-row-end">English</span>
-        </div>
-        <button class="st-row" type="button" id="stHelpBtn">
-          <span>Help &amp; Support</span>
-          <span class="st-row-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
-        </button>
-      </article>
-
-      <!-- Help & Support Popup Modal (Tabbed: Contact / FAQs / Terms / Privacy — exact OG info) -->
-      <div class="st-modal-backdrop" id="stHelpModal" role="dialog" aria-modal="true" aria-labelledby="stHelpTitle" hidden>
-        <div class="st-modal" style="max-width:580px">
-          <div class="st-modal-head">
-            <h2 id="stHelpTitle"><i class="fa-regular fa-circle-question" style="color:#e8b93a" aria-hidden="true"></i> Help &amp; Support</h2>
-            <button type="button" class="st-modal-close" id="stHelpClose" aria-label="Close help popup"><i class="fa-solid fa-xmark"></i></button>
-          </div>
-          <div class="st-pills" id="stHelpTabs" role="tablist" aria-label="Help topics" style="margin:0 0 14px;display:flex;gap:8px;flex-wrap:wrap">
-            <button type="button" role="tab" class="active" data-help-tab="contact" aria-selected="true" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px"><i class="fa-solid fa-headset" aria-hidden="true"></i> Contact</button>
-            <button type="button" role="tab" data-help-tab="faqs" aria-selected="false" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px"><i class="fa-regular fa-circle-question" aria-hidden="true"></i> FAQs</button>
-            <button type="button" role="tab" data-help-tab="terms" aria-selected="false" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px"><i class="fa-solid fa-file-contract" aria-hidden="true"></i> Terms</button>
-            <button type="button" role="tab" data-help-tab="privacy" aria-selected="false" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Privacy</button>
-          </div>
-          <div style="max-height:52vh;overflow-y:auto;padding-right:4px">
-            <div class="st-help-list" data-help-pane="contact">
-              <a class="st-help-item" href="tel:+639060536064">
-                <i class="fa-solid fa-phone" aria-hidden="true"></i>
-                <div><strong>Call Functional Performance</strong><small>0906 053 6064</small></div>
-              </a>
-              <a class="st-help-item" href="mailto:FunctionalPerformance.2022@gmail.com">
-                <i class="fa-regular fa-envelope" aria-hidden="true"></i>
-                <div><strong>Email</strong><small>FunctionalPerformance.2022@gmail.com</small></div>
-              </a>
-              <div class="st-help-item">
-                <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
-                <div><strong>Address</strong><small>Luksuhin - Mangas Rd., Saray, Mangas 1, Alfonso, Cavite, Philippines</small></div>
+          <!-- Appearance & Accessibility -->
+          <article class="st-card st-rv" id="appearance" style="--i:2">
+            <div class="st-head"><i class="fa-regular fa-sun" aria-hidden="true"></i> Appearance &amp; Accessibility</div>
+            <div class="st-row">
+              <label for="prefDark">Dark Mode</label>
+              <label class="st-switch"><input type="checkbox" id="prefDark"
+                  aria-label="Toggle dark mode"><span></span></label>
+            </div>
+            <div class="st-font-row">
+              <span>Font Size</span>
+              <div class="st-pills" role="radiogroup" aria-label="Font size">
+                <button type="button" role="radio" data-font-size="sm" aria-checked="false">Small</button>
+                <button type="button" role="radio" data-font-size="md" class="active"
+                  aria-checked="true">Medium</button>
+                <button type="button" role="radio" data-font-size="lg" aria-checked="false">Large</button>
               </div>
             </div>
-            <div class="st-help-list" data-help-pane="faqs" hidden>
-              <div class="st-help-item"><i class="fa-regular fa-circle-question" aria-hidden="true"></i><div><strong>How do I sign in?</strong><small>Use the email or username and password you set when joining online, or the account details provided by the Gym. Staff use the account created via the owner's invitation.</small></div></div>
-              <div class="st-help-item"><i class="fa-regular fa-circle-question" aria-hidden="true"></i><div><strong>I forgot my password. What do I do?</strong><small>Use the Forgot password? link on the Sign in page. Enter your account email to receive a 6-digit verification code, then enter the code and set a new password. If you still need help, contact the gym front desk.</small></div></div>
-              <div class="st-help-item"><i class="fa-regular fa-circle-question" aria-hidden="true"></i><div><strong>How do I check my membership status, payments, and attendance?</strong><small>After you sign in, your member home shows your membership status, expiry date, recent paid invoices, and recent gym check-ins.</small></div></div>
-              <div class="st-help-item"><i class="fa-regular fa-circle-question" aria-hidden="true"></i><div><strong>How do I request a trainer?</strong><small>You can request a trainer from your member home. The Gym reviews every request and may approve, change, or decline it. If you cannot find the option, ask the front desk.</small></div></div>
-              <div class="st-help-item"><i class="fa-regular fa-circle-question" aria-hidden="true"></i><div><strong>Is my information safe?</strong><small>Yes. Passwords and verification codes are stored only as hashes, production traffic runs over HTTPS, and access is limited by role.</small></div></div>
+            <div class="st-font-prev">
+              <strong>Preview</strong>
+              Cashier recorded a &#8369;800 monthly payment for Angelo Metillo.
             </div>
-            <div class="st-help-list" data-help-pane="terms" hidden>
-              <div class="st-help-item"><i class="fa-solid fa-file-contract" aria-hidden="true"></i><div><strong>Terms of Service (Last updated: October 2026)</strong><small>By using ProFit, the gym management system used by Functional Performance (the "Gym"), you agree to these terms. Keep your login details private, provide accurate personal details, and tell the front desk right away if you think someone else used your account.</small></div></div>
-              <div class="st-help-item"><i class="fa-solid fa-id-card" aria-hidden="true"></i><div><strong>Memberships, Attendance &amp; Payments</strong><small>Sign-up is free and starts a seven-day trial with app access only. Active membership is required for gym access. To activate a gym membership, pay cash at the desk or submit a GCash claim with a reference number and a screenshot link. Staff review the claim before your membership starts. Memberships automatically expire at the end of the selected plan period unless renewed. Old online payment records remain as history and are never changed.</small></div></div>
-              <div class="st-help-item"><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i><div><strong>Acceptable Use &amp; Suspension</strong><small>Do not use another person's account, try to access other members' information, interfere with the system or its security, or submit false, offensive, or unlawful content. The Gym may suspend or end an account that breaks these terms or the Gym's house rules.</small></div></div>
+            <div class="st-row">
+              <div class="st-row-copy">
+                <label for="prefHighContrast">High Contrast Mode</label>
+                <small>Increase contrast for text, borders, inputs, and buttons in both Light and Dark themes.</small>
+              </div>
+              <label class="st-switch"><input type="checkbox" id="prefHighContrast" data-a11y="contrast"
+                  aria-label="Toggle high contrast mode"><span></span></label>
             </div>
-            <div class="st-help-list" data-help-pane="privacy" hidden>
-              <div class="st-help-item"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i><div><strong>Privacy Policy (Last updated: October 2026)</strong><small>The data controller is Functional Performance. We collect account details (passwords stored only as secure hashes), profile details, membership/check-in records, payment references, health/goals entries, trainer requests, and one-time verification hashes to operate the Gym and keep accounts secure.</small></div></div>
-              <div class="st-help-item"><i class="fa-solid fa-server" aria-hidden="true"></i><div><strong>Access, Service Providers &amp; Retention</strong><small>Gym staff see only what their role allows; members see only their own information. Data is processed through Supabase, Vercel, and Resend over HTTPS. Attendance and payment history remain stored when a membership expires so you can renew without losing records. Verification codes expire after 10 minutes; staff invitations expire after 72 hours.</small></div></div>
-              <div class="st-help-item"><i class="fa-solid fa-user-check" aria-hidden="true"></i><div><strong>Your Rights (Data Privacy Act of 2012 / RA 10173)</strong><small>You may ask to be informed, access, correct, object, or request erasure/blocking where the law allows, or complain to the National Privacy Commission. Contact Functional Performance at 0906 053 6064 or FunctionalPerformance.2022@gmail.com.</small></div></div>
+            <div class="st-row">
+              <div class="st-row-copy">
+                <label for="prefEnhancedFocus">Enhanced Focus Indicators</label>
+                <small>Show a prominent orange focus outline around the currently focused button, input, link, or menu item.</small>
+              </div>
+              <label class="st-switch"><input type="checkbox" id="prefEnhancedFocus" data-a11y="focus"
+                  aria-label="Toggle enhanced focus indicators"><span></span></label>
+            </div>
+          </article>
+
+          <!-- General -->
+          <article class="st-card st-rv" id="general" style="--i:3">
+            <div class="st-head"><i class="fa-solid fa-globe" aria-hidden="true"></i> General</div>
+            <div class="st-row">
+              <span>Language</span>
+              <span class="st-row-end">English</span>
+            </div>
+            <button class="st-row" type="button" id="stHelpBtn">
+              <span>Help &amp; Support</span>
+              <span class="st-row-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
+            </button>
+          </article>
+
+          <!-- Help & Support Popup Modal (Tabbed: Contact / FAQs / Terms / Privacy — exact OG info) -->
+          <div class="st-modal-backdrop" id="stHelpModal" role="dialog" aria-modal="true" aria-labelledby="stHelpTitle"
+            hidden>
+            <div class="st-modal" style="max-width:580px">
+              <div class="st-modal-head">
+                <h2 id="stHelpTitle"><i class="fa-regular fa-circle-question" style="color:#e8b93a"
+                    aria-hidden="true"></i> Help &amp; Support</h2>
+                <button type="button" class="st-modal-close" id="stHelpClose" aria-label="Close help popup"><i
+                    class="fa-solid fa-xmark"></i></button>
+              </div>
+              <div class="st-pills" id="stHelpTabs" role="tablist" aria-label="Help topics"
+                style="margin:0 0 14px;display:flex;gap:8px;flex-wrap:wrap">
+                <button type="button" role="tab" class="active" data-help-tab="contact" aria-selected="true"
+                  style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px"><i class="fa-solid fa-headset"
+                    aria-hidden="true"></i> Contact</button>
+                <button type="button" role="tab" data-help-tab="faqs" aria-selected="false"
+                  style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px"><i
+                    class="fa-regular fa-circle-question" aria-hidden="true"></i> FAQs</button>
+                <button type="button" role="tab" data-help-tab="terms" aria-selected="false"
+                  style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px"><i
+                    class="fa-solid fa-file-contract" aria-hidden="true"></i> Terms</button>
+                <button type="button" role="tab" data-help-tab="privacy" aria-selected="false"
+                  style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px"><i
+                    class="fa-solid fa-shield-halved" aria-hidden="true"></i> Privacy</button>
+              </div>
+              <div style="max-height:52vh;overflow-y:auto;padding-right:4px">
+                <div class="st-help-list" data-help-pane="contact">
+                  <a class="st-help-item" href="tel:+639060536064">
+                    <i class="fa-solid fa-phone" aria-hidden="true"></i>
+                    <div><strong>Call Functional Performance</strong><small>0906 053 6064</small></div>
+                  </a>
+                  <a class="st-help-item" href="mailto:FunctionalPerformance.2022@gmail.com">
+                    <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+                    <div><strong>Email</strong><small>FunctionalPerformance.2022@gmail.com</small></div>
+                  </a>
+                  <div class="st-help-item">
+                    <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                    <div><strong>Address</strong><small>Luksuhin - Mangas Rd., Saray, Mangas 1, Alfonso, Cavite,
+                        Philippines</small></div>
+                  </div>
+                </div>
+                <div class="st-help-list" data-help-pane="faqs" hidden>
+                  <div class="st-help-item"><i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                    <div><strong>How do I sign in?</strong><small>Use the email or username and password you set when
+                        joining online, or the account details provided by the Gym. Staff use the account created via
+                        the owner's invitation.</small></div>
+                  </div>
+                  <div class="st-help-item"><i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                    <div><strong>I forgot my password. What do I do?</strong><small>Use the Forgot password? link on the
+                        Sign in page. Enter your account email to receive a 6-digit verification code, then enter the
+                        code and set a new password. If you still need help, contact the gym front desk.</small></div>
+                  </div>
+                  <div class="st-help-item"><i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                    <div><strong>How do I check my membership status, payments, and attendance?</strong><small>After you
+                        sign in, your member home shows your membership status, expiry date, recent paid invoices, and
+                        recent gym check-ins.</small></div>
+                  </div>
+                  <div class="st-help-item"><i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                    <div><strong>How do I request a trainer?</strong><small>You can request a trainer from your member
+                        home. The Gym reviews every request and may approve, change, or decline it. If you cannot find
+                        the option, ask the front desk.</small></div>
+                  </div>
+                  <div class="st-help-item"><i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                    <div><strong>Is my information safe?</strong><small>Yes. Passwords and verification codes are stored
+                        only as hashes, production traffic runs over HTTPS, and access is limited by role.</small></div>
+                  </div>
+                </div>
+                <div class="st-help-list" data-help-pane="terms" hidden>
+                  <div class="st-help-item"><i class="fa-solid fa-file-contract" aria-hidden="true"></i>
+                    <div><strong>Terms of Service (Last updated: October 2026)</strong><small>By using ProFit, the gym
+                        management system used by Functional Performance (the "Gym"), you agree to these terms. Keep
+                        your login details private, provide accurate personal details, and tell the front desk right
+                        away if you think someone else used your account.</small></div>
+                  </div>
+                  <div class="st-help-item"><i class="fa-solid fa-id-card" aria-hidden="true"></i>
+                    <div><strong>Memberships, Attendance &amp; Payments</strong><small>Sign-up is free and starts a
+                        seven-day trial with app access only. Active membership is required for gym access. To activate
+                        a gym membership, pay cash at the desk or submit a GCash claim with a reference number and a
+                        screenshot link. Staff review the claim before your membership starts. Memberships automatically
+                        expire at the end of the selected plan period unless renewed. Old online payment records remain
+                        as history and are never changed.</small></div>
+                  </div>
+                  <div class="st-help-item"><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i>
+                    <div><strong>Acceptable Use &amp; Suspension</strong><small>Do not use another person's account, try
+                        to access other members' information, interfere with the system or its security, or submit
+                        false, offensive, or unlawful content. The Gym may suspend or end an account that breaks these
+                        terms or the Gym's house rules.</small></div>
+                  </div>
+                </div>
+                <div class="st-help-list" data-help-pane="privacy" hidden>
+                  <div class="st-help-item"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                    <div><strong>Privacy Policy (Last updated: October 2026)</strong><small>The data controller is
+                        Functional Performance. We collect account details (passwords stored only as secure hashes),
+                        profile details, membership/check-in records, payment references, health/goals entries, trainer
+                        requests, and one-time verification hashes to operate the Gym and keep accounts secure.</small>
+                    </div>
+                  </div>
+                  <div class="st-help-item"><i class="fa-solid fa-server" aria-hidden="true"></i>
+                    <div><strong>Access, Service Providers &amp; Retention</strong><small>Gym staff see only what their
+                        role allows; members see only their own information. Data is processed through Supabase, Vercel,
+                        and Resend over HTTPS. Attendance and payment history remain stored when a membership expires so
+                        you can renew without losing records. Verification codes expire after 10 minutes; staff
+                        invitations expire after 72 hours.</small></div>
+                  </div>
+                  <div class="st-help-item"><i class="fa-solid fa-user-check" aria-hidden="true"></i>
+                    <div><strong>Your Rights (Data Privacy Act of 2012 / RA 10173)</strong><small>You may ask to be
+                        informed, access, correct, object, or request erasure/blocking where the law allows, or complain
+                        to the National Privacy Commission. Contact Functional Performance at 0906 053 6064 or
+                        FunctionalPerformance.2022@gmail.com.</small></div>
+                  </div>
+                </div>
+              </div>
+              <div class="st-modal-foot" style="justify-content:flex-end">
+                <button type="button" class="st-save-btn" id="stHelpDone"
+                  style="width:auto;height:38px;padding:0 22px;margin:0">Close</button>
+              </div>
             </div>
           </div>
-          <div class="st-modal-foot" style="justify-content:flex-end">
-            <button type="button" class="st-save-btn" id="stHelpDone" style="width:auto;height:38px;padding:0 22px;margin:0">Close</button>
-          </div>
+
+          <!-- Install the app (Phase 4.5 PWA) -->
+          <article class="st-card st-rv" id="install" style="--i:4">
+            <div class="st-head"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i> Install the app</div>
+            <div style="padding:14px 18px 16px;font-size:13.5px;line-height:1.55">
+              <p id="installHelpStatus" role="status" style="margin:0 0 10px;font-weight:600">Checking...</p>
+              <div data-install-steps>
+                <p style="margin:0 0 4px;font-weight:700">iPhone (Safari)</p>
+                <ol style="margin:0 0 10px 18px;padding:0">
+                  <li>Open ProFit in Safari.</li>
+                  <li>Tap the Share button.</li>
+                  <li>Tap Add to Home Screen, then Add.</li>
+                </ol>
+                <p style="margin:0 0 4px;font-weight:700">Android (Chrome)</p>
+                <ol style="margin:0 0 0 18px;padding:0">
+                  <li>Open ProFit in Chrome.</li>
+                  <li>Tap the three-dot menu.</li>
+                  <li>Tap Install app (or Add to Home screen), then Install.</li>
+                </ol>
+              </div>
+            </div>
+          </article>
+
+          <!-- Logout -->
+          <article class="st-card st-logout-card">
+            <button class="st-logout-btn" type="button" data-logout>
+              <i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i> Logout
+            </button>
+          </article>
+
+          <p class="st-foot">ProFit &middot; Functional Fitness Gym</p>
         </div>
-      </div>
+      </section>
+    </main>
+  </div>
 
-      <!-- Install the app (Phase 4.5 PWA) -->
-      <article class="st-card st-rv" id="install" style="--i:4">
-        <div class="st-head"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i> Install the app</div>
-        <div style="padding:14px 18px 16px;font-size:13.5px;line-height:1.55">
-          <p id="installHelpStatus" role="status" style="margin:0 0 10px;font-weight:600">Checking...</p>
-          <div data-install-steps>
-            <p style="margin:0 0 4px;font-weight:700">iPhone (Safari)</p>
-            <ol style="margin:0 0 10px 18px;padding:0">
-              <li>Open ProFit in Safari.</li>
-              <li>Tap the Share button.</li>
-              <li>Tap Add to Home Screen, then Add.</li>
-            </ol>
-            <p style="margin:0 0 4px;font-weight:700">Android (Chrome)</p>
-            <ol style="margin:0 0 0 18px;padding:0">
-              <li>Open ProFit in Chrome.</li>
-              <li>Tap the three-dot menu.</li>
-              <li>Tap Install app (or Add to Home screen), then Install.</li>
-            </ol>
-          </div>
-        </div>
-      </article>
-
-      <!-- Logout -->
-      <article class="st-card st-logout-card">
-        <button class="st-logout-btn" type="button" data-logout>
-          <i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i> Logout
-        </button>
-      </article>
-
-      <p class="st-foot">ProFit &middot; Functional Fitness Gym</p>
-      </div>
-    </section>
-  </main>
-</div>
-
-<script src="layout.js?v=25"></script>
-<script src="sidebar.js?v=21"></script>
-<script src="data.js?v=3"></script>
-<script src="settings.js?v=19"></script>
-<script src="portal-fx.js?v=2"></script>
-<script src="/static/js/install-help.js" defer></script>
-<script src="change-password.js?v=2" defer></script>
-<script src="notifications-live.js?v=2" defer></script>
-<script src="site-footer.js?v=2" defer></script>
+  <script src="layout.js?v=25"></script>
+  <script src="sidebar.js?v=21"></script>
+  <script src="data.js?v=3"></script>
+  <script src="settings.js?v=19"></script>
+  <script src="portal-fx.js?v=2"></script>
+  <script src="/static/js/install-help.js" defer></script>
+  <script src="change-password.js?v=2" defer></script>
+  <script src="notifications-live.js?v=2" defer></script>
+  <script src="site-footer.js?v=2" defer></script>
 </body>
+
 </html>

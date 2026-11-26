@@ -1,14 +1,23 @@
 /* ProFit Global Hover & Interaction System
-   Uses the Dashboard gold tokens (--gold, --gold-soft, --pf-lime-hi, --on-accent).
-   Mouse (hover: hover): subtle 8-12% gold tint + gold border, smooth 160ms transition, no layout jumps.
-   Touch (hover: none): no sticky hover states. */
+   Aligned with the unified 5-state rules:
+   1. Hover: subtle background change only (no strong glow, no lift).
+   2. Active: solid gold (#E8B93A) + dark ink (#0B0F19).
+   3. Pressed: slightly darker than active (#B8860B) on gold/active; deeper neutral on secondary.
+   4. Focus: thin gold outline only (2px solid #E8B93A), never a filled background.
+   5. Disabled: inert, no hover/active effect. */
 
+:root {
+  --pf-hover-gold: #E8B93A;
+  --pf-hover-gold-hover: #F0C44B;
+  --pf-hover-gold-pressed: #B8860B;
+  --pf-hover-ink: #0B0F19;
+}
 
 body:not(.dark) {
-  --pf-hover-bg: rgba(232, 185, 58, 0.12);
-  --pf-hover-row: rgba(232, 185, 58, 0.09);
-  --pf-hover-border: rgba(184, 137, 28, 0.55);
-  --pf-hover-text: #8a6200;
+  --pf-hover-bg: rgba(232, 185, 58, 0.14);
+  --pf-hover-row: rgba(42, 36, 24, 0.045);
+  --pf-hover-border: rgba(184, 137, 28, 0.45);
+  --pf-hover-text: #2a2418;
 }
 
 /* Registrations panel containment */
@@ -18,23 +27,20 @@ html body .registrations-panel .panel-header { flex-wrap: wrap; gap: 12px; }
 html body .registrations-panel .view-all { white-space: nowrap; flex: 0 0 auto; }
 html body .registrations-panel .table-wrapper { width: 100%; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 html body .registrations-panel table { width: 100%; }
-@media (max-width: 760px) {
-  html body .registrations-panel table { min-width: 640px; }
-}
 
-/* Smooth shared transitions */
+/* Smooth background/border/color transitions (no layout or scale jumps) */
 @media (prefers-reduced-motion: no-preference) {
   .btn, .pp-btn, .fn-btn, .pp-chip-btn, .pp-icon-btn, .action-btn, .view-all,
   .pp-status-btn, .pp-status-opt, .pp-page-tab, .pp-tab, .tab, .ci-chip,
   .pp-segment button, .pp-view-toggle button, .ci-seg button,
   .stat-card, .member-metric-card, .pp-stat, .pp-member, .pp-plan-card, .pp-picker-item,
   input, select, textarea, .theme-toggle, .notification {
-    transition: background-color var(--pf-ease-hover), border-color var(--pf-ease-hover), color var(--pf-ease-hover), filter var(--pf-ease-hover);
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
   }
 }
 
-@media (hover: hover) {
-  /* Secondary buttons, pagination, icon buttons, utility buttons */
+@media (hover: hover) and (pointer: fine) {
+  /* Secondary buttons, pagination, icon buttons, utility buttons — subtle bg only */
   .btn:not(.btn-primary):not(.primary):not(.is-danger):not(.btn-danger):not(:disabled):hover,
   .pp-btn:not(.pp-btn-primary):not(.is-danger):not(:disabled):hover,
   .fn-btn:not(.fn-btn-gold):not(.fn-btn-danger):not(:disabled):hover,
@@ -45,29 +51,35 @@ html body .registrations-panel table { width: 100%; }
   .theme-toggle:not(:disabled):hover,
   .notification:not(:disabled):hover {
     background-color: var(--pf-hover-bg);
-    border-color: var(--pf-hover-border);
-    color: var(--pf-hover-text);
+    box-shadow: none;
+    transform: none;
   }
 
-  /* Primary gold buttons: keep gold fill + dark ink, restrained brightness shift */
+  /* Primary gold buttons: subtle flat shift, zero glow */
   .btn-primary:not(:disabled):hover,
   .primary:not(:disabled):hover,
   .pp-btn-primary:not(:disabled):hover,
   .fn-btn-gold:not(:disabled):hover,
-  button[type="submit"]:not(:disabled):hover {
-    filter: brightness(1.06);
+  button[type="submit"].pp-btn-primary:not(:disabled):hover {
+    background-color: var(--pf-hover-gold-hover);
+    border-color: var(--pf-hover-gold-hover);
+    color: var(--pf-hover-ink);
+    box-shadow: none;
+    transform: none;
+    filter: none;
   }
 
-  /* Destructive buttons: retain red warning colors */
+  /* Destructive buttons */
   .is-danger:not(:disabled):hover,
   .btn-danger:not(:disabled):hover,
   .fn-btn-danger:not(:disabled):hover {
-    background-color: rgba(239, 68, 68, 0.14);
-    border-color: rgba(239, 68, 68, 0.6);
+    background-color: rgba(239, 68, 68, 0.12);
     color: #f87171;
+    box-shadow: none;
+    transform: none;
   }
 
-  /* Tabs, segmented controls, filter chips, dropdown options */
+  /* Unselected tabs, segmented controls, filter chips, dropdown options */
   .tab:not(.active):not(:disabled):hover,
   .pp-tab:not(.active):not(:disabled):hover,
   .pp-page-tab:not(.active):not([aria-selected="true"]):not(:disabled):hover,
@@ -80,11 +92,12 @@ html body .registrations-panel table { width: 100%; }
   .pf-menu button:not(:disabled):hover,
   .pf-menu a:hover {
     background-color: var(--pf-hover-bg);
-    border-color: var(--pf-hover-border);
     color: var(--text);
+    box-shadow: none;
+    transform: none;
   }
 
-  /* Table rows: subtle gold-tinted background, never solid gold, no layout shift */
+  /* Table rows: subtle surface change, no layout shift */
   .table-wrapper tbody tr:hover,
   .pp-table-wrap tbody tr:hover,
   .pp-members-table tbody tr:hover,
@@ -93,14 +106,15 @@ html body .registrations-panel table { width: 100%; }
     background-color: var(--pf-hover-row);
   }
 
-  /* Selectable & metric cards */
+  /* Cards: no lift or strong glow */
   .stat-card:hover,
   .member-metric-card:hover,
   .pp-stat:hover,
   .pp-member:hover,
   .pp-plan-card:not(.selected):hover,
   .pp-picker-item:not(.is-selected):hover {
-    border-color: var(--pf-hover-border);
+    box-shadow: none;
+    transform: none;
   }
 
   /* Form controls & links */
@@ -112,23 +126,39 @@ html body .registrations-panel table { width: 100%; }
 
   a.pf-link:hover,
   .pp-link:hover {
-    color: var(--pf-hover-text);
+    color: var(--pf-hover-gold);
   }
 }
 
-/* Focus & pressed feedback (never shift table rows; disabled elements stay inert) */
+/* Focus: thin gold outline only, never filled background */
 :focus-visible {
-  outline: 2px solid var(--gold, #e8b93a);
+  outline: 2px solid var(--pf-hover-gold);
   outline-offset: 2px;
+  box-shadow: none;
 }
 
-.btn:not(:disabled):active,
-.pp-btn:not(:disabled):active,
-.fn-btn:not(:disabled):active,
-.pp-chip-btn:not(:disabled):active,
-.pp-tab:not(:disabled):active,
-.pp-page-tab:not(:disabled):active {
-  transform: scale(0.985);
+/* Pressed feedback: slightly darker than active on primary/active, deeper neutral on secondary */
+.btn-primary:not(:disabled):active,
+.pp-btn-primary:not(:disabled):active,
+.fn-btn-gold:not(:disabled):active,
+.pp-page-tab.active:not(:disabled):active,
+.pp-tab.active:not(:disabled):active,
+.pp-chip-btn.active:not(:disabled):active {
+  background-color: var(--pf-hover-gold-pressed);
+  border-color: var(--pf-hover-gold-pressed);
+  color: var(--pf-hover-ink);
+  transform: none;
+  box-shadow: none;
+}
+
+.btn:not(.btn-primary):not(:disabled):active,
+.pp-btn:not(.pp-btn-primary):not(:disabled):active,
+.fn-btn:not(.fn-btn-gold):not(:disabled):active,
+.pp-chip-btn:not(.active):not(:disabled):active,
+.pp-tab:not(.active):not(:disabled):active,
+.pp-page-tab:not(.active):not(:disabled):active {
+  transform: none;
+  box-shadow: none;
 }
 
 tbody tr:active,
@@ -141,9 +171,12 @@ button:disabled,
 .pp-btn:disabled,
 .fn-btn:disabled,
 [aria-disabled="true"] {
+  opacity: 0.48;
+  cursor: not-allowed;
   pointer-events: none;
   transform: none;
   box-shadow: none;
+  filter: none;
 }
 
 @media (hover: none) {
@@ -152,6 +185,7 @@ button:disabled,
   .pp-segment button:hover, .pp-view-toggle button:hover, .stat-card:hover,
   .panel:hover, .pp-card:hover {
     transform: none;
+    box-shadow: none;
   }
   .sidebar .menulist a:hover { background: transparent; color: #a7b0bf; }
   .table-wrapper tbody tr:hover, .pp-table-wrap tbody tr:hover { background: transparent; }

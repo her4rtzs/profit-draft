@@ -519,6 +519,7 @@
       localStorage.setItem('pf-theme-pref', eff);
     } catch (e) { /* ignore */ }
     document.documentElement.setAttribute('data-theme', eff);
+    document.documentElement.classList.toggle('dark', eff === 'dark');
     document.body.classList.toggle('dark', eff === 'dark');
     themeIcon();
     document.dispatchEvent(new CustomEvent('pf:theme', { detail: { theme: eff } }));
@@ -562,6 +563,9 @@
 
   function build() {
     const body = document.body;
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.documentElement.classList.toggle('dark', isDark);
+    body.classList.toggle('dark', isDark);
     if (document.documentElement.classList.contains('pre-mini')) body.classList.add('mini');
     $('#sidebar').innerHTML = sidebarHTML();
     $('#topbar').innerHTML = topbarHTML();

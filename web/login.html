@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <title>Sign in — ProFit</title>
 <link rel="icon" type="image/jpeg" href="logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -83,13 +83,12 @@
   }
   .portal-brand strong{font-size:22px;font-weight:800;letter-spacing:-.02em;color:#f6efdc}
   .back-link{
-    display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 6px;
+    display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 10px;border-radius:10px;
     color:#9a9788;text-decoration:none;font:600 14px/1 Inter,system-ui,sans-serif;
-    transition:color .18s ease,transform .18s ease;white-space:nowrap;
+    transition:background-color .15s ease,color .15s ease;white-space:nowrap;
   }
-  .back-link i{transition:transform .18s cubic-bezier(.22,1,.36,1)}
-  .back-link:hover{color:var(--gold)}
-  .back-link:hover i{transform:translateX(-3px)}
+  .back-link:hover{background:rgba(255,255,255,.06);color:var(--tx)}
+  .back-link:active{background:rgba(255,255,255,.11)}
 
   /* Full-bleed hero with flat overlay & subtle parallax layer */
   @keyframes pfPageFade{from{opacity:0}to{opacity:1}}
@@ -152,15 +151,12 @@
   .lg-checks{list-style:none;margin:0 0 24px;padding:0;display:grid;gap:12px}
   .lg-checks li{
     display:flex;align-items:center;gap:10px;font-size:14.5px;font-weight:500;color:var(--tx);
-    transition:transform .18s ease;
     animation:pfRiseIn .45s cubic-bezier(.22,1,.36,1) both;
   }
   .lg-checks li:nth-child(1){animation-delay:.18s}
   .lg-checks li:nth-child(2){animation-delay:.24s}
   .lg-checks li:nth-child(3){animation-delay:.30s}
-  .lg-checks li:hover{transform:translateX(3px)}
-  .lg-checks i{color:var(--gold);font-size:14px;flex:none;transition:transform .2s cubic-bezier(.22,1,.36,1)}
-  .lg-checks li:hover i{transform:scale(1.18)}
+  .lg-checks i{color:var(--gold);font-size:14px;flex:none}
   .lg-gym-foot{margin:0;font-size:12.5px;color:var(--mu);animation:pfRiseIn .5s cubic-bezier(.22,1,.36,1) .34s both}
 
   /* Right card */
@@ -196,10 +192,10 @@
     transition:border-color .16s ease,box-shadow .16s ease,background-color .16s ease;
   }
   .lg-input::placeholder{color:var(--mu)}
-  .lg-input:hover:not(:focus){border-color:rgba(232,185,58,.55)}
+  .lg-input:hover:not(:focus):not(:disabled){border-color:rgba(232,185,58,.5)}
   .lg-input:focus{
-    outline:none;border-color:var(--gold);
-    box-shadow:0 0 0 3px rgba(232,185,58,.22);
+    outline:1.5px solid var(--gold);outline-offset:0;border-color:var(--gold);
+    box-shadow:none;
   }
   .lg-input:-webkit-autofill,
   .lg-input:-webkit-autofill:hover,
@@ -216,12 +212,10 @@
     position:absolute;right:4px;top:50%;transform:translateY(-50%);
     width:44px;height:44px;border:0;background:transparent;color:var(--mu);
     display:grid;place-items:center;cursor:pointer;border-radius:10px;
-    transition:color .16s ease,transform .15s ease;
+    transition:background-color .15s ease,color .15s ease;
   }
-  .lg-eye i{transition:transform .16s cubic-bezier(.22,1,.36,1)}
-  .lg-eye:hover{color:var(--gold)}
-  .lg-eye:hover i{transform:scale(1.12)}
-  .lg-eye:active i{transform:scale(.88)}
+  .lg-eye:hover{background:rgba(255,255,255,.06);color:var(--tx)}
+  .lg-eye:active{background:rgba(255,255,255,.11)}
 
   .lg-err-sm{display:block;min-height:0;margin:3px 0 8px;font-size:12px;font-weight:500;color:var(--err)}
   .lg-caps{display:flex;align-items:center;gap:6px;margin:4px 0 0;font-size:12px;font-weight:600;color:var(--gold)}
@@ -240,7 +234,7 @@
     transition:border-color .15s ease,background-color .15s ease;
   }
   .lg-remember input[type="checkbox"]:focus-visible{
-    outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,185,58,.22);
+    outline:2px solid var(--gold);outline-offset:2px;box-shadow:none;
   }
   .lg-remember input[type="checkbox"]:checked{
     background:var(--gold);border-color:var(--gold);
@@ -262,14 +256,14 @@
 
   .lg-btn-gold{
     width:100%;height:44px;border:0;border-radius:999px;
-    background:var(--gold);color:var(--on);
+    background:var(--gold);color:#0b0f19;
     font:700 15px/1 "Plus Jakarta Sans",sans-serif;
     display:inline-flex;align-items:center;justify-content:center;gap:8px;
-    cursor:pointer;transition:filter .16s ease,background-color .16s ease,transform .16s cubic-bezier(.22,1,.36,1);
+    cursor:pointer;transition:background-color .15s ease,opacity .15s ease;
   }
-  .lg-btn-gold:hover:not(:disabled){filter:brightness(1.06);transform:translateY(-1px)}
-  .lg-btn-gold:active:not(:disabled){transform:translateY(1px) scale(.99);filter:brightness(.97)}
-  .lg-btn-gold:disabled{opacity:.65;cursor:not-allowed}
+  .lg-btn-gold:hover:not(:disabled){background:#f0c44b;transform:none;box-shadow:none;filter:none}
+  .lg-btn-gold:active:not(:disabled){background:#b8860b;color:#0b0f19;transform:none;box-shadow:none;filter:none}
+  .lg-btn-gold:disabled{opacity:.48;cursor:not-allowed;pointer-events:none;box-shadow:none;transform:none}
 
   .lg-forgot-row{display:flex;justify-content:center;margin:8px 0 0}
   .lg-forgot{
@@ -298,10 +292,11 @@
     border:1px solid var(--field-line);background:var(--bg2);color:var(--tx);
     font:600 14px/1 "Plus Jakarta Sans",sans-serif;
     display:inline-flex;align-items:center;justify-content:center;gap:9px;
-    cursor:pointer;transition:border-color .16s ease,transform .16s cubic-bezier(.22,1,.36,1),background-color .16s ease;
+    cursor:pointer;transition:background-color .15s ease;
   }
-  .lg-sso-btn:hover{border-color:var(--gold);transform:translateY(-1px)}
-  .lg-sso-btn:active{transform:translateY(1px)}
+  .lg-sso-btn:hover:not(:disabled){background:rgba(255,255,255,.06);transform:none;box-shadow:none}
+  .lg-sso-btn:active:not(:disabled){background:rgba(255,255,255,.11);transform:none}
+  .lg-sso-btn:disabled{opacity:.48;cursor:not-allowed;pointer-events:none}
   .lg-sso-btn svg{width:18px;height:18px;flex:none}
 
   .lg-join-row{
@@ -327,10 +322,10 @@
   }
   @media(max-width:768px){
     footer.site-footer,.site-footer{display:none!important}
-    .portal-nav{height:58px;min-height:58px;padding:0 16px}
+    .portal-nav{height:auto;min-height:58px;padding:env(safe-area-inset-top,0px) 16px 0}
     .portal-brand img{width:32px;height:32px}
     .portal-brand strong{font-size:20px}
-    .lg-shell{min-height:calc(100vh - 58px);padding:20px 14px 28px}
+    .lg-shell{min-height:calc(100dvh - 58px);padding:20px 14px calc(28px + env(safe-area-inset-bottom,0px))}
     .lg-title{font-size:clamp(30px,8vw,42px);margin-bottom:10px}
     .lg-desc{font-size:14.5px;margin-bottom:16px}
     .lg-checks{gap:8px;margin-bottom:14px}
@@ -339,12 +334,22 @@
     .lg-input{height:46px;font-size:16px}
     .lg-btn-gold,.lg-sso-btn{height:46px}
   }
+  @media(max-width:380px){
+    .lg-card{padding:18px 14px}
+    .portal-nav{padding:env(safe-area-inset-top,0px) 12px 0}
+  }
+  @media(pointer:coarse){
+    .lg-input{font-size:16px}
+    button,a{touch-action:manipulation}
+  }
+  html{-webkit-tap-highlight-color:transparent;overscroll-behavior:none}
+  body{min-height:100dvh}
   @media(prefers-reduced-motion:reduce){
     *{transition:none !important;animation:none !important}
   }
 </style>
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script>
-<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
+<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17"><meta name="color-scheme" content="light dark"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
 <body class="portal-body auth-page dark public-dark-theme">
 <header class="portal-nav">
   <a class="portal-brand" href="/">

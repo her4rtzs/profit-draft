@@ -1,196 +1,216 @@
 <!DOCTYPE html>
 <html lang="en" data-default-theme="dark">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ProFit — My Members (Trainer Portal)</title>
-<script>try{var t=localStorage.getItem('pf-theme')||localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);document.documentElement.setAttribute('data-accent','gold');}catch(e){}</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/staff.css?v=12">
-<link rel="stylesheet" href="trainer.css?v=20">
-<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <title>ProFit — My Members (Trainer Portal)</title>
+  <script>try { var t = localStorage.getItem('pf-theme') || localStorage.getItem('theme') || 'dark'; document.documentElement.setAttribute('data-theme', t); document.documentElement.setAttribute('data-accent', 'gold'); } catch (e) { }</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/staff.css?v=12">
+  <link rel="stylesheet" href="trainer.css?v=30">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#0a0e17">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17">
+  <meta name="color-scheme" content="light dark">
+  <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="ProFit">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="stylesheet" href="../pf-system.css?v=18">
+</head>
+
 <body data-page="members" data-portal="trainer" data-head="none">
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="scrim" id="scrim"></div>
-  <div class="main">
-    <header class="topbar" id="topbar"></header>
-    <main class="content" id="content">
+  <div class="app">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="scrim" id="scrim"></div>
+    <div class="main">
+      <header class="topbar" id="topbar"></header>
+      <main class="content" id="content">
 
-      <!-- Page Hero Banner -->
-      <section class="tw-page-hero tw-anim" style="--i:0">
-        <div class="tw-hero-left">
-          <div class="tw-hero-ico" data-ico="users"></div>
-          <div class="tw-hero-text">
-            <span class="tw-hero-eyebrow">Coaching Roster · Module 1</span>
-            <h1 class="tw-hero-title">My Assigned Athletes</h1>
-            <p class="tw-hero-sub">Monitor membership validity, track gym attendance frequency, and record live check-ins for your roster.</p>
-          </div>
-        </div>
-        <div class="tw-hero-actions">
-          <a href="/trainer/attendance" class="tw-btn"><span data-ico="check"></span> Attendance Log</a>
-          <a href="/trainer/schedule" class="tw-btn-primary"><span data-ico="calendar"></span> Broadcast Update</a>
-        </div>
-      </section>
-
-      <!-- Toolbar: Filter Pills, Search & View Mode -->
-      <section class="tw-toolbar tw-anim" style="--i:2">
-        <div class="tw-toolbar-left">
-          <div class="tw-filter-pills" role="tablist" aria-label="Filter members">
-            <button type="button" class="tw-filter-pill active" data-filter="all">
-              All Athletes <span class="tw-filter-count" id="cntMemAll">0</span>
-            </button>
-            <button type="button" class="tw-filter-pill" data-filter="active">
-              Active <span class="tw-filter-count" id="cntMemActive">0</span>
-            </button>
-            <button type="button" class="tw-filter-pill" data-filter="today">
-              In Today <span class="tw-filter-count" id="cntMemToday">0</span>
-            </button>
-            <button type="button" class="tw-filter-pill" data-filter="expiring">
-              Expiring Soon <span class="tw-filter-count" id="cntMemExpiring">0</span>
-            </button>
-          </div>
-        </div>
-        <div class="tw-toolbar-right">
-          <div class="tw-search-box">
-            <span data-ico="search"></span>
-            <input type="search" id="memberSearch" class="tw-search-input" placeholder="Search name, email, or phone...">
-          </div>
-          <div class="tw-filter-pills" role="group" aria-label="View layout">
-            <button type="button" class="tw-filter-pill active" data-view="table">Table</button>
-            <button type="button" class="tw-filter-pill" data-view="cards">Cards</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- Members Table / Cards Container -->
-      <section class="tw-anim" style="--i:3">
-        <!-- Table View -->
-        <div class="tw-card" id="membersTableCard">
-          <div class="tw-card-head">
-            <div>
-              <h2 class="tw-card-title">Assigned Roster Directory</h2>
-              <p class="tw-card-sub">Click "History" to inspect a member's full attendance log or "Check In" when they arrive.</p>
+        <!-- Page Hero Banner -->
+        <section class="tw-page-hero tw-anim" style="--i:0">
+          <div class="tw-hero-left">
+            <div class="tw-hero-ico" data-ico="users"></div>
+            <div class="tw-hero-text">
+              <span class="tw-hero-eyebrow">Coaching Roster · Module 1</span>
+              <h1 class="tw-hero-title">My Assigned Athletes</h1>
+              <p class="tw-hero-sub">Monitor membership validity, track gym attendance frequency, and record live
+                check-ins for your roster.</p>
             </div>
           </div>
-          <div class="tw-table-wrap">
-            <table class="tw-table">
-              <thead>
-                <tr>
-                  <th>Athlete</th>
-                  <th>Phone</th>
-                  <th>Status</th>
-                  <th>Membership Expiry</th>
-                  <th>Total Visits</th>
-                  <th>Last Check-in</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="membersBody">
-                <tr><td colspan="7"><span class="tw-skel tw-skel-row"></span></td></tr>
-              </tbody>
-            </table>
+          <div class="tw-hero-actions">
+            <a href="/trainer/attendance" class="tw-btn"><span data-ico="check"></span> Attendance Log</a>
+            <a href="/trainer/schedule" class="tw-btn-primary"><span data-ico="calendar"></span> Broadcast Update</a>
           </div>
-        </div>
+        </section>
 
-        <!-- Cards View -->
-        <div class="tw-members-cards-grid" id="membersCardsGrid" style="display:none"></div>
-      </section>
+        <!-- Toolbar: Filter Pills, Search & View Mode -->
+        <section class="tw-toolbar tw-anim" style="--i:2">
+          <div class="tw-toolbar-left">
+            <div class="tw-filter-pills" role="tablist" aria-label="Filter members">
+              <button type="button" class="tw-filter-pill active" data-filter="all">
+                All Athletes <span class="tw-filter-count" id="cntMemAll">0</span>
+              </button>
+              <button type="button" class="tw-filter-pill" data-filter="active">
+                Active <span class="tw-filter-count" id="cntMemActive">0</span>
+              </button>
+              <button type="button" class="tw-filter-pill" data-filter="today">
+                In Today <span class="tw-filter-count" id="cntMemToday">0</span>
+              </button>
+              <button type="button" class="tw-filter-pill" data-filter="expiring">
+                Expiring Soon <span class="tw-filter-count" id="cntMemExpiring">0</span>
+              </button>
+            </div>
+          </div>
+          <div class="tw-toolbar-right">
+            <div class="tw-search-box">
+              <span data-ico="search"></span>
+              <input type="search" id="memberSearch" class="tw-search-input"
+                placeholder="Search name, email, or phone...">
+            </div>
+            <div class="tw-filter-pills" role="group" aria-label="View layout">
+              <button type="button" class="tw-filter-pill active" data-view="table">Table</button>
+              <button type="button" class="tw-filter-pill" data-view="cards">Cards</button>
+            </div>
+          </div>
+        </section>
 
-    </main>
-  </div>
-  <nav class="bottom-nav" id="bottomNav" aria-label="Quick navigation"></nav>
-</div>
+        <!-- Members Table / Cards Container -->
+        <section class="tw-anim" style="--i:3">
+          <!-- Table View -->
+          <div class="tw-card" id="membersTableCard">
+            <div class="tw-card-head">
+              <div>
+                <h2 class="tw-card-title">Assigned Roster Directory</h2>
+                <p class="tw-card-sub">Click "History" to inspect a member's full attendance log or "Check In" when they
+                  arrive.</p>
+              </div>
+            </div>
+            <div class="tw-table-wrap">
+              <table class="tw-table">
+                <thead>
+                  <tr>
+                    <th>Athlete</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th>Membership Expiry</th>
+                    <th>Total Visits</th>
+                    <th>Last Check-in</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="membersBody">
+                  <tr>
+                    <td colspan="7"><span class="tw-skel tw-skel-row"></span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
 
-<!-- Member Detail Modal -->
-<div class="modal-backdrop" id="memberDetailModal">
-  <div class="modal" style="max-width:660px">
-    <div class="modal-head">
-      <h3 id="mdTitle">Member Coaching Profile</h3>
-      <button class="modal-close" data-close-modal="memberDetailModal">&times;</button>
+          <!-- Cards View -->
+          <div class="tw-members-cards-grid" id="membersCardsGrid" style="display:none"></div>
+        </section>
+
+      </main>
     </div>
-    <div class="modal-body" id="mdBody"></div>
-    <div class="modal-foot">
-      <button class="tw-btn" data-close-modal="memberDetailModal">Close</button>
-      <button class="tw-btn-primary" id="mdCheckinBtn"><span data-ico="check"></span> Check In Now</button>
+    <nav class="bottom-nav" id="bottomNav" aria-label="Quick navigation"></nav>
+  </div>
+
+  <!-- Member Detail Modal -->
+  <div class="modal-backdrop" id="memberDetailModal">
+    <div class="modal" style="max-width:660px">
+      <div class="modal-head">
+        <h3 id="mdTitle">Member Coaching Profile</h3>
+        <button class="modal-close" data-close-modal="memberDetailModal">&times;</button>
+      </div>
+      <div class="modal-body" id="mdBody"></div>
+      <div class="modal-foot">
+        <button class="tw-btn" data-close-modal="memberDetailModal">Close</button>
+        <button class="tw-btn-primary" id="mdCheckinBtn"><span data-ico="check"></span> Check In Now</button>
+      </div>
     </div>
   </div>
-</div>
 
-<script src="../config.js?v=5"></script>
-<script src="../api.js?v=5"></script>
-<script src="../auth.js?v=5"></script>
-<script src="../assets/js/staff-icons.js?v=5"></script>
-<script src="../assets/js/staff-data.js?v=12"></script>
-<script src="../assets/js/staff.js?v=15"></script>
-<script src="trainer.js?v=12"></script>
-<script>
-PF.ready(async () => {
-  let allMembers = [];
-  let activeFilter = 'all';
-  let viewMode = 'table';
+  <script src="../config.js?v=9"></script>
+  <script src="../api.js?v=5"></script>
+  <script src="../auth.js?v=5"></script>
+  <script src="../assets/js/staff-icons.js?v=5"></script>
+  <script src="../assets/js/staff-data.js?v=12"></script>
+  <script src="../assets/js/staff.js?v=17"></script>
+  <script src="trainer.js?v=12"></script>
+  <script>
+    PF.ready(async () => {
+      let allMembers = [];
+      let activeFilter = 'all';
+      let viewMode = 'table';
 
-  const tbody = document.getElementById('membersBody');
-  const tableCard = document.getElementById('membersTableCard');
-  const cardsGrid = document.getElementById('membersCardsGrid');
-  const searchInput = document.getElementById('memberSearch');
+      const tbody = document.getElementById('membersBody');
+      const tableCard = document.getElementById('membersTableCard');
+      const cardsGrid = document.getElementById('membersCardsGrid');
+      const searchInput = document.getElementById('memberSearch');
 
-  function isExpiringSoon(m) {
-    if (m.expiring_soon !== undefined) return Boolean(m.expiring_soon);
-    if (!m.expiry_date || !m.is_active) return false;
-    const diff = Math.ceil((new Date(m.expiry_date) - new Date()) / 86400000);
-    return diff >= 0 && diff <= 7;
-  }
-
-  function updateKPIs(list) {
-    const total = list.length;
-    const active = list.filter(m => m.is_active || m.membership_status === 'ACTIVE').length;
-    const todayIn = list.filter(m => m.today_checked_in).length;
-    const expiring = list.filter(m => isExpiringSoon(m)).length;
-
-    const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-    setTxt('kpiMemTotal', total);
-    setTxt('kpiMemActive', active);
-    setTxt('kpiMemToday', todayIn);
-    setTxt('kpiMemExpiring', expiring);
-
-    setTxt('cntMemAll', total);
-    setTxt('cntMemActive', active);
-    setTxt('cntMemToday', todayIn);
-    setTxt('cntMemExpiring', expiring);
-  }
-
-  function getFiltered() {
-    const q = (searchInput.value || '').trim().toLowerCase();
-    return allMembers.filter(m => {
-      if (activeFilter === 'active' && !(m.is_active || m.membership_status === 'ACTIVE')) return false;
-      if (activeFilter === 'today' && !m.today_checked_in) return false;
-      if (activeFilter === 'expiring' && !isExpiringSoon(m)) return false;
-      if (q) {
-        const hay = `${m.name || ''} ${m.email || ''} ${m.phone || ''}`.toLowerCase();
-        if (!hay.includes(q)) return false;
+      function isExpiringSoon(m) {
+        if (m.expiring_soon !== undefined) return Boolean(m.expiring_soon);
+        if (!m.expiry_date || !m.is_active) return false;
+        const diff = Math.ceil((new Date(m.expiry_date) - new Date()) / 86400000);
+        return diff >= 0 && diff <= 7;
       }
-      return true;
-    });
-  }
 
-  function renderStatusBadge(m) {
-    if (isExpiringSoon(m)) return '<span class="tw-pill is-amber">Expiring Soon</span>';
-    if (m.is_active || m.membership_status === 'ACTIVE') return '<span class="tw-pill is-green">Active</span>';
-    return '<span class="tw-pill is-red">Expired</span>';
-  }
+      function updateKPIs(list) {
+        const total = list.length;
+        const active = list.filter(m => m.is_active || m.membership_status === 'ACTIVE').length;
+        const todayIn = list.filter(m => m.today_checked_in).length;
+        const expiring = list.filter(m => isExpiringSoon(m)).length;
 
-  function render() {
-    const rows = getFiltered();
+        const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+        setTxt('kpiMemTotal', total);
+        setTxt('kpiMemActive', active);
+        setTxt('kpiMemToday', todayIn);
+        setTxt('kpiMemExpiring', expiring);
 
-    if (viewMode === 'table') {
-      tableCard.style.display = '';
-      cardsGrid.style.display = 'none';
+        setTxt('cntMemAll', total);
+        setTxt('cntMemActive', active);
+        setTxt('cntMemToday', todayIn);
+        setTxt('cntMemExpiring', expiring);
+      }
 
-      if (!rows.length) {
-        tbody.innerHTML = `
+      function getFiltered() {
+        const q = (searchInput.value || '').trim().toLowerCase();
+        return allMembers.filter(m => {
+          if (activeFilter === 'active' && !(m.is_active || m.membership_status === 'ACTIVE')) return false;
+          if (activeFilter === 'today' && !m.today_checked_in) return false;
+          if (activeFilter === 'expiring' && !isExpiringSoon(m)) return false;
+          if (q) {
+            const hay = `${m.name || ''} ${m.email || ''} ${m.phone || ''}`.toLowerCase();
+            if (!hay.includes(q)) return false;
+          }
+          return true;
+        });
+      }
+
+      function renderStatusBadge(m) {
+        if (isExpiringSoon(m)) return '<span class="tw-pill is-amber">Expiring Soon</span>';
+        if (m.is_active || m.membership_status === 'ACTIVE') return '<span class="tw-pill is-green">Active</span>';
+        return '<span class="tw-pill is-red">Expired</span>';
+      }
+
+      function render() {
+        const rows = getFiltered();
+
+        if (viewMode === 'table') {
+          tableCard.style.display = '';
+          cardsGrid.style.display = 'none';
+
+          if (!rows.length) {
+            tbody.innerHTML = `
           <tr>
             <td colspan="7">
               <div class="tw-empty">
@@ -201,10 +221,10 @@ PF.ready(async () => {
             </td>
           </tr>
         `;
-        return;
-      }
+            return;
+          }
 
-      tbody.innerHTML = rows.map(m => `
+          tbody.innerHTML = rows.map(m => `
         <tr>
           <td>
             <div class="tw-member-cell">
@@ -224,19 +244,19 @@ PF.ready(async () => {
             <div style="display:inline-flex;gap:6px;justify-content:flex-end">
               <button class="tw-btn" data-detail="${m.id}">History</button>
               ${m.today_checked_in
-                ? `<span class="tw-pill is-green">In Today</span>`
-                : `<button class="tw-btn-primary" style="height:34px;padding:0 12px;font-size:12px" data-checkin="${m.id}" data-name="${PF.esc(m.name)}">Check In</button>`
-              }
+              ? `<span class="tw-pill is-green">In Today</span>`
+              : `<button class="tw-btn-primary" style="height:34px;padding:0 12px;font-size:12px" data-checkin="${m.id}" data-name="${PF.esc(m.name)}">Check In</button>`
+            }
             </div>
           </td>
         </tr>
       `).join('');
-    } else {
-      tableCard.style.display = 'none';
-      cardsGrid.style.display = 'grid';
+        } else {
+          tableCard.style.display = 'none';
+          cardsGrid.style.display = 'grid';
 
-      if (!rows.length) {
-        cardsGrid.innerHTML = `
+          if (!rows.length) {
+            cardsGrid.innerHTML = `
           <div class="tw-card" style="grid-column:1/-1">
             <div class="tw-empty">
               <div class="tw-empty-ico">${PF.icon('users')}</div>
@@ -245,10 +265,10 @@ PF.ready(async () => {
             </div>
           </div>
         `;
-        return;
-      }
+            return;
+          }
 
-      cardsGrid.innerHTML = rows.map(m => `
+          cardsGrid.innerHTML = rows.map(m => `
         <article class="tw-athlete-card">
           <div>
             <div class="tw-athlete-head">
@@ -289,50 +309,50 @@ PF.ready(async () => {
           </div>
         </article>
       `).join('');
-    }
-
-    bindActions();
-  }
-
-  function bindActions() {
-    document.querySelectorAll('[data-checkin]').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const id = btn.dataset.checkin;
-        const name = btn.dataset.name;
-        btn.disabled = true;
-        try {
-          await Trainer.api.checkIn(id);
-          PF.toast(`${name} checked in!`, 'success');
-          await loadMembers();
-        } catch (err) {
-          PF.toast(err.message || 'Could not check in member.', 'error');
-          btn.disabled = false;
         }
-      });
-    });
 
-    document.querySelectorAll('[data-detail]').forEach(btn => {
-      btn.addEventListener('click', () => openMemberDetail(btn.dataset.detail));
-    });
-  }
-
-  async function openMemberDetail(id) {
-    const d = await Trainer.api.getMemberDetail(id);
-    document.getElementById('mdTitle').textContent = d.name || 'Athlete Coaching Profile';
-    const checkinBtn = document.getElementById('mdCheckinBtn');
-    checkinBtn.onclick = async () => {
-      try {
-        await Trainer.api.checkIn(d.id);
-        PF.toast(`${d.name} checked in!`, 'success');
-        PF.closeModal('memberDetailModal');
-        await loadMembers();
-      } catch (err) {
-        PF.toast(err.message || 'Check-in failed.', 'error');
+        bindActions();
       }
-    };
 
-    const atts = d.attendances || [];
-    document.getElementById('mdBody').innerHTML = `
+      function bindActions() {
+        document.querySelectorAll('[data-checkin]').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const id = btn.dataset.checkin;
+            const name = btn.dataset.name;
+            btn.disabled = true;
+            try {
+              await Trainer.api.checkIn(id);
+              PF.toast(`${name} checked in!`, 'success');
+              await loadMembers();
+            } catch (err) {
+              PF.toast(err.message || 'Could not check in member.', 'error');
+              btn.disabled = false;
+            }
+          });
+        });
+
+        document.querySelectorAll('[data-detail]').forEach(btn => {
+          btn.addEventListener('click', () => openMemberDetail(btn.dataset.detail));
+        });
+      }
+
+      async function openMemberDetail(id) {
+        const d = await Trainer.api.getMemberDetail(id);
+        document.getElementById('mdTitle').textContent = d.name || 'Athlete Coaching Profile';
+        const checkinBtn = document.getElementById('mdCheckinBtn');
+        checkinBtn.onclick = async () => {
+          try {
+            await Trainer.api.checkIn(d.id);
+            PF.toast(`${d.name} checked in!`, 'success');
+            PF.closeModal('memberDetailModal');
+            await loadMembers();
+          } catch (err) {
+            PF.toast(err.message || 'Check-in failed.', 'error');
+          }
+        };
+
+        const atts = d.attendances || [];
+        document.getElementById('mdBody').innerHTML = `
       <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding-bottom:14px;border-bottom:1px solid var(--line)">
         <div style="display:flex;align-items:center;gap:14px">
           <div class="avatar" style="width:52px;height:52px;font-size:18px">${PF.initials(d.name)}</div>
@@ -377,36 +397,37 @@ PF.ready(async () => {
         </div>
       ` : '<p style="font-size:13px;color:var(--muted)">No attendance records yet for this member.</p>'}
     `;
-    PF.openModal('memberDetailModal');
-  }
+        PF.openModal('memberDetailModal');
+      }
 
-  async function loadMembers() {
-    allMembers = await Trainer.api.getMembers();
-    updateKPIs(allMembers);
-    render();
-  }
+      async function loadMembers() {
+        allMembers = await Trainer.api.getMembers();
+        updateKPIs(allMembers);
+        render();
+      }
 
-  document.querySelectorAll('[data-filter]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeFilter = btn.dataset.filter;
-      render();
+      document.querySelectorAll('[data-filter]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeFilter = btn.dataset.filter;
+          render();
+        });
+      });
+
+      document.querySelectorAll('[data-view]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('[data-view]').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          viewMode = btn.dataset.view;
+          render();
+        });
+      });
+
+      searchInput.addEventListener('input', render);
+      await loadMembers();
     });
-  });
-
-  document.querySelectorAll('[data-view]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('[data-view]').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      viewMode = btn.dataset.view;
-      render();
-    });
-  });
-
-  searchInput.addEventListener('input', render);
-  await loadMembers();
-});
-</script>
+  </script>
 </body>
+
 </html>

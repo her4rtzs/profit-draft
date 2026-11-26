@@ -1,156 +1,404 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script>
-(function(){
-  try{
-    var isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.protocol === 'file:' || location.search.indexOf('demo=1') > -1;
-    var hasSession = !!(sessionStorage.getItem('profit-verified-session') || sessionStorage.getItem('profit-demo-session') || localStorage.getItem('profit-demo-session'));
-    var explicitLogout = sessionStorage.getItem('profit-logged-out') === '1';
-    if (!isLocal && (!hasSession || explicitLogout)) {
-      document.documentElement.classList.add('auth-pending');
-      location.replace('/');
+
+<head>
+  <script>
+    (function () {
+      try {
+        var isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.protocol === 'file:' || location.search.indexOf('demo=1') > -1;
+        var hasSession = !!(sessionStorage.getItem('profit-verified-session') || sessionStorage.getItem('profit-demo-session') || localStorage.getItem('profit-demo-session'));
+        var explicitLogout = sessionStorage.getItem('profit-logged-out') === '1';
+        if (!isLocal && (!hasSession || explicitLogout)) {
+          document.documentElement.classList.add('auth-pending');
+          location.replace('/');
+        }
+      } catch (e) { }
+    })();
+  </script>
+  <style>
+    html.auth-pending,
+    html.auth-pending body {
+      display: none !important;
+      visibility: hidden !important;
     }
-  }catch(e){}
-})();
-</script>
-<style>
-html.auth-pending, html.auth-pending body { display: none !important; visibility: hidden !important; }
-</style>
-<script>(function(){try{var t=localStorage.getItem('theme');if(t==='light'&&!localStorage.getItem('pf-staff-explicit-light')){t='dark';try{localStorage.setItem('theme','dark');}catch(_){}}var d=t!=='light';var h=document.documentElement;h.style.background=d?'#0a0e16':'#F7F4EE';h.style.colorScheme=d?'dark':'light';if(d){h.classList.add('dark');}else{h.classList.remove('dark');}}catch(e){}})();</script><script src="splash.js?v=3"></script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ProFit | Dashboard</title>
+  </style>
+  <script>(function () { try { var t = localStorage.getItem('theme'); if (t === 'light' && !localStorage.getItem('pf-staff-explicit-light')) { t = 'dark'; try { localStorage.setItem('theme', 'dark'); } catch (_) { } } var d = t !== 'light'; var h = document.documentElement; h.style.background = d ? '#0a0e16' : '#F7F4EE'; h.style.colorScheme = d ? 'dark' : 'light'; if (d) { h.classList.add('dark'); } else { h.classList.remove('dark'); } } catch (e) { } })();</script>
+  <script src="splash.js?v=3"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <title>ProFit | Dashboard</title>
 
-    <!-- Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Figtree:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Figtree:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="dashboard.css?v=13">
-    <style>
-      /* Editorial Owner Dashboard Hero + Staggered Motion (UI polish only) */
-      @keyframes pfDashRise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-      .ow-hero{
-        position:relative;border-radius:20px;overflow:hidden;margin-bottom:22px;
-        border:1px solid rgba(255,255,255,.09);background:#0c111b !important;
-        display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,360px);gap:24px;
-        align-items:center;padding:30px 32px;
-        animation:pfDashRise .45s cubic-bezier(.2,.8,.2,1) both;
+  <!-- CSS -->
+  <link rel="stylesheet" href="dashboard.css?v=18">
+  <style>
+    /* Editorial Owner Dashboard Hero + Staggered Motion (UI polish only) */
+    @keyframes pfDashRise {
+      from {
+        opacity: 0;
+        transform: translateY(14px)
       }
-      .ow-hero::before{
-        content:"";position:absolute;inset:0;
-        background:url("img/hero.jpg") center/cover no-repeat;
-        opacity:.34;transform:scale(1.02);pointer-events:none;
-      }
-      .ow-hero::after{
-        content:"";position:absolute;inset:0;
-        background:linear-gradient(95deg,rgba(10,14,23,.95) 0%,rgba(10,14,23,.82) 52%,rgba(10,14,23,.58) 100%);
-        pointer-events:none;
-      }
-      .ow-hero-left,.ow-hero-card{position:relative;z-index:1}
-      .ow-eyebrow{
-        display:inline-block;font:800 11.5px/1 "Figtree",Inter,sans-serif;
-        letter-spacing:.12em;text-transform:uppercase;color:#e8b93a !important;margin-bottom:10px;
-      }
-      .ow-hero-left h2{
-        margin:0 0 10px;font:900 clamp(2rem,3.6vw,3.1rem)/1.02 "Figtree","Plus Jakarta Sans",Inter,sans-serif;
-        letter-spacing:-.03em;color:#f8fafc !important;
-      }
-      .ow-hero-left p{
-        margin:0 0 22px;max-width:460px;font-size:14.5px;line-height:1.58;color:#cbd5e1 !important;
-      }
-      .ow-hero-btns{display:flex;flex-wrap:wrap;gap:12px}
-      .ow-btn-gold,.ow-btn-dark{
-        display:inline-flex;align-items:center;gap:9px;min-height:42px;padding:0 18px;
-        border-radius:12px;font:700 13.5px/1 "Plus Jakarta Sans",Inter,sans-serif;
-        text-decoration:none;transition:transform .16s ease,background .16s ease,border-color .16s ease;
-      }
-      .ow-btn-gold{background:#e8b93a !important;color:#141006 !important}
-      .ow-btn-gold:hover{transform:translateY(-1px);background:#f1c856 !important}
-      .ow-btn-dark{background:rgba(15,23,42,.78) !important;color:#f1f5f9 !important;border:1px solid rgba(255,255,255,.2) !important;backdrop-filter:blur(8px)}
-      .ow-btn-dark:hover{transform:translateY(-1px);background:rgba(30,41,59,.9) !important;border-color:rgba(232,185,58,.5) !important}
 
-      .ow-hero-card{
-        background:rgba(15,21,34,.88) !important;border:1px solid rgba(255,255,255,.14) !important;
-        border-radius:16px;padding:18px 20px;backdrop-filter:blur(12px);
-        display:flex;flex-direction:column;gap:16px;color:#f8fafc !important;
+      to {
+        opacity: 1;
+        transform: none
       }
-      .ow-card-top{display:flex;align-items:center;justify-content:space-between;gap:14px}
-      .ow-open-pill{
-        display:inline-flex;align-items:center;gap:7px;padding:5px 10px;border-radius:999px;
-        background:rgba(61,220,132,.14) !important;color:#4ade80 !important;font:700 11.5px/1 Inter,sans-serif;
-        margin-bottom:8px;
-      }
-      .ow-open-dot{width:7px;height:7px;border-radius:50%;background:#4ade80}
-      .ow-card-top h3{margin:0 0 4px;font:800 18px/1.2 "Figtree",Inter,sans-serif;color:#f8fafc !important}
-      .ow-card-date{font-size:12.5px;color:#94a3b8 !important}
-      .ow-ring-wrap{position:relative;width:76px;height:76px;flex:none;display:grid;place-items:center}
-      .ow-ring-svg{width:76px;height:76px;transform:rotate(-90deg)}
-      .ow-ring-track{fill:none;stroke:rgba(255,255,255,.12);stroke-width:6}
-      .ow-ring-arc{fill:none;stroke:#e8b93a;stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset .85s cubic-bezier(.2,.8,.2,1)}
-      .ow-ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
-      .ow-ring-center strong{font:800 19px/1 "Figtree",Inter,sans-serif;color:#f8fafc !important;font-variant-numeric:tabular-nums}
-      .ow-ring-center small{font-size:10px;color:#94a3b8 !important;margin-top:2px}
-      .ow-card-foot{
-        display:flex;align-items:center;justify-content:space-between;gap:12px;
-        padding-top:14px;border-top:1px dashed rgba(255,255,255,.14);
-      }
-      .ow-card-foot span{display:block;font-size:11.5px;color:#94a3b8 !important;margin-bottom:2px}
-      .ow-card-foot strong{font:800 15px/1.2 "Figtree",Inter,sans-serif;color:#f8fafc !important}
-      .ow-mini-btn{
-        padding:8px 14px;border-radius:10px;background:#e8b93a !important;color:#141006 !important;
-        font:700 12.5px/1 "Plus Jakarta Sans",Inter,sans-serif;text-decoration:none;
-        transition:transform .15s ease,background .15s ease;
-      }
-      .ow-mini-btn:hover{transform:translateY(-1px);background:#f1c856 !important}
-
-      /* Staggered card entrance & subtle hover elevation */
-      #dashStats .stat-card{animation:pfDashRise .45s cubic-bezier(.2,.8,.2,1) both}
-      #dashStats .stat-card:nth-child(2){animation-delay:.06s}
-      #dashStats .stat-card:nth-child(3){animation-delay:.12s}
-      #dashStats .stat-card:nth-child(4){animation-delay:.18s}
-      #dashStats .stat-card:hover{transform:translateY(-2px)}
-      .quick-actions{animation:pfDashRise .45s cubic-bezier(.2,.8,.2,1) .08s both}
-      .content-grid .panel{animation:pfDashRise .5s cubic-bezier(.2,.8,.2,1) .16s both}
-      .registrations-panel{animation:pfDashRise .55s cubic-bezier(.2,.8,.2,1) .22s both}
-
-      @media (max-width:960px){
-        .ow-hero{grid-template-columns:1fr;padding:24px 20px}
-      }
-      @media (prefers-reduced-motion:reduce){
-        .ow-hero,#dashStats .stat-card,.quick-actions,.content-grid .panel,.registrations-panel,.ow-open-dot{animation:none!important}
-        .ow-ring-arc{transition:none!important}
-      }
-    </style>
-    <script src="config.js?v=4"></script>
-    <script src="api.js"></script>
-    <script src="auth.js?v=4"></script>
-<script>document.documentElement.dataset.accent='gold'</script>
-
-<script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script><link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
-
-<body class="pf-staff" data-page="dashboard" data-title="Dashboard" data-welcome=""><script>(function(){try{var t=localStorage.getItem('theme');if(t==='light'&&!localStorage.getItem('pf-staff-explicit-light')){t='dark';try{localStorage.setItem('theme','dark');}catch(_){}}var d=t!=='light';if(d){document.body.classList.add('dark');}else{document.body.classList.remove('dark');}}catch(e){}})();</script><script>
-(function(){
-  try {
-    var returning = sessionStorage.getItem('pf-nav-returning-home') || (document.referrer && /(members|attendance|payments|reports|announcements|trainers|settings|profile)\.html/.test(document.referrer));
-    if (returning) {
-      sessionStorage.removeItem('pf-nav-returning-home');
-      document.body.classList.add('pf-home-transition');
-      var line = document.createElement('div');
-      line.id = 'pf-nav-line';
-      line.setAttribute('aria-hidden', 'true');
-      document.body.appendChild(line);
-      setTimeout(function(){ if (line.parentNode) line.parentNode.removeChild(line); }, 600);
     }
-  } catch(e) {}
-})();
-</script>
 
-<div class="dashboard">
+    .ow-hero {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 18px;
+      border: 0;
+      background: #0c111b !important;
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(280px, 360px);
+      gap: 24px;
+      align-items: center;
+      padding: 28px 30px;
+      animation: pfDashRise .45s cubic-bezier(.2, .8, .2, 1) both;
+    }
+
+    .ow-hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: url("img/hero.jpg") center/cover no-repeat;
+      opacity: .34;
+      transform: scale(1.02);
+      pointer-events: none;
+    }
+
+    .ow-hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(95deg, rgba(10, 14, 23, .95) 0%, rgba(10, 14, 23, .82) 52%, rgba(10, 14, 23, .58) 100%);
+      pointer-events: none;
+    }
+
+    .ow-hero-left,
+    .ow-hero-card {
+      position: relative;
+      z-index: 1
+    }
+
+    .ow-eyebrow {
+      display: inline-block;
+      font: 800 11.5px/1 "Figtree", Inter, sans-serif;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: #e8b93a !important;
+      margin-bottom: 10px;
+    }
+
+    .ow-hero-left h2 {
+      margin: 0 0 10px;
+      font: 900 clamp(2rem, 3.6vw, 3.1rem)/1.02 "Figtree", "Plus Jakarta Sans", Inter, sans-serif;
+      letter-spacing: -.03em;
+      color: #f8fafc !important;
+    }
+
+    .ow-hero-left p {
+      margin: 0 0 22px;
+      max-width: 460px;
+      font-size: 14.5px;
+      line-height: 1.58;
+      color: #cbd5e1 !important;
+    }
+
+    .ow-hero-btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px
+    }
+
+    .ow-btn-gold,
+    .ow-btn-dark {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      min-height: 42px;
+      padding: 0 18px;
+      border-radius: 12px;
+      font: 700 13.5px/1 "Plus Jakarta Sans", Inter, sans-serif;
+      text-decoration: none;
+      transition: background-color .15s ease, border-color .15s ease;
+    }
+
+    .ow-btn-gold {
+      background: #e8b93a !important;
+      color: #0B0F19 !important
+    }
+
+    .ow-btn-gold:hover {
+      background: #f0c44b !important
+    }
+
+    .ow-btn-gold:active {
+      background: #b8860b !important
+    }
+
+    .ow-btn-dark {
+      background: rgba(15, 23, 42, .78) !important;
+      color: #f1f5f9 !important;
+      border: 1px solid rgba(255, 255, 255, .2) !important;
+      backdrop-filter: blur(8px)
+    }
+
+    .ow-btn-dark:hover {
+      background: rgba(255, 255, 255, .10) !important
+    }
+
+    .ow-btn-dark:active {
+      background: rgba(255, 255, 255, .16) !important
+    }
+
+    .ow-hero-card {
+      background: rgba(15, 21, 34, .82) !important;
+      border: 1px solid rgba(255, 255, 255, .07) !important;
+      border-radius: 14px;
+      padding: 18px 20px;
+      backdrop-filter: blur(12px);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      color: #f8fafc !important;
+    }
+
+    .ow-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px
+    }
+
+    .ow-open-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(61, 220, 132, .14) !important;
+      color: #4ade80 !important;
+      font: 700 11.5px/1 Inter, sans-serif;
+      margin-bottom: 8px;
+    }
+
+    .ow-open-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #4ade80
+    }
+
+    .ow-card-top h3 {
+      margin: 0 0 4px;
+      font: 800 18px/1.2 "Figtree", Inter, sans-serif;
+      color: #f8fafc !important
+    }
+
+    .ow-card-date {
+      font-size: 12.5px;
+      color: #94a3b8 !important
+    }
+
+    .ow-ring-wrap {
+      position: relative;
+      width: 76px;
+      height: 76px;
+      flex: none;
+      display: grid;
+      place-items: center
+    }
+
+    .ow-ring-svg {
+      width: 76px;
+      height: 76px;
+      transform: rotate(-90deg)
+    }
+
+    .ow-ring-track {
+      fill: none;
+      stroke: rgba(255, 255, 255, .12);
+      stroke-width: 6
+    }
+
+    .ow-ring-arc {
+      fill: none;
+      stroke: #e8b93a;
+      stroke-width: 6;
+      stroke-linecap: round;
+      transition: stroke-dashoffset .85s cubic-bezier(.2, .8, .2, 1)
+    }
+
+    .ow-ring-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center
+    }
+
+    .ow-ring-center strong {
+      font: 800 19px/1 "Figtree", Inter, sans-serif;
+      color: #f8fafc !important;
+      font-variant-numeric: tabular-nums
+    }
+
+    .ow-ring-center small {
+      font-size: 10px;
+      color: #94a3b8 !important;
+      margin-top: 2px
+    }
+
+    .ow-card-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 14px;
+      border-top: 1px dashed rgba(255, 255, 255, .14);
+    }
+
+    .ow-card-foot span {
+      display: block;
+      font-size: 11.5px;
+      color: #94a3b8 !important;
+      margin-bottom: 2px
+    }
+
+    .ow-card-foot strong {
+      font: 800 15px/1.2 "Figtree", Inter, sans-serif;
+      color: #f8fafc !important
+    }
+
+    .ow-mini-btn {
+      padding: 8px 14px;
+      border-radius: 10px;
+      background: #e8b93a !important;
+      color: #0B0F19 !important;
+      font: 700 12.5px/1 "Plus Jakarta Sans", Inter, sans-serif;
+      text-decoration: none;
+      transition: background-color .15s ease;
+    }
+
+    .ow-mini-btn:hover {
+      background: #f0c44b !important
+    }
+
+    .ow-mini-btn:active {
+      background: #b8860b !important
+    }
+
+    /* Staggered card entrance (no hover lift/glow) */
+    #dashStats .stat-card {
+      animation: pfDashRise .45s cubic-bezier(.2, .8, .2, 1) both
+    }
+
+    #dashStats .stat-card:nth-child(2) {
+      animation-delay: .06s
+    }
+
+    #dashStats .stat-card:nth-child(3) {
+      animation-delay: .12s
+    }
+
+    #dashStats .stat-card:nth-child(4) {
+      animation-delay: .18s
+    }
+
+    #dashStats .stat-card:hover {
+      transform: none !important;
+      box-shadow: none !important
+    }
+
+    .quick-actions {
+      animation: pfDashRise .45s cubic-bezier(.2, .8, .2, 1) .08s both
+    }
+
+    .content-grid .panel {
+      animation: pfDashRise .5s cubic-bezier(.2, .8, .2, 1) .16s both
+    }
+
+    .registrations-panel {
+      animation: pfDashRise .55s cubic-bezier(.2, .8, .2, 1) .22s both
+    }
+
+    @media (max-width:960px) {
+      .ow-hero {
+        grid-template-columns: 1fr;
+        padding: 24px 20px
+      }
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+
+      .ow-hero,
+      #dashStats .stat-card,
+      .quick-actions,
+      .content-grid .panel,
+      .registrations-panel,
+      .ow-open-dot {
+        animation: none !important
+      }
+
+      .ow-ring-arc {
+        transition: none !important
+      }
+    }
+  </style>
+  <script src="config.js?v=9"></script>
+  <script src="api.js"></script>
+  <script src="auth.js?v=4"></script>
+  <script>document.documentElement.dataset.accent = 'gold'</script>
+
+  <script
+    type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#0a0e17">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17">
+  <meta name="color-scheme" content="light dark">
+  <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="ProFit">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="stylesheet" href="pf-system.css?v=18">
+</head>
+
+<body class="pf-staff" data-page="dashboard" data-title="Dashboard" data-welcome="">
+  <script>(function () { try { var t = localStorage.getItem('theme'); if (t === 'light' && !localStorage.getItem('pf-staff-explicit-light')) { t = 'dark'; try { localStorage.setItem('theme', 'dark'); } catch (_) { } } var d = t !== 'light'; if (d) { document.body.classList.add('dark'); } else { document.body.classList.remove('dark'); } } catch (e) { } })();</script>
+  <script>
+    (function () {
+      try {
+        var returning = sessionStorage.getItem('pf-nav-returning-home') || (document.referrer && /(members|attendance|payments|reports|announcements|trainers|settings|profile)\.html/.test(document.referrer));
+        if (returning) {
+          sessionStorage.removeItem('pf-nav-returning-home');
+          document.body.classList.add('pf-home-transition');
+          var line = document.createElement('div');
+          line.id = 'pf-nav-line';
+          line.setAttribute('aria-hidden', 'true');
+          document.body.appendChild(line);
+          setTimeout(function () { if (line.parentNode) line.parentNode.removeChild(line); }, 600);
+        }
+      } catch (e) { }
+    })();
+  </script>
+
+  <div class="dashboard">
 
     <!-- ===================== SIDEBAR ===================== -->
     <nav class="sidebar" id="sidebar"></nav>
@@ -159,347 +407,400 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
     <!-- ===================== MAIN ===================== -->
     <main class="main-content">
 
-        <!-- TOPBAR -->
-        <header class="topbar" id="topbar"><h1>Dashboard</h1></header>
+      <!-- TOPBAR -->
+      <header class="topbar" id="topbar">
+        <h1>Dashboard</h1>
+      </header>
 
-        <!-- EDITORIAL OWNER HERO BANNER -->
-        <section class="ow-hero" aria-label="Gym live overview">
-          <div class="ow-hero-left">
-            <span class="ow-eyebrow" id="owHeroEyebrow">GOOD DAY, GYM OWNER</span>
-            <h2>Your gym,<br>live.</h2>
-            <p>Members, check-ins and money in one place. Every check-in your team logs shows up here as it happens.</p>
-            <div class="ow-hero-btns">
-              <a class="ow-btn-gold" href="/reports"><i class="fa-solid fa-chart-column" aria-hidden="true"></i> View reports</a>
-              <a class="ow-btn-dark" href="/attendance"><i class="fa-solid fa-calendar-check" aria-hidden="true"></i> Record attendance</a>
+      <!-- EDITORIAL OWNER HERO BANNER -->
+      <section class="ow-hero has-hero-dock" aria-label="Gym live overview">
+        <div class="ow-hero-left">
+          <span class="ow-eyebrow" id="owHeroEyebrow">GOOD DAY, GYM OWNER</span>
+          <h2>Your gym,<br>live.</h2>
+          <p>Members, check-ins and money in one place. Every check-in your team logs shows up here as it happens.</p>
+          <div class="ow-hero-btns">
+            <a class="ow-btn-gold" href="/reports"><i class="fa-solid fa-chart-column" aria-hidden="true"></i> View
+              reports</a>
+            <a class="ow-btn-dark" href="/attendance"><i class="fa-solid fa-calendar-check" aria-hidden="true"></i>
+              Record attendance</a>
+          </div>
+        </div>
+        <aside class="ow-hero-card" aria-label="Today at the gym">
+          <div class="ow-card-top">
+            <div>
+              <span class="ow-open-pill"><span class="ow-open-dot" aria-hidden="true"></span> Gym open</span>
+              <h3>Today at<br>the gym</h3>
+              <span class="ow-card-date" id="owHeroDate">&mdash;</span>
+            </div>
+            <div class="ow-ring-wrap" aria-label="Today's check-ins">
+              <svg class="ow-ring-svg" viewBox="0 0 80 80" aria-hidden="true">
+                <circle class="ow-ring-track" cx="40" cy="40" r="32"></circle>
+                <circle class="ow-ring-arc" id="owArrivedArc" cx="40" cy="40" r="32" stroke-dasharray="201.06"
+                  stroke-dashoffset="201.06"></circle>
+              </svg>
+              <div class="ow-ring-center">
+                <strong id="owArrivedVal">0</strong>
+                <small>arrived</small>
+              </div>
             </div>
           </div>
-          <aside class="ow-hero-card" aria-label="Today at the gym">
-            <div class="ow-card-top">
+          <div class="ow-card-foot">
+            <div>
+              <span>Today&apos;s attendance</span>
+              <strong style="font-size:13px;font-weight:600;opacity:.85">Live front-desk log</strong>
+            </div>
+            <a class="ow-mini-btn" href="/attendance">Check-ins</a>
+          </div>
+        </aside>
+        <nav class="pf-hero-dock" aria-label="Quick shortcuts">
+          <a class="pf-hero-shortcut" href="/members#enroll">
+            <span class="pf-hs-ico is-gold" aria-hidden="true"><i class="fa-solid fa-user-plus"></i></span>
+            <span class="pf-hs-body">
+              <span class="pf-hs-label">1. Add member</span>
+              <strong class="pf-hs-val">Walk-in desk</strong>
+            </span>
+            <i class="fa-solid fa-chevron-right pf-hs-chev" aria-hidden="true"></i>
+          </a>
+          <a class="pf-hero-shortcut" href="/payments">
+            <span class="pf-hs-ico is-cyan" aria-hidden="true"><i class="fa-solid fa-peso-sign"></i></span>
+            <span class="pf-hs-body">
+              <span class="pf-hs-label">2. Record payment</span>
+              <strong class="pf-hs-val">Cash at desk</strong>
+            </span>
+            <i class="fa-solid fa-chevron-right pf-hs-chev" aria-hidden="true"></i>
+          </a>
+          <a class="pf-hero-shortcut" href="/payments#review">
+            <span class="pf-hs-ico is-green" aria-hidden="true"><i class="fa-solid fa-clipboard-check"></i></span>
+            <span class="pf-hs-body">
+              <span class="pf-hs-label">3. Review GCash</span>
+              <strong class="pf-hs-val" id="owDockPendingVal">0 pending</strong>
+            </span>
+            <i class="fa-solid fa-chevron-right pf-hs-chev" aria-hidden="true"></i>
+          </a>
+          <a class="pf-hero-shortcut" href="/announcements">
+            <span class="pf-hs-ico is-violet" aria-hidden="true"><i class="fa-solid fa-bullhorn"></i></span>
+            <span class="pf-hs-body">
+              <span class="pf-hs-label">4. Announcements</span>
+              <strong class="pf-hs-val">Post update</strong>
+            </span>
+            <i class="fa-solid fa-chevron-right pf-hs-chev" aria-hidden="true"></i>
+          </a>
+        </nav>
+      </section>
+
+      <!-- STATS / KPI CARDS -->
+      <section class="stats is-loading" id="dashStats">
+
+        <!-- 1. TOTAL MEMBERS (Gold / Amber) -->
+        <div class="stat-card kpi-card kpi-gold" id="kpiTotalMembersCard">
+          <div class="stat-top">
+            <div class="stat-icon" aria-hidden="true"><i class="fa-solid fa-users"></i></div>
+            <h2 class="kpi-title">Total Members</h2>
+          </div>
+          <div class="stat-content">
+            <p class="sr-only">Total members</p>
+            <h2 id="kpiTotalMembersVal">&mdash;</h2>
+            <div class="kpi-bottom">
+              <small class="kpi-sub" id="kpiTotalMembersSub">
+                <span class="kpi-trend positive"><i class="fa-solid fa-arrow-up"></i> +12%</span> from last month
+              </small>
+            </div>
+            <div class="stat-skel" aria-hidden="true"><span class="pf-sk sk-val"></span><span
+                class="pf-sk sk-sub"></span></div>
+          </div>
+        </div>
+
+        <!-- 2. EXPIRED MEMBERS (Coral Red) -->
+        <div class="stat-card kpi-card kpi-red" id="kpiExpiredCard">
+          <div class="stat-top">
+            <div class="stat-icon" aria-hidden="true"><i class="fa-solid fa-user-xmark"></i></div>
+            <h2 class="kpi-title">Expired Members</h2>
+          </div>
+          <div class="stat-content">
+            <p class="sr-only">Expired members</p>
+            <h2 id="kpiExpiredVal">&mdash;</h2>
+            <div class="kpi-bottom">
+              <small class="kpi-sub" id="kpiExpiredSub">
+                <span class="kpi-trend neutral">&rarr; No change</span>
+              </small>
+            </div>
+            <div class="stat-skel" aria-hidden="true"><span class="pf-sk sk-val"></span><span
+                class="pf-sk sk-sub"></span></div>
+          </div>
+        </div>
+
+        <!-- 3. EXPIRING SOON (Cyan / Teal) -->
+        <div class="stat-card kpi-card kpi-cyan" id="kpiExpiringCard">
+          <div class="stat-top">
+            <div class="stat-icon" aria-hidden="true"><i class="fa-solid fa-hourglass-half"></i></div>
+            <h2 class="kpi-title">Expiring Soon</h2>
+          </div>
+          <div class="stat-content">
+            <p class="sr-only">Expiring soon</p>
+            <h2 id="kpiExpiringVal">&mdash;</h2>
+            <div class="kpi-bottom">
+              <small class="kpi-sub" id="kpiExpiringSub">
+                <span class="kpi-trend positive"><i class="fa-solid fa-arrow-up"></i> +2</span> this month
+              </small>
+            </div>
+            <div class="stat-skel" aria-hidden="true"><span class="pf-sk sk-val"></span><span
+                class="pf-sk sk-sub"></span></div>
+          </div>
+        </div>
+
+        <!-- 4. TOTAL REVENUE (Violet / Purple) -->
+        <div class="stat-card revenue-card kpi-card kpi-violet" id="kpiRevenueCard">
+          <div class="stat-top">
+            <div class="stat-icon" aria-hidden="true"><i class="fa-solid fa-peso-sign"></i></div>
+            <h2 class="kpi-title">Total Revenue</h2>
+          </div>
+          <div class="stat-content">
+            <p class="sr-only">Total revenue</p>
+            <h2 id="kpiRevenueVal">&#8369;0.00</h2>
+            <div class="kpi-bottom">
+              <small class="kpi-sub" id="kpiRevenueSub">
+                <span class="kpi-trend neutral">&rarr; No payments yet</span>
+              </small>
+            </div>
+            <div class="stat-skel" aria-hidden="true"><span class="pf-sk sk-val"></span><span
+                class="pf-sk sk-sub"></span></div>
+          </div>
+        </div>
+
+      </section>
+
+
+      <!-- CHART + DONUT -->
+      <section class="content-grid">
+
+        <div class="panel revenue-panel is-loading">
+
+          <div class="panel-header">
+            <div class="rev-title-wrap">
+              <span class="rev-title-ico" aria-hidden="true"><i class="fa-solid fa-chart-column"></i></span>
               <div>
-                <span class="ow-open-pill"><span class="ow-open-dot" aria-hidden="true"></span> Gym open</span>
-                <h3>Today at<br>the gym</h3>
-                <span class="ow-card-date" id="owHeroDate">&mdash;</span>
-              </div>
-              <div class="ow-ring-wrap" aria-label="Today's check-ins">
-                <svg class="ow-ring-svg" viewBox="0 0 80 80" aria-hidden="true">
-                  <circle class="ow-ring-track" cx="40" cy="40" r="32"></circle>
-                  <circle class="ow-ring-arc" id="owArrivedArc" cx="40" cy="40" r="32" stroke-dasharray="201.06" stroke-dashoffset="201.06"></circle>
-                </svg>
-                <div class="ow-ring-center">
-                  <strong id="owArrivedVal">0</strong>
-                  <small>arrived</small>
-                </div>
+                <h2 id="revenueTitle">Monthly revenue</h2>
+                <p id="revenueSub">Revenue overview for 2026</p>
               </div>
             </div>
-            <div class="ow-card-foot">
+            <div class="chip-row" id="revenuePeriods" role="group" aria-label="Revenue period">
+              <button type="button" class="chip" data-period="days" aria-pressed="false">Days</button>
+              <button type="button" class="chip" data-period="week" aria-pressed="false">Week</button>
+              <button type="button" class="chip active" data-period="month" aria-pressed="true">Month</button>
+              <button type="button" class="chip" data-period="year" aria-pressed="false">Year</button>
+            </div>
+          </div>
+
+          <div class="chart-area">
+            <div class="rev-skel" aria-hidden="true">
+              <span class="pf-sk"></span><span class="pf-sk"></span><span class="pf-sk"></span>
+              <span class="pf-sk"></span><span class="pf-sk"></span><span class="pf-sk"></span>
+              <span class="pf-sk"></span><span class="pf-sk"></span><span class="pf-sk"></span>
+              <span class="pf-sk"></span><span class="pf-sk"></span><span class="pf-sk"></span>
+            </div>
+
+            <div class="chart-y" id="revenueAxis">
+              <span>&#8369;12k</span>
+              <span>&#8369;10k</span>
+              <span>&#8369;8k</span>
+              <span>&#8369;6k</span>
+              <span>&#8369;4k</span>
+              <span>&#8369;2k</span>
+              <span>&#8369;0</span>
+            </div>
+
+            <div class="chart">
+              <div class="grid-lines"></div>
+              <div class="bar-container" id="revenueBars"></div>
+            </div>
+
+          </div>
+        </div>
+
+
+        <div class="panel membership-type-panel" id="membershipTypePanel">
+
+          <div class="panel-header">
+            <div class="mt-title-wrap">
+              <span class="mt-title-ico" aria-hidden="true"><i class="fa-solid fa-chart-pie"></i></span>
               <div>
-                <span>Today&apos;s attendance</span>
-                <strong style="font-size:13px;font-weight:600;opacity:.85">Live front-desk log</strong>
+                <h2>Membership Type</h2>
+                <p>Distribution by membership plan</p>
               </div>
-              <a class="ow-mini-btn" href="/attendance">Check-ins</a>
             </div>
-          </aside>
-        </section>
+            <div class="menu-wrap">
+              <button class="icon-btn" type="button" data-menu aria-haspopup="true" aria-expanded="false"
+                aria-label="More options">
+                <i class="fa-solid fa-ellipsis"></i>
+              </button>
+              <div class="dropdown" hidden role="menu">
+                <a href="/members"><i class="fa-solid fa-user-group"></i> View all members</a>
+                <a href="/payments#subscription"><i class="fa-solid fa-hourglass-half"></i> Subscription monitor</a>
+                <a href="/reports#summary"><i class="fa-solid fa-chart-column"></i> Revenue summary</a>
+              </div>
+            </div>
+          </div>
 
-        <!-- QUICK ACTIONS -->
-        <section class="quick-actions" aria-label="Quick actions">
-          <a class="quick-action qa-gold" href="/members#enroll">
-            <span class="quick-action-icon" aria-hidden="true"><i class="fa-solid fa-user-plus"></i></span>
-            <span class="qa-details"><strong>Add a member</strong><small>Walk-in at the desk</small></span>
-            <i class="fa-solid fa-chevron-right action-arrow" aria-hidden="true"></i>
-          </a>
-          <a class="quick-action qa-cyan" href="/payments">
-            <span class="quick-action-icon" aria-hidden="true"><i class="fa-solid fa-peso-sign"></i></span>
-            <span class="qa-details"><strong>Record payment</strong><small>Cash at the desk</small></span>
-            <i class="fa-solid fa-chevron-right action-arrow" aria-hidden="true"></i>
-          </a>
-          <a class="quick-action qa-emerald" href="/payments#review">
-            <span class="quick-action-icon" aria-hidden="true"><i class="fa-solid fa-clipboard-check"></i></span>
-            <span class="qa-details"><strong>Review payments</strong><small>GCash waiting for you</small></span>
-            <i class="fa-solid fa-chevron-right action-arrow" aria-hidden="true"></i>
-          </a>
-          <a class="quick-action qa-violet" href="/announcements">
-            <span class="quick-action-icon" aria-hidden="true"><i class="fa-solid fa-bullhorn"></i></span>
-            <span class="qa-details"><strong>Post announcement</strong><small>Tell your members</small></span>
-            <i class="fa-solid fa-chevron-right action-arrow" aria-hidden="true"></i>
-          </a>
-        </section>
+          <div class="mt-skeleton" id="mtSkeleton" aria-hidden="true">
+            <div class="mt-skel-donut pf-sk"></div>
+            <div class="mt-skel-legend">
+              <div class="mt-skel-card pf-sk"></div>
+              <div class="mt-skel-card pf-sk"></div>
+              <div class="mt-skel-card pf-sk"></div>
+              <div class="mt-skel-card pf-sk"></div>
+            </div>
+          </div>
 
-        <!-- STATS / KPI CARDS -->
-        <section class="stats is-loading" id="dashStats">
-
-            <!-- 1. TOTAL MEMBERS (Gold / Amber) -->
-            <div class="stat-card kpi-card kpi-gold" id="kpiTotalMembersCard">
-                <div class="stat-top">
-                    <div class="stat-icon" aria-hidden="true"><i class="fa-solid fa-users"></i></div>
-                    <h2 class="kpi-title">Total Members</h2>
-                </div>
-                <div class="stat-content">
-                    <p class="sr-only">Total members</p>
-                    <h2 id="kpiTotalMembersVal">&mdash;</h2>
-                    <div class="kpi-bottom">
-                        <small class="kpi-sub" id="kpiTotalMembersSub">
-                            <span class="kpi-trend positive"><i class="fa-solid fa-arrow-up"></i> +12%</span> from last month
-                        </small>
-                    </div>
-                    <div class="stat-skel" aria-hidden="true"><span class="pf-sk sk-val"></span><span class="pf-sk sk-sub"></span></div>
-                </div>
+          <div class="mt-body" id="mtBody" hidden>
+            <div class="mt-donut-wrap" id="mtDonutWrap">
+              <svg class="mt-donut-svg" viewBox="0 0 240 240" role="img"
+                aria-label="Membership type distribution chart">
+                <circle class="mt-donut-track" cx="120" cy="120" r="80"></circle>
+                <g id="mtDonutSegments" transform="rotate(-90 120 120)"></g>
+                <g id="mtDonutLabels"></g>
+              </svg>
+              <div class="mt-donut-center">
+                <strong id="mtTotalCount">&mdash;</strong>
+                <span id="mtTotalLabel">Total Members</span>
+                <i class="fa-solid fa-users mt-center-ico" aria-hidden="true"></i>
+              </div>
+              <div class="mt-tooltip" id="mtTooltip" hidden role="status"></div>
             </div>
 
-            <!-- 2. EXPIRED MEMBERS (Coral Red) -->
-            <div class="stat-card kpi-card kpi-red" id="kpiExpiredCard">
-                <div class="stat-top">
-                    <div class="stat-icon" aria-hidden="true"><i class="fa-solid fa-user-xmark"></i></div>
-                    <h2 class="kpi-title">Expired Members</h2>
-                </div>
-                <div class="stat-content">
-                    <p class="sr-only">Expired members</p>
-                    <h2 id="kpiExpiredVal">&mdash;</h2>
-                    <div class="kpi-bottom">
-                        <small class="kpi-sub" id="kpiExpiredSub">
-                            <span class="kpi-trend neutral">&rarr; No change</span>
-                        </small>
-                    </div>
-                    <div class="stat-skel" aria-hidden="true"><span class="pf-sk sk-val"></span><span class="pf-sk sk-sub"></span></div>
-                </div>
+            <ul class="mt-legend" id="mtLegend" aria-label="Membership plans"></ul>
+          </div>
+
+          <div class="mt-empty" id="mtEmpty" hidden>
+            <i class="fa-solid fa-chart-pie" aria-hidden="true"></i>
+            <p id="mtEmptyMsg">No members enrolled yet.</p>
+          </div>
+
+          <div class="mt-footer-note">
+            <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+            <span>Total membership distribution across different plans.</span>
+          </div>
+
+          <svg class="mt-decor-wave" viewBox="0 0 400 120" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="mtWaveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#F59E0B" stop-opacity="0"></stop>
+                <stop offset="40%" stop-color="#F59E0B" stop-opacity="0.25"></stop>
+                <stop offset="80%" stop-color="#FBBF24" stop-opacity="0.65"></stop>
+                <stop offset="100%" stop-color="#F59E0B" stop-opacity="0.9"></stop>
+              </linearGradient>
+              <linearGradient id="mtWaveGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#F59E0B" stop-opacity="0"></stop>
+                <stop offset="60%" stop-color="#F59E0B" stop-opacity="0.12"></stop>
+                <stop offset="100%" stop-color="#FBBF24" stop-opacity="0.38"></stop>
+              </linearGradient>
+            </defs>
+            <path d="M0,120 C120,115 180,85 260,95 C320,102 360,60 400,45 L400,120 Z" fill="url(#mtWaveGrad2)"
+              opacity="0.45"></path>
+            <path d="M0,120 C140,118 210,92 280,105 C330,115 370,80 400,55" stroke="url(#mtWaveGrad)" stroke-width="2.5"
+              fill="none"></path>
+            <path d="M100,120 C200,120 270,100 340,112 C370,118 390,95 400,80" stroke="url(#mtWaveGrad)"
+              stroke-width="1.5" stroke-dasharray="4 2" fill="none" opacity="0.6"></path>
+          </svg>
+
+        </div>
+
+      </section>
+
+
+      <!-- RECENT REGISTRATIONS -->
+      <section class="panel registrations-panel">
+
+        <div class="panel-header">
+          <div class="reg-title-wrap">
+            <span class="reg-title-ico" aria-hidden="true"><i class="fa-solid fa-user-clock"></i></span>
+            <div>
+              <h2>Recent registrations</h2>
+              <p>Latest members who joined the gym</p>
             </div>
+          </div>
+          <a href="/members" class="view-all">View all <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
 
-            <!-- 3. EXPIRING SOON (Cyan / Teal) -->
-            <div class="stat-card kpi-card kpi-cyan" id="kpiExpiringCard">
-                <div class="stat-top">
-                    <div class="stat-icon" aria-hidden="true"><i class="fa-solid fa-hourglass-half"></i></div>
-                    <h2 class="kpi-title">Expiring Soon</h2>
-                </div>
-                <div class="stat-content">
-                    <p class="sr-only">Expiring soon</p>
-                    <h2 id="kpiExpiringVal">&mdash;</h2>
-                    <div class="kpi-bottom">
-                        <small class="kpi-sub" id="kpiExpiringSub">
-                            <span class="kpi-trend positive"><i class="fa-solid fa-arrow-up"></i> +2</span> this month
-                        </small>
-                    </div>
-                    <div class="stat-skel" aria-hidden="true"><span class="pf-sk sk-val"></span><span class="pf-sk sk-sub"></span></div>
-                </div>
-            </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Member</th>
+                <th>Registration date</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
 
-            <!-- 4. TOTAL REVENUE (Violet / Purple) -->
-            <div class="stat-card revenue-card kpi-card kpi-violet" id="kpiRevenueCard">
-                <div class="stat-top">
-                    <div class="stat-icon" aria-hidden="true"><i class="fa-solid fa-peso-sign"></i></div>
-                    <h2 class="kpi-title">Total Revenue</h2>
-                </div>
-                <div class="stat-content">
-                    <p class="sr-only">Total revenue</p>
-                    <h2 id="kpiRevenueVal">&#8369;0.00</h2>
-                    <div class="kpi-bottom">
-                        <small class="kpi-sub" id="kpiRevenueSub">
-                            <span class="kpi-trend neutral">&rarr; No payments yet</span>
-                        </small>
-                    </div>
-                    <div class="stat-skel" aria-hidden="true"><span class="pf-sk sk-val"></span><span class="pf-sk sk-sub"></span></div>
-                </div>
-            </div>
+            <tbody id="recentRows" aria-live="polite">
+              <tr class="pf-skel">
+                <td><span></span></td>
+                <td><span></span></td>
+                <td><span></span></td>
+                <td><span></span></td>
+                <td><span></span></td>
+              </tr>
+              <tr class="pf-skel">
+                <td><span></span></td>
+                <td><span></span></td>
+                <td><span></span></td>
+                <td><span></span></td>
+                <td><span></span></td>
+              </tr>
+              <tr class="pf-skel">
+                <td><span></span></td>
+                <td><span></span></td>
+                <td><span></span></td>
+                <td><span></span></td>
+                <td><span></span></td>
+              </tr>
+              <tr class="pf-skel">
+                <td><span></span></td>
+                <td><span></span></td>
+                <td><span></span></td>
+                <td><span></span></td>
+                <td><span></span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-        </section>
-
-
-        <!-- CHART + DONUT -->
-        <section class="content-grid">
-
-            <div class="panel revenue-panel is-loading">
-
-                <div class="panel-header">
-                    <div class="rev-title-wrap">
-                        <span class="rev-title-ico" aria-hidden="true"><i class="fa-solid fa-chart-column"></i></span>
-                        <div>
-                            <h2 id="revenueTitle">Monthly revenue</h2>
-                            <p id="revenueSub">Revenue overview for 2026</p>
-                        </div>
-                    </div>
-                    <div class="chip-row" id="revenuePeriods" role="group" aria-label="Revenue period">
-                        <button type="button" class="chip" data-period="days" aria-pressed="false">Days</button>
-                        <button type="button" class="chip" data-period="week" aria-pressed="false">Week</button>
-                        <button type="button" class="chip active" data-period="month" aria-pressed="true">Month</button>
-                        <button type="button" class="chip" data-period="year" aria-pressed="false">Year</button>
-                    </div>
-                </div>
-
-                <div class="chart-area">
-                    <div class="rev-skel" aria-hidden="true">
-                        <span class="pf-sk"></span><span class="pf-sk"></span><span class="pf-sk"></span>
-                        <span class="pf-sk"></span><span class="pf-sk"></span><span class="pf-sk"></span>
-                        <span class="pf-sk"></span><span class="pf-sk"></span><span class="pf-sk"></span>
-                        <span class="pf-sk"></span><span class="pf-sk"></span><span class="pf-sk"></span>
-                    </div>
-
-                    <div class="chart-y" id="revenueAxis">
-                        <span>&#8369;12k</span>
-                        <span>&#8369;10k</span>
-                        <span>&#8369;8k</span>
-                        <span>&#8369;6k</span>
-                        <span>&#8369;4k</span>
-                        <span>&#8369;2k</span>
-                        <span>&#8369;0</span>
-                    </div>
-
-                    <div class="chart">
-                        <div class="grid-lines"></div>
-                        <div class="bar-container" id="revenueBars"></div>
-                    </div>
-
-                </div>
-            </div>
-
-
-            <div class="panel membership-type-panel" id="membershipTypePanel">
-
-                <div class="panel-header">
-                    <div class="mt-title-wrap">
-                        <span class="mt-title-ico" aria-hidden="true"><i class="fa-solid fa-chart-pie"></i></span>
-                        <div>
-                            <h2>Membership Type</h2>
-                            <p>Distribution by membership plan</p>
-                        </div>
-                    </div>
-                    <div class="menu-wrap">
-                        <button class="icon-btn" type="button" data-menu aria-haspopup="true" aria-expanded="false" aria-label="More options">
-                            <i class="fa-solid fa-ellipsis"></i>
-                        </button>
-                        <div class="dropdown" hidden role="menu">
-                            <a href="/members"><i class="fa-solid fa-user-group"></i> View all members</a>
-                            <a href="/payments#subscription"><i class="fa-solid fa-hourglass-half"></i> Subscription monitor</a>
-                            <a href="/reports#summary"><i class="fa-solid fa-chart-column"></i> Revenue summary</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-skeleton" id="mtSkeleton" aria-hidden="true">
-                    <div class="mt-skel-donut pf-sk"></div>
-                    <div class="mt-skel-legend">
-                        <div class="mt-skel-card pf-sk"></div>
-                        <div class="mt-skel-card pf-sk"></div>
-                        <div class="mt-skel-card pf-sk"></div>
-                        <div class="mt-skel-card pf-sk"></div>
-                    </div>
-                </div>
-
-                <div class="mt-body" id="mtBody" hidden>
-                    <div class="mt-donut-wrap" id="mtDonutWrap">
-                        <svg class="mt-donut-svg" viewBox="0 0 240 240" role="img" aria-label="Membership type distribution chart">
-                            <circle class="mt-donut-track" cx="120" cy="120" r="80"></circle>
-                            <g id="mtDonutSegments" transform="rotate(-90 120 120)"></g>
-                            <g id="mtDonutLabels"></g>
-                        </svg>
-                        <div class="mt-donut-center">
-                            <strong id="mtTotalCount">&mdash;</strong>
-                            <span id="mtTotalLabel">Total Members</span>
-                            <i class="fa-solid fa-users mt-center-ico" aria-hidden="true"></i>
-                        </div>
-                        <div class="mt-tooltip" id="mtTooltip" hidden role="status"></div>
-                    </div>
-
-                    <ul class="mt-legend" id="mtLegend" aria-label="Membership plans"></ul>
-                </div>
-
-                <div class="mt-empty" id="mtEmpty" hidden>
-                    <i class="fa-solid fa-chart-pie" aria-hidden="true"></i>
-                    <p id="mtEmptyMsg">No members enrolled yet.</p>
-                </div>
-
-                <div class="mt-footer-note">
-                    <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
-                    <span>Total membership distribution across different plans.</span>
-                </div>
-
-                <svg class="mt-decor-wave" viewBox="0 0 400 120" preserveAspectRatio="none" aria-hidden="true">
-                    <defs>
-                        <linearGradient id="mtWaveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stop-color="#F59E0B" stop-opacity="0"></stop>
-                            <stop offset="40%" stop-color="#F59E0B" stop-opacity="0.25"></stop>
-                            <stop offset="80%" stop-color="#FBBF24" stop-opacity="0.65"></stop>
-                            <stop offset="100%" stop-color="#F59E0B" stop-opacity="0.9"></stop>
-                        </linearGradient>
-                        <linearGradient id="mtWaveGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stop-color="#F59E0B" stop-opacity="0"></stop>
-                            <stop offset="60%" stop-color="#F59E0B" stop-opacity="0.12"></stop>
-                            <stop offset="100%" stop-color="#FBBF24" stop-opacity="0.38"></stop>
-                        </linearGradient>
-                    </defs>
-                    <path d="M0,120 C120,115 180,85 260,95 C320,102 360,60 400,45 L400,120 Z" fill="url(#mtWaveGrad2)" opacity="0.45"></path>
-                    <path d="M0,120 C140,118 210,92 280,105 C330,115 370,80 400,55" stroke="url(#mtWaveGrad)" stroke-width="2.5" fill="none"></path>
-                    <path d="M100,120 C200,120 270,100 340,112 C370,118 390,95 400,80" stroke="url(#mtWaveGrad)" stroke-width="1.5" stroke-dasharray="4 2" fill="none" opacity="0.6"></path>
-                </svg>
-
-            </div>
-
-        </section>
-
-
-        <!-- RECENT REGISTRATIONS -->
-        <section class="panel registrations-panel">
-
-            <div class="panel-header">
-                <div class="reg-title-wrap">
-                    <span class="reg-title-ico" aria-hidden="true"><i class="fa-solid fa-user-clock"></i></span>
-                    <div>
-                        <h2>Recent registrations</h2>
-                        <p>Latest members who joined the gym</p>
-                    </div>
-                </div>
-                <a href="/members" class="view-all">View all <i class="fa-solid fa-arrow-right"></i></a>
-            </div>
-
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Member</th>
-                            <th>Registration date</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="recentRows" aria-live="polite"><tr class="pf-skel"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr><tr class="pf-skel"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr><tr class="pf-skel"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr><tr class="pf-skel"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr></tbody>
-                </table>
-            </div>
-
-        </section>
+      </section>
 
     </main>
 
-</div>
+  </div>
 
-<script src="data.js?v=2"></script>
-<script src="layout.js?v=25"></script>
-<script src="sidebar.js?v=21"></script>
-<script src="chart-periods.js?v=918"></script>
-<script src="portal-fx.js?v=2"></script>
-<script src="change-password.js?v=2" defer></script>
-<script>
-(() => {
-  const body = document.getElementById("recentRows");
-  if (!body) return;
-  const table = body.closest("table");
-  const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const initials = n => (String(n || "?").trim().split(/\s+/).map(w => w[0] || "").join("").slice(0, 2).toUpperCase()) || "?";
-  const toDate = v => v instanceof Date ? (isNaN(v.getTime()) ? null : v) : (typeof fromISO === "function" ? fromISO(v) : null);
-  const startOfToday = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
-  const statusFor = m => {
-    const end = toDate(m.end);
-    if (!end) return ["expired", "Pending"];
-    const days = Math.round((end - startOfToday()) / 86400000);
-    if (days < 0) return ["expired", "Expired"];
-    if (days <= 7) return ["expiring", "Expiring"];
-    return ["active", "Active"];
-  };
-  const rowHTML = (m, i) => {
-    const [cls, label] = statusFor(m);
-    const jd = toDate(m.joined);
-    const joined = jd ? (typeof fmtShort === "function" ? fmtShort(jd) : jd.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })) : "&mdash;";
-    const avaSrc = window.ProFitAvatar ? window.ProFitAvatar.resolve(m.photo, m.email || m.name || m.id) : "";
-    return `<tr class="pf-row-in" style="--i:${i}">
+  <script src="data.js?v=2"></script>
+  <script src="layout.js?v=25"></script>
+  <script src="sidebar.js?v=21"></script>
+  <script src="chart-periods.js?v=918"></script>
+  <script src="portal-fx.js?v=2"></script>
+  <script src="change-password.js?v=2" defer></script>
+  <script>
+    (() => {
+      const body = document.getElementById("recentRows");
+      if (!body) return;
+      const table = body.closest("table");
+      const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+      const initials = n => (String(n || "?").trim().split(/\s+/).map(w => w[0] || "").join("").slice(0, 2).toUpperCase()) || "?";
+      const toDate = v => v instanceof Date ? (isNaN(v.getTime()) ? null : v) : (typeof fromISO === "function" ? fromISO(v) : null);
+      const startOfToday = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
+      const statusFor = m => {
+        const end = toDate(m.end);
+        if (!end) return ["expired", "Pending"];
+        const days = Math.round((end - startOfToday()) / 86400000);
+        if (days < 0) return ["expired", "Expired"];
+        if (days <= 7) return ["expiring", "Expiring"];
+        return ["active", "Active"];
+      };
+      const rowHTML = (m, i) => {
+        const [cls, label] = statusFor(m);
+        const jd = toDate(m.joined);
+        const joined = jd ? (typeof fmtShort === "function" ? fmtShort(jd) : jd.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })) : "&mdash;";
+        const avaSrc = window.ProFitAvatar ? window.ProFitAvatar.resolve(m.photo, m.email || m.name || m.id) : "";
+        return `<tr class="pf-row-in" style="--i:${i}">
       <td><span class="member-id">${esc(m.id)}</span></td>
       <td><div class="member"><div class="mini-avatar">${avaSrc ? `<img src="${avaSrc}" alt="">` : esc(initials(m.name))}</div><div><strong>${esc(m.name)}</strong><small>Member</small></div></div></td>
       <td>${joined}</td>
@@ -511,457 +812,471 @@ html.auth-pending, html.auth-pending body { display: none !important; visibility
           <a role="menuitem" href="/payments"><i class="fa-solid fa-wallet" aria-hidden="true"></i> Billing</a>
           <a role="menuitem" href="/attendance"><i class="fa-solid fa-calendar-check" aria-hidden="true"></i> Attendance</a>
         </div></div></td></tr>`;
-  };
-
-  // The open menu is moved to <body> while open, so the table wrapper never clips it.
-  let openMenu = null;
-  function closeMenus() {
-    if (!openMenu) return;
-    const { menu, btn, wrap } = openMenu;
-    menu.hidden = true;
-    menu.removeAttribute("style");
-    wrap.appendChild(menu);
-    btn.setAttribute("aria-expanded", "false");
-    openMenu = null;
-  }
-  body.addEventListener("click", e => {
-    const retry = e.target.closest(".pf-retry-btn");
-    if (retry) {
-      retry.disabled = true;
-      retry.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Retrying...';
-      if (typeof DB !== "undefined" && DB.sync) DB.sync(false);
-      return;
-    }
-    const btn = e.target.closest(".pf-menu-btn");
-    if (!btn) return;
-    const wrap = btn.parentElement, menu = wrap.querySelector(".pf-menu");
-    const same = openMenu && openMenu.btn === btn;
-    closeMenus();
-    if (same) return;
-    const r = btn.getBoundingClientRect();
-    document.body.appendChild(menu);
-    menu.hidden = false;
-    menu.style.position = "fixed";
-    const h = menu.offsetHeight;
-    const above = r.top - h - 8;
-    menu.style.top = (above >= 12 ? above : r.bottom + 8) + "px";
-    menu.style.left = Math.max(12, r.right - 210) + "px";
-    btn.setAttribute("aria-expanded", "true");
-    openMenu = { menu, btn, wrap };
-    menu.querySelector("a")?.focus();
-  });
-  document.addEventListener("click", e => {
-    if (openMenu && !e.target.closest(".pf-menu") && !e.target.closest(".pf-menu-btn")) closeMenus();
-  });
-  document.addEventListener("keydown", e => {
-    if (e.key !== "Escape" || !openMenu) return;
-    const btn = openMenu.btn;
-    closeMenus();
-    btn.focus();
-  });
-  window.addEventListener("resize", closeMenus);
-
-  function render(ok) {
-    try {
-      closeMenus();
-      if (table) table.setAttribute("aria-busy", "false");
-      const pool = (typeof DB !== "undefined" && DB && Array.isArray(DB.members)) ? DB.members : [];
-      if (!ok && (!DB || !DB.synced) && !pool.length) {
-        body.innerHTML = `<tr><td colspan="5" class="pf-empty">Unable to load recent registrations. <button type="button" class="pf-retry-btn" style="margin-left:10px;padding:6px 14px;border-radius:8px;border:1px solid rgba(245,158,11,.45);background:rgba(245,158,11,.14);color:#F59E0B;font-weight:700;cursor:pointer">Retry</button></td></tr>`;
-        delete body.dataset.sig;
-        return;
-      }
-      const newest = pool.slice()
-        .sort((a, b) => {
-          const tb = toDate(b.joined)?.getTime() || 0;
-          const ta = toDate(a.joined)?.getTime() || 0;
-          return (tb - ta) || String(b.id).localeCompare(String(a.id));
-        })
-        .slice(0, 5);
-      if (!newest.length) {
-        body.innerHTML = `<tr><td colspan="5" class="pf-empty">No members registered yet. <a href="/members" style="color:#F59E0B;font-weight:700;margin-left:6px">Go to Members &rarr;</a></td></tr>`;
-        delete body.dataset.sig;
-        return;
-      }
-      const html = newest.map(rowHTML).join("");
-      if (body.dataset.sig !== html) { body.innerHTML = html; body.dataset.sig = html; }
-    } catch (err) {
-      body.innerHTML = `<tr><td colspan="5" class="pf-empty">Could not render registrations. <button type="button" class="pf-retry-btn" style="margin-left:10px;padding:6px 14px;border-radius:8px;border:1px solid rgba(245,158,11,.45);background:rgba(245,158,11,.14);color:#F59E0B;font-weight:700;cursor:pointer">Retry</button></td></tr>`;
-      delete body.dataset.sig;
-    }
-  }
-
-  const SKEL_HTML = Array.from({ length: 4 }, () => '<tr class="pf-skel"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr>').join("");
-  if (table) table.setAttribute("aria-busy", "true");
-  body.innerHTML = SKEL_HTML;
-  if (typeof DB !== "undefined" && DB.synced) {
-    render(true);
-  } else if (typeof window.pfAfterSync === "function") {
-    window.pfAfterSync(() => render(typeof DB !== "undefined" && DB.synced));
-  }
-  document.addEventListener("profit:synced", e => render(e.detail?.ok !== false));
-})();
-</script>
-<script>
-(() => {
-  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-  }[c]));
-  const startOfToday = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
-  const daysLeft = m => (m.end ? Math.round((m.end - startOfToday()) / 86400000) : -1);
-  const cardFor = label => [...document.querySelectorAll(".stat-card .stat-content")]
-    .find(c => c.querySelector("p")?.textContent.trim() === label);
-
-  const SVG_NS = "http://www.w3.org/2000/svg";
-  const RADIUS = 80;
-  const CIRC = 2 * Math.PI * RADIUS;
-  const CANONICAL_ORDER = ["monthly", "quarterly", "annual", "other", "daily", "unassigned"];
-  const PLAN_COLORS = {
-    monthly: "#FF9800",   // Vivid Orange
-    quarterly: "#FFC107", // Golden Amber Yellow
-    annual: "#5B6B7C",    // Slate Steel Gray
-    other: "#9D4EDD",     // Violet / Purple
-    daily: "#38BDF8",     // Sky Blue
-    unassigned: "#475569" // Muted Slate
-  };
-
-  function normalizePlan(p) {
-    const s = String(p || "").trim().toLowerCase();
-    if (s === "monthly") return "monthly";
-    if (s === "quarterly") return "quarterly";
-    if (s === "annual" || s === "annually") return "annual";
-    if (s === "daily") return "daily";
-    if (s === "other") return "other";
-    if (!s || s === "none" || s === "null" || s === "undefined") return "unassigned";
-    return s;
-  }
-
-  function formatPlanName(key) {
-    const k = String(key || "").toLowerCase();
-    if (k === "monthly") return "Monthly";
-    if (k === "quarterly") return "Quarterly";
-    if (k === "annual") return "Annual";
-    if (k === "daily") return "Daily";
-    if (k === "other") return "Other";
-    if (k === "unassigned") return "Unassigned";
-    if (k === "pending") return "Pending";
-    if (window.PLANS && PLANS[k] && PLANS[k].label) return PLANS[k].label;
-    return k.replace(/[-_]+/g, " ").replace(/\b\w/g, c => c.toUpperCase());
-  }
-
-  function formatPct(frac) {
-    const num = frac * 100;
-    return num.toFixed(1) + "%";
-  }
-
-  function animateValue(el, target, duration = 650) {
-    if (!el) return;
-    const startVal = parseInt(el.textContent.replace(/[^0-9]/g, ""), 10) || 0;
-    if (startVal === target) {
-      el.textContent = String(target);
-      return;
-    }
-    const startTime = performance.now();
-    function tick(now) {
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const ease = 1 - Math.pow(1 - progress, 3);
-      const current = Math.round(startVal + (target - startVal) * ease);
-      el.textContent = String(current);
-      if (progress < 1) {
-        requestAnimationFrame(tick);
-      } else {
-        el.textContent = String(target);
-      }
-    }
-    requestAnimationFrame(tick);
-  }
-
-  function renderMembershipType(members, syncError) {
-    const skel = document.getElementById("mtSkeleton");
-    const body = document.getElementById("mtBody");
-    const empty = document.getElementById("mtEmpty");
-    const emptyMsg = document.getElementById("mtEmptyMsg");
-    const segGroup = document.getElementById("mtDonutSegments");
-    const labelGroup = document.getElementById("mtDonutLabels");
-    const totalEl = document.getElementById("mtTotalCount");
-    const totalLabelEl = document.getElementById("mtTotalLabel");
-    const legendEl = document.getElementById("mtLegend");
-    const wrap = document.getElementById("mtDonutWrap");
-    const tooltip = document.getElementById("mtTooltip");
-    if (!skel || !body || !empty) return;
-
-    skel.hidden = true;
-    if (syncError) {
-      body.hidden = true;
-      empty.hidden = false;
-      if (emptyMsg) emptyMsg.textContent = "Could not load membership data. Please refresh.";
-      return;
-    }
-
-    const total = members.length;
-    if (!total) {
-      body.hidden = true;
-      empty.hidden = false;
-      if (emptyMsg) emptyMsg.textContent = "No members enrolled yet.";
-      return;
-    }
-
-    empty.hidden = true;
-    body.hidden = false;
-    if (totalEl) totalEl.textContent = total;
-    if (totalLabelEl) totalLabelEl.textContent = "Total Members";
-
-    const counts = new Map();
-    members.forEach(m => {
-      const k = normalizePlan(m.plan);
-      counts.set(k, (counts.get(k) || 0) + 1);
-    });
-
-    const activeKeys = [
-      ...CANONICAL_ORDER.filter(k => (counts.get(k) || 0) > 0),
-      ...[...counts.keys()].filter(k => !CANONICAL_ORDER.includes(k) && (counts.get(k) || 0) > 0)
-    ];
-
-    const entries = activeKeys.map(key => {
-      const count = counts.get(key) || 0;
-      const frac = count / total;
-      return {
-        key,
-        label: formatPlanName(key),
-        count,
-        frac,
-        pctText: formatPct(frac),
-        color: PLAN_COLORS[key] || "#94A3B8"
       };
-    });
 
-    segGroup.innerHTML = "";
-    labelGroup.innerHTML = "";
-    legendEl.innerHTML = "";
+      // The open menu is moved to <body> while open, so the table wrapper never clips it.
+      let openMenu = null;
+      function closeMenus() {
+        if (!openMenu) return;
+        const { menu, btn, wrap } = openMenu;
+        menu.hidden = true;
+        menu.removeAttribute("style");
+        wrap.appendChild(menu);
+        btn.setAttribute("aria-expanded", "false");
+        openMenu = null;
+      }
+      body.addEventListener("click", e => {
+        const retry = e.target.closest(".pf-retry-btn");
+        if (retry) {
+          retry.disabled = true;
+          retry.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Retrying...';
+          if (typeof DB !== "undefined" && DB.sync) DB.sync(false);
+          return;
+        }
+        const btn = e.target.closest(".pf-menu-btn");
+        if (!btn) return;
+        const wrap = btn.parentElement, menu = wrap.querySelector(".pf-menu");
+        const same = openMenu && openMenu.btn === btn;
+        closeMenus();
+        if (same) return;
+        const r = btn.getBoundingClientRect();
+        document.body.appendChild(menu);
+        menu.hidden = false;
+        menu.style.position = "fixed";
+        const h = menu.offsetHeight;
+        const above = r.top - h - 8;
+        menu.style.top = (above >= 12 ? above : r.bottom + 8) + "px";
+        menu.style.left = Math.max(12, r.right - 210) + "px";
+        btn.setAttribute("aria-expanded", "true");
+        openMenu = { menu, btn, wrap };
+        menu.querySelector("a")?.focus();
+      });
+      document.addEventListener("click", e => {
+        if (openMenu && !e.target.closest(".pf-menu") && !e.target.closest(".pf-menu-btn")) closeMenus();
+      });
+      document.addEventListener("keydown", e => {
+        if (e.key !== "Escape" || !openMenu) return;
+        const btn = openMenu.btn;
+        closeMenus();
+        btn.focus();
+      });
+      window.addEventListener("resize", closeMenus);
 
-    let offset = 0;
-    const segEls = [];
-    const legEls = [];
+      function render(ok) {
+        try {
+          closeMenus();
+          if (table) table.setAttribute("aria-busy", "false");
+          const pool = (typeof DB !== "undefined" && DB && Array.isArray(DB.members)) ? DB.members : [];
+          if (!ok && (!DB || !DB.synced) && !pool.length) {
+            body.innerHTML = `<tr><td colspan="5" class="pf-empty">Unable to load recent registrations. <button type="button" class="pf-retry-btn" style="margin-left:10px;padding:6px 14px;border-radius:8px;border:1px solid rgba(245,158,11,.45);background:rgba(245,158,11,.14);color:#F59E0B;font-weight:700;cursor:pointer">Retry</button></td></tr>`;
+            delete body.dataset.sig;
+            return;
+          }
+          const newest = pool.slice()
+            .sort((a, b) => {
+              const tb = toDate(b.joined)?.getTime() || 0;
+              const ta = toDate(a.joined)?.getTime() || 0;
+              return (tb - ta) || String(b.id).localeCompare(String(a.id));
+            })
+            .slice(0, 5);
+          if (!newest.length) {
+            body.innerHTML = `<tr><td colspan="5" class="pf-empty">No members registered yet. <a href="/members" style="color:#F59E0B;font-weight:700;margin-left:6px">Go to Members &rarr;</a></td></tr>`;
+            delete body.dataset.sig;
+            return;
+          }
+          const html = newest.map(rowHTML).join("");
+          if (body.dataset.sig !== html) { body.innerHTML = html; body.dataset.sig = html; }
+        } catch (err) {
+          body.innerHTML = `<tr><td colspan="5" class="pf-empty">Could not render registrations. <button type="button" class="pf-retry-btn" style="margin-left:10px;padding:6px 14px;border-radius:8px;border:1px solid rgba(245,158,11,.45);background:rgba(245,158,11,.14);color:#F59E0B;font-weight:700;cursor:pointer">Retry</button></td></tr>`;
+          delete body.dataset.sig;
+        }
+      }
 
-    const setHover = activeIdx => {
-      const has = activeIdx !== null;
-      wrap.classList.toggle("has-hover", has);
-      segEls.forEach((s, i) => s.classList.toggle("is-hovered", i === activeIdx));
-      legEls.forEach((l, i) => l.classList.toggle("is-hovered", i === activeIdx));
-      if (!has) {
-        tooltip.hidden = true;
+      const SKEL_HTML = Array.from({ length: 4 }, () => '<tr class="pf-skel"><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr>').join("");
+      if (table) table.setAttribute("aria-busy", "true");
+      body.innerHTML = SKEL_HTML;
+      if (typeof DB !== "undefined" && DB.synced) {
+        render(true);
+      } else if (typeof window.pfAfterSync === "function") {
+        window.pfAfterSync(() => render(typeof DB !== "undefined" && DB.synced));
+      }
+      document.addEventListener("profit:synced", e => render(e.detail?.ok !== false));
+    })();
+  </script>
+  <script>
+    (() => {
+      const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[c]));
+      const startOfToday = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
+      const daysLeft = m => (m.end ? Math.round((m.end - startOfToday()) / 86400000) : -1);
+      const cardFor = label => [...document.querySelectorAll(".stat-card .stat-content")]
+        .find(c => c.querySelector("p")?.textContent.trim() === label);
+
+      const SVG_NS = "http://www.w3.org/2000/svg";
+      const RADIUS = 80;
+      const CIRC = 2 * Math.PI * RADIUS;
+      const CANONICAL_ORDER = ["monthly", "quarterly", "annual", "other", "daily", "unassigned"];
+      const PLAN_COLORS = {
+        monthly: "#FF9800",   // Vivid Orange
+        quarterly: "#FFC107", // Golden Amber Yellow
+        annual: "#5B6B7C",    // Slate Steel Gray
+        other: "#9D4EDD",     // Violet / Purple
+        daily: "#38BDF8",     // Sky Blue
+        unassigned: "#475569" // Muted Slate
+      };
+
+      function normalizePlan(p) {
+        const s = String(p || "").trim().toLowerCase();
+        if (s === "monthly") return "monthly";
+        if (s === "quarterly") return "quarterly";
+        if (s === "annual" || s === "annually") return "annual";
+        if (s === "daily") return "daily";
+        if (s === "other") return "other";
+        if (!s || s === "none" || s === "null" || s === "undefined") return "unassigned";
+        return s;
+      }
+
+      function formatPlanName(key) {
+        const k = String(key || "").toLowerCase();
+        if (k === "monthly") return "Monthly";
+        if (k === "quarterly") return "Quarterly";
+        if (k === "annual") return "Annual";
+        if (k === "daily") return "Daily";
+        if (k === "other") return "Other";
+        if (k === "unassigned") return "Unassigned";
+        if (k === "pending") return "Pending";
+        if (window.PLANS && PLANS[k] && PLANS[k].label) return PLANS[k].label;
+        return k.replace(/[-_]+/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      }
+
+      function formatPct(frac) {
+        const num = frac * 100;
+        return num.toFixed(1) + "%";
+      }
+
+      function animateValue(el, target, duration = 650) {
+        if (!el) return;
+        const startVal = parseInt(el.textContent.replace(/[^0-9]/g, ""), 10) || 0;
+        if (startVal === target) {
+          el.textContent = String(target);
+          return;
+        }
+        const startTime = performance.now();
+        function tick(now) {
+          const elapsed = now - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const ease = 1 - Math.pow(1 - progress, 3);
+          const current = Math.round(startVal + (target - startVal) * ease);
+          el.textContent = String(current);
+          if (progress < 1) {
+            requestAnimationFrame(tick);
+          } else {
+            el.textContent = String(target);
+          }
+        }
+        requestAnimationFrame(tick);
+      }
+
+      function renderMembershipType(members, syncError) {
+        const skel = document.getElementById("mtSkeleton");
+        const body = document.getElementById("mtBody");
+        const empty = document.getElementById("mtEmpty");
+        const emptyMsg = document.getElementById("mtEmptyMsg");
+        const segGroup = document.getElementById("mtDonutSegments");
+        const labelGroup = document.getElementById("mtDonutLabels");
+        const totalEl = document.getElementById("mtTotalCount");
+        const totalLabelEl = document.getElementById("mtTotalLabel");
+        const legendEl = document.getElementById("mtLegend");
+        const wrap = document.getElementById("mtDonutWrap");
+        const tooltip = document.getElementById("mtTooltip");
+        if (!skel || !body || !empty) return;
+
+        skel.hidden = true;
+        if (syncError) {
+          body.hidden = true;
+          empty.hidden = false;
+          if (emptyMsg) emptyMsg.textContent = "Could not load membership data. Please refresh.";
+          return;
+        }
+
+        const total = members.length;
+        if (!total) {
+          body.hidden = true;
+          empty.hidden = false;
+          if (emptyMsg) emptyMsg.textContent = "No members enrolled yet.";
+          return;
+        }
+
+        empty.hidden = true;
+        body.hidden = false;
         if (totalEl) totalEl.textContent = total;
         if (totalLabelEl) totalLabelEl.textContent = "Total Members";
-        return;
-      }
-      const item = entries[activeIdx];
-      if (totalEl) totalEl.textContent = item.count;
-      if (totalLabelEl) totalLabelEl.textContent = item.label;
-      tooltip.innerHTML = `<strong>${esc(item.label)}</strong><small>${item.count} member${item.count === 1 ? "" : "s"} (${item.pctText}) &middot; Click to view</small>`;
-      tooltip.hidden = false;
-    };
 
-    const goToPlan = key => {
-      location.href = `/members?plan=${encodeURIComponent(key)}`;
-    };
+        const counts = new Map();
+        members.forEach(m => {
+          const k = normalizePlan(m.plan);
+          counts.set(k, (counts.get(k) || 0) + 1);
+        });
 
-    entries.forEach((item, idx) => {
-      const arcLen = item.frac * CIRC;
-      const segOffset = -offset;
+        const activeKeys = [
+          ...CANONICAL_ORDER.filter(k => (counts.get(k) || 0) > 0),
+          ...[...counts.keys()].filter(k => !CANONICAL_ORDER.includes(k) && (counts.get(k) || 0) > 0)
+        ];
 
-      const circle = document.createElementNS(SVG_NS, "circle");
-      circle.setAttribute("class", "mt-seg");
-      circle.setAttribute("cx", "120");
-      circle.setAttribute("cy", "120");
-      circle.setAttribute("r", String(RADIUS));
-      circle.setAttribute("stroke", item.color);
-      circle.setAttribute("stroke-dashoffset", String(segOffset));
-      circle.setAttribute("stroke-dasharray", `${arcLen} ${CIRC}`);
-      circle.setAttribute("tabindex", "0");
-      circle.setAttribute("role", "button");
-      circle.setAttribute("aria-label", `${item.label}: ${item.count} members (${item.pctText}). View members.`);
-      segGroup.appendChild(circle);
-      segEls.push(circle);
+        const entries = activeKeys.map(key => {
+          const count = counts.get(key) || 0;
+          const frac = count / total;
+          return {
+            key,
+            label: formatPlanName(key),
+            count,
+            frac,
+            pctText: formatPct(frac),
+            color: PLAN_COLORS[key] || "#94A3B8"
+          };
+        });
 
-      if (item.frac >= 0.07) {
-        const midFrac = (offset + arcLen / 2) / CIRC;
-        const angle = -Math.PI / 2 + midFrac * Math.PI * 2;
-        const lx = 120 + Math.cos(angle) * RADIUS;
-        const ly = 120 + Math.sin(angle) * RADIUS;
-        const txt = document.createElementNS(SVG_NS, "text");
-        txt.setAttribute("class", "mt-seg-label");
-        txt.setAttribute("x", lx.toFixed(1));
-        txt.setAttribute("y", ly.toFixed(1));
-        txt.textContent = item.pctText;
-        labelGroup.appendChild(txt);
-      }
+        segGroup.innerHTML = "";
+        labelGroup.innerHTML = "";
+        legendEl.innerHTML = "";
 
-      const li = document.createElement("li");
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "mt-legend-card";
-      btn.setAttribute("aria-label", `${item.label}: ${item.count} members (${item.pctText}). View members.`);
-      btn.innerHTML =
-        `<div class="mt-card-left">` +
-          `<span class="mt-card-dot" style="background:${item.color};"></span>` +
-          `<div class="mt-card-info">` +
+        let offset = 0;
+        const segEls = [];
+        const legEls = [];
+
+        const setHover = activeIdx => {
+          const has = activeIdx !== null;
+          wrap.classList.toggle("has-hover", has);
+          segEls.forEach((s, i) => s.classList.toggle("is-hovered", i === activeIdx));
+          legEls.forEach((l, i) => l.classList.toggle("is-hovered", i === activeIdx));
+          if (!has) {
+            tooltip.hidden = true;
+            if (totalEl) totalEl.textContent = total;
+            if (totalLabelEl) totalLabelEl.textContent = "Total Members";
+            return;
+          }
+          const item = entries[activeIdx];
+          if (totalEl) totalEl.textContent = item.count;
+          if (totalLabelEl) totalLabelEl.textContent = item.label;
+          tooltip.innerHTML = `<strong>${esc(item.label)}</strong><small>${item.count} member${item.count === 1 ? "" : "s"} (${item.pctText}) &middot; Click to view</small>`;
+          tooltip.hidden = false;
+        };
+
+        const goToPlan = key => {
+          location.href = `/members?plan=${encodeURIComponent(key)}`;
+        };
+
+        entries.forEach((item, idx) => {
+          const arcLen = item.frac * CIRC;
+          const segOffset = -offset;
+
+          const circle = document.createElementNS(SVG_NS, "circle");
+          circle.setAttribute("class", "mt-seg");
+          circle.setAttribute("cx", "120");
+          circle.setAttribute("cy", "120");
+          circle.setAttribute("r", String(RADIUS));
+          circle.setAttribute("stroke", item.color);
+          circle.setAttribute("stroke-dashoffset", String(segOffset));
+          circle.setAttribute("stroke-dasharray", `${arcLen} ${CIRC}`);
+          circle.setAttribute("tabindex", "0");
+          circle.setAttribute("role", "button");
+          circle.setAttribute("aria-label", `${item.label}: ${item.count} members (${item.pctText}). View members.`);
+          segGroup.appendChild(circle);
+          segEls.push(circle);
+
+          if (item.frac >= 0.07) {
+            const midFrac = (offset + arcLen / 2) / CIRC;
+            const angle = -Math.PI / 2 + midFrac * Math.PI * 2;
+            const lx = 120 + Math.cos(angle) * RADIUS;
+            const ly = 120 + Math.sin(angle) * RADIUS;
+            const txt = document.createElementNS(SVG_NS, "text");
+            txt.setAttribute("class", "mt-seg-label");
+            txt.setAttribute("x", lx.toFixed(1));
+            txt.setAttribute("y", ly.toFixed(1));
+            txt.textContent = item.pctText;
+            labelGroup.appendChild(txt);
+          }
+
+          const li = document.createElement("li");
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "mt-legend-card";
+          btn.setAttribute("aria-label", `${item.label}: ${item.count} members (${item.pctText}). View members.`);
+          btn.innerHTML =
+            `<div class="mt-card-left">` +
+            `<span class="mt-card-dot" style="background:${item.color};"></span>` +
+            `<div class="mt-card-info">` +
             `<strong class="mt-card-name">${esc(item.label)}</strong>` +
             `<span class="mt-card-count">${item.count} member${item.count === 1 ? "" : "s"}</span>` +
-          `</div>` +
-        `</div>` +
-        `<div class="mt-card-right">` +
-          `<span class="mt-card-pct">${item.pctText}</span>` +
-        `</div>`;
-      li.appendChild(btn);
-      legendEl.appendChild(li);
-      legEls.push(btn);
+            `</div>` +
+            `</div>` +
+            `<div class="mt-card-right">` +
+            `<span class="mt-card-pct">${item.pctText}</span>` +
+            `</div>`;
+          li.appendChild(btn);
+          legendEl.appendChild(li);
+          legEls.push(btn);
 
-      [circle, btn].forEach(el => {
-        el.addEventListener("mouseenter", () => setHover(idx));
-        el.addEventListener("mouseleave", () => setHover(null));
-        el.addEventListener("focus", () => setHover(idx));
-        el.addEventListener("blur", () => setHover(null));
-        el.addEventListener("click", () => goToPlan(item.key));
-      });
+          [circle, btn].forEach(el => {
+            el.addEventListener("mouseenter", () => setHover(idx));
+            el.addEventListener("mouseleave", () => setHover(null));
+            el.addEventListener("focus", () => setHover(idx));
+            el.addEventListener("blur", () => setHover(null));
+            el.addEventListener("click", () => goToPlan(item.key));
+          });
 
-      offset += arcLen;
-    });
-  }
+          offset += arcLen;
+        });
+      }
 
-  function paint() {
-    const members = (typeof DB !== "undefined" && DB && DB.members && DB.members.length)
-      ? DB.members
-      : (window.DB && window.DB.members && window.DB.members.length ? window.DB.members : []);
-    const total = members.length;
+      function paint() {
+        const members = (typeof DB !== "undefined" && DB && DB.members && DB.members.length)
+          ? DB.members
+          : (window.DB && window.DB.members && window.DB.members.length ? window.DB.members : []);
+        const total = members.length;
 
-    const statsEl = document.getElementById("dashStats");
-    if (statsEl && (total > 0 || (typeof DB !== "undefined" && DB && DB.synced))) statsEl.classList.remove("is-loading");
+        const statsEl = document.getElementById("dashStats");
+        if (statsEl && (total > 0 || (typeof DB !== "undefined" && DB && DB.synced))) statsEl.classList.remove("is-loading");
 
-    let expired = 0, expiring = 0;
-    members.forEach(m => { const d = daysLeft(m); if (d < 0) expired++; else if (d <= 7) expiring++; });
+        let expired = 0, expiring = 0;
+        members.forEach(m => { const d = daysLeft(m); if (d < 0) expired++; else if (d <= 7) expiring++; });
 
-    const totalEl = document.getElementById("kpiTotalMembersVal") || cardFor("Total members")?.querySelector("h2");
-    const expEl = document.getElementById("kpiExpiredVal") || cardFor("Expired members")?.querySelector("h2");
-    const soonEl = document.getElementById("kpiExpiringVal") || cardFor("Expiring soon")?.querySelector("h2");
+        const totalEl = document.getElementById("kpiTotalMembersVal") || cardFor("Total members")?.querySelector("h2");
+        const expEl = document.getElementById("kpiExpiredVal") || cardFor("Expired members")?.querySelector("h2");
+        const soonEl = document.getElementById("kpiExpiringVal") || cardFor("Expiring soon")?.querySelector("h2");
 
-    animateValue(totalEl, total);
-    animateValue(expEl, expired);
-    animateValue(soonEl, expiring);
+        animateValue(totalEl, total);
+        animateValue(expEl, expired);
+        animateValue(soonEl, expiring);
 
-    // Paint the live editorial hero card ("Today at the gym" + animated ring)
-    const nowDate = new Date();
-    const hr = nowDate.getHours();
-    const greetWord = hr < 12 ? "GOOD MORNING" : hr < 18 ? "GOOD AFTERNOON" : "GOOD EVENING";
-    const eyebrowEl = document.getElementById("owHeroEyebrow");
-    if (eyebrowEl) eyebrowEl.textContent = `${greetWord}, GYM OWNER`;
-    const dateEl = document.getElementById("owHeroDate");
-    if (dateEl) {
-      dateEl.textContent = nowDate.toLocaleDateString("en-US", {
-        weekday: "short", month: "short", day: "numeric", year: "numeric"
-      });
-    }
-    const heroTotalEl = document.getElementById("owHeroTotalMembers");
-    if (heroTotalEl) heroTotalEl.textContent = `${total} member${total === 1 ? "" : "s"}`;
+        // Paint the live editorial hero card ("Today at the gym" + animated ring)
+        const nowDate = new Date();
+        const hr = nowDate.getHours();
+        const greetWord = hr < 12 ? "GOOD MORNING" : hr < 18 ? "GOOD AFTERNOON" : "GOOD EVENING";
+        const eyebrowEl = document.getElementById("owHeroEyebrow");
+        if (eyebrowEl) eyebrowEl.textContent = `${greetWord}, GYM OWNER`;
+        const dateEl = document.getElementById("owHeroDate");
+        if (dateEl) {
+          dateEl.textContent = nowDate.toLocaleDateString("en-US", {
+            weekday: "short", month: "short", day: "numeric", year: "numeric"
+          });
+        }
+        const heroTotalEl = document.getElementById("owHeroTotalMembers");
+        if (heroTotalEl) heroTotalEl.textContent = `${total} member${total === 1 ? "" : "s"}`;
 
-    const checkins = (typeof DB !== "undefined" && DB && Array.isArray(DB.checkins)) ? DB.checkins : [];
-    const todayIso = (typeof toISO === "function")
-      ? toISO(nowDate)
-      : `${nowDate.getFullYear()}-${String(nowDate.getMonth() + 1).padStart(2, "0")}-${String(nowDate.getDate()).padStart(2, "0")}`;
-    const arrivedToday = checkins.filter(c => {
-      const iso = typeof toISO === "function" ? toISO(c.date) : String(c.date || "").slice(0, 10);
-      return iso === todayIso;
-    }).length;
-    const arrivedEl = document.getElementById("owArrivedVal");
-    animateValue(arrivedEl, arrivedToday, 700);
-    const arcEl = document.getElementById("owArrivedArc");
-    if (arcEl) {
-      const circ = 201.06;
-      const denom = Math.max(total, 1);
-      const frac = arrivedToday > 0 ? Math.max(0.08, Math.min(1, arrivedToday / denom)) : 0;
-      arcEl.style.strokeDashoffset = (circ * (1 - frac)).toFixed(2);
-    }
+        const checkins = (typeof DB !== "undefined" && DB && Array.isArray(DB.checkins)) ? DB.checkins : [];
+        const todayIso = (typeof toISO === "function")
+          ? toISO(nowDate)
+          : `${nowDate.getFullYear()}-${String(nowDate.getMonth() + 1).padStart(2, "0")}-${String(nowDate.getDate()).padStart(2, "0")}`;
+        const arrivedToday = checkins.filter(c => {
+          const iso = typeof toISO === "function" ? toISO(c.date) : String(c.date || "").slice(0, 10);
+          return iso === todayIso;
+        }).length;
+        const arrivedEl = document.getElementById("owArrivedVal");
+        animateValue(arrivedEl, arrivedToday, 700);
+        const arcEl = document.getElementById("owArrivedArc");
+        if (arcEl) {
+          const circ = 201.06;
+          const denom = Math.max(total, 1);
+          const frac = arrivedToday > 0 ? Math.max(0.08, Math.min(1, arrivedToday / denom)) : 0;
+          arcEl.style.strokeDashoffset = (circ * (1 - frac)).toFixed(2);
+        }
 
-    // Smooth count-up animation for Total Revenue whenever chart-periods.js?v=918 updates #kpiRevenueVal
-    const revValEl = document.getElementById("kpiRevenueVal");
-    if (revValEl && !revValEl.dataset.animBound) {
-      revValEl.dataset.animBound = "1";
-      let animatingRev = false;
-      let lastRevTarget = 0;
-      const obs = new MutationObserver(() => {
-        if (animatingRev) return;
-        const raw = revValEl.textContent || "";
-        const num = parseFloat(raw.replace(/[^0-9.]/g, ""));
-        if (!Number.isFinite(num) || num <= 0 || num === lastRevTarget) return;
-        const from = lastRevTarget;
-        lastRevTarget = num;
-        animatingRev = true;
-        const t0 = performance.now();
-        const dur = 750;
-        const step = t => {
-          const p = Math.min((t - t0) / dur, 1);
-          const ease = 1 - Math.pow(1 - p, 3);
-          const cur = from + (num - from) * ease;
-          revValEl.textContent = "\u20B1" + cur.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-          if (p < 1) requestAnimationFrame(step);
-          else {
-            revValEl.textContent = "\u20B1" + num.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            animatingRev = false;
+        // Smooth count-up animation for Total Revenue whenever chart-periods.js?v=918 updates #kpiRevenueVal
+        const revValEl = document.getElementById("kpiRevenueVal");
+        if (revValEl && !revValEl.dataset.animBound) {
+          revValEl.dataset.animBound = "1";
+          let animatingRev = false;
+          let lastRevTarget = 0;
+          const obs = new MutationObserver(() => {
+            if (animatingRev) return;
+            const raw = revValEl.textContent || "";
+            const num = parseFloat(raw.replace(/[^0-9.]/g, ""));
+            if (!Number.isFinite(num) || num <= 0 || num === lastRevTarget) return;
+            const from = lastRevTarget;
+            lastRevTarget = num;
+            animatingRev = true;
+            const t0 = performance.now();
+            const dur = 750;
+            const step = t => {
+              const p = Math.min((t - t0) / dur, 1);
+              const ease = 1 - Math.pow(1 - p, 3);
+              const cur = from + (num - from) * ease;
+              revValEl.textContent = "\u20B1" + cur.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+              if (p < 1) requestAnimationFrame(step);
+              else {
+                revValEl.textContent = "\u20B1" + num.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                animatingRev = false;
+              }
+            };
+            requestAnimationFrame(step);
+          });
+          obs.observe(revValEl, { childList: true, characterData: true, subtree: true });
+        }
+
+        const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+        const newThisMonth = members.filter(m => m.joined && m.joined >= monthStart).length;
+
+        const totalSub = document.getElementById("kpiTotalMembersSub") || cardFor("Total members")?.querySelector(".kpi-sub, small");
+        if (totalSub) {
+          if (newThisMonth > 0) {
+            const pct = total ? Math.round((newThisMonth / total) * 100) : 0;
+            totalSub.innerHTML = `<span class="kpi-trend positive"><i class="fa-solid fa-arrow-up"></i> +${newThisMonth}</span> (${pct}%) this month`;
+          } else {
+            totalSub.innerHTML = `<span class="kpi-trend neutral">&rarr; 0 new this month</span>`;
           }
-        };
-        requestAnimationFrame(step);
-      });
-      obs.observe(revValEl, { childList: true, characterData: true, subtree: true });
-    }
+        }
 
-    const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-    const newThisMonth = members.filter(m => m.joined && m.joined >= monthStart).length;
+        const expSub = document.getElementById("kpiExpiredSub") || cardFor("Expired members")?.querySelector(".kpi-sub, small");
+        if (expSub) {
+          if (expired > 0) {
+            expSub.innerHTML = `<span class="kpi-trend negative"><i class="fa-solid fa-arrow-down"></i> ${expired} lapsed</span>`;
+          } else {
+            expSub.innerHTML = `<span class="kpi-trend neutral">&rarr; None expired</span>`;
+          }
+        }
 
-    const totalSub = document.getElementById("kpiTotalMembersSub") || cardFor("Total members")?.querySelector(".kpi-sub, small");
-    if (totalSub) {
-      if (newThisMonth > 0) {
-        const pct = total ? Math.round((newThisMonth / total) * 100) : 0;
-        totalSub.innerHTML = `<span class="kpi-trend positive"><i class="fa-solid fa-arrow-up"></i> +${newThisMonth}</span> (${pct}%) this month`;
-      } else {
-        totalSub.innerHTML = `<span class="kpi-trend neutral">&rarr; 0 new this month</span>`;
+        const soonSub = document.getElementById("kpiExpiringSub") || cardFor("Expiring soon")?.querySelector(".kpi-sub, small");
+        if (soonSub) {
+          if (expiring > 0) {
+            soonSub.innerHTML = `<span class="kpi-trend negative"><i class="fa-solid fa-clock"></i> ${expiring}</span> within 7 days`;
+          } else {
+            soonSub.innerHTML = `<span class="kpi-trend neutral">&rarr; All active</span>`;
+          }
+        }
+
+        // Hide old non-kpi trend chips if any exist
+        document.querySelectorAll(".stat-top > .trend").forEach(t => { t.style.display = "none"; });
+
+        renderMembershipType(members, false);
       }
-    }
 
-    const expSub = document.getElementById("kpiExpiredSub") || cardFor("Expired members")?.querySelector(".kpi-sub, small");
-    if (expSub) {
-      if (expired > 0) {
-        expSub.innerHTML = `<span class="kpi-trend negative"><i class="fa-solid fa-arrow-down"></i> ${expired} lapsed</span>`;
+      const hasCachedStats = (typeof DB !== "undefined" && DB && DB.members && DB.members.length > 0);
+      if (hasCachedStats) {
+        paint();
       } else {
-        expSub.innerHTML = `<span class="kpi-trend neutral">&rarr; None expired</span>`;
+        if (window.pfAfterSync) window.pfAfterSync(paint);
       }
-    }
+      document.addEventListener("profit:synced", paint);
+      window.addEventListener("storage", paint);
 
-    const soonSub = document.getElementById("kpiExpiringSub") || cardFor("Expiring soon")?.querySelector(".kpi-sub, small");
-    if (soonSub) {
-      if (expiring > 0) {
-        soonSub.innerHTML = `<span class="kpi-trend negative"><i class="fa-solid fa-clock"></i> ${expiring}</span> within 7 days`;
-      } else {
-        soonSub.innerHTML = `<span class="kpi-trend neutral">&rarr; All active</span>`;
-      }
-    }
-
-    // Hide old non-kpi trend chips if any exist
-    document.querySelectorAll(".stat-top > .trend").forEach(t => { t.style.display = "none"; });
-
-    renderMembershipType(members, false);
-  }
-
-  const hasCachedStats = (typeof DB !== "undefined" && DB && DB.members && DB.members.length > 0);
-  if (hasCachedStats) {
-    paint();
-  } else {
-    if (window.pfAfterSync) window.pfAfterSync(paint);
-  }
-  document.addEventListener("profit:synced", paint);
-  window.addEventListener("storage", paint);
-})();
-</script>
-<script src="notifications-live.js?v=2" defer></script>
-<script src="site-footer.js?v=2" defer></script>
+      // Update GCash pending shortcut count once on load
+      (async function loadDockPending() {
+        const el = document.getElementById("owDockPendingVal");
+        if (!el || !window.ProFitAPI || typeof window.ProFitAPI.get !== "function") return;
+        try {
+          const data = await window.ProFitAPI.get("/staff/claims");
+          const items = data && Array.isArray(data.items) ? data.items : [];
+          el.textContent = `${items.length} pending`;
+        } catch (_) {
+          /* keep default "0 pending" in demo/offline mode */
+        }
+      })();
+    })();
+  </script>
+  <script src="notifications-live.js?v=2" defer></script>
+  <script src="site-footer.js?v=2" defer></script>
 </body>
+
 </html>

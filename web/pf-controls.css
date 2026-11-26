@@ -1,0 +1,331 @@
+/* ==========================================================================
+   ProFit — Custom Branded Controls (Select Popover, Date Calendar, Time Picker)
+   Replaces jarring browser-default grey/blue popups with Light/Dark ProFit UI.
+   ========================================================================== */
+
+:root {
+  --pfc-bg: #ffffff;
+  --pfc-bg-soft: #faf6ee;
+  --pfc-border: #e6dfd2;
+  --pfc-text: #1c1917;
+  --pfc-muted: #78716c;
+  --pfc-hover: #fef3c7;
+  --pfc-hover-text: #92400e;
+  --pfc-gold: #e8b93a;
+  --pfc-gold-strong: #d9a425;
+  --pfc-gold-ink: #161209;
+  --pfc-shadow: 0 18px 42px -10px rgba(28, 25, 23, 0.22), 0 4px 12px rgba(28, 25, 23, 0.08);
+}
+
+html.dark,
+html[data-theme="dark"],
+body.dark {
+  --pfc-bg: #0f172a;
+  --pfc-bg-soft: #162036;
+  --pfc-border: rgba(232, 185, 58, 0.24);
+  --pfc-text: #f8fafc;
+  --pfc-muted: #94a3b8;
+  --pfc-hover: rgba(232, 185, 58, 0.14);
+  --pfc-hover-text: #fbbf24;
+  --pfc-gold: #e8b93a;
+  --pfc-gold-strong: #f2cb5c;
+  --pfc-gold-ink: #161209;
+  --pfc-shadow: 0 22px 48px -12px rgba(2, 6, 23, 0.78), 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.pfc-popover {
+  position: fixed;
+  z-index: 99999;
+  background: var(--pfc-bg);
+  color: var(--pfc-text);
+  border: 1.5px solid var(--pfc-border);
+  border-radius: 16px;
+  box-shadow: var(--pfc-shadow);
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+  box-sizing: border-box;
+  overflow: hidden;
+  animation: pfcPopIn 140ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes pfcPopIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ---------- 1. SELECT DROPDOWN POPOVER ---------- */
+.pfc-select-list {
+  max-height: 268px;
+  overflow-y: auto;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overscroll-behavior: contain;
+}
+
+.pfc-select-opt {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--pfc-text);
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.pfc-select-opt:hover,
+.pfc-select-opt.is-focused {
+  background: var(--pfc-hover);
+  color: var(--pfc-hover-text);
+}
+
+.pfc-select-opt.is-selected {
+  background: linear-gradient(135deg, var(--pfc-gold), var(--pfc-gold-strong));
+  color: var(--pfc-gold-ink);
+  font-weight: 700;
+}
+
+.pfc-select-opt:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.pfc-select-check {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  display: inline-grid;
+  place-items: center;
+}
+
+.pfc-select-empty {
+  padding: 14px 12px;
+  font-size: 13px;
+  color: var(--pfc-muted);
+  text-align: center;
+}
+
+/* ---------- 2. CALENDAR DATE PICKER POPOVER ---------- */
+.pfc-cal {
+  width: 296px;
+  padding: 14px;
+}
+
+.pfc-cal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.pfc-cal-title {
+  font-size: 14.5px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--pfc-text);
+}
+
+.pfc-cal-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pfc-icon-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  border: 1px solid var(--pfc-border);
+  background: var(--pfc-bg-soft);
+  color: var(--pfc-text);
+  display: inline-grid;
+  place-items: center;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.pfc-icon-btn:hover {
+  background: var(--pfc-hover);
+  border-color: var(--pfc-gold);
+  color: var(--pfc-hover-text);
+}
+
+.pfc-cal-dow {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  margin-bottom: 6px;
+}
+
+.pfc-cal-dow span {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--pfc-muted);
+  padding: 4px 0;
+}
+
+.pfc-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+
+.pfc-day {
+  height: 36px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--pfc-text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+
+.pfc-day.is-out {
+  color: var(--pfc-muted);
+  opacity: 0.48;
+}
+
+.pfc-day:hover:not(:disabled):not(.is-selected) {
+  background: var(--pfc-hover);
+  color: var(--pfc-hover-text);
+}
+
+.pfc-day.is-today:not(.is-selected) {
+  border-color: var(--pfc-gold);
+  color: var(--pfc-hover-text);
+  font-weight: 800;
+}
+
+.pfc-day.is-selected {
+  background: linear-gradient(135deg, var(--pfc-gold), var(--pfc-gold-strong));
+  color: var(--pfc-gold-ink);
+  font-weight: 800;
+}
+
+.pfc-day:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.pfc-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--pfc-border);
+}
+
+.pfc-foot-btn {
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 9px;
+  border: 1px solid var(--pfc-border);
+  background: var(--pfc-bg-soft);
+  color: var(--pfc-text);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.pfc-foot-btn:hover {
+  border-color: var(--pfc-gold);
+  background: var(--pfc-hover);
+  color: var(--pfc-hover-text);
+}
+
+.pfc-foot-btn.is-primary {
+  background: linear-gradient(135deg, var(--pfc-gold), var(--pfc-gold-strong));
+  border-color: transparent;
+  color: var(--pfc-gold-ink);
+}
+
+/* ---------- 3. TIME PICKER POPOVER ---------- */
+.pfc-time {
+  width: 244px;
+  padding: 12px;
+}
+
+.pfc-time-head {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 8px;
+  text-align: center;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--pfc-muted);
+}
+
+.pfc-time-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+}
+
+.pfc-time-col {
+  max-height: 210px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 2px;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+.pfc-time-opt {
+  height: 34px;
+  flex-shrink: 0;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--pfc-text);
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.pfc-time-opt:hover:not(.is-selected) {
+  background: var(--pfc-hover);
+  color: var(--pfc-hover-text);
+}
+
+.pfc-time-opt.is-selected {
+  background: linear-gradient(135deg, var(--pfc-gold), var(--pfc-gold-strong));
+  color: var(--pfc-gold-ink);
+  font-weight: 800;
+}

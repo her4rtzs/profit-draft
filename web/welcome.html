@@ -4,7 +4,7 @@
 <head>
   <script src="splash.js?v=6"></script>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
   <title>ProFit · Functional Fitness Gym, Alfonso</title>
   <link rel="icon" type="image/jpeg" href="logo.jpg">
   <meta name="description"
@@ -77,7 +77,8 @@
 
     :focus-visible {
       outline: 2px solid var(--lime);
-      outline-offset: 3px
+      outline-offset: 2px;
+      box-shadow: none;
     }
 
     .btn {
@@ -96,18 +97,46 @@
       transition: background-color .15s, border-color .15s
     }
 
-    .btn:hover {
-      border-color: var(--lime)
+    .btn:hover:not(.p):not(:disabled) {
+      background: rgba(255, 255, 255, .06);
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn:active:not(.p):not(:disabled) {
+      background: rgba(255, 255, 255, .11);
+      transform: none;
     }
 
     .btn.p {
-      background: var(--grad);
-      color: var(--on);
-      border-color: var(--lime)
+      background: var(--lime);
+      color: #0b0f19;
+      border-color: var(--lime);
+      box-shadow: none;
     }
 
-    .btn.p:hover {
-      filter: brightness(1.07)
+    .btn.p:hover:not(:disabled) {
+      background: #f0c44b;
+      border-color: #f0c44b;
+      filter: none;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn.p:active:not(:disabled) {
+      background: #b8860b;
+      border-color: #b8860b;
+      color: #0b0f19;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn:disabled {
+      opacity: .48;
+      cursor: not-allowed;
+      pointer-events: none;
+      box-shadow: none;
+      transform: none;
     }
 
     html {
@@ -449,8 +478,12 @@
     }
 
     .c-arrow:hover {
-      background: var(--lime);
-      color: var(--on)
+      background: rgba(255, 255, 255, .12);
+      color: var(--tx)
+    }
+    .c-arrow:active {
+      background: #b8860b;
+      color: #0b0f19
     }
 
     .c-dots {
@@ -695,9 +728,9 @@
 
     .prog:hover,
     .prog:focus-within {
-      transform: translateY(-4px);
-      border-color: rgba(232, 185, 58, .45);
-      box-shadow: 0 14px 32px rgba(0, 0, 0, .35)
+      transform: none;
+      background: rgba(255, 255, 255, .03);
+      box-shadow: none;
     }
 
     .prog .pic {
@@ -718,7 +751,7 @@
     }
 
     .prog:hover .pic img {
-      transform: scale(1.03)
+      transform: none
     }
 
     .prog .in {
@@ -847,11 +880,14 @@
     .prog-arrow:hover {
       background: rgba(145, 150, 165, .62);
       border-color: rgba(255, 255, 255, .28);
-      transform: translateY(-50%) scale(1.06)
+      transform: translateY(-50%);
+      box-shadow: none;
     }
 
     .prog-arrow:active {
-      transform: translateY(-50%) scale(.96)
+      background: rgba(180, 185, 198, .72);
+      transform: translateY(-50%);
+      box-shadow: none;
     }
 
     .prog-arrow.prev {
@@ -895,9 +931,9 @@
 
     .plan:hover,
     .plan:focus-within {
-      transform: translateY(-4px);
-      border-color: rgba(232, 185, 58, .55);
-      box-shadow: 0 16px 36px rgba(0, 0, 0, .38)
+      transform: none;
+      background: rgba(255, 255, 255, .03);
+      box-shadow: none;
     }
 
     .plan.hot {
@@ -1078,12 +1114,20 @@
       transition: background-color .18s ease, border-color .18s ease, transform .18s ease
     }
 
-    .visit a.box.visit-card:hover,
+    .visit a.box.visit-card:hover {
+      background: rgba(255, 255, 255, .06);
+      transform: none;
+      box-shadow: none;
+    }
+    .visit a.box.visit-card:active {
+      background: rgba(255, 255, 255, .11);
+      transform: none;
+    }
     .visit a.box.visit-card:focus-visible {
-      background: rgba(232, 185, 58, .08);
-      border-color: rgba(232, 185, 58, .45);
-      transform: translateY(-2px);
-      outline: none
+      outline: 2px solid var(--lime);
+      outline-offset: 2px;
+      background: transparent;
+      box-shadow: none;
     }
 
     .visit .visit-main {
@@ -1143,9 +1187,8 @@
     .visit a.box.visit-card:hover .visit-go,
     .visit a.box.visit-card:focus-visible .visit-go {
       color: #e8b93a;
-      border-color: rgba(232, 185, 58, .35);
       background: rgba(232, 185, 58, .12);
-      transform: translateX(2px)
+      transform: none;
     }
 
     @media(max-width:860px) {
@@ -1243,12 +1286,20 @@
 
     .cta-band .btn {
       background: var(--lime);
-      color: var(--on);
+      color: #0b0f19;
       border-color: var(--lime)
     }
 
     .cta-band .btn:hover {
-      filter: brightness(1.07)
+      background: #f0c44b;
+      border-color: #f0c44b;
+      filter: none;
+    }
+
+    .cta-band .btn:active {
+      background: #b8860b;
+      border-color: #b8860b;
+      color: #0b0f19;
     }
 
     .pc-img {
@@ -1273,21 +1324,20 @@
 
     .anim-features .box:hover,
     .anim-features .box:focus-within {
-      transform: translateY(-4px);
-      border-color: rgba(232, 185, 58, .45);
-      box-shadow: 0 14px 30px rgba(0, 0, 0, .35)
+      transform: none;
+      background: rgba(255, 255, 255, .03);
+      box-shadow: none;
     }
 
     .gal-grid figure {
       border: 1px solid var(--line);
-      transition: transform .24s cubic-bezier(.2, .8, .2, 1), border-color .24s ease, box-shadow .24s ease
+      transition: background-color .15s ease, border-color .15s ease
     }
 
     .gal-grid figure:hover,
     .gal-grid figure:focus-visible {
-      transform: translateY(-4px);
-      border-color: rgba(232, 185, 58, .5);
-      box-shadow: 0 14px 30px rgba(0, 0, 0, .4)
+      transform: none;
+      box-shadow: none;
     }
 
     /* =========================================================
@@ -1662,7 +1712,7 @@
     }
 
     .gal-grid figure:hover img {
-      transform: scale(1.04)
+      transform: none
     }
 
     .gal-cap {
@@ -1748,6 +1798,34 @@
       place-items: center
     }
 
+    /* Cross-device responsive polish (320px phones, tablets 640-980px, safe areas) */
+    html {
+      -webkit-tap-highlight-color: transparent;
+      -webkit-text-size-adjust: 100%;
+    }
+    header.top {
+      padding-top: env(safe-area-inset-top, 0px);
+    }
+    button, a { touch-action: manipulation; }
+    @media (hover: none) {
+      .btn:hover, .gal-grid figure:hover img { transform: none; }
+    }
+    @media (min-width: 640px) and (max-width: 980px) {
+      .plans .grid3 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 400px) {
+      .wrap, .top .wrap { width: calc(100% - 24px); }
+      .gal-grid { grid-template-columns: 1fr; }
+      .hero h1 { font-size: clamp(28px, 8.5vw, 38px); }
+      .top .btn.p { padding: 0 10px; font-size: 12px; }
+    }
+    @media (max-width: 360px) {
+      .strip .wrap { grid-template-columns: 1fr; }
+      .strip div { border-right: 0; border-bottom: 1px solid var(--line); }
+    }
+
     @media(prefers-reduced-motion:reduce) {
       .gal-grid figure img {
         animation: none !important;
@@ -1759,7 +1837,7 @@
     type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script>
   <link rel="preload" as="image" href="img/hero.jpg" fetchpriority="high">
   <link rel="manifest" href="/manifest.webmanifest">
-  <meta name="theme-color" content="#0a0e17">
+  <meta name="theme-color" content="#0a0e17"><meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17"><meta name="color-scheme" content="light dark">
   <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="ProFit">
@@ -1994,6 +2072,7 @@
             is <span data-plan-price="daily">₱80</span>.</p>
         </div>
         <div class="grid3 anim-plans">
+
           <div class="box plan">
             <h3>Monthly</h3>
             <div class="price"><span data-plan-price="monthly">₱800</span><small> / 30 days</small></div>

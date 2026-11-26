@@ -73,8 +73,14 @@ def web_page(request, page):
 
 def web_page_group(request, group, page):
     """Serve a grouped web/ page, e.g. /trainer/index -> web/trainer/index.html."""
-    if group == "trainer" and page == "index" and not request.user.is_authenticated:
-        return redirect_to_login(request.get_full_path(), settings.LOGIN_URL)
+    if group == "trainer":
+        if page == "index" and not request.user.is_authenticated:
+            return redirect_to_login(request.get_full_path(), settings.LOGIN_URL)
+        if request.user.is_authenticated:
+            role = str(getattr(request.user, "role", "")).upper()
+            is_active = bool(getattr(request.user, "is_active", False))
+            if not is_active or role not in ("TRAINER", "OWNER"):
+                return HttpResponseForbidden("Trainer access required.")
     return _serve_web_page(f"{group}/{page}")
 
 

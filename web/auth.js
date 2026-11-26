@@ -150,12 +150,18 @@
     }
   })();
 
+  const isDemoForced = Boolean(
+    (cfg.DEMO_MODE && !cfg.API_BASE_URL) ||
+    location.protocol === "file:" ||
+    location.search.includes("demo=1")
+  );
+
   if (
     !storedUser &&
     !loginPage &&
     !explicitlyLoggedOut &&
     !location.search.includes("reason=session") &&
-    (location.hostname === "localhost" || location.hostname === "127.0.0.1" || location.protocol === "file:" || location.search.includes("demo=1"))
+    isDemoForced
   ) {
     storedUser = {
       name: isTrainerSection ? "Coach Mika" : "Administrator",
@@ -167,12 +173,9 @@
     } catch {}
   }
 
-  if (
-    (cfg.DEMO_MODE && !cfg.API_BASE_URL) ||
-    (storedUser && (!cfg.API_BASE_URL || location.hostname === "localhost" || location.hostname === "127.0.0.1" || location.protocol === "file:"))
-  ) {
+  if (isDemoForced) {
     const user = storedUser;
-    if (!loginPage && (adminPages.has(file) || memberPages.has(file)) && !user) {
+    if (!loginPage && (adminPages.has(file) || memberPages.has(file) || isTrainerSection) && !user) {
       location.replace(file === "/index" ? "/" : `${loginTarget}?reason=session`);
       return;
     }
@@ -181,6 +184,7 @@
       window.ProFitAuth = {
         user: active,
         role: active.role,
+        getUser: () => active,
         logout: performLogout
       };
     }
@@ -219,6 +223,7 @@
     window.ProFitAuth = {
       user: storedUser,
       role: storedUser.role,
+      getUser: () => storedUser,
       logout: performLogout
     };
   }
@@ -259,18 +264,19 @@
         location.replace(homeForRole(role));
         return;
       }
-      if (isTrainer && role !== "TRAINER") {
+      if (isTrainer && role !== "TRAINER" && !isOwnerRole(role)) {
         location.replace(homeForRole(role));
         return;
       }
       if (user.must_change_password && isTrainer && file !== "/settings") {
-        location.replace(isTrainerSection ? "/settings?force_password_change=1" : "/trainer/settings?force_password_change=1");
+        location.replace("/trainer/settings?force_password_change=1");
         return;
       }
       document.documentElement.classList.remove("auth-checking", "auth-pending");
       window.ProFitAuth = {
         user,
         role,
+        getUser: () => user,
         logout: performLogout
       };
       document.querySelectorAll("[data-user-name]").forEach(el => {
@@ -278,16 +284,25 @@
         if (displayName) {
           el.textContent = displayName;
         } else {
-          el.innerHTML = '<a href="/profile" style="color:inherit;text-decoration:underline">Name not set</a>';
+          el.innerHTML = `<a href="${isTrainer ? "/trainer/profile" : "/profile"}" style="color:inherit;text-decoration:underline">Name not set</a>`;
         }
       });
       window.dispatchEvent(new CustomEvent("profit-auth-ready", { detail: { user, role } }));
     } catch (error) {
-      if (storedUser) {
+      const isAuthFailure = error && (error.status === 401 || error.status === 403);
+      if (isAuthFailure) {
+        try {
+          sessionStorage.removeItem("profit-verified-session");
+          localStorage.removeItem("profit-demo-session");
+          sessionStorage.removeItem("profit-demo-session");
+        } catch {}
+      }
+      if (storedUser && !isAuthFailure) {
         document.documentElement.classList.remove("auth-checking", "auth-pending");
         window.ProFitAuth = {
           user: storedUser,
           role: storedUser.role,
+          getUser: () => storedUser,
           logout: performLogout
         };
         document.querySelectorAll("[data-user-name]").forEach(el => {

@@ -1,0 +1,2875 @@
+/* ProFit Unified 5-State Interaction System
+   Single source of truth across Owner, Cashier, Member, and Trainer portals.
+   Rules:
+   1. Hover:    Subtle background change only. No strong glow. No lift/scale.
+   2. Active:   Solid gold (#E8B93A) + dark ink (#0B0F19). Stands out the most.
+   3. Pressed:  Slightly darker than active (#B8860B) on gold/active; deeper surface on neutral.
+   4. Focus:    Thin gold outline only (#E8B93A), never a filled background.
+   5. Disabled: No hover/active effect, reduced opacity, pointer-events: none. */
+
+:root {
+  --pf-state-gold: #E8B93A;
+  --pf-state-gold-hover: #F0C44B;
+  --pf-state-gold-pressed: #B8860B;
+  --pf-state-gold-ink: #0B0F19;
+  --pf-state-hover-bg: rgba(232, 185, 58, 0.12);
+  --pf-state-hover-neutral: rgba(255, 255, 255, 0.06);
+  --pf-state-pressed-bg: rgba(255, 255, 255, 0.11);
+  --pf-state-danger-hover: rgba(239, 68, 68, 0.12);
+  --pf-state-danger-pressed: rgba(239, 68, 68, 0.22);
+  --pf-state-focus-ring: #E8B93A;
+  --pf-state-disabled-opacity: 0.48;
+  --pf-state-ease: 150ms ease;
+
+  /* Single Source of Truth Surface & Table Tokens (Dark Default) */
+  --pf-canvas: #0A0E16;
+  --pf-surface: #111622;
+  --pf-surface-thead: #161D2C;
+  --pf-surface-inset: #0D121D;
+  --pf-border: rgba(255, 255, 255, 0.08);
+  --pf-row-divider: rgba(255, 255, 255, 0.06);
+  --pf-tbl-row-hover: rgba(255, 255, 255, 0.045);
+  --pf-text: #F4F6FB;
+  --pf-muted: #94A3B8;
+}
+
+html[data-theme="light"],
+:root[data-theme="light"],
+body.pf-staff:not(.dark),
+body.member-home:not(.dark),
+html:not([data-theme="dark"]) body[data-portal="trainer"] {
+  --pf-state-hover-bg: rgba(232, 185, 58, 0.14);
+  --pf-state-hover-neutral: rgba(42, 36, 24, 0.055);
+  --pf-state-pressed-bg: rgba(42, 36, 24, 0.11);
+
+  /* Light Mode 60 / 30 / 10 Surface & Table Tokens */
+  --pf-canvas: #F7F4EE;
+  --pf-surface: #FFFFFF;
+  --pf-surface-thead: #F7F4EE;
+  --pf-surface-inset: #F7F4EE;
+  --pf-border: #E6DFD2;
+  --pf-row-divider: #EFEAE0;
+  --pf-tbl-row-hover: rgba(42, 36, 24, 0.04);
+  --pf-text: #1C1917;
+  --pf-muted: #6B6254;
+}
+
+/* Smooth background/border/color transitions only (no scale/lift jitter) */
+@media (prefers-reduced-motion: no-preference) {
+
+  html body .btn,
+  html body .pp-btn,
+  html body .fn-btn,
+  html body .ann-btn,
+  html body .csh-btn,
+  html body .csh-btn-gold,
+  html body .csh-btn-dark,
+  html body .csh-mini-gold,
+  html body .ow-btn-gold,
+  html body .ow-btn-dark,
+  html body .ow-mini-btn,
+  html body .tw-btn,
+  html body .tr-btn-gold,
+  html body .tr-add-btn,
+  html body .mb-bento-btn,
+  html body .mb-ticket-renew,
+  html body .mb-mini-btn,
+  html body .mb-strip-btn,
+  html body .pf-pw-outline,
+  html body .ntf-read-all,
+  html body .pp-chip-btn,
+  html body .pp-icon-btn,
+  html body .action-btn,
+  html body .view-all,
+  html body .pp-status-btn,
+  html body .pp-status-opt,
+  html body .pp-page-tab,
+  html body .pp-tab,
+  html body .tab,
+  html body .ci-chip,
+  html body .chip,
+  html body .ann-pill,
+  html body .ann-chip,
+  html body .ann-page-btn,
+  html body .pp-segment button,
+  html body .pp-view-toggle button,
+  html body .pp-subtabs button,
+  html body .ci-seg button,
+  html body .ntf-seg button,
+  html body .st-sidenav a,
+  html body .st-pills button,
+  html body .mb-st-sidenav button,
+  html body .mb-st-pills button,
+  html body .tr-st-sidenav button,
+  html body .tr-st-pills button,
+  html body .tw-seg button,
+  html body .tw-period-tab,
+  html body .tw-filter-pill,
+  html body .tw-dow-btn,
+  html body .tw-chart-nav-btn,
+  html body .pager button,
+  html body .tr-view-btn,
+  html body .theme-toggle,
+  html body .notification,
+  html body .topbar .icon-btn,
+  html body .csh-menu-trigger,
+  html body .csh-menu-item,
+  html body .quick-action,
+  html body .csh-qa-card,
+  html body .tw-qa-tile,
+  html body .ann-action-tile,
+  html body .stat-card,
+  html body .member-metric-card,
+  html body .pp-stat,
+  html body .pp-member,
+  html body .pp-plan-card,
+  html body .pp-picker-item,
+  html body .mb-bento-card,
+  html body .mb-ticket-card,
+  html body .tw-kpi-card,
+  html body .tw-session-card,
+  html body .tw-athlete-card,
+  html body .tw-ann-card,
+  html body .tw-notif-item,
+  html body a.st-row,
+  html body button.st-row,
+  html body .mb-st-row,
+  html body .pf-ava-opt,
+  html body .tr-ava-opt,
+  html body .sidebar .menulist a,
+  html body .member-sidebar .nav-link,
+  html body[data-portal="trainer"] .sidebar .nav-link,
+  html body .pf-mob-tab,
+  html body[data-portal="trainer"] .bottom-nav>a,
+  html body[data-portal="trainer"] .bottom-nav>button {
+    transition: background-color var(--pf-state-ease), border-color var(--pf-state-ease), color var(--pf-state-ease) !important;
+  }
+}
+
+/* =========================================================
+   1. ACTIVE STATE — Solid Gold (#E8B93A) + Dark Ink (#0B0F19)
+      Stands out the most across navs, tabs, filters, primary CTAs
+   ========================================================= */
+
+/* Desktop Sidebar Active Links (Staff/Owner/Cashier, Member, Trainer) */
+html body.pf-staff .sidebar .menulist a.active,
+html body.pf-staff .sidebar .menulist a[aria-current="page"],
+html body.member-home .member-sidebar .nav-link.active,
+html body.member-home .member-sidebar .nav-link[aria-selected="true"],
+html body.member-home .member-sidebar .nav-link[aria-current="page"],
+html body[data-portal="trainer"] .sidebar .nav-link.active,
+html body[data-portal="trainer"] .sidebar .nav-link[aria-current="page"] {
+  background: var(--pf-state-gold) !important;
+  background-color: var(--pf-state-gold) !important;
+  border-color: var(--pf-state-gold) !important;
+  color: var(--pf-state-gold-ink) !important;
+  font-weight: 700 !important;
+  box-shadow: none !important;
+}
+
+html body.pf-staff .sidebar .menulist a.active i,
+html body.pf-staff .sidebar .menulist a.active svg,
+html body.pf-staff .sidebar .menulist a.active span,
+html body.pf-staff .sidebar .menulist a[aria-current="page"] i,
+html body.pf-staff .sidebar .menulist a[aria-current="page"] span,
+html body.member-home .member-sidebar .nav-link.active i,
+html body.member-home .member-sidebar .nav-link.active svg,
+html body.member-home .member-sidebar .nav-link.active span,
+html body.member-home .member-sidebar .nav-link[aria-selected="true"] i,
+html body.member-home .member-sidebar .nav-link[aria-selected="true"] span,
+html body[data-portal="trainer"] .sidebar .nav-link.active i,
+html body[data-portal="trainer"] .sidebar .nav-link.active .ico,
+html body[data-portal="trainer"] .sidebar .nav-link.active span,
+html body[data-portal="trainer"] .sidebar .nav-link[aria-current="page"] i,
+html body[data-portal="trainer"] .sidebar .nav-link[aria-current="page"] .ico,
+html body[data-portal="trainer"] .sidebar .nav-link[aria-current="page"] span {
+  color: var(--pf-state-gold-ink) !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+}
+
+/* Count badges inside active solid gold items */
+html body .sidebar .menulist a.active .nav-count,
+html body .member-sidebar .nav-link.active .nav-count,
+html body .member-sidebar .nav-link[aria-selected="true"] .nav-count,
+html body[data-portal="trainer"] .sidebar .nav-link.active .nav-count,
+html body .tab.active .count,
+html body .fn-tabs .tab.active .count,
+html body .chip.active .chip-count,
+html body .ann-pill.active .ann-pill-count,
+html body .tw-filter-pill.active .tw-filter-count,
+html body .tw-dow-btn.active .tw-dow-count {
+  background: rgba(11, 15, 25, 0.16) !important;
+  border-color: rgba(11, 15, 25, 0.22) !important;
+  color: var(--pf-state-gold-ink) !important;
+}
+
+/* Mobile Bottom Nav Active Tab — Compact Solid Gold Pill */
+html body.pf-staff .pf-mob-tab.on,
+html body.member-home .pf-mob-tab.on,
+html body[data-portal="trainer"] .bottom-nav>a.active,
+html body[data-portal="trainer"] .bottom-nav>button.active {
+  background: var(--pf-state-gold) !important;
+  background-color: var(--pf-state-gold) !important;
+  color: var(--pf-state-gold-ink) !important;
+  font-weight: 700 !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+}
+
+html body.pf-staff .pf-mob-tab.on i,
+html body.pf-staff .pf-mob-tab.on span,
+html body.member-home .pf-mob-tab.on i,
+html body.member-home .pf-mob-tab.on span,
+html body[data-portal="trainer"] .bottom-nav>a.active i,
+html body[data-portal="trainer"] .bottom-nav>a.active span,
+html body[data-portal="trainer"] .bottom-nav>button.active i,
+html body[data-portal="trainer"] .bottom-nav>button.active span {
+  color: var(--pf-state-gold-ink) !important;
+}
+
+/* Settings Side-nav, Tabs, Segmented Controls, Chips, Pills, Pagination */
+html body .st-sidenav a.on,
+html body .mb-st-sidenav button.on,
+html body[data-portal="trainer"] .tr-st-sidenav button.on,
+html body .settings-nav a.active,
+html body .pp-tab.active,
+html body .pp-subtabs button.active,
+html body .pp-segment button.active,
+html body .pp-view-toggle button.active,
+html body .ci-seg button.active,
+html body .ntf-seg button.on,
+html body .st-pills button.active,
+html body .mb-st-pills button.active,
+html body .tr-st-pills button.active,
+html body .tw-seg button.is-on,
+html body .tw-period-tab.active,
+html body .tw-filter-pill.active,
+html body .tw-dow-btn.active,
+html body .chip.active,
+html body .pp-chip-btn.active,
+html body .ci-chip.active,
+html body .ann-pill.active,
+html body .ann-chip.is-on,
+html body .ann-page-btn.active,
+html body .pager button.active,
+html body .seg button.active,
+html body .tr-view-btn.is-on,
+html body .pf-mob-chip.sel,
+html body .portal-tab.active,
+html body .portal-nav-links button.is-on {
+  background: var(--pf-state-gold) !important;
+  background-color: var(--pf-state-gold) !important;
+  border-color: var(--pf-state-gold) !important;
+  color: var(--pf-state-gold-ink) !important;
+  font-weight: 700 !important;
+  box-shadow: none !important;
+}
+
+html body .st-sidenav a.on::before,
+html body .mb-st-sidenav button.on::before,
+html body .tr-st-sidenav button.on::before {
+  display: none !important;
+}
+
+html body .st-sidenav a.on i,
+html body .mb-st-sidenav button.on i,
+html body .tr-st-sidenav button.on i,
+html body .tw-filter-pill.active i,
+html body .ann-pill.active i {
+  color: var(--pf-state-gold-ink) !important;
+}
+
+/* Primary Gold CTAs (Solid Gold) */
+html body .btn-primary,
+html body .pp-btn-primary,
+html body .fn-btn-gold,
+html body .fn-btn-primary,
+html body .ann-btn.primary,
+html body .ow-btn-gold,
+html body .ow-mini-btn,
+html body .csh-btn-gold,
+html body .csh-btn-primary,
+html body .csh-mini-gold,
+html body .tw-btn-primary,
+html body .tr-btn-gold,
+html body .tr-add-btn,
+html body .mb-bento-btn.is-gold,
+html body .mb-ticket-renew,
+html body .mb-mini-btn,
+html body .st-save-btn {
+  background: var(--pf-state-gold) !important;
+  background-color: var(--pf-state-gold) !important;
+  border-color: var(--pf-state-gold) !important;
+  color: var(--pf-state-gold-ink) !important;
+  box-shadow: none !important;
+}
+
+/* Selected cards/avatar tiles stay bordered without solid fill or glow */
+html body .pp-plan-card.selected,
+html body .pf-ava-opt.sel,
+html body .tr-ava-opt.sel,
+html body .pp-picker-item.is-selected {
+  border-color: var(--pf-state-gold) !important;
+  background-color: rgba(232, 185, 58, 0.12) !important;
+  box-shadow: none !important;
+}
+
+/* =========================================================
+   2. HOVER STATE — Subtle Background Change Only (Desktop Pointer)
+      No strong glow (box-shadow: none), no translateY, no scale
+   ========================================================= */
+@media (hover: hover) and (pointer: fine) {
+
+  /* Unselected Sidebar / Nav links */
+  html body.pf-staff .sidebar .menulist a:not(.active):not([aria-current="page"]):hover,
+  html body.member-home .member-sidebar .nav-link:not(.active):not([aria-selected="true"]):not([aria-current="page"]):hover,
+  html body[data-portal="trainer"] .sidebar .nav-link:not(.active):not([aria-current="page"]):hover,
+  html body .st-sidenav a:not(.on):hover,
+  html body .mb-st-sidenav button:not(.on):hover,
+  html body[data-portal="trainer"] .tr-st-sidenav button:not(.on):hover,
+  html body .settings-nav a:not(.active):hover,
+  html body .pf-mob-tab:not(.on):hover,
+  html body[data-portal="trainer"] .bottom-nav>a:not(.active):hover,
+  html body[data-portal="trainer"] .bottom-nav>button:not(.active):hover {
+    background-color: var(--pf-state-hover-bg) !important;
+    box-shadow: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  /* Active items remain solid gold on hover without jumping or glowing */
+  html body.pf-staff .sidebar .menulist a.active:hover,
+  html body.member-home .member-sidebar .nav-link.active:hover,
+  html body.member-home .member-sidebar .nav-link[aria-selected="true"]:hover,
+  html body[data-portal="trainer"] .sidebar .nav-link.active:hover,
+  html body .st-sidenav a.on:hover,
+  html body .mb-st-sidenav button.on:hover,
+  html body[data-portal="trainer"] .tr-st-sidenav button.on:hover,
+  html body .pp-tab.active:hover,
+  html body .pp-subtabs button.active:hover,
+  html body .pp-segment button.active:hover,
+  html body .pp-view-toggle button.active:hover,
+  html body .ci-seg button.active:hover,
+  html body .ntf-seg button.on:hover,
+  html body .st-pills button.active:hover,
+  html body .mb-st-pills button.active:hover,
+  html body .tr-st-pills button.active:hover,
+  html body .tw-seg button.is-on:hover,
+  html body .tw-period-tab.active:hover,
+  html body .tw-filter-pill.active:hover,
+  html body .tw-dow-btn.active:hover,
+  html body .chip.active:hover,
+  html body .pp-chip-btn.active:hover,
+  html body .ci-chip.active:hover,
+  html body .ann-pill.active:hover,
+  html body .ann-chip.is-on:hover,
+  html body .ann-page-btn.active:hover,
+  html body .pager button.active:hover,
+  html body .seg button.active:hover,
+  html body .tr-view-btn.is-on:hover {
+    background-color: var(--pf-state-gold) !important;
+    color: var(--pf-state-gold-ink) !important;
+    box-shadow: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  /* Unselected Tabs, Segmented Controls, Chips, Pills, Pagination */
+  html body .pp-tab:not(.active):not(:disabled):hover,
+  html body .pp-subtabs button:not(.active):not(:disabled):hover,
+  html body .pp-segment button:not(.active):not(:disabled):hover,
+  html body .pp-view-toggle button:not(.active):not(:disabled):hover,
+  html body .ci-seg button:not(.active):not(:disabled):hover,
+  html body .ntf-seg button:not(.on):not(:disabled):hover,
+  html body .st-pills button:not(.active):not(:disabled):hover,
+  html body .mb-st-pills button:not(.active):not(:disabled):hover,
+  html body .tr-st-pills button:not(.active):not(:disabled):hover,
+  html body .tw-seg button:not(.is-on):not(:disabled):hover,
+  html body .tw-period-tab:not(.active):not(:disabled):hover,
+  html body .tw-filter-pill:not(.active):not(:disabled):hover,
+  html body .tw-dow-btn:not(.active):not(:disabled):hover,
+  html body .chip:not(.active):not(:disabled):hover,
+  html body .pp-chip-btn:not(.active):not(:disabled):hover,
+  html body .ci-chip:not(.active):not(:disabled):hover,
+  html body .ann-pill:not(.active):not(:disabled):hover,
+  html body .ann-chip:not(.is-on):not(:disabled):hover,
+  html body .ann-page-btn:not(.active):not(:disabled):hover,
+  html body .pager button:not(.active):not(:disabled):hover,
+  html body .seg button:not(.active):not(:disabled):hover,
+  html body .tr-view-btn:not(.is-on):not(:disabled):hover,
+  html body .tw-chart-nav-btn:not(:disabled):hover {
+    background-color: var(--pf-state-hover-bg) !important;
+    box-shadow: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  /* Primary Gold CTAs: subtle flat gold shift only, ZERO glow or lift */
+  html body .btn-primary:not(:disabled):not([aria-disabled="true"]):hover,
+  html body .pp-btn-primary:not(:disabled):not([aria-disabled="true"]):hover,
+  html body .fn-btn-gold:not(:disabled):not([aria-disabled="true"]):hover,
+  html body .fn-btn-primary:not(:disabled):not([aria-disabled="true"]):hover,
+  html body .ann-btn.primary:not(:disabled):not([aria-disabled="true"]):hover,
+  html body .ow-btn-gold:not(:disabled):not([aria-disabled="true"]):hover,
+  html body .ow-mini-btn:not(:disabled):not([aria-disabled="true"]):hover,
+  html body .csh-btn-gold:not(:disabled):not([aria-disabled="true"]):hover,
+  html body .csh-btn-primary:not(:disabled):not([aria-disabled="true"]):hover,
+  html body .csh-mini-gold:not(:disabled):not([aria-disabled="true"]):hover,
+  html body .tw-btn-primary:not(:disabled):not([aria-disabled="true"]):hover,
+  html body .tr-btn-gold:not(:disabled):not([aria-disabled="true"]):hover,
+  html body .tr-add-btn:not(:disabled):not([aria-disabled="true"]):hover,
+  html body .mb-bento-btn.is-gold:not(:disabled):not([aria-disabled="true"]):hover,
+  html body .mb-ticket-renew:not(:disabled):not([aria-disabled="true"]):hover,
+  html body .mb-mini-btn:not(:disabled):not([aria-disabled="true"]):hover,
+  html body .st-save-btn:not(:disabled):not([aria-disabled="true"]):hover {
+    background: var(--pf-state-gold-hover) !important;
+    background-color: var(--pf-state-gold-hover) !important;
+    border-color: var(--pf-state-gold-hover) !important;
+    color: var(--pf-state-gold-ink) !important;
+    box-shadow: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  /* Secondary / Outline / Ghost / Topbar / Dropdown / Menu buttons */
+  html body .btn:not(.btn-primary):not(.primary):not(.is-danger):not(.btn-danger):not(:disabled):not([aria-disabled="true"]):hover,
+  html body .pp-btn:not(.pp-btn-primary):not(.is-danger):not(:disabled):not([aria-disabled="true"]):hover,
+  html body .fn-btn:not(.fn-btn-gold):not(.fn-btn-primary):not(.fn-btn-danger):not(:disabled):not([aria-disabled="true"]):hover,
+  html body .fn-btn-dark:not(:disabled):not([aria-disabled="true"]):hover,
+  html body .ann-btn:not(.primary):not(.is-danger):not(:disabled):not([aria-disabled="true"]):hover,
+  html body .csh-btn:not(.csh-btn-gold):not(.csh-btn-primary):not(.is-danger):not(:disabled):not([aria-disabled="true"]):hover,
+  html body .csh-btn-dark:not(:disabled):not([aria-disabled="true"]):hover,
+  html body .ow-btn-dark:not(:disabled):not([aria-disabled="true"]):hover,
+  html body .tw-btn:not(.tw-btn-primary):not(.is-danger):not(:disabled):not([aria-disabled="true"]):hover,
+  html body .pf-pw-outline:not(:disabled):hover,
+  html body .ntf-read-all:not(:disabled):hover,
+  html body .pp-icon-btn:not(:disabled):hover,
+  html body .action-btn:not(:disabled):hover,
+  html body .view-all:not(:disabled):hover,
+  html body .pp-status-btn:not(:disabled):hover,
+  html body .theme-toggle:not(:disabled):hover,
+  html body .notification:not(:disabled):hover,
+  html body .topbar .icon-btn:not(:disabled):hover,
+  html body .csh-menu-trigger:not(:disabled):hover,
+  html body .mb-strip-btn:not(:disabled):hover,
+  html body .mb-qr-circle-btn:not(:disabled):hover,
+  html body .pf-menu a:hover,
+  html body .pf-menu button:not(:disabled):hover,
+  html body .account-menu a:hover,
+  html body .account-menu button:not(:disabled):hover,
+  html body .side-account-menu a:hover,
+  html body .side-account-menu button:not(:disabled):hover,
+  html body .csh-menu-item:not(.is-danger):not(:disabled):hover,
+  html body .pf-ava-menu button:not(.is-danger):not(:disabled):hover,
+  html body .pp-status-opt:not(:disabled):hover {
+    background-color: var(--pf-state-hover-neutral) !important;
+    box-shadow: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  /* Destructive buttons */
+  html body .is-danger:not(:disabled):hover,
+  html body .btn-danger:not(:disabled):hover,
+  html body .fn-btn-danger:not(:disabled):hover,
+  html body .st-logout-btn:not(:disabled):hover,
+  html body .csh-menu-item.is-danger:not(:disabled):hover,
+  html body .pf-ava-menu button.is-danger:not(:disabled):hover {
+    background-color: var(--pf-state-danger-hover) !important;
+    box-shadow: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  /* Interactive Cards, Tiles, Rows, Calendar Days — subtle surface tint only, ZERO lift/glow */
+  html body .quick-action:hover,
+  html body.pf-staff[data-page="dashboard"] .quick-action:hover,
+  html body .csh-qa-card:hover,
+  html body .tw-qa-tile:hover,
+  html body[data-portal="trainer"] .tw-qa-tile:hover,
+  html body .ann-action-tile:hover,
+  html body a.st-row:hover,
+  html body button.st-row:hover,
+  html body .mb-st-row:hover,
+  html body .pf-ava-opt:not(.sel):hover,
+  html body .tr-ava-opt:not(.sel):hover,
+  html body .pp-cal-day:not(.is-checkin):not(.is-selected):hover,
+  html body tbody tr:hover {
+    background-color: var(--pf-state-hover-neutral) !important;
+    box-shadow: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  /* Non-navigable metric/display cards must not lift or glow on hover */
+  html body .stat-card:hover,
+  html body #dashStats .stat-card:hover,
+  html body .member-metric-card:hover,
+  html body .member-panel:hover,
+  html body .pp-stat:hover,
+  html body .pp-member:hover,
+  html body .pp-plan-card:hover,
+  html body .pp-picker-item:hover,
+  html body .mb-bento-card:hover,
+  html body .mb-ticket-card:hover,
+  html body .tw-kpi-card:hover,
+  html body .tw-session-card:hover,
+  html body .tw-athlete-card:hover,
+  html body .tw-ann-card:hover,
+  html body .tw-notif-item:hover,
+  html body .pf-ava-trigger:hover,
+  html body .quick-action:hover .quick-action-icon,
+  html body .quick-action:hover .action-arrow,
+  html body .mb-qr-circle-btn:hover .mb-qr-circle-ico {
+    box-shadow: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
+
+/* Suppress sticky hover on touch devices */
+@media (hover: none) {
+
+  html body .btn:hover,
+  html body .pp-btn:hover,
+  html body .fn-btn:hover,
+  html body .quick-action:hover,
+  html body .csh-qa-card:hover,
+  html body .tw-qa-tile:hover,
+  html body .stat-card:hover,
+  html body tbody tr:hover {
+    box-shadow: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
+
+/* =========================================================
+   3. PRESSED STATE (:active) — Slightly Darker Than Active
+   ========================================================= */
+/* Active items + Primary Gold CTAs -> #B8860B darker gold, zero transform/glow */
+html body .btn-primary:not(:disabled):not([aria-disabled="true"]):active,
+html body .pp-btn-primary:not(:disabled):not([aria-disabled="true"]):active,
+html body .fn-btn-gold:not(:disabled):not([aria-disabled="true"]):active,
+html body .fn-btn-primary:not(:disabled):not([aria-disabled="true"]):active,
+html body .ann-btn.primary:not(:disabled):not([aria-disabled="true"]):active,
+html body .ow-btn-gold:not(:disabled):not([aria-disabled="true"]):active,
+html body .ow-mini-btn:not(:disabled):not([aria-disabled="true"]):active,
+html body .csh-btn-gold:not(:disabled):not([aria-disabled="true"]):active,
+html body .csh-btn-primary:not(:disabled):not([aria-disabled="true"]):active,
+html body .csh-mini-gold:not(:disabled):not([aria-disabled="true"]):active,
+html body .tw-btn-primary:not(:disabled):not([aria-disabled="true"]):active,
+html body .tr-btn-gold:not(:disabled):not([aria-disabled="true"]):active,
+html body .tr-add-btn:not(:disabled):not([aria-disabled="true"]):active,
+html body .mb-bento-btn.is-gold:not(:disabled):not([aria-disabled="true"]):active,
+html body .mb-ticket-renew:not(:disabled):not([aria-disabled="true"]):active,
+html body .mb-mini-btn:not(:disabled):not([aria-disabled="true"]):active,
+html body .st-save-btn:not(:disabled):not([aria-disabled="true"]):active,
+html body .sidebar .menulist a.active:active,
+html body .member-sidebar .nav-link.active:active,
+html body .member-sidebar .nav-link[aria-selected="true"]:active,
+html body[data-portal="trainer"] .sidebar .nav-link.active:active,
+html body .st-sidenav a.on:active,
+html body .mb-st-sidenav button.on:active,
+html body .tr-st-sidenav button.on:active,
+html body .pp-tab.active:active,
+html body .pp-subtabs button.active:active,
+html body .pp-segment button.active:active,
+html body .pp-view-toggle button.active:active,
+html body .ci-seg button.active:active,
+html body .ntf-seg button.on:active,
+html body .st-pills button.active:active,
+html body .mb-st-pills button.active:active,
+html body .tr-st-pills button.active:active,
+html body .tw-seg button.is-on:active,
+html body .tw-period-tab.active:active,
+html body .tw-filter-pill.active:active,
+html body .tw-dow-btn.active:active,
+html body .chip.active:active,
+html body .pp-chip-btn.active:active,
+html body .ci-chip.active:active,
+html body .ann-pill.active:active,
+html body .ann-chip.is-on:active,
+html body .ann-page-btn.active:active,
+html body .pager button.active:active,
+html body .seg button.active:active,
+html body .tr-view-btn.is-on:active,
+html body .pf-mob-tab.on:active,
+html body[data-portal="trainer"] .bottom-nav>a.active:active,
+html body[data-portal="trainer"] .bottom-nav>button.active:active {
+  background: var(--pf-state-gold-pressed) !important;
+  background-color: var(--pf-state-gold-pressed) !important;
+  border-color: var(--pf-state-gold-pressed) !important;
+  color: var(--pf-state-gold-ink) !important;
+  box-shadow: none !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+/* Neutral / Secondary / Unselected Controls -> slightly deeper surface */
+html body .btn:not(.btn-primary):not(.primary):not(.is-danger):not(.btn-danger):not(:disabled):not([aria-disabled="true"]):active,
+html body .pp-btn:not(.pp-btn-primary):not(.is-danger):not(:disabled):not([aria-disabled="true"]):active,
+html body .fn-btn:not(.fn-btn-gold):not(.fn-btn-primary):not(.fn-btn-danger):not(:disabled):not([aria-disabled="true"]):active,
+html body .fn-btn-dark:not(:disabled):active,
+html body .ann-btn:not(.primary):not(.is-danger):not(:disabled):active,
+html body .csh-btn:not(.csh-btn-gold):not(.csh-btn-primary):not(.is-danger):not(:disabled):active,
+html body .csh-btn-dark:not(:disabled):active,
+html body .ow-btn-dark:not(:disabled):active,
+html body .tw-btn:not(.tw-btn-primary):not(.is-danger):not(:disabled):active,
+html body .pf-pw-outline:not(:disabled):active,
+html body .ntf-read-all:not(:disabled):active,
+html body .pp-icon-btn:not(:disabled):active,
+html body .action-btn:not(:disabled):active,
+html body .view-all:not(:disabled):active,
+html body .pp-status-btn:not(:disabled):active,
+html body .theme-toggle:not(:disabled):active,
+html body .notification:not(:disabled):active,
+html body .topbar .icon-btn:not(:disabled):active,
+html body .csh-menu-trigger:not(:disabled):active,
+html body .mb-strip-btn:not(:disabled):active,
+html body .mb-qr-circle-btn:not(:disabled):active,
+html body .sidebar .menulist a:not(.active):active,
+html body .member-sidebar .nav-link:not(.active):not([aria-selected="true"]):active,
+html body[data-portal="trainer"] .sidebar .nav-link:not(.active):active,
+html body .st-sidenav a:not(.on):active,
+html body .mb-st-sidenav button:not(.on):active,
+html body .tr-st-sidenav button:not(.on):active,
+html body .pp-tab:not(.active):not(:disabled):active,
+html body .pp-subtabs button:not(.active):not(:disabled):active,
+html body .pp-segment button:not(.active):not(:disabled):active,
+html body .pp-view-toggle button:not(.active):not(:disabled):active,
+html body .ci-seg button:not(.active):not(:disabled):active,
+html body .ntf-seg button:not(.on):not(:disabled):active,
+html body .st-pills button:not(.active):not(:disabled):active,
+html body .mb-st-pills button:not(.active):not(:disabled):active,
+html body .tr-st-pills button:not(.active):not(:disabled):active,
+html body .tw-seg button:not(.is-on):not(:disabled):active,
+html body .tw-period-tab:not(.active):not(:disabled):active,
+html body .tw-filter-pill:not(.active):not(:disabled):active,
+html body .tw-dow-btn:not(.active):not(:disabled):active,
+html body .chip:not(.active):not(:disabled):active,
+html body .pp-chip-btn:not(.active):not(:disabled):active,
+html body .ci-chip:not(.active):not(:disabled):active,
+html body .ann-pill:not(.active):not(:disabled):active,
+html body .ann-chip:not(.is-on):not(:disabled):active,
+html body .ann-page-btn:not(.active):not(:disabled):active,
+html body .pager button:not(.active):not(:disabled):active,
+html body .seg button:not(.active):not(:disabled):active,
+html body .tr-view-btn:not(.is-on):not(:disabled):active,
+html body .pf-mob-tab:not(.on):active,
+html body[data-portal="trainer"] .bottom-nav>a:not(.active):active,
+html body[data-portal="trainer"] .bottom-nav>button:not(.active):active,
+html body .quick-action:active,
+html body .csh-qa-card:active,
+html body .tw-qa-tile:active,
+html body .ann-action-tile:active,
+html body a.st-row:active,
+html body button.st-row:active,
+html body .mb-st-row:active {
+  background-color: var(--pf-state-pressed-bg) !important;
+  box-shadow: none !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+/* Destructive pressed */
+html body .is-danger:not(:disabled):active,
+html body .btn-danger:not(:disabled):active,
+html body .fn-btn-danger:not(:disabled):active,
+html body .st-logout-btn:not(:disabled):active,
+html body .csh-menu-item.is-danger:not(:disabled):active {
+  background-color: var(--pf-state-danger-pressed) !important;
+  box-shadow: none !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+/* =========================================================
+   4. FOCUS STATE — Thin Gold Outline Only (Never Filled Bg)
+   ========================================================= */
+html body :focus-visible {
+  outline: 2px solid var(--pf-state-focus-ring) !important;
+  outline-offset: 2px !important;
+  box-shadow: none !important;
+}
+
+html body :focus:not(:focus-visible) {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Unselected focused buttons/tabs/nav links never get a filled focus background */
+html body button:not(.btn-primary):not(.pp-btn-primary):not(.fn-btn-gold):not(.fn-btn-primary):not(.ann-btn.primary):not(.tw-btn-primary):not(.tr-btn-gold):not(.tr-add-btn):not(.st-save-btn):not(.mb-bento-btn.is-gold):not(.mb-ticket-renew):not(.mb-mini-btn):not(.active):not(.on):not(.is-on):not([aria-selected="true"]):not([aria-current="page"]):focus-visible,
+html body a:not(.ow-btn-gold):not(.ow-mini-btn):not(.csh-btn-gold):not(.csh-mini-gold):not(.btn-primary):not(.pp-btn-primary):not(.active):not(.on):not([aria-current="page"]):focus-visible {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Form Inputs, Selects, Textareas — keep clean surface, crisp gold ring only */
+html body input:focus,
+html body select:focus,
+html body textarea:focus,
+html body .input:focus,
+html body .select:focus,
+html body .textarea:focus,
+html body .fn-input:focus,
+html body .tw-search-input:focus,
+html body .tw-field input:focus,
+html body .tw-field select:focus,
+html body .tw-field textarea:focus {
+  border-color: var(--pf-state-focus-ring) !important;
+  outline: 1.5px solid var(--pf-state-focus-ring) !important;
+  outline-offset: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Search / icon-prefixed input wrappers get single outer gold focus-within ring */
+html body .ann-search-box:focus-within,
+html body .fn-search-pill:focus-within,
+html body .ann-search:focus-within {
+  border-color: var(--pf-state-focus-ring) !important;
+  outline: 1.5px solid var(--pf-state-focus-ring) !important;
+  outline-offset: 0 !important;
+  box-shadow: none !important;
+}
+
+html body .ann-search-box input:focus,
+html body .fn-search-pill input:focus,
+html body .ann-search input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+html body .checkin-input-wrap {
+  border-radius: 12px !important;
+}
+
+html body .checkin-input-wrap:focus-within {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+html body .checkin-input-wrap .input:focus {
+  border-color: var(--pf-state-focus-ring) !important;
+  outline: 1.5px solid var(--pf-state-focus-ring) !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 3px rgba(232, 185, 58, 0.18) !important;
+}
+
+/* =========================================================
+   5. DISABLED STATE — Completely Inert (No Hover/Active)
+   ========================================================= */
+html body button:disabled,
+html body input:disabled,
+html body select:disabled,
+html body textarea:disabled,
+html body .btn:disabled,
+html body .pp-btn:disabled,
+html body .fn-btn:disabled,
+html body .ann-btn:disabled,
+html body .csh-btn:disabled,
+html body .tw-btn:disabled,
+html body .st-save-btn:disabled,
+html body .ntf-read-all:disabled,
+html body [aria-disabled="true"],
+html body .is-disabled {
+  opacity: var(--pf-state-disabled-opacity) !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+  filter: none !important;
+  transition: none !important;
+}
+
+html body button:disabled:hover,
+html body button:disabled:active,
+html body .btn:disabled:hover,
+html body .btn:disabled:active,
+html body .pp-btn:disabled:hover,
+html body .pp-btn:disabled:active,
+html body .fn-btn:disabled:hover,
+html body .fn-btn:disabled:active,
+html body .ann-btn:disabled:hover,
+html body .ann-btn:disabled:active,
+html body .csh-btn:disabled:hover,
+html body .csh-btn:disabled:active,
+html body .tw-btn:disabled:hover,
+html body .tw-btn:disabled:active,
+html body .st-save-btn:disabled:hover,
+html body .ntf-read-all:disabled:hover,
+html body [aria-disabled="true"]:hover,
+html body [aria-disabled="true"]:active,
+html body .is-disabled:hover,
+html body .is-disabled:active {
+  box-shadow: none !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+
+/* =========================================================
+   6. 60 / 30 / 10 LIGHT MODE CONTAINERS, TABLES & FORMS
+      60% Neutral Canvas  (#F7F4EE)
+      30% Card Surface    (#FFFFFF, 1px solid #E6DFD2)
+      10% Gold Accent     (#E8B93A active / #8A6212 text)
+      Preserves dark sidebars & dark photo hero cards intact
+   ========================================================= */
+html:not(.dark)[data-theme="light"],
+:root[data-theme="light"],
+body.pf-staff:not(.dark),
+body.member-home:not(.dark),
+html:not([data-theme="dark"]) body[data-portal="trainer"] {
+  --pf-l-canvas: #F7F4EE;
+  --pf-l-surface: #FFFFFF;
+  --pf-l-surface-inset: #F7F4EE;
+  --pf-l-surface-hover: #F3ECE0;
+  --pf-l-border: #E6DFD2;
+  --pf-l-border-input: #D9D0BF;
+  --pf-l-text: #1C1917;
+  --pf-l-muted: #6B6254;
+  --pf-l-shadow: 0 1px 3px rgba(26, 20, 7, 0.04);
+}
+
+/* 60% Canvas */
+html:not(.dark):not([data-theme="dark"]),
+html[data-theme="light"],
+body.pf-staff:not(.dark),
+body.pf-staff:not(.dark) .dashboard,
+body.pf-staff:not(.dark) main.main-content,
+body.pf-staff:not(.dark) .topbar,
+body.member-home:not(.dark),
+body.member-home:not(.dark) .member-main,
+body.member-home:not(.dark) .member-topbar,
+html:not([data-theme="dark"]) body[data-portal="trainer"],
+html:not([data-theme="dark"]) body[data-portal="trainer"] .main-content,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .topbar {
+  background-color: #F7F4EE !important;
+  color: #1C1917;
+}
+
+/* 30% Unified Card / Panel / Modal / Popover Surface (#FFFFFF, clears gradients) */
+html body.pf-staff:not(.dark) .panel,
+html body.pf-staff:not(.dark) .stat-card,
+html body.pf-staff:not(.dark)[data-page="attendance"] .stats.three .stat-card,
+html body.pf-staff:not(.dark)[data-page="attendance"] .checkin-panel,
+html body.pf-staff:not(.dark)[data-page="attendance"] .checkins-table-panel,
+html body.pf-staff:not(.dark) .quick-action,
+html body.pf-staff:not(.dark) .registrations-panel,
+html body.pf-staff:not(.dark) .attendance-chart-panel,
+html body.pf-staff:not(.dark) .checkin-panel,
+html body.pf-staff:not(.dark) .checkins-table-panel,
+html body.pf-staff:not(.dark) .fn-card,
+html body.pf-staff:not(.dark) .fn-kpi-card,
+html body.pf-staff:not(.dark) .fn-receipt-card,
+html body.pf-staff:not(.dark) .cashier-member-card,
+html body.pf-staff:not(.dark) .pp-section-card,
+html body.pf-staff:not(.dark) .pp-card,
+html body.pf-staff:not(.dark) .pp-toolbar,
+html body.pf-staff:not(.dark) .pp-members-wrap,
+html body.pf-staff:not(.dark) .pp-browse-card,
+html body.pf-staff:not(.dark) .pp-det-card,
+html body.pf-staff:not(.dark) .pp-det-panel,
+html body.pf-staff:not(.dark) .pp-member,
+html body.pf-staff:not(.dark) .pp-plan-card:not(.selected),
+html body.pf-staff:not(.dark) .md-card:not(.md-id-card),
+html body.pf-staff:not(.dark) .md-side,
+html body.pf-staff:not(.dark) .ann-card,
+html body.pf-staff:not(.dark) .ann-kpi-card,
+html body.pf-staff:not(.dark) .ann-action-tile,
+html body.pf-staff:not(.dark) .ann-panel,
+html body.pf-staff:not(.dark) .ann-list-panel,
+html body.pf-staff:not(.dark) .ann-modal,
+html body.pf-staff:not(.dark) .ann-dropdown-menu,
+html body.pf-staff:not(.dark) .tr-card,
+html body.pf-staff:not(.dark) .tr-panel,
+html body.pf-staff:not(.dark) .tr-modal,
+html body.pf-staff:not(.dark) .csh-card,
+html body.pf-staff:not(.dark) .csh-qa-card,
+html body.pf-staff:not(.dark) .ntf-card,
+html body.pf-staff:not(.dark) .st-card,
+html body.pf-staff:not(.dark) .st-modal,
+html body.pf-staff:not(.dark) .ci-table-wrap,
+html body.pf-staff:not(.dark) .ci-ac-menu,
+html body.pf-staff:not(.dark) .pp-status-menu,
+html body.pf-staff:not(.dark) .modal-box,
+html body.pf-staff:not(.dark) .modal-content,
+html body.pf-staff:not(.dark) .dropdown,
+html body.pf-staff:not(.dark) .pf-menu,
+html body.pf-staff:not(.dark) .pf-ava-menu,
+html body.pf-staff:not(.dark) .notification-popover,
+html body.member-home:not(.dark) .member-panel,
+html body.member-home:not(.dark) .member-card,
+html body.member-home:not(.dark) .member-metric-card,
+html body.member-home:not(.dark) .member-status-card,
+html body.member-home:not(.dark) .mb-bento-card:not(.mb-bento-hero-photo),
+html body.member-home:not(.dark) .mb-kpi-card,
+html body.member-home:not(.dark) .mb-strip-card,
+html body.member-home:not(.dark) .mb-badges-panel,
+html body.member-home:not(.dark) .mb-prof-form-card,
+html body.member-home:not(.dark) .mb-prof-preview-card,
+html body.member-home:not(.dark) .mb-st-card,
+html body.member-home:not(.dark) .mb-st-logout-card,
+html body.member-home:not(.dark) .mb-tab-banner,
+html body.member-home:not(.dark) .pp-class-card,
+html body.member-home:not(.dark) .pp-card,
+html body.member-home:not(.dark) .pp-section-card,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-card,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-panel,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-toolbar,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-ckpi,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-kpi-card,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-stat-card,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-sum-card,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-coach-card,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-checkin-panel,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-qa-tile,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-session-card,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-athlete-card,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-ann-card,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-modal,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tr-st-card,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .panel {
+  background: var(--pf-surface) !important;
+  background-color: var(--pf-surface) !important;
+  background-image: none !important;
+  border: 1px solid var(--pf-border) !important;
+  box-shadow: 0 1px 3px rgba(26, 20, 7, 0.04) !important;
+  color: var(--pf-text);
+}
+
+/* Fix Announcements & Settings nested cards/items leaking dark colors in light mode */
+body.pf-staff:not(.dark) .ann-item,
+body.pf-staff:not(.dark) .ann-image-preview-wrap,
+body.pf-staff:not(.dark) .ann-thumb,
+body.pf-staff:not(.dark) .st-drawer,
+body.pf-staff:not(.dark) .st-help-item,
+body.pf-staff:not(.dark) .fn-info-banner,
+body.pf-staff:not(.dark) .fn-table--tx,
+body.member-home:not(.dark) .mb-st-drawer {
+  background-color: #F7F4EE !important;
+  border-color: #E6DFD2 !important;
+  color: #1C1917 !important;
+}
+
+body.pf-staff:not(.dark) .ann-kpi-card h2,
+body.pf-staff:not(.dark) .ann-kpi-card strong,
+body.pf-staff:not(.dark) .ann-action-tile strong,
+body.pf-staff:not(.dark) .ann-panel-title,
+body.pf-staff:not(.dark) .ann-list-panel h2,
+body.pf-staff:not(.dark) .ann-list-panel h3,
+body.pf-staff:not(.dark) .ann-item h3,
+body.pf-staff:not(.dark) .ann-item h4,
+body.pf-staff:not(.dark) .ann-item-title,
+body.pf-staff:not(.dark) .ann-modal h2,
+body.pf-staff:not(.dark) .ann-modal h3,
+body.pf-staff:not(.dark) .tr-card h2,
+body.pf-staff:not(.dark) .tr-card h3 {
+  color: #1C1917 !important;
+}
+
+body.pf-staff:not(.dark) .ann-kpi-card span,
+body.pf-staff:not(.dark) .ann-action-tile small,
+body.pf-staff:not(.dark) .ann-item p,
+body.pf-staff:not(.dark) .ann-item-meta {
+  color: #6B6254 !important;
+}
+
+body.pf-staff:not(.dark) .ann-kebab-btn,
+body.pf-staff:not(.dark) .ann-page-btn:not(.active),
+body.pf-staff:not(.dark) .ann-pill:not(.active) {
+  background-color: #F7F4EE !important;
+  border-color: #E6DFD2 !important;
+  color: #1C1917 !important;
+}
+
+/* Unified Light Mode Tables inside Cards */
+body.pf-staff:not(.dark) .table-wrapper,
+body.pf-staff:not(.dark) .ci-table-wrap,
+body.pf-staff:not(.dark) .fn-table-wrap,
+body.pf-staff:not(.dark) .pp-members-wrap,
+body.member-home:not(.dark) .table-wrapper,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-table-wrap {
+  background-color: #FFFFFF !important;
+  border-color: #E6DFD2 !important;
+}
+
+body.pf-staff:not(.dark) table thead tr,
+body.pf-staff:not(.dark) .ci-table thead tr,
+body.pf-staff:not(.dark) .pp-members-table thead tr,
+body.pf-staff:not(.dark) .fn-table thead tr,
+body.member-home:not(.dark) table thead tr,
+html:not([data-theme="dark"]) body[data-portal="trainer"] table thead tr {
+  background: #F7F4EE !important;
+  background-color: #F7F4EE !important;
+}
+
+body.pf-staff:not(.dark) table thead th,
+body.member-home:not(.dark) table thead th,
+html:not([data-theme="dark"]) body[data-portal="trainer"] table thead th {
+  color: #6B6254 !important;
+  border-bottom: 1px solid #E6DFD2 !important;
+}
+
+body.pf-staff:not(.dark) table tbody tr,
+body.pf-staff:not(.dark) .ci-table tbody tr,
+body.pf-staff:not(.dark) .pp-members-table tbody tr,
+body.pf-staff:not(.dark) .fn-table tbody tr,
+body.member-home:not(.dark) table tbody tr,
+html:not([data-theme="dark"]) body[data-portal="trainer"] table tbody tr {
+  background-color: #FFFFFF !important;
+  color: #1C1917 !important;
+  border-color: #EFEAE0 !important;
+}
+
+/* Unified Light Mode Segmented Trays & Period Pills */
+body.pf-staff:not(.dark) .ntf-seg,
+body.pf-staff:not(.dark) .pp-subtabs,
+body.pf-staff:not(.dark) .pp-view-toggle,
+body.pf-staff:not(.dark) .ci-seg,
+body.pf-staff:not(.dark) .pp-segment,
+body.pf-staff:not(.dark) .chart-stepper,
+body.pf-staff:not(.dark) .chip:not(.active),
+body.pf-staff:not(.dark) .st-pills button:not(.active),
+body.member-home:not(.dark) .mb-st-pills button:not(.active),
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-seg,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tr-st-pills button:not(.active) {
+  background-color: #F7F4EE !important;
+  border-color: #E6DFD2 !important;
+  color: #1C1917 !important;
+}
+
+/* Unified Light Mode Form Inputs, Selects & Textareas (never touches icon padding) */
+body.pf-staff:not(.dark) input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]),
+body.pf-staff:not(.dark) select,
+body.pf-staff:not(.dark) textarea,
+body.pf-staff:not(.dark) .input,
+body.pf-staff:not(.dark) .select,
+body.pf-staff:not(.dark) .textarea,
+body.pf-staff:not(.dark) .fn-input,
+body.pf-staff:not(.dark) .fn-toolbar-select,
+body.pf-staff:not(.dark) .checkin-input-wrap .input,
+body.pf-staff:not(.dark) .ann-field input,
+body.pf-staff:not(.dark) .ann-field select,
+body.pf-staff:not(.dark) .ann-field textarea,
+body.pf-staff:not(.dark) .ann-select-wrap select,
+body.pf-staff:not(.dark) .st-peso-wrap input,
+body.member-home:not(.dark) input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]),
+body.member-home:not(.dark) select,
+body.member-home:not(.dark) textarea,
+body.member-home:not(.dark) .input,
+body.member-home:not(.dark) .select,
+html:not([data-theme="dark"]) body[data-portal="trainer"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]),
+html:not([data-theme="dark"]) body[data-portal="trainer"] select,
+html:not([data-theme="dark"]) body[data-portal="trainer"] textarea,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-input,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-select,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-search-input,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-checkin-select,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tr-search-wrap input,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tr-select-wrap select {
+  background-color: #F7F4EE !important;
+  border-color: #D9D0BF !important;
+  color: #1C1917 !important;
+}
+
+body.pf-staff:not(.dark) input::placeholder,
+body.pf-staff:not(.dark) textarea::placeholder,
+body.member-home:not(.dark) input::placeholder,
+body.member-home:not(.dark) textarea::placeholder,
+html:not([data-theme="dark"]) body[data-portal="trainer"] input::placeholder,
+html:not([data-theme="dark"]) body[data-portal="trainer"] textarea::placeholder {
+  color: #8A7F6D !important;
+}
+
+/* Search wrappers get the inset field surface; inner input stays borderless */
+body.pf-staff:not(.dark) .fn-search-pill,
+body.pf-staff:not(.dark) .pp-search,
+body.pf-staff:not(.dark) .ann-search-box,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-search-box {
+  background-color: #F7F4EE !important;
+  border: 1px solid #D9D0BF !important;
+  color: #1C1917 !important;
+}
+
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-search-box {
+  border-radius: 10px !important;
+  overflow: hidden;
+}
+
+body.pf-staff:not(.dark) .fn-search-pill input,
+body.pf-staff:not(.dark) .pp-search input,
+body.pf-staff:not(.dark) .ann-search-box input,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-search-box input {
+  background-color: transparent !important;
+  border: 0 !important;
+  outline: none !important;
+}
+
+body.pf-staff:not(.dark) select option,
+body.member-home:not(.dark) select option,
+html:not([data-theme="dark"]) body[data-portal="trainer"] select option {
+  background-color: #FFFFFF;
+  color: #1C1917;
+}
+
+/* =========================================================
+   7. CUTE ANIMATED MASCOT EMPTY STATES (DARK & LIGHT)
+   Shows ONLY when a section truly has no data:
+   - Never shows on [hidden] elements
+   - Never shows during loading (.fa-spin)
+   - Never shows on error / permission states (.is-error, .fa-triangle-exclamation, .fa-lock, .pf-retry-btn)
+   - Never breaks table <td colspan> cells
+   ========================================================= */
+html body .chart-empty-state[hidden],
+html body .empty-state[hidden],
+html body .pp-empty[hidden],
+html body .pp-empty-state[hidden],
+html body .ann-empty[hidden],
+html body .ann-empty-state[hidden],
+html body .csh-empty[hidden],
+html body .tr-empty[hidden],
+html body .ntf-empty[hidden],
+html body .tw-empty[hidden],
+html body .member-empty[hidden],
+html body .notification-empty[hidden],
+html body .pf-empty[hidden],
+html body .pf-state-box[hidden],
+html body .mt-empty[hidden] {
+  display: none !important;
+}
+
+/* Block/Div empty states (never apply display: flex !important to <td>) */
+html body .chart-empty-state:not([hidden]),
+html body .empty-state:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock)):not(:has(.pf-retry-btn)),
+html body .pp-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock)),
+html body .pp-empty-state:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock)),
+html body .ann-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock)),
+html body .ann-empty-state:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock)),
+html body .csh-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)),
+html body .tr-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock)),
+html body .ntf-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)),
+html body .tw-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock)),
+html body .member-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock)),
+html body .notification-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)),
+html body .pf-state-box:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock)),
+html body .mt-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.pf-retry-btn)) {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  gap: 8px !important;
+}
+
+/* Table cell empty states preserve table-cell colspan behavior */
+html body td.pf-empty:not([hidden]),
+html body tr.fn-review-empty td {
+  display: table-cell !important;
+  text-align: center !important;
+  vertical-align: middle !important;
+}
+
+html body .chart-empty-state:not([hidden])::before,
+html body .empty-state:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock)):not(:has(.pf-retry-btn))::before,
+html body .pp-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock))::before,
+html body .pp-empty-state:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock))::before,
+html body .ann-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock))::before,
+html body .ann-empty-state:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock))::before,
+html body .csh-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation))::before,
+html body .tr-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock))::before,
+html body .ntf-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation))::before,
+html body .tw-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock))::before,
+html body .member-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock))::before,
+html body .notification-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation))::before,
+html body .pf-state-box:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock))::before,
+html body .mt-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.pf-retry-btn))::before,
+html body td.pf-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.pf-retry-btn))::before,
+html body tr.fn-review-empty:not(.is-error) td:not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.pf-retry-btn))::before {
+  content: "";
+  display: block;
+  width: 96px;
+  height: 86px;
+  flex: none;
+  margin: 0 auto 4px;
+  background-image: url("/img/empty-mascot.svg?v=4");
+  background-repeat: no-repeat;
+  background-size: 600% 100%;
+  background-position: 100% 0%;
+  pointer-events: none;
+}
+
+/* Slot 0 (0%): Barbell Press Buddy — Attendance, Check-ins, Trainers */
+html body[data-page="attendance"] .empty-state:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock)):not(:has(.pf-retry-btn))::before,
+html body[data-page="attendance"] .tw-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock))::before,
+html body .tr-empty:not(.tr-empty-compact):not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock))::before,
+html body #attendanceHistoryRoot .pf-state-box:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock))::before {
+  background-position: 0% 0%;
+}
+
+/* Slot 1 (20%): Writing Notebook + Megaphone Buddy — Announcements & Notifications */
+html body[data-page="announcements"] .ann-empty-state:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock))::before,
+html body[data-page="announcements"] .tw-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock))::before,
+html body .ann-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock))::before,
+html body .ntf-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation))::before,
+html body[data-page="notifications"] .tw-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock))::before,
+html body .notification-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation))::before {
+  background-position: 20% 0%;
+}
+
+/* Slot 2 (40%): Reading Open Book / Ledger Buddy — Charts, Reports, Payments, Cashier, Schedule, Membership Type */
+html body .chart-empty-state:not([hidden])::before,
+html body .mt-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.pf-retry-btn))::before,
+html body[data-page="reports"] .empty-state:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock)):not(:has(.pf-retry-btn))::before,
+html body[data-page="payments"] .empty-state:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock)):not(:has(.pf-retry-btn))::before,
+html body[data-page="cashier"] .empty-state:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock)):not(:has(.pf-retry-btn))::before,
+html body #paymentsHistoryRoot .pf-state-box:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock))::before,
+html body[data-page="schedule"] .tw-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock))::before {
+  background-position: 40% 0%;
+}
+
+/* Slot 3 (60%): Jump-Rope Buddy — Members, Athletes, Member Goals */
+html body[data-page="members"] .pp-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock))::before,
+html body[data-page="members"] .pp-empty-state:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock))::before,
+html body[data-page="members"] .empty-state:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock)):not(:has(.pf-retry-btn))::before,
+html body[data-page="members"] .tw-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock))::before,
+html body .pp-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock))::before {
+  background-position: 60% 0%;
+}
+
+/* Slot 4 (80%): Towel Rest Buddy — All Caught Up Requests, Payment Review Queue, Cashiers */
+html body tr.fn-review-empty:not(.is-error) td:not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.pf-retry-btn))::before,
+html body .tr-empty-compact:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock))::before,
+html body .csh-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation))::before {
+  background-position: 80% 0%;
+}
+
+/* Slightly smaller mascot inside compact dropdowns or side lists */
+html body .notification-empty:not([hidden]):not(:has(.fa-spin))::before,
+html body .tr-empty-compact:not([hidden]):not(:has(.fa-triangle-exclamation))::before,
+html body .mt-empty:not([hidden])::before {
+  width: 68px;
+  height: 61px;
+}
+
+@media (max-width: 430px) {
+
+  html body .chart-empty-state:not([hidden])::before,
+  html body .empty-state:not([hidden])::before,
+  html body .pp-empty:not([hidden])::before,
+  html body .ann-empty-state:not([hidden])::before,
+  html body .csh-empty:not([hidden])::before,
+  html body .tr-empty:not([hidden])::before,
+  html body .ntf-empty:not([hidden])::before,
+  html body .tw-empty:not([hidden])::before,
+  html body .pf-state-box:not([hidden])::before,
+  html body td.pf-empty:not([hidden])::before,
+  html body tr.fn-review-empty td::before {
+    width: 76px;
+    height: 68px;
+  }
+}
+
+/* Hide static placeholder icons only when the mascot itself is active (never hide spinners or errors) */
+html body .chart-empty-state:not([hidden])>i,
+html body .empty-state:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock)):not(:has(.pf-retry-btn))>.fn-empty-icon,
+html body .empty-state:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock)):not(:has(.pf-retry-btn))>i,
+html body .pp-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock))>i,
+html body .pp-empty-state:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock))>.pp-empty-ico,
+html body .ann-empty-state:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock))>.ann-empty-art,
+html body .ann-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock))>i,
+html body .csh-empty:not([hidden]):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation))>.csh-empty-ico,
+html body .tr-empty:not([hidden]):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock))>i,
+html body .ntf-empty:not([hidden]):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation))>i,
+html body .tw-empty:not([hidden]):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock))>.tw-empty-ico,
+html body .member-empty:not([hidden]):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock))>i,
+html body .notification-empty:not([hidden]):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation))>i,
+html body .pf-state-box:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)):not(:has(.fa-lock))>i,
+html body .mt-empty:not([hidden]):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation))>i {
+  display: none !important;
+}
+
+/* Clean table empty cells without nested box-inside-box borders */
+html body td .empty-state,
+html body tr.fn-review-empty td {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 28px 16px !important;
+}
+
+html body .chart-empty-state {
+  background: rgba(17, 22, 34, 0.72) !important;
+  border: 1px dashed rgba(255, 255, 255, 0.12) !important;
+  border-radius: 14px !important;
+}
+
+body.pf-staff:not(.dark) .chart-empty-state,
+body.member-home:not(.dark) .chart-empty-state,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .chart-empty-state {
+  background: #FAF7F1 !important;
+  border: 1px dashed #DFD6C5 !important;
+  color: #6B6254 !important;
+}
+
+/* =========================================================
+   8. UNIFIED TABLE, THEAD, TH, ROW & HOVER (DARK + LIGHT)
+      Single table container, thead, and row hover tokens across all portals
+   ========================================================= */
+html body .table-wrapper,
+html body.pf-staff[data-page="attendance"] .ci-table-wrap,
+html body.pf-staff[data-page="members"] .pp-members-wrap,
+html body.pf-staff .fn-table-wrap,
+html body.member-home .pf-table-wrap,
+html body[data-portal="trainer"] .tw-table-wrap {
+  background: var(--pf-surface) !important;
+  background-image: none !important;
+  border: 1px solid var(--pf-border) !important;
+  border-radius: 14px;
+  overflow-x: auto;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+html body table thead,
+html body table thead tr,
+html body.pf-staff[data-page="attendance"] .ci-table thead tr,
+html body.pf-staff[data-page="members"] .pp-members-table thead tr,
+html body.pf-staff[data-page="payments"] .fn-table thead tr,
+html body.pf-staff[data-page="reports"] .fn-table thead tr,
+html body.pf-staff[data-page="cashier"] .fn-table thead tr,
+html body.member-home .pf-table thead tr,
+html body[data-portal="trainer"] .tw-table thead tr,
+html body[data-portal="trainer"] table thead tr {
+  background: var(--pf-surface-thead) !important;
+  background-color: var(--pf-surface-thead) !important;
+  background-image: none !important;
+  border-bottom: 1px solid var(--pf-border) !important;
+}
+
+html body table thead th,
+html body.pf-staff[data-page="attendance"] .ci-table thead th,
+html body.pf-staff[data-page="members"] .pp-members-table thead th,
+html body.pf-staff[data-page="payments"] .fn-table thead th,
+html body.pf-staff[data-page="reports"] .fn-table thead th,
+html body.pf-staff[data-page="cashier"] .fn-table thead th,
+html body.member-home .pf-table thead th,
+html body[data-portal="trainer"] .tw-table thead th,
+html body[data-portal="trainer"] table thead th {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  color: var(--pf-muted) !important;
+  border-bottom: 1px solid var(--pf-border) !important;
+}
+
+html body table tbody tr:not(.fn-review-empty):not(:has(.empty-state)):not(:has(td[colspan])),
+html body.pf-staff[data-page="attendance"] .ci-table tbody tr:not(:has(td[colspan])),
+html body.pf-staff[data-page="members"] .pp-members-table tbody tr:not(:has(td[colspan])),
+html body.pf-staff[data-page="payments"] .fn-table tbody tr:not(.fn-review-empty):not(:has(td[colspan])),
+html body.pf-staff[data-page="reports"] .fn-table tbody tr:not(:has(td[colspan])),
+html body.pf-staff[data-page="cashier"] .fn-table tbody tr:not(:has(td[colspan])),
+html body.member-home .pf-table tbody tr:not(:has(td[colspan])),
+html body[data-portal="trainer"] .tw-table tbody tr:not(:has(td[colspan])) {
+  background: var(--pf-surface) !important;
+  background-color: var(--pf-surface) !important;
+  background-image: none !important;
+  color: var(--pf-text) !important;
+  border-bottom: 1px solid var(--pf-row-divider) !important;
+}
+
+html body table tbody td {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+
+  html body table tbody tr:not(.fn-review-empty):not(:has(.empty-state)):not(:has(td[colspan])):hover,
+  html body.pf-staff[data-page="attendance"] .ci-table tbody tr:not(:has(td[colspan])):hover,
+  html body.pf-staff[data-page="members"] .pp-members-table tbody tr:not(:has(td[colspan])):hover,
+  html body.pf-staff[data-page="payments"] .fn-table tbody tr:not(.fn-review-empty):not(:has(td[colspan])):hover,
+  html body.pf-staff[data-page="reports"] .fn-table tbody tr:not(:has(td[colspan])):hover,
+  html body.pf-staff[data-page="cashier"] .fn-table tbody tr:not(:has(td[colspan])):hover,
+  html body.member-home .pf-table tbody tr:not(:has(td[colspan])):hover,
+  html body[data-portal="trainer"] .tw-table tbody tr:not(:has(td[colspan])):hover,
+  html body[data-portal="trainer"] table tbody tr:not(:has(td[colspan])):hover {
+    background: var(--pf-tbl-row-hover) !important;
+    background-color: var(--pf-tbl-row-hover) !important;
+  }
+
+  html body[data-portal="trainer"] table tbody tr:not(:has(td[colspan])):hover td,
+  html body table tbody tr:hover td {
+    background: transparent !important;
+  }
+}
+
+/* =========================================================
+   9. MOBILE VIEWPORT (375px-430px) ZERO HORIZONTAL OVERFLOW
+   ========================================================= */
+@media (max-width: 768px) {
+
+  html,
+  body,
+  html body .dashboard,
+  html body main.main-content,
+  html body .member-main {
+    max-width: 100% !important;
+    overflow-x: clip !important;
+  }
+
+  html body .table-wrapper,
+  html body .fn-table-wrap,
+  html body .pf-table-wrap,
+  html body[data-portal="trainer"] .tw-table-wrap,
+  html body[data-portal="trainer"] .table-wrap {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Stacked card tables never force min-width > viewport width */
+  html body .registrations-panel table,
+  html body.pf-staff[data-page="attendance"] .ci-table,
+  html body.pf-staff[data-page="members"] .pp-members-table,
+  html body.pf-staff .fn-table--tx,
+  html body.pf-staff .fn-table--sub,
+  html body.pf-staff .fn-table--hist,
+  html body.pf-staff .fn-table--cashier-hist,
+  html body.pf-staff .fn-table--review,
+  html body.pf-staff .csh-table {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  html body.pf-staff[data-page="attendance"] .ci-table tbody tr:not(:has(td[colspan])),
+  html body.pf-staff[data-page="members"] .pp-members-table tbody tr:not(:has(td[colspan])),
+  html body.pf-staff .fn-table--tx tbody tr:not(:has(td[colspan])),
+  html body.pf-staff .fn-table--sub tbody tr:not(:has(td[colspan])),
+  html body.pf-staff .fn-table--hist tbody tr:not(:has(td[colspan])),
+  html body.pf-staff .fn-table--cashier-hist tbody tr:not(:has(td[colspan])) {
+    background: var(--pf-surface) !important;
+    background-color: var(--pf-surface) !important;
+    border: 1px solid var(--pf-border) !important;
+    border-radius: 12px !important;
+  }
+
+  /* Responsive text & container safety on narrow phones */
+  html body .panel,
+  html body .stat-card,
+  html body .fn-card,
+  html body .pp-card,
+  html body .ann-card,
+  html body .ann-item,
+  html body .tr-card,
+  html body .csh-card,
+  html body .tw-card,
+  html body .member-panel,
+  html body .mb-bento-card {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+}
+
+/* =========================================================
+   10. INTEGRATED HERO SHORTCUT DOCK (4-col desktop, 2x2 tablet/mobile)
+   Bottom-docked quick-access bar inside each dashboard hero banner.
+   ========================================================= */
+html body .has-hero-dock {
+  --pf-dock-px: 30px;
+  padding-bottom: 0 !important;
+  row-gap: 20px !important;
+}
+
+html body .tw-dash-hero.has-hero-dock,
+html body.member-home .mb-hero-ticket-layout.has-hero-dock {
+  --pf-dock-px: 32px;
+}
+
+html body .has-hero-dock>.pf-hero-dock {
+  grid-column: 1 / -1;
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 4px calc(var(--pf-dock-px) * -1) 0;
+  background: rgba(9, 13, 22, 0.78);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+html body .pf-hero-dock .pf-hero-shortcut {
+  -webkit-appearance: none;
+  appearance: none;
+  border: 0;
+  font: inherit;
+  text-align: left;
+  width: 100%;
+  background: transparent;
+  background-color: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  min-height: 64px;
+  min-width: 0;
+  text-decoration: none;
+  color: #f8fafc !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
+  transition: background-color 0.15s ease;
+}
+
+html body .pf-hero-dock .pf-hero-shortcut:last-child {
+  border-right: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html body .pf-hero-dock .pf-hero-shortcut:not(:disabled):not([aria-disabled="true"]):hover {
+    background: rgba(255, 255, 255, 0.06) !important;
+    background-color: rgba(255, 255, 255, 0.06) !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+
+  html body .pf-hero-dock .pf-hero-shortcut:not(:disabled):not([aria-disabled="true"]):hover .pf-hs-chev {
+    color: #e8b93a !important;
+  }
+}
+
+html body .pf-hero-dock .pf-hero-shortcut:not(:disabled):not([aria-disabled="true"]):active {
+  background: rgba(255, 255, 255, 0.11) !important;
+  background-color: rgba(255, 255, 255, 0.11) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+html body .pf-hero-dock .pf-hero-shortcut:focus-visible {
+  background: transparent !important;
+  background-color: transparent !important;
+  outline: 2px solid #e8b93a !important;
+  outline-offset: -2px !important;
+  box-shadow: none !important;
+}
+
+html body .pf-hero-dock .pf-hero-shortcut:disabled,
+html body .pf-hero-dock .pf-hero-shortcut[aria-disabled="true"] {
+  opacity: 0.48 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+
+html body .pf-hero-dock .pf-hs-ico {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  font-size: 14px;
+}
+
+html body .pf-hero-dock .pf-hs-ico.is-gold {
+  background: rgba(232, 185, 58, 0.16);
+  color: #e8b93a;
+  border: 1px solid rgba(232, 185, 58, 0.24);
+}
+
+html body .pf-hero-dock .pf-hs-ico.is-cyan {
+  background: rgba(56, 189, 248, 0.14);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.22);
+}
+
+html body .pf-hero-dock .pf-hs-ico.is-green {
+  background: rgba(74, 222, 128, 0.14);
+  color: #4ade80;
+  border: 1px solid rgba(74, 222, 128, 0.22);
+}
+
+html body .pf-hero-dock .pf-hs-ico.is-violet {
+  background: rgba(167, 139, 250, 0.15);
+  color: #c4b5fd;
+  border: 1px solid rgba(167, 139, 250, 0.24);
+}
+
+html body .pf-hero-dock .pf-hs-body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+html body .pf-hero-dock .pf-hs-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #94a3b8 !important;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+html body .pf-hero-dock .pf-hs-val {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #f8fafc !important;
+  line-height: 1.25;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+html body .pf-hero-dock .pf-hs-chev {
+  color: rgba(248, 250, 252, 0.42) !important;
+  font-size: 11px;
+  flex: none;
+  transition: color 0.15s ease;
+}
+
+@media (max-width: 960px) {
+
+  html body .ow-hero.has-hero-dock,
+  html body .csh-hero.has-hero-dock,
+  html body .tw-dash-hero.has-hero-dock,
+  html body.member-home .mb-hero-ticket-layout.has-hero-dock {
+    --pf-dock-px: 20px;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    padding-bottom: 0 !important;
+  }
+
+  html body .has-hero-dock>.pf-hero-dock {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  html body .pf-hero-dock .pf-hero-shortcut:nth-child(2n) {
+    border-right: 0;
+  }
+
+  html body .pf-hero-dock .pf-hero-shortcut:nth-child(-n+2) {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+}
+
+@media (max-width: 640px) {
+
+  html body .ow-hero.has-hero-dock,
+  html body .csh-hero.has-hero-dock,
+  html body .tw-dash-hero.has-hero-dock {
+    --pf-dock-px: 16px;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    padding-bottom: 0 !important;
+  }
+
+  html body.member-home .mb-hero-ticket-layout.has-hero-dock {
+    --pf-dock-px: 14px;
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    padding-bottom: 0 !important;
+  }
+
+  html body .pf-hero-dock .pf-hero-shortcut {
+    padding: 12px 13px;
+    gap: 10px;
+    min-height: 58px;
+  }
+
+  html body .pf-hero-dock .pf-hs-ico {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    font-size: 13px;
+  }
+
+  html body .pf-hero-dock .pf-hs-label {
+    font-size: 11.5px;
+  }
+
+  html body .pf-hero-dock .pf-hs-val {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 380px) {
+  html body .pf-hero-dock .pf-hero-shortcut {
+    padding: 10px 10px;
+    gap: 8px;
+  }
+
+  html body .pf-hero-dock .pf-hs-ico {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+
+  html body .pf-hero-dock .pf-hs-val {
+    font-size: 12.5px;
+  }
+}
+
+/* Trainer floating hero card stays dark glass & Schedule active day text stays crisp on gold */
+html body[data-portal="trainer"] .tw-duty-card {
+  background: rgba(15, 21, 34, 0.88) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  color: #f8fafc !important;
+}
+
+html body[data-portal="trainer"] .tw-dow-btn.active .tw-dow-short,
+html body[data-portal="trainer"] .tw-dow-btn.active .tw-dow-name,
+html body[data-portal="trainer"] .tw-dow-btn.active .tw-dow-count {
+  color: var(--pf-state-gold-ink) !important;
+}
+
+html body[data-portal="trainer"] .tw-dow-btn.active .tw-dow-count {
+  background: rgba(11, 15, 25, 0.14) !important;
+}
+
+/* =========================================================
+   11. UNIFIED DROPDOWNS, DATE CALENDARS & TIME PICKERS
+       Matches the ProFit icon-pill trigger + bare-icon menu
+       design across Owner, Cashier, Trainer, Member & Claim.
+   ========================================================= */
+.pfc-wrap,
+.pfc-popover {
+  --pfc-bg: #131B2B;
+  --pfc-bg-hover: rgba(255, 255, 255, 0.06);
+  --pfc-bg-active: rgba(255, 255, 255, 0.11);
+  --pfc-pop-bg: #0B1220;
+  --pfc-border: rgba(255, 255, 255, 0.14);
+  --pfc-pop-border: rgba(232, 185, 58, 0.36);
+  --pfc-text: #F4F6FB;
+  --pfc-muted: #94A3B8;
+  --pfc-shadow: 0 20px 44px rgba(0, 0, 0, 0.62);
+}
+
+html[data-theme="light"] .pfc-wrap,
+html[data-theme="light"] .pfc-popover,
+html:not([data-theme="dark"]):not(.dark) body:not(.dark) .pfc-wrap,
+html:not([data-theme="dark"]):not(.dark) body:not(.dark) .pfc-popover {
+  --pfc-bg: #F7F4EE;
+  --pfc-bg-hover: #EFE7D9;
+  --pfc-bg-active: #E7DEC9;
+  --pfc-pop-bg: #FFFFFF;
+  --pfc-border: #D9D0BF;
+  --pfc-pop-border: #E6DFD2;
+  --pfc-text: #1C1917;
+  --pfc-muted: #6B6254;
+  --pfc-shadow: 0 16px 36px rgba(26, 20, 7, 0.14);
+}
+
+.pfc-wrap {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.pfc-wrap--compact {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 102px;
+}
+
+.pfc-wrap--inline {
+  width: auto;
+  min-width: 174px;
+}
+
+.pfc-sr-native {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  overflow: hidden !important;
+  border: 0 !important;
+}
+
+html body .pfc-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  height: 44px;
+  padding: 0 14px 0 8px;
+  border-radius: 12px !important;
+  background: var(--pfc-bg) !important;
+  background-color: var(--pfc-bg) !important;
+  border: 1px solid var(--pfc-border) !important;
+  color: var(--pfc-text) !important;
+  font: 700 13.5px/1.2 "Plus Jakarta Sans", Inter, system-ui, sans-serif;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: none !important;
+  transform: none !important;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.pfc-wrap--compact .pfc-trigger {
+  min-height: 40px;
+  height: 40px;
+  padding: 0 10px 0 7px;
+  gap: 8px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html body .pfc-trigger:not(:disabled):hover {
+    background: var(--pfc-bg-hover) !important;
+    background-color: var(--pfc-bg-hover) !important;
+    border-color: rgba(232, 185, 58, 0.55) !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+}
+
+html body .pfc-trigger[aria-expanded="true"] {
+  border-color: rgba(232, 185, 58, 0.72) !important;
+  color: #F5B73B !important;
+}
+
+html[data-theme="light"] .pfc-trigger[aria-expanded="true"],
+html:not([data-theme="dark"]):not(.dark) body:not(.dark) .pfc-trigger[aria-expanded="true"] {
+  color: #8A6212 !important;
+}
+
+html body .pfc-trigger:not(:disabled):active {
+  background: var(--pfc-bg-active) !important;
+  background-color: var(--pfc-bg-active) !important;
+  transform: none !important;
+}
+
+html body .pfc-trigger:focus-visible {
+  background: var(--pfc-bg) !important;
+  background-color: var(--pfc-bg) !important;
+  outline: 2px solid #E8B93A !important;
+  outline-offset: 2px !important;
+  box-shadow: none !important;
+}
+
+html body .pfc-trigger:disabled {
+  opacity: 0.48 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+
+/* Trigger left icon square (dark #070B14 inset box + crisp border matching 1st pic) */
+.pfc-trig-ico,
+html body .pp-dd-ico {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 8px !important;
+  flex: none;
+  display: inline-grid !important;
+  place-items: center !important;
+  font-size: 13px !important;
+  background: #070B14 !important;
+  box-shadow: none !important;
+}
+
+.pfc-trig-ico.is-gold,
+html body .pp-dd-ico.is-amber {
+  color: #F5B73B !important;
+  border: 1px solid rgba(232, 185, 58, 0.48) !important;
+}
+
+.pfc-trig-ico.is-cyan,
+html body .pp-dd-ico.is-cyan {
+  color: #38BDF8 !important;
+  border: 1px solid rgba(56, 189, 248, 0.45) !important;
+}
+
+.pfc-trig-ico.is-green {
+  color: #10B981 !important;
+  border: 1px solid rgba(16, 185, 129, 0.45) !important;
+}
+
+.pfc-trig-ico.is-red {
+  color: #EF4444 !important;
+  border: 1px solid rgba(239, 68, 68, 0.45) !important;
+}
+
+.pfc-trig-ico.is-violet {
+  color: #A78BFA !important;
+  border: 1px solid rgba(167, 139, 250, 0.45) !important;
+}
+
+.pfc-trig-ico.is-slate {
+  color: #94A3B8 !important;
+  border: 1px solid rgba(148, 163, 184, 0.42) !important;
+}
+
+html[data-theme="light"] .pfc-trig-ico,
+html:not([data-theme="dark"]):not(.dark) body:not(.dark) .pfc-trig-ico,
+body.pf-staff:not(.dark) .pp-dd-ico {
+  background: #FAF3E0 !important;
+}
+
+html[data-theme="light"] .pfc-trig-ico.is-gold,
+html:not([data-theme="dark"]):not(.dark) body:not(.dark) .pfc-trig-ico.is-gold,
+body.pf-staff:not(.dark) .pp-dd-ico.is-amber {
+  color: #9A6B0D !important;
+  border-color: rgba(154, 107, 13, 0.35) !important;
+}
+
+html[data-theme="light"] .pfc-trig-ico.is-cyan,
+html:not([data-theme="dark"]):not(.dark) body:not(.dark) .pfc-trig-ico.is-cyan,
+body.pf-staff:not(.dark) .pp-dd-ico.is-cyan {
+  color: #0369A1 !important;
+  background: #ECFEFF !important;
+  border-color: rgba(3, 105, 161, 0.28) !important;
+}
+
+html[data-theme="light"] .pfc-trig-ico.is-green,
+html:not([data-theme="dark"]):not(.dark) body:not(.dark) .pfc-trig-ico.is-green {
+  color: #047857 !important;
+  background: #ECFDF5 !important;
+  border-color: rgba(4, 120, 87, 0.28) !important;
+}
+
+html[data-theme="light"] .pfc-trig-ico.is-red,
+html:not([data-theme="dark"]):not(.dark) body:not(.dark) .pfc-trig-ico.is-red {
+  color: #B91C1C !important;
+  background: #FEF2F2 !important;
+  border-color: rgba(185, 28, 28, 0.28) !important;
+}
+
+html[data-theme="light"] .pfc-trig-ico.is-violet,
+html:not([data-theme="dark"]):not(.dark) body:not(.dark) .pfc-trig-ico.is-violet {
+  color: #6D28D9 !important;
+  background: #F5F3FF !important;
+  border-color: rgba(109, 40, 217, 0.28) !important;
+}
+
+/* Bare solid option icons inside menu lists (no square box/border, matching 1st pic) */
+.pfc-opt-ico {
+  width: 18px;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1;
+  flex: none;
+  background: none !important;
+  border: 0 !important;
+}
+
+.pfc-opt-ico.is-gold {
+  color: #F5B73B;
+}
+
+.pfc-opt-ico.is-cyan {
+  color: #38BDF8;
+}
+
+.pfc-opt-ico.is-green {
+  color: #10B981;
+}
+
+.pfc-opt-ico.is-red {
+  color: #EF4444;
+}
+
+.pfc-opt-ico.is-violet {
+  color: #A78BFA;
+}
+
+.pfc-opt-ico.is-slate {
+  color: #94A3B8;
+}
+
+html[data-theme="light"] .pfc-opt-ico.is-gold,
+html:not([data-theme="dark"]):not(.dark) body:not(.dark) .pfc-opt-ico.is-gold {
+  color: #B45309;
+}
+
+html[data-theme="light"] .pfc-opt-ico.is-cyan,
+html:not([data-theme="dark"]):not(.dark) body:not(.dark) .pfc-opt-ico.is-cyan {
+  color: #0284C7;
+}
+
+html[data-theme="light"] .pfc-opt-ico.is-green,
+html:not([data-theme="dark"]):not(.dark) body:not(.dark) .pfc-opt-ico.is-green {
+  color: #059669;
+}
+
+html[data-theme="light"] .pfc-opt-ico.is-red,
+html:not([data-theme="dark"]):not(.dark) body:not(.dark) .pfc-opt-ico.is-red {
+  color: #DC2626;
+}
+
+html[data-theme="light"] .pfc-opt-ico.is-violet,
+html:not([data-theme="dark"]):not(.dark) body:not(.dark) .pfc-opt-ico.is-violet {
+  color: #7C3AED;
+}
+
+html[data-theme="light"] .pfc-opt-ico.is-slate,
+html:not([data-theme="dark"]):not(.dark) body:not(.dark) .pfc-opt-ico.is-slate {
+  color: #64748B;
+}
+
+.pfc-trig-lbl {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pfc-trig-lbl.is-placeholder {
+  color: var(--pfc-muted);
+  font-weight: 500;
+}
+
+.pfc-trig-caret {
+  font-size: 11px;
+  color: var(--pfc-muted);
+  flex: none;
+  transition: transform 160ms ease, color 160ms ease;
+}
+
+.pfc-trigger[aria-expanded="true"] .pfc-trig-caret {
+  transform: rotate(180deg);
+  color: #F5B73B;
+}
+
+/* Elevated Popover Shell */
+.pfc-popover {
+  position: fixed;
+  z-index: 99999;
+  padding: 8px;
+  border-radius: 16px;
+  background: var(--pfc-pop-bg);
+  border: 1px solid var(--pfc-pop-border);
+  box-shadow: var(--pfc-shadow);
+  color: var(--pfc-text);
+  box-sizing: border-box;
+  font-family: "Plus Jakarta Sans", Inter, system-ui, sans-serif;
+}
+
+.pfc-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.pfc-search-wrap i {
+  position: absolute;
+  left: 11px;
+  font-size: 12px;
+  color: var(--pfc-muted);
+  pointer-events: none;
+}
+
+.pfc-search {
+  width: 100%;
+  height: 36px;
+  padding: 0 12px 0 32px;
+  border-radius: 10px;
+  border: 1px solid var(--pfc-border);
+  background: var(--pfc-bg);
+  color: var(--pfc-text);
+  font: 500 13px/1 inherit;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.pfc-search:focus {
+  border-color: #E8B93A;
+}
+
+.pfc-select-list {
+  display: grid;
+  gap: 3px;
+  max-height: 260px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.pfc-select-empty {
+  padding: 16px 12px;
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--pfc-muted);
+}
+
+html body .pfc-select-opt {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 40px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 10px !important;
+  background: transparent !important;
+  color: var(--pfc-text) !important;
+  font: 700 14px/1.2 inherit;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: none !important;
+  transform: none !important;
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.pfc-opt-lbl {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html body .pfc-select-opt:not(:disabled):not(.is-selected):hover {
+    background: var(--pfc-bg-hover) !important;
+    background-color: var(--pfc-bg-hover) !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+}
+
+html body .pfc-select-opt:not(:disabled):active {
+  background: var(--pfc-bg-active) !important;
+}
+
+html body .pfc-select-opt.is-selected {
+  background: rgba(232, 185, 58, 0.16) !important;
+  background-color: rgba(232, 185, 58, 0.16) !important;
+  color: #F5B73B !important;
+}
+
+html[data-theme="light"] .pfc-select-opt.is-selected,
+html:not([data-theme="dark"]):not(.dark) body:not(.dark) .pfc-select-opt.is-selected {
+  color: #8A6212 !important;
+}
+
+html body .pfc-select-opt:focus-visible {
+  outline: 2px solid #E8B93A !important;
+  outline-offset: -2px !important;
+}
+
+/* Custom Branded Calendar (.pfc-cal) */
+.pfc-cal {
+  display: grid;
+  gap: 8px;
+  padding: 4px;
+}
+
+.pfc-cal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 2px 4px;
+}
+
+.pfc-cal-title {
+  font: 800 14px/1.2 inherit;
+  color: var(--pfc-text);
+}
+
+.pfc-cal-nav {
+  display: flex;
+  gap: 4px;
+}
+
+.pfc-icon-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  border: 1px solid var(--pfc-border);
+  background: var(--pfc-bg);
+  color: var(--pfc-text);
+  display: inline-grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.pfc-icon-btn:hover {
+  background: var(--pfc-bg-hover);
+  border-color: rgba(232, 185, 58, 0.45);
+}
+
+.pfc-cal-dow,
+.pfc-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 3px;
+  text-align: center;
+}
+
+.pfc-cal-dow span {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--pfc-muted);
+  padding: 4px 0;
+}
+
+.pfc-day {
+  height: 34px;
+  border-radius: 9px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--pfc-text);
+  font: 600 12.5px/1 inherit;
+  cursor: pointer;
+  display: inline-grid;
+  place-items: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.pfc-day.is-out {
+  color: var(--pfc-muted);
+  opacity: 0.48;
+}
+
+.pfc-day.is-today:not(.is-selected) {
+  border-color: rgba(232, 185, 58, 0.65);
+  color: #F5B73B;
+}
+
+.pfc-day:not(:disabled):not(.is-selected):hover {
+  background: var(--pfc-bg-hover);
+}
+
+.pfc-day.is-selected {
+  background: #E8B93A !important;
+  color: #0B0F19 !important;
+  font-weight: 800;
+}
+
+.pfc-day:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.pfc-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--pfc-border);
+}
+
+.pfc-foot-btn {
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 9px;
+  border: 1px solid var(--pfc-border);
+  background: transparent;
+  color: var(--pfc-text);
+  font: 700 12px/1 inherit;
+  cursor: pointer;
+}
+
+.pfc-foot-btn:hover {
+  background: var(--pfc-bg-hover);
+}
+
+.pfc-foot-btn.is-primary {
+  background: #E8B93A;
+  border-color: #E8B93A;
+  color: #0B0F19;
+}
+
+/* Custom Branded Time Picker (.pfc-time) */
+.pfc-time {
+  display: grid;
+  gap: 8px;
+  padding: 4px;
+}
+
+.pfc-time-head {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--pfc-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.pfc-time-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.pfc-time-col {
+  display: grid;
+  gap: 3px;
+  max-height: 184px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  padding: 2px;
+}
+
+.pfc-time-opt {
+  height: 32px;
+  border-radius: 8px;
+  border: 0;
+  background: transparent;
+  color: var(--pfc-text);
+  font: 600 13px/1 inherit;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.pfc-time-opt:not(.is-selected):hover {
+  background: var(--pfc-bg-hover);
+}
+
+.pfc-time-opt.is-selected {
+  background: #E8B93A !important;
+  color: #0B0F19 !important;
+  font-weight: 800;
+}
+
+/* Align existing custom listbox dropdowns (members.html & trainers.html) 1:1 with Screenshot 1 */
+html body .pp-status-btn,
+html body .tr-spec-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  padding: 0 14px 0 8px !important;
+  border-radius: 12px !important;
+  background: #131B2B !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  color: #F4F6FB !important;
+  font-weight: 700 !important;
+  box-shadow: none !important;
+}
+
+html body.pf-staff:not(.dark) .pp-status-btn,
+html body.pf-staff:not(.dark) .tr-spec-btn {
+  background: #F7F4EE !important;
+  border-color: #D9D0BF !important;
+  color: #1C1917 !important;
+}
+
+html body .pp-status-btn[aria-expanded="true"],
+html body .tr-spec-btn[aria-expanded="true"] {
+  border-color: rgba(232, 185, 58, 0.72) !important;
+  color: #F5B73B !important;
+  box-shadow: none !important;
+}
+
+html body.pf-staff:not(.dark) .pp-status-btn[aria-expanded="true"],
+html body.pf-staff:not(.dark) .tr-spec-btn[aria-expanded="true"] {
+  color: #8A6212 !important;
+}
+
+html body .pp-status-menu,
+html body .tr-combo-menu,
+html body .tr-spec-menu {
+  border-radius: 16px !important;
+  padding: 8px !important;
+  min-width: 215px !important;
+  max-height: 290px !important;
+  background: #0B1220 !important;
+  border: 1px solid rgba(232, 185, 58, 0.36) !important;
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.62) !important;
+}
+
+html body .tr-spec-btn .pp-status-btn-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+
+html body .tr-spec-btn .pp-dd-caret {
+  font-size: 11px;
+  color: var(--pf-muted, #94A3B8);
+  transition: transform 160ms ease, color 160ms ease;
+}
+
+html body .tr-spec-btn[aria-expanded="true"] .pp-dd-caret {
+  transform: rotate(180deg) !important;
+  color: #F5B73B !important;
+}
+
+html body .ann-select-wrap:has(.pfc-wrap)>i,
+html body .tr-select-wrap:has(.pfc-wrap)>i {
+  display: none !important;
+}
+
+html body.pf-staff:not(.dark) .pp-status-menu,
+html body.pf-staff:not(.dark) .tr-combo-menu,
+html body.pf-staff:not(.dark) .tr-spec-menu {
+  background: #FFFFFF !important;
+  border: 1px solid #E6DFD2 !important;
+  box-shadow: 0 16px 36px rgba(26, 20, 7, 0.14) !important;
+}
+
+html body .pp-status-opt,
+html body .tr-combo-item {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
+  gap: 12px !important;
+  width: 100%;
+  padding: 10px 12px !important;
+  border-radius: 10px !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  color: var(--pf-text) !important;
+  box-shadow: none !important;
+}
+
+html body .pp-status-opt:hover:not(.is-selected),
+html body .tr-combo-item:hover:not(.is-selected) {
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+
+html body.pf-staff:not(.dark) .pp-status-opt:hover:not(.is-selected),
+html body.pf-staff:not(.dark) .tr-combo-item:hover:not(.is-selected) {
+  background: rgba(42, 36, 24, 0.055) !important;
+}
+
+html body .pp-status-opt.is-selected,
+html body .tr-combo-item.is-selected {
+  background: rgba(232, 185, 58, 0.16) !important;
+  color: #F5B73B !important;
+}
+
+html body.pf-staff:not(.dark) .pp-status-opt.is-selected,
+html body.pf-staff:not(.dark) .tr-combo-item.is-selected {
+  color: #8A6212 !important;
+}
+
+@media (max-width: 640px) {
+  .pfc-wrap--inline {
+    width: 100%;
+  }
+
+  .pfc-popover {
+    max-width: calc(100vw - 24px) !important;
+  }
+}
+
+@media (pointer: coarse) {
+
+  html body .pfc-trigger,
+  html body .pfc-select-opt {
+    min-height: 44px;
+  }
+}
+
+/* =========================================================
+   CONTAINER OVERLAP, DROPDOWN STACKING & MODAL SAFETY GUARDS
+   ========================================================= */
+
+/* A. Attendance check-in autocomplete stacking & rounded input focus */
+html body[data-page="attendance"] .checkin-panel {
+  position: relative !important;
+  z-index: 40 !important;
+  overflow: visible !important;
+}
+
+html body[data-page="attendance"] .checkins-table-panel {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+html body[data-page="attendance"] .ci-ac-menu {
+  z-index: 160 !important;
+}
+
+/* B. Dashboard Membership Type legend containment & non-overlapping opaque tooltip */
+html body .membership-type-panel {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+}
+
+html body .membership-type-panel .mt-body {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 16px 18px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  padding: 12px 0 6px !important;
+  box-sizing: border-box !important;
+}
+
+html body .membership-type-panel .mt-donut-wrap {
+  position: relative !important;
+  width: clamp(160px, 14.5vw, 196px) !important;
+  height: clamp(160px, 14.5vw, 196px) !important;
+  flex: 0 0 auto !important;
+  max-width: 100% !important;
+}
+
+html body .membership-type-panel .mt-donut-center strong {
+  font-size: clamp(24px, 2.2vw, 32px) !important;
+}
+
+html body .membership-type-panel .mt-legend {
+  flex: 1 1 175px !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+html body .membership-type-panel .mt-legend-card {
+  padding: 10px 12px !important;
+  gap: 8px !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+html body .membership-type-panel .mt-legend-card:hover,
+html body .membership-type-panel .mt-legend-card:focus-visible {
+  transform: translateY(-1px) !important;
+}
+
+html body .membership-type-panel .mt-card-left {
+  gap: 10px !important;
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+}
+
+html body .membership-type-panel .mt-card-pct {
+  padding: 5px 10px !important;
+  min-width: 46px !important;
+  font-size: 12.5px !important;
+}
+
+html body .membership-type-panel .mt-tooltip {
+  top: calc(100% + 8px) !important;
+  bottom: auto !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 45 !important;
+  background: #070B14 !important;
+  color: #F8FAFC !important;
+  opacity: 1 !important;
+  border: 1px solid rgba(245, 158, 11, 0.55) !important;
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.58) !important;
+  max-width: min(260px, 85vw) !important;
+  white-space: normal !important;
+}
+
+html body:not(.dark) .membership-type-panel .mt-tooltip {
+  background: #14181F !important;
+  color: #FFFFFF !important;
+  border-color: rgba(245, 158, 11, 0.6) !important;
+}
+
+html body .membership-type-panel .menu-wrap .dropdown {
+  z-index: 85 !important;
+}
+
+/* C. Trainers Edit/Add Modal (#trModal / #trForm) clean layout & never-clipped actions */
+html body[data-page="trainers"] .tr-modal-backdrop {
+  overflow-y: auto !important;
+  padding: 16px !important;
+  align-items: center !important;
+  box-sizing: border-box !important;
+}
+
+html body[data-page="trainers"] .tr-modal {
+  max-height: calc(100dvh - 32px) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box !important;
+  padding: 22px 24px 24px !important;
+  overscroll-behavior: contain;
+}
+
+html body[data-page="trainers"] .tr-modal.tr-modal-wide:has(#trAccessSection[hidden]) {
+  width: min(580px, 94vw) !important;
+  max-width: 580px !important;
+}
+
+html body[data-page="trainers"] .tr-modal.tr-modal-wide:has(#trAccessSection:not([hidden])) {
+  width: min(880px, 94vw) !important;
+  max-width: 880px !important;
+}
+
+html body[data-page="trainers"] #trForm:has(#trAccessSection[hidden]) {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 14px !important;
+}
+
+html body[data-page="trainers"] #trForm:has(#trAccessSection:not([hidden])) {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.06fr) minmax(0, 0.94fr) !important;
+  gap: 16px !important;
+  align-items: start !important;
+}
+
+@media (max-width: 860px) {
+  html body[data-page="trainers"] #trForm:has(#trAccessSection:not([hidden])) {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+
+html body[data-page="trainers"] #trForm>.tr-modal-section {
+  width: 100% !important;
+  min-width: 0 !important;
+  overflow: visible !important;
+  box-sizing: border-box !important;
+}
+
+html body[data-page="trainers"] #trForm>.tr-check-wrap,
+html body[data-page="trainers"] #trForm>.tr-status-field,
+html body[data-page="trainers"] #trForm>.tr-modal-actions,
+html body[data-page="trainers"] #trForm>.tr-form-err,
+html body[data-page="trainers"] #trForm>.ann-msg {
+  grid-column: 1 / -1 !important;
+}
+
+html body[data-page="trainers"] #trEditStatusWrap[hidden] {
+  display: none !important;
+}
+
+html body[data-page="trainers"] #trEditStatusWrap .pfc-wrap,
+html body[data-page="trainers"] #trEditStatusWrap .pfc-trigger {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+html body[data-page="trainers"] .tr-field-hint {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--pf-muted, #94A3B8);
+}
+
+html body[data-page="trainers"] .tr-modal-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+  margin-top: 6px !important;
+  padding-top: 12px !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  flex-wrap: wrap !important;
+}
+
+html body[data-page="trainers"] #trDeactivateBtn {
+  margin-right: auto !important;
+}
+
+html body:not(.dark)[data-page="trainers"] .tr-modal-actions {
+  border-top-color: #ECE7DC;
+}
+
+html body[data-page="trainers"] .tr-modal-actions-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+html body[data-page="trainers"] .tr-btn-danger-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 13.5px;
+  cursor: pointer;
+  background: rgba(239, 68, 68, 0.1);
+  color: #FCA5A5;
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease, transform 90ms ease;
+}
+
+html body[data-page="trainers"] .tr-btn-danger-outline:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(248, 113, 113, 0.65);
+  color: #FECACA;
+}
+
+html body[data-page="trainers"] .tr-btn-danger-outline.is-reactivate {
+  background: rgba(34, 197, 94, 0.12);
+  color: #4ADE80;
+  border-color: rgba(74, 222, 128, 0.38);
+}
+
+html body[data-page="trainers"] .tr-btn-danger-outline.is-reactivate:hover:not(:disabled) {
+  background: rgba(34, 197, 94, 0.22);
+  border-color: rgba(74, 222, 128, 0.68);
+  color: #86EFAC;
+}
+
+html body:not(.dark)[data-page="trainers"] .tr-btn-danger-outline {
+  background: #FEF2F2;
+  color: #B91C1C;
+  border-color: #FECACA;
+}
+
+html body:not(.dark)[data-page="trainers"] .tr-btn-danger-outline:hover:not(:disabled) {
+  background: #FEE2E2;
+  border-color: #F87171;
+}
+
+html body:not(.dark)[data-page="trainers"] .tr-btn-danger-outline.is-reactivate {
+  background: #ECFDF5;
+  color: #047857;
+  border-color: #A7F3D0;
+}
+
+html body:not(.dark)[data-page="trainers"] .tr-btn-danger-outline.is-reactivate:hover:not(:disabled) {
+  background: #D1FAE5;
+  border-color: #34D399;
+}
+
+html body[data-page="trainers"] .tr-btn-danger-outline[hidden] {
+  display: none !important;
+}
+
+html body[data-page="trainers"] .tr-status.is-leave {
+  background: rgba(245, 158, 11, 0.16) !important;
+  color: #FBBF24 !important;
+  border: 1px solid rgba(245, 158, 11, 0.36) !important;
+}
+
+html body:not(.dark)[data-page="trainers"] .tr-status.is-leave {
+  background: #FFFBEB !important;
+  color: #B45309 !important;
+  border-color: #FCD34D !important;
+}
+
+html body[data-page="trainers"] .tr-status.is-deactivated {
+  background: rgba(239, 68, 68, 0.16) !important;
+  color: #FCA5A5 !important;
+  border: 1px solid rgba(248, 113, 113, 0.36) !important;
+}
+
+html body:not(.dark)[data-page="trainers"] .tr-status.is-deactivated {
+  background: #FEF2F2 !important;
+  color: #B91C1C !important;
+  border-color: #FECACA !important;
+}
+
+/* D. Site-wide modal height, dropdown stacking & container overflow guards */
+html body .ann-modal-backdrop,
+html body .pay-modal,
+html body .st-modal-backdrop,
+html body .modal-backdrop,
+html body .modal-back,
+html body .jn-legal-modal {
+  overflow-y: auto !important;
+  padding: 16px !important;
+  box-sizing: border-box !important;
+}
+
+html body .ann-modal,
+html body .csh-modal,
+html body .pay-modal-card,
+html body .st-modal,
+html body .tr-help-modal {
+  max-height: calc(100dvh - 32px) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box !important;
+  overscroll-behavior: contain;
+}
+
+html body[data-portal="trainer"] .modal-backdrop .modal {
+  display: flex !important;
+  flex-direction: column !important;
+  max-height: calc(100dvh - 32px) !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+html body[data-portal="trainer"] .modal-backdrop .modal-body {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+}
+
+html body[data-portal="trainer"] .modal-backdrop .modal-foot {
+  flex: 0 0 auto !important;
+}
+
+html body .pp-toolbar,
+html body .tr-dir-toolbar,
+html body .tr-assign-panel,
+html body .ann-toolbar,
+html body .fn-toolbar,
+html body .tw-toolbar {
+  position: relative;
+  z-index: 25;
+  overflow: visible !important;
+}
+
+html body :is(.panel, .tw-card, .fn-card, section):has(.is-open),
+html body :is(.panel, .tw-card, .fn-card, section):has([aria-expanded="true"]),
+html body :is(.panel, .tw-card, .fn-card, section):has(.ci-ac-menu:not([hidden])),
+html body :is(.panel, .tw-card, .fn-card, section):has(.pfc-wrap.is-open),
+html body :is(.pp-toolbar, .tr-dir-toolbar, .ann-toolbar, .fn-toolbar, .tw-toolbar):has(.is-open),
+html body :is(.pp-toolbar, .tr-dir-toolbar, .ann-toolbar, .fn-toolbar, .tw-toolbar):has([aria-expanded="true"]),
+html body :is(.pp-toolbar, .tr-dir-toolbar, .ann-toolbar, .fn-toolbar, .tw-toolbar):has(.pfc-wrap.is-open) {
+  z-index: 65 !important;
+}
+
+html body .registrations-panel {
+  overflow: visible !important;
+}
+
+html body .registrations-panel .table-wrapper {
+  overflow-x: auto !important;
+}
+
+html body .charts-grid>*,
+html body .panels-grid>*,
+html body .kpi-grid>*,
+html body .tw-grid>*,
+html body .tw-coach-kpis>*,
+html body .tr-grid>* {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 1240px) {
+
+  html body .revenue-panel .panel-header,
+  html body .revenue-panel .panel-header #revenuePeriods {
+    flex-wrap: wrap !important;
+  }
+}

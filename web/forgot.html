@@ -1,8 +1,8 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <title>Reset password — ProFit</title>
 <meta name="description" content="Reset your ProFit account password.">
 <link rel="icon" type="image/jpeg" href="logo.jpg">
@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
-<script src="config.js?v=4"></script>
+<script src="config.js?v=9"></script>
 <script src="api.js?v=5"></script>
 <style>
   :root{
@@ -83,13 +83,12 @@
   .portal-brand img{width:36px;height:36px;border-radius:10px;object-fit:cover;display:block;flex:none}
   .portal-brand strong{font-size:22px;font-weight:800;letter-spacing:-.02em;color:#f6efdc}
   .back-link{
-    display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 6px;
+    display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 10px;border-radius:10px;
     color:#9a9788;text-decoration:none;font:600 14px/1 Inter,system-ui,sans-serif;
-    transition:color .18s ease,transform .18s ease;white-space:nowrap;
+    transition:background-color .15s ease,color .15s ease;white-space:nowrap;
   }
-  .back-link i{transition:transform .18s cubic-bezier(.22,1,.36,1)}
-  .back-link:hover{color:var(--gold)}
-  .back-link:hover i{transform:translateX(-3px)}
+  .back-link:hover{background:rgba(255,255,255,.06);color:var(--tx)}
+  .back-link:active{background:rgba(255,255,255,.11)}
 
   /* Full-bleed hero with flat overlay */
   .fp-shell{
@@ -139,8 +138,7 @@
     animation:pfRiseIn .5s cubic-bezier(.22,1,.36,1) .12s both;
   }
   .fp-checks{list-style:none;margin:0 0 24px;padding:0;display:grid;gap:12px;animation:pfRiseIn .5s cubic-bezier(.22,1,.36,1) .18s both}
-  .fp-checks li{display:flex;align-items:center;gap:10px;font-size:14.5px;font-weight:500;color:var(--tx);transition:transform .18s ease}
-  .fp-checks li:hover{transform:translateX(3px)}
+  .fp-checks li{display:flex;align-items:center;gap:10px;font-size:14.5px;font-weight:500;color:var(--tx)}
   .fp-checks i{color:var(--gold);font-size:14px;flex:none}
   .fp-gym-foot{margin:0;font-size:12.5px;color:var(--mu);animation:pfRiseIn .5s cubic-bezier(.22,1,.36,1) .24s both}
 
@@ -172,8 +170,8 @@
     transition:border-color .16s ease,box-shadow .16s ease,background-color .16s ease;
   }
   .fp-input::placeholder{color:var(--mu)}
-  .fp-input:hover:not(:focus){border-color:rgba(232,185,58,.55)}
-  .fp-input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,185,58,.22)}
+  .fp-input:hover:not(:focus):not(:disabled){border-color:rgba(232,185,58,.5)}
+  .fp-input:focus{outline:1.5px solid var(--gold);outline-offset:0;border-color:var(--gold);box-shadow:none}
   .fp-input:-webkit-autofill,
   .fp-input:-webkit-autofill:hover,
   .fp-input:-webkit-autofill:focus{
@@ -188,9 +186,10 @@
   .fp-eye{
     position:absolute;right:4px;top:50%;transform:translateY(-50%);
     width:40px;height:40px;border:0;background:transparent;color:var(--mu);
-    display:grid;place-items:center;cursor:pointer;border-radius:10px;transition:color .15s ease;
+    display:grid;place-items:center;cursor:pointer;border-radius:10px;transition:background-color .15s ease,color .15s ease;
   }
-  .fp-eye:hover{color:var(--gold)}
+  .fp-eye:hover{background:rgba(255,255,255,.06);color:var(--tx)}
+  .fp-eye:active{background:rgba(255,255,255,.11)}
 
   .fp-msg{
     margin:0 0 12px;padding:10px 12px;border-radius:12px;font-size:13px;font-weight:500;
@@ -201,24 +200,25 @@
 
   .fp-btn-gold{
     width:100%;height:44px;border:0;border-radius:999px;
-    background:var(--gold);color:var(--on);
+    background:var(--gold);color:#0b0f19;
     font:700 15px/1 "Plus Jakarta Sans",sans-serif;
     display:inline-flex;align-items:center;justify-content:center;
-    cursor:pointer;transition:filter .16s ease,transform .16s cubic-bezier(.22,1,.36,1),box-shadow .16s ease;
+    cursor:pointer;transition:background-color .15s ease,opacity .15s ease;
   }
-  .fp-btn-gold:hover:not(:disabled){filter:brightness(1.06);transform:translateY(-1px);box-shadow:0 8px 20px -6px rgba(232,185,58,.45)}
-  .fp-btn-gold:active:not(:disabled){transform:translateY(1px);box-shadow:none}
-  .fp-btn-gold:disabled{opacity:.65;cursor:not-allowed}
+  .fp-btn-gold:hover:not(:disabled){background:#f0c44b;transform:none;box-shadow:none;filter:none}
+  .fp-btn-gold:active:not(:disabled){background:#b8860b;color:#0b0f19;transform:none;box-shadow:none}
+  .fp-btn-gold:disabled{opacity:.48;cursor:not-allowed;pointer-events:none;box-shadow:none;transform:none}
 
   .fp-resend-row{margin:10px 0 0;display:flex;justify-content:center}
   .fp-resend-btn{
     width:100%;height:42px;padding:0 16px;border-radius:999px;
     border:1px solid var(--field-line);background:var(--bg2);color:var(--gold);
     font:600 13.5px/1 "Plus Jakarta Sans",sans-serif;cursor:pointer;
-    transition:border-color .16s ease,color .16s ease,opacity .16s ease;
+    transition:background-color .15s ease,opacity .15s ease;
   }
-  .fp-resend-btn:hover:not(:disabled){border-color:var(--gold);color:var(--lime-hi)}
-  .fp-resend-btn:disabled{opacity:.58;color:var(--mu);cursor:not-allowed}
+  .fp-resend-btn:hover:not(:disabled){background:rgba(255,255,255,.06)}
+  .fp-resend-btn:active:not(:disabled){background:rgba(255,255,255,.11)}
+  .fp-resend-btn:disabled{opacity:.48;color:var(--mu);cursor:not-allowed;pointer-events:none}
 
   .fp-steps{
     display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
@@ -265,7 +265,7 @@
     font:700 20px/1 "Plus Jakarta Sans",Inter,system-ui,sans-serif;
     transition:border-color .16s ease,box-shadow .16s ease;
   }
-  .fp-otp-digit:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,185,58,.22)}
+  .fp-otp-digit:focus{outline:1.5px solid var(--gold);outline-offset:0;border-color:var(--gold);box-shadow:none}
   .fp-done-box{text-align:center;padding:8px 0 4px}
   .fp-done-box[hidden]{display:none}
   .fp-done-icon{
@@ -282,10 +282,10 @@
   }
   @media(max-width:768px){
     footer.site-footer,.site-footer{display:none!important}
-    .portal-nav{height:58px;min-height:58px;padding:0 16px}
+    .portal-nav{height:auto;min-height:58px;padding:env(safe-area-inset-top,0px) 16px 0}
     .portal-brand img{width:32px;height:32px}
     .portal-brand strong{font-size:20px}
-    .fp-shell{min-height:calc(100vh - 58px);padding:20px 14px 28px}
+    .fp-shell{min-height:calc(100dvh - 58px);padding:20px 14px calc(28px + env(safe-area-inset-bottom,0px))}
     .fp-title{font-size:clamp(30px,8vw,42px);margin-bottom:10px}
     .fp-desc{font-size:14.5px;margin-bottom:16px}
     .fp-checks{gap:8px;margin-bottom:14px}
@@ -293,12 +293,25 @@
     .fp-input{height:46px;font-size:16px}
     .fp-btn-gold{height:46px}
   }
+  @media(max-width:400px){
+    .fp-card{padding:18px 14px}
+    .fp-steps{gap:5px}
+    .fp-step{flex-direction:column;text-align:center;padding:6px 4px;font-size:10.5px;gap:4px}
+    .fp-otp-boxes{gap:5px}
+    .fp-otp-digit{height:44px;font-size:18px}
+  }
+  @media(pointer:coarse){
+    .fp-input,.fp-otp-digit{font-size:16px}
+    button,a{touch-action:manipulation}
+  }
+  html{-webkit-tap-highlight-color:transparent;overscroll-behavior:none}
+  body{min-height:100dvh}
   @media(prefers-reduced-motion:reduce){
     *{transition:none !important;animation:none !important}
   }
 </style>
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script>
-<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
+<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17"><meta name="color-scheme" content="light dark"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
 <body class="portal-body auth-page dark public-dark-theme">
 <header class="portal-nav">
   <a class="portal-brand" href="/">

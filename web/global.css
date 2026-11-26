@@ -3375,7 +3375,7 @@ body .dashboard .sidebar li a.active:hover {
   background: var(--gold-grad) !important;
   color: var(--on-accent) !important;
   box-shadow: none !important;
-  inset auto;
+  inset: auto;
 }
 body .dashboard .sidebar li a.active .icon { color: var(--on-accent) !important; }
 body .dashboard .sidebar li a.active .text { color: var(--on-accent); font-weight: 700; }
@@ -6276,7 +6276,7 @@ html.auth-checking::before { display: none !important; content: none !important;
 .year-stepper[hidden]{display:none}
 .year-stepper button{width:28px;height:28px;border:0;border-radius:50%;background:transparent;color:var(--text);font-size:18px;cursor:pointer}
 .year-stepper button:hover{background:var(--card)}
-.year-stepper input{width:64px;border:0;background:transparent;color:var(--text);font-weight:700;text-align:center;font-size:13px;-moz-appearance:textfield}
+.year-stepper input{width:64px;border:0;background:transparent;color:var(--text);font-weight:700;text-align:center;font-size:13px;-moz-appearance:textfield;appearance:textfield}
 .year-stepper input::-webkit-outer-spin-button,.year-stepper input::-webkit-inner-spin-button{-webkit-appearance:none}
 @media (max-width:560px){
   .portal-tabs{flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
@@ -7183,6 +7183,7 @@ body:not(.dark) .chart-stepper .stepper-label.is-editable:focus-visible {
   box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.35) !important;
   font-variant-numeric: tabular-nums !important;
   -moz-appearance: textfield !important;
+  appearance: textfield !important;
 }
 .chart-stepper .stepper-input::-webkit-inner-spin-button,
 .chart-stepper .stepper-input::-webkit-outer-spin-button {
@@ -13652,7 +13653,9 @@ html body.dark .theme-toggle {
   html body .topbar-right .theme-toggle,
   html body .topbar-right .notification,
   html body .topbar-right .topbar-avatar {
-    border-radius: 10px !important;
+    border-radius: 50% !important;
+    aspect-ratio: 1 / 1;
+    overflow: hidden !important;
     display: grid !important;
     place-items: center !important;
     border: 1px solid var(--border) !important;
@@ -13859,13 +13862,12 @@ html body.dark .theme-toggle {
     border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent) !important;
   }
 
-  /* Touch Form Controls - 16px font prevents iOS auto-zoom */
+  /* Touch Form Controls - 16px font prevents iOS auto-zoom without clobbering icon padding */
   html body .main-content :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
-    font-size: 15px !important;
+    font-size: 16px !important;
     height: 44px !important;
     min-height: 44px !important;
     border-radius: 12px !important;
-    padding: 0 14px !important;
     width: 100% !important;
     box-sizing: border-box !important;
   }
@@ -15152,4 +15154,444 @@ body.pf-staff .pf-mob-sheet:not(.on) {
   display: none !important;
   visibility: hidden !important;
   pointer-events: none !important;
+}
+
+
+/* ============================================================================
+   Mobile-Native Baseline (viewport, touch, scroll, safe-area, press feedback)
+   ============================================================================ */
+html {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior: none;
+}
+body { overscroll-behavior: none; }
+.dashboard { min-height: 100dvh; }
+@media (pointer: coarse) {
+  input, textarea, select { font-size: 16px !important; }
+}
+button, a, [role="button"], .pf-mob-tab, .pf-mob-chip, .chip {
+  touch-action: manipulation;
+}
+button, [role="button"], .pf-mob-tab, .pf-mob-chip, .chip, .pf-mob-sheet-bar {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+.pf-mob-tab:active, .pf-mob-chip:active, .pp-btn:active:not(:disabled) {
+  transform: scale(0.97);
+  transition: transform 100ms ease-out;
+}
+.pf-mob-sheet, .notification-panel { overscroll-behavior: contain; }
+.pf-mob-sheet-bar { touch-action: pan-x; }
+@media (max-width: 980px) {
+  html body.pf-staff .main-content {
+    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important;
+    overflow-x: clip;
+  }
+}
+@media (max-width: 768px) {
+  body.pf-staff .topbar {
+    padding-top: calc(12px + env(safe-area-inset-top, 0px)) !important;
+  }
+}
+@media (max-width: 440px) {
+  body.pf-staff .topbar {
+    gap: 8px !important;
+    padding: calc(10px + env(safe-area-inset-top, 0px)) 12px 10px !important;
+  }
+  body.pf-staff .topbar-title h1 {
+    font-size: clamp(14px, 4.1vw, 17px) !important;
+  }
+  body.pf-staff .topbar-actions {
+    gap: 6px !important;
+  }
+  body.pf-staff .topbar-actions .theme-toggle,
+  body.pf-staff .topbar-actions .notification,
+  body.pf-staff .topbar-avatar {
+    width: 36px !important;
+    height: 36px !important;
+  }
+  body.pf-staff .pf-mob-tab {
+    font-size: 10px !important;
+  }
+}
+@media (hover: none) {
+  .pp-btn:hover, .pf-ava-opt:hover, .pf-mob-chip:hover {
+    transform: none !important;
+  }
+}
+
+/* ============================================================================
+   Root-Cause Bottom Scroll Clearance, Unified Header, Circular Avatars &
+   Compact Mobile Container Sizing (Profile, Settings & Shared Staff Pages)
+   ============================================================================ */
+html body.pf-staff,
+html body.pf-staff .dashboard {
+  height: auto !important;
+  min-height: 100dvh !important;
+  overflow-y: visible !important;
+}
+
+html body.pf-staff .dashboard > main.main-content {
+  height: auto !important;
+  min-height: 100dvh !important;
+  overflow-x: clip !important;
+  overflow-y: visible !important;
+  padding-bottom: 56px !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 980px) {
+  html body.pf-staff .dashboard > main.main-content {
+    padding-bottom: calc(112px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+/* Unified Portal Header Parity */
+html body.pf-staff .topbar {
+  min-height: 68px !important;
+  padding: 12px 24px !important;
+  gap: 12px !important;
+}
+
+html body.pf-staff .topbar-title {
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+}
+
+html body.pf-staff .topbar-title h1 {
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+html body.pf-staff .topbar-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  flex: none !important;
+}
+
+html body.pf-staff .topbar-actions .theme-toggle,
+html body.pf-staff .topbar-actions .notification,
+html body.pf-staff .topbar-actions .topbar-avatar,
+html body.pf-staff .topbar-actions .notification-wrap,
+html body.pf-staff .topbar-right .theme-toggle,
+html body.pf-staff .topbar-right .notification,
+html body.pf-staff .topbar-right .topbar-avatar,
+html body.pf-staff .topbar-right .notification-wrap {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  flex: 0 0 40px !important;
+}
+
+html body.pf-staff .topbar-actions .theme-toggle,
+html body.pf-staff .topbar-actions .notification,
+html body.pf-staff .topbar-actions .topbar-avatar,
+html body.pf-staff .topbar-right .theme-toggle,
+html body.pf-staff .topbar-right .notification,
+html body.pf-staff .topbar-right .topbar-avatar {
+  border-radius: 50% !important;
+  aspect-ratio: 1 / 1 !important;
+  overflow: hidden !important;
+}
+
+@media (max-width: 480px) {
+  html body.pf-staff .topbar {
+    min-height: 58px !important;
+    padding: calc(10px + env(safe-area-inset-top, 0px)) 12px 10px !important;
+    gap: 8px !important;
+    margin-bottom: 12px !important;
+  }
+
+  html body.pf-staff .topbar-title h1 {
+    font-size: clamp(15px, 4.1vw, 17px) !important;
+  }
+
+  html body.pf-staff .topbar-actions {
+    gap: 8px !important;
+  }
+
+  html body.pf-staff .topbar-actions .theme-toggle,
+  html body.pf-staff .topbar-actions .notification,
+  html body.pf-staff .topbar-actions .topbar-avatar,
+  html body.pf-staff .topbar-actions .notification-wrap,
+  html body.pf-staff .topbar-right .theme-toggle,
+  html body.pf-staff .topbar-right .notification,
+  html body.pf-staff .topbar-right .topbar-avatar,
+  html body.pf-staff .topbar-right .notification-wrap {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    flex: 0 0 36px !important;
+  }
+}
+
+/* Standardized Perfectly Circular Avatars */
+html body.pf-staff .topbar-avatar,
+html body.pf-staff .sidebar-avatar,
+html body.pf-staff .mini-avatar,
+html body.pf-staff .pp-avatar,
+html body.pf-staff .pp-avatar.xl,
+html body.pf-staff .pp-avatar-photo,
+html body.pf-staff .pf-ava-trigger,
+html body.pf-staff .pf-pv-ava {
+  border-radius: 50% !important;
+  aspect-ratio: 1 / 1 !important;
+  overflow: hidden !important;
+  flex-shrink: 0 !important;
+}
+
+html body.pf-staff .topbar-avatar img,
+html body.pf-staff .sidebar-avatar img,
+html body.pf-staff .mini-avatar img,
+html body.pf-staff .pp-avatar img,
+html body.pf-staff .pp-avatar-photo img,
+html body.pf-staff .pf-ava-trigger img,
+html body.pf-staff .pf-pv-ava img,
+html body.pf-staff .pf-ava-opt img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: 50% !important;
+  display: block !important;
+}
+
+html body.pf-staff .pf-ava-opt img {
+  width: 42px !important;
+  height: 42px !important;
+  aspect-ratio: 1 / 1 !important;
+}
+
+/* Compact Mobile Container Sizing (Profile & Settings) */
+@media (max-width: 640px) {
+  html body.pf-staff .dashboard > main.main-content {
+    padding: 8px 12px calc(112px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  html body.pf-staff .pp-section-card,
+  html body.pf-staff .pf-hero-v2,
+  html body.pf-staff .st-card {
+    padding: 14px !important;
+    border-radius: 14px !important;
+  }
+
+  html body.pf-staff .pf-grid-2,
+  html body.pf-staff .st-stack {
+    gap: 12px !important;
+  }
+
+  html body.pf-staff .pf-ava-opt {
+    height: 54px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  html body.pf-staff .dashboard > main.main-content {
+    padding: 0 10px calc(112px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+/* Motionless Edge-to-Edge Member-Portal-Style Header Parity (PC & Mobile) */
+html body.pf-staff .dashboard > main.main-content {
+  padding-top: 0 !important;
+}
+
+html body.pf-staff .topbar,
+html body.pf-staff .topbar.is-scrolled {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 60 !important;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  width: calc(100% + clamp(20px, 3vw, 40px) * 2) !important;
+  max-width: none !important;
+  height: 76px !important;
+  min-height: 76px !important;
+  max-height: 76px !important;
+  margin: 0 calc(clamp(20px, 3vw, 40px) * -1) 24px !important;
+  padding: 0 clamp(24px, 3vw, 40px) !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+  background: #0B0F18 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+  box-shadow: none !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+html body.pf-staff:not(.dark) .topbar,
+html body.pf-staff:not(.dark) .topbar.is-scrolled {
+  background: #FAF6EE !important;
+  border-bottom: 1px solid #E8DFCE !important;
+}
+
+html body.pf-staff .topbar-heading {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  flex: 1 1 auto !important;
+  width: auto !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+html body.pf-staff .topbar-title {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+html body.pf-staff .topbar-title h1 {
+  font-size: 21px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.2 !important;
+  margin: 0 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+html body.pf-staff .topbar-right {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  flex: 0 0 auto !important;
+  width: auto !important;
+  max-width: none !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+html body.pf-staff .topbar-actions {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  flex: 0 0 auto !important;
+  width: auto !important;
+  gap: 12px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+html body.pf-staff .topbar-actions .theme-toggle,
+html body.pf-staff .topbar-actions .notification,
+html body.pf-staff .topbar-actions .topbar-avatar,
+html body.pf-staff .topbar-actions .notification-wrap,
+html body.pf-staff .topbar-right .theme-toggle,
+html body.pf-staff .topbar-right .notification,
+html body.pf-staff .topbar-right .topbar-avatar,
+html body.pf-staff .topbar-right .notification-wrap {
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+  flex: 0 0 42px !important;
+}
+
+@media (max-width: 768px) {
+  html body.pf-staff .dashboard > main.main-content {
+    padding: 0 14px calc(112px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  html body.pf-staff .topbar,
+  html body.pf-staff .topbar.is-scrolled {
+    width: calc(100% + 28px) !important;
+    max-width: none !important;
+    height: calc(62px + env(safe-area-inset-top, 0px)) !important;
+    min-height: calc(62px + env(safe-area-inset-top, 0px)) !important;
+    max-height: calc(62px + env(safe-area-inset-top, 0px)) !important;
+    margin: 0 -14px 16px !important;
+    padding: env(safe-area-inset-top, 0px) 14px 0 !important;
+    gap: 10px !important;
+    flex-wrap: nowrap !important;
+  }
+
+  html body.pf-staff .topbar-title h1 {
+    font-size: clamp(16px, 4.4vw, 19px) !important;
+  }
+
+  html body.pf-staff .topbar-actions {
+    gap: 8px !important;
+  }
+
+  html body.pf-staff .topbar-actions .theme-toggle,
+  html body.pf-staff .topbar-actions .notification,
+  html body.pf-staff .topbar-actions .topbar-avatar,
+  html body.pf-staff .topbar-actions .notification-wrap,
+  html body.pf-staff .topbar-right .theme-toggle,
+  html body.pf-staff .topbar-right .notification,
+  html body.pf-staff .topbar-right .topbar-avatar,
+  html body.pf-staff .topbar-right .notification-wrap {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    flex: 0 0 38px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  html body.pf-staff .dashboard > main.main-content {
+    padding: 0 12px calc(112px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  html body.pf-staff .topbar,
+  html body.pf-staff .topbar.is-scrolled {
+    width: calc(100% + 24px) !important;
+    margin: 0 -12px 14px !important;
+    padding: env(safe-area-inset-top, 0px) 12px 0 !important;
+  }
+}
+
+@media (max-width: 380px) {
+  html body.pf-staff .dashboard > main.main-content {
+    padding: 0 10px calc(112px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  html body.pf-staff .topbar,
+  html body.pf-staff .topbar.is-scrolled {
+    width: calc(100% + 20px) !important;
+    margin: 0 -10px 12px !important;
+    padding: env(safe-area-inset-top, 0px) 10px 0 !important;
+  }
+
+  html body.pf-staff .topbar-actions {
+    gap: 6px !important;
+  }
+
+  html body.pf-staff .topbar-actions .theme-toggle,
+  html body.pf-staff .topbar-actions .notification,
+  html body.pf-staff .topbar-actions .topbar-avatar,
+  html body.pf-staff .topbar-actions .notification-wrap,
+  html body.pf-staff .topbar-right .theme-toggle,
+  html body.pf-staff .topbar-right .notification,
+  html body.pf-staff .topbar-right .topbar-avatar,
+  html body.pf-staff .topbar-right .notification-wrap {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    flex: 0 0 36px !important;
+  }
 }

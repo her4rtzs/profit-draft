@@ -1298,14 +1298,14 @@ html[data-theme="light"] .tw-pill.is-gray {
 }
 html:not([data-theme="dark"]) .tw-table-wrap,
 html[data-theme="light"] .tw-table-wrap {
-  background: #FAF8F3;
-  border-color: #E8E1D3;
+  background: var(--pf-surface, #FFFFFF);
+  border-color: var(--pf-border, #E6DFD2);
 }
 html:not([data-theme="dark"]) .tw-table th,
 html[data-theme="light"] .tw-table th {
-  background: #F3EEE4;
-  color: var(--muted);
-  border-bottom-color: #E8E1D3;
+  background: var(--pf-surface-thead, #F7F4EE);
+  color: var(--pf-muted, #6B6254);
+  border-bottom-color: var(--pf-border, #E6DFD2);
 }
 html:not([data-theme="dark"]) .tw-table td,
 html[data-theme="light"] .tw-table td {
@@ -1314,7 +1314,7 @@ html[data-theme="light"] .tw-table td {
 }
 html:not([data-theme="dark"]) .tw-table tbody tr:hover,
 html[data-theme="light"] .tw-table tbody tr:hover {
-  background: #F3EEE4;
+  background: var(--pf-tbl-row-hover, rgba(42, 36, 24, 0.04));
 }
 html:not([data-theme="dark"]) .tw-person,
 html[data-theme="light"] .tw-person {
@@ -1951,14 +1951,28 @@ html[data-theme="light"] .tw-toolbar {
   min-width: 250px;
   flex: 1 1 260px;
   max-width: 380px;
+  border-radius: 10px;
 }
-.tw-search-box .ico {
+.tw-search-box > .ico,
+.tw-search-box > span[data-ico="search"] {
   position: absolute;
   left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
   width: 15px;
   height: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   color: var(--muted);
   pointer-events: none;
+}
+.tw-search-box > span[data-ico="search"] .ico {
+  position: static;
+  transform: none;
+  vertical-align: 0;
+  width: 15px;
+  height: 15px;
 }
 .tw-search-input {
   width: 100%;
@@ -3225,7 +3239,7 @@ html[data-theme="light"] body[data-portal="trainer"] .tw-qa-arrow {
 }
 
 /* 3. Owner-style Sleek Obsidian Rail Sidebar (grouped pods, hover-expand on desktop) */
-@media (min-width: 960px) {
+@media (min-width: 981px) {
   body[data-portal="trainer"] .app {
     grid-template-columns: 76px minmax(0, 1fr) !important;
   }
@@ -3350,8 +3364,8 @@ body[data-portal="trainer"] table thead th {
   font-weight: 700 !important;
   letter-spacing: .07em !important;
   text-transform: uppercase !important;
-  color: var(--muted) !important;
-  background: var(--card-2) !important;
+  color: var(--pf-muted, var(--muted)) !important;
+  background: var(--pf-surface-thead, var(--card-2)) !important;
   padding: 12px 14px !important;
   border-bottom: 1px solid var(--line) !important;
   text-align: left;
@@ -3386,7 +3400,7 @@ body[data-portal="trainer"] table tbody tr:hover td {
 }
 
 /* Fix left-edge clipping behind fixed 76px rail sidebar + clean Owner card colors on all subpages */
-@media (min-width: 960px) {
+@media (min-width: 981px) {
   body[data-portal="trainer"] .app {
     display: block !important;
   }
@@ -3399,7 +3413,7 @@ body[data-portal="trainer"] table tbody tr:hover td {
   }
 }
 
-@media (max-width: 959px) {
+@media (max-width: 980px) {
   body[data-portal="trainer"] .main {
     margin-left: 0 !important;
     width: 100% !important;
@@ -3421,7 +3435,7 @@ body[data-portal="trainer"] [class*="kpi-card"] {
 }
 
 /* Bulletproof Trainer Rail Sidebar — hide text cleanly with display:none when collapsed */
-@media (min-width: 960px) {
+@media (min-width: 981px) {
   body[data-portal="trainer"] .sidebar:not(:hover):not(:focus-within) .brand-txt,
   body[data-portal="trainer"] .sidebar:not(:hover):not(:focus-within) .nav-label,
   body[data-portal="trainer"] .sidebar:not(:hover):not(:focus-within) .nav-text,
@@ -3684,7 +3698,7 @@ html[data-font-size="lg"] body[data-portal="trainer"] .content { zoom: 1.07; }
    ============================================================================ */
 
 /* 1. Centered Collapsed Sidebar Rail (zero right-edge clipping) */
-@media (min-width: 960px) {
+@media (min-width: 981px) {
   body[data-portal="trainer"] .sidebar:not(:hover):not(:focus-within) {
     padding: 14px 0 !important;
   }
@@ -3772,7 +3786,7 @@ body[data-portal="trainer"] .topbar .icon-btn {
   text-decoration: none !important;
 }
 
-@media (min-width: 960px) {
+@media (min-width: 981px) {
   body[data-portal="trainer"] .topbar .t-menu {
     display: none !important;
   }
@@ -4048,15 +4062,15 @@ body[data-portal="trainer"] .tw-duty-sub {
 }
 body[data-portal="trainer"] .tw-duty-ring {
   position: relative;
-  width: 74px;
-  height: 74px;
+  width: 82px;
+  height: 82px;
   flex: none;
   display: grid;
   place-items: center;
 }
 body[data-portal="trainer"] .tw-duty-ring svg {
-  width: 74px;
-  height: 74px;
+  width: 82px;
+  height: 82px;
   transform: rotate(-90deg);
 }
 body[data-portal="trainer"] .tw-duty-ring-track {
@@ -4079,6 +4093,7 @@ body[data-portal="trainer"] .tw-duty-ring-txt {
   align-items: center;
   justify-content: center;
   line-height: 1.05;
+  text-align: center;
 }
 body[data-portal="trainer"] .tw-duty-ring-txt strong {
   font-size: 18px;
@@ -4086,9 +4101,10 @@ body[data-portal="trainer"] .tw-duty-ring-txt strong {
   color: #f8fafc;
 }
 body[data-portal="trainer"] .tw-duty-ring-txt small {
-  font-size: 9.5px;
+  font-size: 9px;
   color: #94a3b8;
   margin-top: 2px;
+  white-space: nowrap;
 }
 body[data-portal="trainer"] .tw-duty-foot {
   display: flex;
@@ -4173,6 +4189,19 @@ body[data-portal="trainer"] .tw-ckpi-segs i.on {
   body[data-portal="trainer"] .tw-coach-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 560px) {
+  body[data-portal="trainer"] .tw-coach-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  body[data-portal="trainer"] .tw-ckpi {
+    padding: 13px 14px;
+    gap: 6px;
+  }
+  body[data-portal="trainer"] .tw-ckpi-val strong {
+    font-size: 26px;
+  }
+}
+@media (max-width: 330px) {
   body[data-portal="trainer"] .tw-coach-kpis { grid-template-columns: 1fr; }
 }
 
@@ -4190,7 +4219,7 @@ body[data-portal="trainer"] .tr-mob-sheet {
   display: none;
 }
 
-@media (max-width: 959px) {
+@media (max-width: 980px) {
   body[data-portal="trainer"] .content {
     padding: 16px 14px calc(88px + env(safe-area-inset-bottom, 0px)) !important;
     overflow-x: clip;
@@ -4347,4 +4376,416 @@ body[data-portal="trainer"] .tr-mob-sheet:not(.on) {
   display: none !important;
   visibility: hidden !important;
   pointer-events: none !important;
+}
+
+
+/* ============================================================================
+   Mobile-Native Baseline (Trainer Portal: dvh, touch, 16px inputs, safe areas)
+   ============================================================================ */
+html {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior: none;
+}
+body[data-portal="trainer"] { overscroll-behavior: none; }
+body[data-portal="trainer"] .app { min-height: 100dvh; }
+@media (pointer: coarse) {
+  body[data-portal="trainer"] input,
+  body[data-portal="trainer"] textarea,
+  body[data-portal="trainer"] select {
+    font-size: 16px !important;
+  }
+}
+body[data-portal="trainer"] button,
+body[data-portal="trainer"] a,
+body[data-portal="trainer"] [role="button"],
+body[data-portal="trainer"] .tr-mob-chip,
+body[data-portal="trainer"] .tw-filter-pill {
+  touch-action: manipulation;
+}
+body[data-portal="trainer"] button,
+body[data-portal="trainer"] [role="button"],
+body[data-portal="trainer"] .tr-mob-chip,
+body[data-portal="trainer"] .tw-filter-pill,
+body[data-portal="trainer"] .tr-mob-sheet-bar {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+body[data-portal="trainer"] .bottom-nav > a:active,
+body[data-portal="trainer"] .bottom-nav > button:active,
+body[data-portal="trainer"] .tr-mob-chip:active,
+body[data-portal="trainer"] .tw-btn:active:not(:disabled),
+body[data-portal="trainer"] .tw-btn-primary:active:not(:disabled) {
+  transform: scale(0.97);
+  transition: transform 100ms ease-out;
+}
+body[data-portal="trainer"] .tr-mob-sheet,
+body[data-portal="trainer"] .modal-backdrop .modal {
+  overscroll-behavior: contain;
+}
+body[data-portal="trainer"] .tr-mob-sheet-bar { touch-action: pan-x; }
+body[data-portal="trainer"] .tw-dow-strip,
+body[data-portal="trainer"] .tw-filter-pills {
+  touch-action: pan-y;
+}
+@media (max-width: 980px) {
+  body[data-portal="trainer"] .topbar {
+    padding-top: calc(12px + env(safe-area-inset-top, 0px)) !important;
+  }
+}
+@media (hover: none) {
+  body[data-portal="trainer"] .tw-qa-tile:hover,
+  body[data-portal="trainer"] .tr-ava-opt:hover,
+  body[data-portal="trainer"] .tr-mob-chip:hover,
+  body[data-portal="trainer"] .tw-athlete-card:hover,
+  body[data-portal="trainer"] .tw-session-card:hover,
+  body[data-portal="trainer"] .tw-notif-item:hover {
+    transform: none !important;
+  }
+}
+
+/* ============================================================================
+   Cross-Device Responsive Fixes Across All Trainer Tabs (Phone & Tablet)
+   ============================================================================ */
+@media (max-width: 980px) {
+  body[data-portal="trainer"] .content {
+    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important;
+    overflow-x: clip;
+  }
+
+  body[data-portal="trainer"] .tr-st-sidenav {
+    touch-action: pan-x;
+    scrollbar-width: none;
+  }
+
+  body[data-portal="trainer"] .tr-st-sidenav::-webkit-scrollbar {
+    display: none;
+  }
+
+  body[data-portal="trainer"] .tw-table-wrap,
+  body[data-portal="trainer"] .table-wrap {
+    max-width: 100%;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+  }
+}
+
+@media (max-width: 640px) {
+  body[data-portal="trainer"] .tw-search-box,
+  body[data-portal="trainer"] .tw-checkin-info,
+  body[data-portal="trainer"] .tw-checkin-select,
+  body[data-portal="trainer"] .tw-date-stepper {
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  body[data-portal="trainer"] .tw-date-stepper {
+    justify-content: space-between;
+  }
+
+  body[data-portal="trainer"] .tw-checkin-panel {
+    padding: 16px !important;
+  }
+
+  body[data-portal="trainer"] .tw-card-head {
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+  }
+
+  body[data-portal="trainer"] .tw-notif-item {
+    flex-direction: column !important;
+    gap: 10px !important;
+    padding: 14px !important;
+  }
+
+  body[data-portal="trainer"] .tw-session-card {
+    padding: 14px !important;
+  }
+
+  body[data-portal="trainer"] .tr-prof-hero {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 16px !important;
+    padding: 18px 16px !important;
+  }
+
+  body[data-portal="trainer"] .tr-prof-hero-left {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  body[data-portal="trainer"] .tr-st-font-row {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+
+  body[data-portal="trainer"] .tr-st-pills {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    width: 100% !important;
+  }
+
+  body[data-portal="trainer"] .tr-st-pills button {
+    width: 100% !important;
+    text-align: center !important;
+  }
+}
+
+@media (max-width: 440px) {
+  body[data-portal="trainer"] .topbar {
+    gap: 8px !important;
+    padding: calc(10px + env(safe-area-inset-top, 0px)) 12px 10px !important;
+  }
+
+  body[data-portal="trainer"] .tr-top-title {
+    font-size: clamp(15px, 4.3vw, 19px) !important;
+  }
+
+  body[data-portal="trainer"] .topbar .icon-btn {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  body[data-portal="trainer"] .bottom-nav > a,
+  body[data-portal="trainer"] .bottom-nav > button {
+    font-size: 10px !important;
+  }
+
+  body[data-portal="trainer"] .tw-dow-btn {
+    padding: 9px 6px !important;
+  }
+}
+
+@media (min-width: 1560px) {
+  body[data-portal="trainer"] .content {
+    max-width: 1520px !important;
+    margin-inline: auto !important;
+  }
+}
+
+/* ============================================================================
+   Root-Cause Bottom Scroll Clearance, Unified Header, Circular Avatars &
+   Compact Mobile Container Sizing (Trainer Portal)
+   ============================================================================ */
+
+/* 1. Root-cause fix: shell grows naturally and clears fixed mobile bottom nav */
+body[data-portal="trainer"],
+body[data-portal="trainer"] .app,
+body[data-portal="trainer"] .main {
+  height: auto !important;
+  min-height: 100dvh !important;
+  overflow-y: visible !important;
+}
+
+body[data-portal="trainer"] .content {
+  height: auto !important;
+  padding-bottom: 56px !important;
+  overflow-x: clip !important;
+  overflow-y: visible !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 980px) {
+  body[data-portal="trainer"] .content {
+    padding: 12px 12px calc(112px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+/* 2. Unified Portal Header Parity (matches Owner, Cashier & Member 1:1 — motionless 76px PC / 60px mobile) */
+body[data-portal="trainer"] .topbar {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 60 !important;
+  height: 76px !important;
+  min-height: 76px !important;
+  padding: 0 clamp(24px, 3vw, 40px) !important;
+  gap: 12px !important;
+  background: #0B0F18 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+html:not([data-theme="dark"]) body[data-portal="trainer"] .topbar,
+html[data-theme="light"] body[data-portal="trainer"] .topbar {
+  background: #FAF6EE !important;
+  border-bottom: 1px solid #E8DFCE !important;
+}
+
+body[data-portal="trainer"] .topbar .t-left {
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+  overflow: hidden !important;
+}
+
+body[data-portal="trainer"] .topbar .tr-top-title {
+  font-size: 21px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  min-width: 0 !important;
+}
+
+body[data-portal="trainer"] .topbar .icon-btn,
+body[data-portal="trainer"] .topbar .avatar-btn,
+body[data-portal="trainer"] .topbar .avatar-btn .avatar {
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+  flex: 0 0 42px !important;
+  border-radius: 50% !important;
+  aspect-ratio: 1 / 1 !important;
+  overflow: hidden !important;
+}
+
+@media (max-width: 768px) {
+  body[data-portal="trainer"] .topbar {
+    flex-wrap: nowrap !important;
+    height: calc(62px + env(safe-area-inset-top, 0px)) !important;
+    min-height: calc(62px + env(safe-area-inset-top, 0px)) !important;
+    max-height: calc(62px + env(safe-area-inset-top, 0px)) !important;
+    padding: env(safe-area-inset-top, 0px) 14px 0 !important;
+    gap: 8px !important;
+  }
+
+  body[data-portal="trainer"] .topbar .tr-top-title {
+    font-size: clamp(16px, 4.4vw, 19px) !important;
+  }
+
+  body[data-portal="trainer"] .topbar .icon-btn,
+  body[data-portal="trainer"] .topbar .avatar-btn,
+  body[data-portal="trainer"] .topbar .avatar-btn .avatar {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    flex: 0 0 38px !important;
+  }
+}
+
+@media (max-width: 380px) {
+  body[data-portal="trainer"] .topbar {
+    padding: calc(10px + env(safe-area-inset-top, 0px)) 10px 10px !important;
+    gap: 6px !important;
+  }
+
+  body[data-portal="trainer"] .topbar .icon-btn,
+  body[data-portal="trainer"] .topbar .avatar-btn,
+  body[data-portal="trainer"] .topbar .avatar-btn .avatar {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    flex: 0 0 36px !important;
+  }
+}
+
+/* 3. Standardized Perfectly Circular Avatars Everywhere */
+body[data-portal="trainer"] .avatar,
+body[data-portal="trainer"] .tw-coach-avatar,
+body[data-portal="trainer"] .tr-prof-ava,
+body[data-portal="trainer"] .tr-prof-ava-btn,
+body[data-portal="trainer"] .tr-prev-mini-ava,
+body[data-portal="trainer"] .side-user .avatar {
+  border-radius: 50% !important;
+  aspect-ratio: 1 / 1 !important;
+  overflow: hidden !important;
+  flex-shrink: 0 !important;
+}
+
+body[data-portal="trainer"] .avatar img,
+body[data-portal="trainer"] .tw-coach-avatar img,
+body[data-portal="trainer"] .tr-prof-ava img,
+body[data-portal="trainer"] .tr-prof-ava-btn img,
+body[data-portal="trainer"] .tr-prev-mini-ava img,
+body[data-portal="trainer"] .tr-ava-opt img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: 50% !important;
+  display: block !important;
+}
+
+body[data-portal="trainer"] .tr-ava-opt img {
+  width: 42px !important;
+  height: 42px !important;
+  aspect-ratio: 1 / 1 !important;
+}
+
+/* 4. Compact Mobile Container & Box Sizing (desktop untouched) */
+@media (max-width: 640px) {
+  body[data-portal="trainer"] .tw-card,
+  body[data-portal="trainer"] .card,
+  body[data-portal="trainer"] .tw-athlete-card,
+  body[data-portal="trainer"] .tr-st-card,
+  body[data-portal="trainer"] .tw-checkin-panel {
+    padding: 14px !important;
+    border-radius: 14px !important;
+  }
+
+  body[data-portal="trainer"] .tw-dash-hero,
+  body[data-portal="trainer"] .tw-page-hero,
+  body[data-portal="trainer"] .tr-prof-hero {
+    min-height: 0 !important;
+    padding: 16px 14px !important;
+    border-radius: 16px !important;
+  }
+
+  body[data-portal="trainer"] .tw-kpi,
+  body[data-portal="trainer"] .tw-qa-tile {
+    padding: 12px 14px !important;
+    min-height: 0 !important;
+    border-radius: 14px !important;
+  }
+
+  body[data-portal="trainer"] .tw-kpi-grid,
+  body[data-portal="trainer"] .tw-qa-grid,
+  body[data-portal="trainer"] .tw-members-cards-grid,
+  body[data-portal="trainer"] .tw-dash-grid,
+  body[data-portal="trainer"] .tr-st-stack {
+    gap: 10px !important;
+  }
+
+  body[data-portal="trainer"] .tw-att-filters,
+  body[data-portal="trainer"] .tw-ctrl-field,
+  body[data-portal="trainer"] .tw-date-wrap,
+  body[data-portal="trainer"] .tw-date-text,
+  body[data-portal="trainer"] .tw-select,
+  body[data-portal="trainer"] .tw-period-tabs {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  body[data-portal="trainer"] .tw-att-filters {
+    gap: 10px;
+  }
+}
+
+@media (max-width: 360px) {
+  body[data-portal="trainer"] .content {
+    padding: 10px 10px calc(112px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+/* Desktop toolbar search + view toggle single-row alignment & dark hero Live Feed pill */
+@media (min-width: 769px) {
+  body[data-portal="trainer"] .tw-toolbar-right {
+    flex-wrap: nowrap;
+  }
+  body[data-portal="trainer"] .tw-toolbar-right .tw-search-box {
+    flex: 0 1 250px;
+    min-width: 210px;
+    width: 250px;
+  }
+}
+
+body[data-portal="trainer"] .tw-page-hero .tw-updated-badge {
+  background: rgba(15, 23, 42, 0.78) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  color: #f8fafc !important;
 }

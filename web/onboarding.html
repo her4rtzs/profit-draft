@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <title>Welcome Setup &middot; ProFit</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@600;700;800;900&family=Inter:wght@500;600;700&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<script src="config.js?v=4"></script><script src="api.js"></script><script src="auth.js?v=4"></script>
+<script src="config.js?v=9"></script><script src="api.js"></script><script src="auth.js?v=4"></script>
 <link rel="manifest" href="/manifest.webmanifest">
-<meta name="theme-color" content="#0a0e17">
+<meta name="theme-color" content="#0a0e17"><meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17"><meta name="color-scheme" content="light dark">
 <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ProFit">
@@ -72,8 +72,12 @@
   .ob-back{
     background:none;border:0;color:var(--mut);width:38px;height:38px;border-radius:12px;
     font-size:22px;cursor:pointer;display:grid;place-items:center;flex:none;
+    transition:background-color .15s ease,color .15s ease;
   }
-  .ob-back:hover{background:var(--hover);color:var(--text)}
+  .ob-back:hover:not(:disabled){background:rgba(255,255,255,.06);color:var(--text)}
+  .ob-back:active:not(:disabled){background:rgba(255,255,255,.11);color:var(--text)}
+  .ob-back:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .ob-back:disabled{opacity:.48;cursor:not-allowed;pointer-events:none}
   .ob-back[hidden]{visibility:hidden;display:grid}
   .ob-bar{flex:1;height:16px;border-radius:999px;background:var(--hover);overflow:hidden}
   .ob-fill{
@@ -101,23 +105,32 @@
   .ob-grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   .ob-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
   .ob-tile{
-    background:var(--card);border:2px solid var(--line);box-shadow:0 4px 0 var(--line);
+    background:var(--card);border:2px solid var(--line);box-shadow:none;
     border-radius:18px;padding:13px 10px;color:var(--text);font-weight:800;font-size:15px;
-    cursor:pointer;text-align:center;transition:transform .08s,box-shadow .08s,border-color .15s;
+    cursor:pointer;text-align:center;transition:background-color .15s ease,border-color .15s ease;
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
   }
-  .ob-tile:active{transform:translateY(3px);box-shadow:0 1px 0 var(--line)}
-  .ob-tile.is-sel{border-color:var(--gold);background:rgba(232,185,58,.15);box-shadow:0 4px 0 var(--gold-d)}
+  .ob-tile:hover:not(.is-sel):not(:disabled){background:rgba(232,185,58,.10)}
+  .ob-tile:active:not(:disabled){background:rgba(255,255,255,.11);transform:none;box-shadow:none}
+  .ob-tile:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .ob-tile.is-sel{border-color:var(--gold);background:var(--gold);color:#0b0f19;box-shadow:none}
+  .ob-tile.is-sel .ob-ico{color:#0b0f19}
+  .ob-tile.is-sel:active{background:#b8860b;border-color:#b8860b}
   .ob-tile .ob-ico{font-size:24px;color:var(--gold)}
   .ob-tile.ob-av{padding:14px 8px 11px}
   .ob-tile.ob-av img{width:84px;height:84px;border-radius:50%;display:block;border:2px solid rgba(255,255,255,.12)}
   .ob-lbl{font-size:14px;color:var(--mut);margin:18px 0 10px;font-weight:800}
   .ob-row{display:flex;flex-wrap:wrap;gap:10px}
   .ob-chip{
-    border:2px solid var(--line);box-shadow:0 3px 0 var(--line);background:var(--card);
+    border:2px solid var(--line);box-shadow:none;background:var(--card);
     color:var(--text);border-radius:999px;padding:10px 16px;font-weight:800;font-size:15px;cursor:pointer;
+    transition:background-color .15s ease,border-color .15s ease,color .15s ease;
   }
-  .ob-chip.is-sel{border-color:var(--gold);background:var(--gold);color:var(--ink);box-shadow:0 3px 0 var(--gold-d)}
+  .ob-chip:hover:not(.is-sel):not(:disabled){background:rgba(232,185,58,.12)}
+  .ob-chip:active:not(.is-sel):not(:disabled){background:rgba(255,255,255,.11)}
+  .ob-chip:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .ob-chip.is-sel{border-color:var(--gold);background:var(--gold);color:#0b0f19;box-shadow:none}
+  .ob-chip.is-sel:active:not(:disabled){background:#b8860b;border-color:#b8860b}
   .ob-field{margin-bottom:14px}
   .ob-field label{display:block;font-size:14px;color:var(--mut);margin-bottom:6px;font-weight:800}
   .ob-field input,.ob-field textarea{
@@ -149,8 +162,11 @@
   .ob-edit{
     background:none;border:2px solid var(--line);color:var(--gold);border-radius:12px;
     padding:7px 13px;font-weight:800;cursor:pointer;flex:none;
+    transition:background-color .15s ease;
   }
-  .ob-edit:hover{border-color:var(--gold)}
+  .ob-edit:hover:not(:disabled){background:rgba(255,255,255,.06)}
+  .ob-edit:active:not(:disabled){background:rgba(255,255,255,.11)}
+  .ob-edit:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
   .ob-big{text-align:center;padding:8px 0}
   .ob-big img{width:112px;height:112px;border-radius:50%;border:2px solid var(--line);display:block;margin:0 auto}
   .ob-tag{
@@ -164,15 +180,19 @@
   .ob-btn{
     flex:1;border:0;border-radius:18px;padding:16px;font-weight:900;font-size:15.5px;
     letter-spacing:.05em;text-transform:uppercase;cursor:pointer;text-decoration:none;
-    background:var(--gold);color:var(--ink);box-shadow:0 5px 0 var(--gold-d);
-    transition:transform .08s,box-shadow .08s;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    background:var(--gold);color:#0b0f19;box-shadow:none;
+    transition:background-color .15s ease,opacity .15s ease;display:inline-flex;align-items:center;justify-content:center;gap:8px;
   }
-  .ob-btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--gold-d)}
+  .ob-btn:hover:not(.is-ghost):not(:disabled){background:#f0c44b;transform:none;box-shadow:none}
+  .ob-btn:active:not(.is-ghost):not(:disabled){background:#b8860b;color:#0b0f19;transform:none;box-shadow:none}
+  .ob-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
   .ob-btn.is-ghost{
     flex:0 0 auto;padding:16px 22px;background:transparent;color:var(--mut);
-    border:2px solid var(--line);box-shadow:0 4px 0 var(--line);
+    border:2px solid var(--line);box-shadow:none;
   }
-  .ob-btn:disabled{background:var(--hover);color:var(--faint);box-shadow:0 5px 0 var(--line);cursor:not-allowed}
+  .ob-btn.is-ghost:hover:not(:disabled){background:rgba(255,255,255,.06);color:var(--text)}
+  .ob-btn.is-ghost:active:not(:disabled){background:rgba(255,255,255,.11)}
+  .ob-btn:disabled{opacity:.48;cursor:not-allowed;pointer-events:none;box-shadow:none;transform:none}
   .ob-global-err{color:var(--danger);font-size:14px;margin:0 0 8px;min-height:18px}
   .ob-chk{
     display:flex;gap:12px;align-items:flex-start;color:var(--mut);font-size:14.5px;
@@ -198,6 +218,16 @@
     .ob-mascot svg{width:68px}
     .ob-bubble{font-size:16px}
   }
+  @media (max-width:390px){
+    .ob-pane{padding:12px 12px 0}
+    .ob-grid2{gap:8px}
+    .ob-mascot{gap:10px}
+    .ob-mascot svg{width:56px}
+    .ob-bubble{font-size:15px;padding:11px 13px}
+    .ob-btn,.ob-btn.is-ghost{padding:13px 12px;font-size:13.5px}
+  }
+  html{-webkit-tap-highlight-color:transparent;overscroll-behavior:none}
+  button,a{touch-action:manipulation}
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>

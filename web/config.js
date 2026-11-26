@@ -400,3 +400,132 @@ window.PROFIT_CONFIG = window.PROFIT_CONFIG || { API_BASE_URL: "/api", DEMO_MODE
     }
   };
 })();
+
+
+/* Keep mobile status bar theme-color synced with manual Light/Dark theme toggles */
+(() => {
+  if (typeof document === "undefined") return;
+  const syncThemeColor = () => {
+    const html = document.documentElement;
+    const isLight = html.getAttribute("data-theme") === "light" ||
+      (document.body && !document.body.classList.contains("dark") && html.getAttribute("data-theme") !== "dark" && localStorage.getItem("theme") === "light");
+    const color = isLight ? "#faf6ee" : "#0a0e17";
+    const meta = document.querySelector('meta[name="theme-color"]:not([media])');
+    if (meta && meta.getAttribute("content") !== color) {
+      meta.setAttribute("content", color);
+    }
+  };
+  document.addEventListener("DOMContentLoaded", syncThemeColor);
+  window.addEventListener("storage", e => { if (e.key === "theme" || e.key === "pf-theme") syncThemeColor(); });
+  new MutationObserver(syncThemeColor).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme", "class"] });
+})();
+
+
+/* Global Accessibility preferences (High Contrast Mode + Enhanced Focus Indicators) */
+(() => {
+  if (typeof document === "undefined") return;
+  const K_CONTRAST = "pf-a11y-contrast";
+  const K_FOCUS = "pf-a11y-focus";
+
+  if (!document.getElementById("pf-a11y-styles")) {
+    const st = document.createElement("style");
+    st.id = "pf-a11y-styles";
+    st.textContent = `
+      html[data-high-contrast="1"],
+      html[data-high-contrast="1"][data-theme="dark"] body[data-portal="trainer"] {
+        --text: #ffffff !important;
+        --text-2: #f1f5f9 !important;
+        --muted: #cbd5e1 !important;
+        --border: rgba(255, 255, 255, .42) !important;
+        --line: rgba(255, 255, 255, .42) !important;
+        --line-strong: rgba(255, 255, 255, .62) !important;
+        --ink: #ffffff !important;
+        --t2: #e2e8f0 !important;
+        --ln: rgba(255, 255, 255, .45) !important;
+      }
+      html[data-high-contrast="1"][data-theme="light"],
+      html[data-high-contrast="1"][data-theme="light"] body[data-portal="trainer"],
+      html[data-high-contrast="1"]:not([data-theme="dark"]) body:not(.dark) {
+        --text: #0a0a0a !important;
+        --text-2: #171717 !important;
+        --muted: #262626 !important;
+        --border: #404040 !important;
+        --line: #404040 !important;
+        --line-strong: #171717 !important;
+        --ink: #0a0a0a !important;
+        --t2: #262626 !important;
+        --ln: #404040 !important;
+      }
+      html[data-high-contrast="1"] .st-card,
+      html[data-high-contrast="1"] .mb-st-card,
+      html[data-high-contrast="1"] .tr-st-card,
+      html[data-high-contrast="1"] .panel,
+      html[data-high-contrast="1"] .card,
+      html[data-high-contrast="1"] .tw-card,
+      html[data-high-contrast="1"] .pp-card,
+      html[data-high-contrast="1"] .member-panel,
+      html[data-high-contrast="1"] input,
+      html[data-high-contrast="1"] select,
+      html[data-high-contrast="1"] textarea,
+      html[data-high-contrast="1"] button {
+        border-width: 1.5px;
+      }
+      html[data-enhanced-focus="1"] :is(button, a, input, select, textarea, [role="button"], [role="menuitem"], [role="tab"], [tabindex]):focus,
+      html[data-enhanced-focus="1"] :is(button, a, input, select, textarea, [role="button"], [role="menuitem"], [role="tab"], [tabindex]):focus-visible {
+        outline: 3px solid #ff8c00 !important;
+        outline-offset: 2px !important;
+        box-shadow: 0 0 0 5px rgba(255, 140, 0, .28) !important;
+      }
+    `;
+    (document.head || document.documentElement).appendChild(st);
+  }
+
+  const read = key => {
+    try { return localStorage.getItem(key) === "1"; } catch (_) { return false; }
+  };
+  const write = (key, on) => {
+    try { localStorage.setItem(key, on ? "1" : "0"); } catch (_) {}
+  };
+
+  const apply = () => {
+    const contrast = read(K_CONTRAST);
+    const focus = read(K_FOCUS);
+    if (contrast) document.documentElement.dataset.highContrast = "1";
+    else delete document.documentElement.dataset.highContrast;
+    if (focus) document.documentElement.dataset.enhancedFocus = "1";
+    else delete document.documentElement.dataset.enhancedFocus;
+    document.querySelectorAll('[data-a11y="contrast"]').forEach(el => { el.checked = contrast; });
+    document.querySelectorAll('[data-a11y="focus"]').forEach(el => { el.checked = focus; });
+  };
+
+  window.ProFitA11y = {
+    get: () => ({ contrast: read(K_CONTRAST), focus: read(K_FOCUS) }),
+    setHighContrast: on => { write(K_CONTRAST, !!on); apply(); },
+    setEnhancedFocus: on => { write(K_FOCUS, !!on); apply(); },
+    sync: apply
+  };
+
+  apply();
+  document.addEventListener("DOMContentLoaded", apply);
+  document.addEventListener("change", e => {
+    const t = e.target;
+    if (!t || !t.matches) return;
+    if (t.matches('[data-a11y="contrast"]')) {
+      window.ProFitA11y.setHighContrast(t.checked);
+    } else if (t.matches('[data-a11y="focus"]')) {
+      window.ProFitA11y.setEnhancedFocus(t.checked);
+    }
+  });
+  window.addEventListener("storage", e => {
+    if (e.key === K_CONTRAST || e.key === K_FOCUS) apply();
+  });
+
+  /* Auto-load branded ProFit controls (Select dropdowns, Date & Time pickers) */
+  if (!document.getElementById("pf-controls-js")) {
+    const sc = document.createElement("script");
+    sc.id = "pf-controls-js";
+    sc.src = "/pf-controls.js?v=4";
+    sc.defer = true;
+    (document.head || document.documentElement).appendChild(sc);
+  }
+})();

@@ -99,3 +99,5 @@ One note per decision, oldest first; entries with an `Unknown` date are listed l
 - [[2026-11-22 Remove claim wording from the portals]]: All visible claim wording replaced with payment wording and dead claim page/script deleted.
 - [[2026-11-22 Only staff and admin enroll members]]: AGENTS.md now names cash desk recording and payment confirmation as the only enrollment paths.
 - [[2026-11-22 Add QR check-in using CDN scanner and existing endpoint]]: Added Member Check-in QR pass and Staff camera QR scanner reusing `POST /api/staff/attendance/check-in/`.
+- [[2026-11-26 Unified 5-state interaction system in pf-system.css]]: Standardized Hover, Active, Pressed, Focus, and Disabled states across all portals and standalone pages via `web/pf-system.css?v=2` and cleaned inline styles.
+- [[2026-11-26 Light mode 60-30-10 surfaces and animated empty-state mascot]]: Standardized light-mode 60/30/10 container/form surfaces in `web/pf-system.css?v=3` and `web/claim.html`, and added animated `web/img/empty-mascot.svg` across empty states.

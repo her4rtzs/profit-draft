@@ -94,7 +94,7 @@
           }).join("")
         : '<tr class="fn-review-empty"><td colspan="7">No payments are waiting for review.</td></tr>';
     } catch (e) {
-      tbody.innerHTML = '<tr class="fn-review-empty"><td colspan="7">' + esc(e.message || "Could not load payments.") + '</td></tr>';
+      tbody.innerHTML = '<tr class="fn-review-empty is-error"><td colspan="7">' + esc(e.message || "Could not load payments.") + '</td></tr>';
     }
   }
 

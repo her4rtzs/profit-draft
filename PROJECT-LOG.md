@@ -3623,3 +3623,252 @@ Remove the old rounded bar peeking out right above the mobile bottom navigation 
 - Hid the legacy `.pf-bottomnav` dock and enforced `display: none !important; visibility: hidden !important;` on closed `.pf-mob-sheet` / `.tr-mob-sheet` elements across `web/member-shell.css`, `web/dashboard.css`, `web/global.css`, and `web/trainer/trainer.css`.
 ### Decision-log skill
 When replacing a legacy mobile bottom dock (`.pf-bottomnav`) with a unified `.pf-mob-tabs` bar, explicitly hide the legacy element across all portal stylesheets so it never peeks behind the new bar.
+
+
+## 2026-11-25 20:15 (Asia/Manila): Install mobile-native skill & apply mobile-native baseline across all portals
+### What I asked for
+Install the `mobile-native` skill and fix mobile responsiveness / native-feel issues across the web app.
+### What the agent decided and why
+- Installed the skill at `.agents/skills/mobile-native/SKILL.md` so Antigravity discovers it automatically in this workspace.
+- Updated `<meta name="viewport">` across all `web/*.html` and `web/trainer/*.html` pages to include `viewport-fit=cover, interactive-widget=resizes-content`, and added dual light/dark `theme-color` (`#faf6ee` / `#0a0e17`) + `color-scheme` meta tags plus live JS status-bar sync in `web/config.js`.
+- Applied the mobile-native CSS baseline across `web/dashboard.css`, `web/global.css`, `web/member-shell.css`, and `web/trainer/trainer.css`: `-webkit-tap-highlight-color: transparent`, `overscroll-behavior: none` / `contain`, `100dvh` app shells, `16px` coarse-pointer inputs, `touch-action: manipulation` + `pan-x`/`pan-y`, `user-select: none` on controls only, `:active` press scale, safe-area top header padding, and `@media (hover: none)` hover reset.
+### Decision-log skill
+`env(safe-area-inset-*)` evaluates to `0px` unless `viewport-fit=cover` is set on the viewport meta tag; keep the baseline dark `theme-color` tag intact alongside media-qualified light/dark tags so PWA head tests pass.
+
+
+## 2026-11-25 22:56 (Asia/Manila): Fix cross-device responsive UI issues across every portal tab
+### What I asked for
+Fix the frontend UI layout issues across different devices (phones, tablets, desktops) on every tab, including the clipped Monthly Revenue controls, overlapping chart month labels, cramped Recent Registrations cards, clipped bottom content behind the mobile nav bar, and horizontal scrollbars on Reports/Transactions.
+### What the agent decided and why
+- Closed the unclosed `@media (max-width: 768px)` block in `web/finance-ui.css` and removed the stray extra `}` in `web/announcements.css` so CSS cascade rules apply cleanly across all screen widths.
+- Added the missing mobile-native baseline (`100dvh`, `16px` coarse inputs, `overscroll-behavior: none`, safe-area top header padding, touch-action, hover reset) and high-specificity mobile fixes to `web/dashboard.css`, `web/global.css`, `web/layout-fixes.css`, and `web/claim.html` so bottom content always clears the mobile tab bar (including at `<= 440px`), `#revenuePeriods` / `#attendancePeriods` wrap cleanly instead of clipping left, bar chart X-axis labels angle cleanly without overlapping, and Owner Dashboard Recent Registrations render as clean single-row cards.
+- Converted wide tables on phones (`<= 768px`) in `web/finance-ui.css` (Reports, Payments, Cashier), `web/members-ui.css` (Members), `web/attendance-ui.css` (Attendance check-ins), and `web/dashboard.css` (Cashiers) into stacked mobile cards with full-width empty states and zero horizontal scroll, and fixed `.pf-dirty-bar` in `web/profile.html` and `.st-price-row` in `web/settings.html`.
+- Polished all Member Portal tabs (`web/member-shell.css`, `web/member-home.html`) and aligned Trainer Portal's sidebar/bottom-nav breakpoint to `980px` in `web/trainer/trainer.css` to eliminate the `960px–980px` dead zone where neither sidebar nor bottom nav appeared, plus fixed narrow-phone search/date/profile/settings wrapping.
+- Bumped stylesheet `?v=` cache-busting query versions across all affected `web/*.html` and `web/trainer/*.html` pages so phones load the fresh CSS right away.
+### Decision-log skill
+Always check CSS brace balance when adding responsive blocks and bump `?v=` query strings on linked stylesheets so phone browsers pick up layout fixes without stale cache.
+
+
+## 2026-11-25 23:18 (Asia/Manila): Complete responsiveness audit and fixes from real-phone screenshots (320px–1920px)
+### What I asked for
+Perform a complete responsiveness audit of the entire application across mobile (320px–430px), tablet (768px–1024px), and desktop (1280px–1920px), fixing every visual issue spotted in the 13 real-phone screenshots (icon overlaps, clipped Payments tabs, overlapping Recent Registrations text/pills, smudged 14-day chart labels, peeking Unsaved Changes bar, truncated Trainers header, orphan button, Cashiers card layout, and public/auth pages).
+### What the agent decided and why
+- Removed the blanket `padding: 0 14px !important` override from mobile form rules in `web/dashboard.css`, `web/global.css`, and `web/layout-fixes.css` and explicitly protected `padding-left: 38px !important` on icon-prefixed inputs/selects (`.ann-select-wrap select`, `.tr-search-wrap input`, `.tr-member-search-wrap input`, `.tr-select-wrap select`) so icons never overlap text.
+- Changed `.fn-tabs` in `web/finance-ui.css` (`<= 560px`) to a clean 2-column grid so all 4 Payments tabs (`Daily`, `Monthly`, `History`, `Review`) show full labels with zero truncation, and kept Reports' 2 tabs side-by-side.
+- Rebuilt Owner Dashboard Recent Registrations mobile cards in `web/dashboard.css` as a 2-row card (Member + `...` on row 1, Status pill cleanly aligned on row 2) so long names never collide with `EXPIRING`/`EXPIRED` pills; fixed Cashiers mobile cards to put Cashier + Status + `...` on row 1 and Email on row 2; spanned orphan 3rd Trainer card buttons (`Deactivate`) full width; compacted narrow-phone topbars (`<= 480px`) so `"Trainers Management"` fits without ellipsis.
+- Replaced rotated chart X-axis labels with crisp horizontal labels + `:has()` density thinning in `web/dashboard.css` (`<= 640px`) so both 12-month (`Jan`–`Dec`) and 14-day (`Nov 12`–`Nov 25`) charts stay readable with zero smudging.
+- Hid `.pf-dirty-bar` cleanly when inactive (`opacity: 0; visibility: hidden; pointer-events: none;`) and styled `.pp-actions` as a 2-button mobile grid in `web/profile.html`; compacted Member card status pills in `web/members-ui.css`.
+- Audited and polished `web/welcome.html`, `web/login.html`, `web/join.html`, `web/forgot.html`, `web/onboarding.html`, `web/member-shell.css`, and `web/trainer/trainer.css` across `320px–1920px` (100dvh, 16px coarse inputs, safe-area topbars, tablet 1024px grids, 320px OTP/step fitting, and 1520px max-width centering on ultra-wide 1920px screens), and bumped all stylesheet `?v=` versions.
+### Decision-log skill
+Never apply blanket `padding: 0 14px !important` to all `input, select` elements — it silently breaks every icon-prefixed search box and dropdown; and always pair off-screen `transform` bars (like `.pf-dirty-bar`) with `opacity: 0; visibility: hidden;` when inactive so they never peek above fixed mobile bottom navigation.
+
+
+## 2026-11-25 23:36 (Asia/Manila): Root-cause bottom scroll cutoff fix, circular avatar standardization, unified headers, and compact mobile sizing
+### What I asked for
+Fix the root cause of the last container getting cut off at the bottom of pages, standardize all avatars across the entire app to be perfectly circular, make mobile cards and containers more compact and proportional without breaking desktop, and inspect and unify the portal header across all pages.
+### What the agent decided and why
+- Found and fixed the exact specificity root cause of bottom container cutoff: `html body .dashboard > main.main-content` (`padding-bottom: 48px !important` in `web/dashboard.css` & `web/global.css`) and `body[data-page="dashboard"] .main-content` (`24px !important`) out-ranked earlier mobile bottom-clearance rules (`(0,2,3)` vs `(0,2,2)`), letting the fixed bottom nav overlap the last card. Added `html body.pf-staff .dashboard > main.main-content` (`(0,3,3)`) plus natural `height: auto; min-height: 100dvh; overflow-y: visible;` and `padding-bottom: calc(112px + env(safe-area-inset-bottom, 0px))` on mobile/tablet (`56px` on desktop) across `web/dashboard.css`, `web/global.css`, `web/member-shell.css`, and `web/trainer/trainer.css`.
+- Standardized all portal headers (`Owner`, `Cashier`, `Member`, `Trainer`, and `claim.html`) to one consistent layout: `68px` desktop (`58px` mobile) sticky bar, single `17px` bold truncated page title (hid the extra Member header eyebrow), and identical circular `40px` (`36px` mobile) Theme, Bell, and Profile Avatar controls.
+- Standardized every user avatar across all portals to be always circular (`border-radius: 50% !important; aspect-ratio: 1 / 1; overflow: hidden; flex-shrink: 0;` + `object-fit: cover` on images), replacing old rounded-square overrides (`10px` on `.topbar-avatar`, `11px/13px` on `.sidebar-avatar`, `12px` on `.mini-avatar`, `24px` on `.tw-coach-avatar`, `30px` on `.pp-avatar.xl`).
+- Compacted mobile container padding (`14px`), card radii (`14px`), grid gaps (`10px–12px`), KPI heights, and hero heights at `<= 640px` across all portals while keeping desktop layouts unchanged, and bumped stylesheet `?v=` cache versions across all portal HTML files.
+### Decision-log skill
+When a base stylesheet uses high-specificity layout selectors like `html body .dashboard > main.main-content`, responsive overrides must match or exceed that specificity (`html body.pf-staff .dashboard > main.main-content`) — otherwise `padding-bottom` silently loses and fixed mobile bottom bars cut off the last card.
+
+
+## 2026-11-26 00:32 (Asia/Manila): Motionless Member-style PC/mobile header across all portals & 60/30/10 Admin Dashboard UI refinement
+### What I asked for
+Make the portal header larger and properly scaled on PC, make it stay completely motionless when scrolling (matching the Member Portal header across all portals), and refine the ProFit Admin Dashboard following the 60/30/10 rule to reduce box-heavy borders and improve visual hierarchy without changing functionality.
+### What the agent decided and why
+- Unified the header across Owner, Cashier, Member, Trainer, and Claim pages (`web/dashboard.css`, `web/global.css`, `web/member-shell.css`, `web/trainer/trainer.css`, `web/claim.html`) as a full edge-to-edge motionless sticky bar (`76px` height, `21px` bold title, `42px` circular Theme/Bell/Avatar controls on desktop; `60px` safe-area sticky bar with `38px`/`36px` circles on mobile). Removed top padding on `main.main-content` and disabled `.topbar.is-scrolled` padding shifts so Owner & Cashier headers sit flush at `top: 0` and never jump when scrolling.
+- Refined the Admin Dashboard (`web/index.html` + `web/dashboard.css`) using the 60/30/10 hierarchy (`#0A0E16` 60% canvas, `#111622` 30% elevated borderless surfaces, `#E8B93A` 10% accent reserved for primary actions, active period chips, revenue highlight, and hover states; status colors restricted to status badges/icons only).
+- Made Quick Actions compact and lightweight (`54px` height, borderless subtle surfaces, quiet `34px` neutral icons turning gold on hover, lightweight chevrons), kept all 4 KPI cards uniform (`126px` height, aligned typography), preserved the 2-column Revenue + Membership Type layout while removing nested inner borders, boxed legend cards, decorative wave clutter, and boxed desktop table rows in Recent Registrations.
+- Bumped stylesheet `?v=` cache-busting query strings across all portal HTML pages so browsers pick up the fresh styles right away.
+### Decision-log skill
+Putting `padding-top: 0` on `main.main-content` with negative horizontal margins on `.topbar` lets a sticky header inside `<main>` behave identically to a top-level full-bleed header (flush at `top: 0`, motionless on scroll, zero `.is-scrolled` height jump).
+
+
+## 2026-11-26 00:46 (Asia/Manila): Fix single-row edge-to-edge sticky header on phone, tablet, and PC across all portals
+### What I asked for
+Fix the broken mobile header (which stretched tall and wrapped the 3 action buttons onto a second row with a right-edge gap) and make the header clean and functional across all devices.
+### What the agent decided and why
+- Found and overrode legacy mobile rules in `web/dashboard.css` and `web/global.css` (`flex-wrap: wrap`, `.topbar-heading { width: 100% }`, `.topbar-right { display: contents !important }`, and `max-width: 100% !important`) that forced the title and action icons onto two rows and clipped the right edge of the full-bleed bar.
+- Locked `.topbar` across all widths (`320px` to `1920px`) in `web/dashboard.css`, `web/global.css`, `web/member-shell.css`, and `web/trainer/trainer.css` to a single non-wrapping row (`flex-wrap: nowrap`, explicit full-bleed `width: calc(100% + ...)` with `max-width: none`, fixed `76px` desktop / `62px + safe-area` mobile height, and `overflow: visible` so the notification dropdown always opens cleanly).
+- Fixed the slight clipping on the 3rd Members topbar tab (`New enrollment`) in `web/members-ui.css` on narrow phones and bumped stylesheet `?v=` versions across all portal HTML files.
+### Decision-log skill
+When turning a sticky header inside a padded `<main>` container full-bleed with negative side margins, always set `max-width: none !important`, explicit `width: calc(100% + <2x gutter>)`, `flex-wrap: nowrap !important`, and `overflow: visible !important` (so dropdown menus like Notifications are never clipped).
+
+
+
+## 2026-11-26 01:32 (Asia/Manila): Standardize Hover, Active, Pressed, Focus, and Disabled interaction states across all portals
+### What I asked for
+Fix inconsistent hover effects across the site and enforce one rule set for all 5 states: subtle background-only Hover (no strong glow), solid gold Active (stands out the most), slightly darker Pressed, thin gold outline Focus (not filled background), and no hover effect on Disabled.
+### What the agent decided and why
+- Created `web/pf-system.css` (already linked by all 21 authenticated portal pages, now bumped to `?v=2`) as the single source of truth enforcing the 5 states across Owner, Cashier, Member, and Trainer portals; see [[2026-11-26 Unified 5-state interaction system in pf-system.css]].
+- Updated `web/hover-fx.css?v=2` and cleaned up inline `<style>` interaction rules in `web/index.html`, `web/cashier.html`, `web/notifications.html`, `web/profile.html`, `web/settings.html`, `web/member-home.html`, `web/claim.html`, `web/login.html`, `web/join.html`, `web/forgot.html`, `web/onboarding.html`, `web/welcome.html`, and `web/faq.html` to remove hover glows (`box-shadow`), lifts (`translateY`/`scale`), brightness filters, and filled focus backgrounds.
+- Verified CSS brace balance across every modified file and passed `python manage.py check` (0 errors) and `python manage.py test` (292/292 OK with in-memory SQLite; `ruff` not installed and no Python files touched).
+### Decision-log skill
+Centralizing the 5 interaction states in one shared override stylesheet loaded last across every portal (`web/pf-system.css`), while stripping custom hover transforms/glows from inline `<style>` tags, prevents different modules and pages from drifting into mismatched hover animations or filled focus rings.
+
+
+## 2026-11-26 02:22 (Asia/Manila): Light mode 60/30/10 container/form consistency & animated empty-state mascot
+### What I asked for
+Make all containers, panels, and forms consistent in light mode following the 60/30/10 rule, and add a cute animation for blank/no-data states.
+### What the agent decided and why
+- Added unified 60/30/10 light-mode rules to `web/pf-system.css?v=3` (and aligned `web/claim.html`): `#F7F4EE` neutral page canvas (60%), `#FFFFFF` with `1px solid #E6DFD2` for every elevated card, panel, modal, popover, and table surface (30%, fixing dark `#131C2E` leaks in Announcements and mixed cool-slate vs. warm-cream form inputs/table headers), and `#E8B93A` solid gold accent (10%) while keeping dark sidebars and dark photo heroes intact; see [[2026-11-26 Light mode 60-30-10 surfaces and animated empty-state mascot]].
+- Created a local, transparent animated gym-frog mascot (`web/img/empty-mascot.svg`) inspired by the user's dumbbell-lifting frog and wired it across all non-loading, non-error empty states (charts, tables, lists, notifications, claims) with `prefers-reduced-motion: reduce` support.
+- Verified XML validity on `web/img/empty-mascot.svg`, balanced CSS braces on `web/pf-system.css` and `web/claim.html`, `?v=3` across all 21 portal HTML files, and passed `python manage.py check` (0 errors) and `python manage.py test` (292/292 OK with in-memory SQLite; `ruff` not installed and no Python files touched).
+### Decision-log skill
+Store empty-state illustrations locally in `web/img/` (served via WhiteNoise) instead of external image URLs so they never break from hotlink blocking or offline PWA use, and exclude loading spinners and error banners when styling generic `.empty` selectors.
+
+
+## 2026-11-26 02:40 (Asia/Manila): Standardize single CSS source of truth, table/thead/card surfaces, and 375px–430px mobile overflow guards
+### What I asked for
+Identify which stylesheets are actually loaded across HTML pages, clean up per-page CSS overrides (`attendance-ui.css`, `members-ui.css`, `finance-ui.css`, `trainer.css`, `hover-fx.css`) on table, `thead`, `th`, `tr`, and card surfaces, and standardize table/thead/card/hover surfaces with zero horizontal overflow at 375px–430px.
+### What the agent decided and why
+- Audited all HTML `<link>` tags and decision notes: the 10 Staff pages load `dashboard.css` (generated from 12 files with `spotify.css` as the `:root` token root) + page CSS + `pf-system.css`; `profile`/`settings` load `global.css` + `pf-system.css`; `member-home` loads its stylesheets + `pf-system.css`; and the 8 Trainer pages load `staff.css`, `trainer.css` + `pf-system.css`. Kept `web/pf-system.css` (`?v=4`) as the single shared runtime override layer across all 21 portal pages.
+- Fixed the exact per-page background and gradient overrides that leaked across dark and light modes: cleared the light-mode `linear-gradient(...)` on `.stats.three .stat-card`/`.panel` in `web/attendance-ui.css`, removed mismatched dark navy `thead` gradients (`#1b2742 -> #141e35`) and cool `#f8fafc`/cream `#faf6ee` row mismatches in `web/attendance-ui.css` (`?v=14`), `web/members-ui.css` (`?v=29`), `web/finance-ui.css` (`?v=24`), `web/trainer/trainer.css` (`?v=28`), and `web/pf-system.css`, using shared `--pf-surface`, `--pf-surface-thead`, and `--pf-tbl-row-hover` tokens plus `background-image: none !important`.
+- Removed the stale `@media (max-width: 760px) { html body .registrations-panel table { min-width: 640px; } }` rule in `web/hover-fx.css` (`?v=3`) and added explicit `max-width: 100%; overflow-x: clip;` page guards + `min-width: 0; width: 100%;` stacked mobile card table rules in `web/pf-system.css` for `375px–430px` viewports.
+- Verified CSS brace balance across all 6 edited stylesheets, `0` stale `?v=` links across 22 HTML files, `python manage.py check` (0 errors), and `python manage.py test` (292/292 OK in 500.431s with in-memory SQLite; `ruff` not installed and no Python files touched).
+### Decision-log skill
+Setting `background-color` alone in an override stylesheet will not clear a `linear-gradient(...)` from a page-specific stylesheet (`attendance-ui.css`, `members-ui.css`); always pair `background: var(--pf-surface) !important` with `background-image: none !important` and unify table container/`thead`/`tbody tr`/hover tokens in one shared sheet loaded last.
+
+
+## 2026-11-26 11:29 (Asia/Manila): Context-aware 6-pose animated mascot, strict no-data guards & mobile safety audit
+### What I asked for
+Animate the cute yellow headband buddy with different context-matched animations for empty states (no data, no announcement, etc.), make sure the animation ONLY appears when data is truly absent (never when data exists), check device responsiveness across tabs, and avoid creating unnecessary new files.
+### What the agent decided and why
+- Kept zero new files by upgrading `web/img/empty-mascot.svg` into a `1200×180` 6-pose animated sprite sheet matching the user's yellow headband gym buddy (Barbell Press, Writing Notebook, Reading Open Book, Jump Rope, Towel Rest, Twin Mini-Dumbbells), each isolated in a `200×180` `<clipPath>` slot with `prefers-reduced-motion` support.
+- Mapped each context animation in `web/pf-system.css?v=7` and `web/claim.html` (`url("/img/empty-mascot.svg?v=3")` at `600% 100%` and `200:180` sizing) and fixed the critical `[hidden]` display override bug (`[hidden] { display: none !important; }` + `:not([hidden])`), `td.pf-empty` / `tr.fn-review-empty td` `table-cell` `colspan` behavior, `.fa-spin` loading / `.is-error` / `.fa-triangle-exclamation` / `.fa-lock` / `.pf-retry-btn` exclusions, and `web/member-home.html`'s empty `.pf-state-box` coverage.
+- Added `.is-error` flags on error paths in `web/announcements-member.js?v=2` and `web/payments-review.js?v=3` so network/permission errors never render the no-data mascot, plus added `overflow-wrap: anywhere` and `min-width: 0` mobile container safety guards.
+- Verified SVG XML validity (`viewBox="0 0 1200 180"`, `6` clipPaths), balanced CSS braces (`pf-system.css` `83/83`, `claim.html` `145/145`), `0` stale `pf-system.css?v=1..6` links across all 21 portal pages, `python manage.py check` (`0` errors), and `python manage.py test` (`292/292 OK` in `835.302s` with in-memory SQLite; `ruff` not installed and live browser automation unavailable in this environment).
+### Decision-log skill
+Never apply `display: flex !important` to selector groups whose visibility is toggled via the HTML `hidden` attribute (`#mtEmpty`, `#cshEmpty`, `.chart-empty-state`), or to `<td colspan>` cells; and pack multi-pose vector animations into one `<clipPath>`-sliced SVG sprite (`background-size: 600% 100%`) when avoiding extra files.
+
+
+## 2026-11-26 12:11 (Asia/Manila): Add Accessibility settings (High Contrast & Enhanced Focus) across all portals
+### What I asked for
+Add an Accessibility section to Settings with High Contrast Mode and Enhanced Focus Indicators toggles.
+### What the agent decided and why
+- Added `window.ProFitA11y` and shared high-contrast / prominent orange focus-outline CSS in `web/config.js`, persisted via `localStorage` (`pf-a11y-contrast`, `pf-a11y-focus`) so both settings apply site-wide across every portal and page.
+- Added the **Accessibility** section (nav link + High Contrast Mode and Enhanced Focus Indicators toggles) to Owner/Cashier (`web/settings.html`), Member (`web/member-tabs.js`), and Trainer (`web/trainer/settings.html`).
+### Decision-log skill
+Centralize cross-portal UI accessibility preferences in `web/config.js` using `data-a11y` event delegation and `document.documentElement.dataset` attributes so every page inherits the active contrast and focus settings automatically.
+
+
+## 2026-11-26 12:22 (Asia/Manila): Merge Appearance and Accessibility into one Settings card
+### What I asked for
+Combine Appearance and Accessibility into a single section in Settings.
+### What the agent decided and why
+- Merged High Contrast Mode and Enhanced Focus Indicators directly into the **Appearance & Accessibility** card (and removed the extra Accessibility nav item) across `web/settings.html`, `web/member-tabs.js`, and `web/trainer/settings.html`.
+### Decision-log skill
+Group related display controls (Dark Mode, Font Size, High Contrast, Enhanced Focus) into one Settings card to keep navigation concise.
+
+
+## 2026-11-26 12:27 (Asia/Manila): Darken banner photos in Light Mode
+### What I asked for
+Darken the washed-out banner background images when using Light Mode.
+### What the agent decided and why
+- Updated the Light Mode (`body:not(.dark)`) rules for `.fn-header-bg` in `web/finance-ui.css` (Payments & Reports) and `.pp-header-bg` / `.md-id-card` in `web/members-ui.css` (Members & Member Detail) to use `opacity: 0.9`, `filter: brightness(0.56) contrast(1.14)`, and a crisp left-to-dark-right scrim so the photos look rich and sharp while keeping left-side text high-contrast.
+### Decision-log skill
+In Light Mode banner cards, avoid stacking low image opacity with a heavy white overlay; instead darken the image directly with `brightness()` + a subtle dark right-side tint while keeping only the text zone light.
+
+
+## 2026-11-26 12:30 (Asia/Manila): Remove hero shortcut dock in Member Portal
+### What I asked for
+Remove the 4-item quick member shortcuts bar (`1. My membership`, `2. Attendance`, `3. Schedule`, `4. Workout diary`) from the Member Dashboard hero.
+### What the agent decided and why
+- Removed `<nav class="pf-hero-dock">` from `web/member-home.html` since all four destinations are already accessible in the sidebar and mobile bottom navigation.
+### Decision-log skill
+Keep the Member hero focused on the greeting, primary CTA, and Membership Ticket Card rather than duplicating sidebar navigation links inside the hero banner.
+
+## 2026-11-26 12:39 (Asia/Manila): Keep Staff photo banners dark in Light Mode (matching Dark Mode)
+### What I asked for
+Make the Staff photo banners in Light Mode look the same dark photo-banner style as Dark Mode (matching the Trainer "My Assigned Athletes" banner).
+### What the agent decided and why
+- Excluded `.fn-header-card`, `.pp-members-topbar`, `.md-id-card`, and `.mb-bento-hero-photo` from the Light Mode white-surface override in `web/pf-system.css` so photo-backed banners stay dark in both themes.
+- Removed the Light Mode white-card, white-scrim, and white-tab overrides on `.fn-header-card` / `.fn-header-bg` (`web/finance-ui.css`) and `.pp-members-topbar` / `.pp-header-bg` / `.pp-page-tab` / `.md-id-card` (`web/members-ui.css`), pinning their internal text variables to crisp light colors so every Staff photo banner matches Dark Mode in Light Mode.
+### Decision-log skill
+Photo-backed hero banners should keep their dark scrim and white typography in both Light and Dark themes (rather than flipping to white-on-photo) so contrast and visual consistency match across Owner, Cashier, Trainer, and Member portals.
+
+## 2026-11-26 12:50 (Asia/Manila): Fix Members banner tab icons/hover and unify Payments & Reports banners
+### What I asked for
+Fix the missing active icon and hover/Light Mode styling on Browse Members tabs, then apply the same dark photo-banner layout (icon + title + subtitle on the left, icon tab cards on the right) to Payments and Reports.
+### What the agent decided and why
+- Removed `.pp-page-tab` and `.fn-tabs .tab` from the generic pill active/hover/pressed/Light Mode overrides in `web/pf-system.css` so dark-banner icon tab cards keep their dark-glass fill, amber hover, and bright colored icons in both Light and Dark Mode.
+- Locked `.pp-tab-ico` icon colors (`is-amber`, `is-cyan`, `is-emerald`) in `web/members-ui.css` so icons never turn dark on active/hover.
+- Upgraded `.fn-header-card` and `.fn-tabs` in `web/finance-ui.css`, `web/payments.html`, and `web/reports.html` to the exact same 2-column Browse Members banner layout (left icon + dynamic title/subtitle, right 74px icon-above-label dark-glass tab cards, dark gym-photo scrim in both modes) and bumped CSS cache-busters (`?v=11`, `?v=25`, `?v=30`).
+### Decision-log skill
+Exclude dark-banner icon tab cards (`.pp-page-tab`, `.fn-tabs .tab`) from global flat pill rules in `pf-system.css` and bump stylesheet `?v=` query strings after CSS edits so browsers pick up changes immediately without stale cache.
+
+
+## 2026-11-26 12:52 (Asia/Manila): Show member renewal form on demand and match staff review fields
+### What I asked for
+Fix the repeated renewal UI on the member portal's My Membership page so the payment form only appears when clicking "Renew membership", and keep only the fields staff actually need to review GCash claims.
+### What the agent decided and why
+- Hid `#memberPayCard` by default in `web/member-home.html` (with `#memberPayCard[hidden] { display: none !important; }` in `web/member-shell.css`) so it only opens when the member clicks **Renew membership** (or **Renew** on the Overview hero card), with Close, Cancel, and Escape support.
+- Removed the duplicate **Pay for membership** button from the Payment History panel header and renamed the top membership panel heading to **Current plan** so "My Membership" and the renew trigger no longer repeat on the same screen.
+- Matched the renewal form fields directly to what staff review on `web/payments.html` and what `POST /api/member/claims/` accepts: **Plan**, read-only server-priced **Amount (PHP)** side by side, **GCash reference number** (10–13 digits), and **Google Drive link (proof of payment)** — removing the redundant read-only `Payment method` input box in favor of a compact `GCash only` badge.
+- Updated `web/claim.html` to include the required **Plan** dropdown + live server **Amount (PHP)** and aligned its GCash reference validation to 10–13 digits so standalone claims also match `api/claims.py` and staff review.
+- Added a markup regression test in `apps/billing/tests/test_claim_review.py`. All billing claim, clean-URL, and installable tests passed; one pre-existing test (`api.tests_member_portal.MemberPortalApiTests.test_expired_membership_is_locked`) failed on untouched code, and `ruff` is not installed in this Python environment.
+### Decision-log skill
+Keep member GCash renewal forms hidden behind a single "Renew membership" trigger and align every visible input strictly to the server serializer (`plan`, `reference_number`, `proof_link`) and the staff review columns (`Plan`, `Amount`, `Reference`, `Proof`) so nothing is duplicated or out of sync.
+
+## 2026-11-26 12:59 (Asia/Manila): Lock dark background on Payments & Reports banners in Light Mode
+### What I asked for
+Fix the white background still appearing on Payments and Reports header banners in Light Mode and test across different device sizes.
+### What the agent decided and why
+- Locked `background`, `background-color`, `border`, and `color` on `html body.pf-staff .fn-header-card` plus `.fn-header-bg` and `.fn-header-bg::after` with `!important` in `web/finance-ui.css` and bumped `finance-ui.css?v=26` in `web/payments.html` and `web/reports.html` so no Light Mode card rule can turn the photo banner white.
+- Attempted live multi-viewport testing via the browser subagent, which reported that the Chrome DevTools MCP connection is not currently active; verified responsive CSS breakpoints (Desktop >1180px, Tablet <=1180px, Mobile <=560px) and ran Django check + tests.
+### Decision-log skill
+Photo-backed banners (`.fn-header-card`, `.pp-members-topbar`) need high-specificity `!important` dark backgrounds and scrims so Light Mode card/contrast utilities cannot turn the banner white while leaving its typography white.
+
+## 2026-11-26 13:06 (Asia/Manila): Branded Select, Date/Time Pickers, and Export PDF/CSV buttons
+### What I asked for
+Replace plain/empty browser-default dropdown, date picker, and time picker UI with ProFit-designed UI, and give Export PDF and Export CSV proper button styling.
+### What the agent decided and why
+- Created `web/pf-controls.css` and `web/pf-controls.js` (auto-loaded from `web/config.js`) to progressively replace native grey `<select>` popups and blue OS `<input type="date">` / `<input type="time">` popups with Light/Dark ProFit-themed floating popovers (gold selection, checkmarks, month navigation, Today/Clear, 12-hour AM/PM columns) while keeping the underlying HTML inputs and `change` events 100% synced.
+- Styled `#exportPdf` (crimson-tinted badge button with solid red hover) and `#exportCsv` (emerald-tinted badge button with solid green hover) in `web/finance-ui.css` for both Light and Dark Mode, and bumped `finance-ui.css?v=27` in `web/reports.html`.
+### Decision-log skill
+Progressive enhancement via a shared popover controller (`pf-controls.js`) upgrades native `<select>`, `<input type="date">`, and `<input type="time">` across every portal without rewriting individual page scripts or breaking form submissions.
+
+
+## 2026-11-26 13:18 (Asia/Manila): Remove hero shortcut dock from Trainer Dashboard
+### What I asked for
+Remove the 4-item bottom shortcut dock (`1. My roster`, `2. Attendance`, `3. Schedule`, `4. Announcements`) from the Trainer Dashboard hero banner.
+### What the agent decided and why
+- Removed `<nav class="pf-hero-dock">` and the `has-hero-dock` class from `<section class="tw-dash-hero">` in `web/trainer/index.html` so the hero banner keeps its normal bottom padding across desktop, tablet, and mobile.
+- Removed the unused `syncCoachHeroDock()` `MutationObserver` helper from `web/trainer/index.html` while keeping shared `.pf-hero-dock` styles in `web/pf-system.css` intact for Owner, Cashier, and Member dashboards.
+### Decision-log skill
+When removing a bottom-docked bar from a hero section, also remove its layout modifier class (`has-hero-dock`) and any page-local JS observers that mirror counts into it so spacing stays clean and no dead observers remain.
+
+## 2026-11-26 14:26 (Asia/Manila): Megaphone Empty Mascot, Hero Dock, Trainer Theme/Controls, Overlap Guards & Trainer Edit Status
+### What I asked for
+Update the No Announcements empty mascot, add the hero shortcut dock across portals, fix Trainer Dark/Light Mode and mobile layout, unify dropdown/date/time controls with icon pills, fix overlapping containers and clipped modals/tooltips, and move Trainer Deactivate inside the Edit Trainer modal with Active, On Leave, and Inactive status options.
+### What the agent decided and why
+- Updated slot 1 of `web/img/empty-mascot.svg` (`?v=4`) with the megaphone buddy mascot and mapped it to Announcements/Notifications in `web/pf-system.css` and `web/claim.html`, while clearing VS Code CSS Problems across `web/dashboard.css`, `web/portal-ui.css`, `web/global.css`, and `web/spotify.css`.
+- Added `.has-hero-dock` + `<nav class="pf-hero-dock">` with live counts on `web/index.html` (Owner) and `web/cashier.html` (Cashier).
+- Fixed Trainer Dark Mode contrast leaks in `web/config.js`, `web/pf-system.css`, `web/assets/js/staff-boot.js`, and `web/assets/js/staff.js`, plus preserved dark glass styling on `.tw-duty-card` / `.mb-ticket-card`, mobile `2x2` `.tw-coach-kpis`, and toolbar layout in `web/trainer/trainer.css`.
+- Unified visible `<select>`, `<input type="date">`, and `<input type="time">` controls (including Trainer date pickers) via `web/pf-controls.js` (`?v=4`) loaded from `web/config.js` (`?v=9`), and aligned `.pp-status-btn`/`.tr-spec-btn`/`.tr-combo-menu` in `web/pf-system.css` and `web/trainers-staff.js`.
+- Fixed overlap, clipping, and stacking bugs in `web/pf-system.css` (`?v=16`): elevated `.checkin-panel` (`z-index: 40`) with rounded `.checkin-input-wrap` focus ring, moved `.mt-tooltip` cleanly below the donut with an opaque dark surface (`z-index: 45`), contained `.mt-legend-card` inside `.membership-type-panel`, made `#trModal` single-column in Edit mode with `calc(100dvh - 32px)` modal scroll bounds across all portals, and kept `.registrations-panel` `overflow: visible` for table row menus.
+- Added `TrainerProfile.Status` (`active`, `on_leave`, `inactive`) and field `status` in `apps/trainers/models.py` (migration `0003_trainerprofile_status.py`), wired column-safe validation and serialization in `api/trainers.py`, removed the card-level `Deactivate` button in `web/trainers-staff.js` (`?v=13`) and moved `Deactivate` / `Reactivate` inside `#trModal` alongside the `#trStatus` selector in `web/trainers.html`, and added status transition unit tests in `apps/trainers/tests/test_trainers.py`.
+### Decision-log skill
+Keep destructive account toggles (`Deactivate` / `Reactivate`) and full lifecycle statuses (`active`, `on_leave`, `inactive`) inside the Edit modal with both a human-friendly dropdown and guarded backend state transitions, and check `.tr-modal-actions` alignment across both form and read-only profile modals when adding left-aligned action buttons.
+
+## 2026-11-26 15:53 (Asia/Manila): Add Edit Modal Status Selector and True Account Deactivation for Trainers
+### What I asked for
+Show the Active / On Leave / Inactive status selector inside Edit Trainer, and make Deactivate Account terminate the trainer's login and portal access rather than only toggling accepting-members availability.
+### What the agent decided and why
+- Resolved the duplicate `trStatusWrap` ID in `web/trainers.html` by moving the Edit modal dropdown inside `Trainer Information` with unique IDs (`trEditStatusWrap`, `trEditStatus`) and clear labels (`Active — Accepting new members`, `On Leave — Temporarily away`, `Inactive — Not accepting members`).
+- Separated coaching availability (`TrainerProfile.status`: `active` / `on_leave` / `inactive`) from login access (`User.is_active` via `account_active` in `api/trainers.py`): clicking `Deactivate Account` sets `user.is_active = False`, revokes pending trainer invites, marks `invite_status` as `"DEACTIVATED"`, disables the availability selector while deactivated, and blocks login and `/api/trainer/*` portal endpoints while preserving coaching history (and `Reactivate Account` restores access).
+- Styled `.tr-status.is-deactivated` in `web/pf-system.css` (`?v=18`), updated `web/trainers-staff.js` (`?v=15`), and added `test_deactivate_trainer_account_terminates_portal_access` plus `trainer.refresh_from_db()` in `apps/trainers/tests/test_trainers.py`.
+### Decision-log skill
+Never reuse an existing element ID (`trStatusWrap`) between a directory toolbar and a modal dialog, and separate temporary coaching unavailability (`On Leave` / `Inactive`) from full login revocation (`user.is_active = False`) with an explicit `account_active` flag and dedicated `DEACTIVATED` badge state.
+
+## 2026-11-26 16:07 (Asia/Manila): Add Migration-Safe Guards for Trainer Status & Sessions Endpoints
+### What I asked for
+Fix the HTTP 500 "Request failed (500)" error shown on `/trainer/index` when new trainer migrations (`0003_trainerprofile_status` and `0004_trainersession`) have not yet been applied to the local database.
+### What the agent decided and why
+- Added shared DB-scoped schema inspection helpers (`has_trainer_phone_column`, `has_trainer_status_column`, `has_trainer_session_table`, `defer_missing_trainer_fields`) in `apps/trainers/services.py` and applied them across `current_assignment`, `api/trainers.py` (`_trainer_qs`, `_get_trainer_profile_for_user`, `TrainerDashboardView`, `TrainerScheduleView`, `TrainerSessionListCreateView`, `TrainerSessionDetailView`, `TrainerProfileView.patch`, request/member lookups), `api/staff.py`, and `api/auth.py`.
+- Keyed the introspection cache by `(connection.alias, DB name)` so PostgreSQL Dev and in-memory SQLite tests never share stale schema cache, returned empty session lists cleanly on GET when `trainers_trainersession` does not exist yet, and instructed the owner to run `python manage.py migrate` on Dev and enable RLS with no policies on `trainers_trainersession` in Supabase.
+### Decision-log skill
+Always defer unmigrated columns and guard newly added tables with DB-keyed introspection checks across shared `select_related` / `prefetch_related` / dashboard paths so pages never return HTTP 500 between deployment and running `migrate`.

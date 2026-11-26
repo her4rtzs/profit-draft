@@ -244,3 +244,29 @@ class ReviewPageMarkupTests(TestCase):
             css.index("@media (max-width: 768px)"),
             css.index(".fn-table tbody tr {"),
         )
+
+    def test_member_renewal_form_opens_on_demand_and_matches_staff_fields(self):
+        web = Path(__file__).resolve().parents[3] / "web"
+        member_html = (web / "member-home.html").read_text(encoding="utf-8")
+        member_css = (web / "member-shell.css").read_text(encoding="utf-8")
+        claim_html = (web / "claim.html").read_text(encoding="utf-8")
+
+        # Hidden by default until the member opens "Renew membership"
+        self.assertIn('id="memberPayCard" hidden', member_html)
+        self.assertIn("#memberPayCard[hidden]", member_css)
+        self.assertIn('id="memberPayClose"', member_html)
+        self.assertIn('id="memberPayCancel"', member_html)
+        # Only one renew button inside the My Membership tab (no duplicate in Payment History)
+        membership_section = member_html.split('data-panel="membership"', 1)[1].split(
+            'data-panel="attendance"', 1
+        )[0]
+        self.assertEqual(membership_section.count("data-renew-membership"), 1)
+        # Exact staff-needed fields only (Plan, server-derived Amount, Reference, Proof link)
+        self.assertIn('id="memberPayPlan"', member_html)
+        self.assertIn('id="memberPayAmount"', member_html)
+        self.assertIn('id="memberPayReference"', member_html)
+        self.assertIn('id="memberPayProof"', member_html)
+        self.assertNotIn('id="memberPayMethod"', member_html)
+        # Standalone claim page also submits the required plan field
+        self.assertIn('id="claimPlan"', claim_html)
+        self.assertIn("plan: planSelect.value", claim_html)

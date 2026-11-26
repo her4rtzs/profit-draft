@@ -11,7 +11,7 @@
       <h3>${esc(n.title)}</h3>
       <p class="ann-body">${esc(n.message)}</p>
     </article>`;
-  const empty = text => `<div class="ann-empty"><i class="fa-solid fa-bullhorn" aria-hidden="true"></i><p>${text}</p></div>`;
+  const empty = (text, extraCls = "", iconCls = "fa-bullhorn") => `<div class="ann-empty${extraCls ? " " + extraCls : ""}"><i class="fa-solid ${iconCls}" aria-hidden="true"></i><p>${text}</p></div>`;
 
   async function load() {
     try {
@@ -23,7 +23,7 @@
       const msg = restricted
         ? "Announcements are available once your membership is active."
         : "Could not load announcements right now.";
-      if (list) list.innerHTML = empty(msg);
+      if (list) list.innerHTML = empty(msg, "is-error", restricted ? "fa-lock" : "fa-triangle-exclamation");
       if (preview) preview.innerHTML = `<p class="ann-msg">${esc(msg)}</p>`;
     }
   }

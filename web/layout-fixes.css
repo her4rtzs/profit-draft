@@ -813,7 +813,9 @@ html body.dark .theme-toggle {
   html body .topbar-right .theme-toggle,
   html body .topbar-right .notification,
   html body .topbar-right .topbar-avatar {
-    border-radius: 10px !important;
+    border-radius: 50% !important;
+    aspect-ratio: 1 / 1;
+    overflow: hidden !important;
     display: grid !important;
     place-items: center !important;
     border: 1px solid var(--border) !important;
@@ -1020,13 +1022,12 @@ html body.dark .theme-toggle {
     border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent) !important;
   }
 
-  /* Touch Form Controls - 16px font prevents iOS auto-zoom */
+  /* Touch Form Controls - 16px font prevents iOS auto-zoom without clobbering icon padding */
   html body .main-content :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
-    font-size: 15px !important;
+    font-size: 16px !important;
     height: 44px !important;
     min-height: 44px !important;
     border-radius: 12px !important;
-    padding: 0 14px !important;
     width: 100% !important;
     box-sizing: border-box !important;
   }
@@ -1077,7 +1078,7 @@ html body.dark .theme-toggle {
   }
 
   html body .main-content {
-    padding: 12px 10px 36px !important;
+    padding: 12px 12px calc(96px + env(safe-area-inset-bottom, 0px)) !important;
   }
 
   html body .panel,

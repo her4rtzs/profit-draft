@@ -1,230 +1,145 @@
 /* ProFit Trainer Portal - Client API and Page Logic
-   Connects the Trainer frontend directly to the Django backend.
+   Connects the Trainer frontend directly to the Django backend with no fake demo fallbacks.
 */
 (function () {
   'use strict';
   const PF = window.PF || {};
   const api = window.ProFitAPI;
 
+  const requireApi = () => {
+    if (!api) throw new Error('Backend API client is unavailable.');
+    return api;
+  };
+
+  const broadcastCheckin = (memberId) => {
+    try {
+      localStorage.setItem('profit-last-checkin-ts', String(Date.now()));
+      if (window.BroadcastChannel) {
+        const bc = new BroadcastChannel('profit-attendance-sync');
+        bc.postMessage({ type: 'checkin', memberId: Number(memberId || 0), ts: Date.now() });
+        bc.close();
+      }
+      if (window.PF && PF.syncNotifications) PF.syncNotifications();
+    } catch (_) {}
+  };
+
+  const normalizeNotifList = (raw, syncShell) => {
+    const list = Array.isArray(raw) ? raw : (raw && Array.isArray(raw.items) ? raw.items : []);
+    const items = list.map(n => ({
+      ...n,
+      created_at: n.created_at || n.time || new Date().toISOString(),
+      time: n.time || n.created_at || new Date().toISOString(),
+      read_at: n.read_at !== undefined ? n.read_at : (n.read ? (n.time || n.created_at || new Date().toISOString()) : null),
+      read: Boolean(n.read || n.read_at)
+    }));
+    if (syncShell && window.PF && PF.db && PF.db.setNotifications && PF.mapServerNotification) {
+      PF.db.setNotifications(items.map(PF.mapServerNotification));
+    }
+    return items;
+  };
+
   const Trainer = {
-    // API client
+    // Live API client (always talks to Django; throws real errors on failure)
     api: {
       async getProfile() {
-        if (!api) return Trainer.demo.getProfile();
-        try {
-          return await api.get('/trainer/profile/');
-        } catch (e) {
-          console.warn('API error, using demo fallback:', e);
-          return Trainer.demo.getProfile();
-        }
+        return await requireApi().get('/trainer/profile/');
       },
       async updateProfile(data) {
-        if (!api) return Trainer.demo.updateProfile(data);
-        return await api.patch('/trainer/profile/', data);
+        return await requireApi().patch('/trainer/profile/', data);
       },
       async getDashboard() {
-        if (!api) return Trainer.demo.getDashboard();
-        try {
-          return await api.get('/trainer/dashboard/');
-        } catch (e) {
-          console.warn('API error, using demo fallback:', e);
-          return Trainer.demo.getDashboard();
-        }
+        return await requireApi().get('/trainer/dashboard/');
       },
       async getMembers() {
-        if (!api) return Trainer.demo.getMembers();
-        try {
-          return await api.get('/trainer/members/');
-        } catch (e) {
-          console.warn('API error, using demo fallback:', e);
-          return Trainer.demo.getMembers();
-        }
+        return await requireApi().get('/trainer/members/');
       },
       async getMemberDetail(id) {
-        if (!api) return Trainer.demo.getMemberDetail(id);
-        try {
-          return await api.get(`/trainer/members/${id}/`);
-        } catch (e) {
-          console.warn('API error, using demo fallback:', e);
-          return Trainer.demo.getMemberDetail(id);
-        }
+        return await requireApi().get(`/trainer/members/${encodeURIComponent(id)}/`);
       },
       async getAttendance(dateStr, filter) {
-        if (!api) return Trainer.demo.getAttendance(dateStr, filter);
-        try {
-          const q = new URLSearchParams();
-          if (dateStr) q.set('date', dateStr);
-          if (filter) q.set('filter', filter);
-          return await api.get(`/trainer/attendance/?${q.toString()}`);
-        } catch (e) {
-          console.warn('API error, using demo fallback:', e);
-          return Trainer.demo.getAttendance(dateStr, filter);
-        }
+        const q = new URLSearchParams();
+        if (dateStr) q.set('date', dateStr);
+        if (filter) q.set('filter', filter);
+        return await requireApi().get(`/trainer/attendance/?${q.toString()}`);
       },
       async getAttendanceSeries({ granularity = 'day', period = '', from = '', to = '', memberId = 'all' } = {}) {
         const granMap = { days: 'day', day: 'day', weeks: 'week', week: 'week', months: 'month', month: 'month', years: 'year', year: 'year' };
         const gran = granMap[String(granularity || period || 'day').toLowerCase()] || 'day';
         const rawMid = String(memberId ?? 'all').trim().replace(/\/+$/, '');
-        const cleanMemberId = (!rawMid || rawMid.toLowerCase() === 'all') ? 'all' : String(Number.isFinite(Number(rawMid)) && Number(rawMid) > 0 ? Math.trunc(Number(rawMid)) : rawMid);
-        if (!api) return Trainer.demo.getAttendanceSeries({ granularity: gran, from, to, memberId: cleanMemberId });
-        try {
-          const q = new URLSearchParams();
-          q.set('granularity', gran);
-          if (from) q.set('from', from);
-          if (to) q.set('to', to);
-          q.set('member_id', cleanMemberId);
-          return await api.get(`/trainer/attendance/?${q.toString()}`);
-        } catch (e) {
-          if (e && (e.status === 403 || e.status === 400)) throw e;
-          console.warn('API error, using demo fallback:', e);
-          return Trainer.demo.getAttendanceSeries({ granularity: gran, from, to, memberId: cleanMemberId });
-        }
+        const cleanMemberId = (!rawMid || rawMid.toLowerCase() === 'all')
+          ? 'all'
+          : String(Number.isFinite(Number(rawMid)) && Number(rawMid) > 0 ? Math.trunc(Number(rawMid)) : rawMid);
+        const q = new URLSearchParams();
+        q.set('granularity', gran);
+        if (from) q.set('from', from);
+        if (to) q.set('to', to);
+        q.set('member_id', cleanMemberId);
+        return await requireApi().get(`/trainer/attendance/?${q.toString()}`);
       },
       async checkIn(memberId) {
-        let res;
-        if (!api) {
-          res = await Trainer.demo.checkIn(memberId);
-        } else {
-          try {
-            res = await api.post('/trainer/attendance/check-in/', { member_id: Number(memberId) });
-          } catch (e) {
-            if (e && (e.status === 400 || e.status === 404)) throw e;
-            res = await api.post('/staff/attendance/check-in/', { member_id: Number(memberId) });
-          }
-        }
-        try {
-          localStorage.setItem('profit-last-checkin-ts', String(Date.now()));
-          if (window.BroadcastChannel) {
-            const bc = new BroadcastChannel('profit-attendance-sync');
-            bc.postMessage({ type: 'checkin', memberId: Number(memberId), ts: Date.now() });
-            bc.close();
-          }
-          if (window.PF && PF.syncNotifications) PF.syncNotifications();
-        } catch (_) {}
+        const res = await requireApi().post('/trainer/attendance/check-in/', { member_id: Number(memberId) });
+        broadcastCheckin(memberId);
         return res;
       },
       async checkInByQr(qrCode) {
-        if (!api) throw new Error('API unavailable.');
-        const res = await api.post('/trainer/attendance/check-in/', { qr_code: String(qrCode || '').trim() });
-        try {
-          localStorage.setItem('profit-last-checkin-ts', String(Date.now()));
-          if (window.BroadcastChannel) {
-            const bc = new BroadcastChannel('profit-attendance-sync');
-            bc.postMessage({ type: 'checkin', memberId: Number(res.member_id || 0), ts: Date.now() });
-            bc.close();
-          }
-          if (window.PF && PF.syncNotifications) PF.syncNotifications();
-        } catch (_) {}
+        const res = await requireApi().post('/trainer/attendance/check-in/', { qr_code: String(qrCode || '').trim() });
+        broadcastCheckin(res && res.member_id);
         return res;
       },
       async getSchedule() {
-        if (!api) return Trainer.demo.getSchedule();
-        try {
-          return await api.get('/trainer/schedule/');
-        } catch (e) {
-          console.warn('API error, using demo fallback:', e);
-          return Trainer.demo.getSchedule();
+        return await requireApi().get('/trainer/schedule/');
+      },
+      async createSession(data) {
+        return await requireApi().post('/trainer/schedule/sessions/', data);
+      },
+      async updateSession(id, data) {
+        return await requireApi().patch(`/trainer/schedule/sessions/${encodeURIComponent(id)}/`, data);
+      },
+      async deleteSession(id) {
+        const client = requireApi();
+        if (typeof client.delete === 'function') {
+          return await client.delete(`/trainer/schedule/sessions/${encodeURIComponent(id)}/`);
         }
+        return await client.request('DELETE', `/trainer/schedule/sessions/${encodeURIComponent(id)}/`);
       },
       async sendScheduleNote(sessionName, note, memberId = 'all') {
         const payload = { session_name: sessionName, note: note };
         if (memberId && memberId !== 'all') payload.member_id = Number(memberId);
-        if (!api) return Trainer.demo.sendScheduleNote(sessionName, note, memberId);
-        const res = await api.post('/trainer/schedule/note/', payload);
+        const res = await requireApi().post('/trainer/schedule/note/', payload);
         if (window.PF && PF.syncNotifications) PF.syncNotifications();
         return res;
       },
       async getAnnouncements() {
-        if (!api) return Trainer.demo.getAnnouncements();
-        try {
-          const data = await api.get('/trainer/announcements/');
-          if (data && Array.isArray(data.items)) return data.items;
-          if (Array.isArray(data)) return data;
-          const fallback = await api.get('/announcements/');
-          return Array.isArray(fallback) ? fallback : (fallback && fallback.items ? fallback.items : []);
-        } catch (e) {
-          try {
-            const fallback = await api.get('/announcements/');
-            if (Array.isArray(fallback)) return fallback;
-          } catch (_) {}
-          console.warn('API error, using demo fallback:', e);
-          return Trainer.demo.getAnnouncements();
-        }
+        const data = await requireApi().get('/trainer/announcements/');
+        if (data && Array.isArray(data.items)) return data.items;
+        if (Array.isArray(data)) return data;
+        return [];
       },
       async getNotifications({ syncShell = true } = {}) {
-        const normalizeList = (raw) => {
-          const list = Array.isArray(raw) ? raw : (raw && Array.isArray(raw.items) ? raw.items : []);
-          const items = list.map(n => ({
-            ...n,
-            created_at: n.created_at || n.time || new Date().toISOString(),
-            time: n.time || n.created_at || new Date().toISOString(),
-            read_at: n.read_at !== undefined ? n.read_at : (n.read ? (n.time || n.created_at || new Date().toISOString()) : null),
-            read: Boolean(n.read || n.read_at)
-          }));
-          if (syncShell && window.PF && PF.db && PF.db.setNotifications && PF.mapServerNotification) {
-            PF.db.setNotifications(items.map(PF.mapServerNotification));
-          }
-          return items;
-        };
-        if (!api) return normalizeList(Trainer.demo.getNotifications());
-        try {
-          const res = await api.get('/trainer/notifications/?limit=40');
-          return normalizeList(res);
-        } catch (e) {
-          try {
-            const fallback = await api.get('/notifications/?limit=40');
-            return normalizeList(fallback);
-          } catch (_) {
-            return normalizeList(Trainer.demo.getNotifications());
-          }
-        }
+        const res = await requireApi().get('/trainer/notifications/?limit=40');
+        return normalizeNotifList(res, syncShell);
       },
       async markNotifRead(id, { syncShell = true } = {}) {
+        const res = await requireApi().post(`/trainer/notifications/${encodeURIComponent(id)}/read/`, {});
         if (syncShell && window.PF && PF.db && PF.db.markRead) PF.db.markRead(id);
-        if (!api) return;
-        try {
-          return await api.post(`/trainer/notifications/${id}/read/`, {});
-        } catch (e) {
-          try {
-            return await api.post(`/notifications/${id}/read/`, {});
-          } catch (err) {
-            console.warn(err);
-          }
-        }
+        return res;
       },
       async markAllNotifsRead({ syncShell = true } = {}) {
+        const res = await requireApi().post('/trainer/notifications/read-all/', {});
         if (syncShell && window.PF && PF.db && PF.db.markAllRead) PF.db.markAllRead();
-        if (!api) return;
-        try {
-          return await api.post('/trainer/notifications/read-all/', {});
-        } catch (e) {
-          try {
-            return await api.post('/notifications/read-all/', {});
-          } catch (err) {
-            console.warn(err);
-          }
-        }
+        return res;
       },
       async deleteNotif(id, { syncShell = true } = {}) {
+        const client = requireApi();
+        const path = `/trainer/notifications/${encodeURIComponent(id)}/`;
+        const res = typeof client.delete === 'function'
+          ? await client.delete(path)
+          : await client.request('DELETE', path);
         if (syncShell && window.PF && PF.db && PF.db.removeNotification) PF.db.removeNotification(id);
-        if (!api) return;
-        try {
-          if (typeof api.delete === 'function') {
-            return await api.delete(`/trainer/notifications/${id}/`);
-          }
-          return await api.request('DELETE', `/trainer/notifications/${id}/`);
-        } catch (e) {
-          try {
-            if (typeof api.delete === 'function') {
-              return await api.delete(`/notifications/${id}/`);
-            }
-            return await api.request('DELETE', `/notifications/${id}/`);
-          } catch (err) {
-            console.warn(err);
-          }
-        }
+        return res;
       },
       async clearNotifs(readOnly = false, { syncShell = true } = {}) {
+        const res = await requireApi().post('/trainer/notifications/clear/', { read_only: Boolean(readOnly) });
         if (syncShell && window.PF && PF.db) {
           if (readOnly) {
             const unreadItems = PF.db.notifications().filter(n => !n.read);
@@ -233,328 +148,45 @@
             PF.db.clearNotifications();
           }
         }
-        if (!api) return;
-        try {
-          return await api.post('/trainer/notifications/clear/', { read_only: Boolean(readOnly) });
-        } catch (e) {
-          try {
-            return await api.post('/notifications/clear/', { read_only: Boolean(readOnly) });
-          } catch (err) {
-            console.warn(err);
-          }
-        }
+        return res;
       },
       async changePassword(currentPassword, newPassword) {
-        if (!api) throw new Error('API unavailable.');
-        return await api.post('/auth/change-password/', {
+        return await requireApi().post('/auth/change-password/', {
           current_password: currentPassword,
           new_password: newPassword
         });
       }
     },
 
-    // Demo fallback for offline development
-    demo: {
-      getProfile() {
-        return {
-          id: 1,
-          name: 'Coach Mika',
-          first_name: 'Coach',
-          last_name: 'Mika',
-          email: 'coach@example.com',
-          phone: '0917-555-0190',
-          username: 'coach',
-          specialization: 'HIIT & Functional Strength',
-          bio: 'Passionate about high-intensity interval training, mobility and helping members achieve peak daily energy.',
-          availability: 'Mon - Fri: 6:00 AM - 2:00 PM, Sat: 8:00 AM - 12:00 PM',
-          max_members: 20,
-          load: 6,
-          active_members: 6,
-          today_checkins: 3,
-          unread_notifications: 0,
-          is_full: false,
-          is_active: true
-        };
-      },
-      updateProfile(data) {
-        return { detail: 'Profile updated.' };
-      },
-      getDashboard() {
-        return {
-          trainer: this.getProfile(),
-          stats: {
-            assigned_members: 2,
-            active_members: 2,
-            expiring_soon_members: 0,
-            expired_members: 0,
-            max_members: 20,
-            capacity_pct: 10,
-            today_checkins: 1,
-            week_checkins: 8,
-            is_full: false,
-            is_active: true
-          },
-          assigned_members: [
-            { id: 1, name: 'Joyce Alvarez' },
-            { id: 2, name: 'Angelo Metillo' }
-          ],
-          recent_attendances: [
-            { id: 101, member_id: 2, member_name: 'Angelo Metillo', check_in_at: '2026-10-30T00:05:00+08:00', check_in_date: '2026-10-30' },
-            { id: 102, member_id: 1, member_name: 'Joyce Alvarez', check_in_at: '2026-10-29T09:00:00+08:00', check_in_date: '2026-10-29' }
-          ],
-          announcements: [
-            { id: 1, title: 'Gym Equipment Upgrades', message: 'New Olympic barbells and bumper plates have arrived in Studio 1.', publish_on: new Date().toISOString().slice(0, 10), pinned: true }
-          ],
-          unread_notifications: 0
-        };
-      },
-      getMembers() {
-        return [
-          { id: 1, name: 'Joyce Alvarez', email: 'joyce.alvarez@example.com', phone: '0917-555-0101', membership_status: 'ACTIVE', is_active: true, days_remaining: 30, expiring_soon: false, expiry_date: '2026-12-15', date_joined: '2026-09-01', assigned_at: '2026-09-05', total_checkins: 24, last_checkin: new Date().toISOString(), today_checked_in: true },
-          { id: 2, name: 'Angelo Metillo', email: 'angelo.metillo@example.com', phone: '0917-555-0102', membership_status: 'ACTIVE', is_active: true, days_remaining: 13, expiring_soon: false, expiry_date: '2026-11-28', date_joined: '2026-08-10', assigned_at: '2026-08-12', total_checkins: 19, last_checkin: new Date(Date.now() - 3600000).toISOString(), today_checked_in: false },
-          { id: 3, name: 'Carlos Dizon', email: 'carlos.dizon@example.com', phone: '0918-555-0203', membership_status: 'ACTIVE', is_active: true, days_remaining: 5, expiring_soon: true, expiry_date: '2026-11-20', date_joined: '2026-07-15', assigned_at: '2026-07-18', total_checkins: 31, last_checkin: new Date(Date.now() - 7200000).toISOString(), today_checked_in: true }
-        ];
-      },
-      getMemberDetail(id) {
-        const m = this.getMembers().find(x => x.id === Number(id)) || this.getMembers()[0];
-        return {
-          ...m,
-          attendances: [
-            { id: 201, check_in_at: new Date().toISOString(), check_in_date: new Date().toISOString().slice(0, 10), recorded_by: 'Front Desk' },
-            { id: 202, check_in_at: new Date(Date.now() - 86400000).toISOString(), check_in_date: new Date(Date.now() - 86400000).toISOString().slice(0, 10), recorded_by: 'Coach Mika' },
-            { id: 203, check_in_at: new Date(Date.now() - 172800000).toISOString(), check_in_date: new Date(Date.now() - 172800000).toISOString().slice(0, 10), recorded_by: 'Coach Mika' }
-          ]
-        };
-      },
-      getAttendance(dateStr, filter) {
-        const today = new Date().toISOString().slice(0, 10);
-        return {
-          date: dateStr || today,
-          total: 3,
-          my_members_count: 3,
-          attendances: [
-            { id: 301, member_id: 1, member_name: 'Ana Santos', member_phone: '0917-555-0101', membership_status: 'ACTIVE', is_my_member: true, check_in_at: new Date().toISOString(), recorded_by: 'Coach Mika' },
-            { id: 302, member_id: 2, member_name: 'Ben Reyes', member_phone: '0917-555-0102', membership_status: 'ACTIVE', is_my_member: true, check_in_at: new Date(Date.now() - 3600000).toISOString(), recorded_by: 'Front Desk' },
-            { id: 304, member_id: 3, member_name: 'Carlos Dizon', member_phone: '0918-555-0203', membership_status: 'ACTIVE', is_my_member: true, check_in_at: new Date(Date.now() - 7200000).toISOString(), recorded_by: 'Coach Mika' }
-          ]
-        };
-      },
-      getAttendanceSeries({ granularity = 'day', period = '', from = '', to = '', memberId = 'all' } = {}) {
-        const granMap = { days: 'day', day: 'day', weeks: 'week', week: 'week', months: 'month', month: 'month', years: 'year', year: 'year' };
-        const gran = granMap[String(granularity || period || 'day').toLowerCase()] || 'day';
-        const periodAlias = { day: 'days', week: 'weeks', month: 'months', year: 'years' }[gran];
-
-        const parseDate = s => {
-          if (!s) return null;
-          if (/^\d{2}\/\d{2}\/\d{4}$/.test(String(s))) {
-            const [mm, dd, yy] = String(s).split('/').map(Number);
-            return new Date(yy, mm - 1, dd);
-          }
-          const [y, m, d] = String(s).split('-').map(Number);
-          return (!y || !m || !d) ? null : new Date(y, m - 1, d);
-        };
-        const toIso = d => {
-          const y = d.getFullYear();
-          const m = String(d.getMonth() + 1).padStart(2, '0');
-          const day = String(d.getDate()).padStart(2, '0');
-          return `${y}-${m}-${day}`;
-        };
-        const shortFmt = d => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-        const fullFmt = d => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        let dTo = parseDate(to) || new Date(today);
-        let dFrom = parseDate(from);
-        if (!dFrom) {
-          dFrom = new Date(dTo);
-          if (gran === 'week') dFrom.setDate(dFrom.getDate() - 55);
-          else if (gran === 'month') dFrom = new Date(dTo.getFullYear(), dTo.getMonth() - 5, 1);
-          else if (gran === 'year') dFrom = new Date(dTo.getFullYear() - 2, 0, 1);
-          else dFrom.setDate(dFrom.getDate() - 13);
-        }
-        if (dFrom > dTo) { const t = dFrom; dFrom = dTo; dTo = t; }
-
-        const singleMember = memberId && memberId !== 'all';
-        const baseTargets = singleMember ? 1 : 5;
-        const seedOffset = singleMember ? Number(memberId) || 1 : 0;
-
-        const dayTally = d => {
-          if (d > today) return { c: 0, s: 0 };
-          const h = (d.getFullYear() * 372 + (d.getMonth() + 1) * 31 + d.getDate() + seedOffset * 7) % 11;
-          const s = singleMember ? 1 : Math.max(3, baseTargets - (h % 2));
-          const c = singleMember ? (h % 3 === 0 ? 0 : 1) : Math.min(s, Math.max(1, s - (h % 3)));
-          return { c, s };
-        };
-
-        const rangeTally = (sDate, eDate) => {
-          let c = 0, s = 0;
-          const cur = new Date(sDate);
-          while (cur <= eDate) {
-            const r = dayTally(cur);
-            c += r.c;
-            s += r.s;
-            cur.setDate(cur.getDate() + 1);
-          }
-          const missed = Math.max(0, s - c);
-          const rate = s > 0 ? Math.round((c / s) * 1000) / 10 : null;
-          return { checked_in: c, scheduled: s, missed, attendance_rate: rate, rate };
-        };
-
-        const buckets = [];
-        if (gran === 'day') {
-          const cur = new Date(dFrom);
-          while (cur <= dTo) {
-            const t = rangeTally(cur, cur);
-            const iso = toIso(cur);
-            buckets.push({
-              start: iso,
-              key: iso,
-              label: shortFmt(cur),
-              tooltip_label: fullFmt(cur),
-              ...t
-            });
-            cur.setDate(cur.getDate() + 1);
-          }
-        } else if (gran === 'week') {
-          // Weeks start on Monday
-          const firstMon = new Date(dFrom);
-          const dow = (firstMon.getDay() + 6) % 7; // Mon=0 .. Sun=6
-          firstMon.setDate(firstMon.getDate() - dow);
-          const curMon = new Date(firstMon);
-          while (curMon <= dTo) {
-            const curSun = new Date(curMon);
-            curSun.setDate(curSun.getDate() + 6);
-            const wStart = curMon < dFrom ? dFrom : curMon;
-            const wEnd = curSun > dTo ? dTo : curSun;
-            const t = rangeTally(wStart, wEnd);
-            const iso = toIso(curMon);
-            buckets.push({
-              start: iso,
-              key: iso,
-              label: shortFmt(curMon),
-              tooltip_label: `${shortFmt(curMon)} – ${fullFmt(curSun)}`,
-              ...t
-            });
-            curMon.setDate(curMon.getDate() + 7);
-          }
-        } else if (gran === 'month') {
-          let y = dFrom.getFullYear(), m = dFrom.getMonth();
-          const sameYear = dFrom.getFullYear() === dTo.getFullYear();
-          while (y < dTo.getFullYear() || (y === dTo.getFullYear() && m <= dTo.getMonth())) {
-            const first = new Date(y, m, 1);
-            const last = new Date(y, m + 1, 0);
-            const mStart = first < dFrom ? dFrom : first;
-            const mEnd = last > dTo ? dTo : last;
-            const t = rangeTally(mStart, mEnd);
-            const iso = toIso(first);
-            buckets.push({
-              start: iso,
-              key: iso,
-              label: first.toLocaleDateString('en-US', sameYear ? { month: 'short' } : { month: 'short', year: '2-digit' }),
-              tooltip_label: first.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
-              ...t
-            });
-            m++;
-            if (m > 11) { m = 0; y++; }
-          }
-        } else {
-          for (let y = dFrom.getFullYear(); y <= dTo.getFullYear(); y++) {
-            const first = new Date(y, 0, 1);
-            const last = new Date(y, 11, 31);
-            const yStart = first < dFrom ? dFrom : first;
-            const yEnd = last > dTo ? dTo : last;
-            const t = rangeTally(yStart, yEnd);
-            const iso = toIso(first);
-            buckets.push({
-              start: iso,
-              key: iso,
-              label: String(y),
-              tooltip_label: String(y),
-              ...t
-            });
-          }
-        }
-
-        const totalC = buckets.reduce((a, b) => a + b.checked_in, 0);
-        const totalS = buckets.reduce((a, b) => a + b.scheduled, 0);
-        const totalM = Math.max(0, totalS - totalC);
-        const avgR = totalS > 0 ? Math.round((totalC / totalS) * 1000) / 10 : null;
-
-        return {
-          granularity: gran,
-          period: periodAlias,
-          from: toIso(dFrom),
-          to: toIso(dTo),
-          member_id: singleMember ? Number(memberId) : 'all',
-          assigned_members: [
-            { id: 1, name: 'Joyce Alvarez' },
-            { id: 2, name: 'Angelo Metillo' }
-          ],
-          updated_at: new Date().toISOString(),
-          buckets,
-          summary: {
-            checked_in: totalC,
-            scheduled: totalS,
-            missed: totalM,
-            attendance_rate: avgR,
-            rate: avgR
-          }
-        };
-      },
-      checkIn(memberId) {
-        return { detail: 'Member checked in successfully.' };
-      },
-      getSchedule() {
-        return {
-          coach_name: 'Coach Mika',
-          sessions: [
-            { id: 1, dow: 0, day: 'Sunday', time: '09:00', mins: 45, name: 'Recovery & Stretch', coach: 'Coach Bea', cap: 18, room: 'Studio 1', is_mine: false },
-            { id: 2, dow: 1, day: 'Monday', time: '06:00', mins: 45, name: 'Sunrise HIIT', coach: 'Coach Mika', cap: 12, room: 'Main Floor', is_mine: true },
-            { id: 3, dow: 1, day: 'Monday', time: '18:30', mins: 60, name: 'Strength Basics', coach: 'Coach Jun', cap: 10, room: 'Weight Area', is_mine: false },
-            { id: 4, dow: 2, day: 'Tuesday', time: '07:00', mins: 40, name: 'Cardio Club', coach: 'Coach Rei', cap: 16, room: 'Cardio Deck', is_mine: false },
-            { id: 5, dow: 2, day: 'Tuesday', time: '19:00', mins: 50, name: 'Boxing Fitness', coach: 'Coach Dan', cap: 12, room: 'Studio 2', is_mine: false },
-            { id: 6, dow: 3, day: 'Wednesday', time: '06:00', mins: 45, name: 'Sunrise HIIT', coach: 'Coach Mika', cap: 12, room: 'Main Floor', is_mine: true },
-            { id: 7, dow: 3, day: 'Wednesday', time: '19:00', mins: 50, name: 'Mobility Flow', coach: 'Coach Bea', cap: 14, room: 'Studio 1', is_mine: false },
-            { id: 8, dow: 4, day: 'Thursday', time: '18:00', mins: 60, name: 'Barbell Club', coach: 'Coach Jun', cap: 8, room: 'Weight Area', is_mine: false },
-            { id: 9, dow: 5, day: 'Friday', time: '07:00', mins: 40, name: 'Cardio Club', coach: 'Coach Rei', cap: 16, room: 'Cardio Deck', is_mine: false },
-            { id: 10, dow: 5, day: 'Friday', time: '17:30', mins: 45, name: 'Friday Finisher', coach: 'Coach Mika', cap: 12, room: 'Main Floor', is_mine: true },
-            { id: 11, dow: 6, day: 'Saturday', time: '08:00', mins: 75, name: 'Team Sweat', coach: 'Coaches', cap: 20, room: 'Main Floor', is_mine: true }
-          ],
-          assigned_members: [
-            { id: 1, name: 'Ana Santos' },
-            { id: 2, name: 'Ben Reyes' },
-            { id: 3, name: 'Carlos Dizon' }
-          ]
-        };
-      },
-      sendScheduleNote(sessionName, note) {
-        return { detail: 'Schedule update sent to assigned members.', recipient_count: 6 };
-      },
-      getAnnouncements() {
-        return [
-          { id: 1, title: 'Gym Equipment Upgrades in Studio 1', body: 'New Olympic barbells, calibrated competition bumper plates, and adjustable benches have arrived in Studio 1. Please remind members to re-rack all weights after training sessions.', message: 'New Olympic barbells, calibrated competition bumper plates, and adjustable benches have arrived in Studio 1. Please remind members to re-rack all weights after training sessions.', audience: 'everyone', event_date: '2026-11-20', publish_on: '2026-11-10', pinned: true },
-          { id: 2, title: 'Q4 Coach Alignment & Programming Sync', body: 'All Personal Trainers will meet this Saturday at 1:00 PM in Studio 2 to review progressive overload templates and member retention check-ins.', message: 'All Personal Trainers will meet this Saturday at 1:00 PM in Studio 2 to review progressive overload templates and member retention check-ins.', audience: 'trainers', event_date: '2026-11-22', publish_on: '2026-11-08', pinned: true },
-          { id: 3, title: 'Holiday Operating Hours', body: 'Special schedule for the upcoming holidays. Morning conditioning and open-gym sessions will run normally from 6:00 AM - 11:00 AM.', message: 'Special schedule for the upcoming holidays. Morning conditioning and open-gym sessions will run normally from 6:00 AM - 11:00 AM.', audience: 'everyone', event_date: null, publish_on: '2026-10-28', pinned: false }
-        ];
-      },
-      getNotifications() {
-        return [];
-      }
-    },
-
     // Formatters
     format: {
+      localIsoDate(date = new Date()) {
+        const d = date instanceof Date ? date : new Date(date);
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+      },
       date(d) {
         if (!d) return '—';
-        const date = new Date(d);
-        if (isNaN(date.getTime())) return String(d);
+        const raw = String(d).trim();
+        const isoDateOnly = /^(\d{4})-(\d{2})-(\d{2})$/.exec(raw);
+        const date = isoDateOnly
+          ? new Date(Number(isoDateOnly[1]), Number(isoDateOnly[2]) - 1, Number(isoDateOnly[3]))
+          : new Date(raw);
+        if (isNaN(date.getTime())) return raw;
         return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
       },
       time(d) {
         if (!d) return '—';
-        const date = new Date(d);
-        if (isNaN(date.getTime())) return String(d);
+        const raw = String(d).trim();
+        const hhmm = /^(\d{2}):(\d{2})$/.exec(raw);
+        if (hhmm) {
+          const dt = new Date(2000, 0, 1, Number(hhmm[1]), Number(hhmm[2]));
+          return dt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+        }
+        const date = new Date(raw);
+        if (isNaN(date.getTime())) return raw;
         return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
       },
       timeAgo(d) {
@@ -569,8 +201,9 @@
       statusPill(status, isActive) {
         const s = String(status || '').toUpperCase();
         if (s === 'ACTIVE' || isActive) return '<span class="pill green">Active</span>';
-        if (s === 'EXPIRED') return '<span class="pill red">Expired</span>';
+        if (s === 'TRIAL') return '<span class="pill blue">Trial</span>';
         if (s === 'PENDING') return '<span class="pill amber">Pending</span>';
+        if (s === 'EXPIRED') return '<span class="pill red">Expired</span>';
         return `<span class="pill gray">${PF.esc ? PF.esc(status) : status}</span>`;
       }
     },
@@ -578,21 +211,25 @@
     _cachedMembers: null,
     async syncShell() {
       try {
-        const [prof, members] = await Promise.all([
+        const [profRes, membersRes] = await Promise.allSettled([
           Trainer.api.getProfile(),
           Trainer.api.getMembers(),
           window.PF && PF.syncNotifications ? PF.syncNotifications() : Promise.resolve()
         ]);
-        Trainer._cachedMembers = members;
-        if (window.PF && PF.syncShellProfile && prof) {
+        if (membersRes.status === 'fulfilled' && Array.isArray(membersRes.value)) {
+          Trainer._cachedMembers = membersRes.value;
+        }
+        if (profRes.status === 'fulfilled' && profRes.value && window.PF && PF.syncShellProfile) {
+          const prof = profRes.value;
           PF.syncShellProfile({
             name: prof.name || 'Coach',
             email: prof.email || '',
             role: 'Personal Trainer',
-            photo: prof.photo || ''
+            photo: prof.photo || '',
+            unread: prof.unread_notifications
           });
         }
-      } catch (e) {
+      } catch (_) {
         // non-blocking shell sync
       }
     }
@@ -635,4 +272,3 @@
     });
   }
 })();
-

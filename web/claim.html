@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <title>Submit a GCash claim — ProFit</title>
 <meta name="description" content="Submit a GCash payment claim for staff review.">
 <link rel="icon" type="image/jpeg" href="logo.jpg">
@@ -10,22 +10,23 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
-<script src="config.js?v=4"></script><script src="api.js?v=5"></script><script src="auth.js?v=4"></script>
-<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17">
+<script src="config.js?v=9"></script><script src="api.js?v=5"></script><script src="auth.js?v=4"></script>
+<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17"><meta name="color-scheme" content="light dark">
 <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="pf-system.css?v=18">
 <style>
 :root {
   box-sizing: border-box;
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
-  --bg: #faf6ea;
+  --bg: #f7f4ee;
   --cd: #ffffff;
-  --c2: #f6efdc;
-  --ln: #eadfc4;
-  --ink: #1f1b10;
-  --t2: #6f6853;
-  --y: #e8b931;
-  --on: #2a2000;
+  --c2: #f7f4ee;
+  --ln: #e6dfd2;
+  --ink: #1c1917;
+  --t2: #6b6254;
+  --y: #e8b93a;
+  --on: #0b0f19;
   --bad: #c93b3b;
   --ok: #1f8f5f;
   --warn: #a96f00;
@@ -92,13 +93,15 @@ a { color: inherit; text-decoration: none; }
 .claim-topbar {
   position: sticky;
   top: 0;
-  z-index: 40;
+  z-index: 60;
   width: 100%;
+  height: 76px;
+  min-height: 76px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
-  padding: 14px 28px;
+  gap: 16px;
+  padding: 0 clamp(24px, 3vw, 40px);
   background: var(--bg);
   border-bottom: 1px solid var(--ln);
 }
@@ -110,28 +113,35 @@ a { color: inherit; text-decoration: none; }
 }
 .claim-top-title {
   margin: 0;
-  font-size: 17px;
-  font-weight: 700;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   color: var(--ink);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.hr { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.hr { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
 
 .cb {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  flex: 0 0 42px;
+  aspect-ratio: 1 / 1;
   border-radius: 50%;
+  overflow: hidden;
   background: var(--cd);
   border: 1px solid var(--ln);
   display: grid;
   place-items: center;
   font-size: 15px;
   color: var(--ink);
-  transition: transform 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
-.cb:hover { transform: translateY(-2px); border-color: var(--y); color: var(--warn); }
+.cb img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
+.cb:hover { background: var(--c2); }
+.cb:active { background: var(--ln); }
 .cb.av {
   border: 2px solid var(--y);
   background: var(--y);
@@ -194,7 +204,8 @@ a { color: inherit; text-decoration: none; }
   font-weight: 700;
   transition: border-color 0.2s ease, color 0.2s ease;
 }
-.claim-back-pill:hover { border-color: #e8b93a; color: #e8b93a; }
+.claim-back-pill:hover { background: rgba(255, 255, 255, 0.10); }
+.claim-back-pill:active { background: rgba(255, 255, 255, 0.16); }
 
 /* Status banner */
 .notice-banner {
@@ -250,9 +261,9 @@ a { color: inherit; text-decoration: none; }
   border-radius: 16px;
   padding: 16px;
   position: relative;
-  transition: transform 0.2s ease, border-color 0.2s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
 }
-.sp:hover { transform: translateY(-2px); border-color: var(--y); }
+.sp:hover { filter: none; transform: none; }
 .sp.s1 { background: #fef3c7; }
 .sp.s2 { background: #dbeafe; }
 .sp.s3 { background: #dcfce7; }
@@ -345,7 +356,7 @@ a { color: inherit; text-decoration: none; }
   font-size: 15px;
   transition: border-color 0.2s ease, background 0.2s ease;
 }
-.in:focus { outline: 0; border-color: var(--y); }
+.in:focus { outline: 1.5px solid var(--y); border-color: var(--y); box-shadow: none; }
 .in.ok { border-color: var(--ok); }
 .in.bad { border-color: var(--bad); }
 
@@ -464,11 +475,11 @@ a { color: inherit; text-decoration: none; }
   gap: 9px;
   align-items: center;
   justify-content: center;
-  transition: transform 0.2s ease, filter 0.2s ease, opacity 0.2s ease;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
 }
-.btn:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.06); }
-.btn:active:not(:disabled) { transform: scale(0.98); }
-.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn:hover:not(:disabled) { background: #f0c44b; transform: none; filter: none; box-shadow: none; }
+.btn:active:not(:disabled) { background: #b8860b; color: #0b0f19; transform: none; box-shadow: none; }
+.btn:disabled { opacity: 0.48; cursor: not-allowed; pointer-events: none; box-shadow: none; transform: none; }
 
 .fe {
   color: var(--bad);
@@ -529,18 +540,10 @@ a { color: inherit; text-decoration: none; }
 .pill.a { background: var(--ok-bg); color: var(--ok); }
 .pill.r { background: var(--bad-bg); color: var(--bad); }
 
-.emp { text-align: center; padding: 32px 12px; color: var(--t2); }
-.emp .ei {
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
-  background: var(--c2);
-  color: var(--t2);
-  display: inline-grid;
-  place-items: center;
-  font-size: 20px;
-  margin-bottom: 10px;
-}
+.emp[hidden] { display: none !important; }
+.emp { text-align: center; padding: 32px 12px; color: var(--t2); display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.emp:not([hidden]):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation))::before { content: ""; display: block; width: 96px; height: 86px; background: url("/img/empty-mascot.svg?v=4") 40% 0% / 600% 100% no-repeat; margin-bottom: 4px; }
+.emp:not([hidden]):not(:has(.fa-spin)):not(:has(.fa-triangle-exclamation)) .ei { display: none; }
 .emp b { display: block; color: var(--ink); font-size: 16px; margin-bottom: 4px; }
 
 #claimToast {
@@ -565,15 +568,44 @@ a { color: inherit; text-decoration: none; }
   .steps { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 620px) {
-  .claim-topbar { padding: 12px 14px; }
-  .wrap { padding: 16px 14px 56px; }
-  .claim-hero { padding: 20px 18px; border-radius: 18px; }
-  .g2, .steps { grid-template-columns: 1fr; }
+  .claim-topbar {
+    min-height: 58px;
+    padding: calc(10px + env(safe-area-inset-top, 0px)) 12px 10px;
+    gap: 8px;
+  }
+  .claim-top-left { gap: 8px; }
+  .claim-top-title { font-size: clamp(15px, 4.1vw, 17px); }
+  .hr { gap: 6px; }
+  .cb { width: 36px; height: 36px; min-width: 36px; flex: 0 0 36px; font-size: 14px; }
+  .wrap { padding: 12px 12px calc(64px + env(safe-area-inset-bottom, 0px)); }
+  .claim-hero { padding: 16px 14px; border-radius: 14px; margin-bottom: 14px; }
+  .g2, .steps { grid-template-columns: 1fr; gap: 10px; }
   .cl { flex-wrap: wrap; }
   .btn { width: 100%; }
   .ft { flex-direction: column; align-items: stretch; }
   .lim { max-width: none; }
-  .card { padding: 18px; border-radius: 18px; }
+  .card { padding: 14px; border-radius: 14px; margin-bottom: 12px; }
+}
+html {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior: none;
+}
+body {
+  min-height: 100dvh;
+  overscroll-behavior: none;
+}
+button, a { touch-action: manipulation; }
+button, .cb {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+@media (pointer: coarse) {
+  input, select, textarea { font-size: 16px; }
+}
+@media (hover: none) {
+  .cb:hover, .sp:hover, .btn:hover { transform: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -657,14 +689,34 @@ a { color: inherit; text-decoration: none; }
     <p class="sub">Staff check the screenshot against the reference number.</p>
 
     <form id="claimForm" novalidate>
+      <div class="g2" style="margin-bottom:18px">
+        <div>
+          <label class="lb" for="claimPlan">Plan</label>
+          <div class="fw" id="planWrap">
+            <select class="in" id="claimPlan" required>
+              <option value="">Loading plans&hellip;</option>
+            </select>
+          </div>
+          <div class="hint" id="planHint">Choose the membership plan you paid for.</div>
+        </div>
+
+        <div>
+          <label class="lb" for="claimAmount">Amount (PHP)</label>
+          <div class="fw">
+            <input class="in" id="claimAmount" value="&mdash;" readonly>
+          </div>
+          <div class="hint">Set automatically from the official plan price.</div>
+        </div>
+      </div>
+
       <div class="g2">
         <div>
           <label class="lb" for="claimReference">GCash reference number</label>
           <div class="fw" id="refWrap">
-            <input class="in" id="claimReference" maxlength="24" inputmode="numeric" autocomplete="off" placeholder="1234 5678 9012 3" required>
+            <input class="in" id="claimReference" maxlength="20" inputmode="numeric" autocomplete="off" placeholder="6028 871 884223" required>
             <span class="st" id="refStatus" aria-hidden="true"></span>
           </div>
-          <div class="hint" id="refHint">Digits only, 10 to 20. It&rsquo;s the number shown after &ldquo;Ref No.&rdquo; in GCash.</div>
+          <div class="hint" id="refHint">Digits only, 10 to 13. It&rsquo;s the number shown after &ldquo;Ref No.&rdquo; in GCash.</div>
         </div>
 
         <div>
@@ -727,19 +779,46 @@ a { color: inherit; text-decoration: none; }
   const root = document.documentElement;
   const notice = $("claimNotice");
   const errorBox = $("claimError");
+  const planSelect = $("claimPlan");
+  const amountInput = $("claimAmount");
   const refInput = $("claimReference");
   const linkInput = $("claimLink");
   const cropCheck = $("claimCropCheck");
   const openLinkBtn = $("openLinkBtn");
 
   const DEF = {
-    ref: 'Digits only, 10 to 20. It\u2019s the number shown after \u201cRef No.\u201d in GCash.',
+    ref: 'Digits only, 10 to 13. It\u2019s the number shown after \u201cRef No.\u201d in GCash.',
     lnk: 'An https link from drive.google.com or docs.google.com.'
   };
 
+  const claimPlans = {};
   let touched = {};
   let pendingCount = 0;
   let toastTimer = null;
+
+  function formatPlanPeso(pesos) {
+    return "\u20B1" + Number(pesos || 0).toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function updateClaimAmount() {
+    const plan = claimPlans[planSelect.value];
+    amountInput.value = plan ? formatPlanPeso(plan.price) : "\u2014";
+  }
+
+  async function loadPlans() {
+    try {
+      const data = await window.ProFitAPI.get("/plans/");
+      Object.keys(claimPlans).forEach((k) => delete claimPlans[k]);
+      Object.assign(claimPlans, data.plans || {});
+      planSelect.innerHTML = Object.entries(claimPlans)
+        .map(([key, p]) => '<option value="' + esc(key) + '">' + esc(p.label) + " \u2014 " + esc(formatPlanPeso(p.price)) + "</option>")
+        .join("");
+      updateClaimAmount();
+    } catch (_) {
+      planSelect.innerHTML = '<option value="">Plans unavailable</option>';
+      amountInput.value = "\u2014";
+    }
+  }
 
   /* Theme sync with the rest of ProFit */
   function applyTheme(mode) {
@@ -786,7 +865,7 @@ a { color: inherit; text-decoration: none; }
   }
 
   function digits(v) {
-    return String(v || "").replace(/\D/g, "").slice(0, 20);
+    return String(v || "").replace(/\D/g, "").slice(0, 13);
   }
 
   function formatRef(v) {
@@ -807,11 +886,13 @@ a { color: inherit; text-decoration: none; }
   }
 
   function validate() {
+    const planVal = planSelect.value;
     const d = digits(refInput.value);
     const linkVal = linkInput.value.trim();
     return {
-      ref: d.length < 10
-        ? (d.length ? "Add " + (10 - d.length) + " more digit" + (10 - d.length > 1 ? "s" : "") + " (at least 10)." : "Enter the GCash reference number.")
+      plan: planVal && claimPlans[planVal] ? "" : "Choose a membership plan.",
+      ref: d.length < 10 || d.length > 13
+        ? (d.length && d.length < 10 ? "Add " + (10 - d.length) + " more digit" + (10 - d.length > 1 ? "s" : "") + " (10 to 13 digits)." : "Enter a 10 to 13 digit GCash reference number.")
         : "",
       lnk: !linkVal
         ? "Paste your Google Drive link."
@@ -961,16 +1042,21 @@ a { color: inherit; text-decoration: none; }
     paintValidation();
   });
 
+  planSelect.addEventListener("change", () => {
+    updateClaimAmount();
+    errorBox.textContent = "";
+  });
+
   $("claimForm").addEventListener("submit", async (event) => {
     event.preventDefault();
     touched = { ref: true, lnk: true, ck: true };
     paintValidation();
 
     const errs = validate();
-    const firstKey = ["ref", "lnk", "ck"].find((k) => errs[k]);
+    const firstKey = ["plan", "ref", "lnk", "ck"].find((k) => errs[k]);
     if (firstKey) {
       errorBox.textContent = errs[firstKey];
-      const target = { ref: refInput, lnk: linkInput, ck: cropCheck }[firstKey];
+      const target = { plan: planSelect, ref: refInput, lnk: linkInput, ck: cropCheck }[firstKey];
       if (target) target.focus();
       return;
     }
@@ -982,6 +1068,7 @@ a { color: inherit; text-decoration: none; }
 
     const button = $("claimSubmit");
     const body = {
+      plan: planSelect.value,
       reference_number: digits(refInput.value),
       proof_link: linkInput.value.trim()
     };
@@ -993,6 +1080,7 @@ a { color: inherit; text-decoration: none; }
       showNotice("Claim submitted. Status: " + (claim.status || "pending_review") + ". Staff will review it.", true);
       toast("Claim submitted. Staff will review it.");
       $("claimForm").reset();
+      updateClaimAmount();
       touched = {};
       paintValidation();
       await loadClaims();
@@ -1007,6 +1095,7 @@ a { color: inherit; text-decoration: none; }
   });
 
   paintValidation();
+  loadPlans();
   loadProfileInitials();
   loadClaims();
 })();

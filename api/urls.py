@@ -41,6 +41,8 @@ from .trainers import (
     TrainerNotificationReadView,
     TrainerProfileView,
     TrainerScheduleView,
+    TrainerSessionDetailView,
+    TrainerSessionListCreateView,
 )
 from .announcements import (
     MemberAnnouncementListView,
@@ -144,6 +146,8 @@ urlpatterns = [
     path("trainer/notifications/<int:pk>/", TrainerNotificationDeleteView.as_view(), name="trainer-notification-delete"),
     path("trainer/schedule/", TrainerScheduleView.as_view(), name="trainer-schedule"),
     path("trainer/schedule/note/", TrainerScheduleView.as_view(), name="trainer-schedule-note"),
+    path("trainer/schedule/sessions/", TrainerSessionListCreateView.as_view(), name="trainer-schedule-sessions"),
+    path("trainer/schedule/sessions/<int:pk>/", TrainerSessionDetailView.as_view(), name="trainer-schedule-session-detail"),
     path("trainer-requests/", MemberTrainerRequestView.as_view(), name="member-trainer-request"),
     path("trainer-requests/<int:pk>/cancel/", MemberTrainerRequestCancelView.as_view(), name="member-trainer-request-cancel"),
     *staff_router.urls,

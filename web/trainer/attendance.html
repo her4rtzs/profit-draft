@@ -1,178 +1,205 @@
 <!DOCTYPE html>
 <html lang="en" data-default-theme="dark">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ProFit — Attendance Log (Trainer Portal)</title>
-<script>try{var t=localStorage.getItem('pf-theme')||localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);document.documentElement.setAttribute('data-accent','gold');}catch(e){}</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/staff.css?v=12">
-<link rel="stylesheet" href="trainer.css?v=20">
-<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <title>ProFit — Attendance Log (Trainer Portal)</title>
+  <script>try { var t = localStorage.getItem('pf-theme') || localStorage.getItem('theme') || 'dark'; document.documentElement.setAttribute('data-theme', t); document.documentElement.setAttribute('data-accent', 'gold'); } catch (e) { }</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/staff.css?v=12">
+  <link rel="stylesheet" href="trainer.css?v=30">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#0a0e17">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17">
+  <meta name="color-scheme" content="light dark">
+  <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="ProFit">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="stylesheet" href="../pf-system.css?v=18">
+</head>
+
 <body data-page="attendance" data-portal="trainer" data-head="none">
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="scrim" id="scrim"></div>
-  <div class="main">
-    <header class="topbar" id="topbar"></header>
-    <main class="content" id="content">
+  <div class="app">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="scrim" id="scrim"></div>
+    <div class="main">
+      <header class="topbar" id="topbar"></header>
+      <main class="content" id="content">
 
-      <!-- Page Hero Banner -->
-      <section class="tw-page-hero tw-anim" style="--i:0">
-        <div class="tw-hero-left">
-          <div class="tw-hero-ico" data-ico="check"></div>
-          <div class="tw-hero-text">
-            <span class="tw-hero-eyebrow">Gym Floor · Daily Check-Ins</span>
-            <h1 class="tw-hero-title">Attendance &amp; Floor Check-In</h1>
-            <p class="tw-hero-sub">Log live session arrivals for your assigned athletes and inspect daily gym floor activity.</p>
+        <!-- Page Hero Banner -->
+        <section class="tw-page-hero tw-anim" style="--i:0">
+          <div class="tw-hero-left">
+            <div class="tw-hero-ico" data-ico="check"></div>
+            <div class="tw-hero-text">
+              <span class="tw-hero-eyebrow">Gym Floor · Daily Check-Ins</span>
+              <h1 class="tw-hero-title">Attendance &amp; Floor Check-In</h1>
+              <p class="tw-hero-sub">Log live session arrivals for your assigned athletes and inspect daily gym floor
+                activity.</p>
+            </div>
           </div>
-        </div>
-        <div class="tw-hero-actions">
-          <div class="tw-date-stepper">
-            <button type="button" class="tw-chart-nav-btn" id="attPrevDay" title="Previous day" aria-label="Previous day">
-              <span data-ico="chevron-left"></span>
+          <div class="tw-hero-actions">
+            <div class="tw-date-stepper">
+              <button type="button" class="tw-chart-nav-btn" id="attPrevDay" title="Previous day"
+                aria-label="Previous day">
+                <span data-ico="chevron-left"></span>
+              </button>
+              <input type="date" id="attDate" aria-label="Attendance date">
+              <button type="button" class="tw-chart-nav-btn" id="attNextDay" title="Next day" aria-label="Next day">
+                <span data-ico="chevron-right"></span>
+              </button>
+            </div>
+            <button type="button" class="tw-btn" id="attTodayBtn">Today</button>
+          </div>
+        </section>
+
+        <!-- Quick Floor Check-In Bar -->
+        <section class="tw-checkin-panel tw-anim" style="--i:1" aria-label="Quick athlete check-in">
+          <div class="tw-checkin-info">
+            <div class="tw-hero-ico" data-ico="bolt" style="width:42px;height:42px;border-radius:12px"></div>
+            <div>
+              <strong style="display:block;font-size:15px;font-weight:700;color:var(--text)">Quick Athlete
+                Check-In</strong>
+              <span style="font-size:12.5px;color:var(--muted)">Select an assigned athlete from your roster to record
+                their gym arrival for today.</span>
+            </div>
+          </div>
+          <form class="tw-checkin-form" id="quickCheckinForm">
+            <select id="quickCheckinSelect" class="tw-checkin-select" aria-label="Select assigned member">
+              <option value="">Select an athlete to check in...</option>
+            </select>
+            <button type="submit" class="tw-btn-primary" id="quickCheckinBtn">
+              <span data-ico="check"></span> Check In Athlete
             </button>
-            <input type="date" id="attDate" aria-label="Attendance date">
-            <button type="button" class="tw-chart-nav-btn" id="attNextDay" title="Next day" aria-label="Next day">
-              <span data-ico="chevron-right"></span>
+            <button type="button" class="tw-btn" id="trainerQrBtn">
+              <span data-ico="camera"></span> Scan QR
             </button>
-          </div>
-          <button type="button" class="tw-btn" id="attTodayBtn">Today</button>
-        </div>
-      </section>
+          </form>
+        </section>
 
-      <!-- Quick Floor Check-In Bar -->
-      <section class="tw-checkin-panel tw-anim" style="--i:1" aria-label="Quick athlete check-in">
-        <div class="tw-checkin-info">
-          <div class="tw-hero-ico" data-ico="bolt" style="width:42px;height:42px;border-radius:12px"></div>
-          <div>
-            <strong style="display:block;font-size:15px;font-weight:700;color:var(--text)">Quick Athlete Check-In</strong>
-            <span style="font-size:12.5px;color:var(--muted)">Select an assigned athlete from your roster to record their gym arrival for today.</span>
+        <!-- QR Check-in Camera Scanner Modal -->
+        <div class="modal-backdrop" id="trainerQrModal" role="dialog" aria-modal="true"
+          aria-labelledby="trainerQrTitle">
+          <div class="modal" style="max-width:440px">
+            <div class="modal-head">
+              <h3 id="trainerQrTitle">Scan Member QR</h3>
+              <button type="button" class="modal-close" id="trainerQrClose" aria-label="Close scanner">&times;</button>
+            </div>
+            <div class="modal-body">
+              <div id="trainerQrReader"
+                style="width:100%;min-height:240px;border-radius:14px;overflow:hidden;background:#070b14;border:1px solid var(--line-strong)">
+              </div>
+              <p id="trainerQrStatus" role="status" aria-live="polite"
+                style="margin:12px 0 0;font-size:13.5px;font-weight:600;color:var(--muted);text-align:center">Point the
+                camera at the member's Check-in QR pass.</p>
+            </div>
+            <div class="modal-foot">
+              <button type="button" class="tw-btn" id="trainerQrDone" style="width:100%;justify-content:center">Close
+                scanner</button>
+            </div>
           </div>
         </div>
-        <form class="tw-checkin-form" id="quickCheckinForm">
-          <select id="quickCheckinSelect" class="tw-checkin-select" aria-label="Select assigned member">
-            <option value="">Select an athlete to check in...</option>
-          </select>
-          <button type="submit" class="tw-btn-primary" id="quickCheckinBtn">
-            <span data-ico="check"></span> Check In Athlete
-          </button>
-          <button type="button" class="tw-btn" id="trainerQrBtn">
-            <span data-ico="camera"></span> Scan QR
-          </button>
-        </form>
-      </section>
 
-      <!-- QR Check-in Camera Scanner Modal -->
-      <div class="modal-backdrop" id="trainerQrModal" role="dialog" aria-modal="true" aria-labelledby="trainerQrTitle">
-        <div class="modal" style="max-width:440px">
-          <div class="modal-head">
-            <h3 id="trainerQrTitle">Scan Member QR</h3>
-            <button type="button" class="modal-close" id="trainerQrClose" aria-label="Close scanner">&times;</button>
+        <!-- Filter & Search Toolbar -->
+        <section class="tw-toolbar tw-anim" style="--i:3">
+          <div class="tw-toolbar-left">
+            <div class="tw-filter-pills" id="attFilterSeg" role="tablist">
+              <button type="button" class="tw-filter-pill active" data-filter="mine">
+                My Athletes <span class="tw-filter-count" id="cntAttMine">0</span>
+              </button>
+              <button type="button" class="tw-filter-pill" data-filter="all">
+                All Gym Floor <span class="tw-filter-count" id="cntAttAll">0</span>
+              </button>
+            </div>
           </div>
-          <div class="modal-body">
-            <div id="trainerQrReader" style="width:100%;min-height:240px;border-radius:14px;overflow:hidden;background:#070b14;border:1px solid var(--line-strong)"></div>
-            <p id="trainerQrStatus" role="status" aria-live="polite" style="margin:12px 0 0;font-size:13.5px;font-weight:600;color:var(--muted);text-align:center">Point the camera at the member's Check-in QR pass.</p>
+          <div class="tw-toolbar-right">
+            <div class="tw-search-box">
+              <span data-ico="search"></span>
+              <input type="search" id="attSearchInput" class="tw-search-input" placeholder="Search member or staff...">
+            </div>
           </div>
-          <div class="modal-foot">
-            <button type="button" class="tw-btn" id="trainerQrDone" style="width:100%;justify-content:center">Close scanner</button>
-          </div>
-        </div>
-      </div>
+        </section>
 
-      <!-- Filter & Search Toolbar -->
-      <section class="tw-toolbar tw-anim" style="--i:3">
-        <div class="tw-toolbar-left">
-          <div class="tw-filter-pills" id="attFilterSeg" role="tablist">
-            <button type="button" class="tw-filter-pill active" data-filter="mine">
-              My Athletes <span class="tw-filter-count" id="cntAttMine">0</span>
-            </button>
-            <button type="button" class="tw-filter-pill" data-filter="all">
-              All Gym Floor <span class="tw-filter-count" id="cntAttAll">0</span>
-            </button>
+        <!-- Attendance Table Card -->
+        <section class="tw-card tw-anim" style="--i:4">
+          <div class="tw-card-head">
+            <div>
+              <h2 class="tw-card-title" id="attTableTitle">Check-In Log</h2>
+              <p class="tw-card-sub">Verified entry timestamps recorded at the front desk or by coaches.</p>
+            </div>
+            <a href="/trainer/index#twChartStage" class="tw-link">View Analytics Chart →</a>
           </div>
-        </div>
-        <div class="tw-toolbar-right">
-          <div class="tw-search-box">
-            <span data-ico="search"></span>
-            <input type="search" id="attSearchInput" class="tw-search-input" placeholder="Search member or staff...">
+          <div class="tw-table-wrap">
+            <table class="tw-table">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Member</th>
+                  <th>Assignment</th>
+                  <th>Phone</th>
+                  <th>Status</th>
+                  <th>Recorded By</th>
+                </tr>
+              </thead>
+              <tbody id="attBody">
+                <tr>
+                  <td colspan="6"><span class="tw-skel tw-skel-row"></span></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- Attendance Table Card -->
-      <section class="tw-card tw-anim" style="--i:4">
-        <div class="tw-card-head">
-          <div>
-            <h2 class="tw-card-title" id="attTableTitle">Check-In Log</h2>
-            <p class="tw-card-sub">Verified entry timestamps recorded at the front desk or by coaches.</p>
-          </div>
-          <a href="/trainer/index#twChartStage" class="tw-link">View Analytics Chart →</a>
-        </div>
-        <div class="tw-table-wrap">
-          <table class="tw-table">
-            <thead>
-              <tr>
-                <th>Time</th>
-                <th>Member</th>
-                <th>Assignment</th>
-                <th>Phone</th>
-                <th>Status</th>
-                <th>Recorded By</th>
-              </tr>
-            </thead>
-            <tbody id="attBody">
-              <tr><td colspan="6"><span class="tw-skel tw-skel-row"></span></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-    </main>
+      </main>
+    </div>
+    <nav class="bottom-nav" id="bottomNav" aria-label="Quick navigation"></nav>
   </div>
-  <nav class="bottom-nav" id="bottomNav" aria-label="Quick navigation"></nav>
-</div>
 
-<script src="../config.js?v=5"></script>
-<script src="../api.js?v=5"></script>
-<script src="../auth.js?v=5"></script>
-<script src="../assets/js/staff-icons.js?v=5"></script>
-<script src="../assets/js/staff-data.js?v=12"></script>
-<script src="../assets/js/staff.js?v=15"></script>
-<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script>
-<script src="trainer.js?v=13"></script>
-<script>
-PF.ready(async () => {
-  const dateInput = document.getElementById('attDate');
-  const searchInput = document.getElementById('attSearchInput');
-  const quickSelect = document.getElementById('quickCheckinSelect');
-  const todayIso = new Date().toISOString().slice(0, 10);
-  dateInput.value = todayIso;
+  <script src="../config.js?v=9"></script>
+  <script src="../api.js?v=5"></script>
+  <script src="../auth.js?v=5"></script>
+  <script src="../assets/js/staff-icons.js?v=5"></script>
+  <script src="../assets/js/staff-data.js?v=12"></script>
+  <script src="../assets/js/staff.js?v=17"></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script>
+  <script src="trainer.js?v=13"></script>
+  <script>
+    PF.ready(async () => {
+      const dateInput = document.getElementById('attDate');
+      const searchInput = document.getElementById('attSearchInput');
+      const quickSelect = document.getElementById('quickCheckinSelect');
+      const todayIso = new Date().toISOString().slice(0, 10);
+      dateInput.value = todayIso;
 
-  let currentFilter = 'mine';
-  let currentRows = [];
-  let rosterMembers = [];
+      let currentFilter = 'mine';
+      let currentRows = [];
+      let rosterMembers = [];
 
-  async function populateQuickCheckin() {
-    rosterMembers = await Trainer.api.getMembers();
-    const unchecked = rosterMembers.filter(m => !m.today_checked_in);
-    const list = unchecked.length ? unchecked : rosterMembers;
-    quickSelect.innerHTML = `<option value="">Select an athlete to check in (${rosterMembers.length} assigned)...</option>` +
-      list.map(m => `<option value="${m.id}">${PF.esc(m.name)}${m.today_checked_in ? ' (Already in today)' : ''}</option>`).join('');
-  }
+      async function populateQuickCheckin() {
+        rosterMembers = await Trainer.api.getMembers();
+        const unchecked = rosterMembers.filter(m => !m.today_checked_in);
+        const list = unchecked.length ? unchecked : rosterMembers;
+        quickSelect.innerHTML = `<option value="">Select an athlete to check in (${rosterMembers.length} assigned)...</option>` +
+          list.map(m => `<option value="${m.id}">${PF.esc(m.name)}${m.today_checked_in ? ' (Already in today)' : ''}</option>`).join('');
+      }
 
-  function renderTable() {
-    const tbody = document.getElementById('attBody');
-    const q = (searchInput.value || '').trim().toLowerCase();
-    const filtered = currentRows.filter(a => {
-      if (!q) return true;
-      return `${a.member_name || ''} ${a.member_phone || ''} ${a.recorded_by || ''}`.toLowerCase().includes(q);
-    });
+      function renderTable() {
+        const tbody = document.getElementById('attBody');
+        const q = (searchInput.value || '').trim().toLowerCase();
+        const filtered = currentRows.filter(a => {
+          if (!q) return true;
+          return `${a.member_name || ''} ${a.member_phone || ''} ${a.recorded_by || ''}`.toLowerCase().includes(q);
+        });
 
-    if (!filtered.length) {
-      tbody.innerHTML = `
+        if (!filtered.length) {
+          tbody.innerHTML = `
         <tr>
           <td colspan="6">
             <div class="tw-empty">
@@ -183,10 +210,10 @@ PF.ready(async () => {
           </td>
         </tr>
       `;
-      return;
-    }
+          return;
+        }
 
-    tbody.innerHTML = filtered.map(a => `
+        tbody.innerHTML = filtered.map(a => `
       <tr>
         <td style="font-variant-numeric:tabular-nums"><strong>${Trainer.format.time(a.check_in_at)}</strong></td>
         <td>
@@ -205,159 +232,160 @@ PF.ready(async () => {
         <td>${PF.esc(a.recorded_by || 'Staff')}</td>
       </tr>
     `).join('');
-  }
+      }
 
-  async function loadAttendance() {
-    const res = await Trainer.api.getAttendance(dateInput.value, currentFilter);
-    currentRows = res.attendances || [];
+      async function loadAttendance() {
+        const res = await Trainer.api.getAttendance(dateInput.value, currentFilter);
+        currentRows = res.attendances || [];
 
-    const myCount = res.my_members_count ?? currentRows.filter(r => r.is_my_member).length;
-    const totalCount = res.total ?? currentRows.length;
+        const myCount = res.my_members_count ?? currentRows.filter(r => r.is_my_member).length;
+        const totalCount = res.total ?? currentRows.length;
 
-    let morning = res.morning_count;
-    let evening = res.evening_count;
-    if (morning === undefined || evening === undefined) {
-      morning = 0;
-      evening = 0;
-      currentRows.forEach(r => {
-        const dt = new Date(r.check_in_at);
-        if (!isNaN(dt.getTime()) && dt.getHours() < 12) morning++;
-        else evening++;
+        let morning = res.morning_count;
+        let evening = res.evening_count;
+        if (morning === undefined || evening === undefined) {
+          morning = 0;
+          evening = 0;
+          currentRows.forEach(r => {
+            const dt = new Date(r.check_in_at);
+            if (!isNaN(dt.getTime()) && dt.getHours() < 12) morning++;
+            else evening++;
+          });
+        }
+
+        const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+        setTxt('statMyMembers', myCount);
+        setTxt('statTotalDay', totalCount);
+        setTxt('statMorning', morning);
+        setTxt('statEvening', evening);
+
+        setTxt('cntAttMine', myCount);
+        setTxt('cntAttAll', totalCount);
+        setTxt('attTableTitle', `Check-In Log · ${Trainer.format.date(dateInput.value)}`);
+
+        renderTable();
+      }
+
+      function stepDate(days) {
+        const d = new Date(dateInput.value || todayIso);
+        d.setDate(d.getDate() + days);
+        dateInput.value = d.toISOString().slice(0, 10);
+        loadAttendance();
+      }
+
+      document.getElementById('attPrevDay').addEventListener('click', () => stepDate(-1));
+      document.getElementById('attNextDay').addEventListener('click', () => stepDate(1));
+      document.getElementById('attTodayBtn').addEventListener('click', () => {
+        dateInput.value = todayIso;
+        loadAttendance();
       });
-    }
+      dateInput.addEventListener('change', loadAttendance);
+      searchInput.addEventListener('input', renderTable);
 
-    const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-    setTxt('statMyMembers', myCount);
-    setTxt('statTotalDay', totalCount);
-    setTxt('statMorning', morning);
-    setTxt('statEvening', evening);
+      document.querySelectorAll('#attFilterSeg [data-filter]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#attFilterSeg [data-filter]').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentFilter = btn.dataset.filter;
+          loadAttendance();
+        });
+      });
 
-    setTxt('cntAttMine', myCount);
-    setTxt('cntAttAll', totalCount);
-    setTxt('attTableTitle', `Check-In Log · ${Trainer.format.date(dateInput.value)}`);
+      document.getElementById('quickCheckinForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const memberId = quickSelect.value;
+        if (!memberId) {
+          PF.toast('Please select an athlete to check in.', 'warning');
+          return;
+        }
+        const btn = document.getElementById('quickCheckinBtn');
+        btn.disabled = true;
+        try {
+          const m = rosterMembers.find(x => String(x.id) === String(memberId));
+          await Trainer.api.checkIn(memberId);
+          PF.toast(`${m ? m.name : 'Athlete'} checked in!`, 'success');
+          await Promise.all([populateQuickCheckin(), loadAttendance()]);
+        } catch (err) {
+          PF.toast(err.message || 'Check-in failed.', 'error');
+        } finally {
+          btn.disabled = false;
+        }
+      });
 
-    renderTable();
-  }
+      // ---- QR Check-in Camera Scanner ----
+      const qrBtn = document.getElementById('trainerQrBtn');
+      const qrModal = document.getElementById('trainerQrModal');
+      const qrStatus = document.getElementById('trainerQrStatus');
+      let qrScanner = null;
+      let qrBusy = false;
 
-  function stepDate(days) {
-    const d = new Date(dateInput.value || todayIso);
-    d.setDate(d.getDate() + days);
-    dateInput.value = d.toISOString().slice(0, 10);
-    loadAttendance();
-  }
+      const setQrStatus = (msg, tone) => {
+        if (!qrStatus) return;
+        qrStatus.textContent = msg;
+        qrStatus.style.color = tone === 'ok' ? 'var(--tw-green, #10B981)' : tone === 'err' ? 'var(--tw-red, #EF4444)' : 'var(--muted)';
+      };
 
-  document.getElementById('attPrevDay').addEventListener('click', () => stepDate(-1));
-  document.getElementById('attNextDay').addEventListener('click', () => stepDate(1));
-  document.getElementById('attTodayBtn').addEventListener('click', () => {
-    dateInput.value = todayIso;
-    loadAttendance();
-  });
-  dateInput.addEventListener('change', loadAttendance);
-  searchInput.addEventListener('input', renderTable);
+      const stopQrScanner = async () => {
+        if (qrScanner) {
+          try { await qrScanner.stop(); } catch (_) { }
+          try { qrScanner.clear(); } catch (_) { }
+          qrScanner = null;
+        }
+        qrBusy = false;
+        if (qrModal) qrModal.classList.remove('open');
+      };
 
-  document.querySelectorAll('#attFilterSeg [data-filter]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('#attFilterSeg [data-filter]').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentFilter = btn.dataset.filter;
-      loadAttendance();
-    });
-  });
+      const openQrScanner = async () => {
+        if (!qrModal) return;
+        qrModal.classList.add('open');
+        setQrStatus('Starting camera...', '');
+        if (typeof window.Html5Qrcode !== 'function') {
+          setQrStatus('QR scanner library failed to load. Check your internet connection.', 'err');
+          return;
+        }
+        try {
+          qrScanner = new window.Html5Qrcode('trainerQrReader');
+          await qrScanner.start(
+            { facingMode: 'environment' },
+            { fps: 10, qrbox: { width: 220, height: 220 } },
+            async decodedText => {
+              if (qrBusy) return;
+              qrBusy = true;
+              setQrStatus('Checking in...', '');
+              try {
+                const res = await Trainer.api.checkInByQr(decodedText);
+                const msg = res.detail || `${res.member_name || 'Member'} checked in!`;
+                setQrStatus(msg, 'ok');
+                PF.toast(msg, 'success');
+                await Promise.all([populateQuickCheckin(), loadAttendance()]);
+              } catch (err) {
+                const msg = err.message || 'Could not check in member.';
+                setQrStatus(msg, 'err');
+                PF.toast(msg, 'error');
+              } finally {
+                setTimeout(() => { qrBusy = false; }, 2200);
+              }
+            },
+            () => { }
+          );
+          setQrStatus('Point the camera at the member\'s Check-in QR pass.', '');
+        } catch (err) {
+          setQrStatus('Could not access camera. Allow camera permission (HTTPS or localhost required).', 'err');
+        }
+      };
 
-  document.getElementById('quickCheckinForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const memberId = quickSelect.value;
-    if (!memberId) {
-      PF.toast('Please select an athlete to check in.', 'warning');
-      return;
-    }
-    const btn = document.getElementById('quickCheckinBtn');
-    btn.disabled = true;
-    try {
-      const m = rosterMembers.find(x => String(x.id) === String(memberId));
-      await Trainer.api.checkIn(memberId);
-      PF.toast(`${m ? m.name : 'Athlete'} checked in!`, 'success');
+      if (qrBtn) qrBtn.addEventListener('click', openQrScanner);
+      document.getElementById('trainerQrClose')?.addEventListener('click', stopQrScanner);
+      document.getElementById('trainerQrDone')?.addEventListener('click', stopQrScanner);
+      qrModal?.addEventListener('mousedown', (e) => { if (e.target === qrModal) stopQrScanner(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && qrModal?.classList.contains('open')) stopQrScanner(); });
+
       await Promise.all([populateQuickCheckin(), loadAttendance()]);
-    } catch (err) {
-      PF.toast(err.message || 'Check-in failed.', 'error');
-    } finally {
-      btn.disabled = false;
-    }
-  });
-
-  // ---- QR Check-in Camera Scanner ----
-  const qrBtn = document.getElementById('trainerQrBtn');
-  const qrModal = document.getElementById('trainerQrModal');
-  const qrStatus = document.getElementById('trainerQrStatus');
-  let qrScanner = null;
-  let qrBusy = false;
-
-  const setQrStatus = (msg, tone) => {
-    if (!qrStatus) return;
-    qrStatus.textContent = msg;
-    qrStatus.style.color = tone === 'ok' ? 'var(--tw-green, #10B981)' : tone === 'err' ? 'var(--tw-red, #EF4444)' : 'var(--muted)';
-  };
-
-  const stopQrScanner = async () => {
-    if (qrScanner) {
-      try { await qrScanner.stop(); } catch (_) {}
-      try { qrScanner.clear(); } catch (_) {}
-      qrScanner = null;
-    }
-    qrBusy = false;
-    if (qrModal) qrModal.classList.remove('open');
-  };
-
-  const openQrScanner = async () => {
-    if (!qrModal) return;
-    qrModal.classList.add('open');
-    setQrStatus('Starting camera...', '');
-    if (typeof window.Html5Qrcode !== 'function') {
-      setQrStatus('QR scanner library failed to load. Check your internet connection.', 'err');
-      return;
-    }
-    try {
-      qrScanner = new window.Html5Qrcode('trainerQrReader');
-      await qrScanner.start(
-        { facingMode: 'environment' },
-        { fps: 10, qrbox: { width: 220, height: 220 } },
-        async decodedText => {
-          if (qrBusy) return;
-          qrBusy = true;
-          setQrStatus('Checking in...', '');
-          try {
-            const res = await Trainer.api.checkInByQr(decodedText);
-            const msg = res.detail || `${res.member_name || 'Member'} checked in!`;
-            setQrStatus(msg, 'ok');
-            PF.toast(msg, 'success');
-            await Promise.all([populateQuickCheckin(), loadAttendance()]);
-          } catch (err) {
-            const msg = err.message || 'Could not check in member.';
-            setQrStatus(msg, 'err');
-            PF.toast(msg, 'error');
-          } finally {
-            setTimeout(() => { qrBusy = false; }, 2200);
-          }
-        },
-        () => {}
-      );
-      setQrStatus('Point the camera at the member\'s Check-in QR pass.', '');
-    } catch (err) {
-      setQrStatus('Could not access camera. Allow camera permission (HTTPS or localhost required).', 'err');
-    }
-  };
-
-  if (qrBtn) qrBtn.addEventListener('click', openQrScanner);
-  document.getElementById('trainerQrClose')?.addEventListener('click', stopQrScanner);
-  document.getElementById('trainerQrDone')?.addEventListener('click', stopQrScanner);
-  qrModal?.addEventListener('mousedown', (e) => { if (e.target === qrModal) stopQrScanner(); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && qrModal?.classList.contains('open')) stopQrScanner(); });
-
-  await Promise.all([populateQuickCheckin(), loadAttendance()]);
-  if (new URLSearchParams(window.location.search).get('scan') === '1') {
-    openQrScanner();
-  }
-});
-</script>
+      if (new URLSearchParams(window.location.search).get('scan') === '1') {
+        openQrScanner();
+      }
+    });
+  </script>
 </body>
+
 </html>

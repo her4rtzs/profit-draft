@@ -24,7 +24,7 @@ from apps.accounts.models import Role, StaffInvite
 from apps.accounts.services import create_staff_invite, normalize_email
 from apps.announcements.models import Announcement
 from apps.membership.models import Attendance, MemberProfile
-from apps.membership.services import check_in_member
+from apps.membership.services import check_in_member, validate_full_name
 from apps.notifications.models import Notification
 from apps.notifications.services import (
     clear_notifications,
@@ -38,46 +38,46 @@ from apps.notifications.services import (
 from .notifications import build_notification_payload
 from .permissions import MemberAccess
 from apps.trainers import services
-from apps.trainers.models import TrainerAssignment, TrainerProfile, TrainerRequest
+from apps.trainers.models import TrainerAssignment, TrainerProfile, TrainerRequest, TrainerSession
 
 
 class IsOwner(BasePermission):
     def has_permission(self, request, view):
-        return bool(request.user.is_authenticated and getattr(request.user, "role", "") == "OWNER")
+        user = getattr(request, "user", None)
+        return bool(
+            user
+            and user.is_authenticated
+            and getattr(user, "is_active", False)
+            and getattr(user, "role", "") == "OWNER"
+        )
 
 
 class IsMember(BasePermission):
     def has_permission(self, request, view):
-        return bool(request.user.is_authenticated and getattr(request.user, "role", "") == "MEMBER")
+        user = getattr(request, "user", None)
+        return bool(
+            user
+            and user.is_authenticated
+            and getattr(user, "is_active", False)
+            and getattr(user, "role", "") == "MEMBER"
+        )
 
 
 def _effective_trainer_user(request):
-    """Return the signed-in user, or in local DEBUG mode on localhost/127.0.0.1 fall back to the
-    first active TRAINER or OWNER account so local previews work seamlessly alongside session auth."""
-    if request.user and request.user.is_authenticated:
-        return request.user
-    if getattr(settings, "DEBUG", False):
-        try:
-            host = request.get_host().split(":")[0].lower()
-        except Exception:
-            host = ""
-        if host in ("localhost", "127.0.0.1"):
-            User = get_user_model()
-            return (
-                User.objects.filter(role="TRAINER", is_active=True).first()
-                or User.objects.filter(role="OWNER", is_active=True).first()
-                or request.user
-            )
-    return request.user
+    """Return the authenticated request user (never impersonates an anonymous caller)."""
+    return getattr(request, "user", None)
 
 
 class IsTrainerOrOwner(BasePermission):
-    """Permits access to users with role TRAINER or OWNER."""
+    """Permits access to active users with role TRAINER or OWNER."""
+
     def has_permission(self, request, view):
         user = _effective_trainer_user(request)
         return bool(
-            user and getattr(user, "is_authenticated", False) and
-            getattr(user, "role", "") in ("TRAINER", "OWNER")
+            user
+            and getattr(user, "is_authenticated", False)
+            and getattr(user, "is_active", False)
+            and getattr(user, "role", "") in ("TRAINER", "OWNER")
         )
 
 
@@ -94,38 +94,43 @@ def _invite_status_for(user):
         return "ACTIVE"
     now = timezone.now()
     latest = StaffInvite.objects.filter(email=normalize_email(user.email), role=Role.TRAINER).order_by("-created_at", "-id").first()
-    if latest and latest.is_usable(now):
-        return "INVITE_PENDING"
-    if latest and latest.is_expired(now):
-        return "INVITE_EXPIRED"
-    return "INVITE_PENDING"
-
-
-_PHONE_COL_CACHE = None
+    if latest and latest.used_at is None:
+        if latest.is_usable(now):
+            return "INVITE_PENDING"
+        if latest.is_expired(now):
+            return "INVITE_EXPIRED"
+    return "DEACTIVATED"
 
 
 def _has_phone_column():
-    global _PHONE_COL_CACHE
-    if _PHONE_COL_CACHE is True:
-        return True
-    try:
-        with connection.cursor() as cursor:
-            cols = {c.name for c in connection.introspection.get_table_description(cursor, TrainerProfile._meta.db_table)}
-        has_col = "phone" in cols
-        if has_col:
-            _PHONE_COL_CACHE = True
-        return has_col
-    except Exception:
-        return False
+    return services.has_trainer_phone_column()
+
+
+def _has_status_column():
+    return services.has_trainer_status_column()
+
+
+def _has_session_table():
+    return services.has_trainer_session_table()
 
 
 def _trainer_qs():
-    qs = TrainerProfile.objects.select_related("user")
-    return qs if _has_phone_column() else qs.defer("phone")
+    return services.defer_missing_trainer_fields(TrainerProfile.objects.select_related("user"))
+
+
+def _trainer_status_value(t):
+    if _has_status_column():
+        raw = str(getattr(t, "status", "") or "").strip().lower()
+        if raw in (TrainerProfile.Status.ACTIVE, TrainerProfile.Status.ON_LEAVE, TrainerProfile.Status.INACTIVE):
+            if raw == TrainerProfile.Status.ACTIVE and not t.is_active:
+                return TrainerProfile.Status.INACTIVE
+            return raw
+    return TrainerProfile.Status.ACTIVE if t.is_active else TrainerProfile.Status.INACTIVE
 
 
 def _trainer_json(t):
     load = services.load(t)
+    status_val = _trainer_status_value(t)
     return {
         "id": t.pk,
         "name": _name(t.user),
@@ -138,6 +143,9 @@ def _trainer_json(t):
         "load": load,
         "is_full": load >= t.max_members,
         "is_active": t.is_active,
+        "account_active": bool(t.user.is_active),
+        "status": status_val,
+        "on_leave": status_val == TrainerProfile.Status.ON_LEAVE,
         "invite_status": _invite_status_for(t.user),
     }
 
@@ -304,11 +312,32 @@ class StaffTrainerDetailView(APIView):
         profile = _trainer_qs().filter(pk=pk).first()
         if profile is None:
             return Response({"detail": "Trainer not found."}, status=404)
-        fields = _profile_fields(request.data, creating=False)
-        for key, value in fields.items():
-            setattr(profile, key, value)
-        if fields:
-            profile.save(update_fields=list(fields.keys()))
+        data = request.data if isinstance(request.data, dict) else {}
+        fields = _profile_fields(data, creating=False)
+        with transaction.atomic():
+            if "account_active" in data:
+                next_acc = bool(data.get("account_active"))
+                if profile.user.is_active != next_acc:
+                    profile.user.is_active = next_acc
+                    profile.user.save(update_fields=["is_active"])
+                if not next_acc:
+                    if profile.user.email:
+                        StaffInvite.objects.filter(
+                            email__iexact=profile.user.email,
+                            role=Role.TRAINER,
+                            used_at__isnull=True,
+                        ).update(used_at=timezone.now())
+                    fields["is_active"] = False
+                    if _has_status_column():
+                        fields["status"] = TrainerProfile.Status.INACTIVE
+                elif "status" not in data and "is_active" not in data:
+                    fields["is_active"] = True
+                    if _has_status_column():
+                        fields["status"] = TrainerProfile.Status.ACTIVE
+            for key, value in fields.items():
+                setattr(profile, key, value)
+            if fields:
+                profile.save(update_fields=list(fields.keys()))
         return Response(_trainer_json(profile))
 
 
@@ -318,7 +347,7 @@ class StaffTrainerResendInviteView(APIView):
     permission_classes = [IsOwner]
 
     def post(self, request, pk):
-        profile = TrainerProfile.objects.select_related("user").filter(pk=pk).first()
+        profile = _trainer_qs().filter(pk=pk).first()
         if profile is None:
             return Response({"detail": "Trainer not found."}, status=404)
         if profile.user.is_active:
@@ -353,10 +382,29 @@ def _profile_fields(data, *, creating):
         if cap < 1 or cap > 200:
             raise ValidationError({"detail": "Capacity must be between 1 and 200."})
         fields["max_members"] = cap
-    if "is_active" in data:
-        fields["is_active"] = bool(data.get("is_active"))
+    valid_statuses = (
+        TrainerProfile.Status.ACTIVE,
+        TrainerProfile.Status.ON_LEAVE,
+        TrainerProfile.Status.INACTIVE,
+    )
+    if "status" in data:
+        raw_status = str(data.get("status") or "").strip().lower()
+        if raw_status not in valid_statuses:
+            raise ValidationError({"detail": "Status must be active, on_leave, or inactive."})
+        if raw_status == TrainerProfile.Status.ON_LEAVE and not _has_status_column():
+            raise ValidationError({"detail": "Run python manage.py migrate to enable On Leave status."})
+        fields["is_active"] = raw_status == TrainerProfile.Status.ACTIVE
+        if _has_status_column():
+            fields["status"] = raw_status
+    elif "is_active" in data:
+        active = bool(data.get("is_active"))
+        fields["is_active"] = active
+        if _has_status_column():
+            fields["status"] = TrainerProfile.Status.ACTIVE if active else TrainerProfile.Status.INACTIVE
     elif creating:
         fields["is_active"] = True
+        if _has_status_column():
+            fields["status"] = TrainerProfile.Status.ACTIVE
     return fields
 
 
@@ -367,7 +415,7 @@ class StaffMemberTrainerView(APIView):
 
     def post(self, request, pk):
         member = MemberProfile.objects.select_related("user").filter(pk=pk).first()
-        trainer = TrainerProfile.objects.select_related("user").filter(pk=request.data.get("trainer_id")).first()
+        trainer = _trainer_qs().filter(pk=request.data.get("trainer_id")).first()
         if member is None:
             return Response({"detail": "Member not found."}, status=404)
         if trainer is None:
@@ -397,7 +445,10 @@ class StaffTrainerRequestListView(APIView):
     permission_classes = [IsOwner]
 
     def get(self, request):
-        rows = TrainerRequest.objects.select_related("member__user", "trainer__user")
+        rows = services.defer_missing_trainer_fields(
+            TrainerRequest.objects.select_related("member__user", "trainer__user"),
+            prefix="trainer__",
+        )
         status = request.query_params.get("status", "PENDING")
         if status:
             rows = rows.filter(status=status)
@@ -410,12 +461,19 @@ class StaffTrainerRequestDecideView(APIView):
     permission_classes = [IsOwner]
 
     def post(self, request, pk):
-        req = TrainerRequest.objects.select_related("member__user", "trainer__user").filter(pk=pk).first()
+        req = (
+            services.defer_missing_trainer_fields(
+                TrainerRequest.objects.select_related("member__user", "trainer__user"),
+                prefix="trainer__",
+            )
+            .filter(pk=pk)
+            .first()
+        )
         if req is None:
             return Response({"detail": "Request not found."}, status=404)
         trainer = None
         if request.data.get("trainer_id"):
-            trainer = TrainerProfile.objects.select_related("user").filter(pk=request.data.get("trainer_id")).first()
+            trainer = _trainer_qs().filter(pk=request.data.get("trainer_id")).first()
             if trainer is None:
                 return Response({"detail": "Trainer not found."}, status=404)
         try:
@@ -443,7 +501,7 @@ class MemberTrainerView(APIView):
             return Response({"detail": "No membership profile found."}, status=404)
         current = services.current_assignment(profile)
         pending = TrainerRequest.objects.filter(member=profile, status=TrainerRequest.Status.PENDING).first()
-        options = [_trainer_json(t) for t in TrainerProfile.objects.filter(is_active=True).select_related("user")]
+        options = [_trainer_json(t) for t in _trainer_qs().filter(is_active=True)]
         return Response({
             "trainer": _trainer_json(current.trainer) if current else None,
             "pending_request": _request_json(pending) if pending else None,
@@ -462,7 +520,7 @@ class MemberTrainerRequestView(APIView):
             return Response({"detail": "No membership profile found."}, status=404)
         trainer = None
         if request.data.get("trainer_id"):
-            trainer = TrainerProfile.objects.filter(pk=request.data.get("trainer_id")).first()
+            trainer = _trainer_qs().filter(pk=request.data.get("trainer_id")).first()
             if trainer is None:
                 return Response({"detail": "Trainer not found."}, status=404)
         try:
@@ -491,19 +549,24 @@ class MemberTrainerRequestCancelView(APIView):
 
 def _get_trainer_profile_for_user(user):
     if getattr(user, "role", "") == "TRAINER":
-        profile, _ = TrainerProfile.objects.get_or_create(
-            user=user,
-            defaults={
-                "specialization": "Functional Training & Conditioning",
-                "max_members": 20,
-                "is_active": True,
-            },
-        )
-        return profile
+        profile = _trainer_qs().filter(user=user).first()
+        if profile is not None:
+            return profile
+        if _has_phone_column() and _has_status_column():
+            profile, _ = TrainerProfile.objects.get_or_create(
+                user=user,
+                defaults={
+                    "specialization": "Functional Training & Conditioning",
+                    "max_members": 20,
+                    "is_active": True,
+                },
+            )
+            return profile
+        return None
     elif getattr(user, "role", "") == "OWNER":
-        profile = TrainerProfile.objects.filter(user=user).first()
+        profile = _trainer_qs().filter(user=user).first()
         if not profile:
-            profile = TrainerProfile.objects.first()
+            profile = _trainer_qs().first()
         return profile
     return None
 
@@ -527,6 +590,7 @@ class TrainerProfileView(APIView):
             if assigned_ids else 0
         )
         unread_notifs = Notification.objects.filter(recipient=user, read_at__isnull=True).count()
+        status_val = _trainer_status_value(profile)
         return {
             "id": profile.pk,
             "user_id": profile.user_id,
@@ -547,6 +611,8 @@ class TrainerProfileView(APIView):
             "unread_notifications": unread_notifs,
             "is_full": load >= profile.max_members,
             "is_active": profile.is_active,
+            "status": status_val,
+            "on_leave": status_val == TrainerProfile.Status.ON_LEAVE,
             "created_at": profile.created_at,
         }
 
@@ -563,24 +629,50 @@ class TrainerProfileView(APIView):
         if profile is None:
             return Response({"detail": "Trainer profile not found."}, status=404)
         data = request.data
+        update_fields = []
         raw_name = data.get("full_name") if "full_name" in data else data.get("name")
         if raw_name is not None:
-            clean_name = str(raw_name).strip()
-            if clean_name:
-                first_name, last_name = _split_full_name(clean_name)
-                profile.user.first_name = first_name
-                profile.user.last_name = last_name
-                profile.user.save(update_fields=["first_name", "last_name"])
+            try:
+                first_name, last_name = validate_full_name(raw_name)
+            except DjangoValidationError as exc:
+                return Response({"detail": exc.messages[0]}, status=400)
+            profile.user.first_name = first_name[:150]
+            profile.user.last_name = last_name[:150]
+            profile.user.save(update_fields=["first_name", "last_name"])
         if "specialization" in data:
             profile.specialization = str(data["specialization"] or "")[:120]
+            update_fields.append("specialization")
         if "bio" in data:
             profile.bio = str(data["bio"] or "")[:500]
+            update_fields.append("bio")
         if "availability" in data:
             profile.availability = str(data["availability"] or "")[:160]
+            update_fields.append("availability")
         if "phone" in data and _has_phone_column():
             profile.phone = str(data["phone"] or "")[:40]
-        if "is_active" in data:
-            profile.is_active = bool(data["is_active"])
+            update_fields.append("phone")
+        if "status" in data:
+            raw_status = str(data.get("status") or "").strip().lower()
+            if raw_status not in (
+                TrainerProfile.Status.ACTIVE,
+                TrainerProfile.Status.ON_LEAVE,
+                TrainerProfile.Status.INACTIVE,
+            ):
+                return Response({"detail": "Status must be active, on_leave, or inactive."}, status=400)
+            if raw_status == TrainerProfile.Status.ON_LEAVE and not _has_status_column():
+                return Response({"detail": "Run python manage.py migrate to enable On Leave status."}, status=400)
+            profile.is_active = raw_status == TrainerProfile.Status.ACTIVE
+            update_fields.append("is_active")
+            if _has_status_column():
+                profile.status = raw_status
+                update_fields.append("status")
+        elif "is_active" in data:
+            active = bool(data["is_active"])
+            profile.is_active = active
+            update_fields.append("is_active")
+            if _has_status_column():
+                profile.status = TrainerProfile.Status.ACTIVE if active else TrainerProfile.Status.INACTIVE
+                update_fields.append("status")
         if "photo" in data:
             photo = data.get("photo")
             if photo is None:
@@ -596,7 +688,8 @@ class TrainerProfileView(APIView):
                     return Response({"detail": "That photo is too large. Please pick one under 900 KB."}, status=400)
             profile.user.avatar_data = photo
             profile.user.save(update_fields=["avatar_data"])
-        profile.save()
+        if update_fields:
+            profile.save(update_fields=list(dict.fromkeys(update_fields)))
         payload = self._serialize(profile, user)
         payload["detail"] = "Profile updated successfully."
         return Response(payload)
@@ -787,6 +880,22 @@ class TrainerDashboardView(APIView):
             for a in assignments
         ]
 
+        today_dow = (today.weekday() + 1) % 7
+        today_db_sessions = (
+            list(
+                services.defer_missing_trainer_fields(
+                    TrainerSession.objects.filter(is_active=True, day_of_week=today_dow)
+                    .select_related("trainer__user")
+                    .order_by("start_time", "id"),
+                    prefix="trainer__",
+                )
+            )
+            if _has_session_table()
+            else []
+        )
+        today_sessions_list = [_session_json(s, my_trainer_id=profile.pk) for s in today_db_sessions]
+        my_today_classes = sum(1 for s in today_sessions_list if s["is_mine"])
+
         return Response({
             "trainer": {
                 "id": profile.pk,
@@ -804,10 +913,13 @@ class TrainerDashboardView(APIView):
                 "capacity_pct": min(100, cap_pct),
                 "today_checkins": today_checkins,
                 "week_checkins": week_checkins,
+                "today_my_classes": my_today_classes,
+                "today_all_classes": len(today_sessions_list),
                 "is_full": assigned_count >= max_members,
                 "is_active": profile.is_active,
             },
             "assigned_members": assigned_members_list,
+            "today_sessions": today_sessions_list,
             "recent_attendances": recent_list,
             "announcements": ann_list,
             "unread_notifications": unread_count,
@@ -1002,23 +1114,97 @@ class TrainerAnnouncementsView(APIView):
         })
 
 
-TIMETABLE_SESSIONS = [
-    {"id": 1, "dow": 0, "day": "Sunday", "time": "09:00", "mins": 45, "name": "Recovery & Stretch", "coach": "Coach Bea", "cap": 18, "room": "Studio 1"},
-    {"id": 2, "dow": 1, "day": "Monday", "time": "06:00", "mins": 45, "name": "Sunrise HIIT", "coach": "Coach Mika", "cap": 12, "room": "Main Floor"},
-    {"id": 3, "dow": 1, "day": "Monday", "time": "18:30", "mins": 60, "name": "Strength Basics", "coach": "Coach Jun", "cap": 10, "room": "Weight Area"},
-    {"id": 4, "dow": 2, "day": "Tuesday", "time": "07:00", "mins": 40, "name": "Cardio Club", "coach": "Coach Rei", "cap": 16, "room": "Cardio Deck"},
-    {"id": 5, "dow": 2, "day": "Tuesday", "time": "19:00", "mins": 50, "name": "Boxing Fitness", "coach": "Coach Dan", "cap": 12, "room": "Studio 2"},
-    {"id": 6, "dow": 3, "day": "Wednesday", "time": "06:00", "mins": 45, "name": "Sunrise HIIT", "coach": "Coach Mika", "cap": 12, "room": "Main Floor"},
-    {"id": 7, "dow": 3, "day": "Wednesday", "time": "19:00", "mins": 50, "name": "Mobility Flow", "coach": "Coach Bea", "cap": 14, "room": "Studio 1"},
-    {"id": 8, "dow": 4, "day": "Thursday", "time": "18:00", "mins": 60, "name": "Barbell Club", "coach": "Coach Jun", "cap": 8, "room": "Weight Area"},
-    {"id": 9, "dow": 5, "day": "Friday", "time": "07:00", "mins": 40, "name": "Cardio Club", "coach": "Coach Rei", "cap": 16, "room": "Cardio Deck"},
-    {"id": 10, "dow": 5, "day": "Friday", "time": "17:30", "mins": 45, "name": "Friday Finisher", "coach": "Coach Mika", "cap": 12, "room": "Main Floor"},
-    {"id": 11, "dow": 6, "day": "Saturday", "time": "08:00", "mins": 75, "name": "Team Sweat", "coach": "Coaches", "cap": 20, "room": "Main Floor"},
-]
+DAY_NAMES = ("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
+_TIME_RE = re.compile(r"^([01]\d|2[0-3]):([0-5]\d)$")
+
+
+def _session_json(session, *, my_trainer_id=None):
+    return {
+        "id": session.pk,
+        "trainer_id": session.trainer_id,
+        "dow": session.day_of_week,
+        "day": DAY_NAMES[session.day_of_week] if 0 <= session.day_of_week <= 6 else "",
+        "time": session.start_time,
+        "mins": session.duration_mins,
+        "name": session.name,
+        "coach": _name(session.trainer.user),
+        "cap": session.capacity,
+        "room": session.room or "Main Floor",
+        "notes": session.notes or "",
+        "is_mine": bool(my_trainer_id is not None and session.trainer_id == my_trainer_id),
+    }
+
+
+def _validate_session_payload(data, *, partial=False):
+    fields = {}
+    if not partial or "name" in data:
+        name = str(data.get("name") or "").strip()
+        if not name:
+            raise ValidationError({"detail": "Session name is required."})
+        fields["name"] = name[:120]
+
+    has_dow = "day_of_week" in data or "dow" in data
+    if not partial or has_dow:
+        raw_dow = data.get("day_of_week") if "day_of_week" in data else data.get("dow")
+        try:
+            dow = int(raw_dow)
+        except (TypeError, ValueError):
+            dow = -1
+        if not 0 <= dow <= 6:
+            raise ValidationError({"detail": "Pick a valid day of the week (Sunday to Saturday)."})
+        fields["day_of_week"] = dow
+
+    has_time = "start_time" in data or "time" in data
+    if not partial or has_time:
+        raw_time = str(
+            (data.get("start_time") if "start_time" in data else data.get("time")) or ""
+        ).strip()
+        if not _TIME_RE.match(raw_time):
+            raise ValidationError({"detail": "Start time must be in 24-hour HH:MM format (e.g. 06:30)."})
+        fields["start_time"] = raw_time
+
+    has_mins = "duration_mins" in data or "mins" in data
+    if has_mins or not partial:
+        raw_mins = (
+            data.get("duration_mins")
+            if "duration_mins" in data
+            else data.get("mins", 45)
+        )
+        try:
+            mins = int(raw_mins)
+        except (TypeError, ValueError):
+            mins = -1
+        if not 15 <= mins <= 240:
+            raise ValidationError({"detail": "Duration must be between 15 and 240 minutes."})
+        fields["duration_mins"] = mins
+
+    has_cap = "capacity" in data or "cap" in data
+    if has_cap or not partial:
+        raw_cap = (
+            data.get("capacity")
+            if "capacity" in data
+            else data.get("cap", 12)
+        )
+        try:
+            cap = int(raw_cap)
+        except (TypeError, ValueError):
+            cap = -1
+        if not 1 <= cap <= 100:
+            raise ValidationError({"detail": "Capacity must be between 1 and 100 athletes."})
+        fields["capacity"] = cap
+
+    if "room" in data or not partial:
+        room = str(data.get("room") or "Main Floor").strip() or "Main Floor"
+        fields["room"] = room[:80]
+
+    if "notes" in data or not partial:
+        fields["notes"] = str(data.get("notes") or "").strip()[:300]
+
+    return fields
 
 
 class TrainerScheduleView(APIView):
-    """GET weekly timetable sessions, and POST a schedule update note to assigned members."""
+    """GET database-backed weekly sessions, and POST a schedule update note to assigned members."""
 
     permission_classes = [IsTrainerOrOwner]
 
@@ -1046,20 +1232,24 @@ class TrainerScheduleView(APIView):
                     "today_checked_in": today_in,
                 })
 
-        sessions = []
-        for s in TIMETABLE_SESSIONS:
-            item = dict(s)
-            item["is_mine"] = (
-                coach_name.lower() in s["coach"].lower() or
-                s["coach"].lower() in coach_name.lower() or
-                s["coach"] == "Coaches"
+        my_trainer_id = profile.pk if profile else None
+        db_sessions = (
+            services.defer_missing_trainer_fields(
+                TrainerSession.objects.filter(is_active=True)
+                .select_related("trainer__user")
+                .order_by("day_of_week", "start_time", "id"),
+                prefix="trainer__",
             )
-            sessions.append(item)
+            if _has_session_table()
+            else []
+        )
+        sessions = [_session_json(s, my_trainer_id=my_trainer_id) for s in db_sessions]
 
         my_sessions_count = sum(1 for s in sessions if s["is_mine"])
         # Convert Python weekday (Mon=0..Sun=6) to JS dow (Sun=0..Sat=6)
         today_dow = (today.weekday() + 1) % 7
-        today_sessions_count = sum(1 for s in sessions if s["dow"] == today_dow)
+        today_all_count = sum(1 for s in sessions if s["dow"] == today_dow)
+        today_my_count = sum(1 for s in sessions if s["dow"] == today_dow and s["is_mine"])
 
         return Response({
             "coach_name": coach_name,
@@ -1070,7 +1260,8 @@ class TrainerScheduleView(APIView):
             "stats": {
                 "total_weekly_sessions": len(sessions),
                 "my_weekly_sessions": my_sessions_count,
-                "today_sessions_count": today_sessions_count,
+                "today_sessions_count": today_my_count,
+                "today_all_sessions_count": today_all_count,
                 "assigned_count": len(assigned_members),
             },
         })
@@ -1078,10 +1269,12 @@ class TrainerScheduleView(APIView):
     def post(self, request):
         user = _effective_trainer_user(request)
         note = str(request.data.get("note") or "").strip()
-        session_name = str(request.data.get("session_name") or "Schedule Update").strip()
+        session_name = str(request.data.get("session_name") or "Schedule Update").strip()[:120]
         raw_member_id = request.data.get("member_id")
         if not note:
             return Response({"detail": "Note content is required."}, status=400)
+        if len(note) > 500:
+            return Response({"detail": "Note must be 500 characters or fewer."}, status=400)
 
         profile = _get_trainer_profile_for_user(user)
         if not profile:
@@ -1094,9 +1287,11 @@ class TrainerScheduleView(APIView):
         if raw_member_id and str(raw_member_id).lower() != "all":
             try:
                 target_id = int(raw_member_id)
-                assignments = assignments.filter(member_id=target_id)
             except (TypeError, ValueError):
                 return Response({"detail": "Invalid member_id."}, status=400)
+            assignments = assignments.filter(member_id=target_id)
+            if not assignments.exists():
+                return Response({"detail": "That member is not assigned to you."}, status=403)
 
         member_users = [a.member.user for a in assignments]
         coach_label = _name(profile.user)
@@ -1107,14 +1302,14 @@ class TrainerScheduleView(APIView):
                 title=f"Schedule Update: {session_name}",
                 kind=Notification.Kind.TRAINER,
                 body=f"{coach_label}: {note}",
-                link="member-home.html#timetable",
+                link="/member-home",
             )
         notify(
             user,
             title=f"Schedule update sent: {session_name}",
             kind=Notification.Kind.TRAINER,
             body=f"Broadcast delivered to {len(member_users)} athlete{'s' if len(member_users) != 1 else ''}: {note[:140]}",
-            link="schedule.html",
+            link="/trainer/schedule",
         )
         return Response({
             "detail": f"Schedule update sent to {len(member_users)} athlete{'s' if len(member_users) != 1 else ''}.",
@@ -1123,6 +1318,86 @@ class TrainerScheduleView(APIView):
             "note": note,
             "sent_at": timezone.now().isoformat(),
         })
+
+
+class TrainerSessionListCreateView(APIView):
+    """GET all active sessions; POST creates a coaching session owned by the signed-in trainer."""
+
+    permission_classes = [IsTrainerOrOwner]
+
+    def get(self, request):
+        user = _effective_trainer_user(request)
+        profile = _get_trainer_profile_for_user(user)
+        my_id = profile.pk if profile else None
+        if not _has_session_table():
+            return Response({"items": []})
+        rows = services.defer_missing_trainer_fields(
+            TrainerSession.objects.filter(is_active=True)
+            .select_related("trainer__user")
+            .order_by("day_of_week", "start_time", "id"),
+            prefix="trainer__",
+        )
+        return Response({"items": [_session_json(s, my_trainer_id=my_id) for s in rows]})
+
+    def post(self, request):
+        if not _has_session_table():
+            return Response({"detail": "Run python manage.py migrate to enable scheduled sessions."}, status=503)
+        user = _effective_trainer_user(request)
+        profile = _get_trainer_profile_for_user(user)
+        if profile is None:
+            return Response({"detail": "Trainer profile not found."}, status=404)
+        fields = _validate_session_payload(request.data or {}, partial=False)
+        session = TrainerSession.objects.create(trainer=profile, **fields)
+        return Response(_session_json(session, my_trainer_id=profile.pk), status=201)
+
+
+class TrainerSessionDetailView(APIView):
+    """PATCH or DELETE a coaching session (only the owning trainer or Owner may modify it)."""
+
+    permission_classes = [IsTrainerOrOwner]
+
+    def _get_owned_session(self, request, pk):
+        if not _has_session_table():
+            return None, None, Response({"detail": "Run python manage.py migrate to enable scheduled sessions."}, status=503)
+        user = _effective_trainer_user(request)
+        profile = _get_trainer_profile_for_user(user)
+        session = (
+            services.defer_missing_trainer_fields(
+                TrainerSession.objects.filter(pk=pk, is_active=True)
+                .select_related("trainer__user"),
+                prefix="trainer__",
+            )
+            .first()
+        )
+        if session is None:
+            return None, None, Response({"detail": "Session not found."}, status=404)
+        is_owner = getattr(user, "role", "") == "OWNER"
+        if not is_owner and (profile is None or session.trainer_id != profile.pk):
+            return None, None, Response(
+                {"detail": "You can only modify your own coaching sessions."},
+                status=403,
+            )
+        return session, profile, None
+
+    def patch(self, request, pk):
+        session, profile, err = self._get_owned_session(request, pk)
+        if err is not None:
+            return err
+        fields = _validate_session_payload(request.data or {}, partial=True)
+        if not fields:
+            return Response({"detail": "Provide at least one field to update."}, status=400)
+        for key, value in fields.items():
+            setattr(session, key, value)
+        session.save(update_fields=[*fields.keys(), "updated_at"])
+        my_id = profile.pk if profile else None
+        return Response(_session_json(session, my_trainer_id=my_id))
+
+    def delete(self, request, pk):
+        session, _profile, err = self._get_owned_session(request, pk)
+        if err is not None:
+            return err
+        session.delete()
+        return Response({"deleted": pk, "detail": "Session removed from schedule."})
 
 
 class TrainerNotificationListView(APIView):

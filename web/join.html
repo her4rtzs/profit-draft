@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <title>Join online — ProFit · Functional Fitness Gym</title>
 <meta name="description" content="Create a free ProFit account and start a seven-day trial. Add a gym membership with cash or a reviewed GCash payment.">
 <link rel="icon" type="image/jpeg" href="logo.jpg">
@@ -82,13 +82,12 @@
   .portal-brand img{width:36px;height:36px;border-radius:10px;object-fit:cover;display:block;flex:none}
   .portal-brand strong{font-size:22px;font-weight:800;letter-spacing:-.02em;color:#f6efdc}
   .back-link{
-    display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 6px;
+    display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 10px;border-radius:10px;
     color:#9a9788;text-decoration:none;font:600 14px/1 Inter,system-ui,sans-serif;
-    transition:color .18s ease,transform .18s ease;white-space:nowrap;
+    transition:background-color .15s ease,color .15s ease;white-space:nowrap;
   }
-  .back-link i{transition:transform .18s cubic-bezier(.22,1,.36,1)}
-  .back-link:hover{color:var(--gold)}
-  .back-link:hover i{transform:translateX(-3px)}
+  .back-link:hover{background:rgba(255,255,255,.06);color:var(--tx)}
+  .back-link:active{background:rgba(255,255,255,.11)}
 
   /* Full-bleed hero with flat overlay */
   .jn-shell{
@@ -140,9 +139,7 @@
   .jn-checks{list-style:none;margin:0 0 24px;padding:0;display:grid;gap:12px;animation:pfRiseIn .5s cubic-bezier(.22,1,.36,1) .18s both}
   .jn-checks li{
     display:flex;align-items:center;gap:10px;font-size:14.5px;font-weight:500;color:var(--tx);
-    transition:transform .18s ease;
   }
-  .jn-checks li:hover{transform:translateX(3px)}
   .jn-checks i{color:var(--gold);font-size:14px;flex:none}
   .jn-gym-foot{margin:0;font-size:12.5px;color:var(--mu);animation:pfRiseIn .5s cubic-bezier(.22,1,.36,1) .24s both}
 
@@ -177,8 +174,8 @@
     transition:border-color .16s ease,box-shadow .16s ease,background-color .16s ease;
   }
   .jn-input::placeholder{color:var(--mu)}
-  .jn-input:hover:not(:focus){border-color:rgba(232,185,58,.55)}
-  .jn-input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,185,58,.22)}
+  .jn-input:hover:not(:focus):not(:disabled){border-color:rgba(232,185,58,.5)}
+  .jn-input:focus{outline:1.5px solid var(--gold);outline-offset:0;border-color:var(--gold);box-shadow:none}
   .jn-input.is-invalid{border-color:var(--err)}
   .jn-input:-webkit-autofill,
   .jn-input:-webkit-autofill:hover,
@@ -203,9 +200,10 @@
     position:absolute;right:4px;top:50%;transform:translateY(-50%);
     width:40px;height:40px;border:0;background:transparent;color:var(--mu);
     display:grid;place-items:center;cursor:pointer;border-radius:10px;
-    transition:color .15s ease;
+    transition:background-color .15s ease,color .15s ease;
   }
-  .jn-eye:hover{color:var(--gold)}
+  .jn-eye:hover{background:rgba(255,255,255,.06);color:var(--tx)}
+  .jn-eye:active{background:rgba(255,255,255,.11)}
 
   .jn-f-err{display:block;min-height:0;margin-top:2px;font-size:11.5px;font-weight:500;color:var(--err)}
 
@@ -231,7 +229,7 @@
     transition:border-color .15s ease,background-color .15s ease;
   }
   .jn-terms input[type="checkbox"]:focus-visible{
-    outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,185,58,.22);
+    outline:2px solid var(--gold);outline-offset:2px;box-shadow:none;
   }
   .jn-terms input[type="checkbox"]:checked{background:var(--gold);border-color:var(--gold)}
   .jn-terms input[type="checkbox"]:checked::after{
@@ -245,14 +243,14 @@
 
   .jn-btn-gold{
     width:100%;height:44px;border:0;border-radius:999px;
-    background:var(--gold);color:var(--on);
+    background:var(--gold);color:#0b0f19;
     font:700 15px/1 "Plus Jakarta Sans",sans-serif;
     display:inline-flex;align-items:center;justify-content:center;
-    cursor:pointer;transition:filter .16s ease,transform .16s cubic-bezier(.22,1,.36,1),box-shadow .16s ease,opacity .16s ease;
+    cursor:pointer;transition:background-color .15s ease,opacity .15s ease;
   }
-  .jn-btn-gold:hover:not(:disabled){filter:brightness(1.06);transform:translateY(-1px);box-shadow:0 8px 20px -6px rgba(232,185,58,.45)}
-  .jn-btn-gold:active:not(:disabled){transform:translateY(1px);box-shadow:none}
-  .jn-btn-gold:disabled{opacity:.48;cursor:not-allowed}
+  .jn-btn-gold:hover:not(:disabled){background:#f0c44b;transform:none;box-shadow:none;filter:none}
+  .jn-btn-gold:active:not(:disabled){background:#b8860b;color:#0b0f19;transform:none;box-shadow:none}
+  .jn-btn-gold:disabled{opacity:.48;cursor:not-allowed;pointer-events:none;box-shadow:none;transform:none}
 
   .jn-divider{display:flex;align-items:center;gap:12px;margin:10px 0 10px;font-size:12px;color:var(--mu)}
   .jn-divider::before,.jn-divider::after{content:"";flex:1;height:1px;background:var(--line)}
@@ -261,11 +259,11 @@
     border:1px solid var(--field-line);background:var(--bg2);color:var(--tx);
     font:600 14px/1 "Plus Jakarta Sans",sans-serif;
     display:inline-flex;align-items:center;justify-content:center;gap:10px;
-    cursor:pointer;transition:border-color .16s ease,transform .16s cubic-bezier(.22,1,.36,1),background-color .16s ease;
+    cursor:pointer;transition:background-color .15s ease;
   }
-  .jn-sso-btn:hover:not(:disabled){border-color:var(--gold);transform:translateY(-1px)}
-  .jn-sso-btn:active:not(:disabled){transform:translateY(1px)}
-  .jn-sso-btn:disabled{opacity:.65;cursor:not-allowed}
+  .jn-sso-btn:hover:not(:disabled){background:rgba(255,255,255,.06);transform:none;box-shadow:none}
+  .jn-sso-btn:active:not(:disabled){background:rgba(255,255,255,.11);transform:none}
+  .jn-sso-btn:disabled{opacity:.48;cursor:not-allowed;pointer-events:none}
   .jn-sso-btn svg{width:18px;height:18px;flex:none}
   .jn-google-msg{margin:8px 0 0;font-size:12.5px;font-weight:500;text-align:center}
   .jn-google-msg[hidden]{display:none}
@@ -282,15 +280,26 @@
   .jn-ok h2{margin-bottom:8px}
   .jn-ok p{color:var(--mu);font-size:14px;margin:0 0 18px}
 
+  @media(max-width:1160px) and (min-width:901px){
+    .jn-wrap{grid-template-columns:minmax(0,1fr) minmax(380px,500px);gap:32px}
+  }
   @media(max-width:900px){
-    .jn-shell{min-height:auto;padding:28px 16px 36px;align-items:flex-start}
+    .jn-shell{min-height:auto;padding:24px 16px calc(36px + env(safe-area-inset-bottom,0px));align-items:flex-start}
     .jn-wrap{grid-template-columns:1fr;gap:24px}
-    .jn-card{max-width:600px;margin-inline:auto}
+    .jn-card{max-width:600px;margin-inline:auto;justify-self:center}
   }
   @media(max-width:480px){
+    .portal-nav{height:auto;min-height:58px;padding:env(safe-area-inset-top,0px) 14px 0}
     .jn-row{grid-template-columns:1fr}
     .jn-input{font-size:16px}
+    .jn-card{padding:18px 14px}
   }
+  @media(pointer:coarse){
+    .jn-input{font-size:16px}
+    button,a{touch-action:manipulation}
+  }
+  html{-webkit-tap-highlight-color:transparent;overscroll-behavior:none}
+  body{min-height:100dvh}
   @media(prefers-reduced-motion:reduce){
     *{transition:none !important;animation:none !important}
   }
@@ -305,12 +314,15 @@
   .jn-legal-ico{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:var(--gold);color:var(--on);font-size:16px;flex:none}
   .jn-legal-head h3{margin:0;font-size:18px;font-weight:700;color:var(--tx)}
   .jn-legal-head p{margin:2px 0 0;font-size:12px;color:var(--mu)}
-  .jn-legal-x{width:44px;height:44px;border-radius:10px;border:1px solid var(--field-line);background:var(--bg2);color:var(--tx);font-size:20px;line-height:1;display:grid;place-items:center;cursor:pointer}
-  .jn-legal-x:hover{border-color:var(--gold);color:var(--gold)}
+  .jn-legal-x{width:44px;height:44px;border-radius:10px;border:1px solid var(--field-line);background:var(--bg2);color:var(--tx);font-size:20px;line-height:1;display:grid;place-items:center;cursor:pointer;transition:background-color .15s ease}
+  .jn-legal-x:hover{background:rgba(255,255,255,.06)}
+  .jn-legal-x:active{background:rgba(255,255,255,.11)}
   .jn-legal-tabs{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 22px;background:var(--bg);border-bottom:1px solid var(--line)}
   .jn-legal-tab-group{display:flex;gap:8px;flex-wrap:wrap}
-  .jn-legal-tab{display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--field-line);background:var(--bg2);color:var(--tx);font:600 13px/1 "Plus Jakarta Sans",sans-serif;cursor:pointer}
-  .jn-legal-tab.is-active{background:var(--gold);color:var(--on);border-color:var(--gold)}
+  .jn-legal-tab{display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--field-line);background:var(--bg2);color:var(--tx);font:600 13px/1 "Plus Jakarta Sans",sans-serif;cursor:pointer;transition:background-color .15s ease}
+  .jn-legal-tab:hover:not(.is-active){background:rgba(232,185,58,.12)}
+  .jn-legal-tab.is-active{background:var(--gold);color:#0b0f19;border-color:var(--gold)}
+  .jn-legal-tab.is-active:active{background:#b8860b;border-color:#b8860b;color:#0b0f19}
   .jn-legal-tab .chk{display:none;color:var(--ok);font-weight:800}
   .jn-legal-tab.is-read .chk{display:inline}
   .jn-legal-tab.is-active.is-read .chk{color:var(--on)}
@@ -328,9 +340,13 @@
   .jn-legal-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 22px;border-top:1px solid var(--line);background:var(--bg)}
   .jn-legal-note{margin:0;font-size:12.5px;color:var(--mu)}
   .jn-legal-acts{display:flex;align-items:center;gap:10px;margin-left:auto}
-  .jn-legal-btn{height:44px;padding:0 18px;border-radius:999px;font:600 13.5px/1 "Plus Jakarta Sans",sans-serif;border:1px solid var(--field-line);background:var(--bg2);color:var(--tx);cursor:pointer}
-  .jn-legal-btn.primary{background:var(--gold);color:var(--on);border-color:var(--gold);font-weight:700}
-  .jn-legal-btn.primary:disabled{opacity:.45;cursor:not-allowed}
+  .jn-legal-btn{height:44px;padding:0 18px;border-radius:999px;font:600 13.5px/1 "Plus Jakarta Sans",sans-serif;border:1px solid var(--field-line);background:var(--bg2);color:var(--tx);cursor:pointer;transition:background-color .15s ease}
+  .jn-legal-btn:hover:not(.primary):not(:disabled){background:rgba(255,255,255,.06)}
+  .jn-legal-btn:active:not(.primary):not(:disabled){background:rgba(255,255,255,.11)}
+  .jn-legal-btn.primary{background:var(--gold);color:#0b0f19;border-color:var(--gold);font-weight:700}
+  .jn-legal-btn.primary:hover:not(:disabled){background:#f0c44b;border-color:#f0c44b}
+  .jn-legal-btn.primary:active:not(:disabled){background:#b8860b;border-color:#b8860b}
+  .jn-legal-btn.primary:disabled{opacity:.48;cursor:not-allowed;pointer-events:none}
   @media(max-width:768px){
     footer.site-footer,.site-footer{display:none!important}
     .portal-nav{height:58px;min-height:58px;padding:0 16px}
@@ -348,7 +364,7 @@
   @media(max-width:560px){.jn-legal-backdrop{padding:10px}.jn-legal-head,.jn-legal-tabs,.jn-legal-body,.jn-legal-foot{padding-left:14px;padding-right:14px}.jn-legal-foot{flex-direction:column;align-items:stretch}.jn-legal-acts{justify-content:flex-end}}
 </style>
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script>
-<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
+<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17"><meta name="color-scheme" content="light dark"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
 <body class="portal-body auth-page dark public-dark-theme">
 <header class="portal-nav">
   <a class="portal-brand" href="/">

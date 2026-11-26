@@ -1,0 +1,271 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 180" width="1200" height="180" role="img" aria-label="Animated yellow gym buddy empty-state poses">
+  <style>
+    /* Slot 0: Barbell Press */
+    .s0-buddy { transform-origin: 100px 150px; animation: s0Squat 1.5s ease-in-out infinite; }
+    .s0-bar   { transform-origin: 100px 92px;  animation: s0Bar   1.5s ease-in-out infinite; }
+    .s0-sw    { animation: pfPulse 1.5s ease-out infinite; }
+    @keyframes s0Squat { 0%,100%{transform:translateY(0) scale(1,1)} 35%{transform:translateY(4px) scale(1.03,.96)} 72%{transform:translateY(-4px) scale(.98,1.03)} }
+    @keyframes s0Bar   { 0%,100%{transform:translateY(0)} 35%{transform:translateY(5px)} 72%{transform:translateY(-10px)} }
+
+    /* Slot 1: Writing Notebook + Broadcasting Megaphone (Announcements and Notices) */
+    .s1-buddy { transform-origin: 278px 136px; animation: s1Nod 2.1s ease-in-out infinite; }
+    .s1-pen   { transform-origin: 266px 120px; animation: s1Write .85s ease-in-out infinite alternate; }
+    .s1-mega  { transform-origin: 332px 66px;  animation: s1Mega 1.4s ease-in-out infinite; }
+    .s1-wave  { transform-origin: 356px 56px;  animation: s1Wave 1.4s ease-out infinite; }
+    .s1-star  { transform-origin: center; transform-box: fill-box; animation: pfTwinkle 1.6s ease-in-out infinite alternate; }
+    @keyframes s1Nod   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
+    @keyframes s1Write { from{transform:rotate(-4deg) translate(0,0)} to{transform:rotate(5deg) translate(3px,2px)} }
+    @keyframes s1Mega  { 0%,100%{transform:rotate(-2deg) scale(1)} 45%{transform:rotate(6deg) scale(1.06)} }
+    @keyframes s1Wave  { 0%{opacity:.25;transform:scale(.88)} 50%{opacity:1;transform:scale(1.06)} 100%{opacity:.25;transform:scale(.88)} }
+
+    /* Slot 2: Reading Open Book (Reports, Charts, Schedule) */
+    .s2-buddy { transform-origin: 500px 115px; animation: s2Peek 2.4s ease-in-out infinite; }
+    .s2-heart { animation: pfFloat 2.1s ease-in-out infinite alternate; }
+    @keyframes s2Peek  { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+
+    /* Slot 3: Jump Rope (Members, Athletes, Goals) */
+    .s3-buddy { transform-origin: 700px 145px; animation: s3Hop .9s ease-in-out infinite; }
+    .s3-rope  { transform-origin: 700px 106px; animation: s3Rope .9s ease-in-out infinite; }
+    @keyframes s3Hop  { 0%,100%{transform:translateY(3px) scale(1.03,.96)} 50%{transform:translateY(-11px) scale(.97,1.03)} }
+    @keyframes s3Rope { 0%,100%{transform:scaleY(.92)} 50%{transform:scaleY(1.06)} }
+
+    /* Slot 4: Towel Rest (All Caught Up, Review Queue, Cashiers) */
+    .s4-buddy { transform-origin: 900px 150px; animation: s4Sway 2.4s ease-in-out infinite; }
+    .s4-sw    { animation: pfPulse 2s ease-out infinite; }
+    @keyframes s4Sway { 0%,100%{transform:rotate(0deg) translateY(0)} 50%{transform:rotate(2deg) translateY(-3px)} }
+
+    /* Slot 5: Twin Mini-Dumbbells (Default Gym Activity) */
+    .s5-l { transform-origin: 1062px 104px; animation: s5CurlL 1.4s ease-in-out infinite; }
+    .s5-r { transform-origin: 1138px 104px; animation: s5CurlR 1.4s ease-in-out infinite; }
+    .s5-b { transform-origin: 1100px 145px; animation: s1Nod 1.4s ease-in-out infinite; }
+    @keyframes s5CurlL { 0%,100%{transform:translateY(2px) rotate(6deg)} 50%{transform:translateY(-7px) rotate(-10deg)} }
+    @keyframes s5CurlR { 0%,100%{transform:translateY(-7px) rotate(10deg)} 50%{transform:translateY(2px) rotate(-6deg)} }
+
+    @keyframes pfPulse   { 0%{opacity:.25} 50%{opacity:1} 100%{opacity:.25} }
+    @keyframes pfTwinkle { from{opacity:.45;transform:scale(.88)} to{opacity:1;transform:scale(1.12)} }
+    @keyframes pfFloat   { from{transform:translateY(0)} to{transform:translateY(-5px)} }
+    .sh { opacity:.15; fill:#18181B; }
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; }
+    }
+  </style>
+
+  <defs>
+    <clipPath id="c0"><rect x="0" y="0" width="200" height="180"/></clipPath>
+    <clipPath id="c1"><rect x="200" y="0" width="200" height="180"/></clipPath>
+    <clipPath id="c2"><rect x="400" y="0" width="200" height="180"/></clipPath>
+    <clipPath id="c3"><rect x="600" y="0" width="200" height="180"/></clipPath>
+    <clipPath id="c4"><rect x="800" y="0" width="200" height="180"/></clipPath>
+    <clipPath id="c5"><rect x="1000" y="0" width="200" height="180"/></clipPath>
+  </defs>
+
+  <!-- SLOT 0 (0..200): BARBELL PRESS BUDDY -->
+  <g clip-path="url(#c0)">
+    <ellipse class="sh" cx="100" cy="161" rx="32" ry="5.5"/>
+    <g class="s0-buddy">
+      <g class="s0-sw" fill="#18181B">
+        <path d="M51 64 C44 59 41 64 46 68 C49 70 52 67 51 64 Z"/>
+        <path d="M149 64 C156 59 159 64 154 68 C151 70 148 67 149 64 Z"/>
+      </g>
+      <path d="M96 31 C93 22 100 18 102 27 C104 19 111 21 108 31 C129 33 145 50 145 76 C145 92 140 107 136 122 C135 134 132 149 124 152 C117 154 113 147 109 142 C104 143 96 143 91 142 C87 147 83 154 76 152 C68 149 65 134 64 122 C60 107 55 92 55 76 C55 50 71 33 96 31 Z"
+            fill="#FFE863" stroke="#18181B" stroke-width="3.2" stroke-linejoin="round"/>
+      <path d="M56 56 Q100 47 144 56 L145 64 Q100 55 55 64 Z" fill="#18181B"/>
+      <path d="M77 74 L84 78 L77 82" fill="none" stroke="#18181B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M123 74 L116 78 L123 82" fill="none" stroke="#18181B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <ellipse cx="73" cy="87" rx="5.5" ry="3.2" fill="#F9A8B8" opacity="0.85"/>
+      <ellipse cx="127" cy="87" rx="5.5" ry="3.2" fill="#F9A8B8" opacity="0.85"/>
+      <path d="M95 82 Q100 88 105 82" fill="none" stroke="#18181B" stroke-width="2.8" stroke-linecap="round"/>
+      <path d="M59 95 C49 95 45 87 50 81 C54 76 61 81 62 87" fill="#FFE863" stroke="#18181B" stroke-width="3" stroke-linecap="round"/>
+      <path d="M141 95 C151 95 155 87 150 81 C146 76 139 81 138 87" fill="#FFE863" stroke="#18181B" stroke-width="3" stroke-linecap="round"/>
+    </g>
+    <g class="s0-bar">
+      <rect x="28" y="88" width="144" height="7" rx="3.5" fill="#7C76A6" stroke="#18181B" stroke-width="2.6" transform="rotate(-3 100 92)"/>
+      <g transform="translate(0,2) rotate(-3 100 92)">
+        <ellipse cx="32" cy="91" rx="9" ry="18" fill="#5D5782" stroke="#18181B" stroke-width="2.8"/>
+        <ellipse cx="38" cy="91" rx="11" ry="21" fill="#7D76A8" stroke="#18181B" stroke-width="2.8"/>
+        <circle cx="38" cy="91" r="2.6" fill="#E8B93A"/>
+      </g>
+      <g transform="translate(0,-1) rotate(-3 100 92)">
+        <ellipse cx="168" cy="92" rx="9" ry="18" fill="#5D5782" stroke="#18181B" stroke-width="2.8"/>
+        <ellipse cx="162" cy="92" rx="11" ry="21" fill="#7D76A8" stroke="#18181B" stroke-width="2.8"/>
+        <circle cx="162" cy="92" r="2.6" fill="#E8B93A"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- SLOT 1 (200..400): WRITING NOTEBOOK + MEGAPHONE BUDDY -->
+  <g clip-path="url(#c1)">
+    <ellipse class="sh" cx="288" cy="161" rx="46" ry="5.5"/>
+    <!-- Decorative purple stars -->
+    <g class="s1-star" fill="#554F80" stroke="#18181B" stroke-width="1.5">
+      <polygon points="222,108 224,114 230,114 225,118 227,124 222,120 217,124 219,118 214,114 220,114"/>
+      <polygon points="325,103 327,108 332,108 328,111 330,116 325,113 320,116 322,111 318,108 323,108"/>
+    </g>
+    <!-- Cute round yellow buddy behind notebook -->
+    <g class="s1-buddy">
+      <path d="M276 48 C273 41 279 38 281 45 C283 39 288 41 286 48 C303 50 315 65 315 87 C315 106 306 123 287 125 C265 127 248 111 247 88 C246 67 258 50 276 48 Z"
+            fill="#FFE863" stroke="#18181B" stroke-width="2.8" stroke-linejoin="round"/>
+      <circle cx="271" cy="84" r="3" fill="#18181B"/>
+      <circle cx="294" cy="83" r="3" fill="#18181B"/>
+      <ellipse cx="263" cy="91" rx="4.5" ry="2.6" fill="#FFFFFF" opacity="0.72"/>
+      <ellipse cx="302" cy="90" rx="4.5" ry="2.6" fill="#FFFFFF" opacity="0.72"/>
+      <path d="M279 88 Q282.5 93 286 88" fill="none" stroke="#18181B" stroke-width="2.4" stroke-linecap="round"/>
+    </g>
+    <!-- Open yellow notebook -->
+    <g>
+      <path d="M226 135 L270 123 L302 131 L258 145 Z" fill="#FFF3A1" stroke="#18181B" stroke-width="2.4" stroke-linejoin="round"/>
+      <path d="M258 145 L302 131 L344 140 L300 157 Z" fill="#FFE863" stroke="#18181B" stroke-width="2.4" stroke-linejoin="round"/>
+      <path d="M226 135 L226 142 L258 152 L300 163 L344 146 L344 140" fill="none" stroke="#18181B" stroke-width="2.4" stroke-linejoin="round"/>
+      <path d="M244 137 Q257 131 268 134 M250 142 Q263 137 274 139 M275 147 Q292 141 305 143 M283 152 Q300 146 313 148"
+            fill="none" stroke="#18181B" stroke-width="1.6" stroke-linecap="round" opacity="0.72"/>
+    </g>
+    <!-- Big purple pen with tiny heart accents, gold clip & black grip -->
+    <g class="s1-pen">
+      <path d="M228 64 C226 57 235 53 239 59 L264 114 L251 120 Z" fill="#554F80" stroke="#18181B" stroke-width="2.6" stroke-linejoin="round"/>
+      <!-- Gold pen clip -->
+      <path d="M238 62 L244 60 L256 89 L250 91 Z" fill="#D4AE36" stroke="#18181B" stroke-width="1.8" stroke-linejoin="round"/>
+      <!-- Black grip & nib -->
+      <path d="M245 102 L258 96 L263 109 L250 115 Z" fill="#18181B"/>
+      <polygon points="251,118 264,112 264,127" fill="#554F80" stroke="#18181B" stroke-width="2" stroke-linejoin="round"/>
+      <!-- Tiny white hearts/dots on barrel -->
+      <circle cx="234" cy="66" r="2" fill="#FFF"/>
+      <circle cx="239" cy="76" r="2" fill="#FFF"/>
+      <circle cx="242" cy="87" r="2" fill="#FFF"/>
+      <circle cx="247" cy="95" r="1.8" fill="#FFF"/>
+      <!-- Tiny holding paw -->
+      <ellipse cx="258" cy="99" rx="6.5" ry="5" fill="#FFE863" stroke="#18181B" stroke-width="2.5"/>
+    </g>
+    <!-- Animated yellow megaphone & zigzag broadcast waves -->
+    <g class="s1-mega">
+      <!-- Handle -->
+      <path d="M333 65 L339 62 L343 75 L334 78 Z" fill="#FFE45E" stroke="#18181B" stroke-width="2.2" stroke-linejoin="round"/>
+      <!-- Megaphone body + cone -->
+      <path d="M318 55 L344 33 L358 58 L324 67 Z" fill="#FFE45E" stroke="#18181B" stroke-width="2.4" stroke-linejoin="round"/>
+      <ellipse cx="351" cy="45.5" rx="7.5" ry="14" transform="rotate(-28 351 45.5)" fill="#F4C430" stroke="#18181B" stroke-width="2.3"/>
+      <ellipse cx="351" cy="45.5" rx="3" ry="5" transform="rotate(-28 351 45.5)" fill="#FFE45E" stroke="#18181B" stroke-width="1.8"/>
+    </g>
+    <g class="s1-wave" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <!-- Accent gold sound lines + dark zigzag rays -->
+      <path d="M359 35 L368 25 M364 46 L379 44 M360 56 L371 67" stroke="#E8B93A" stroke-width="2.4"/>
+      <path d="M353 26 L355 19 M361 32 L367 23 L364 31 L374 28 M365 42 L378 39 L371 45 L382 48 M362 52 L372 56 L366 59 L374 66"
+            stroke="#18181B" stroke-width="1.8"/>
+      <path d="M311 42 L322 48" stroke="#18181B" stroke-width="1.8"/>
+    </g>
+  </g>
+
+  <!-- SLOT 2 (400..600): READING OPEN BOOK BUDDY -->
+  <g clip-path="url(#c2)">
+    <ellipse class="sh" cx="500" cy="161" rx="48" ry="6"/>
+    <!-- Floating hearts -->
+    <g class="s2-heart" fill="#5D5782" stroke="#18181B" stroke-width="1.8">
+      <path d="M446 95 C441 88 432 94 438 102 L447 110 L452 101 C455 95 449 90 446 95 Z"/>
+      <path d="M555 83 C551 77 544 82 549 89 L556 96 L561 88 C563 82 558 78 555 83 Z"/>
+    </g>
+    <!-- Peeking buddy -->
+    <g class="s2-buddy">
+      <path d="M494 37 C491 29 497 26 499 34 C501 27 507 29 504 37 C524 40 537 56 537 79 C537 97 528 112 513 116 L478 116 C466 110 461 95 461 79 C461 56 475 40 494 37 Z"
+            fill="#FFE863" stroke="#18181B" stroke-width="3.2" stroke-linejoin="round"/>
+      <circle cx="486" cy="77" r="3.4" fill="#18181B"/>
+      <circle cx="513" cy="77" r="3.4" fill="#18181B"/>
+      <ellipse cx="478" cy="86" rx="5.5" ry="3.2" fill="#F9A8B8" opacity="0.85"/>
+      <ellipse cx="521" cy="86" rx="5.5" ry="3.2" fill="#F9A8B8" opacity="0.85"/>
+      <path d="M496 82 Q500 88 504 82" fill="none" stroke="#18181B" stroke-width="2.6" stroke-linecap="round"/>
+      <!-- Raised paw over page -->
+      <path d="M521 106 C527 98 538 98 538 107 L522 112 Z" fill="#FFE863" stroke="#18181B" stroke-width="2.8" stroke-linejoin="round"/>
+    </g>
+    <!-- Big open yellow ledger/book -->
+    <g>
+      <path d="M442 146 L448 108 L499 114 L499 156 Z" fill="#6D6793" stroke="#18181B" stroke-width="2.6"/>
+      <path d="M558 146 L552 108 L499 114 L499 156 Z" fill="#6D6793" stroke="#18181B" stroke-width="2.6"/>
+      <path d="M447 142 L454 103 L499 111 L499 151 Z" fill="#FFE863" stroke="#18181B" stroke-width="2.6" stroke-linejoin="round"/>
+      <path d="M553 142 L546 103 L499 111 L499 151 Z" fill="#FFF3A1" stroke="#18181B" stroke-width="2.6" stroke-linejoin="round"/>
+      <path d="M460 115 Q476 112 490 117 M458 124 Q474 121 489 126 M456 133 Q472 130 488 135 M508 117 Q522 113 538 115 M508 126 Q523 122 540 124 M508 135 Q524 131 542 133"
+            fill="none" stroke="#18181B" stroke-width="1.8" stroke-linecap="round" opacity="0.72"/>
+    </g>
+  </g>
+
+  <!-- SLOT 3 (600..800): JUMP ROPE BUDDY -->
+  <g clip-path="url(#c3)">
+    <ellipse class="sh" cx="700" cy="162" rx="28" ry="5"/>
+    <!-- Jump rope loop -->
+    <path class="s3-rope" d="M663 107 C636 86 645 48 666 72 C682 90 676 146 664 151 C652 155 642 136 650 118"
+          fill="none" stroke="#6D6793" stroke-width="3.6" stroke-linecap="round"/>
+    <path class="s3-rope" d="M737 107 C764 86 755 48 734 72 C718 90 724 146 736 151 C748 155 758 136 750 118"
+          fill="none" stroke="#6D6793" stroke-width="3.6" stroke-linecap="round"/>
+    <g class="s3-buddy">
+      <g fill="#18181B">
+        <path d="M652 62 C645 57 643 62 648 66 Z"/>
+        <path d="M748 62 C755 57 757 62 752 66 Z"/>
+      </g>
+      <path d="M696 32 C693 23 700 20 702 28 C704 20 711 22 708 32 C729 34 744 50 744 75 C744 91 739 107 735 121 C734 133 731 146 723 149 C716 151 712 145 708 140 C703 141 696 141 692 140 C688 145 684 151 677 149 C669 146 666 133 665 121 C661 107 656 91 656 75 C656 50 671 34 696 32 Z"
+            fill="#FFE863" stroke="#18181B" stroke-width="3.2" stroke-linejoin="round"/>
+      <path d="M657 55 Q700 46 743 55 L744 63 Q700 54 656 63 Z" fill="#18181B"/>
+      <path d="M678 73 L685 77 L678 81" fill="none" stroke="#18181B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M722 73 L715 77 L722 81" fill="none" stroke="#18181B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <ellipse cx="674" cy="86" rx="5.2" ry="3" fill="#F9A8B8" opacity="0.85"/>
+      <ellipse cx="726" cy="86" rx="5.2" ry="3" fill="#F9A8B8" opacity="0.85"/>
+      <path d="M696 81 Q700 87 704 81" fill="none" stroke="#18181B" stroke-width="2.7" stroke-linecap="round"/>
+      <!-- Hands gripping handles -->
+      <path d="M663 103 L674 114 L670 118 L660 107 Z" fill="#FFE863" stroke="#18181B" stroke-width="2.8" stroke-linejoin="round"/>
+      <path d="M737 103 L726 114 L730 118 L740 107 Z" fill="#FFE863" stroke="#18181B" stroke-width="2.8" stroke-linejoin="round"/>
+    </g>
+  </g>
+
+  <!-- SLOT 4 (800..1000): TOWEL REST BUDDY -->
+  <g clip-path="url(#c4)">
+    <ellipse class="sh" cx="900" cy="161" rx="28" ry="5"/>
+    <g class="s4-buddy">
+      <g class="s4-sw" fill="#18181B">
+        <path d="M852 103 C846 105 846 110 852 110 Z"/>
+        <path d="M948 103 C954 105 954 110 948 110 Z"/>
+      </g>
+      <path d="M896 31 C893 22 900 18 902 27 C904 19 911 21 908 31 C929 33 944 50 944 75 C944 92 939 109 935 124 C934 136 931 150 923 153 C916 155 912 148 908 143 C903 144 897 144 892 143 C888 148 884 155 877 153 C869 150 866 136 865 124 C861 109 856 92 856 75 C856 50 871 33 896 31 Z"
+            fill="#FFE863" stroke="#18181B" stroke-width="3.2" stroke-linejoin="round"/>
+      <path d="M857 55 Q900 46 943 55 L944 63 Q900 54 856 63 Z" fill="#18181B"/>
+      <circle cx="884" cy="76" r="3.4" fill="#18181B"/>
+      <circle cx="916" cy="76" r="3.4" fill="#18181B"/>
+      <ellipse cx="876" cy="85" rx="5.5" ry="3.2" fill="#F9A8B8" opacity="0.85"/>
+      <ellipse cx="924" cy="85" rx="5.5" ry="3.2" fill="#F9A8B8" opacity="0.85"/>
+      <path d="M895 81 Q900 87 905 81" fill="none" stroke="#18181B" stroke-width="2.7" stroke-linecap="round"/>
+      <!-- Towel around shoulders -->
+      <path d="M869 100 L884 103 L882 135 L865 130 Z" fill="#6D6793" stroke="#18181B" stroke-width="2.8" stroke-linejoin="round"/>
+      <path d="M931 100 L916 103 L918 135 L935 130 Z" fill="#6D6793" stroke="#18181B" stroke-width="2.8" stroke-linejoin="round"/>
+      <!-- Paws holding towel ends -->
+      <circle cx="876" cy="116" r="5" fill="#FFE863" stroke="#18181B" stroke-width="2.6"/>
+      <circle cx="924" cy="116" r="5" fill="#FFE863" stroke="#18181B" stroke-width="2.6"/>
+    </g>
+  </g>
+
+  <!-- SLOT 5 (1000..1200): TWIN MINI-DUMBBELLS BUDDY -->
+  <g clip-path="url(#c5)">
+    <ellipse class="sh" cx="1100" cy="161" rx="30" ry="5"/>
+    <g class="s5-b">
+      <g class="s0-sw" fill="#18181B">
+        <path d="M1050 64 C1043 59 1041 64 1046 68 Z"/>
+        <path d="M1150 64 C1157 59 1159 64 1154 68 Z"/>
+      </g>
+      <path d="M1096 31 C1093 22 1100 18 1102 27 C1104 19 1111 21 1108 31 C1129 33 1144 50 1144 75 C1144 92 1139 109 1135 124 C1134 136 1131 150 1123 153 C1116 155 1112 148 1108 143 C1103 144 1097 144 1092 143 C1088 148 1084 155 1077 153 C1069 150 1066 136 1065 124 C1061 109 1056 92 1056 75 C1056 50 1071 33 1096 31 Z"
+            fill="#FFE863" stroke="#18181B" stroke-width="3.2" stroke-linejoin="round"/>
+      <path d="M1057 55 Q1100 46 1143 55 L1144 63 Q1100 54 1056 63 Z" fill="#18181B"/>
+      <circle cx="1084" cy="76" r="3.4" fill="#18181B"/>
+      <circle cx="1116" cy="76" r="3.4" fill="#18181B"/>
+      <ellipse cx="1076" cy="85" rx="5.5" ry="3.2" fill="#F9A8B8" opacity="0.85"/>
+      <ellipse cx="1124" cy="85" rx="5.5" ry="3.2" fill="#F9A8B8" opacity="0.85"/>
+      <path d="M1095 81 Q1100 87 1105 81" fill="none" stroke="#18181B" stroke-width="2.7" stroke-linecap="round"/>
+      <!-- Left mini dumbbell -->
+      <g class="s5-l">
+        <rect x="1044" y="96" width="22" height="5" rx="2.5" fill="#7C76A6" stroke="#18181B" stroke-width="2.2" transform="rotate(28 1055 98)"/>
+        <circle cx="1045" cy="93" r="6" fill="#6D6793" stroke="#18181B" stroke-width="2.4"/>
+        <circle cx="1064" cy="103" r="6" fill="#6D6793" stroke="#18181B" stroke-width="2.4"/>
+        <circle cx="1057" cy="106" r="6" fill="#FFE863" stroke="#18181B" stroke-width="2.6"/>
+      </g>
+      <!-- Right mini dumbbell -->
+      <g class="s5-r">
+        <rect x="1134" y="96" width="22" height="5" rx="2.5" fill="#7C76A6" stroke="#18181B" stroke-width="2.2" transform="rotate(-28 1145 98)"/>
+        <circle cx="1155" cy="93" r="6" fill="#6D6793" stroke="#18181B" stroke-width="2.4"/>
+        <circle cx="1136" cy="103" r="6" fill="#6D6793" stroke="#18181B" stroke-width="2.4"/>
+        <circle cx="1143" cy="106" r="6" fill="#FFE863" stroke="#18181B" stroke-width="2.6"/>
+      </g>
+    </g>
+  </g>
+</svg>

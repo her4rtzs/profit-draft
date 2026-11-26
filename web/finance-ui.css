@@ -55,32 +55,93 @@ html body.pf-staff[data-page="cashier"] .main-content {
 }
 
 /* ---------- 1. SHARED PAGE HEADER CARD & TABS ---------- */
+html body.pf-staff .fn-header-card,
 .fn-header-card {
+  --fn-text: #f8fafc;
+  --fn-muted: #cbd5e1;
+  --fn-eyebrow: #fbbf24;
   position: relative;
   overflow: hidden;
-  border-radius: 18px;
-  padding: 18px 24px;
-  min-height: 0;
+  border-radius: 18px !important;
+  padding: 26px 28px;
+  min-height: 158px;
   margin-bottom: 20px !important;
-  border: 1px solid rgba(245, 158, 11, 0.24);
-  background: linear-gradient(135deg, #0b1120 0%, #0f172a 60%, #111827 100%);
-  box-shadow: 0 12px 32px rgba(2, 6, 23, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 18px;
-}
-
-body:not(.dark) .fn-header-card {
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-  border-color: rgba(217, 170, 82, 0.42);
-  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+  border: 1px solid rgba(245, 158, 11, 0.24) !important;
+  background: linear-gradient(135deg, #0b1120 0%, #0f172a 60%, #111827 100%) !important;
+  background-color: #0b1120 !important;
+  box-shadow: 0 12px 32px rgba(2, 6, 23, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+  color: #f8fafc !important;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 22px;
 }
 
 .fn-header-card > * {
   position: relative;
   z-index: 1;
+}
+
+.fn-header-title {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  min-width: 0;
+}
+
+.fn-header-ico {
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+  display: grid;
+  place-items: center;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.36);
+  color: #ffb020;
+  font-size: 17px;
+  flex-shrink: 0;
+}
+
+.fn-header-ico.is-cyan {
+  background: rgba(34, 211, 238, 0.14);
+  border-color: rgba(34, 211, 238, 0.4);
+  color: #22d3ee;
+}
+
+.fn-header-ico.is-emerald {
+  background: rgba(16, 185, 129, 0.14);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #10b981;
+}
+
+.fn-header-ico.is-violet {
+  background: rgba(167, 139, 250, 0.14);
+  border-color: rgba(167, 139, 250, 0.4);
+  color: #a78bfa;
+}
+
+.fn-header-copy {
+  min-width: 0;
+}
+
+.fn-header-copy h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.24rem;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  color: #f8fafc;
+  line-height: 1.2;
+}
+
+.fn-header-copy p {
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+  line-height: 1.4;
 }
 
 .fn-header-bg {
@@ -89,9 +150,9 @@ body:not(.dark) .fn-header-card {
   right: 0;
   bottom: 0;
   width: 68%;
-  background: url("img/gal-4.jpg") center right / cover no-repeat;
-  opacity: 0.42;
-  filter: grayscale(35%) contrast(1.06) brightness(0.86);
+  background: url("img/gal-4.jpg") center right / cover no-repeat !important;
+  opacity: 0.42 !important;
+  filter: grayscale(35%) contrast(1.06) brightness(0.86) !important;
   -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.52) 42%, rgba(0, 0, 0, 0.96) 100%);
   mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.52) 42%, rgba(0, 0, 0, 0.96) 100%);
   pointer-events: none;
@@ -102,23 +163,14 @@ body:not(.dark) .fn-header-card {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgba(11, 17, 32, 0.92) 0%, rgba(11, 17, 32, 0.45) 55%, rgba(11, 17, 32, 0.35) 100%);
+  background: linear-gradient(90deg, rgba(11, 17, 32, 0.92) 0%, rgba(11, 17, 32, 0.45) 55%, rgba(11, 17, 32, 0.35) 100%) !important;
 }
 
 body[data-page="reports"] .fn-header-bg {
   width: 72%;
-  background: url("img/hero-side.jpg") center 38% / cover no-repeat;
-  opacity: 0.36;
-  filter: grayscale(40%) contrast(1.06) brightness(0.84);
-}
-
-body:not(.dark) .fn-header-bg {
-  opacity: 0.56;
-  filter: contrast(1.06);
-}
-
-body:not(.dark) .fn-header-bg::after {
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.72) 42%, rgba(255, 255, 255, 0.14) 100%);
+  background: url("img/hero-side.jpg") center 38% / cover no-repeat !important;
+  opacity: 0.36 !important;
+  filter: grayscale(40%) contrast(1.06) brightness(0.84) !important;
 }
 
 .fn-header-title-wrap {
@@ -156,10 +208,11 @@ body:not(.dark) .fn-header-bg::after {
 }
 
 .fn-tabs {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(118px, 1fr);
   gap: 10px;
-  align-items: center;
+  align-items: stretch;
 }
 
 html body.pf-staff[data-page="payments"] .fn-tabs .tab,
@@ -167,48 +220,51 @@ html body.pf-staff[data-page="reports"] .fn-tabs .tab,
 html body.pf-staff[data-page="cashier"] .fn-tabs .tab,
 .fn-tabs .tab {
   position: relative;
-  display: inline-flex !important;
+  display: flex !important;
+  flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 9px;
-  height: 44px !important;
-  min-height: 44px !important;
-  padding: 0 18px !important;
+  gap: 7px;
+  height: 74px !important;
+  min-height: 74px !important;
+  padding: 10px 14px !important;
   border-radius: 14px !important;
   border: 1px solid rgba(148, 163, 184, 0.22) !important;
-  background: rgba(15, 23, 42, 0.72) !important;
-  color: var(--fn-muted) !important;
+  background: rgba(15, 23, 42, 0.78) !important;
+  color: #a9b6cc !important;
   font: inherit;
-  font-size: 13px !important;
+  font-size: 0.79rem !important;
   font-weight: 600 !important;
+  line-height: 1.1 !important;
   white-space: nowrap;
   cursor: pointer;
   box-shadow: none !important;
   backdrop-filter: blur(8px);
-  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, color 0.18s ease;
+  transition: transform 160ms ease-out, border-color 160ms ease-out, background 160ms ease-out, color 160ms ease-out;
 }
 
-html body.pf-staff:not(.dark)[data-page="payments"] .fn-tabs .tab,
-html body.pf-staff:not(.dark)[data-page="reports"] .fn-tabs .tab,
-html body.pf-staff:not(.dark)[data-page="cashier"] .fn-tabs .tab {
-  background: rgba(255, 255, 255, 0.88) !important;
-  border-color: rgba(148, 163, 184, 0.35) !important;
-}
-
-html body.pf-staff[data-page="payments"] .fn-tabs .tab:hover,
-html body.pf-staff[data-page="reports"] .fn-tabs .tab:hover,
-html body.pf-staff[data-page="cashier"] .fn-tabs .tab:hover,
-.fn-tabs .tab:hover {
+html body.pf-staff[data-page="payments"] .fn-tabs .tab:not(.active):hover,
+html body.pf-staff[data-page="reports"] .fn-tabs .tab:not(.active):hover,
+html body.pf-staff[data-page="cashier"] .fn-tabs .tab:not(.active):hover,
+.fn-tabs .tab:not(.active):hover {
   transform: translateY(-1px);
-  color: var(--fn-text) !important;
-  border-color: rgba(245, 158, 11, 0.45) !important;
+  color: #ffffff !important;
+  background: rgba(15, 23, 42, 0.94) !important;
+  border-color: rgba(245, 158, 11, 0.5) !important;
+}
+
+html body.pf-staff[data-page="payments"] .fn-tabs .tab:not(.active):hover .fn-tab-icon,
+html body.pf-staff[data-page="reports"] .fn-tabs .tab:not(.active):hover .fn-tab-icon,
+html body.pf-staff[data-page="cashier"] .fn-tabs .tab:not(.active):hover .fn-tab-icon {
+  border-color: rgba(245, 158, 11, 0.55);
 }
 
 html body.pf-staff[data-page="payments"] .fn-tabs .tab.active,
 html body.pf-staff[data-page="reports"] .fn-tabs .tab.active,
 html body.pf-staff[data-page="cashier"] .fn-tabs .tab.active,
 .fn-tabs .tab.active {
-  color: var(--fn-text) !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
   border: 1.5px solid #f59e0b !important;
   background: rgba(245, 158, 11, 0.16) !important;
   box-shadow: 0 4px 14px rgba(245, 158, 11, 0.14) !important;
@@ -224,27 +280,43 @@ html body.pf-staff[data-page="cashier"] .fn-tabs .tab.active,
 }
 
 .fn-tab-icon {
-  width: 18px;
-  height: 18px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  display: inline-grid;
+  place-items: center;
   flex-shrink: 0;
-  background: transparent;
-  border: 0;
-  color: currentColor;
+  background: rgba(7, 11, 20, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffb020;
   box-shadow: none;
+  transition: border-color 160ms ease-out;
 }
 
-body:not(.dark) .fn-tab-icon {
-  background: transparent;
-  color: currentColor;
-  border: 0;
+.fn-tab-icon.is-amber {
+  color: #ffb020 !important;
+  border-color: rgba(255, 176, 32, 0.45);
+}
+
+.fn-tab-icon.is-cyan {
+  color: #22d3ee !important;
+  border-color: rgba(34, 211, 238, 0.4);
+}
+
+.fn-tab-icon.is-emerald {
+  color: #10b981 !important;
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+.fn-tab-icon.is-violet {
+  color: #a78bfa !important;
+  border-color: rgba(167, 139, 250, 0.4);
 }
 
 .fn-tab-icon svg {
   width: 15px;
   height: 15px;
+  stroke: currentColor;
 }
 
 .fn-tab-short {
@@ -726,6 +798,106 @@ body:not(.dark) .fn-btn-dark:hover {
   background: #fef3c7;
 }
 
+/* Designed Export PDF & Export CSV Action Buttons */
+html body.pf-staff #exportPdf,
+html body.pf-staff #exportCsv {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px;
+  height: 40px !important;
+  padding: 0 16px !important;
+  border-radius: 12px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.01em;
+  transition: transform 0.16s ease, background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease, box-shadow 0.16s ease !important;
+}
+
+html body.pf-staff #exportPdf {
+  background: rgba(239, 68, 68, 0.16) !important;
+  border: 1.5px solid rgba(248, 113, 113, 0.45) !important;
+  color: #fca5a5 !important;
+}
+
+html body.pf-staff #exportPdf svg {
+  color: #f87171 !important;
+}
+
+html body.pf-staff #exportPdf:hover {
+  background: #dc2626 !important;
+  border-color: #dc2626 !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px -6px rgba(220, 38, 38, 0.45) !important;
+}
+
+html body.pf-staff #exportPdf:hover svg {
+  color: #ffffff !important;
+}
+
+html body.pf-staff:not(.dark) #exportPdf {
+  background: #fef2f2 !important;
+  border: 1.5px solid #fca5a5 !important;
+  color: #b91c1c !important;
+}
+
+html body.pf-staff:not(.dark) #exportPdf svg {
+  color: #dc2626 !important;
+}
+
+html body.pf-staff:not(.dark) #exportPdf:hover {
+  background: #dc2626 !important;
+  border-color: #dc2626 !important;
+  color: #ffffff !important;
+}
+
+html body.pf-staff:not(.dark) #exportPdf:hover svg {
+  color: #ffffff !important;
+}
+
+html body.pf-staff #exportCsv {
+  background: rgba(16, 185, 129, 0.16) !important;
+  border: 1.5px solid rgba(52, 211, 153, 0.45) !important;
+  color: #6ee7b7 !important;
+}
+
+html body.pf-staff #exportCsv svg {
+  color: #34d399 !important;
+}
+
+html body.pf-staff #exportCsv:hover {
+  background: #059669 !important;
+  border-color: #059669 !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px -6px rgba(5, 150, 105, 0.45) !important;
+}
+
+html body.pf-staff #exportCsv:hover svg {
+  color: #ffffff !important;
+}
+
+html body.pf-staff:not(.dark) #exportCsv {
+  background: #ecfdf5 !important;
+  border: 1.5px solid #6ee7b7 !important;
+  color: #047857 !important;
+}
+
+html body.pf-staff:not(.dark) #exportCsv svg {
+  color: #059669 !important;
+}
+
+html body.pf-staff:not(.dark) #exportCsv:hover {
+  background: #059669 !important;
+  border-color: #059669 !important;
+  color: #ffffff !important;
+}
+
+html body.pf-staff:not(.dark) #exportCsv:hover svg {
+  color: #ffffff !important;
+}
+
 .fn-btn-sm {
   min-width: 82px;
   height: 32px;
@@ -983,10 +1155,10 @@ html body.pf-staff[data-page="cashier"] .fn-table thead tr,
   grid-template-columns: var(--fn-cols);
   align-items: center;
   gap: 0;
-  height: 32px;
+  height: 38px;
   padding: 0;
-  background: transparent !important;
-  border: 0 !important;
+  background: var(--pf-surface-thead, #161d2c) !important;
+  border-bottom: 1px solid var(--pf-border, rgba(255, 255, 255, 0.08)) !important;
 }
 
 html body.pf-staff[data-page="payments"] .fn-table thead th,
@@ -1507,26 +1679,29 @@ body:not(.dark) .fn-tx-foot strong {
 }
 
 /* ---------- 8. RESPONSIVE & REDUCED MOTION ---------- */
-@media (max-width: 900px) {
+@media (max-width: 1180px) {
+  html body.pf-staff .fn-header-card,
   .fn-header-card {
-    gap: 14px;
+    grid-template-columns: 1fr;
+    gap: 16px;
     padding: 20px;
     min-height: 140px;
   }
 
+  .fn-tabs {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    width: 100%;
+  }
+}
+
+@media (max-width: 900px) {
   .fn-header-bg,
   body[data-page="reports"] .fn-header-bg {
     width: 100%;
-    opacity: 0.22;
+    opacity: 0.24 !important;
     -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.85) 100%);
     mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.85) 100%);
-  }
-
-  .fn-tabs {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-    gap: 8px;
   }
 
   .fn-daily-grid,
@@ -1537,11 +1712,12 @@ body:not(.dark) .fn-tx-foot strong {
 }
 
 @media (max-width: 560px) {
+  html body.pf-staff .fn-header-card,
   .fn-header-card,
   .fn-card,
   .fn-kpi-card {
     padding: 16px;
-    border-radius: 16px;
+    border-radius: 16px !important;
   }
 
   .fn-page-title {
@@ -1549,8 +1725,7 @@ body:not(.dark) .fn-tx-foot strong {
   }
 
   .fn-tabs {
-    display: flex;
-    flex-wrap: wrap;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
   }
 
@@ -1558,12 +1733,11 @@ body:not(.dark) .fn-tx-foot strong {
   html body.pf-staff[data-page="reports"] .fn-tabs .tab,
   html body.pf-staff[data-page="cashier"] .fn-tabs .tab,
   .fn-tabs .tab {
-    flex: 1 1 auto;
-    height: 40px !important;
-    min-height: 40px !important;
-    padding: 0 12px !important;
-    gap: 6px;
-    font-size: 12px !important;
+    height: 68px !important;
+    min-height: 68px !important;
+    padding: 8px 6px !important;
+    gap: 5px;
+    font-size: 0.72rem !important;
   }
 
   .fn-tab-full {
@@ -1897,6 +2071,8 @@ body[data-page="reports"] .fn-card {
   html body.pf-staff[data-page="payments"] #pane-review .fn-table-scroll {
     overflow: visible !important;
   }
+}
+
 /* Equal-height (pantay) Record a payment + Today's payments grid */
 .fn-daily-grid {
   align-items: stretch !important;
@@ -1914,4 +2090,212 @@ body[data-page="reports"] .fn-card {
   display: flex !important;
   flex-direction: column !important;
   margin: 0 !important;
+}
+
+/* ============================================================================
+   Cross-Device Responsive Fixes (Reports, Payments, Cashier, Member Billing)
+   ============================================================================ */
+@media (max-width: 768px) {
+  .fn-card-head {
+    flex-wrap: wrap !important;
+    gap: 8px 12px !important;
+  }
+
+  .fn-toolbar {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+
+  .fn-toolbar-left,
+  .fn-toolbar-right {
+    width: 100% !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  .fn-toolbar-select {
+    width: 100% !important;
+    min-width: 0 !important;
+    flex: 1 1 100% !important;
+  }
+
+  .fn-toolbar-right > .fn-btn,
+  .fn-toolbar-right > button,
+  .fn-toolbar-right > a {
+    flex: 1 1 calc(50% - 4px) !important;
+    justify-content: center !important;
+    min-height: 42px !important;
+  }
+
+  .fn-field-row {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  /* Convert finance data tables into clean phone cards with zero horizontal scroll */
+  .fn-table-scroll {
+    overflow-x: visible !important;
+  }
+
+  .fn-table--tx,
+  .fn-table--sub,
+  .fn-table--hist,
+  .fn-table--cashier-hist {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .fn-table--tx thead,
+  .fn-table--sub thead,
+  .fn-table--hist thead,
+  .fn-table--cashier-hist thead {
+    display: none !important;
+  }
+
+  .fn-table--tx tbody,
+  .fn-table--sub tbody,
+  .fn-table--hist tbody,
+  .fn-table--cashier-hist tbody {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    padding: 12px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+  }
+
+  .fn-table--tx tbody tr,
+  .fn-table--sub tbody tr,
+  .fn-table--hist tbody tr,
+  .fn-table--cashier-hist tbody tr {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px 12px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    padding: 14px !important;
+    border-radius: 14px !important;
+    border: 1px solid var(--border, rgba(255, 255, 255, .08)) !important;
+    background: var(--card-2, rgba(255, 255, 255, .025)) !important;
+    box-sizing: border-box !important;
+  }
+
+  body:not(.dark) .fn-table--tx tbody tr,
+  body:not(.dark) .fn-table--sub tbody tr,
+  body:not(.dark) .fn-table--hist tbody tr,
+  body:not(.dark) .fn-table--cashier-hist tbody tr {
+    background: var(--pf-surface, #ffffff) !important;
+    border-color: var(--pf-border, #e6dfd2) !important;
+  }
+
+  .fn-table--tx tbody td,
+  .fn-table--sub tbody td,
+  .fn-table--hist tbody td,
+  .fn-table--cashier-hist tbody td {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    gap: 3px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    min-width: 0 !important;
+    width: auto !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    text-align: left !important;
+  }
+
+  .fn-table--tx tbody td[data-label]::before,
+  .fn-table--sub tbody td[data-label]::before,
+  .fn-table--hist tbody td[data-label]::before,
+  .fn-table--cashier-hist tbody td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted, #94a3b8);
+    line-height: 1.2;
+  }
+
+  /* Empty-state rows span full width cleanly without card borders or horizontal scroll */
+  .fn-table--tx tbody tr:has(td[colspan]),
+  .fn-table--sub tbody tr:has(td[colspan]),
+  .fn-table--hist tbody tr:has(td[colspan]),
+  .fn-table--cashier-hist tbody tr:has(td[colspan]) {
+    display: block !important;
+    padding: 18px 10px !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
+
+  .fn-table--tx tbody td[colspan],
+  .fn-table--sub tbody td[colspan],
+  .fn-table--hist tbody td[colspan],
+  .fn-table--cashier-hist tbody td[colspan] {
+    display: block !important;
+    width: 100% !important;
+    text-align: center !important;
+    align-items: center !important;
+  }
+
+  .fn-table--tx tbody td[colspan]::before,
+  .fn-table--sub tbody td[colspan]::before,
+  .fn-table--hist tbody td[colspan]::before,
+  .fn-table--cashier-hist tbody td[colspan]::before {
+    display: none !important;
+  }
+
+  .fn-card-foot {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    padding: 14px 16px !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .fn-tabs {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+    padding: 6px !important;
+    border-radius: 16px !important;
+    box-sizing: border-box !important;
+  }
+
+  .fn-tab {
+    width: 100% !important;
+    min-height: 40px !important;
+    justify-content: center !important;
+    padding: 0 10px !important;
+    font-size: 13px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .csh-hero-actions,
+  .csh-hero-card-foot {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  .csh-hero-actions > * {
+    flex: 1 1 100% !important;
+    justify-content: center !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .fn-toolbar-right > .fn-btn,
+  .fn-toolbar-right > button,
+  .fn-toolbar-right > a {
+    flex: 1 1 100% !important;
+  }
 }
