@@ -267,13 +267,15 @@ class ReviewPageMarkupTests(TestCase):
         self.assertIn('id="memberPayProof"', member_html)
         self.assertNotIn('id="memberPayMethod"', member_html)
 
-    def test_gcash_qr_code_is_present_on_member_and_cashier_payment_pages(self):
+    def test_gcash_qr_code_is_present_on_member_and_payment_pages(self):
         web = Path(__file__).resolve().parents[3] / "web"
         qr_asset = web / "img" / "gcash-qr.jpg"
         self.assertTrue(qr_asset.is_file())
         self.assertGreater(qr_asset.stat().st_size, 0)
 
-        for filename in ("member-home.html", "payments.html", "cashier.html"):
+        # The cashier page no longer embeds the QR panel; it lives on the member
+        # payment card and the staff Payments desk.
+        for filename in ("member-home.html", "payments.html"):
             with self.subTest(page=filename):
                 html = (web / filename).read_text(encoding="utf-8")
                 self.assertIn('src="img/gcash-qr.jpg"', html)

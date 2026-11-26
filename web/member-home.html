@@ -1805,7 +1805,6 @@
           const eh = v => String(v ?? "&mdash;").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
           const raw = data.membership || {};
           const endIso = raw.endDate || raw.expiry || (raw.expiresAt ? localDateStr(raw.expiresAt) : null);
-          const startIso = raw.startDate || null;
           const todayIso = todayKey();
           const daysBetween = (a, b) => {
             if (!a || !b) return null;
@@ -1815,14 +1814,9 @@
           };
           const rawRemaining = endIso ? daysBetween(todayIso, endIso) : (typeof raw.remainingDays === "number" ? raw.remainingDays : null);
           const remainingDays = rawRemaining != null ? Math.max(0, rawRemaining) : 0;
-          const durationDays = raw.durationDays || (startIso && endIso ? Math.max(1, daysBetween(startIso, endIso)) : null);
           let effStatus = String(raw.status || "PENDING").toUpperCase();
           if (endIso && rawRemaining < 0) effStatus = "EXPIRED";
           else if (endIso && rawRemaining >= 0 && rawRemaining <= 7 && effStatus === "ACTIVE") effStatus = "EXPIRING_SOON";
-
-          const progressPct = durationDays
-            ? Math.max(0, Math.min(100, Math.round((remainingDays / durationDays) * 100)))
-            : (effStatus === "ACTIVE" ? 100 : 0);
 
           $("membershipName").textContent = safe(raw.planName || raw.plan || "No active plan");
           $("membershipDetail").textContent = endIso
@@ -1833,29 +1827,18 @@
           const badgeEl = $("membershipStatus");
           badgeEl.textContent = formatStatusLabel(effStatus);
           badgeEl.className = `pf-status-badge ${statusBadgeClass(effStatus)}`;
-          $("overviewMembershipRemaining").textContent = durationDays
-            ? `${remainingDays} of ${durationDays} days remaining`
-            : (endIso ? `${remainingDays} days remaining` : "No active coverage");
-          $("overviewMembershipPct").textContent = `${progressPct}%`;
-          $("overviewMembershipBar").style.width = `${progressPct}%`;
+          $("overviewMembershipRemaining").textContent = endIso
+            ? `${remainingDays} days remaining`
+            : "No active coverage";
 
           const mBody = $("membershipTabBody");
           if (mBody) {
             mBody.innerHTML = `
         <div class="pf-meta-grid">
           <div class="pf-meta-cell"><span class="k">Plan</span><span class="v">${eh(raw.planName || raw.plan || "No active plan")}</span></div>
-          <div class="pf-meta-cell"><span class="k">Start Date</span><span class="v">${startIso ? eh(date(startIso)) : "&mdash;"}</span></div>
           <div class="pf-meta-cell"><span class="k">Expiration Date</span><span class="v">${endIso ? eh(date(endIso)) : "&mdash;"}</span></div>
-          <div class="pf-meta-cell"><span class="k">Duration</span><span class="v">${durationDays ? `${durationDays} day${durationDays === 1 ? "" : "s"}` : "&mdash;"}</span></div>
           <div class="pf-meta-cell"><span class="k">Remaining Days</span><span class="v">${endIso ? `${remainingDays} day${remainingDays === 1 ? "" : "s"}` : "0 days"}</span></div>
           <div class="pf-meta-cell"><span class="k">Status &amp; Payment</span><span class="v" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px"><span class="pf-status-badge ${statusBadgeClass(effStatus)}">${eh(formatStatusLabel(effStatus))}</span><span class="pf-status-badge ${statusBadgeClass(raw.paymentStatus)}">${eh(formatStatusLabel(raw.paymentStatus))}</span></span></div>
-        </div>
-        <div class="pf-progress-wrap">
-          <div class="pf-progress-labels">
-            <span>Remaining coverage</span>
-            <span>${progressPct}% (${durationDays ? `${remainingDays} / ${durationDays} days` : `${remainingDays} days`})</span>
-          </div>
-          <div class="pf-progress-track"><div class="pf-progress-fill" style="width:${progressPct}%"></div></div>
         </div>`;
           }
 
