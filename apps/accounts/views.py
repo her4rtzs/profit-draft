@@ -228,9 +228,15 @@ def login_view(request):
 
 
 @require_POST
-@login_required
 def logout_view(request):
     logout(request)
+    next_url = request.POST.get("next") or request.GET.get("next")
+    if next_url and url_has_allowed_host_and_scheme(
+        next_url,
+        allowed_hosts={request.get_host()},
+        require_https=request.is_secure(),
+    ):
+        return redirect(next_url)
     return redirect(settings.LOGOUT_REDIRECT_URL)
 
 
@@ -256,7 +262,7 @@ def _first_login_cooldown_seconds(user) -> int:
     return 0
 
 
-@login_required
+@login_required(login_url="/login")
 @require_GET
 def onboarding_gate_view(request):
     user = request.user
@@ -267,7 +273,7 @@ def onboarding_gate_view(request):
     return redirect(_post_onboarding_redirect_url(user))
 
 
-@login_required
+@login_required(login_url="/login")
 @require_http_methods(["GET", "POST"])
 def onboarding_otp_view(request):
     user = request.user
@@ -327,7 +333,7 @@ def onboarding_otp_view(request):
     )
 
 
-@login_required
+@login_required(login_url="/login")
 @require_POST
 def onboarding_otp_resend_view(request):
     user = request.user
@@ -374,7 +380,7 @@ def onboarding_otp_resend_view(request):
     return redirect("accounts:onboarding_otp")
 
 
-@login_required
+@login_required(login_url="/login")
 @require_http_methods(["GET", "POST"])
 def onboarding_consent_view(request):
     user = request.user

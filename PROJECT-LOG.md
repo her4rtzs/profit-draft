@@ -3985,3 +3985,12 @@ Allow new users signing in with Google on `/login` to connect directly and proce
 - Updated `google_auth_view` and `google_oauth_callback_view` in `api/auth.py` to call `authenticate_google_member(claims)` for both `/login` and `/join`, so brand-new Gmail users enter `/accounts/onboarding/` (`OTP -> Terms & Privacy`), linked Owner/Staff/Member users sign in cleanly, and unlinked Staff/Owner emails still redirect to `/login?error=not-linked`; see [[2026-11-26 Allow new Google members on login via OTP gate]].
 ### Decision-log skill
 Keep public Google Member creation safe on both `/login` and `/join` by gating every new Google session behind Email OTP + legal consent while rejecting unlinked privileged roles cleanly.
+
+## 2026-11-26 19:32 (Asia/Manila): In-Place OTP & ToS Modals Over /login + Clean Logout Redirects
+### What I asked for
+Replace the plain full-page `/accounts/onboarding/otp/` screen with blurred modal overlays over `/login` (`Verify your email` -> `Terms of Service & Privacy Policy`) matching the reference screenshots, and fix the `Sign out` redirect so it never lands on `/accounts/login/?next=/accounts/logout/`.
+### What the agent decided and why
+- Removed `@login_required` from `logout_view` (keeping `@require_POST` + CSRF) with validated `next` redirect support and pointed `@login_required(login_url="/login")` on the fallback onboarding views so signing out or unauthenticated requests always go cleanly to `/login`.
+- Added CSRF-protected JSON endpoints (`GET /api/auth/onboarding/status/`, `POST /api/auth/onboarding/otp/verify/`, `POST /api/auth/onboarding/otp/resend/`, `POST /api/auth/onboarding/consent/`) in `api/auth.py`, exempted `/login`, `/join`, and `/api/auth/onboarding/` in `FirstLoginOnboardingGateMiddleware`, and added matching ProFit obsidian/gold `<dialog>` modal overlays in `web/google-auth.js?v=5` (plus polished fallback templates).
+### Decision-log skill
+Keep server-side HTML middleware enforcement intact on all protected dashboards and APIs while exposing thin CSRF-protected JSON onboarding endpoints so login screens can run multi-step OTP + Terms & Privacy dialogs seamlessly without page jumps.

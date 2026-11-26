@@ -26,6 +26,7 @@ from django.contrib.auth import authenticate, get_user_model, login, logout, upd
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.db import DatabaseError
 from django.http import HttpResponseRedirect, JsonResponse
@@ -44,12 +45,21 @@ from apps.accounts.google_auth import (
     verify_google_access_token,
     verify_google_id_token,
 )
+from apps.accounts.forms import VerifyForm
+from apps.accounts.models import EmailOTP, OTPPurpose
 from apps.accounts.services import (
+    EmailDeliveryError,
     InvalidInviteError,
     InviteEmailMismatchError,
     InviteGoogleInUseError,
+    OTPCooldownError,
+    OTPRateLimitError,
     accept_invite_with_google,
+    issue_first_login_otp,
+    record_legal_consent,
+    resend_first_login_otp,
     role_home_url,
+    verify_first_login_otp,
 )
 from apps.accounts.validators import validate_real_email
 
@@ -871,3 +881,161 @@ def google_oauth_callback_view(request):
     user.backend = "django.contrib.auth.backends.ModelBackend"
     login(request, user)
     return HttpResponseRedirect(_post_google_redirect_for(user))
+
+
+def _first_login_otp_cooldown(user) -> int:
+    latest = (
+        EmailOTP.objects.filter(user=user, purpose=OTPPurpose.FIRST_LOGIN)
+        .order_by("-created_at")
+        .first()
+    )
+    if latest is None:
+        return 0
+    elapsed = timezone.now() - latest.created_at
+    if elapsed < EmailOTP.RESEND_COOLDOWN:
+        return max(0, int((EmailOTP.RESEND_COOLDOWN - elapsed).total_seconds() + 0.999))
+    return 0
+
+
+@require_GET
+def onboarding_status_api_view(request):
+    """GET /api/auth/onboarding/status/: issue initial OTP if needed and return gate state."""
+    user = request.user
+    if not user.is_authenticated or not user.is_active:
+        return JsonResponse({"detail": "Not signed in."}, status=401)
+
+    delivery_failed = False
+    if getattr(user, "needs_first_login_otp", False):
+        try:
+            issue_first_login_otp(user, force_resend=False)
+        except (OTPCooldownError, OTPRateLimitError):
+            pass
+        except EmailDeliveryError:
+            delivery_failed = True
+
+    return JsonResponse({
+        "needs_otp": bool(getattr(user, "needs_first_login_otp", False)),
+        "needs_consent": bool(getattr(user, "needs_legal_consent", False)),
+        "email": user.email or "",
+        "cooldown_seconds": _first_login_otp_cooldown(user) if getattr(user, "needs_first_login_otp", False) else 0,
+        "delivery_failed": delivery_failed,
+        "redirect": _post_google_redirect_for(user),
+    })
+
+
+@require_POST
+def onboarding_otp_verify_api_view(request):
+    """POST /api/auth/onboarding/otp/verify/: verify 6-digit FIRST_LOGIN OTP in JSON modal."""
+    user = request.user
+    if not user.is_authenticated or not user.is_active:
+        return JsonResponse({"detail": "Not signed in."}, status=401)
+
+    if not getattr(user, "needs_first_login_otp", False):
+        return JsonResponse({
+            "ok": True,
+            "needs_consent": bool(getattr(user, "needs_legal_consent", False)),
+            "redirect": _post_google_redirect_for(user),
+            "user": _session_user_dict(user),
+        })
+
+    data = _json_body(request)
+    if data is None:
+        return JsonResponse({"detail": "Invalid request body."}, status=400)
+
+    form = VerifyForm({"code": str(data.get("code") or "")})
+    if not form.is_valid():
+        return JsonResponse(
+            {"ok": False, "reason": "bad_code", "detail": "Enter the 6-digit verification code."},
+            status=400,
+        )
+
+    result = verify_first_login_otp(user, form.cleaned_data["code"])
+    if result.ok:
+        return JsonResponse({
+            "ok": True,
+            "needs_consent": bool(getattr(user, "needs_legal_consent", False)),
+            "redirect": _post_google_redirect_for(user),
+            "user": _session_user_dict(user),
+        })
+
+    if result.reason == "capped":
+        msg = "Too many wrong attempts. This code is locked — request a new code."
+    elif result.reason == "expired":
+        msg = "That verification code has expired. Request a new code."
+    else:
+        msg = "That code is invalid or has expired."
+    return JsonResponse({"ok": False, "reason": result.reason, "detail": msg}, status=400)
+
+
+@require_POST
+def onboarding_otp_resend_api_view(request):
+    """POST /api/auth/onboarding/otp/resend/: resend FIRST_LOGIN OTP enforcing cooldown & cap."""
+    user = request.user
+    if not user.is_authenticated or not user.is_active:
+        return JsonResponse({"detail": "Not signed in."}, status=401)
+    if not getattr(user, "needs_first_login_otp", False):
+        return JsonResponse({"status": "done", "detail": "Email already verified."}, status=200)
+
+    try:
+        resend_first_login_otp(user)
+        return JsonResponse({
+            "status": "sent",
+            "cooldown_seconds": 60,
+            "detail": "A new verification code was sent to your email.",
+        })
+    except OTPCooldownError as exc:
+        return JsonResponse(
+            {
+                "status": "cooldown",
+                "retry_after": exc.retry_after,
+                "detail": f"Please wait {exc.retry_after}s before requesting another code.",
+            },
+            status=429,
+        )
+    except OTPRateLimitError as exc:
+        return JsonResponse(
+            {
+                "status": "rate_limited",
+                "retry_after": min(exc.retry_after, 3600),
+                "detail": "Too many code requests. Please wait before trying again.",
+            },
+            status=429,
+        )
+    except EmailDeliveryError:
+        return JsonResponse(
+            {
+                "status": "send_failed",
+                "detail": "We couldn't send the verification code right now. Try again shortly.",
+            },
+            status=503,
+        )
+
+
+@require_POST
+def onboarding_consent_api_view(request):
+    """POST /api/auth/onboarding/consent/: require both ToS & Privacy consent, then unlock dashboard."""
+    user = request.user
+    if not user.is_authenticated or not user.is_active:
+        return JsonResponse({"detail": "Not signed in."}, status=401)
+    if getattr(user, "needs_first_login_otp", False):
+        return JsonResponse(
+            {"detail": "Verify your email code first.", "code": "otp_required"},
+            status=400,
+        )
+
+    data = _json_body(request)
+    if data is None:
+        return JsonResponse({"detail": "Invalid request body."}, status=400)
+
+    if data.get("accept_terms") is not True or data.get("accept_privacy") is not True:
+        return JsonResponse(
+            {"detail": "You must agree to both the Terms of Service and Privacy Policy."},
+            status=400,
+        )
+
+    record_legal_consent(user)
+    return JsonResponse({
+        "ok": True,
+        "redirect": _post_google_redirect_for(user),
+        "user": _session_user_dict(user),
+    })

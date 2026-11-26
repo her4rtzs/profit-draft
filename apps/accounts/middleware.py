@@ -9,6 +9,10 @@ _EXEMPT_EXACT = frozenset({
     "/api/auth/csrf/",
     "/api/auth/session/",
     "/api/auth/google/config/",
+    "/login",
+    "/login.html",
+    "/join",
+    "/join.html",
     "/terms",
     "/terms.html",
     "/privacy",
@@ -21,6 +25,7 @@ _EXEMPT_EXACT = frozenset({
 
 _EXEMPT_PREFIXES = (
     "/accounts/onboarding/",
+    "/api/auth/onboarding/",
     "/static/",
     "/icons/",
 )

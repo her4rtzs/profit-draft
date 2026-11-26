@@ -35,7 +35,7 @@ def _serve_web_page(relative):
 
 def web_page(request, page):
     """Serve a top-level web/ page at an extensionless URL, with RBAC checks for signed-in users."""
-    if page == "login" and request.user.is_authenticated:
+    if page == "login" and request.user.is_authenticated and not getattr(request.user, "requires_first_login_gate", False):
         from apps.accounts.services import role_home_url
         return redirect(role_home_url(request.user))
     if page in PUBLIC_PAGES:

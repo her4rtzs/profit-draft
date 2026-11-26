@@ -410,3 +410,94 @@ class LinkedGoogleAndOnboardingGateTests(TestCase):
         self.assertEqual(conn.status_code, 200)
         self.assertTrue(conn.json()["user"]["google_connected"])
         self.assertEqual(conn.json()["user"]["google_email"], "cashier.gmail@gmail.com")
+
+    def test_modal_onboarding_json_apis_and_clean_logout_redirects(self):
+        # Anonymous visit to /accounts/onboarding/otp/ goes to /login (not legacy /accounts/login/)
+        anon_otp = self.client.get("/accounts/onboarding/otp/")
+        self.assertEqual(anon_otp.status_code, 302)
+        self.assertTrue(anon_otp["Location"].startswith("/login"))
+
+        # Anonymous POST /accounts/logout/ with next=/login lands cleanly on /login
+        anon_logout = self.client.post(
+            "/accounts/logout/",
+            {"next": "/login"},
+            HTTP_X_CSRFTOKEN=self._csrf(),
+        )
+        self.assertEqual(anon_logout.status_code, 302)
+        self.assertEqual(anon_logout["Location"], "/login")
+
+        # Brand-new Google visitor completes OTP + ToS/Privacy via JSON modal APIs over /login
+        claims = GoogleClaims(
+            sub="modal-google-sub-1",
+            email="modalvisitor@gmail.com",
+            email_verified=True,
+            name="Modal Visitor",
+        )
+        mail.outbox.clear()
+        with patch("api.auth.verify_google_id_token", return_value=claims):
+            g_resp = self.client.post(
+                "/api/auth/google/",
+                data=json.dumps({"credential": "fake-token", "source": "login"}),
+                content_type="application/json",
+                HTTP_X_CSRFTOKEN=self._csrf(),
+            )
+        self.assertEqual(g_resp.status_code, 200)
+        self.assertTrue(g_resp.json()["requires_onboarding_gate"])
+
+        # /login remains accessible (serves login.html for the modal backdrop) while /member-home is blocked
+        self.assertEqual(self.client.get("/login").status_code, 200)
+        self.assertEqual(self.client.get("/member-home").status_code, 302)
+
+        # Modal status endpoint issues OTP email once and enforces resend cooldown
+        st_resp = self.client.get("/api/auth/onboarding/status/")
+        self.assertEqual(st_resp.status_code, 200)
+        self.assertTrue(st_resp.json()["needs_otp"])
+        self.assertTrue(st_resp.json()["needs_consent"])
+        code = re.search(r"\b(\d{6})\b", mail.outbox[-1].body).group(1)
+
+        cd_resp = self.client.post(
+            "/api/auth/onboarding/otp/resend/",
+            data="{}",
+            content_type="application/json",
+            HTTP_X_CSRFTOKEN=self._csrf(),
+        )
+        self.assertEqual(cd_resp.status_code, 429)
+
+        # Cannot skip straight to JSON consent before OTP verification
+        premature = self.client.post(
+            "/api/auth/onboarding/consent/",
+            data=json.dumps({"accept_terms": True, "accept_privacy": True}),
+            content_type="application/json",
+            HTTP_X_CSRFTOKEN=self._csrf(),
+        )
+        self.assertEqual(premature.status_code, 400)
+
+        # Verify OTP -> moves to consent step
+        ok_otp = self.client.post(
+            "/api/auth/onboarding/otp/verify/",
+            data=json.dumps({"code": code}),
+            content_type="application/json",
+            HTTP_X_CSRFTOKEN=self._csrf(),
+        )
+        self.assertEqual(ok_otp.status_code, 200)
+        self.assertTrue(ok_otp.json()["needs_consent"])
+
+        # Partial checkboxes rejected (400)
+        bad_consent = self.client.post(
+            "/api/auth/onboarding/consent/",
+            data=json.dumps({"accept_terms": True, "accept_privacy": False}),
+            content_type="application/json",
+            HTTP_X_CSRFTOKEN=self._csrf(),
+        )
+        self.assertEqual(bad_consent.status_code, 400)
+
+        # Both checkboxes accepted -> unlocks member portal
+        ok_consent = self.client.post(
+            "/api/auth/onboarding/consent/",
+            data=json.dumps({"accept_terms": True, "accept_privacy": True}),
+            content_type="application/json",
+            HTTP_X_CSRFTOKEN=self._csrf(),
+        )
+        self.assertEqual(ok_consent.status_code, 200)
+        self.assertEqual(ok_consent.json()["redirect"], "/member-home")
+        self.assertEqual(self.client.get("/member-home").status_code, 200)

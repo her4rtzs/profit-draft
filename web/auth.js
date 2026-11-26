@@ -241,6 +241,17 @@
         sessionStorage.setItem("profit-verified-session", JSON.stringify(user));
       } catch {}
       if (loginPage) {
+        if (user.requires_first_login_gate) {
+          document.documentElement.classList.remove("auth-checking", "auth-pending");
+          window.ProFitAuth = {
+            user,
+            role,
+            getUser: () => user,
+            logout: performLogout
+          };
+          window.dispatchEvent(new CustomEvent("profit-auth-ready", { detail: { user, role } }));
+          return;
+        }
         if ((role === "MEMBER" || role === "CASHIER" || role === "TRAINER") && user.onboarding_completed === false) {
           location.replace("/onboarding");
           return;
