@@ -334,6 +334,131 @@ a { color: inherit; text-decoration: none; }
   font-weight: 800;
   letter-spacing: 0.01em;
 }
+.gcash-pay-layout {
+  display: grid;
+  grid-template-columns: minmax(210px, 248px) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+.gcash-qr-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 125, 254, 0.28);
+  background: var(--c2);
+}
+.gcash-qr-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #007dfe;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.gcash-qr-thumb {
+  display: block;
+  width: 100%;
+  max-width: 196px;
+  border: 2px solid rgba(0, 125, 254, 0.36);
+  border-radius: 14px;
+  overflow: hidden;
+  background: #007dfe;
+}
+.gcash-qr-thumb img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.gcash-qr-caption {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--t2);
+}
+.gcash-qr-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+.gcash-qr-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid var(--ln);
+  background: var(--cd);
+  color: var(--ink);
+  font-size: 12.5px;
+  font-weight: 700;
+  flex: 1 1 auto;
+}
+.gcash-qr-btn:hover {
+  border-color: var(--y);
+}
+.gcash-qr-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(5, 8, 16, 0.72);
+  backdrop-filter: blur(8px);
+}
+.gcash-qr-modal[hidden] {
+  display: none;
+}
+.gcash-qr-modal-card {
+  width: 100%;
+  max-width: 420px;
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  border-radius: 20px;
+  padding: 22px;
+  background: var(--cd);
+  border: 1px solid var(--ln);
+  text-align: center;
+}
+.gcash-qr-modal-card h3 {
+  margin: 0 0 6px;
+  font-size: 18px;
+}
+.gcash-qr-modal-card p {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: var(--t2);
+}
+.gcash-qr-modal-card img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  max-height: 64dvh;
+  margin: 0 auto 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 125, 254, 0.35);
+}
+@media (max-width: 820px) {
+  .gcash-pay-layout {
+    grid-template-columns: 1fr;
+  }
+  .gcash-qr-thumb {
+    max-width: 220px;
+  }
+}
 
 /* Form */
 .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
@@ -686,9 +811,28 @@ button, .cb {
 
   <section class="card gcash-card" aria-labelledby="detailsHeading">
     <h2 id="detailsHeading">Your payment details <span class="gcash-badge">GCash</span></h2>
-    <p class="sub">Staff check the screenshot against the reference number.</p>
+    <p class="sub">Scan the QR code in GCash to pay, then submit your reference number and screenshot link below.</p>
 
-    <form id="claimForm" novalidate>
+    <div class="gcash-pay-layout">
+      <aside class="gcash-qr-panel" aria-label="GCash payment QR code">
+        <span class="gcash-qr-kicker"><i class="fa-solid fa-qrcode" aria-hidden="true"></i> Scan to pay</span>
+        <button type="button" class="gcash-qr-thumb" data-gcash-qr-open aria-label="Enlarge GCash payment QR code">
+          <img src="img/gcash-qr.jpg" alt="ProFit GCash payment QR code" loading="lazy">
+        </button>
+        <p class="gcash-qr-caption">Scan in your GCash app or save this QR to upload it inside GCash, then send the exact plan amount.</p>
+        <div class="gcash-qr-actions">
+          <button type="button" class="gcash-qr-btn" data-gcash-qr-open>
+            <i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i>
+            <span>Enlarge</span>
+          </button>
+          <a class="gcash-qr-btn" href="img/gcash-qr.jpg" download="profit-gcash-qr.jpg">
+            <i class="fa-solid fa-download" aria-hidden="true"></i>
+            <span>Save QR</span>
+          </a>
+        </div>
+      </aside>
+
+      <form id="claimForm" novalidate>
       <div class="g2" style="margin-bottom:18px">
         <div>
           <label class="lb" for="claimPlan">Plan</label>
@@ -757,6 +901,7 @@ button, .cb {
 
       <div class="fe" id="claimError" role="alert"></div>
     </form>
+    </div>
   </section>
 
   <section class="card" aria-labelledby="claimsHeading">
@@ -772,6 +917,21 @@ button, .cb {
 </div>
 
 <div id="claimToast" role="status" aria-live="polite"></div>
+
+<div class="gcash-qr-modal" id="gcashQrModal" hidden role="dialog" aria-modal="true" aria-labelledby="gcashQrModalTitle">
+  <div class="gcash-qr-modal-card">
+    <h3 id="gcashQrModalTitle">GCash Payment QR</h3>
+    <p>Scan this QR code in your GCash app and send the exact amount for your chosen plan.</p>
+    <img src="img/gcash-qr.jpg" alt="ProFit GCash payment QR code">
+    <div class="gcash-qr-actions">
+      <button type="button" class="gcash-qr-btn" id="gcashQrClose">Close</button>
+      <a class="gcash-qr-btn" href="img/gcash-qr.jpg" download="profit-gcash-qr.jpg">
+        <i class="fa-solid fa-download" aria-hidden="true"></i>
+        <span>Save QR</span>
+      </a>
+    </div>
+  </div>
+</div>
 
 <script>
 (function () {
@@ -1092,6 +1252,26 @@ button, .cb {
     } finally {
       button.disabled = false;
     }
+  });
+
+  const gcashQrModal = $("gcashQrModal");
+  const openGcashQrModal = () => {
+    if (!gcashQrModal) return;
+    gcashQrModal.hidden = false;
+    $("gcashQrClose")?.focus();
+  };
+  const closeGcashQrModal = () => {
+    if (gcashQrModal) gcashQrModal.hidden = true;
+  };
+  document.querySelectorAll("[data-gcash-qr-open]").forEach((btn) => {
+    btn.addEventListener("click", openGcashQrModal);
+  });
+  $("gcashQrClose")?.addEventListener("click", closeGcashQrModal);
+  gcashQrModal?.addEventListener("click", (event) => {
+    if (event.target === gcashQrModal) closeGcashQrModal();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && gcashQrModal && !gcashQrModal.hidden) closeGcashQrModal();
   });
 
   paintValidation();

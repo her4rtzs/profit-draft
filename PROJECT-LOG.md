@@ -3889,3 +3889,14 @@ Fix the `Request failed (500)` error on Add Trainer (`https://functionalfitnessg
 - Gave the owner step-by-step instructions to apply the new migrations (`0003_trainerprofile_status` and `0004_trainersession`) to Prod Supabase and enable RLS with no policies on `trainers_trainersession`.
 ### Decision-log skill
 Vercel deploys run `collectstatic` only and never `migrate`, so every `POST` handler creating rows on recently migrated models should check column readiness upfront and return an actionable 503 instead of a 500.
+
+## 2026-11-26 17:17 (Asia/Manila): Add GCash payment QR code to member and cashier payment pages
+### What I asked for
+Add the provided GCash QR code image to both the member payment page and the cashier daily payment page.
+### What the agent decided and why
+- Saved the supplied GCash QR image unmodified to `web/img/gcash-qr.jpg` so mobile cameras and GCash scanners read it cleanly without cropping or compression loss.
+- Added shared Light/Dark responsive `.pf-gcash-*` styles in `web/finance-ui.css` (`?v=27`) and button variables in `web/member-shell.css` (`?v=38`), with clickable enlarge (`#gcashQrModal`) and `Save QR` download actions so members on phones can upload the QR inside GCash and cashiers can show a large scannable QR at the desk.
+- Displayed the QR panel beside the member renewal form in `web/member-home.html` (`#memberPayCard`) and `web/claim.html`, and added a dedicated GCash QR card plus inline `Show GCash QR` trigger on the cashier daily payment pages (`web/payments.html` `#pane-daily` and `web/cashier.html` `#pane-terminal`) that highlights when `GCash` is selected (`web/pages.js?v=5`, `web/cashier.js?v=5`).
+- Added a markup and asset test in `apps/billing/tests/test_claim_review.py` covering all four payment pages.
+### Decision-log skill
+Include both an enlarge lightbox and a direct `download` action alongside payment QR codes: desk staff need a large screen view for walk-ins, while members paying on their own phone need to save the QR to import it into GCash.

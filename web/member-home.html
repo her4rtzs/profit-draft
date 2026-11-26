@@ -38,7 +38,7 @@
   <script src="api.js"></script>
   <script src="auth.js?v=4"></script>
   <link rel="stylesheet" href="pro-theme.css">
-  <link rel="stylesheet" href="finance-ui.css?v=24">
+  <link rel="stylesheet" href="finance-ui.css?v=28">
   <link rel="stylesheet" href="spotify.css?v=14">
   <link rel="stylesheet" href="portal-ui.css?v=13">
   <script>document.documentElement.dataset.accent = 'gold'</script>
@@ -47,7 +47,7 @@
   <link rel="stylesheet" href="ui-polish.css?v=2">
   <link rel="stylesheet" href="ui-fixes.css?v=1">
   <link rel="stylesheet" href="pf-modern.css?v=2">
-  <link rel="stylesheet" href="member-shell.css?v=37">
+  <link rel="stylesheet" href="member-shell.css?v=38">
   <style>
     @keyframes mbDashRise {
       from {
@@ -1231,39 +1231,59 @@
                 <i class="fa-solid fa-xmark" aria-hidden="true"></i>
               </button>
             </header>
-            <form class="fn-form" id="memberPayForm" novalidate>
-              <div class="fn-field-row">
-                <div class="fn-field">
-                  <label for="memberPayPlan">Plan</label>
-                  <select class="fn-input" id="memberPayPlan" required>
-                    <option value="">Loading plans&hellip;</option>
-                  </select>
-                </div>
-                <div class="fn-field">
-                  <label for="memberPayAmount">Amount (PHP)</label>
-                  <input class="fn-input" id="memberPayAmount" value="&mdash;" readonly>
-                </div>
-              </div>
-              <div class="fn-field">
-                <label for="memberPayReference">GCash reference number</label>
-                <input class="fn-input" id="memberPayReference" inputmode="numeric" maxlength="25" autocomplete="off"
-                  placeholder="6028 871 884223" required>
-                <small>10 to 13 digits; spaces are okay.</small>
-              </div>
-              <div class="fn-field">
-                <label for="memberPayProof">Google Drive link (proof of payment)</label>
-                <input class="fn-input" id="memberPayProof" type="url" maxlength="500" autocomplete="off"
-                  placeholder="https://drive.google.com/..." required>
-                <small>Set sharing to &ldquo;Anyone with the link can view&rdquo; and crop out private details.</small>
-              </div>
-              <p class="fn-status-msg" id="memberPayStatus" role="status" aria-live="polite" hidden></p>
-              <div class="member-pay-actions">
-                <button class="fn-btn-gold" type="submit" id="memberPaySubmit">
-                  <i class="fa-solid fa-paper-plane" aria-hidden="true"></i><span>Submit payment</span>
+            <div class="pf-gcash-pay-layout">
+              <aside class="pf-gcash-qr-panel" aria-label="GCash payment QR code">
+                <span class="pf-gcash-qr-kicker"><i class="fa-solid fa-qrcode" aria-hidden="true"></i> Scan to pay</span>
+                <button type="button" class="pf-gcash-qr-thumb" data-gcash-qr-open
+                  aria-label="Enlarge GCash payment QR code">
+                  <img src="img/gcash-qr.jpg" alt="ProFit GCash payment QR code" loading="lazy">
                 </button>
-                <button class="fn-btn-dark" type="button" id="memberPayCancel">Cancel</button>
-              </div>
-            </form>
+                <p class="pf-gcash-qr-caption">Scan this QR in your GCash app (or save it to upload in GCash), send the exact plan amount, then submit your reference and proof link.</p>
+                <div class="pf-gcash-qr-actions">
+                  <button type="button" class="fn-btn-dark" data-gcash-qr-open>
+                    <i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i>
+                    <span>Enlarge</span>
+                  </button>
+                  <a class="fn-btn-dark" href="img/gcash-qr.jpg" download="profit-gcash-qr.jpg">
+                    <i class="fa-solid fa-download" aria-hidden="true"></i>
+                    <span>Save QR</span>
+                  </a>
+                </div>
+              </aside>
+              <form class="fn-form" id="memberPayForm" novalidate>
+                <div class="fn-field-row">
+                  <div class="fn-field">
+                    <label for="memberPayPlan">Plan</label>
+                    <select class="fn-input" id="memberPayPlan" required>
+                      <option value="">Loading plans&hellip;</option>
+                    </select>
+                  </div>
+                  <div class="fn-field">
+                    <label for="memberPayAmount">Amount (PHP)</label>
+                    <input class="fn-input" id="memberPayAmount" value="&mdash;" readonly>
+                  </div>
+                </div>
+                <div class="fn-field">
+                  <label for="memberPayReference">GCash reference number</label>
+                  <input class="fn-input" id="memberPayReference" inputmode="numeric" maxlength="25" autocomplete="off"
+                    placeholder="6028 871 884223" required>
+                  <small>10 to 13 digits; spaces are okay.</small>
+                </div>
+                <div class="fn-field">
+                  <label for="memberPayProof">Google Drive link (proof of payment)</label>
+                  <input class="fn-input" id="memberPayProof" type="url" maxlength="500" autocomplete="off"
+                    placeholder="https://drive.google.com/..." required>
+                  <small>Set sharing to &ldquo;Anyone with the link can view&rdquo; and crop out private details.</small>
+                </div>
+                <p class="fn-status-msg" id="memberPayStatus" role="status" aria-live="polite" hidden></p>
+                <div class="member-pay-actions">
+                  <button class="fn-btn-gold" type="submit" id="memberPaySubmit">
+                    <i class="fa-solid fa-paper-plane" aria-hidden="true"></i><span>Submit payment</span>
+                  </button>
+                  <button class="fn-btn-dark" type="button" id="memberPayCancel">Cancel</button>
+                </div>
+              </form>
+            </div>
           </article>
 
           <section class="panel member-panel" style="margin-top:18px">
@@ -1956,8 +1976,34 @@
 
         $("memberPayClose")?.addEventListener("click", closePayCard);
         $("memberPayCancel")?.addEventListener("click", closePayCard);
+
+        const openGcashQrModal = () => {
+          const modal = $("gcashQrModal");
+          if (!modal) return;
+          modal.hidden = false;
+          $("gcashQrClose")?.focus();
+        };
+        const closeGcashQrModal = () => {
+          const modal = $("gcashQrModal");
+          if (modal) modal.hidden = true;
+        };
+        document.addEventListener("click", (event) => {
+          if (event.target.closest("[data-gcash-qr-open]")) {
+            openGcashQrModal();
+            return;
+          }
+          if (event.target.closest("#gcashQrClose") || event.target.id === "gcashQrModal") {
+            closeGcashQrModal();
+          }
+        });
+
         document.addEventListener("keydown", (event) => {
           if (event.key === "Escape") {
+            const modal = $("gcashQrModal");
+            if (modal && !modal.hidden) {
+              closeGcashQrModal();
+              return;
+            }
             const card = $("memberPayCard");
             if (card && !card.hidden) closePayCard();
           }
@@ -2581,6 +2627,20 @@
       }
     })();
   </script>
+  <div class="pay-modal" id="gcashQrModal" hidden role="dialog" aria-modal="true" aria-labelledby="gcashQrModalTitle">
+    <div class="pay-modal-card pf-gcash-qr-modal-card">
+      <h3 id="gcashQrModalTitle">GCash Payment QR</h3>
+      <p class="pay-note">Scan this QR code in your GCash app and send the exact amount for your chosen plan.</p>
+      <img class="pf-gcash-qr-modal-img" src="img/gcash-qr.jpg" alt="ProFit GCash payment QR code">
+      <div class="pay-modal-actions">
+        <button class="fn-btn-dark" type="button" id="gcashQrClose">Close</button>
+        <a class="fn-btn-gold" href="img/gcash-qr.jpg" download="profit-gcash-qr.jpg">
+          <i class="fa-solid fa-download" aria-hidden="true"></i>
+          <span>Save QR</span>
+        </a>
+      </div>
+    </div>
+  </div>
   <script src="/static/js/install-help.js" defer></script>
   <script src="site-footer.js?v=2" defer></script>
 </body>

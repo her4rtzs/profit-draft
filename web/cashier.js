@@ -839,6 +839,17 @@
     if (planSelect) {
       planSelect.addEventListener('change', syncAmountFromPlan);
     }
+
+    var methodSelect = $('cashierMethod');
+    var syncGcashQrHighlight = function () {
+      var qrCard = $('cashierGcashQrCard');
+      if (!qrCard || !methodSelect) return;
+      qrCard.classList.toggle('is-gcash-active', String(methodSelect.value || '').toUpperCase() === 'GCASH');
+    };
+    if (methodSelect) {
+      methodSelect.addEventListener('change', syncGcashQrHighlight);
+      syncGcashQrHighlight();
+    }
     hydrateLivePlanPrices();
     window.addEventListener('profit:plans-updated', function (ev) {
       if (ev && ev.detail) applyLivePlanPrices(ev.detail);
@@ -903,6 +914,27 @@
     var closeBtn = $('receiptCloseBtn');
     var printBtn = $('receiptPrintBtn');
     var modal = $('cashierReceiptModal');
+    var qrModal = $('gcashQrModal');
+    var qrCloseBtn = $('gcashQrClose');
+
+    var openQrModal = function () {
+      if (!qrModal) return;
+      qrModal.hidden = false;
+      if (qrCloseBtn) qrCloseBtn.focus();
+    };
+    var closeQrModal = function () {
+      if (qrModal) qrModal.hidden = true;
+    };
+
+    document.querySelectorAll('[data-gcash-qr-open]').forEach(function (btn) {
+      btn.addEventListener('click', openQrModal);
+    });
+    if (qrCloseBtn) qrCloseBtn.addEventListener('click', closeQrModal);
+    if (qrModal) {
+      qrModal.addEventListener('click', function (event) {
+        if (event.target === qrModal) closeQrModal();
+      });
+    }
 
     if (closeBtn) closeBtn.addEventListener('click', closeReceiptModal);
     if (printBtn) printBtn.addEventListener('click', printReceipt);
@@ -913,8 +945,14 @@
     }
 
     document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape' && modal && !modal.hidden) {
-        closeReceiptModal();
+      if (event.key === 'Escape') {
+        if (qrModal && !qrModal.hidden) {
+          closeQrModal();
+          return;
+        }
+        if (modal && !modal.hidden) {
+          closeReceiptModal();
+        }
       }
     });
 

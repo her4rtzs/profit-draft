@@ -16,7 +16,7 @@
         href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Figtree:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="dashboard.css?v=18">
-    <link rel="stylesheet" href="finance-ui.css?v=26">
+    <link rel="stylesheet" href="finance-ui.css?v=28">
     <script>(function () { try { var t = localStorage.getItem('theme'); if (t === 'light' && !localStorage.getItem('pf-staff-explicit-light')) { t = 'dark'; try { localStorage.setItem('theme', 'dark'); } catch (_) { } } var d = t !== 'light'; var h = document.documentElement; h.style.background = d ? '#0a0e16' : '#fbf6ee'; h.style.colorScheme = d ? 'dark' : 'light'; h.dataset.theme = d ? 'dark' : 'light'; if (d) { h.classList.add('dark'); } else { h.classList.remove('dark'); } } catch (e) { } })();</script>
     <style>
         html.dark,
@@ -157,6 +157,10 @@
                                 <input class="fn-input" id="payReference" maxlength="20" inputmode="numeric"
                                     placeholder="0917 123 4567 (GCash only)">
                                 <small>Required for GCash. Digits and spaces only.</small>
+                                <button type="button" class="pf-gcash-inline-trigger" data-gcash-qr-open>
+                                    <i class="fa-solid fa-qrcode" aria-hidden="true"></i>
+                                    <span>Show GCash QR</span>
+                                </button>
                             </div>
                             <button class="fn-btn-gold" type="submit">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
@@ -184,6 +188,40 @@
                             <h2 class="fn-kpi-val" id="todayTotal">&#8369;0</h2>
                             <div class="fn-kpi-foot">
                                 <span class="fn-kpi-cap" id="todayCount">0 payments received today</span>
+                            </div>
+                        </article>
+
+                        <article class="fn-card fn-card--gcash" id="dailyGcashQrCard" aria-label="GCash payment QR code">
+                            <header class="fn-card-head">
+                                <div class="fn-card-head-left">
+                                    <span class="fn-icon-box" aria-hidden="true">
+                                        <i class="fa-solid fa-qrcode"></i>
+                                    </span>
+                                    <div>
+                                        <h2 class="fn-card-title">GCash Payment QR</h2>
+                                        <p class="fn-card-sub">Let walk-in members scan this QR at the desk.</p>
+                                    </div>
+                                </div>
+                                <span class="pf-gcash-qr-kicker">GCash</span>
+                            </header>
+                            <div class="pf-gcash-desk-body">
+                                <button type="button" class="pf-gcash-qr-thumb" data-gcash-qr-open
+                                    aria-label="Enlarge GCash payment QR code">
+                                    <img src="img/gcash-qr.jpg" alt="ProFit GCash payment QR code" loading="lazy">
+                                </button>
+                                <div class="pf-gcash-desk-copy">
+                                    <p>Have the member scan this QR code in their GCash app, verify the paid amount, then enter the GCash reference number on the left.</p>
+                                    <div class="pf-gcash-qr-actions">
+                                        <button type="button" class="fn-btn-gold" data-gcash-qr-open>
+                                            <i class="fa-solid fa-expand" aria-hidden="true"></i>
+                                            <span>Show large QR</span>
+                                        </button>
+                                        <a class="fn-btn-dark" href="img/gcash-qr.jpg" download="profit-gcash-qr.jpg">
+                                            <i class="fa-solid fa-download" aria-hidden="true"></i>
+                                            <span>Save QR</span>
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </article>
 
@@ -435,10 +473,26 @@
         </form>
     </div>
 
+    <div class="pay-modal" id="gcashQrModal" hidden role="dialog" aria-modal="true"
+        aria-labelledby="gcashQrModalTitle">
+        <div class="pay-modal-card pf-gcash-qr-modal-card">
+            <h3 id="gcashQrModalTitle">GCash Payment QR</h3>
+            <p class="pay-note">Ask the member to scan this QR code in their GCash app, then enter the reference number.</p>
+            <img class="pf-gcash-qr-modal-img" src="img/gcash-qr.jpg" alt="ProFit GCash payment QR code">
+            <div class="pay-modal-actions">
+                <button class="fn-btn-dark" type="button" id="gcashQrClose">Close</button>
+                <a class="fn-btn-gold" href="img/gcash-qr.jpg" download="profit-gcash-qr.jpg">
+                    <i class="fa-solid fa-download" aria-hidden="true"></i>
+                    <span>Save QR</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
     <script src="layout.js?v=25"></script>
     <script src="sidebar.js?v=21"></script>
     <script src="data.js"></script>
-    <script src="pages.js?v=4"></script>
+    <script src="pages.js?v=5"></script>
     <script src="payments-review.js?v=3"></script>
     <script src="portal-fx.js?v=2"></script>
     <script src="change-password.js?v=2" defer></script>

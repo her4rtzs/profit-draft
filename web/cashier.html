@@ -14,7 +14,7 @@
     href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Figtree:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="dashboard.css?v=18">
-  <link rel="stylesheet" href="finance-ui.css?v=24">
+  <link rel="stylesheet" href="finance-ui.css?v=28">
   <script src="config.js?v=9"></script>
   <script src="api.js?v=5"></script>
   <script src="auth.js?v=4"></script>
@@ -605,6 +605,10 @@
                 <input class="fn-input" id="cashierReference" maxlength="20" inputmode="numeric"
                   placeholder="0917 123 4567 (GCash only)">
                 <small>Required for GCash. Digits and spaces only.</small>
+                <button type="button" class="pf-gcash-inline-trigger" data-gcash-qr-open>
+                  <i class="fa-solid fa-qrcode" aria-hidden="true"></i>
+                  <span>Show GCash QR</span>
+                </button>
               </div>
 
               <div class="fn-field">
@@ -647,36 +651,72 @@
             </form>
           </article>
 
-          <article class="fn-card fn-card--amber">
-            <header class="fn-card-head">
-              <div class="fn-card-head-left">
-                <span class="fn-icon-box" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round">
-                    <path d="M4 2v20l3-2 3 2 3-2 3 2 4-2V2l-4 2-3-2-3 2-3-2z" />
-                    <line x1="8" y1="9" x2="16" y2="9" />
-                    <line x1="8" y1="13" x2="14" y2="13" />
-                  </svg>
-                </span>
-                <div>
-                  <h2 class="fn-card-title">Today&apos;s receipts</h2>
-                  <p class="fn-card-sub" id="cashierShiftDate">Desk payments and confirmed GCash payments for today.</p>
+          <div class="fn-daily-right">
+            <article class="fn-card fn-card--gcash" id="cashierGcashQrCard" aria-label="GCash payment QR code">
+              <header class="fn-card-head">
+                <div class="fn-card-head-left">
+                  <span class="fn-icon-box" aria-hidden="true">
+                    <i class="fa-solid fa-qrcode"></i>
+                  </span>
+                  <div>
+                    <h2 class="fn-card-title">GCash Payment QR</h2>
+                    <p class="fn-card-sub">Let walk-in members scan this QR at the desk.</p>
+                  </div>
+                </div>
+                <span class="pf-gcash-qr-kicker">GCash</span>
+              </header>
+              <div class="pf-gcash-desk-body">
+                <button type="button" class="pf-gcash-qr-thumb" data-gcash-qr-open
+                  aria-label="Enlarge GCash payment QR code">
+                  <img src="img/gcash-qr.jpg" alt="ProFit GCash payment QR code" loading="lazy">
+                </button>
+                <div class="pf-gcash-desk-copy">
+                  <p>Have the member scan this QR code in their GCash app, verify the paid amount, then enter the GCash reference number on the left.</p>
+                  <div class="pf-gcash-qr-actions">
+                    <button type="button" class="fn-btn-gold" data-gcash-qr-open>
+                      <i class="fa-solid fa-expand" aria-hidden="true"></i>
+                      <span>Show large QR</span>
+                    </button>
+                    <a class="fn-btn-dark" href="img/gcash-qr.jpg" download="profit-gcash-qr.jpg">
+                      <i class="fa-solid fa-download" aria-hidden="true"></i>
+                      <span>Save QR</span>
+                    </a>
+                  </div>
                 </div>
               </div>
-              <div style="display:flex;align-items:center;gap:8px;">
-                <span class="fn-card-meta" id="cashierTodayCount">0 today</span>
-                <button type="button" class="fn-btn-dark fn-btn-sm" id="cashierRefreshBtn" title="Refresh shift totals">
-                  <i class="fa-solid fa-rotate" aria-hidden="true"></i> Refresh
-                </button>
-              </div>
-            </header>
-            <div class="fn-feed-cols"><span>Member &amp; method</span><span>Amount</span></div>
-            <ul class="fn-feed" id="cashierTodayFeed" aria-live="polite">
-              <li><span class="pf-sk pf-sk--sm" style="width:70%"></span></li>
-              <li><span class="pf-sk pf-sk--sm" style="width:56%"></span></li>
-              <li><span class="pf-sk pf-sk--sm" style="width:64%"></span></li>
-            </ul>
-          </article>
+            </article>
+
+            <article class="fn-card fn-card--amber">
+              <header class="fn-card-head">
+                <div class="fn-card-head-left">
+                  <span class="fn-icon-box" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <path d="M4 2v20l3-2 3 2 3-2 3 2 4-2V2l-4 2-3-2-3 2-3-2z" />
+                      <line x1="8" y1="9" x2="16" y2="9" />
+                      <line x1="8" y1="13" x2="14" y2="13" />
+                    </svg>
+                  </span>
+                  <div>
+                    <h2 class="fn-card-title">Today&apos;s receipts</h2>
+                    <p class="fn-card-sub" id="cashierShiftDate">Desk payments and confirmed GCash payments for today.</p>
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span class="fn-card-meta" id="cashierTodayCount">0 today</span>
+                  <button type="button" class="fn-btn-dark fn-btn-sm" id="cashierRefreshBtn" title="Refresh shift totals">
+                    <i class="fa-solid fa-rotate" aria-hidden="true"></i> Refresh
+                  </button>
+                </div>
+              </header>
+              <div class="fn-feed-cols"><span>Member &amp; method</span><span>Amount</span></div>
+              <ul class="fn-feed" id="cashierTodayFeed" aria-live="polite">
+                <li><span class="pf-sk pf-sk--sm" style="width:70%"></span></li>
+                <li><span class="pf-sk pf-sk--sm" style="width:56%"></span></li>
+                <li><span class="pf-sk pf-sk--sm" style="width:64%"></span></li>
+              </ul>
+            </article>
+          </div>
         </div>
       </section>
 
@@ -888,13 +928,30 @@
     </div>
   </div>
 
+  <!-- GCash Payment QR Lightbox -->
+  <div class="pay-modal" id="gcashQrModal" hidden role="dialog" aria-modal="true"
+    aria-labelledby="gcashQrModalTitle">
+    <div class="pay-modal-card pf-gcash-qr-modal-card">
+      <h3 id="gcashQrModalTitle">GCash Payment QR</h3>
+      <p class="pay-note">Ask the member to scan this QR code in their GCash app, then enter the reference number.</p>
+      <img class="pf-gcash-qr-modal-img" src="img/gcash-qr.jpg" alt="ProFit GCash payment QR code">
+      <div class="pay-modal-actions">
+        <button class="fn-btn-dark" type="button" id="gcashQrClose">Close</button>
+        <a class="fn-btn-gold" href="img/gcash-qr.jpg" download="profit-gcash-qr.jpg">
+          <i class="fa-solid fa-download" aria-hidden="true"></i>
+          <span>Save QR</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
   <script src="layout.js?v=25"></script>
   <script src="sidebar.js?v=21"></script>
   <script src="data.js"></script>
   <script src="portal-fx.js?v=2"></script>
   <script src="change-password.js?v=2" defer></script>
   <script src="notifications-live.js?v=2" defer></script>
-  <script src="cashier.js?v=4" defer></script>
+  <script src="cashier.js?v=5" defer></script>
   <script src="site-footer.js?v=2" defer></script>
 </body>
 
