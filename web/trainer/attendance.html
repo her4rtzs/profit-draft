@@ -5,25 +5,27 @@
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
-  <title>ProFit Ã¢â‚¬â€ Attendance Log (Trainer Portal)</title>
+  <title>ProFit — Attendance Log (Trainer Portal)</title>
+  <link rel="icon" type="image/jpeg" href="/logo.jpg">
   <script>try { var t = localStorage.getItem('pf-theme') || localStorage.getItem('theme') || 'dark'; document.documentElement.setAttribute('data-theme', t); document.documentElement.setAttribute('data-accent', 'gold'); } catch (e) { }</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
     rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="../assets/css/staff.css?v=12">
-  <link rel="stylesheet" href="trainer.css?v=30">
+  <link rel="stylesheet" href="trainer.css?v=40">
   <link rel="manifest" href="/manifest.webmanifest">
   <meta name="theme-color" content="#0a0e17">
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F7F8FC">
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17">
   <meta name="color-scheme" content="light dark">
   <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="ProFit">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="stylesheet" href="../pf-system.css?v=34">
+  <link rel="stylesheet" href="../pf-system.css?v=48">
 </head>
 
 <body data-page="attendance" data-portal="trainer" data-head="none">
@@ -39,7 +41,7 @@
           <div class="tw-hero-left">
             <div class="tw-hero-ico" data-ico="check"></div>
             <div class="tw-hero-text">
-              <span class="tw-hero-eyebrow">Gym Floor Ã‚Â· Daily Check-Ins</span>
+              <span class="tw-hero-eyebrow">Gym Floor · Daily Check-Ins</span>
               <h1 class="tw-hero-title">Attendance &amp; Floor Check-In</h1>
               <p class="tw-hero-sub">Log live session arrivals for your assigned athletes and inspect daily gym floor
                 activity.</p>
@@ -63,7 +65,7 @@
         <!-- Quick Floor Check-In Bar -->
         <section class="tw-checkin-panel tw-anim" style="--i:1" aria-label="Quick athlete check-in">
           <div class="tw-checkin-info">
-            <div class="tw-hero-ico" data-ico="bolt" style="width:42px;height:42px;border-radius:12px"></div>
+            <div class="tw-hero-ico" data-ico="zap" style="width:42px;height:42px;border-radius:12px"></div>
             <div>
               <strong style="display:block;font-size:15px;font-weight:700;color:var(--text)">Quick Athlete
                 Check-In</strong>
@@ -134,7 +136,7 @@
               <h2 class="tw-card-title" id="attTableTitle">Check-In Log</h2>
               <p class="tw-card-sub">Verified entry timestamps recorded at the front desk or by coaches.</p>
             </div>
-            <a href="/dashboard#attChartStage" class="tw-link">View Analytics Chart Ã¢â€ â€™</a>
+            <a href="/dashboard#attChartStage" class="tw-link">View Analytics Chart →</a>
           </div>
           <div class="tw-table-wrap">
             <table class="tw-table">
@@ -165,9 +167,9 @@
   <script src="../config.js?v=11"></script>
   <script src="../api.js?v=6"></script>
   <script src="../auth.js?v=7"></script>
-  <script src="../assets/js/staff-icons.js?v=5"></script>
+  <script src="../assets/js/staff-icons.js?v=6"></script>
   <script src="../assets/js/staff-data.js?v=12"></script>
-  <script src="../assets/js/staff.js?v=19"></script>
+  <script src="../assets/js/staff.js?v=21"></script>
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script>
   <script src="trainer.js?v=14"></script>
   <script>
@@ -228,7 +230,7 @@
         <td style="font-variant-numeric:tabular-nums"><strong>${Trainer.format.time(a.check_in_at)}</strong></td>
         <td>
           <div class="tw-member-cell">
-            <div class="avatar">${PF.initials(a.member_name)}</div>
+            ${PF.avatar(a.member_name, '', a.member_photo)}
             <strong>${PF.esc(a.member_name)}</strong>
           </div>
         </td>
@@ -237,7 +239,7 @@
             ? '<span class="tw-pill is-amber">My Athlete</span>'
             : '<span class="tw-pill is-gray">General Member</span>'}
         </td>
-        <td>${PF.esc(a.member_phone || 'Ã¢â‚¬â€')}</td>
+        <td>${PF.esc(a.member_phone || '—')}</td>
         <td>${Trainer.format.statusPill(a.membership_status, a.membership_status === 'ACTIVE')}</td>
         <td>${PF.esc(a.recorded_by || 'Staff')}</td>
       </tr>
@@ -273,7 +275,7 @@
 
           setTxt('cntAttMine', myCount);
           setTxt('cntAttAll', totalCount);
-          setTxt('attTableTitle', `Check-In Log Ã‚Â· ${Trainer.format.date(dateInput.value)}`);
+          setTxt('attTableTitle', `Check-In Log · ${Trainer.format.date(dateInput.value)}`);
 
           renderTable();
         } catch (err) {

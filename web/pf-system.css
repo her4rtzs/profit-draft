@@ -2,35 +2,35 @@
    Single source of truth across Owner, Cashier, Member, and Trainer portals.
    Rules:
    1. Hover:    Subtle background change only. No strong glow. No lift/scale.
-   2. Active:   Solid gold (#E8B93A) + dark ink (#0B0F19). Stands out the most.
-   3. Pressed:  Slightly darker than active (#B8860B) on gold/active; deeper surface on neutral.
-   4. Focus:    Thin gold outline only (#E8B93A), never a filled background.
+   2. Active:   Solid gold (#F5C518) + dark ink (#0B1530). Stands out the most.
+   3. Pressed:  Slightly darker than active (#8A6A00) on gold/active; deeper surface on neutral.
+   4. Focus:    Thin gold outline only (#F5C518), never a filled background.
    5. Disabled: No hover/active effect, reduced opacity, pointer-events: none. */
 
 :root {
-  --pf-state-gold: #E8B93A;
-  --pf-state-gold-hover: #F0C44B;
-  --pf-state-gold-pressed: #B8860B;
-  --pf-state-gold-ink: #0B0F19;
+  --pf-state-gold: #F5C518;
+  --pf-state-gold-hover: #FAD03C;
+  --pf-state-gold-pressed: #8A6A00;
+  --pf-state-gold-ink: #0B1530;
   --pf-state-hover-bg: rgba(232, 185, 58, 0.12);
   --pf-state-hover-neutral: rgba(255, 255, 255, 0.06);
   --pf-state-pressed-bg: rgba(255, 255, 255, 0.11);
   --pf-state-danger-hover: rgba(239, 68, 68, 0.12);
   --pf-state-danger-pressed: rgba(239, 68, 68, 0.22);
-  --pf-state-focus-ring: #E8B93A;
+  --pf-state-focus-ring: #F5C518;
   --pf-state-disabled-opacity: 0.48;
   --pf-state-ease: 150ms ease;
 
-  /* Single Source of Truth Surface & Table Tokens (Dark Default) */
-  --pf-canvas: #0A0E16;
-  --pf-surface: #111622;
-  --pf-surface-thead: #161D2C;
-  --pf-surface-inset: #0D121D;
-  --pf-border: rgba(255, 255, 255, 0.08);
-  --pf-row-divider: rgba(255, 255, 255, 0.06);
-  --pf-tbl-row-hover: rgba(255, 255, 255, 0.045);
+  /* Single Source of Truth Surface & Table Tokens (Dark Default — Deep Midnight Navy & Gold) */
+  --pf-canvas: #070B18;
+  --pf-surface: #0F1A33;
+  --pf-surface-thead: #162547;
+  --pf-surface-inset: #0A1124;
+  --pf-border: #1F2F55;
+  --pf-row-divider: #182747;
+  --pf-tbl-row-hover: rgba(96, 165, 250, 0.09);
   --pf-text: #F4F6FB;
-  --pf-muted: #94A3B8;
+  --pf-muted: #9FB0D6;
 
   /* Consistent amber warning tokens for EXPIRING SOON badges (distinct from EXPIRED red) */
   --pf-st-expiring-bg: rgba(245, 158, 11, 0.16);
@@ -42,7 +42,31 @@
 html.dark,
 body.dark,
 body.pf-staff.dark,
-body.member-home.dark {
+body.member-home.dark,
+html[data-theme="dark"] body[data-portal="trainer"] {
+  --bg: #070B18;
+  --canvas: #070B18;
+  --card: #0F1A33;
+  --surface: #0F1A33;
+  --hover: #162547;
+  --border: #1F2F55;
+  --line: #1F2F55;
+  --sidebar: #070B18;
+  --sidebar-line: #1F2F55;
+  --sidebar-hover: rgba(96, 165, 250, 0.10);
+  --text: #F4F6FB;
+  --ink: #F4F6FB;
+  --muted: #9FB0D6;
+  --faint: #7A91B8;
+  --pf-canvas: #070B18;
+  --pf-surface: #0F1A33;
+  --pf-surface-thead: #162547;
+  --pf-surface-inset: #0A1124;
+  --pf-border: #1F2F55;
+  --pf-row-divider: #182747;
+  --pf-tbl-row-hover: rgba(96, 165, 250, 0.09);
+  --pf-text: #F4F6FB;
+  --pf-muted: #9FB0D6;
   --pf-st-expiring-bg: rgba(245, 158, 11, 0.16);
   --pf-st-expiring-fg: #FBBF24;
   --pf-st-expiring-dot: #F59E0B;
@@ -52,26 +76,68 @@ body.member-home.dark {
 html[data-theme="light"],
 :root[data-theme="light"],
 body.pf-staff:not(.dark),
-body.member-home:not(.dark),
-html:not([data-theme="dark"]) body[data-portal="trainer"] {
+body.member-home:not(.dark) {
+  --pf-state-hover-bg: rgba(232, 185, 58, 0.14);
+  --pf-state-hover-neutral: rgba(35, 30, 22, 0.055);
+  --pf-state-pressed-bg: rgba(35, 30, 22, 0.11);
+
+  /* Light Mode 60 / 30 / 10 Light Navy Blue Surface & Table Tokens */
+  --bg: #F7F8FC;
+  --canvas: #F7F8FC;
+  --card: #FFFFFF;
+  --surface: #FFFFFF;
+  --hover: #E6ECF7;
+  --border: #DDE3F0;
+  --line: #DDE3F0;
+  --text: #0B1530;
+  --ink: #0B1530;
+  --muted: #4A5878;
+  --pf-canvas: #F7F8FC;
+  --pf-surface: #FFFFFF;
+  --pf-surface-thead: #EEF2FA;
+  --pf-surface-inset: #EEF2FA;
+  --pf-border: #DDE3F0;
+  --pf-row-divider: #E7ECF6;
+  --pf-tbl-row-hover: rgba(15, 27, 51, 0.055);
+  --pf-text: #0B1530;
+  --pf-muted: #4A5878;
+
+  /* Light Mode amber warning tokens for EXPIRING SOON badges */
+  --pf-st-expiring-bg: #FEF3C7;
+  --pf-st-expiring-fg: #8A6A00;
+  --pf-st-expiring-dot: #D97706;
+  --pf-st-expiring-bd: #FCD34D;
+}
+
+/* Trainer Portal Light Mode Parity (Warm Cream #FAF6EE + White #FFFFFF + Warm #EADFC8) */
+html:not([data-theme="dark"]) body[data-portal="trainer"],
+html[data-theme="light"] body[data-portal="trainer"] {
   --pf-state-hover-bg: rgba(232, 185, 58, 0.14);
   --pf-state-hover-neutral: rgba(42, 36, 24, 0.055);
   --pf-state-pressed-bg: rgba(42, 36, 24, 0.11);
 
-  /* Light Mode 60 / 30 / 10 Surface & Table Tokens */
-  --pf-canvas: #F7F4EE;
+  --bg: #FAF6EE;
+  --canvas: #FAF6EE;
+  --card: #FFFFFF;
+  --surface: #FFFFFF;
+  --hover: #F6ECD9;
+  --border: #EADFC8;
+  --line: #EADFC8;
+  --text: #2A2418;
+  --ink: #2A2418;
+  --muted: #6F6450;
+  --pf-canvas: #FAF6EE;
   --pf-surface: #FFFFFF;
-  --pf-surface-thead: #F7F4EE;
-  --pf-surface-inset: #F7F4EE;
-  --pf-border: #E6DFD2;
-  --pf-row-divider: #EFEAE0;
-  --pf-tbl-row-hover: rgba(42, 36, 24, 0.04);
-  --pf-text: #1C1917;
-  --pf-muted: #6B6254;
+  --pf-surface-thead: #FBF8F0;
+  --pf-surface-inset: #FAF6EE;
+  --pf-border: #EADFC8;
+  --pf-row-divider: #EADFC8;
+  --pf-tbl-row-hover: rgba(184, 134, 11, 0.06);
+  --pf-text: #2A2418;
+  --pf-muted: #6F6450;
 
-  /* Light Mode amber warning tokens for EXPIRING SOON badges */
   --pf-st-expiring-bg: #FEF3C7;
-  --pf-st-expiring-fg: #B45309;
+  --pf-st-expiring-fg: #8A6A00;
   --pf-st-expiring-dot: #D97706;
   --pf-st-expiring-bd: #FCD34D;
 }
@@ -169,7 +235,7 @@ html:not([data-theme="dark"]) body[data-portal="trainer"] {
 }
 
 /* =========================================================
-   1. ACTIVE STATE — Solid Gold (#E8B93A) + Dark Ink (#0B0F19)
+   1. ACTIVE STATE — Solid Gold (#F5C518) + Dark Ink (#0B1530)
       Stands out the most across navs, tabs, filters, primary CTAs
    ========================================================= */
 
@@ -400,14 +466,23 @@ html body .tw-dow-btn.active .tw-dow-count {
 
 /* Mobile Bottom Nav Active Tab — Compact Solid Gold Pill */
 html body.pf-staff .pf-mob-tab.on,
-html body.member-home .pf-mob-tab.on,
+html body.member-home .pf-mob-tab.on {
+  background: var(--pf-state-gold) !important;
+  background-color: var(--pf-state-gold) !important;
+  color: var(--pf-state-gold-ink) !important;
+  font-weight: 700 !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+}
+
 html body[data-portal="trainer"] .bottom-nav>a.active,
 html body[data-portal="trainer"] .bottom-nav>button.active {
   background: var(--pf-state-gold) !important;
   background-color: var(--pf-state-gold) !important;
   color: var(--pf-state-gold-ink) !important;
   font-weight: 700 !important;
-  border-radius: 12px !important;
+  border-radius: 14px !important;
+  padding: 7px 4px !important;
   box-shadow: none !important;
 }
 
@@ -747,7 +822,7 @@ html body .pp-picker-item.is-selected {
 /* =========================================================
    3. PRESSED STATE (:active) — Slightly Darker Than Active
    ========================================================= */
-/* Active items + Primary Gold CTAs -> #B8860B darker gold, zero transform/glow */
+/* Active items + Primary Gold CTAs -> #8A6A00 darker gold, zero transform/glow */
 html body .btn-primary:not(:disabled):not([aria-disabled="true"]):active,
 html body .pp-btn-primary:not(:disabled):not([aria-disabled="true"]):active,
 html body .fn-btn-gold:not(:disabled):not([aria-disabled="true"]):active,
@@ -1010,25 +1085,37 @@ html body .is-disabled:active {
 
 /* =========================================================
    6. 60 / 30 / 10 LIGHT MODE CONTAINERS, TABLES & FORMS
-      60% Neutral Canvas  (#F7F4EE)
-      30% Card Surface    (#FFFFFF, 1px solid #E6DFD2)
-      10% Gold Accent     (#E8B93A active / #8A6212 text)
-      Preserves dark sidebars & dark photo hero cards intact
+      60% Light Navy Canvas  (#F7F8FC)
+      30% Ice-Navy Card      (#FFFFFF, 1px solid #DDE3F0)
+      10% Gold Accent        (#F5C518 active / #8A6A00 text)
+      Preserves dark navy sidebars intact
    ========================================================= */
 html:not(.dark)[data-theme="light"],
 :root[data-theme="light"],
 body.pf-staff:not(.dark),
-body.member-home:not(.dark),
-html:not([data-theme="dark"]) body[data-portal="trainer"] {
-  --pf-l-canvas: #F7F4EE;
+body.member-home:not(.dark) {
+  --pf-l-canvas: #F7F8FC;
   --pf-l-surface: #FFFFFF;
-  --pf-l-surface-inset: #F7F4EE;
-  --pf-l-surface-hover: #F3ECE0;
-  --pf-l-border: #E6DFD2;
-  --pf-l-border-input: #D9D0BF;
-  --pf-l-text: #1C1917;
-  --pf-l-muted: #6B6254;
-  --pf-l-shadow: 0 1px 3px rgba(26, 20, 7, 0.04);
+  --pf-l-surface-inset: #EEF2FA;
+  --pf-l-surface-hover: #E6ECF7;
+  --pf-l-border: #DDE3F0;
+  --pf-l-border-input: #CDD6E8;
+  --pf-l-text: #0B1530;
+  --pf-l-muted: #4A5878;
+  --pf-l-shadow: 0 1px 3px rgba(15, 27, 51, 0.06);
+}
+
+html:not([data-theme="dark"]) body[data-portal="trainer"],
+html[data-theme="light"] body[data-portal="trainer"] {
+  --pf-l-canvas: #FAF6EE;
+  --pf-l-surface: #FFFFFF;
+  --pf-l-surface-inset: #FBF8F0;
+  --pf-l-surface-hover: #F6ECD9;
+  --pf-l-border: #EADFC8;
+  --pf-l-border-input: #DFD1B4;
+  --pf-l-text: #2A2418;
+  --pf-l-muted: #6F6450;
+  --pf-l-shadow: 0 1px 3px rgba(42, 36, 24, 0.05);
 }
 
 /* 60% Canvas */
@@ -1040,12 +1127,23 @@ body.pf-staff:not(.dark) main.main-content,
 body.pf-staff:not(.dark) .topbar,
 body.member-home:not(.dark),
 body.member-home:not(.dark) .member-main,
-body.member-home:not(.dark) .member-topbar,
+body.member-home:not(.dark) .member-topbar {
+  background-color: #F7F8FC !important;
+  color: #0B1530;
+}
+
 html:not([data-theme="dark"]) body[data-portal="trainer"],
+html:not([data-theme="dark"]) body[data-portal="trainer"] .app,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .main,
 html:not([data-theme="dark"]) body[data-portal="trainer"] .main-content,
-html:not([data-theme="dark"]) body[data-portal="trainer"] .topbar {
-  background-color: #F7F4EE !important;
-  color: #1C1917;
+html:not([data-theme="dark"]) body[data-portal="trainer"] .topbar,
+html[data-theme="light"] body[data-portal="trainer"],
+html[data-theme="light"] body[data-portal="trainer"] .app,
+html[data-theme="light"] body[data-portal="trainer"] .main,
+html[data-theme="light"] body[data-portal="trainer"] .main-content,
+html[data-theme="light"] body[data-portal="trainer"] .topbar {
+  background-color: #FAF6EE !important;
+  color: #2A2418;
 }
 
 /* 30% Unified Card / Panel / Modal / Popover Surface (#FFFFFF, clears gradients) */
@@ -1147,9 +1245,9 @@ body.pf-staff:not(.dark) .st-help-item,
 body.pf-staff:not(.dark) .fn-info-banner,
 body.pf-staff:not(.dark) .fn-table--tx,
 body.member-home:not(.dark) .mb-st-drawer {
-  background-color: #F7F4EE !important;
-  border-color: #E6DFD2 !important;
-  color: #1C1917 !important;
+  background-color: #EEF2FA !important;
+  border-color: #DDE3F0 !important;
+  color: #0B1530 !important;
 }
 
 body.pf-staff:not(.dark) .ann-kpi-card h2,
@@ -1165,22 +1263,22 @@ body.pf-staff:not(.dark) .ann-modal h2,
 body.pf-staff:not(.dark) .ann-modal h3,
 body.pf-staff:not(.dark) .tr-card h2,
 body.pf-staff:not(.dark) .tr-card h3 {
-  color: #1C1917 !important;
+  color: #0B1530 !important;
 }
 
 body.pf-staff:not(.dark) .ann-kpi-card span,
 body.pf-staff:not(.dark) .ann-action-tile small,
 body.pf-staff:not(.dark) .ann-item p,
 body.pf-staff:not(.dark) .ann-item-meta {
-  color: #6B6254 !important;
+  color: #4A5878 !important;
 }
 
 body.pf-staff:not(.dark) .ann-kebab-btn,
 body.pf-staff:not(.dark) .ann-page-btn:not(.active),
 body.pf-staff:not(.dark) .ann-pill:not(.active) {
-  background-color: #F7F4EE !important;
-  border-color: #E6DFD2 !important;
-  color: #1C1917 !important;
+  background-color: #EEF2FA !important;
+  border-color: #DDE3F0 !important;
+  color: #0B1530 !important;
 }
 
 /* Unified Light Mode Tables inside Cards */
@@ -1188,38 +1286,55 @@ body.pf-staff:not(.dark) .table-wrapper,
 body.pf-staff:not(.dark) .ci-table-wrap,
 body.pf-staff:not(.dark) .fn-table-wrap,
 body.pf-staff:not(.dark) .pp-members-wrap,
-body.member-home:not(.dark) .table-wrapper,
+body.member-home:not(.dark) .table-wrapper {
+  background-color: #FFFFFF !important;
+  border-color: #DDE3F0 !important;
+}
+
 html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-table-wrap {
   background-color: #FFFFFF !important;
-  border-color: #E6DFD2 !important;
+  border-color: #EADFC8 !important;
 }
 
 body.pf-staff:not(.dark) table thead tr,
 body.pf-staff:not(.dark) .ci-table thead tr,
 body.pf-staff:not(.dark) .pp-members-table thead tr,
 body.pf-staff:not(.dark) .fn-table thead tr,
-body.member-home:not(.dark) table thead tr,
+body.member-home:not(.dark) table thead tr {
+  background: #EEF2FA !important;
+  background-color: #EEF2FA !important;
+}
+
 html:not([data-theme="dark"]) body[data-portal="trainer"] table thead tr {
-  background: #F7F4EE !important;
-  background-color: #F7F4EE !important;
+  background: #FBF8F0 !important;
+  background-color: #FBF8F0 !important;
 }
 
 body.pf-staff:not(.dark) table thead th,
-body.member-home:not(.dark) table thead th,
+body.member-home:not(.dark) table thead th {
+  color: #4A5878 !important;
+  border-bottom: 1px solid #DDE3F0 !important;
+}
+
 html:not([data-theme="dark"]) body[data-portal="trainer"] table thead th {
-  color: #6B6254 !important;
-  border-bottom: 1px solid #E6DFD2 !important;
+  color: #6F6450 !important;
+  border-bottom: 1px solid #EADFC8 !important;
 }
 
 body.pf-staff:not(.dark) table tbody tr,
 body.pf-staff:not(.dark) .ci-table tbody tr,
 body.pf-staff:not(.dark) .pp-members-table tbody tr,
 body.pf-staff:not(.dark) .fn-table tbody tr,
-body.member-home:not(.dark) table tbody tr,
+body.member-home:not(.dark) table tbody tr {
+  background-color: #FFFFFF !important;
+  color: #0B1530 !important;
+  border-color: #E7ECF6 !important;
+}
+
 html:not([data-theme="dark"]) body[data-portal="trainer"] table tbody tr {
   background-color: #FFFFFF !important;
-  color: #1C1917 !important;
-  border-color: #EFEAE0 !important;
+  color: #2A2418 !important;
+  border-color: #EADFC8 !important;
 }
 
 /* Unified Light Mode Segmented Trays & Period Pills */
@@ -1231,12 +1346,17 @@ body.pf-staff:not(.dark) .pp-segment,
 body.pf-staff:not(.dark) .chart-stepper,
 body.pf-staff:not(.dark) .chip:not(.active),
 body.pf-staff:not(.dark) .st-pills button:not(.active),
-body.member-home:not(.dark) .mb-st-pills button:not(.active),
+body.member-home:not(.dark) .mb-st-pills button:not(.active) {
+  background-color: #EEF2FA !important;
+  border-color: #DDE3F0 !important;
+  color: #0B1530 !important;
+}
+
 html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-seg,
 html:not([data-theme="dark"]) body[data-portal="trainer"] .tr-st-pills button:not(.active) {
-  background-color: #F7F4EE !important;
-  border-color: #E6DFD2 !important;
-  color: #1C1917 !important;
+  background-color: #FBF8F0 !important;
+  border-color: #EADFC8 !important;
+  color: #2A2418 !important;
 }
 
 /* Unified Light Mode Form Inputs, Selects & Textareas (never touches icon padding) */
@@ -1258,7 +1378,12 @@ body.member-home:not(.dark) input:not([type="checkbox"]):not([type="radio"]):not
 body.member-home:not(.dark) select,
 body.member-home:not(.dark) textarea,
 body.member-home:not(.dark) .input,
-body.member-home:not(.dark) .select,
+body.member-home:not(.dark) .select {
+  background-color: #EEF2FA !important;
+  border-color: #CDD6E8 !important;
+  color: #0B1530 !important;
+}
+
 html:not([data-theme="dark"]) body[data-portal="trainer"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]),
 html:not([data-theme="dark"]) body[data-portal="trainer"] select,
 html:not([data-theme="dark"]) body[data-portal="trainer"] textarea,
@@ -1268,31 +1393,36 @@ html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-search-input,
 html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-checkin-select,
 html:not([data-theme="dark"]) body[data-portal="trainer"] .tr-search-wrap input,
 html:not([data-theme="dark"]) body[data-portal="trainer"] .tr-select-wrap select {
-  background-color: #F7F4EE !important;
-  border-color: #D9D0BF !important;
-  color: #1C1917 !important;
+  background-color: #FAF6EE !important;
+  border-color: #EADFC8 !important;
+  color: #2A2418 !important;
 }
 
 body.pf-staff:not(.dark) input::placeholder,
 body.pf-staff:not(.dark) textarea::placeholder,
 body.member-home:not(.dark) input::placeholder,
-body.member-home:not(.dark) textarea::placeholder,
+body.member-home:not(.dark) textarea::placeholder {
+  color: #697D9E !important;
+}
+
 html:not([data-theme="dark"]) body[data-portal="trainer"] input::placeholder,
 html:not([data-theme="dark"]) body[data-portal="trainer"] textarea::placeholder {
-  color: #8A7F6D !important;
+  color: #8A7E66 !important;
 }
 
 /* Search wrappers get the inset field surface; inner input stays borderless */
 body.pf-staff:not(.dark) .fn-search-pill,
 body.pf-staff:not(.dark) .pp-search,
-body.pf-staff:not(.dark) .ann-search-box,
-html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-search-box {
-  background-color: #F7F4EE !important;
-  border: 1px solid #D9D0BF !important;
-  color: #1C1917 !important;
+body.pf-staff:not(.dark) .ann-search-box {
+  background-color: #EEF2FA !important;
+  border: 1px solid #CDD6E8 !important;
+  color: #0B1530 !important;
 }
 
 html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-search-box {
+  background-color: #FAF6EE !important;
+  border: 1px solid #EADFC8 !important;
+  color: #2A2418 !important;
   border-radius: 10px !important;
   overflow: hidden;
 }
@@ -1307,10 +1437,284 @@ html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-search-box input {
 }
 
 body.pf-staff:not(.dark) select option,
-body.member-home:not(.dark) select option,
+body.member-home:not(.dark) select option {
+  background-color: #FFFFFF;
+  color: #0B1530;
+}
+
 html:not([data-theme="dark"]) body[data-portal="trainer"] select option {
   background-color: #FFFFFF;
-  color: #1C1917;
+  color: #2A2418;
+}
+
+/* =========================================================
+   6B. TINTED DEEP MIDNIGHT NAVY DARK MODE (All Portals)
+       Zero pure #000000 and zero neutral #18191a/#242526 grey
+       60% Deep Navy Canvas  (#070B18)
+       30% Deep Navy Surface (#0F1A33, 1px solid #1F2F55)
+       10% ProFit Gold       (#F5C518)
+   ========================================================= */
+html.dark,
+html[data-theme="dark"],
+body.pf-staff.dark,
+body.pf-staff.dark .dashboard,
+body.pf-staff.dark main.main-content,
+body.pf-staff.dark .topbar,
+body.member-home.dark,
+body.member-home.dark .member-main,
+body.member-home.dark .member-topbar,
+html[data-theme="dark"] body[data-portal="trainer"],
+html[data-theme="dark"] body[data-portal="trainer"] .main-content,
+html[data-theme="dark"] body[data-portal="trainer"] .topbar {
+  background-color: #070B18 !important;
+  color: #F4F6FB;
+}
+
+html body.pf-staff.dark .sidebar,
+html[data-theme="dark"] body[data-portal="trainer"] .sidebar,
+html[data-theme="light"] body[data-portal="trainer"] .sidebar,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .sidebar {
+  background: linear-gradient(180deg, #0F1A33 0%, #070B18 100%) !important;
+  border-right-color: #1F2F55 !important;
+  color: #DCE7F8 !important;
+}
+
+/* Light Mode Classic Navy Sidebar (lighter than Dark Mode Midnight Navy) */
+html body.pf-staff:not(.dark) .sidebar,
+html body.member-home:not(.dark) .member-sidebar {
+  background: linear-gradient(180deg, #243866 0%, #1F2F55 100%) !important;
+  border-right-color: #2D4273 !important;
+  color: #DCE7F8 !important;
+}
+
+html body.pf-staff:not(.dark) .sidebar .headertxt h2,
+html body.pf-staff:not(.dark) .sidebar .headertxt strong,
+html body.member-home:not(.dark) .member-sidebar .brand-txt strong {
+  color: #FFFFFF !important;
+}
+
+html body.pf-staff:not(.dark) .sidebar .headertxt span {
+  color: #A9C2EA !important;
+}
+
+html body.pf-staff:not(.dark) .sidebar .nav-group-label,
+html body.member-home:not(.dark) .member-sidebar .nav-group-label {
+  color: #9AB3D8 !important;
+}
+
+html body.pf-staff:not(.dark) .sidebar .menulist a:not(.active):not([aria-current="page"]),
+html body.pf-staff:not(.dark) .sidebar .menulist a:not(.active):not([aria-current="page"]) i,
+html body.pf-staff:not(.dark) .sidebar .menulist a:not(.active):not([aria-current="page"]) span,
+html body.member-home:not(.dark) .member-sidebar .nav-link:not(.active):not([aria-selected="true"]):not([aria-current="page"]),
+html body.member-home:not(.dark) .member-sidebar .nav-link:not(.active):not([aria-selected="true"]):not([aria-current="page"]) i,
+html body.member-home:not(.dark) .member-sidebar .nav-link:not(.active):not([aria-selected="true"]):not([aria-current="page"]) span {
+  color: #DCE7F8 !important;
+}
+
+html body.pf-staff:not(.dark) .sidebar .menulist a:not(.active):not([aria-current="page"]):hover,
+html body.member-home:not(.dark) .member-sidebar .nav-link:not(.active):not([aria-selected="true"]):not([aria-current="page"]):hover {
+  background: rgba(255, 255, 255, 0.11) !important;
+  color: #FFFFFF !important;
+}
+
+html body.pf-staff.dark .panel,
+html body.pf-staff.dark .stat-card,
+html body.pf-staff.dark[data-page="attendance"] .stats.three .stat-card,
+html body.pf-staff.dark[data-page="attendance"] .checkin-panel,
+html body.pf-staff.dark[data-page="attendance"] .checkins-table-panel,
+html body.pf-staff.dark .quick-action,
+html body.pf-staff.dark .registrations-panel,
+html body.pf-staff.dark .attendance-chart-panel,
+html body.pf-staff.dark .checkin-panel,
+html body.pf-staff.dark .checkins-table-panel,
+html body.pf-staff.dark .fn-card,
+html body.pf-staff.dark .fn-kpi-card,
+html body.pf-staff.dark .fn-receipt-card,
+html body.pf-staff.dark .cashier-member-card,
+html body.pf-staff.dark .pp-section-card,
+html body.pf-staff.dark .pp-card,
+html body.pf-staff.dark .pp-toolbar,
+html body.pf-staff.dark .pp-members-wrap,
+html body.pf-staff.dark .pp-browse-card,
+html body.pf-staff.dark .pp-det-card,
+html body.pf-staff.dark .pp-det-panel,
+html body.pf-staff.dark .pp-member,
+html body.pf-staff.dark .pp-plan-card:not(.selected),
+html body.pf-staff.dark .md-card:not(.md-id-card),
+html body.pf-staff.dark .md-side,
+html body.pf-staff.dark .ann-card,
+html body.pf-staff.dark .ann-kpi-card,
+html body.pf-staff.dark .ann-action-tile,
+html body.pf-staff.dark .ann-panel,
+html body.pf-staff.dark .ann-list-panel,
+html body.pf-staff.dark .ann-modal,
+html body.pf-staff.dark .ann-dropdown-menu,
+html body.pf-staff.dark .tr-card,
+html body.pf-staff.dark .tr-panel,
+body.pf-staff.dark .tr-modal,
+html body.pf-staff.dark .csh-card,
+html body.pf-staff.dark .csh-qa-card,
+html body.pf-staff.dark .ntf-card,
+html body.pf-staff.dark .st-card,
+html body.pf-staff.dark .st-modal,
+html body.pf-staff.dark .ci-table-wrap,
+html body.pf-staff.dark .ci-ac-menu,
+html body.pf-staff.dark .pp-status-menu,
+html body.pf-staff.dark .modal-box,
+html body.pf-staff.dark .modal-content,
+html body.pf-staff.dark .dropdown,
+html body.pf-staff.dark .pf-menu,
+html body.pf-staff.dark .pf-ava-menu,
+html body.pf-staff.dark .notification-popover,
+html body.member-home.dark .member-panel,
+html body.member-home.dark .member-card,
+html body.member-home.dark .member-metric-card,
+html body.member-home.dark .member-status-card,
+html body.member-home.dark .mb-bento-card:not(.mb-bento-hero-photo),
+html body.member-home.dark .mb-kpi-card,
+html body.member-home.dark .mb-strip-card,
+html body.member-home.dark .mb-badges-panel,
+html body.member-home.dark .mb-prof-form-card,
+html body.member-home.dark .mb-prof-preview-card,
+html body.member-home.dark .mb-st-card,
+html body.member-home.dark .mb-st-logout-card,
+html body.member-home.dark .mb-tab-banner,
+html body.member-home.dark .pp-class-card,
+html body.member-home.dark .pp-card,
+html body.member-home.dark .pp-section-card,
+html[data-theme="dark"] body[data-portal="trainer"] .tw-card,
+html[data-theme="dark"] body[data-portal="trainer"] .tw-panel,
+html[data-theme="dark"] body[data-portal="trainer"] .tw-toolbar,
+html[data-theme="dark"] body[data-portal="trainer"] .tw-ckpi,
+html[data-theme="dark"] body[data-portal="trainer"] .tw-kpi-card,
+html[data-theme="dark"] body[data-portal="trainer"] .tw-stat-card,
+html[data-theme="dark"] body[data-portal="trainer"] .tw-sum-card,
+html[data-theme="dark"] body[data-portal="trainer"] .tw-coach-card,
+html[data-theme="dark"] body[data-portal="trainer"] .tw-checkin-panel,
+html[data-theme="dark"] body[data-portal="trainer"] .tw-qa-tile,
+html[data-theme="dark"] body[data-portal="trainer"] .tw-session-card,
+html[data-theme="dark"] body[data-portal="trainer"] .tw-athlete-card,
+html[data-theme="dark"] body[data-portal="trainer"] .tw-ann-card,
+html[data-theme="dark"] body[data-portal="trainer"] .tw-modal,
+html[data-theme="dark"] body[data-portal="trainer"] .tr-st-card,
+html[data-theme="dark"] body[data-portal="trainer"] .panel {
+  background: #0F1A33 !important;
+  background-color: #0F1A33 !important;
+  background-image: none !important;
+  border-color: #1F2F55 !important;
+  color: #F4F6FB;
+}
+
+body.pf-staff.dark .st-drawer,
+body.pf-staff.dark .st-help-item,
+body.pf-staff.dark .fn-info-banner,
+body.pf-staff.dark .fn-table--tx,
+body.pf-staff.dark .ann-item,
+body.member-home.dark .mb-st-drawer {
+  background-color: #101A2E !important;
+  border-color: #1F2F55 !important;
+  color: #F4F6FB !important;
+}
+
+body.pf-staff.dark .table-wrapper,
+body.pf-staff.dark .ci-table-wrap,
+body.pf-staff.dark .fn-table-wrap,
+body.pf-staff.dark .pp-members-wrap,
+body.member-home.dark .table-wrapper,
+html[data-theme="dark"] body[data-portal="trainer"] .tw-table-wrap {
+  background-color: #0F1A33 !important;
+  border-color: #1F2F55 !important;
+}
+
+body.pf-staff.dark table thead tr,
+body.pf-staff.dark .ci-table thead tr,
+body.pf-staff.dark .pp-members-table thead tr,
+body.pf-staff.dark .fn-table thead tr,
+body.member-home.dark table thead tr,
+html[data-theme="dark"] body[data-portal="trainer"] table thead tr {
+  background: #162547 !important;
+  background-color: #162547 !important;
+}
+
+body.pf-staff.dark table thead th,
+body.member-home.dark table thead th,
+html[data-theme="dark"] body[data-portal="trainer"] table thead th {
+  color: #9FB0D6 !important;
+  border-bottom: 1px solid #1F2F55 !important;
+}
+
+body.pf-staff.dark table tbody tr,
+body.pf-staff.dark .ci-table tbody tr,
+body.pf-staff.dark .pp-members-table tbody tr,
+body.pf-staff.dark .fn-table tbody tr,
+body.member-home.dark table tbody tr,
+html[data-theme="dark"] body[data-portal="trainer"] table tbody tr {
+  background-color: #0F1A33 !important;
+  color: #F4F6FB !important;
+  border-color: #182747 !important;
+}
+
+body.pf-staff.dark table tbody tr:hover,
+body.member-home.dark table tbody tr:hover,
+html[data-theme="dark"] body[data-portal="trainer"] table tbody tr:hover {
+  background-color: #162547 !important;
+}
+
+body.pf-staff.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]),
+body.pf-staff.dark select,
+body.pf-staff.dark textarea,
+body.pf-staff.dark .input,
+body.pf-staff.dark .select,
+body.pf-staff.dark .textarea,
+body.pf-staff.dark .fn-input,
+body.pf-staff.dark .fn-toolbar-select,
+body.pf-staff.dark .checkin-input-wrap .input,
+body.pf-staff.dark .ann-field input,
+body.pf-staff.dark .ann-field select,
+body.pf-staff.dark .ann-field textarea,
+body.pf-staff.dark .ann-select-wrap select,
+body.pf-staff.dark .st-peso-wrap input,
+body.member-home.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]),
+body.member-home.dark select,
+body.member-home.dark textarea,
+body.member-home.dark .input,
+body.member-home.dark .select,
+html[data-theme="dark"] body[data-portal="trainer"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]),
+html[data-theme="dark"] body[data-portal="trainer"] select,
+html[data-theme="dark"] body[data-portal="trainer"] textarea,
+html[data-theme="dark"] body[data-portal="trainer"] .tw-input,
+html[data-theme="dark"] body[data-portal="trainer"] .tw-select,
+html[data-theme="dark"] body[data-portal="trainer"] .tw-search-input,
+html[data-theme="dark"] body[data-portal="trainer"] .tw-checkin-select,
+html[data-theme="dark"] body[data-portal="trainer"] .tr-search-wrap input,
+html[data-theme="dark"] body[data-portal="trainer"] .tr-select-wrap select {
+  background-color: #0A1124 !important;
+  border-color: #293D6B !important;
+  color: #F4F6FB !important;
+}
+
+body.pf-staff.dark .fn-search-pill,
+body.pf-staff.dark .pp-search,
+body.pf-staff.dark .ann-search-box,
+html[data-theme="dark"] body[data-portal="trainer"] .tw-search-box {
+  background-color: #0A1124 !important;
+  border: 1px solid #293D6B !important;
+  color: #F4F6FB !important;
+}
+
+body.pf-staff.dark .fn-search-pill input,
+body.pf-staff.dark .pp-search input,
+body.pf-staff.dark .ann-search-box input,
+html[data-theme="dark"] body[data-portal="trainer"] .tw-search-box input {
+  background-color: transparent !important;
+  border: 0 !important;
+}
+
+body.pf-staff.dark select option,
+body.member-home.dark select option,
+html[data-theme="dark"] body[data-portal="trainer"] select option {
+  background-color: #0F1A33;
+  color: #F4F6FB;
 }
 
 /* =========================================================
@@ -1650,7 +2054,6 @@ html body table tbody td {
   /* Stacked card tables never force min-width > viewport width */
   html body .registrations-panel table,
   html body.pf-staff[data-page="attendance"] .ci-table,
-  html body.pf-staff[data-page="members"] .pp-members-table,
   html body.pf-staff .fn-table--tx,
   html body.pf-staff .fn-table--sub,
   html body.pf-staff .fn-table--hist,
@@ -1662,7 +2065,6 @@ html body table tbody td {
   }
 
   html body.pf-staff[data-page="attendance"] .ci-table tbody tr:not(:has(td[colspan])),
-  html body.pf-staff[data-page="members"] .pp-members-table tbody tr:not(:has(td[colspan])),
   html body.pf-staff .fn-table--tx tbody tr:not(:has(td[colspan])),
   html body.pf-staff .fn-table--sub tbody tr:not(:has(td[colspan])),
   html body.pf-staff .fn-table--hist tbody tr:not(:has(td[colspan])),
@@ -1713,10 +2115,15 @@ html body .has-hero-dock>.pf-hero-dock {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   margin: 4px calc(var(--pf-dock-px) * -1) 0;
-  background: #0f172a !important;
+  background: #1F2F55 !important;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+html body.dark .has-hero-dock>.pf-hero-dock {
+  background: #0F1A33 !important;
+  border-top-color: #1F2F55 !important;
 }
 
 html body .pf-hero-dock .pf-hero-shortcut {
@@ -1757,7 +2164,7 @@ html body .pf-hero-dock .pf-hero-shortcut:last-child {
   }
 
   html body .pf-hero-dock .pf-hero-shortcut:not(:disabled):not([aria-disabled="true"]):hover .pf-hs-chev {
-    color: #e8b93a !important;
+    color: #F5C518 !important;
   }
 }
 
@@ -1771,7 +2178,7 @@ html body .pf-hero-dock .pf-hero-shortcut:not(:disabled):not([aria-disabled="tru
 html body .pf-hero-dock .pf-hero-shortcut:focus-visible {
   background: transparent !important;
   background-color: transparent !important;
-  outline: 2px solid #e8b93a !important;
+  outline: 2px solid #F5C518 !important;
   outline-offset: -2px !important;
   box-shadow: none !important;
 }
@@ -1795,7 +2202,7 @@ html body .pf-hero-dock .pf-hs-ico {
 
 html body .pf-hero-dock .pf-hs-ico.is-gold {
   background: rgba(232, 185, 58, 0.16);
-  color: #e8b93a;
+  color: #F5C518;
   border: 1px solid rgba(232, 185, 58, 0.24);
 }
 
@@ -1974,15 +2381,30 @@ html[data-theme="light"] .pfc-wrap,
 html[data-theme="light"] .pfc-popover,
 html:not([data-theme="dark"]):not(.dark) body:not(.dark) .pfc-wrap,
 html:not([data-theme="dark"]):not(.dark) body:not(.dark) .pfc-popover {
-  --pfc-bg: #F7F4EE;
-  --pfc-bg-hover: #EFE7D9;
-  --pfc-bg-active: #E7DEC9;
+  --pfc-bg: #EEF2FA;
+  --pfc-bg-hover: #E6ECF7;
+  --pfc-bg-active: #D3E1F4;
   --pfc-pop-bg: #FFFFFF;
-  --pfc-border: #D9D0BF;
-  --pfc-pop-border: #E6DFD2;
-  --pfc-text: #1C1917;
-  --pfc-muted: #6B6254;
-  --pfc-shadow: 0 16px 36px rgba(26, 20, 7, 0.14);
+  --pfc-border: #DDE3F0;
+  --pfc-pop-border: #E7ECF6;
+  --pfc-text: #0B1530;
+  --pfc-muted: #4A5878;
+  --pfc-shadow: 0 16px 36px rgba(15, 27, 51, 0.14);
+}
+
+html[data-theme="light"] body[data-portal="trainer"] .pfc-wrap,
+html[data-theme="light"] body[data-portal="trainer"] .pfc-popover,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .pfc-wrap,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .pfc-popover {
+  --pfc-bg: #FAF6EE;
+  --pfc-bg-hover: #F6ECD9;
+  --pfc-bg-active: #EFE2C6;
+  --pfc-pop-bg: #FFFFFF;
+  --pfc-border: #EADFC8;
+  --pfc-pop-border: #EADFC8;
+  --pfc-text: #2A2418;
+  --pfc-muted: #6F6450;
+  --pfc-shadow: 0 16px 36px rgba(42, 36, 24, 0.12);
 }
 
 .pfc-wrap {
@@ -2065,7 +2487,7 @@ html body .pfc-trigger[aria-expanded="true"] {
 
 html[data-theme="light"] .pfc-trigger[aria-expanded="true"],
 html:not([data-theme="dark"]):not(.dark) body:not(.dark) .pfc-trigger[aria-expanded="true"] {
-  color: #8A6212 !important;
+  color: #8A6A00 !important;
 }
 
 html body .pfc-trigger:not(:disabled):active {
@@ -2077,7 +2499,7 @@ html body .pfc-trigger:not(:disabled):active {
 html body .pfc-trigger:focus-visible {
   background: var(--pfc-bg) !important;
   background-color: var(--pfc-bg) !important;
-  outline: 2px solid #E8B93A !important;
+  outline: 2px solid #F5C518 !important;
   outline-offset: 2px !important;
   box-shadow: none !important;
 }
@@ -2143,7 +2565,7 @@ body.pf-staff:not(.dark) .pp-dd-ico {
 html[data-theme="light"] .pfc-trig-ico.is-gold,
 html:not([data-theme="dark"]):not(.dark) body:not(.dark) .pfc-trig-ico.is-gold,
 body.pf-staff:not(.dark) .pp-dd-ico.is-amber {
-  color: #9A6B0D !important;
+  color: #8A6A00 !important;
   border-color: rgba(154, 107, 13, 0.35) !important;
 }
 
@@ -2213,7 +2635,7 @@ html:not([data-theme="dark"]):not(.dark) body:not(.dark) .pfc-trig-ico.is-violet
 
 html[data-theme="light"] .pfc-opt-ico.is-gold,
 html:not([data-theme="dark"]):not(.dark) body:not(.dark) .pfc-opt-ico.is-gold {
-  color: #B45309;
+  color: #8A6A00;
 }
 
 html[data-theme="light"] .pfc-opt-ico.is-cyan,
@@ -2309,7 +2731,7 @@ html:not([data-theme="dark"]):not(.dark) body:not(.dark) .pfc-opt-ico.is-slate {
 }
 
 .pfc-search:focus {
-  border-color: #E8B93A;
+  border-color: #F5C518;
 }
 
 .pfc-select-list {
@@ -2375,11 +2797,11 @@ html body .pfc-select-opt.is-selected {
 
 html[data-theme="light"] .pfc-select-opt.is-selected,
 html:not([data-theme="dark"]):not(.dark) body:not(.dark) .pfc-select-opt.is-selected {
-  color: #8A6212 !important;
+  color: #8A6A00 !important;
 }
 
 html body .pfc-select-opt:focus-visible {
-  outline: 2px solid #E8B93A !important;
+  outline: 2px solid #F5C518 !important;
   outline-offset: -2px !important;
 }
 
@@ -2485,8 +2907,8 @@ html body .pfc-popover .pfc-day:not(:disabled):not(.is-selected):hover {
 }
 
 html body .pfc-popover .pfc-day.is-selected {
-  background: #E8B93A !important;
-  color: #0B0F19 !important;
+  background: #F5C518 !important;
+  color: #0B1530 !important;
   font-weight: 800;
 }
 
@@ -2520,9 +2942,9 @@ html body .pfc-popover .pfc-foot-btn {
 }
 
 .pfc-foot-btn.is-primary {
-  background: #E8B93A;
-  border-color: #E8B93A;
-  color: #0B0F19;
+  background: #F5C518;
+  border-color: #F5C518;
+  color: #0B1530;
 }
 
 /* Custom Branded Time Picker (.pfc-time) */
@@ -2575,8 +2997,8 @@ html body .pfc-popover .pfc-foot-btn {
 }
 
 .pfc-time-opt.is-selected {
-  background: #E8B93A !important;
-  color: #0B0F19 !important;
+  background: #F5C518 !important;
+  color: #0B1530 !important;
   font-weight: 800;
 }
 
@@ -2600,9 +3022,9 @@ html body .tr-spec-btn {
 
 html body.pf-staff:not(.dark) .pp-status-btn,
 html body.pf-staff:not(.dark) .tr-spec-btn {
-  background: #F7F4EE !important;
-  border-color: #D9D0BF !important;
-  color: #1C1917 !important;
+  background: #EEF2FA !important;
+  border-color: #DDE3F0 !important;
+  color: #0B1530 !important;
 }
 
 html body .pp-status-btn[aria-expanded="true"],
@@ -2614,7 +3036,7 @@ html body .tr-spec-btn[aria-expanded="true"] {
 
 html body.pf-staff:not(.dark) .pp-status-btn[aria-expanded="true"],
 html body.pf-staff:not(.dark) .tr-spec-btn[aria-expanded="true"] {
-  color: #8A6212 !important;
+  color: #8A6A00 !important;
 }
 
 html body .pp-status-menu,
@@ -2695,7 +3117,7 @@ html body .tr-combo-item.is-selected {
 
 html body.pf-staff:not(.dark) .pp-status-opt.is-selected,
 html body.pf-staff:not(.dark) .tr-combo-item.is-selected {
-  color: #8A6212 !important;
+  color: #8A6A00 !important;
 }
 
 @media (max-width: 640px) {
@@ -3079,7 +3501,7 @@ html body[data-page="trainers"] .tr-status.is-leave {
 
 html body:not(.dark)[data-page="trainers"] .tr-status.is-leave {
   background: #FFFBEB !important;
-  color: #B45309 !important;
+  color: #8A6A00 !important;
   border-color: #FCD34D !important;
 }
 
@@ -3847,40 +4269,40 @@ html body .pf-gc-msg[hidden] {
 
 /* =========================================================
 14. LIGHT MODE HERO & PHOTO BANNER PARITY
-       Dark Mode stays deep dark-glass; Light Mode uses a warm
-       frosted cream scrim with subtle photo opacity and dark text
-       across Owner, Cashier, Member, Claim, and Trainer portals.
+       Both modes use rich navy-to-photo hero banners with crisp
+       white/yellow typography and dark-navy frosted status cards
+       matching the ProFit reference redesign.
    ========================================================= */
 :root {
-  --pf-lb-bg: #faf6ee;
-  --pf-lb-border: rgba(15, 23, 42, 0.16);
-  --pf-lb-shadow: 0 8px 24px rgba(15, 23, 42, 0.07);
-  --pf-lb-scrim-h: linear-gradient(95deg, rgba(255, 253, 248, 0.92) 0%, rgba(250, 246, 238, 0.80) 54%, rgba(250, 246, 238, 0.62) 100%);
-  --pf-lb-scrim-v: linear-gradient(180deg, rgba(250, 246, 238, 0.72) 0%, rgba(255, 253, 248, 0.94) 100%);
-  --pf-lb-photo-opacity: 0.22;
-  --pf-lb-title: #2a2418;
-  --pf-lb-sub: #5c5243;
-  --pf-lb-muted: #786c5a;
-  --pf-lb-eyebrow: #9a6b0d;
-  --pf-lb-glass: rgba(255, 255, 255, 0.86);
-  --pf-lb-glass-hover: #ffffff;
-  --pf-lb-glass-border: rgba(15, 23, 42, 0.14);
-  --pf-lb-dashed: rgba(15, 23, 42, 0.14);
-  --pf-lb-ring-track: #eadfc8;
+  --pf-lb-bg: #0F1A33;
+  --pf-lb-border: #1F2F55;
+  --pf-lb-shadow: 0 12px 32px rgba(7, 11, 24, 0.16);
+  --pf-lb-scrim-h: linear-gradient(95deg, #0F1A33 0%, rgba(15, 26, 51, 0.90) 42%, rgba(15, 26, 51, 0.42) 72%, rgba(15, 26, 51, 0.20) 100%);
+  --pf-lb-scrim-v: linear-gradient(180deg, rgba(15, 26, 51, 0.38) 0%, rgba(15, 26, 51, 0.88) 100%);
+  --pf-lb-photo-opacity: 0.72;
+  --pf-lb-title: #F4F6FB;
+  --pf-lb-sub: #C5D2EC;
+  --pf-lb-muted: #9FB0D6;
+  --pf-lb-eyebrow: #F5C518;
+  --pf-lb-glass: rgba(15, 26, 51, 0.74);
+  --pf-lb-glass-hover: rgba(22, 37, 71, 0.92);
+  --pf-lb-glass-border: #293D6B;
+  --pf-lb-dashed: rgba(159, 176, 214, 0.24);
+  --pf-lb-ring-track: #1F2F55;
 }
 
 /* Dark Mode scoped parity */
 html body.pf-staff.dark .csh-hero {
-  background: #101521 !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  color: #f8fafc !important;
+  background: #0F1A33 !important;
+  border: 1px solid #1F2F55 !important;
+  color: #F4F6FB !important;
 }
 
 html body.pf-staff.dark .csh-hero-card {
-  background: rgba(15, 21, 34, 0.88) !important;
-  background-color: rgba(15, 21, 34, 0.88) !important;
-  border: 1px solid rgba(255, 255, 255, 0.14) !important;
-  color: #f8fafc !important;
+  background: rgba(16, 26, 48, 0.90) !important;
+  background-color: rgba(16, 26, 48, 0.90) !important;
+  border: 1px solid #293D6B !important;
+  color: #F4F6FB !important;
   box-shadow: none !important;
   backdrop-filter: blur(12px);
 }
@@ -3958,13 +4380,13 @@ html body.pf-staff:not(.dark)[data-page="members"] .pp-browse-title p {
 html body.pf-staff:not(.dark)[data-page="members"] .pp-browse-badge {
   background: #fef3c7 !important;
   border-color: #e6c675 !important;
-  color: #8a6212 !important;
+  color: #8A6A00 !important;
 }
 
 html body.pf-staff:not(.dark)[data-page="members"] .pp-browse-ico {
   background: #fef3c7 !important;
   border-color: #e6c675 !important;
-  color: #9a6b0d !important;
+  color: #8A6A00 !important;
 }
 
 html body.pf-staff:not(.dark)[data-page="members"] .pp-browse-ico.is-cyan {
@@ -3987,7 +4409,7 @@ html body.pf-staff:not(.dark)[data-page="members"] .pp-tab-ico {
 
 html body.pf-staff:not(.dark)[data-page="members"] .pp-tab-ico.is-amber,
 html body.pf-staff:not(.dark)[data-page="members"] .pp-tab-ico.is-amber i {
-  color: #9a6b0d !important;
+  color: #8A6A00 !important;
   border-color: #e6c675 !important;
 }
 
@@ -4008,30 +4430,27 @@ html body.pf-staff:not(.dark)[data-page="members"] .pp-tab-ico.is-emerald i {
 html body.pf-staff:not(.dark)[data-page="members"] .pp-page-tab .pp-count {
   background: #fef3c7 !important;
   border-color: #e6c675 !important;
-  color: #8a6212 !important;
+  color: #8A6A00 !important;
 }
 
-/* 2) Member Detail name banner (Light Mode) */
+/* 2) Member Detail identity card (Light Mode — clean white card, no duplicate photo banner) */
 html body.pf-staff:not(.dark)[data-page="members"] .md-id-card {
-  background: var(--pf-lb-bg) !important;
-  border: 1px solid var(--pf-lb-border) !important;
-  box-shadow: var(--pf-lb-shadow) !important;
-  color: var(--pf-lb-title) !important;
+  background: #FFFFFF !important;
+  border: 1px solid #DDE3F0 !important;
+  border-left: 4px solid #F5C518 !important;
+  box-shadow: 0 2px 10px rgba(11, 21, 48, 0.04) !important;
+  color: #0B1530 !important;
 }
 
-html body.pf-staff:not(.dark)[data-page="members"] .md-id-card::before {
-  opacity: 0.16 !important;
-  filter: grayscale(20%) brightness(1.06) !important;
-}
-
+html body.pf-staff:not(.dark)[data-page="members"] .md-id-card::before,
 html body.pf-staff:not(.dark)[data-page="members"] .md-id-card::after {
-  background: var(--pf-lb-scrim-h) !important;
+  display: none !important;
 }
 
 html body.pf-staff:not(.dark)[data-page="members"] .md-id-card h2,
 html body.pf-staff:not(.dark)[data-page="members"] .md-id-card .md-cols-3 strong,
 html body.pf-staff:not(.dark)[data-page="members"] .md-id-card .md-cols-2 strong {
-  color: var(--pf-lb-title) !important;
+  color: #0B1530 !important;
 }
 
 html body.pf-staff:not(.dark)[data-page="members"] .md-id-card .md-kicker,
@@ -4039,7 +4458,7 @@ html body.pf-staff:not(.dark)[data-page="members"] .md-id-card .md-cols-3 span,
 html body.pf-staff:not(.dark)[data-page="members"] .md-id-card .md-cols-2 span,
 html body.pf-staff:not(.dark)[data-page="members"] .md-id-card .md-cols-3 small,
 html body.pf-staff:not(.dark)[data-page="members"] .md-id-card .md-cols-2 small {
-  color: var(--pf-lb-muted) !important;
+  color: #4A5878 !important;
 }
 
 /* 3) Payments & Reports top banner (Light Mode) */
@@ -4081,7 +4500,7 @@ html body.pf-staff:not(.dark) .fn-eyebrow {
 html body.pf-staff:not(.dark) .fn-header-ico {
   background: #fef3c7 !important;
   border-color: #e6c675 !important;
-  color: #9a6b0d !important;
+  color: #8A6A00 !important;
 }
 
 html body.pf-staff:not(.dark) .fn-header-ico.is-cyan {
@@ -4105,12 +4524,12 @@ html body.pf-staff:not(.dark) .fn-header-ico.is-violet {
 html body.pf-staff:not(.dark) .fn-tab-icon {
   background: #fef3c7 !important;
   border-color: #e6c675 !important;
-  color: #9a6b0d !important;
+  color: #8A6A00 !important;
   box-shadow: none !important;
 }
 
 html body.pf-staff:not(.dark) .fn-tab-icon.is-amber {
-  color: #9a6b0d !important;
+  color: #8A6A00 !important;
   border-color: #e6c675 !important;
 }
 
@@ -4158,8 +4577,8 @@ html body.pf-staff.dark[data-page="payments"] .fn-tabs .tab,
 html body.pf-staff.dark[data-page="reports"] .fn-tabs .tab,
 html body.pf-staff.dark[data-page="cashier"] .fn-tabs .tab,
 html body.pf-staff.dark .fn-tabs .tab {
-  background: #111827 !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background: #0F1A33 !important;
+  border: 1px solid #1F2F55 !important;
   color: #cbd5e1 !important;
 }
 
@@ -4168,9 +4587,9 @@ html body.pf-staff.dark[data-page="payments"] .fn-tabs .tab:not(.active):hover,
 html body.pf-staff.dark[data-page="reports"] .fn-tabs .tab:not(.active):hover,
 html body.pf-staff.dark[data-page="cashier"] .fn-tabs .tab:not(.active):hover,
 html body.pf-staff.dark .fn-tabs .tab:not(.active):hover {
-  background: rgba(232, 185, 58, 0.18) !important;
-  border-color: #e8b93a !important;
-  color: #f8fafc !important;
+  background: #162547 !important;
+  border-color: #293D6B !important;
+  color: #F4F6FB !important;
 }
 
 html body.pf-staff:not(.dark)[data-page="members"] .pp-page-tab,
@@ -4178,9 +4597,9 @@ html body.pf-staff:not(.dark)[data-page="payments"] .fn-tabs .tab,
 html body.pf-staff:not(.dark)[data-page="reports"] .fn-tabs .tab,
 html body.pf-staff:not(.dark)[data-page="cashier"] .fn-tabs .tab,
 html body.pf-staff:not(.dark) .fn-tabs .tab {
-  background: #ffffff !important;
-  border: 1px solid rgba(15, 23, 42, 0.15) !important;
-  color: #5c5243 !important;
+  background: #FFFFFF !important;
+  border: 1px solid #DDE3F0 !important;
+  color: #0B1530 !important;
 }
 
 html body.pf-staff:not(.dark)[data-page="members"] .pp-page-tab:not(.active):not([aria-selected="true"]):hover,
@@ -4188,9 +4607,9 @@ html body.pf-staff:not(.dark)[data-page="payments"] .fn-tabs .tab:not(.active):h
 html body.pf-staff:not(.dark)[data-page="reports"] .fn-tabs .tab:not(.active):hover,
 html body.pf-staff:not(.dark)[data-page="cashier"] .fn-tabs .tab:not(.active):hover,
 html body.pf-staff:not(.dark) .fn-tabs .tab:not(.active):hover {
-  background: #fef3c7 !important;
-  border-color: #e8b93a !important;
-  color: #2a2418 !important;
+  background: #EEF2FA !important;
+  border-color: #9FB0D6 !important;
+  color: #0B1530 !important;
 }
 
 html body.pf-staff[data-page="members"] .pp-page-tab.active,
@@ -4199,9 +4618,9 @@ html body.pf-staff[data-page="payments"] .fn-tabs .tab.active,
 html body.pf-staff[data-page="reports"] .fn-tabs .tab.active,
 html body.pf-staff[data-page="cashier"] .fn-tabs .tab.active,
 html body.pf-staff .fn-tabs .tab.active {
-  background: var(--pf-state-gold, #E8B93A) !important;
-  border: 1.5px solid var(--pf-state-gold, #E8B93A) !important;
-  color: var(--pf-state-gold-ink, #0B0F19) !important;
+  background: var(--pf-state-gold, #F5C518) !important;
+  border: 1.5px solid var(--pf-state-gold, #F5C518) !important;
+  color: var(--pf-state-gold-ink, #0B1530) !important;
   font-weight: 700 !important;
   box-shadow: none !important;
 }
@@ -4212,9 +4631,9 @@ html body.pf-staff[data-page="payments"] .fn-tabs .tab.active:hover,
 html body.pf-staff[data-page="reports"] .fn-tabs .tab.active:hover,
 html body.pf-staff[data-page="cashier"] .fn-tabs .tab.active:hover,
 html body.pf-staff .fn-tabs .tab.active:hover {
-  background: var(--pf-state-gold-hover, #F0C44B) !important;
-  border-color: var(--pf-state-gold-hover, #F0C44B) !important;
-  color: var(--pf-state-gold-ink, #0B0F19) !important;
+  background: #E6B812 !important;
+  border-color: #E6B812 !important;
+  color: #0B1530 !important;
 }
 
 html body.pf-staff[data-page="members"] .pp-page-tab.active .pp-tab-ico[class],
@@ -4235,7 +4654,7 @@ html body.pf-staff .fn-tabs .tab.active .fn-tab-icon[class] i,
 html body.pf-staff .fn-tabs .tab.active .fn-tab-icon[class] svg {
   background: rgba(11, 15, 25, 0.12) !important;
   border-color: transparent !important;
-  color: #0B0F19 !important;
+  color: #0B1530 !important;
   box-shadow: none !important;
 }
 
@@ -4247,7 +4666,7 @@ html body.pf-staff[data-page="cashier"] .fn-tabs .tab.active .count[class],
 html body.pf-staff .fn-tabs .tab.active .count[class] {
   background: rgba(11, 15, 25, 0.14) !important;
   border-color: rgba(11, 15, 25, 0.22) !important;
-  color: #0B0F19 !important;
+  color: #0B1530 !important;
 }
 
 /* 4) Owner Dashboard hero (Light Mode) */
@@ -4259,7 +4678,7 @@ html body.pf-staff:not(.dark) .ow-hero {
 
 html body.pf-staff:not(.dark) .ow-hero::before {
   opacity: var(--pf-lb-photo-opacity) !important;
-  filter: grayscale(15%) brightness(1.06) !important;
+  filter: saturate(1.04) contrast(1.02) !important;
 }
 
 html body.pf-staff:not(.dark) .ow-hero::after {
@@ -4293,19 +4712,20 @@ html body.pf-staff:not(.dark) .ow-hero .ow-btn-dark:not(:disabled):hover {
 }
 
 html body.pf-staff:not(.dark) .ow-hero-card {
-  background: rgba(255, 255, 255, 0.88) !important;
-  border: 1px solid #eadfc8 !important;
-  color: var(--pf-lb-title) !important;
-  box-shadow: 0 6px 18px rgba(42, 36, 24, 0.06) !important;
+  background: rgba(15, 26, 51, 0.86) !important;
+  border: 1px solid #293D6B !important;
+  color: #F4F6FB !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(12px);
 }
 
 html body.pf-staff:not(.dark) .ow-open-pill {
-  background: #dcfce7 !important;
-  color: #15803d !important;
+  background: rgba(34, 197, 94, 0.18) !important;
+  color: #4ade80 !important;
 }
 
 html body.pf-staff:not(.dark) .ow-open-dot {
-  background: #16a34a !important;
+  background: #22c55e !important;
 }
 
 html body.pf-staff:not(.dark) .ow-card-top h3,
@@ -4338,7 +4758,7 @@ html body.pf-staff:not(.dark) .csh-hero {
 
 html body.pf-staff:not(.dark) .csh-hero-bg {
   opacity: var(--pf-lb-photo-opacity) !important;
-  filter: grayscale(15%) brightness(1.06) !important;
+  filter: saturate(1.04) contrast(1.02) !important;
 }
 
 html body.pf-staff:not(.dark) .csh-hero-bg::after {
@@ -4372,11 +4792,11 @@ html body.pf-staff:not(.dark) .csh-hero .csh-btn-dark:not(:disabled):hover {
 }
 
 html body.pf-staff:not(.dark) .csh-hero-card {
-  background: rgba(255, 255, 255, 0.88) !important;
-  background-color: rgba(255, 255, 255, 0.88) !important;
-  border: 1px solid #eadfc8 !important;
-  color: var(--pf-lb-title) !important;
-  box-shadow: 0 6px 18px rgba(42, 36, 24, 0.06) !important;
+  background: rgba(15, 26, 51, 0.86) !important;
+  background-color: rgba(15, 26, 51, 0.86) !important;
+  border: 1px solid #293D6B !important;
+  color: #F4F6FB !important;
+  box-shadow: none !important;
   backdrop-filter: blur(12px);
 }
 
@@ -4391,12 +4811,12 @@ html body.pf-staff:not(.dark) .csh-hero-card .csh-hero-card-foot small {
 }
 
 html body.pf-staff:not(.dark) .csh-hero-card .csh-live-pill {
-  background: #dcfce7 !important;
-  color: #15803d !important;
+  background: rgba(34, 197, 94, 0.18) !important;
+  color: #4ade80 !important;
 }
 
 html body.pf-staff:not(.dark) .csh-hero-card .csh-live-dot {
-  background: #16a34a !important;
+  background: #22c55e !important;
 }
 
 html body.pf-staff:not(.dark) .csh-hero-card-foot {
@@ -4413,7 +4833,7 @@ html body.member-home:not(.dark) .member-welcome.member-hero.pf-app-hero {
 
 html body.member-home:not(.dark) .member-welcome.member-hero.pf-app-hero::before {
   opacity: var(--pf-lb-photo-opacity) !important;
-  filter: grayscale(15%) brightness(1.06) !important;
+  filter: saturate(1.04) contrast(1.02) !important;
 }
 
 html body.member-home:not(.dark) .member-welcome.member-hero.pf-app-hero::after {
@@ -4448,26 +4868,27 @@ html body.member-home:not(.dark) .pf-app-hero .member-hero-actions .btn:not(.btn
 
 html body.member-home:not(.dark) .mb-hero-card,
 html body.member-home:not(.dark) .mb-ticket-card {
-  background: rgba(255, 255, 255, 0.88) !important;
-  background-color: rgba(255, 255, 255, 0.88) !important;
-  border: 1px solid #eadfc8 !important;
-  color: var(--pf-lb-title) !important;
-  box-shadow: 0 6px 18px rgba(42, 36, 24, 0.06) !important;
+  background: rgba(15, 26, 51, 0.86) !important;
+  background-color: rgba(15, 26, 51, 0.86) !important;
+  border: 1px solid #293D6B !important;
+  color: #F4F6FB !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(12px);
 }
 
 html body.member-home:not(.dark) .mb-status-pill {
-  background: #dcfce7 !important;
-  color: #15803d !important;
+  background: rgba(34, 197, 94, 0.18) !important;
+  color: #4ade80 !important;
 }
 
 html body.member-home:not(.dark) .mb-status-pill.is-trial {
-  background: #fef3c7 !important;
-  color: #8a6212 !important;
+  background: rgba(245, 197, 24, 0.18) !important;
+  color: #F5C518 !important;
 }
 
 html body.member-home:not(.dark) .mb-status-pill.is-expired {
-  background: #fee2e2 !important;
-  color: #b91c1c !important;
+  background: rgba(239, 68, 68, 0.18) !important;
+  color: #F87171 !important;
 }
 
 html body.member-home:not(.dark) .mb-card-top h3,
@@ -4498,8 +4919,8 @@ html body.member-home:not(.dark) .mb-tab-banner {
 }
 
 html body.member-home:not(.dark) .mb-tab-banner::before {
-  opacity: 0.18 !important;
-  filter: grayscale(15%) brightness(1.06) !important;
+  opacity: 0.48 !important;
+  filter: saturate(1.04) contrast(1.02) !important;
 }
 
 html body.member-home:not(.dark) .mb-tab-banner::after {
@@ -4522,7 +4943,7 @@ html body.member-home:not(.dark) .mb-bento-hero-photo {
 
 html body.member-home:not(.dark) .mb-hero-photo-bg {
   opacity: var(--pf-lb-photo-opacity) !important;
-  filter: grayscale(15%) brightness(1.06) !important;
+  filter: saturate(1.04) contrast(1.02) !important;
 }
 
 html body.member-home:not(.dark) .mb-hero-photo-bg::after {
@@ -4530,9 +4951,9 @@ html body.member-home:not(.dark) .mb-hero-photo-bg::after {
 }
 
 html body.member-home:not(.dark) .mb-hero-pill-tag {
-  background: #fef3c7 !important;
-  border-color: #e6c675 !important;
-  color: #8a6212 !important;
+  background: rgba(245, 197, 24, 0.16) !important;
+  border-color: rgba(245, 197, 24, 0.36) !important;
+  color: #F5C518 !important;
 }
 
 html body.member-home:not(.dark) .mb-bento-hero-photo h1 {
@@ -4608,7 +5029,7 @@ html[data-theme="light"] .claim-back-pill:hover {
 html[data-theme="light"] body[data-portal="trainer"] .tw-page-hero,
 html[data-theme="light"] body[data-portal="trainer"] .tw-dash-hero {
   background:
-    linear-gradient(95deg, rgba(255, 253, 248, 0.94) 0%, rgba(250, 246, 238, 0.86) 55%, rgba(250, 246, 238, 0.74) 100%),
+    var(--pf-lb-scrim-h),
     url("/img/hero.jpg") center/cover no-repeat !important;
   border: 1px solid var(--pf-lb-border) !important;
   box-shadow: var(--pf-lb-shadow) !important;
@@ -4631,9 +5052,9 @@ html[data-theme="light"] body[data-portal="trainer"] .tw-dash-hero .tw-hero-sub 
 }
 
 html[data-theme="light"] body[data-portal="trainer"] .tw-page-hero .tw-hero-ico {
-  background: #fef3c7 !important;
-  border: 1px solid #e6c675 !important;
-  color: #9a6b0d !important;
+  background: rgba(245, 197, 24, 0.16) !important;
+  border: 1px solid rgba(245, 197, 24, 0.36) !important;
+  color: #F5C518 !important;
 }
 
 html[data-theme="light"] body[data-portal="trainer"] .tw-page-hero .tw-btn:not(.tw-btn-gold):not(.tw-btn-primary),
@@ -4646,30 +5067,45 @@ html[data-theme="light"] body[data-portal="trainer"] .tw-dash-hero .tw-btn:not(.
 html[data-theme="light"] body[data-portal="trainer"] .tw-page-hero .tw-btn:not(.tw-btn-gold):not(.tw-btn-primary):hover,
 html[data-theme="light"] body[data-portal="trainer"] .tw-dash-hero .tw-btn:not(.tw-btn-gold):not(.tw-btn-primary):hover {
   background: var(--pf-lb-glass-hover) !important;
-  border-color: #d9a425 !important;
-  color: #8a6212 !important;
+  border-color: #F5C518 !important;
+  color: #F5C518 !important;
 }
 
-html[data-theme="light"] body[data-portal="trainer"] .tw-page-hero .tw-date-stepper {
-  background: var(--pf-lb-glass) !important;
-  border: 1px solid var(--pf-lb-glass-border) !important;
-  color: var(--pf-lb-title) !important;
+html[data-theme="light"] body[data-portal="trainer"] .tw-page-hero .tw-date-stepper,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-page-hero .tw-date-stepper {
+  background: rgba(15, 26, 51, 0.85) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  color: #F4F6FB !important;
 }
 
-html[data-theme="light"] body[data-portal="trainer"] .tw-page-hero .tw-date-stepper input {
-  color: var(--pf-lb-title) !important;
+html[data-theme="light"] body[data-portal="trainer"] .tw-page-hero .tw-date-stepper input[type="date"]#attDate,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-page-hero .tw-date-stepper input[type="date"]#attDate {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: #F4F6FB !important;
+  color-scheme: dark !important;
+}
+
+html[data-theme="light"] body[data-portal="trainer"] .tw-page-hero .tw-date-stepper .tw-chart-nav-btn,
+html:not([data-theme="dark"]) body[data-portal="trainer"] .tw-page-hero .tw-date-stepper .tw-chart-nav-btn {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.16) !important;
+  color: #F4F6FB !important;
 }
 
 html[data-theme="light"] body[data-portal="trainer"] .tw-duty-card {
-  background: rgba(255, 255, 255, 0.88) !important;
-  border: 1px solid #eadfc8 !important;
-  color: var(--pf-lb-title) !important;
-  box-shadow: 0 6px 18px rgba(42, 36, 24, 0.06) !important;
+  background: #0F1A33 !important;
+  border: 1px solid #1F2F55 !important;
+  color: #F4F6FB !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(12px);
 }
 
 html[data-theme="light"] body[data-portal="trainer"] .tw-duty-pill {
-  background: #dcfce7 !important;
-  color: #15803d !important;
+  background: rgba(34, 197, 94, 0.18) !important;
+  color: #4ade80 !important;
 }
 
 html[data-theme="light"] body[data-portal="trainer"] .tw-duty-top h3,
@@ -4704,8 +5140,8 @@ html body input.pf-pay-amount-input[readonly] {
 
 html body:not(.dark) input.pf-pay-amount-input,
 html body:not(.dark) input.pf-pay-amount-input[readonly] {
-  color: #b45309 !important;
-  -webkit-text-fill-color: #b45309 !important;
+  color: #8A6A00 !important;
+  -webkit-text-fill-color: #8A6A00 !important;
 }
 
 /* Soft dark borders on Light Mode inner hero cards & idle banner tabs */
@@ -4717,8 +5153,7 @@ html body.pf-staff:not(.dark) .fn-tabs .tab {
 html body.pf-staff:not(.dark) .ow-hero-card,
 html body.pf-staff:not(.dark) .csh-hero-card,
 html body.member-home:not(.dark) .mb-hero-card,
-html body.member-home:not(.dark) .mb-ticket-card,
-html[data-theme="light"] body[data-portal="trainer"] .tw-duty-card {
+html body.member-home:not(.dark) .mb-ticket-card {
   border-color: rgba(15, 23, 42, 0.14) !important;
 }
 
@@ -4762,8 +5197,8 @@ html body .pf-act-pill {
   height: 32px;
   padding: 0 12px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid #293D6B;
+  background: #162547;
   color: inherit;
   font: 600 12.5px/1 inherit;
   cursor: pointer;
@@ -4780,9 +5215,9 @@ html body .pf-act-pill:hover:not(.is-active) {
 }
 
 html body .pf-act-pill.is-active {
-  background: #e8b93a !important;
-  border-color: #e8b93a !important;
-  color: #0b0f19 !important;
+  background: #F5C518 !important;
+  border-color: #F5C518 !important;
+  color: #0B1530 !important;
   font-weight: 700 !important;
 }
 
@@ -4817,8 +5252,8 @@ html body .pf-act-search input {
   height: 36px;
   padding: 0 12px 0 32px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(10, 14, 23, 0.55);
+  border: 1px solid #293D6B;
+  background: #0A1124;
   color: inherit;
   font: inherit;
   font-size: 13px;
@@ -4829,8 +5264,8 @@ html body .pf-act-refresh {
   height: 36px;
   flex: none;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid #293D6B;
+  background: #162547;
   color: inherit;
   display: grid;
   place-items: center;
@@ -4838,8 +5273,8 @@ html body .pf-act-refresh {
 }
 
 html body .pf-act-refresh:hover:not(:disabled) {
-  border-color: #e8b93a;
-  color: #e8b93a;
+  border-color: #F5C518;
+  color: #F5C518;
 }
 
 html body .pf-act-scroll {
@@ -4870,8 +5305,8 @@ html body .pf-act-row {
   gap: 11px;
   padding: 10px 12px;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid #1F2F55;
+  background: #0F1A33;
 }
 
 html body .pf-act-ico {
@@ -4930,7 +5365,7 @@ html body .pf-act-go {
 
 html body .pf-act-go:hover {
   opacity: 1;
-  color: #e8b93a;
+  color: #F5C518;
 }
 
 html body .pf-act-loading,
@@ -4947,7 +5382,7 @@ html body .pf-act-empty {
 html body .pf-act-retry {
   padding: 7px 14px;
   border-radius: 9px;
-  border: 1px solid #e8b93a;
+  border: 1px solid #F5C518;
   background: rgba(232, 185, 58, 0.16);
   color: inherit;
   font: 700 12.5px/1 inherit;
@@ -4958,16 +5393,16 @@ html body .pf-act-retry {
 html body.pf-staff:not(.dark) .pf-act-pill,
 html body.member-home:not(.dark) .pf-act-pill,
 html[data-theme="light"] body[data-portal="trainer"] .pf-act-pill {
-  background: #ffffff;
-  border-color: rgba(15, 23, 42, 0.16);
-  color: #2a2418;
+  background: #EEF2FA;
+  border-color: #DDE3F0;
+  color: #0B1530;
 }
 
 html body.pf-staff:not(.dark) .pf-act-pill:hover:not(.is-active),
 html body.member-home:not(.dark) .pf-act-pill:hover:not(.is-active),
 html[data-theme="light"] body[data-portal="trainer"] .pf-act-pill:hover:not(.is-active) {
   background: #fef3c7;
-  border-color: #e8b93a;
+  border-color: #F5C518;
 }
 
 html body.pf-staff:not(.dark) .pf-act-search input,
@@ -4976,21 +5411,21 @@ html[data-theme="light"] body[data-portal="trainer"] .pf-act-search input,
 html body.pf-staff:not(.dark) .pf-act-refresh,
 html body.member-home:not(.dark) .pf-act-refresh,
 html[data-theme="light"] body[data-portal="trainer"] .pf-act-refresh {
-  background: #ffffff;
-  border-color: rgba(15, 23, 42, 0.16);
-  color: #1c1917;
+  background: #EEF2FA;
+  border-color: #CDD6E8;
+  color: #0B1530;
 }
 
 html body.pf-staff:not(.dark) .pf-act-row,
 html body.member-home:not(.dark) .pf-act-row,
 html[data-theme="light"] body[data-portal="trainer"] .pf-act-row {
-  background: #faf6ee;
-  border-color: rgba(15, 23, 42, 0.12);
+  background: #FFFFFF;
+  border-color: #DDE3F0;
 }
 
 html body.pf-staff:not(.dark) .pf-act-ico.tone-gold,
 html body.member-home:not(.dark) .pf-act-ico.tone-gold,
-html[data-theme="light"] body[data-portal="trainer"] .pf-act-ico.tone-gold { background: #fef3c7; color: #9a6b0d; }
+html[data-theme="light"] body[data-portal="trainer"] .pf-act-ico.tone-gold { background: #fef3c7; color: #8A6A00; }
 html body.pf-staff:not(.dark) .pf-act-ico.tone-emerald,
 html body.member-home:not(.dark) .pf-act-ico.tone-emerald,
 html[data-theme="light"] body[data-portal="trainer"] .pf-act-ico.tone-emerald { background: #dcfce7; color: #15803d; }
@@ -5046,7 +5481,7 @@ html[data-theme="light"] body[data-portal="trainer"] .pf-act-ico.tone-slate { ba
   display: grid;
   place-items: center;
   background: rgba(232, 185, 58, 0.16);
-  color: #e8b93a;
+  color: #F5C518;
   font-size: 15px;
 }
 
@@ -5083,8 +5518,8 @@ html[data-theme="light"] body[data-portal="trainer"] .pf-act-ico.tone-slate { ba
   align-content: start;
   padding: 16px;
   border-radius: 14px;
-  border: 1px solid var(--border, #263246);
-  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--pf-border, #1F2F55);
+  background: #101A2E;
 }
 
 .pf-install-card-head {
@@ -5092,7 +5527,7 @@ html[data-theme="light"] body[data-portal="trainer"] .pf-act-ico.tone-slate { ba
   align-items: center;
   gap: 10px;
   padding-bottom: 10px;
-  border-bottom: 1px solid var(--border, #263246);
+  border-bottom: 1px solid var(--pf-border, #1F2F55);
 }
 
 .pf-install-plat-ico {
@@ -5102,8 +5537,9 @@ html[data-theme="light"] body[data-portal="trainer"] .pf-act-ico.tone-slate { ba
   flex: none;
   display: grid;
   place-items: center;
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--text, #f3f4f6);
+  background: #162547;
+  border: 1px solid #293D6B;
+  color: var(--pf-text, #F4F6FB);
   font-size: 15px;
 }
 
@@ -5111,16 +5547,16 @@ html[data-theme="light"] body[data-portal="trainer"] .pf-act-ico.tone-slate { ba
   margin: 0;
   font-size: 14.5px;
   font-weight: 700;
-  color: var(--text, #f3f4f6);
+  color: var(--pf-text, #F4F6FB);
 }
 
 .pf-install-chip {
   margin-left: auto;
   padding: 3px 9px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--muted, #94a3b8);
+  border: 1px solid #293D6B;
+  background: #0F1A33;
+  color: var(--pf-muted, #9FB0D6);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -5157,7 +5593,7 @@ html[data-theme="light"] body[data-portal="trainer"] .pf-act-ico.tone-slate { ba
   font-size: 11.5px;
   font-weight: 800;
   background: rgba(232, 185, 58, 0.16);
-  color: #e8b93a;
+  color: #F5C518;
   border: 1px solid rgba(232, 185, 58, 0.34);
 }
 
@@ -5166,78 +5602,475 @@ html[data-theme="light"] body[data-portal="trainer"] .pf-act-ico.tone-slate { ba
   font-weight: 700;
 }
 
-/* Light mode overrides for .pf-install-* */
+/* Light mode overrides for .pf-install-* (Light Navy Blue) */
 html body.pf-staff:not(.dark) .pf-install-status,
 html body.member-home:not(.dark) .pf-install-status,
 html[data-theme="light"] body[data-portal="trainer"] .pf-install-status {
-  background: #fdf6e3;
-  border-color: #ead7a4;
+  background: #FDF6E3;
+  border-color: #E6C675;
 }
 
 html body.pf-staff:not(.dark) .pf-install-status-ico,
 html body.member-home:not(.dark) .pf-install-status-ico,
 html[data-theme="light"] body[data-portal="trainer"] .pf-install-status-ico {
-  background: #fae8b4;
-  color: #9a6b0d;
+  background: #FAE8B4;
+  color: #8A6A00;
 }
 
 html body.pf-staff:not(.dark) .pf-install-status-copy,
 html body.member-home:not(.dark) .pf-install-status-copy,
 html[data-theme="light"] body[data-portal="trainer"] .pf-install-status-copy {
-  color: #2a2418;
+  color: #0B1530;
 }
 
 html body.pf-staff:not(.dark) .pf-install-card,
 html body.member-home:not(.dark) .pf-install-card,
 html[data-theme="light"] body[data-portal="trainer"] .pf-install-card {
-  background: #faf6ee;
-  border-color: #eadfc8;
+  background: #EEF2FA;
+  border-color: #DDE3F0;
 }
 
 html body.pf-staff:not(.dark) .pf-install-card-head,
 html body.member-home:not(.dark) .pf-install-card-head,
 html[data-theme="light"] body[data-portal="trainer"] .pf-install-card-head {
-  border-bottom-color: #eadfc8;
+  border-bottom-color: #DDE3F0;
 }
 
 html body.pf-staff:not(.dark) .pf-install-plat-ico,
 html body.member-home:not(.dark) .pf-install-plat-ico,
 html[data-theme="light"] body[data-portal="trainer"] .pf-install-plat-ico {
-  background: #ffffff;
-  border: 1px solid #eadfc8;
-  color: #2a2418;
+  background: #FFFFFF;
+  border: 1px solid #DDE3F0;
+  color: #0B1530;
 }
 
 html body.pf-staff:not(.dark) .pf-install-plat-title,
 html body.member-home:not(.dark) .pf-install-plat-title,
 html[data-theme="light"] body[data-portal="trainer"] .pf-install-plat-title {
-  color: #2a2418;
+  color: #0B1530;
 }
 
 html body.pf-staff:not(.dark) .pf-install-chip,
 html body.member-home:not(.dark) .pf-install-chip,
 html[data-theme="light"] body[data-portal="trainer"] .pf-install-chip {
-  background: #ffffff;
-  border-color: #dfd2b6;
-  color: #6f6450;
+  background: #FFFFFF;
+  border-color: #CDD6E8;
+  color: #4A5878;
 }
 
 html body.pf-staff:not(.dark) .pf-install-steps li,
 html body.member-home:not(.dark) .pf-install-steps li,
 html[data-theme="light"] body[data-portal="trainer"] .pf-install-steps li {
-  color: #5c5344;
+  color: #4A5878;
 }
 
 html body.pf-staff:not(.dark) .pf-install-steps li::before,
 html body.member-home:not(.dark) .pf-install-steps li::before,
 html[data-theme="light"] body[data-portal="trainer"] .pf-install-steps li::before {
   background: #fae8b4;
-  border-color: #e8b93a;
+  border-color: #F5C518;
   color: #7c5206;
 }
 
 html body.pf-staff:not(.dark) .pf-install-steps li strong,
 html body.member-home:not(.dark) .pf-install-steps li strong,
 html[data-theme="light"] body[data-portal="trainer"] .pf-install-steps li strong {
-  color: #1c1917;
+  color: #0B1530;
+}
+
+
+/* ==========================================================================
+   16. CROSS-DEVICE STAFF RESPONSIVENESS (Unified Tablet/Mobile Nav & Controls)
+   - Fixes double navigation (sidebar rail + bottom tabs) at 769px-980px tablets
+   - Fixes Members search pill inner input & dropdown label overflow on 360px
+   - Ensures comfortable touch targets & clean bottom-sheet scrolling
+   ========================================================================== */
+
+/* Clean inner search input inside pill wrappers (never show nested box/border; preserve left icon padding on absolute-icon inputs) */
+html body.pf-staff.dark .pp-search input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]),
+html body.pf-staff:not(.dark) .pp-search input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]) {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  min-width: 0 !important;
+  height: 100% !important;
+}
+
+html body.pf-staff.dark .fn-search-pill input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]),
+html body.pf-staff:not(.dark) .fn-search-pill input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]),
+html body.pf-staff.dark .ann-search-box input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]),
+html body.pf-staff:not(.dark) .ann-search-box input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]),
+html body[data-portal="trainer"] .tw-search-box input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]) {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  min-width: 0 !important;
+}
+
+html[data-theme="light"] body[data-portal="trainer"] .pf-act-pill {
+  background: #FBF8F0;
+  border-color: #EADFC8;
+  color: #2A2418;
+}
+
+html[data-theme="light"] body[data-portal="trainer"] .pf-act-search input,
+html[data-theme="light"] body[data-portal="trainer"] .pf-act-refresh {
+  background: #FAF6EE;
+  border-color: #EADFC8;
+  color: #2A2418;
+}
+
+html[data-theme="light"] body[data-portal="trainer"] .pf-act-row {
+  background: #FFFFFF;
+  border-color: #EADFC8;
+}
+
+html[data-theme="light"] body[data-portal="trainer"] .pf-install-card {
+  background: #FBF8F0;
+  border-color: #EADFC8;
+}
+
+html[data-theme="light"] body[data-portal="trainer"] .pf-install-card-head {
+  border-bottom-color: #EADFC8;
+}
+
+html[data-theme="light"] body[data-portal="trainer"] .pf-install-plat-ico,
+html[data-theme="light"] body[data-portal="trainer"] .pf-install-chip {
+  background: #FFFFFF;
+  border-color: #EADFC8;
+  color: #2A2418;
+}
+
+html[data-theme="light"] body[data-portal="trainer"] .pf-install-plat-title,
+html[data-theme="light"] body[data-portal="trainer"] .pf-install-status-copy,
+html[data-theme="light"] body[data-portal="trainer"] .pf-install-steps li strong {
+  color: #2A2418;
+}
+
+html[data-theme="light"] body[data-portal="trainer"] .pf-install-steps li {
+  color: #6F6450;
+}
+
+/* Keep Owner/Cashier Light Mode topbar aligned with Light Navy canvas (#F7F8FC) */
+html body.pf-staff:not(.dark) .topbar,
+html body.pf-staff:not(.dark) .topbar.is-scrolled {
+  background: #F7F8FC !important;
+  border-bottom-color: #DDE3F0 !important;
+}
+
+/* Custom filter/sort buttons never overflow their borders on narrow screens */
+html body .pp-status-btn,
+html body .tr-spec-btn {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+html body .pp-status-btn .pp-status-btn-inner,
+html body .tr-spec-btn .pp-status-btn-inner {
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+  overflow: hidden !important;
+}
+
+html body .pp-status-btn .pp-status-btn-inner > span:not(.pp-dd-ico),
+html body .tr-spec-btn .pp-status-btn-inner > span:not(.pp-dd-ico) {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+html body .pp-status-btn .pp-dd-ico,
+html body .pp-status-btn .pp-dd-caret,
+html body .tr-spec-btn .pp-dd-ico,
+html body .tr-spec-btn .pp-dd-caret {
+  flex: none !important;
+}
+
+@media (max-width: 440px) {
+  html body[data-page="members"] .pp-status-dd {
+    flex: 1 1 100% !important;
+    width: 100% !important;
+  }
+
+  html body[data-page="members"] .pp-status-btn {
+    width: 100% !important;
+    padding: 0 12px 0 8px !important;
+    gap: 8px !important;
+    font-size: 13.5px !important;
+  }
+}
+
+/* Desktop (> 980px): keep mobile bottom nav hidden */
+@media (min-width: 981px) {
+  html body.pf-staff .pf-mob-tabs,
+  html body.pf-staff .pf-mob-sheet,
+  html body.pf-staff .pf-mob-backdrop {
+    display: none !important;
+  }
+}
+
+/* Tablet & Phone (<= 980px): hide fixed desktop sidebar rail so bottom nav is the sole primary nav */
+@media (max-width: 980px) {
+  html body.pf-staff nav.sidebar#sidebar:not(.mobile-open),
+  html body.pf-staff nav.sidebar:not(.mobile-open) {
+    transform: translateX(-108%) !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  html body.pf-staff nav.sidebar#sidebar ~ .main-content,
+  html body.pf-staff nav.sidebar ~ .main-content,
+  html body.pf-staff .dashboard > main.main-content {
+    margin-left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-bottom: calc(108px + env(safe-area-inset-bottom, 0px)) !important;
+    overflow-x: clip !important;
+  }
+
+  html body.pf-staff .pf-mob-tabs {
+    z-index: 650 !important;
+  }
+
+  html body.pf-staff .pf-mob-sheet.on {
+    max-height: calc(100dvh - 110px) !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    z-index: 660 !important;
+  }
+
+  html body.pf-staff .pf-mob-backdrop.on {
+    z-index: 655 !important;
+  }
+}
+
+/* Tablet portrait band (769px-980px): clean edge-to-edge topbar & balanced horizontal gutters */
+@media (min-width: 769px) and (max-width: 980px) {
+  html body.pf-staff .dashboard > main.main-content {
+    padding: 0 20px calc(108px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  html body.pf-staff .topbar,
+  html body.pf-staff .topbar.is-scrolled {
+    width: calc(100% + 40px) !important;
+    max-width: none !important;
+    margin: 0 -20px 20px !important;
+    padding: env(safe-area-inset-top, 0px) 20px 0 !important;
+  }
+}
+
+
+/* ==========================================================================
+   17. MOBILE POLISH: PERFECT CIRCLE HEADER ICONS, SEARCH ICON, SETTINGS ROWS,
+       CENTERED MOBILE PROFILE AVATAR & COMPACT HERO SHORTCUTS
+   ========================================================================== */
+
+/* Keep header circular buttons perfectly round even under @media (pointer: coarse) min-height: 44px */
+html body.pf-staff .topbar-actions .theme-toggle,
+html body.pf-staff .topbar-actions .notification,
+html body.pf-staff .topbar-actions .topbar-avatar,
+html body.pf-staff .topbar-actions .notification-wrap,
+html body.pf-staff .topbar-right .theme-toggle,
+html body.pf-staff .topbar-right .notification,
+html body.pf-staff .topbar-right .topbar-avatar,
+html body.pf-staff .topbar-right .notification-wrap,
+html body[data-portal="trainer"] .topbar .icon-btn,
+html body[data-portal="trainer"] .topbar .t-ava {
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+  min-height: 42px !important;
+  max-width: 42px !important;
+  max-height: 42px !important;
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  flex: 0 0 42px !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 768px) {
+  html body.pf-staff .topbar-actions .theme-toggle,
+  html body.pf-staff .topbar-actions .notification,
+  html body.pf-staff .topbar-actions .topbar-avatar,
+  html body.pf-staff .topbar-actions .notification-wrap,
+  html body.pf-staff .topbar-right .theme-toggle,
+  html body.pf-staff .topbar-right .notification,
+  html body.pf-staff .topbar-right .topbar-avatar,
+  html body.pf-staff .topbar-right .notification-wrap,
+  html body[data-portal="trainer"] .topbar .icon-btn,
+  html body[data-portal="trainer"] .topbar .t-ava {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    max-width: 40px !important;
+    max-height: 40px !important;
+    flex: 0 0 40px !important;
+  }
+}
+
+@media (max-width: 380px) {
+  html body.pf-staff .topbar-actions .theme-toggle,
+  html body.pf-staff .topbar-actions .notification,
+  html body.pf-staff .topbar-actions .topbar-avatar,
+  html body.pf-staff .topbar-actions .notification-wrap,
+  html body.pf-staff .topbar-right .theme-toggle,
+  html body.pf-staff .topbar-right .notification,
+  html body.pf-staff .topbar-right .topbar-avatar,
+  html body.pf-staff .topbar-right .notification-wrap,
+  html body[data-portal="trainer"] .topbar .icon-btn,
+  html body[data-portal="trainer"] .topbar .t-ava {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    min-height: 38px !important;
+    max-width: 38px !important;
+    max-height: 38px !important;
+    flex: 0 0 38px !important;
+  }
+}
+
+/* Keep .pp-search icon in flex flow so it never overlaps placeholder text */
+html body.pf-staff .pp-search > i {
+  position: static !important;
+  left: auto !important;
+  top: auto !important;
+  transform: none !important;
+  flex: none !important;
+  margin: 0 !important;
+}
+
+/* Keep mini-avatar images cleanly clipped inside circular frames (Today's payments, tables, cards) */
+html body.pf-staff .mini-avatar {
+  overflow: hidden !important;
+  padding: 0 !important;
+}
+
+html body.pf-staff .mini-avatar img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: 50% !important;
+  display: block !important;
+}
+
+/* Settings rows: keep chevrons and toggle switches pinned on the right on mobile */
+@media (max-width: 768px) {
+  html body.pf-staff .st-row,
+  html body[data-portal="trainer"] .tr-st-row {
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    gap: 12px !important;
+  }
+
+  html body.pf-staff .st-row-lead,
+  html body.pf-staff .st-row-copy,
+  html body[data-portal="trainer"] .tr-st-lead,
+  html body[data-portal="trainer"] .tr-st-copy {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+
+  html body.pf-staff .st-row-end,
+  html body.pf-staff .st-switch,
+  html body[data-portal="trainer"] .tr-st-end,
+  html body[data-portal="trainer"] .tr-st-toggle-row input[type="checkbox"] {
+    flex: none !important;
+    margin-left: auto !important;
+  }
+
+  html body[data-portal="trainer"] .tr-st-toggle-row input[type="checkbox"] {
+    width: 46px !important;
+    min-width: 46px !important;
+    max-width: 46px !important;
+    height: 26px !important;
+    min-height: 26px !important;
+    max-height: 26px !important;
+    padding: 0 !important;
+  }
+}
+
+/* Center Profile avatar & identity block on phones (Owner, Cashier & Trainer) */
+@media (max-width: 780px) {
+  html body.pf-staff .pf-hero-v2 {
+    justify-items: center !important;
+  }
+
+  html body.pf-staff .pf-hero-v2 .pf-ava-trigger-wrap {
+    margin-inline: auto !important;
+  }
+
+  html body.pf-staff .pf-hero-v2 .pf-hero-id {
+    align-items: center !important;
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  html body.pf-staff .pf-hero-v2 .pf-hero-meta {
+    justify-content: center !important;
+  }
+
+  html body[data-portal="trainer"] .tr-prof-hero {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 18px !important;
+  }
+
+  html body[data-portal="trainer"] .tr-prof-hero-left {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    width: 100% !important;
+    flex: 0 0 auto !important;
+  }
+
+  html body[data-portal="trainer"] .tr-prof-copy {
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  html body[data-portal="trainer"] .tr-prof-meta {
+    justify-content: center !important;
+  }
+
+  html body[data-portal="trainer"] .tr-prof-hero-right {
+    align-items: center !important;
+  }
+
+  html body[data-portal="trainer"] .tr-prof-ava-wrap {
+    margin-inline: auto !important;
+  }
+}
+
+/* Give 2x2 hero dock labels extra breathing room on phones (<= 440px) */
+@media (max-width: 440px) {
+  html body .pf-hero-dock .pf-hero-shortcut {
+    padding: 10px 10px !important;
+    gap: 8px !important;
+  }
+
+  html body .pf-hero-dock .pf-hs-ico {
+    width: 30px !important;
+    height: 30px !important;
+    font-size: 12.5px !important;
+  }
+
+  html body .pf-hero-dock .pf-hs-label {
+    font-size: 11px !important;
+  }
+
+  html body .pf-hero-dock .pf-hs-val {
+    font-size: 12.5px !important;
+  }
 }

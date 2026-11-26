@@ -36,11 +36,15 @@
       localStorage.removeItem("profit-member-demo-checkins");
       localStorage.removeItem("profit-demo-session");
       localStorage.removeItem("profit-account-v1");
+      localStorage.removeItem("profit-offline-user");
       sessionStorage.removeItem("profit-demo-session");
       sessionStorage.removeItem("profit-verified-session");
       sessionStorage.removeItem("pf-auth-just-logged-in");
       sessionStorage.setItem("profit-logged-out", "1");
     } catch (e) { }
+    if (window.ProFitAPI && typeof window.ProFitAPI.clearOfflineData === "function") {
+      try { await window.ProFitAPI.clearOfflineData(); } catch (e) { }
+    }
     if (window.ProFitAPI) {
       try {
         await window.ProFitAPI.post("/auth/logout", {});
@@ -134,6 +138,7 @@
     try {
       return JSON.parse(
         sessionStorage.getItem("profit-verified-session") ||
+        localStorage.getItem("profit-offline-user") ||
         localStorage.getItem("profit-demo-session") ||
         sessionStorage.getItem("profit-demo-session") ||
         "null"
@@ -264,7 +269,7 @@
       const pageIsCashierDash = file === "/cashier" || pageAttr === "cashier";
       const pageIsMemberDash = isMember || pageAttr === "member-home" || Boolean(document.body?.classList?.contains("member-home"));
       const pageIsOwnerDash = file === "/index" || (dashboardPage && !pageIsTrainer && !pageIsCashierDash && !pageIsMemberDash);
-      const pageIsOwnerOnly = pageIsOwnerDash || ownerOnlyPages.has(file);
+      const pageIsOwnerOnly = !pageIsTrainer && (pageIsOwnerDash || ownerOnlyPages.has(file));
       const pageIsStaffShared = !pageIsTrainer && !pageIsMemberDash && !pageIsCashierDash && !pageIsOwnerOnly && isAdmin;
 
       const redirectHomeSafely = () => {
@@ -321,9 +326,13 @@
       if (isAuthFailure) {
         try {
           sessionStorage.removeItem("profit-verified-session");
+          localStorage.removeItem("profit-offline-user");
           localStorage.removeItem("profit-demo-session");
           sessionStorage.removeItem("profit-demo-session");
         } catch { }
+        if (window.ProFitAPI && typeof window.ProFitAPI.clearOfflineData === "function") {
+          try { await window.ProFitAPI.clearOfflineData(); } catch { }
+        }
       }
       if (storedUser && !isAuthFailure) {
         document.documentElement.classList.remove("auth-checking", "auth-pending");

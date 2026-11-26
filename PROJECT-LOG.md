@@ -4021,3 +4021,275 @@ Fix the member portal reload loop and the issue shown in the attached clip.
 - Fixed mid-input cursor jumping on the `+63` Mobile number field in `web/join.html` (shown in the uploaded clip) by preserving the caret position by digit count across `formatPHPhone()` updates.
 ### Decision-log skill
 Guard every client-side `location.replace(dest)` against redirecting to `location.pathname` so a missing page attribute can never trigger an infinite browser reload loop.
+
+
+## 2026-11-27 01:54 (Asia/Manila): Deep Midnight Navy Dark Mode & Soft Warm-Ivory Light Mode
+### What I asked for
+Eliminate glaring Light Mode surfaces and pure black / neutral grey Dark Mode by updating CSS and Tailwind/DaisyUI theme variables to Deep Midnight Navy & Gold with soft warm-ivory Light Mode cards and strong contrast.
+### What the agent decided and why
+- Standardized Dark Mode surfaces across `web/pf-system.css` (`?v=35`), `web/trainer/trainer.css` (`?v=31`), `web/member-shell.css` (`?v=40`), `web/members-ui.css` (`?v=34`), `web/finance-ui.css` (`?v=34`), `web/spotify.css` (`?v=15`), and public auth/landing pages on tinted Deep Midnight Navy (`#0D1526` canvas, `#142038` cards, `#1A2947` headers, `#0A1120` inputs, `#263B63` navy borders, `#F4F7FC` / `#9EB1D1` text) paired with `#E8B93A` gold; see [[2026-11-27 Tinted Midnight Navy dark mode and soft warm-ivory light mode]].
+- Replaced glaring `#FFFFFF` Light Mode card/table/input surfaces with low-glare warm ivory (`#FAF7F0` cards, `#EFE9DC` parchment canvas, `#F2ECE0` insets, `#DCD2BF` borders, `#231E16` ink).
+- Updated `static/src/tailwind.config.js` (`profitLight` and `profitDark` DaisyUI themes plus `profit.*` color tokens), `static/src/input.css`, and `templates/` theme tokens and pre-paint background colors.
+### Decision-log skill
+Keep Section 6 (Light Mode) and Section 6B (Dark Mode) symmetrical in `web/pf-system.css` alongside matching `:root` CSS variables and Tailwind/DaisyUI theme tokens so legacy stylesheets (`dashboard.css`, `global.css`) never leak neutral grey or glaring `#FFFFFF`.
+
+
+## 2026-11-27 02:03 (Asia/Manila): Light Navy Blue & Dark Midnight Navy Theme Pair
+### What I asked for
+Align Light Mode to calming Light Navy Blue paired with Dark Midnight Navy in Dark Mode across CSS variables, Tailwind/DaisyUI theme tokens, and portal pages.
+### What the agent decided and why
+- Replaced Light Mode warm-ivory/white hexes across `web/pf-system.css` (`?v=36`), `web/trainer/trainer.css` (`?v=32`), `web/finance-ui.css` (`?v=35`), `web/member-shell.css`, `web/members-ui.css`, `web/attendance-ui.css`, `web/spotify.css`, `web/settings.html`, `web/login.html`, `web/join.html`, `web/forgot.html`, `static/src/tailwind.config.js` (`profitLight` + `light-navy-*`), `static/src/input.css`, and `templates/errors/portal_error.html` with `#E3EAF5` canvas, `#F1F5FB` cards, `#DCE5F2` inputs/headers, `#BCCAE0` borders, and `#0F1B33` / `#3D5275` text; see [[2026-11-27 Pair Light Navy Blue with Dark Midnight Navy]].
+- Updated pre-paint `<head>` background scripts across all `web/` HTML pages from `#EFE9DC` to `#E3EAF5` and bumped stylesheet query versions while keeping `<meta name="theme-color" content="#0a0e17">` intact for PWA manifest checks.
+### Decision-log skill
+Check both CSS fallback variables across page stylesheets (`attendance-ui.css`, `members-ui.css`, `finance-ui.css`, `spotify.css`) and `<head>` pre-paint JS + cache-buster query strings whenever switching palette tones so hard-refreshing never flashes the prior theme color.
+
+
+## 2026-11-27 02:12 (Asia/Manila): Refine Light Navy Blue to Airy Ice-Navy Balance
+### What I asked for
+Inspect a light-green-to-dark-green reference clip and soften ProFit's Light Navy Blue palette to the same airy, eye-friendly light-to-dark balance.
+### What the agent decided and why
+- Refined Light Mode surfaces across `web/pf-system.css` (`?v=37`), `web/trainer/trainer.css` (`?v=33`), `web/finance-ui.css` (`?v=36`), `web/member-shell.css`, `web/members-ui.css`, `web/attendance-ui.css`, `web/spotify.css`, `web/**/*.html` pre-paint scripts, `static/src/tailwind.config.js`, `static/src/input.css`, and `templates/errors/portal_error.html` to `#F4F7FB` canvas, `#FCFDFE` cards, `#E8F0FA` insets/active tints, `#DCE4F0` borders, and `#101D35` / `#4B5E7E` text while keeping Dark Midnight Navy (`#0D1526` / `#142038` / `#263B63`) unchanged; see [[2026-11-27 Pair Light Navy Blue with Dark Midnight Navy]].
+### Decision-log skill
+Keep tinted Light Mode canvases around ~96% lightness (`#F4F7FB`) with elevated soft-white cards (`#FCFDFE`) and reserve saturated pastel tint (`#E8F0FA`) for active/inset states so tinted light mode matches airy reference palettes instead of feeling washed or heavy.
+
+
+## 2026-11-27 02:27 (Asia/Manila): Classic Navy Light Sidebar & Visible Banner Photos
+### What I asked for
+Make the Light Mode sidebar noticeably lighter than Dark Mode (matching the Classic Navy + gold reference) and make sure hero/banner background photos remain clearly visible in Light Mode.
+### What the agent decided and why
+- Lightened the Light Mode sidebar across `web/pf-system.css` (`?v=38`), `web/member-shell.css`, `web/trainer/trainer.css` (`?v=34`), and `web/spotify.css` to a Classic Navy gradient (`#213C6B -> #1B3158`, border `#2D4D82`, `#DCE7F8` inactive links, `#FFFFFF` brand title) and set `.pf-hero-dock` to `#1D355E` in Light Mode vs `#142038` in Dark Mode, clearly lighter than Dark Mode's `#131F36 -> #0B1222` sidebar.
+- Opened up Section 14 Light Mode banner scrims in `web/pf-system.css` (`--pf-lb-photo-opacity: 0.58`, `.mb-tab-banner::before` `0.48`, lighter frosted scrim `--pf-lb-scrim-h` fading from `0.86` behind headings to `0.18` over the photo, and updated `.tw-page-hero`/`.tw-dash-hero` to use `var(--pf-lb-scrim-h)`) so gym photos remain crisp and visible in Light Mode.
+### Decision-log skill
+Keep Light Mode navigation chrome distinctly lighter in luminance (`#213C6B`) than Dark Mode (`#0B1222`) and fade photo scrims horizontally (`0.86 -> 0.18`) so headings retain contrast without washing out hero photography.
+
+
+## 2026-11-27 02:34 (Asia/Manila): Exact Owner Navy + Yellow Palette Applied
+### What I asked for
+Apply the uploaded Navy + Yellow color palette (`#070B18`/`#0F1A33`/`#1F2F55`/`#F5C518`/`#F4F6FB`/`#9FB0D6` in Dark Mode and `#F7F8FC`/`#FFFFFF`/`#DDE3F0`/`#F5C518`/`#8A6A00`/`#0B1530`/`#4A5878` in Light Mode) across the system.
+### What the agent decided and why
+- Updated all portal stylesheets (`web/pf-system.css` `?v=39`, `web/trainer/trainer.css` `?v=35`, `web/finance-ui.css` `?v=37`, `web/member-shell.css`, `web/members-ui.css`, `web/attendance-ui.css`, `web/spotify.css`), Tailwind/DaisyUI config (`static/src/tailwind.config.js`, `static/src/input.css`), Django templates (`portal_error.html`, `onboarding_otp.html`, `onboarding_consent.html`), and `web/**/*.html` pages to the owner's exact palette hexes; see [[2026-11-27 Pair Light Navy Blue with Dark Midnight Navy]].
+- Kept `#8A6A00` for gold text/icons on `#F7F8FC`/`#FFFFFF` light surfaces and `#243866 -> #1F2F55` for the Light Mode sidebar/dock while leaving `<meta name="theme-color" content="#0a0e17">` intact for PWA manifest tests.
+### Decision-log skill
+Map yellow accent tokens separately by background luminance (`#F5C518` for solid fills/dark-surface highlights, `#8A6A00` for text/icons on white/ice-navy backgrounds) and bump cache-buster versions consistently whenever re-theming static CSS.
+
+
+## 2026-11-27 02:44 (Asia/Manila): Landing Page Seamless Navy Base & Loading Skip Button
+### What I asked for
+Improve the landing page to remove section seams so everything sits on one navy base with lighter navy cards and add a Skip button to the loading screen.
+### What the agent decided and why
+- Added a top-right `Skip ->` button (plus `Escape` key support) with an idempotent `dismiss()` handler in `web/splash.js` (`?v=8`) so visitors can skip the loading overlay immediately while still firing `pf:splash-done` for hero reveal and count-ups, and updated `#pf-loader` colors to `#070B18` / `#0F1A33` / `#F5C518` / `#F4F6FB` / `#9FB0D6`.
+- Unified `web/welcome.html` section backgrounds (`html`, `.strip`, `.plans`, `#about`, `.story .pic`, `.visit-card`, `.diff-card`, `header.top`) onto the single `#070B18` navy base and `#0F1A33` cards with `#1F2F55` borders, removed the border/background seam between Pricing and Our Story, and fixed mojibake peso/punctuation symbols.
+### Decision-log skill
+Make landing splash dismiss handlers idempotent and dispatch the post-splash reveal event even on Skip so hero zoom-out and count-ups never stay stuck hidden.
+
+
+## 2026-11-27 02:49 (Asia/Manila): Restore Splash Loader, Tighten Landing Gaps, & Phone Header Sign In
+### What I asked for
+Restore the splash loading screen (with the Skip button working), remove oversized gaps between landing page sections, and show "Sign in" in the header on phones.
+### What the agent decided and why
+- Fixed a duplicate `let raf, stepIdx` declaration in `web/splash.js` (`?v=9`) that had thrown a JS `SyntaxError` and suppressed `#pf-loader`; the animated ProFit loader now runs cleanly with a working `Skip ->` button and `Escape` key shortcut.
+- Eliminated doubled section gaps in `web/welcome.html` by tightening `.s` (`48px` vertical, `36px` on mobile), adding `.s + .s { padding-top: 16px }` (`12px` on mobile), and reducing `.gal-grid` top margin to `16px`.
+- Updated the `<= 560px` header media rule in `web/welcome.html` so **Sign in** stays visible in the phone header while moving **Join now** into the hamburger menu (`Join now` also remains the primary hero CTA right below).
+### Decision-log skill
+When refactoring a standalone IIFE script, check for outer `let` bindings (`raf`, `stepIdx`) before re-declaring them inside setup blocks—one `SyntaxError` silently kills the entire script before execution.
+
+
+## 2026-11-27 02:56 (Asia/Manila): Bottom Splash Skip, Navy Reference Hero Banners, & Cross-Portal Palette Audit
+### What I asked for
+Move the loading Skip button to the bottom, match hero banners in Light Mode to the uploaded ProFit reference (rich navy-to-photo scrim with visible gym crew), apply the Navy + Yellow palette uniformly across all portals, and audit them for parity.
+### What the agent decided and why
+- Repositioned `#pf-loader .pf-skip` in `web/splash.js` (`?v=10`) to bottom-center (`bottom: max(28px, env(safe-area-inset-bottom))`).
+- Updated Section 14 (`--pf-lb-*`) in `web/pf-system.css` (`?v=40`) so Light Mode hero banners across Owner, Cashier, Member, and Trainer use the `#0F1A33` navy-to-photo scrim (`photo-opacity: 0.72`), `#F4F6FB` / `#F5C518` headings, and dark-navy frosted status cards (`rgba(15, 26, 51, 0.86)` with `#293D6B` borders), matching the reference screenshots.
+- Audited all live portals and cleared remaining off-palette hexes from `web/member-shell.css` (`?v=41`, `#fbf6ee -> #F7F8FC`), `web/announcements.css` (`?v=12`, `#e8b93a -> #F5C518`, `#131C2E -> #0F1A33`), `web/trainer/trainer.css` (`?v=36`, `#F7F4EE -> #EEF2FA`), `web/site-footer.css` (`?v=6`), `web/legal.css`, and `<head>` pre-paint scripts across `web/` HTML pages.
+### Decision-log skill
+Run a repo-wide hex audit across every portal-specific stylesheet and `<head>` pre-paint snippet (not just the primary tokens file) so secondary pages like Member Home, Trainer Attendance, Announcements, and Footer stay visually identical.
+
+
+## 2026-11-27 03:09 (Asia/Manila): Root-Cause Repair of UTF-8 Mojibake & Cashiers Placeholder Fix
+### What I asked for
+Find and fix the broken `Cashiers Ã‚Â· ProFit` and `Ã¢â‚¬â€` character/loading bug visible in the browser, verify across all pages, and test it.
+### What the agent decided and why
+- Root cause: earlier PowerShell `[System.IO.File]::ReadAllText(...)` calls without explicit UTF-8 encoding / PowerShell 5.1 Windows-1252 decoding corrupted multi-byte UTF-8 punctuation (`·`, `—`, `₱`, `─`) into mojibake across 19 `web/**/*.html` files (`cashier.html`, `cashiers.html`, `forgot.html`, `join.html`, `login.html`, `member-home.html`, `payments.html`, `reports.html`, `settings.html`, `trainers.html`, `welcome.html`, and all 8 `web/trainer/*.html` pages).
+- Restored clean UTF-8 across all 19 affected HTML files using Python (`encoding="utf-8"`), replaced `#kpiActiveCashiers` and `#kpiPendingInvites` initial values in `web/cashiers.html` with `0` (and `<title>Cashiers &middot; ProFit</title>`), and verified 0 remaining mojibake matches across `web/` and `templates/`.
+- Added `HeadTagTests.test_no_utf8_mojibake_in_static_pages` in `profit/tests/test_installable.py` so any future mojibake regression fails automated tests.
+### Decision-log skill
+Never rewrite HTML/CSS files in Windows PowerShell without explicit `[System.Text.UTF8Encoding]::new($false)` on **both** reads (`ReadAllText(path, encoding)`) and writes—or better yet, use Python with `encoding="utf-8"` for bulk text updates.
+
+
+## 2026-11-27 03:15 (Asia/Manila): Navy FAQ Page Redesign & Calm Banner Tab Hovers
+### What I asked for
+Redesign the FAQs page (`web/faq.html`) to match the Navy + Yellow palette mockup, and soften the bright yellow hover on banner tabs across all portals.
+### What the agent decided and why
+- Redesigned `web/faq.html` onto the exact `#070B18` / `#0F1A33` / `#1F2F55` / `#F5C518` / `#F4F6FB` / `#9FB0D6` palette: added the header banner card (`?` badge, title/subtitle, `FAQ` / `Terms of Service` / `Privacy Policy` pills), an accessible live search filter (`#faqSearch`), category badges (`Account`, `Membership`, `Payments`, `Attendance`, `Trainers`, `Gym info`, `Security`), clean `#182747` dividers, and the `Still need help?` + `Contact the gym` card footer.
+- Updated banner tab hovers in `web/pf-system.css` (`?v=41` via Python explicit UTF-8) so inactive banner tabs hover with `#162547` / `#293D6B` in Dark Mode and `#EEF2FA` / `#9FB0D6` in Light Mode instead of bright yellow, and active tab hover softens to `#E6B812`.
+### Decision-log skill
+Use calm elevated surface colors (`#162547` in Dark Mode, `#EEF2FA` in Light Mode) on unselected banner tab hovers and reserve bright yellow (`#F5C518` -> `#E6B812`) strictly for selected tabs and primary CTAs.
+
+
+## 2026-11-27 03:22 (Asia/Manila): Line-Art FAQ Icon & Privacy Policy Law Highlights
+### What I asked for
+Replace the generic yellow `?` square icon on the FAQ page with a cleaner line-art icon and highlight statutory privacy laws and rights in the Privacy Policy tab.
+### What the agent decided and why
+- Styled `.faq-banner-ico` in `web/faq.html` as a framed `#0A1124` / `#293D6B` tile with `#F5C518` line-art SVG icons that swap per active tab (Q&A speech bubbles for FAQ, lined document for Terms of Service, shield-check for Privacy Policy).
+- Added a Philippine Data Privacy Act compliance callout (`.legal-callout`), inline `.legal-hl` highlights for `Data Privacy Act of 2012 (Republic Act No. 10173)`, `National Privacy Commission`, `Functional Performance`, `Supabase`/`Vercel`/`Resend`, `HTTPS`, `secure hashes`, `10 minutes`, and `72 hours`, plus a two-column scannable `.legal-rights-grid` inside Section 8.
+### Decision-log skill
+Use framed line-art SVGs instead of filled single-character boxes for header icon tiles, and break dense statutory clauses into scannable callout + pill grids using existing semantic tokens.
+
+
+## 2026-11-27 03:27 (Asia/Manila): Privacy Law Icon Cards, Doc Indentation, & Member Detail Card Polish
+### What I asked for
+Replace the literal inline highlights on Privacy Policy with icon cards, fix left-edge bullets/paragraphs indentation in legal sections, and replace the duplicate dark photo banner on the Member Detail FULL NAME card with a clean card matching the palette.
+### What the agent decided and why
+- Replaced the inline `.legal-hl` highlighter boxes and single callout in `web/faq.html` with a 2x2 `.legal-law-grid` of `#0A1124` / `#1F2F55` cards with `#F5C518` framed icon tiles (`Data Privacy Act of 2012 (RA 10173)`, `Data Controller`, `HTTPS & Hashed Credentials`, `Expiring Verification Codes`), indented `.legal-sec` paragraphs and lists (`40px` left offset on desktop, `0` on mobile) with `#182747` dividers, and switched highlighted terms to bold `<strong>`.
+- Removed the duplicate hero photo from `.md-id-card` on Member Detail (`web/pf-system.css` `?v=42` Light Mode & `web/members-ui.css` `?v=35` Dark Mode): Light Mode now uses `#FFFFFF` with `#DDE3F0` borders, a `4px` `#F5C518` left accent stripe, and `#0B1530` / `#4A5878` text; Dark Mode uses `#0F1A33` with `#1F2F55` borders and `#F5C518` left accent stripe.
+### Decision-log skill
+Avoid placing two dark hero-photo banners stacked on the same detail screen; make secondary identity cards clean flat cards with a crisp gold left accent bar while keeping the page header as the single photo banner.
+
+
+## 2026-11-27 03:32 (Asia/Manila): Landing Page PWA Install App Button & Guide Modal
+### What I asked for
+Add an Install app button on the landing page.
+### What the agent decided and why
+- Added an **Install app** button (`#wlInstallBtn`) inside the hero CTA row in `web/welcome.html` using the Navy + Yellow palette (`#0F1A33` / `#1F2F55` / `#F5C518` icon / `#162547` calm navy hover).
+- Wired `beforeinstallprompt` + `appinstalled` with a `try/catch/finally` guard so Chrome/Edge/Brave open the native one-tap install dialog when ready, auto-hide the button once installed or running in `standalone` mode, and open a Navy + Yellow `#wlInstallModal` fallback guide with iPhone Safari & Android/Desktop instructions when the native prompt isn't supported.
+### Decision-log skill
+Wrap native `beforeinstallprompt.prompt()` flows in `try/catch/finally` with an accessible step-by-step install guide modal fallback so iOS Safari visitors still get a working install path from the same button.
+
+
+## 2026-11-27 04:08 (Asia/Manila): Cashier Dashboard Shift Graphs
+### What I asked for
+Remove the duplicated payment-terminal tabs and form from the Cashier Dashboard and replace them with graphs.
+### What the agent decided and why
+- Removed the duplicated **Process Payment / Transaction history / Member lookup & renewals** tabs, form, and unused modals from `web/cashier.html` and routed the hero/dock **Record payment** links straight to `/payments`.
+- Added three live SVG/responsive **Cashier Shift Graphs** in `web/cashier.html` and `web/cashier.js` (`?v=7`) using existing `/api/staff/cashier/overview/` and `/api/staff/members/` data: **7-Day Desk Collections** (`#cshDailyChart` bar chart), **Payment Method Mix** (`#cshMethodChart` donut chart with a Today/Recent toggle), and **Membership & Renewal Health** (`#cshMemberChart` stacked + metric bars) styled in the Navy + Yellow palette.
+### Decision-log skill
+Reuse existing role-authorized overview endpoints (`GET /api/staff/cashier/overview/` and `GET /api/staff/members/`) to drive role-appropriate operational charts on the Cashier Dashboard instead of duplicating Owner-only finance endpoints or repeating the full Payments form.
+
+## 2026-11-27 04:18 (Asia/Manila): Cashier Shift Graphs Animations
+### What I asked for
+Add animations to the newly added Cashier Shift Graphs on the Cashier Dashboard.
+### What the agent decided and why
+- Added staggered entrance (`cshCardIn`), upward bar reveal (`cshBarGrow` with `--bar-delay`), horizontal stacked/progress bar slide (`cshBarSlide` with `--seg-delay`), and `@media (prefers-reduced-motion: reduce)` fallbacks in `web/cashier.html`, bumping `cashier.js?v=8`.
+- Updated `renderDailyBarChart`, `renderMethodDonutChart` (double-rAF SVG `stroke-dasharray` sweep per segment + staggered legend), and `renderMemberHealthChart` (480ms cubic-eased count-up numbers + staggered bars) in `web/cashier.js`.
+### Decision-log skill
+Animate multi-segment SVG donut rings by keeping each segment's `stroke-dashoffset` anchored and transitioning `stroke-dasharray` from `0 circ` to `len circ` across a double `requestAnimationFrame` so every slice expands cleanly in place while honoring `prefers-reduced-motion`.
+
+
+## 2026-11-27 04:31 (Asia/Manila): Multi-device staff UI audit and responsive fixes (Owner, Cashier, Trainer)
+### What I asked for
+Test the UI of all staff roles (Owner, Cashier, Personal Trainer) across all device sizes and fix responsive, layout, and usability issues.
+### What the agent decided and why
+- Audited all 26 Owner, Cashier, and Personal Trainer pages across 6 viewports (`360px`, `390px`, `768px`, `820px`, `1024px`, `1440px`) plus Light Mode and mobile More-sheet interactions against an isolated SQLite database via Playwright.
+- Unified the Owner/Cashier sidebar and bottom-tab breakpoint at `980px` in `web/pf-system.css` (using `#sidebar` specificity to clear the `80px` rail margin at `769px`–`980px`) so portrait tablets never render both navs or leave a ghost margin; see [[2026-11-27 Unify staff tablet navigation at 980px]].
+- Fixed `web/auth.js` (`pageIsOwnerOnly = !pageIsTrainer && ...`) so Personal Trainers can open `/trainer/announcements` instead of being redirected to `/dashboard`.
+- Fixed Members toolbar on narrow phones (`<= 440px`) in `web/pf-system.css` by stacking filter/sort buttons full-width (no clipping/truncation) and stripping the nested box inside `.pp-search input` while keeping icon padding on `.fn-search-pill`, `.ann-search-box`, and `.tw-search-box`.
+- Adjusted `.tw-att-summary` in `web/trainer/trainer.css` (`<= 480px`) to a 2+1 grid so summary cards no longer squish to `98px`; enlarged `.pf-ava-badge` to `36px` in `web/profile.html` for touch comfort.
+- Removed nonexistent `auth-guard.js` 404 script tags from `web/payments.html` and `web/reports.html`, guarded Cashier Settings in `web/settings.js` from calling Owner-only `/api/staff/plans/`, and fixed a stray closing brace inside `@media (max-width: 768px)` in `web/global.css`.
+### Decision-log skill
+Always test the `769px`–`980px` tablet band in addition to phone (`360px`/`390px`) and desktop (`1024px`/`1440px`), verify `location.pathname` after page load to catch silent client-side redirects, and visually inspect screenshots so CSS specificity or icon-padding regressions never slip past automated checks.
+
+## 2026-11-27 04:35 (Asia/Manila): Cashier Graph Hover Animations & Trainer Portal Parity
+### What I asked for
+Add cursor-hover animations to the Cashier Shift Graphs, then fix the Trainer Portal so its palette, sidebar, topbar, mobile bottom nav, and hero banner match the Cashier/Owner portal.
+### What the agent decided and why
+- Added pointer-only (`@media (hover: hover) and (pointer: fine)`) hover animations on Cashier graph cards, bars (adjacent column dimming + highlight), stacked health bar/cards, and bidirectional donut slice ↔ legend highlights in `web/cashier.html` and `web/cashier.js` (`cashier.js?v=9`), respecting `prefers-reduced-motion`.
+- Aligned `web/pf-system.css` (`?v=43`) and `web/trainer/trainer.css` (`?v=37`) so Trainer uses `#070B18`/`#0F1A33`/`#1F2F55`/`#F5C518` in dark mode, warm cream `#FAF6EE`/`#FFFFFF`/`#EADFC8`/`#2A2418` in light mode, Deep Midnight Navy desktop sidebar with solid gold active pill in both modes, Cashier-matched `.bottom-nav` mobile pill styling, and title-case `Floor is open.` hero banner in `web/trainer/index.html`.
+### Decision-log skill
+Check stylesheet cascade order (`pf-system.css` loads after portal stylesheets): conflicting `body[data-portal="trainer"]` rules in `pf-system.css` must be updated alongside `trainer.css` or light-mode overrides will silently revert to `#F7F8FC` and light-blue sidebars.
+
+
+## 2026-11-27 04:39 (Asia/Manila): Fix iPhone header circles, Today's payments avatars, centered profile avatar, search icon, and Settings rows
+### What I asked for
+Fix the issues shown in the 10 iPhone 16 screenshots: oval header icons, old initials avatars in Today's payments, left-aligned profile avatar on phone, overlapping search icon on Members/Reports, wrapped chevrons/toggles in Settings, and truncated hero dock labels.
+### What the agent decided and why
+- Locked topbar icon buttons (`.theme-toggle`, `.notification`, `.topbar-avatar`, Trainer `.icon-btn`/`.t-ava`) in `web/pf-system.css` to equal width/height + `min-height`/`max-height` + `aspect-ratio: 1 / 1` so coarse-pointer `min-height: 44px` never stretches them into ovals.
+- Updated `drawToday()` in `web/pages.js` and review cards in `web/payments-review.js` to render members' resolved avatars (`ProFitAvatar.resolve`) instead of text initials, with `.mini-avatar img` clipped cleanly to circles in `web/pf-system.css`.
+- Centered the profile hero avatar and header text on phones (`<= 780px`) in `web/profile.html` and `web/pf-system.css` (covering Owner, Cashier, and Trainer profiles).
+- Switched `.pp-search > i` to `position: static` inside the flex `.pp-search` pill in `web/pf-system.css` so the magnifying-glass icon never overlaps placeholder text.
+- Changed mobile `.st-row` / `.tr-st-row` in `web/settings.html` and `web/pf-system.css` from `flex-wrap: wrap` to `flex-wrap: nowrap` with `flex: 1 1 auto; min-width: 0` on text columns so chevrons and switches stay pinned on the right.
+- Tightened 2x2 `.pf-hero-dock` padding/type at `<= 440px` so all 4 labels fit without truncation, and bumped `pf-system.css?v=44`, `pages.js?v=6`, and `payments-review.js?v=5` across portal pages to prevent stale browser cache.
+### Decision-log skill
+When `@media (pointer: coarse)` enforces `min-height: 44px` on `button`, every circular icon button must also declare explicit `min-height`/`max-height`/`aspect-ratio: 1/1` so it stays a true circle on touch devices; and never put `flex-wrap: wrap` on two-column settings rows where a right-aligned chevron or toggle belongs on the same line.
+
+## 2026-11-27 04:42 (Asia/Manila): Interactive Circular Donut Graph Animations
+### What I asked for
+Apply the same interactive circular graph animation as the Owner Dashboard's Membership Type chart (expanding active slice, dimming sibling slices, inline percentage labels, floating gold-bordered tooltip, dynamic center count/label, and synchronized glowing legend cards) to the Cashier and Trainer circular donut graphs.
+### What the agent decided and why
+- Upgraded Cashier's Payment Method Mix donut in `web/cashier.html` and `web/cashier.js` (`cashier.js?v=10`) with inline SVG slice percentages (`>= 8%`), expanding stroke (`24` -> `29`), dimming inactive slices (`0.4`), floating `#070B18` + gold-bordered tooltip, dynamic center readout, glowing legend rows with rounded `%` pills, keyboard focus support, and click navigation to `/payments`.
+- Upgraded Trainer's Membership overview donut in `web/trainer/index.html` and `web/trainer/trainer.css` (`trainer.css?v=38`) with counter-rotated upright inline percentage labels (`#donutLabels`), floating `#twDonutTooltip`, `stroke-width: 24 -> 30` slice expansion, sibling dimming, dynamic `#donutTotal` / `#donutCenterLbl`, interactive status rows, and click navigation to `/trainer/members`.
+### Decision-log skill
+When placing upright SVG `<text>` percentage labels inside an SVG element that uses CSS `transform: rotate(-90deg)` (`.tw-donut-svg`), wrap the label `<g>` in `transform="rotate(90 120 120)"` so screen-coordinate angles match the arcs and text remains horizontal.
+
+
+## 2026-11-27 04:54 (Asia/Manila): Safe Offline Read Mode, Auto-Refresh & Logout Wipe Across All Portals
+### What I asked for
+Allow all users across ProFit to continue using the site even when there is no internet connection, with data updating automatically once internet returns.
+### What the agent decided and why
+- Created `web/sw.js` (served at `/sw.js` via `ProtectedWhiteNoiseMiddleware`) using Stale-While-Revalidate for static assets/fonts/icons (`profit-assets-v1`) and Network-First for visited HTML pages (`profit-pages-v1`) with a branded ProFit offline fallback page, strictly excluding `/api/*`, `/admin/`, and `/accounts/` from SW caching and supporting `CLEAR_PRIVATE_CACHES` on logout (see [[2026-11-27 Safe offline read mode with auto-refresh and logout wipe]]).
+- Updated `web/api.js` (`?v=6`) and `web/site-footer.js` (`?v=8`) to register `/sw.js` across every portal and public page, added per-user `GET` snapshot caching (`pf-api-cache:v1:<userKey>:`) with automatic quota pruning, blocked offline writes (`POST`/`PATCH`/`DELETE`) with a clear reconnect message, and added automatic live refresh when `window` `online` fires (offering a `Refresh now` button instead of reloading if a form input or modal is open).
+- Updated `web/auth.js` (`?v=7`) and `web/assets/js/staff.js` (`?v=20`) to persist a lightweight `profit-offline-user` snapshot for offline PWA re-opens and immediately call `ProFitAPI.clearOfflineData()` (wiping all cached API snapshots and `profit-pages-v1`) on logout or `401`/`403` session expiry; bumped `?v=` cache strings across 28 `web/**/*.html` files.
+- Superseded `[[2026-11-16 Installable web app, no service worker]]`, updated `ROADMAP.md` Phase 4.5 and `profit/tests/test_installable.py` (`OfflineSupportTests`), and verified `python manage.py check` (0 errors), `makemigrations --check --dry-run` (no changes), and `python manage.py test profit.tests` (35/35 OK; `ruff` not installed in active Python 3.13 environment).
+### Decision-log skill
+Keep `/api/*` out of the Service Worker cache and store offline `GET` snapshots per signed-in user ID in the shared API client instead, with a mandatory wipe hook triggered on both `POST /auth/logout` and `401`/`403` session checks so shared devices never leak cached private records.
+
+
+## 2026-11-27 05:04 (Asia/Manila): Remove Automatic Scroll to Appearance on Settings Open
+### What I asked for
+Remove the automatic scroll in Settings when opening it because it scrolls straight to Appearance even when the user isn't doing anything.
+### What the agent decided and why
+- Updated the three Settings navigation links in `web/layout.js` (desktop sidebar account menu, Cashier mobile More sheet, and Owner mobile More sheet) from `/settings#appearance` to `/settings` so opening Settings no longer appends `#appearance` or triggers native browser anchor scrolling.
+- Removed the automatic `hashTarget.scrollIntoView(...)` on initial page load in `web/settings.js` (keeping smooth scrolling only when clicking a section in `#stSideNav`, and resetting scroll to top if `#appearance` is present from an old bookmark/history entry).
+- Bumped `layout.js?v=27` and `settings.js?v=21` across the portal HTML pages so cached scripts refresh immediately.
+### Decision-log skill
+Check both the target page's JS hash-scroll logic and the shell navigation (`layout.js`) for hardcoded `#section` anchors when a page opens scrolled past its top card.
+
+
+## 2026-11-27 05:17 (Asia/Manila): Mobile Layout Fixes Across Dashboard, Attendance, Members, Trainers & Cashiers
+### What I asked for
+Fix seven phone-screen UI issues reported from screenshots: put Dashboard's "View all" button beside the "Recent registrations" title and remove the trailing "Expiring" badge after the 3-dots action button; fix the Daily Attendance period tabs and empty-state stepper spacing; center the Browse Members top tab cards; fix Member Detail buttons and tab bar alignment; keep Members "Table" view as a horizontally swipeable table on phones instead of converting it to cards; fix Trainers toolbar alignment and grid/list toggle sizing; and remove the large header gap and bottom row clipping on Cashiers.
+### What the agent decided and why
+- Updated `web/dashboard.css` (`?v=19`) and `web/attendance-ui.css` (`?v=15`) mobile media queries to keep `.registrations-panel .panel-header` on one horizontal row with a compact `.view-all` button (`height: 32px; min-height: 32px`), hide `td:nth-child(4)` on mobile registration rows, reset `height: auto; min-height: 0` on mobile `tr`/`td` (beating the global `td { height: 60px !important }` rule), allow `#revenuePeriods`/`#attendancePeriods` `.chip-row` to grow automatically (`height: auto`) with `min-height: 34px` on `.chip` pills and `28px` stepper arrows (preventing `@media (pointer: coarse)` `44px` buttons from overflowing the pill track onto the chart Y-axis), align full-width `.tr-spec-btn` dropdowns and pair the `40px` `.tr-view-toggle` cleanly beside `#openAddTrainer`, collapse empty `.ann-msg:empty` status paragraphs under the Cashiers header, and give mobile Cashier rows clean 2-column grid layout with `padding-bottom: calc(124px + env(safe-area-inset-bottom, 0px))`.
+- Updated `web/members-ui.css` (`?v=36`) and `web/pf-system.css` (`?v=45`) mobile rules so `.pp-page-tabs` stays a centered 3-column grid spanning 100% width, `.md-top-bar` and `.pp-subtabs` (`height: auto; min-height: 44px` with `36px` equal grid buttons) align cleanly without active pill overflow, and `.pp-members-table` stays a `min-width: 680px` horizontal table inside an `overflow-x: auto; touch-action: pan-x` wrapper on phones when Table view is active.
+- Bumped `?v=` CSS versions across portal HTML pages and verified CSS brace balance and `python manage.py check` + `python manage.py test profit.tests`.
+### Decision-log skill
+Remember that `@media (pointer: coarse)` `min-height: 44px; min-width: 44px` on bare `button` beats any explicit `height: 32px !important` in CSS unless `min-height`/`min-width` is also explicitly overridden on compact pill/segmented controls inside toolbars and chart headers.
+
+
+## 2026-11-27 05:24 (Asia/Manila): Browse Members View-Mode Visibility & Horizontal Line Alignment
+### What I asked for
+Align the horizontal divider lines in Browse Members Table view and make sure phone displays only Table when Table is selected and only Cards when Cards is selected.
+### What the agent decided and why
+- Scoped `.pp-members-wrap` mobile display rule in `web/members-ui.css` (`?v=37` in `web/members.html`) with `:not([hidden])` and explicit `[hidden] { display: none !important; }` guards for `.pp-members-wrap` and `.pp-member-grid` so `Table` mode and `Cards` mode never appear simultaneously when switching views on mobile.
+- Matched `.pp-members-table` mobile `min-width` to the full 5-column grid minimum (`784px`) with `width: 100%; min-width: 100%` on `thead`, `tbody`, and `tr`, and reset `.pp-members-table tbody td` `height: 100%; border-bottom: 0` so the single row divider line aligns cleanly end-to-end across all columns.
+### Decision-log skill
+Never apply `display: block !important` (or `flex`/`grid !important`) without `:not([hidden])` on containers whose visibility is toggled via the HTML `hidden` attribute.
+
+## 2026-11-27 05:32 (Asia/Manila): Trainer Portal Icon Visibility, Select Parity & Subpage Alignment
+### What I asked for
+Fix the Trainer portal and subpages so all icons are clearly visible in both Light and Dark mode, and fix alignment across info blocks, inputs, and buttons.
+### What the agent decided and why
+- Added missing `bolt` and `layers` icons to `web/assets/js/staff-icons.js` (`?v=6`) so `attendance.html` (`bolt`/`zap`) and `schedule.html` (`layers`) no longer fall back to the `(i)` icon.
+- Added the Font Awesome stylesheet to the 5 Trainer subpages (`announcements.html`, `attendance.html`, `members.html`, `notifications.html`, `schedule.html`) that lacked it, restoring icons inside shared `.pfc-trigger` select boxes and carets.
+- Updated `web/pf-system.css` (`?v=46`) and `web/trainer/trainer.css` (`?v=39`) so `.pfc-wrap`, `.pf-act-*`, and `.pf-install-*` match Trainer's Warm Cream light mode, `.tw-page-hero .tw-date-stepper` renders cleanly as dark glass with visible white date text and calendar picker icon in both modes, native date/time pickers match theme `color-scheme`, topbar/button/badge/chart-nav icons maintain high contrast in both modes, and `.tw-checkin-panel` keeps the select and action buttons aligned on one row on desktop.
+### Decision-log skill
+Shared JS widgets (`.pfc-wrap` custom selects, Activity Log) inject Font Awesome `<i>` classes rather than inline `PF.icon()` SVGs, so every portal subpage that loads `pf-system.css` / `pf-system.js` must include Font Awesome CSS as well as `staff-icons.js`.
+
+
+## 2026-11-27 05:33 (Asia/Manila): Move My Trainer Card to Member Plan Tab
+### What I asked for
+Move the "My trainer" card out of "My Profile" in the Member portal and place it under the Member Plan ("My Membership") section instead.
+### What the agent decided and why
+- Moved `<section class="panel member-panel"><div id="trainerCard"></div></section>` in `web/member-home.html` from `[data-panel="profile"]` into `[data-panel="membership"]` (right below the Current Plan & Payment History sections), keeping `trainer-member.js` (`#trainerCard` + `closest("section")`) working unchanged without cluttering My Profile.
+### Decision-log skill
+Check `closest("section")` visibility toggles in widget scripts (`trainer-member.js`) when relocating widget containers across tab panels so parent panel `hidden` state stays controlled solely by the tab switcher.
+
+
+## 2026-11-27 05:41 (Asia/Manila): Installed App Welcome, Sign Up & Login Flow (No Marketing Landing Page)
+### What I asked for
+In the installed app, remove the marketing landing page and match the uploaded mobile app flow (Splash -> Welcome -> Sign Up / Login) using ProFit's existing color palette and real gym information.
+### What the agent decided and why
+- Added standalone-app detection (`display-mode: standalone` / `navigator.standalone`) in `web/welcome.html`, `web/login.html`, and `web/join.html` using `html.pf-standalone` before first paint so the normal browser website remains untouched while the installed PWA hides the marketing landing page, navbar, marketing copy, and footer.
+- In `web/welcome.html`, added `#pf-app-welcome` (rendered after `splash.js` when standalone and not already signed in, or redirecting straight to `/dashboard` when a session/offline snapshot exists) featuring a ProFit navy/gold curved top wave, ProFit logo, `Welcome!` heading, Functional Fitness Gym (Alfonso, Cavite · 7-day free trial · Cash & GCash) details, and full-width `Sign Up` (`/join`) and `Login` (`/login`) pill buttons.
+- In `web/login.html` and `web/join.html`, added matching ProFit curved wave headers with a `<` back button to `/` and clean centered single-column app forms preserving all existing fields, validation, and Google Sign-In.
+### Decision-log skill
+Keep `manifest.webmanifest` `start_url` at `/` and toggle `html.pf-standalone` synchronously in `<head>` so installed PWA users bypass the marketing landing page without breaking normal web visitors or manifest contract tests.

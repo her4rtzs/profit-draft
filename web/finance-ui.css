@@ -6,45 +6,45 @@
 body[data-page="payments"],
 body[data-page="reports"],
 body[data-page="cashier"] {
-  --fn-bg-card: linear-gradient(160deg, #111a2e 0%, #0d1424 60%, #090f1d 100%);
-  --fn-bg-inset: rgba(8, 13, 24, 0.72);
-  --fn-border: rgba(148, 163, 184, 0.14);
-  --fn-divider: rgba(255, 255, 255, 0.06);
-  --fn-row-bg: rgba(255, 255, 255, 0.022);
-  --fn-row-border: rgba(255, 255, 255, 0.045);
-  --fn-row-hover-bg: rgba(245, 158, 11, 0.06);
-  --fn-row-hover-border: rgba(245, 158, 11, 0.28);
-  --fn-text: #f8fafc;
-  --fn-muted: #94a3b8;
-  --fn-eyebrow: #fbbf24;
-  --fn-input-bg: rgba(11, 17, 32, 0.85);
-  --fn-input-border: rgba(148, 163, 184, 0.2);
-  --fn-btn-dark-bg: #101a2d;
-  --fn-btn-dark-border: rgba(148, 163, 184, 0.22);
-  --fn-btn-dark-text: #e2e8f0;
-  --fn-shadow: 0 14px 34px -14px rgba(0, 0, 0, 0.65);
+  --fn-bg-card: #0F1A33;
+  --fn-bg-inset: #0A1124;
+  --fn-border: #1F2F55;
+  --fn-divider: #182747;
+  --fn-row-bg: #182642;
+  --fn-row-border: #223559;
+  --fn-row-hover-bg: rgba(232, 185, 58, 0.09);
+  --fn-row-hover-border: rgba(232, 185, 58, 0.36);
+  --fn-text: #F4F6FB;
+  --fn-muted: #9FB0D6;
+  --fn-eyebrow: #FBBF24;
+  --fn-input-bg: #0A1124;
+  --fn-input-border: #293D6B;
+  --fn-btn-dark-bg: #162547;
+  --fn-btn-dark-border: #293D6B;
+  --fn-btn-dark-text: #E2E8F5;
+  --fn-shadow: 0 14px 34px -14px rgba(4, 9, 22, 0.55);
 }
 
 body:not(.dark)[data-page="payments"],
 body:not(.dark)[data-page="reports"],
 body:not(.dark)[data-page="cashier"] {
-  --fn-bg-card: linear-gradient(155deg, #fffdf9 0%, #faf6ee 65%, #f5efe4 100%);
-  --fn-bg-inset: rgba(255, 255, 255, 0.86);
-  --fn-border: rgba(217, 170, 82, 0.42);
-  --fn-divider: rgba(15, 23, 42, 0.08);
-  --fn-row-bg: #ffffff;
-  --fn-row-border: rgba(203, 190, 170, 0.6);
-  --fn-row-hover-bg: rgba(245, 158, 11, 0.09);
-  --fn-row-hover-border: rgba(217, 119, 6, 0.48);
-  --fn-text: #0f172a;
-  --fn-muted: #64748b;
-  --fn-eyebrow: #b45309;
-  --fn-input-bg: #ffffff;
-  --fn-input-border: rgba(148, 163, 184, 0.42);
-  --fn-btn-dark-bg: #ffffff;
-  --fn-btn-dark-border: rgba(148, 163, 184, 0.42);
-  --fn-btn-dark-text: #1e293b;
-  --fn-shadow: 0 12px 28px -8px rgba(45, 35, 20, 0.09), 0 0 18px rgba(245, 158, 11, 0.06);
+  --fn-bg-card: #FFFFFF;
+  --fn-bg-inset: #EEF2FA;
+  --fn-border: #DDE3F0;
+  --fn-divider: rgba(15, 27, 51, 0.09);
+  --fn-row-bg: #FFFFFF;
+  --fn-row-border: #E7ECF6;
+  --fn-row-hover-bg: rgba(232, 185, 58, 0.11);
+  --fn-row-hover-border: rgba(217, 119, 6, 0.45);
+  --fn-text: #0B1530;
+  --fn-muted: #4A5878;
+  --fn-eyebrow: #8A6A00;
+  --fn-input-bg: #EEF2FA;
+  --fn-input-border: #CDD6E8;
+  --fn-btn-dark-bg: #FFFFFF;
+  --fn-btn-dark-border: #CDD6E8;
+  --fn-btn-dark-text: #0B1530;
+  --fn-shadow: 0 10px 26px -10px rgba(15, 27, 51, 0.10);
 }
 
 /* Override legacy portal shell spacing — rely on layout-fixes.css for sidebar width/collapse */
@@ -614,7 +614,7 @@ body[data-page="cashier"] .input:focus {
 }
 
 body:not(.dark) .fn-input[readonly] {
-  color: #b45309;
+  color: #8A6A00;
 }
 
 /* Toolbar & Pill Search */
@@ -738,9 +738,9 @@ html body.pf-staff:not(.dark)[data-page="payments"] .fn-toolbar-select {
 }
 
 .fn-filter-chips .chip.active {
-  background: #e8b93a;
-  color: #0b0f19;
-  border-color: #e8b93a;
+  background: #F5C518;
+  color: #0B1530;
+  border-color: #F5C518;
   box-shadow: none;
 }
 
@@ -754,8 +754,8 @@ html body.pf-staff:not(.dark)[data-page="payments"] .fn-toolbar-select {
   padding: 0 20px;
   border-radius: 12px;
   border: 0;
-  background: #e8b93a;
-  color: #0b0f19;
+  background: #F5C518;
+  color: #0B1530;
   font: inherit;
   font-size: 14px;
   font-weight: 700;
@@ -767,12 +767,12 @@ html body.pf-staff:not(.dark)[data-page="payments"] .fn-toolbar-select {
 
 .fn-btn-gold:hover {
   transform: none;
-  background: #f0c44b;
+  background: #FAD03C;
   box-shadow: none;
 }
 
 .fn-btn-gold:active {
-  background: #b8860b;
+  background: #8A6A00;
 }
 
 .fn-btn-gold svg,
@@ -809,7 +809,7 @@ html body.pf-staff:not(.dark)[data-page="payments"] .fn-toolbar-select {
 }
 
 body:not(.dark) .fn-btn-dark:hover {
-  color: #b45309;
+  color: #8A6A00;
   background: #fef3c7;
 }
 
@@ -1606,7 +1606,7 @@ body:not(.dark)[data-page="payments"] .empty-state .fn-empty-icon,
 body:not(.dark)[data-page="reports"] .empty-state .fn-empty-icon,
 body:not(.dark)[data-page="cashier"] .empty-state .fn-empty-icon {
   background: #fef3c7;
-  color: #b45309;
+  color: #8A6A00;
 }
 
 body[data-page="payments"] .empty-state p,
@@ -1644,7 +1644,7 @@ body[data-page="cashier"] .empty-state p {
 }
 
 body:not(.dark) .fn-tx-foot strong {
-  color: #b45309;
+  color: #8A6A00;
 }
 
 /* Modals */
@@ -2381,14 +2381,14 @@ body[data-page="reports"] .fn-card {
 }
 
 .pf-pay-step.is-active .pf-pay-step-num {
-  border-color: #e8b93a;
+  border-color: #F5C518;
   background: rgba(232, 185, 58, 0.14);
   color: #fbbf24;
 }
 
 body:not(.dark) .pf-pay-step.is-active .pf-pay-step-num {
   background: #fef3c7;
-  color: #b45309;
+  color: #8A6A00;
   border-color: #d97706;
 }
 
@@ -2551,8 +2551,8 @@ html body input.pf-pay-amount-input[readonly] {
 
 html body:not(.dark) input.pf-pay-amount-input,
 html body:not(.dark) input.pf-pay-amount-input[readonly] {
-  color: #b45309 !important;
-  -webkit-text-fill-color: #b45309 !important;
+  color: #8A6A00 !important;
+  -webkit-text-fill-color: #8A6A00 !important;
 }
 
 .pf-pay-checklist {
@@ -2594,7 +2594,7 @@ html body:not(.dark) input.pf-pay-amount-input[readonly] {
   height: 18px;
   min-width: 18px;
   margin: 0;
-  accent-color: #e8b93a;
+  accent-color: #F5C518;
   cursor: pointer;
   flex-shrink: 0;
 }
@@ -2605,13 +2605,13 @@ html body:not(.dark) input.pf-pay-amount-input[readonly] {
 }
 
 body:not(.dark) .pf-pay-check {
-  background: #f7f4ee;
-  border-color: #d9d0bf;
-  color: #1c1917;
+  background: #EEF2FA;
+  border-color: #DDE3F0;
+  color: #0B1530;
 }
 
 body:not(.dark) .pf-pay-check strong {
-  color: #b45309;
+  color: #8A6A00;
 }
 
 .pf-pay-method-pill {

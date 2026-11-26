@@ -19,9 +19,11 @@
   PF.debounce = (fn, ms = 160) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
   PF.avatar = (name, cls, photo) => {
     const [bg, fg] = avatarColors(name);
-    let src = photo || '';
-    if (src && window.ProFitAvatar && typeof window.ProFitAvatar.resolve === 'function' && !src.startsWith('data:') && !src.startsWith('http')) {
-      src = window.ProFitAvatar.resolve(src, name);
+    let src = String(photo || '').trim();
+    if (window.ProFitAvatar && typeof window.ProFitAvatar.resolve === 'function') {
+      if (!src || (!src.startsWith('data:') && !src.startsWith('http'))) {
+        src = window.ProFitAvatar.resolve(src, name || 'Member');
+      }
     }
     return `<span class="avatar ${cls || ''}" style="--av-bg:${bg};--av-fg:${fg}">${src ? `<img src="${esc(src)}" alt="">` : esc(initials(name))}</span>`;
   };
@@ -727,8 +729,13 @@
       localStorage.removeItem("pp-accent");
       localStorage.removeItem("profit-member-demo-checkins");
       localStorage.removeItem("profit-demo-session");
+      localStorage.removeItem("profit-offline-user");
       sessionStorage.removeItem("profit-demo-session");
+      sessionStorage.removeItem("profit-verified-session");
       sessionStorage.setItem("profit-logged-out", "1");
+      if (window.ProFitAPI && typeof window.ProFitAPI.clearOfflineData === "function") {
+        await window.ProFitAPI.clearOfflineData();
+      }
       if (window.ProFitAPI) await window.ProFitAPI.post("/auth/logout", {});
     } catch (e) { /* ignore */ }
     const isSub = location.pathname.includes('/staff/') || location.pathname.includes('/trainer/');

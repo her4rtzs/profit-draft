@@ -2,24 +2,27 @@
 <html lang="en">
 
 <head>
-  <script src="splash.js?v=7"></script>
+  <script src="splash.js?v=10"></script>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
   <title>Functional Fitness Gym in Alfonso | ProFit</title>
-  <link rel="icon" type="image/jpeg" href="logo.jpg">
+  <link rel="icon" type="image/jpeg" href="/logo.jpg">
   <meta name="description"
     content="Functional Fitness Gym in Alfonso, Cavite. Join with a free seven-day trial, then pay cash or by GCash and manage your membership online.">
   <link rel="canonical" href="https://functionalfitnessgym.site/">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://functionalfitnessgym.site/">
   <meta property="og:title" content="ProFit · Functional Fitness Gym, Alfonso">
-  <meta property="og:description" content="Functional Fitness Gym in Alfonso, Cavite. Join with a free seven-day trial, then pay cash or by GCash and manage your membership online.">
+  <meta property="og:description"
+    content="Functional Fitness Gym in Alfonso, Cavite. Join with a free seven-day trial, then pay cash or by GCash and manage your membership online.">
   <meta property="og:image" content="https://functionalfitnessgym.site/logo.jpg">
   <meta property="og:image:width" content="1254">
   <meta property="og:image:height" content="1254">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="ProFit · Functional Fitness Gym, Alfonso">
-  <meta name="twitter:description" content="Functional Fitness Gym in Alfonso, Cavite. Join with a free seven-day trial, then pay cash or by GCash and manage your membership online.">
+  <meta name="twitter:description"
+    content="Functional Fitness Gym in Alfonso, Cavite. Join with a free seven-day trial, then pay cash or by GCash and manage your membership online.">
   <meta name="twitter:image" content="https://functionalfitnessgym.site/logo.jpg">
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"HealthClub","name":"Functional Fitness Gym","url":"https://functionalfitnessgym.site/","description":"Functional fitness gym in Alfonso, Cavite. Free seven-day trial, then cash or GCash membership.","image":"https://functionalfitnessgym.site/img/hero.jpg","telephone":"+639122617663","address":{"@type":"PostalAddress","streetAddress":"259 Luksuhin-Mangas Road","addressLocality":"Alfonso","addressRegion":"Cavite","addressCountry":"PH"},"sameAs":"https://www.facebook.com/FunctionalPerformance.2022","areaServed":"Alfonso, Cavite"}
@@ -30,7 +33,7 @@
     href="https://fonts.googleapis.com/css2?family=Anton&family=Permanent+Marker&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-  <link rel="stylesheet" href="site-footer.css?v=5">
+  <link rel="stylesheet" href="site-footer.css?v=6">
   <style>
     * {
       box-sizing: border-box;
@@ -42,17 +45,17 @@
     }
 
     :root {
-      --gold: #e8b93a;
-      --lime: #e8b93a;
-      --lime-hi: #f2cb5c;
-      --on: #1a1407;
-      --bg: #07080c;
-      --grad: #e8b93a;
-      --bg2: #0b0d16;
-      --card: #111320;
-      --line: #232636;
-      --tx: #f6efdc;
-      --mu: #9a9788;
+      --gold: #F5C518;
+      --lime: #F5C518;
+      --lime-hi: #FAD03C;
+      --on: #0B1530;
+      --bg: #070B18;
+      --grad: #F5C518;
+      --bg2: #0A1124;
+      --card: #0F1A33;
+      --line: #1F2F55;
+      --tx: #F4F6FB;
+      --mu: #9FB0D6;
       --wrap: 1160px;
       --r: 16px;
       --gap: 20px
@@ -125,23 +128,23 @@
 
     .btn.p {
       background: var(--lime);
-      color: #0b0f19;
+      color: #0B1530;
       border-color: var(--lime);
       box-shadow: none;
     }
 
     .btn.p:hover:not(:disabled) {
-      background: #f0c44b;
-      border-color: #f0c44b;
+      background: #FAD03C;
+      border-color: #FAD03C;
       filter: none;
       transform: none;
       box-shadow: none;
     }
 
     .btn.p:active:not(:disabled) {
-      background: #b8860b;
-      border-color: #b8860b;
-      color: #0b0f19;
+      background: #8A6A00;
+      border-color: #8A6A00;
+      color: #0B1530;
       transform: none;
       box-shadow: none;
     }
@@ -155,13 +158,13 @@
     }
 
     html {
-      background-color: #07080c;
+      background-color: #070B18;
       background-image: none;
     }
 
     .strip,
     .plans {
-      background: rgba(11, 13, 22, .85)
+      background: var(--bg);
     }
 
     /* header */
@@ -169,7 +172,9 @@
       position: sticky;
       top: 0;
       z-index: 50;
-      background: #0b0c10;
+      background: rgba(7, 11, 24, 0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--line)
     }
 
@@ -219,7 +224,7 @@
       font-size: 10px;
       font-weight: 700;
       letter-spacing: .14em;
-      color: #e8b93a;
+      color: #F5C518;
       text-transform: uppercase
     }
 
@@ -301,8 +306,17 @@
     }
 
     @media(max-width:560px) {
-      .top .btn:not(.p) {
+      .top .btn.p {
         display: none
+      }
+
+      .top .btn:not(.p) {
+        display: inline-flex;
+        height: 36px;
+        padding: 0 14px;
+        font-size: 13px;
+        border-color: var(--lime);
+        color: var(--lime)
       }
 
       .m-only {
@@ -431,7 +445,7 @@
       gap: 10px;
       padding: 10px 14px;
       border-radius: 12px;
-      background: rgba(11, 12, 16, .88);
+      background: rgba(7, 11, 24, .88);
       border: 1px solid rgba(255, 255, 255, .12);
       font-size: 13px;
       font-weight: 600;
@@ -467,7 +481,7 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      background: rgba(11, 12, 16, .86);
+      background: rgba(7, 11, 24, .86);
       border: 1px solid rgba(255, 255, 255, .14);
       border-radius: 999px;
       padding: 5px 8px;
@@ -494,9 +508,10 @@
       background: rgba(255, 255, 255, .12);
       color: var(--tx)
     }
+
     .c-arrow:active {
-      background: #b8860b;
-      color: #0b0f19
+      background: #8A6A00;
+      color: #0B1530
     }
 
     .c-dots {
@@ -748,7 +763,7 @@
 
     .prog .pic {
       aspect-ratio: 16/10;
-      background: #0b0c10;
+      background: var(--card);
       border-bottom: 1px solid var(--line);
       position: relative;
       overflow: hidden
@@ -924,8 +939,8 @@
 
     /* plans */
     .plans {
-      background: var(--bg2);
-      border-block: 1px solid var(--line)
+      background: var(--bg);
+      border-block: none
     }
 
     .plans .grid4 {
@@ -939,17 +954,23 @@
       flex-direction: column;
       height: 100%;
       padding: 26px 22px;
-      transition: transform .24s cubic-bezier(.2, .8, .2, 1), border-color .24s ease, box-shadow .24s ease
+      transition: transform .24s cubic-bezier(.2, .8, .2, 1), border-color .24s ease, box-shadow .24s ease, background-color .24s ease
     }
 
     .plan:hover,
     .plan:focus-within {
       transform: none;
-      background: rgba(255, 255, 255, .03);
+      background: #132140;
+      border-color: #293D6B;
       box-shadow: none;
     }
 
     .plan.hot {
+      border-color: var(--lime)
+    }
+
+    .plan.hot:hover,
+    .plan.hot:focus-within {
       border-color: var(--lime)
     }
 
@@ -1020,7 +1041,7 @@
       aspect-ratio: 4/3;
       border-radius: 24px;
       border: 1px solid var(--line);
-      background: #0b0c10;
+      background: var(--card);
       position: relative;
       overflow: hidden;
       display: grid;
@@ -1120,8 +1141,8 @@
       gap: 14px;
       padding: 20px 22px;
       border-radius: 14px;
-      background: #131C2E;
-      border: 1px solid rgba(255, 255, 255, .08);
+      background: var(--card);
+      border: 1px solid var(--line);
       text-decoration: none;
       color: inherit;
       transition: background-color .18s ease, border-color .18s ease, transform .18s ease
@@ -1132,10 +1153,12 @@
       transform: none;
       box-shadow: none;
     }
+
     .visit a.box.visit-card:active {
       background: rgba(255, 255, 255, .11);
       transform: none;
     }
+
     .visit a.box.visit-card:focus-visible {
       outline: 2px solid var(--lime);
       outline-offset: 2px;
@@ -1159,7 +1182,7 @@
       display: grid;
       place-items: center;
       background: rgba(232, 185, 58, .12);
-      color: #e8b93a;
+      color: #F5C518;
       border: 1px solid rgba(232, 185, 58, .24)
     }
 
@@ -1199,7 +1222,7 @@
 
     .visit a.box.visit-card:hover .visit-go,
     .visit a.box.visit-card:focus-visible .visit-go {
-      color: #e8b93a;
+      color: #F5C518;
       background: rgba(232, 185, 58, .12);
       transform: none;
     }
@@ -1214,14 +1237,14 @@
     .hero {
       position: relative;
       overflow: hidden;
-      background: #0b0b09 url("img/hero.jpg") center 30%/cover no-repeat
+      background: #070B18 url("img/hero.jpg") center 30%/cover no-repeat
     }
 
     .hero::before {
       content: "";
       position: absolute;
       inset: 0;
-      background: rgba(9, 9, 7, .82)
+      background: rgba(7, 11, 24, .82)
     }
 
     .hero .wrap {
@@ -1241,7 +1264,7 @@
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 14px;
-      margin-top: 22px
+      margin-top: 16px
     }
 
     .gal-grid figure {
@@ -1265,18 +1288,26 @@
 
     /* Refinement pass: calmer spacing, solid surfaces, photo program cards, no intro overlay. */
     header.top {
-      background: #0b0c10;
-      backdrop-filter: none;
-      -webkit-backdrop-filter: none
+      background: rgba(7, 11, 24, 0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px)
     }
 
     .s {
-      padding: 68px 0
+      padding: 48px 0
+    }
+
+    .s + .s {
+      padding-top: 16px
     }
 
     @media (max-width:820px) {
       .s {
-        padding: 48px 0
+        padding: 36px 0
+      }
+
+      .s + .s {
+        padding-top: 12px
       }
     }
 
@@ -1299,20 +1330,20 @@
 
     .cta-band .btn {
       background: var(--lime);
-      color: #0b0f19;
+      color: #0B1530;
       border-color: var(--lime)
     }
 
     .cta-band .btn:hover {
-      background: #f0c44b;
-      border-color: #f0c44b;
+      background: #FAD03C;
+      border-color: #FAD03C;
       filter: none;
     }
 
     .cta-band .btn:active {
-      background: #b8860b;
-      border-color: #b8860b;
-      color: #0b0f19;
+      background: #8A6A00;
+      border-color: #8A6A00;
+      color: #0B1530;
     }
 
     .pc-img {
@@ -1356,7 +1387,7 @@
     /* =========================================================
    Clean, Non-Overlapping Section Scroll & Post-Load Animations
    ========================================================= */
-    .hero .wrap > div:first-child,
+    .hero .wrap>div:first-child,
     .hero .hero-media {
       opacity: 0;
       transform: scale(1.06);
@@ -1365,7 +1396,7 @@
       will-change: opacity, transform;
     }
 
-    .hero.is-ready .wrap > div:first-child {
+    .hero.is-ready .wrap>div:first-child {
       opacity: 1;
       transform: scale(1);
     }
@@ -1476,20 +1507,28 @@
     .anim-programs.is-visible>*:nth-child(1),
     .anim-gallery.is-visible>*:nth-child(1),
     .anim-plans.is-visible>*:nth-child(1),
-    .anim-visit.is-visible>*:nth-child(1) { transition-delay: .04s; }
+    .anim-visit.is-visible>*:nth-child(1) {
+      transition-delay: .04s;
+    }
 
     .anim-programs.is-visible>*:nth-child(2),
     .anim-gallery.is-visible>*:nth-child(2),
     .anim-plans.is-visible>*:nth-child(2),
-    .anim-visit.is-visible>*:nth-child(2) { transition-delay: .12s; }
+    .anim-visit.is-visible>*:nth-child(2) {
+      transition-delay: .12s;
+    }
 
     .anim-programs.is-visible>*:nth-child(3),
     .anim-gallery.is-visible>*:nth-child(3),
     .anim-plans.is-visible>*:nth-child(3),
-    .anim-visit.is-visible>*:nth-child(3) { transition-delay: .20s; }
+    .anim-visit.is-visible>*:nth-child(3) {
+      transition-delay: .20s;
+    }
 
     .anim-gallery.is-visible>*:nth-child(4),
-    .anim-plans.is-visible>*:nth-child(4) { transition-delay: .28s; }
+    .anim-plans.is-visible>*:nth-child(4) {
+      transition-delay: .28s;
+    }
 
     .anim-programs.is-visible>*,
     .anim-gallery.is-visible>*,
@@ -1521,7 +1560,7 @@
     /* Accessibility override */
     @media(prefers-reduced-motion:reduce) {
 
-      .hero .wrap > div:first-child,
+      .hero .wrap>div:first-child,
       .hero .hero-media,
       .anim-header,
       .anim-header.is-visible,
@@ -1565,13 +1604,13 @@
     }
 
     .diff-card.trad {
-      background: rgba(17, 19, 32, .55);
+      background: rgba(15, 26, 51, .58);
       opacity: .88
     }
 
     .diff-card.profit-card {
       border: 2px solid var(--lime);
-      background: linear-gradient(180deg, rgba(232, 185, 58, .04) 0%, rgba(17, 19, 32, .95) 100%)
+      background: linear-gradient(180deg, rgba(245, 197, 24, .06) 0%, #0F1A33 100%)
     }
 
     .diff-badge {
@@ -1695,7 +1734,7 @@
         flex-direction: column;
         align-items: stretch;
         gap: 0;
-        background: #0b0c10;
+        background: #0F1A33;
         border-bottom: 1px solid var(--line);
         padding: 4px 24px 12px;
         z-index: 60
@@ -1779,7 +1818,7 @@
       position: absolute;
       left: 10px;
       bottom: 10px;
-      background: rgba(11, 12, 16, .86);
+      background: rgba(7, 11, 24, .86);
       color: #f6efdc;
       font-size: 12px;
       font-weight: 700;
@@ -1810,7 +1849,7 @@
       display: grid;
       place-items: center;
       padding: 20px;
-      background: rgba(7, 8, 12, .88);
+      background: rgba(7, 11, 24, .88);
       backdrop-filter: blur(6px)
     }
 
@@ -1850,7 +1889,7 @@
       height: 36px;
       border-radius: 50%;
       border: 1px solid rgba(255, 255, 255, .2);
-      background: #131C2E;
+      background: #0F1A33;
       color: #fff;
       font-size: 20px;
       cursor: pointer;
@@ -1863,27 +1902,60 @@
       -webkit-tap-highlight-color: transparent;
       -webkit-text-size-adjust: 100%;
     }
+
     header.top {
       padding-top: env(safe-area-inset-top, 0px);
     }
-    button, a { touch-action: manipulation; }
-    @media (hover: none) {
-      .btn:hover, .gal-grid figure:hover img { transform: none; }
+
+    button,
+    a {
+      touch-action: manipulation;
     }
+
+    @media (hover: none) {
+
+      .btn:hover,
+      .gal-grid figure:hover img {
+        transform: none;
+      }
+    }
+
     @media (min-width: 640px) and (max-width: 980px) {
       .plans .grid4 {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
+
     @media (max-width: 400px) {
-      .wrap, .top .wrap { width: calc(100% - 24px); }
-      .gal-grid { grid-template-columns: 1fr; }
-      .hero h1 { font-size: clamp(28px, 8.5vw, 38px); }
-      .top .btn.p { padding: 0 10px; font-size: 12px; }
+
+      .wrap,
+      .top .wrap {
+        width: calc(100% - 24px);
+      }
+
+      .gal-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h1 {
+        font-size: clamp(28px, 8.5vw, 38px);
+      }
+
+      .top .btn.p {
+        padding: 0 10px;
+        font-size: 12px;
+      }
     }
+
     @media (max-width: 360px) {
-      .strip .wrap { grid-template-columns: 1fr; }
-      .strip div { border-right: 0; border-bottom: 1px solid var(--line); }
+      .strip .wrap {
+        grid-template-columns: 1fr;
+      }
+
+      .strip div {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
     }
 
     @media(prefers-reduced-motion:reduce) {
@@ -1891,6 +1963,7 @@
         animation: none !important;
         transition: none !important
       }
+
       .wl-scroll-top {
         transition: none !important;
       }
@@ -1905,9 +1978,9 @@
       width: 46px;
       height: 46px;
       border-radius: 999px;
-      border: 1px solid rgba(232, 185, 58, .38);
-      background: #111622;
-      color: var(--gold, #e8b93a);
+      border: 1px solid rgba(245, 197, 24, .38);
+      background: #0F1A33;
+      color: var(--gold, #F5C518);
       display: grid;
       place-items: center;
       font-size: 16px;
@@ -1919,33 +1992,319 @@
       transform: translateY(10px);
       transition: opacity .2s ease, transform .2s ease, background-color .16s ease, color .16s ease, border-color .16s ease, visibility .2s ease;
     }
+
     .wl-scroll-top.is-visible {
       opacity: 1;
       visibility: visible;
       pointer-events: auto;
       transform: translateY(0);
     }
+
     .wl-scroll-top:hover,
     .wl-scroll-top:focus-visible {
-      background: var(--gold, #e8b93a);
-      border-color: var(--gold, #e8b93a);
-      color: #0b0f19;
+      background: var(--gold, #F5C518);
+      border-color: var(--gold, #F5C518);
+      color: #0B1530;
     }
+
     .wl-scroll-top:active {
-      background: #b8860b;
-      border-color: #b8860b;
-      color: #0b0f19;
+      background: #8A6A00;
+      border-color: #8A6A00;
+      color: #0B1530;
     }
+
     .wl-scroll-top:focus-visible {
       outline: 2px solid #ffffff;
       outline-offset: 2px;
+    }
+
+    /* Install App button & fallback modal */
+    .wl-install-btn {
+      background: var(--card);
+      border: 1px solid var(--line);
+      color: var(--tx);
+    }
+
+    .wl-install-btn i {
+      color: var(--gold, #F5C518);
+    }
+
+    .wl-install-btn:hover:not(:disabled) {
+      background: #162547;
+      border-color: #293D6B;
+    }
+
+    .wl-install-btn:active:not(:disabled) {
+      background: #0A1124;
+      border-color: #1F2F55;
+    }
+
+    .wl-install-btn[hidden] {
+      display: none !important;
+    }
+
+    .wl-install-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 2100;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: rgba(7, 11, 24, .82);
+      backdrop-filter: blur(6px);
+    }
+
+    .wl-install-modal[hidden] {
+      display: none;
+    }
+
+    .wl-install-dialog {
+      width: min(460px, 100%);
+      background: #0F1A33;
+      border: 1px solid #1F2F55;
+      border-radius: 18px;
+      padding: 22px;
+      color: #F4F6FB;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, .55);
+    }
+
+    .wl-install-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .wl-install-head h2 {
+      margin: 0 0 4px;
+      font-size: 19px;
+      font-weight: 800;
+      color: #F4F6FB;
+    }
+
+    .wl-install-head p {
+      margin: 0;
+      font-size: 13.5px;
+      color: #9FB0D6;
+      line-height: 1.45;
+    }
+
+    .wl-install-x {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 1px solid #1F2F55;
+      background: #0A1124;
+      color: #F4F6FB;
+      font-size: 20px;
+      line-height: 1;
+      display: grid;
+      place-items: center;
+      flex: none;
+      cursor: pointer;
+    }
+
+    .wl-install-x:hover {
+      background: #162547;
+      border-color: #293D6B;
+    }
+
+    .wl-install-steps {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .wl-install-step {
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: #0A1124;
+      border: 1px solid #1F2F55;
+    }
+
+    .wl-install-step strong {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13.5px;
+      color: #F4F6FB;
+      margin-bottom: 6px;
+    }
+
+    .wl-install-step strong i {
+      color: #F5C518;
+    }
+
+    .wl-install-step ol {
+      margin: 0;
+      padding-left: 18px;
+      color: #9FB0D6;
+      font-size: 13px;
+      line-height: 1.55;
+      display: grid;
+      gap: 3px;
+    }
+
+    .wl-install-foot {
+      display: flex;
+      justify-content: flex-end;
     }
   </style>
   <script
     type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script>
   <link rel="preload" as="image" href="img/hero.jpg" fetchpriority="high">
+  <script>
+    (function () {
+      var s = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+      if (s) {
+        document.documentElement.classList.add('pf-standalone');
+        try {
+          if (!navigator.onLine && localStorage.getItem('profit-offline-user')) {
+            location.replace('/dashboard');
+            return;
+          }
+        } catch (_) {}
+        fetch('/api/auth/session', { credentials: 'include' })
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (d) { if (d && d.user) location.replace('/dashboard'); })
+          .catch(function () {});
+      }
+    })();
+  </script>
+  <style>
+    #pf-app-welcome { display: none; }
+    html.pf-standalone body {
+      background: #070B18 !important;
+      color: #F4F6FB !important;
+      min-height: 100dvh !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow-x: hidden !important;
+    }
+    html.pf-standalone body > :not(#pf-app-welcome):not(#pf-loader):not(script):not(style) {
+      display: none !important;
+    }
+    html.pf-standalone #pf-app-welcome {
+      display: flex !important;
+      flex-direction: column;
+      min-height: 100dvh;
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      background: #070B18;
+      padding-bottom: max(28px, env(safe-area-inset-bottom, 28px));
+    }
+    .pf-app-wave {
+      position: relative;
+      width: 100%;
+      height: calc(132px + env(safe-area-inset-top, 0px));
+      flex: none;
+      overflow: hidden;
+    }
+    .pf-app-wave svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    .pf-app-body {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 12px 28px 24px;
+      gap: 18px;
+    }
+    .pf-app-logo {
+      width: 112px;
+      height: 112px;
+      border-radius: 28px;
+      padding: 4px;
+      background: linear-gradient(145deg, #F5C518, #0F1A33);
+      box-shadow: 0 18px 40px -16px rgba(245, 197, 24, 0.35);
+      overflow: hidden;
+    }
+    .pf-app-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 24px;
+      display: block;
+    }
+    .pf-app-title {
+      margin: 4px 0 0;
+      font-family: "Plus Jakarta Sans", Inter, sans-serif;
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      color: #F4F6FB;
+      line-height: 1.15;
+    }
+    .pf-app-sub {
+      margin: 0;
+      max-width: 300px;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #9FB0D6;
+    }
+    .pf-app-pills {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+    }
+    .pf-app-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: #0F1A33;
+      border: 1px solid #1F2F55;
+      color: #F4F6FB;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .pf-app-pill i { color: #F5C518; font-size: 11px; }
+    .pf-app-actions {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .pf-app-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 50px;
+      border-radius: 999px;
+      font-family: "Plus Jakarta Sans", Inter, sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform 0.15s ease, filter 0.15s ease, background-color 0.15s ease;
+    }
+    .pf-app-btn:active { transform: scale(0.98); }
+    .pf-app-btn-primary {
+      background: #F5C518;
+      color: #0B1530;
+      border: 1px solid #F5C518;
+    }
+    .pf-app-btn-secondary {
+      background: #0F1A33;
+      color: #F4F6FB;
+      border: 1.5px solid #293D6B;
+    }
+  </style>
   <link rel="manifest" href="/manifest.webmanifest">
-  <meta name="theme-color" content="#0a0e17"><meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17"><meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#0a0e17">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F7F8FC">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17">
+  <meta name="color-scheme" content="light dark">
   <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="ProFit">
@@ -1953,14 +2312,40 @@
 </head>
 
 <body class="dark">
+  <main id="pf-app-welcome" aria-label="ProFit app welcome">
+    <div class="pf-app-wave" aria-hidden="true">
+      <svg viewBox="0 0 400 140" preserveAspectRatio="none">
+        <rect width="400" height="140" fill="#070B18" />
+        <path d="M0,0 L400,0 L400,92 C310,136 185,48 0,104 Z" fill="#0F1A33" />
+        <path d="M0,0 L400,0 L400,72 C305,118 185,34 0,88 Z" fill="#F5C518" fill-opacity="0.92" />
+      </svg>
+    </div>
+    <div class="pf-app-body">
+      <div class="pf-app-logo">
+        <img src="logo.jpg" alt="ProFit logo" width="112" height="112">
+      </div>
+      <div>
+        <p class="pf-app-title" role="heading" aria-level="1">Welcome!</p>
+        <p class="pf-app-sub" style="margin-top:8px">Functional Fitness Gym · Alfonso, Cavite. Start your 7-day free trial or sign in to continue.</p>
+      </div>
+      <div class="pf-app-pills" aria-label="Membership highlights">
+        <span class="pf-app-pill"><i class="fa-solid fa-bolt" aria-hidden="true"></i> 7-day free trial</span>
+        <span class="pf-app-pill"><i class="fa-solid fa-wallet" aria-hidden="true"></i> Cash &amp; GCash</span>
+      </div>
+      <div class="pf-app-actions">
+        <a class="pf-app-btn pf-app-btn-primary" href="/join">Sign Up</a>
+        <a class="pf-app-btn pf-app-btn-secondary" href="/login">Login</a>
+      </div>
+    </div>
+  </main>
   <input id="navt" type="checkbox" hidden>
   <header class="top">
     <div class="wrap"><a class="brand" href="/"><img src="logo.jpg" alt="ProFit logo" width="40" height="40"><span
           class="brand-copy"><strong>ProFit</strong><small data-gym-name>FUNCTIONAL FITNESS GYM</small></span></a>
       <nav aria-label="Primary"><a href="#home">Home</a><a href="#why">Features</a><a
           href="#difference">Difference</a><a href="#programs">Programs</a><a href="#plans">Membership</a><a
-          href="#about">About</a><a href="#visit">Contact</a><a href="/faq">FAQs</a><a class="m-only" href="/login">Sign
-          in</a></nav><label class="menu-btn" for="navt" aria-label="Open menu"><i class="fa-solid fa-bars"></i></label>
+          href="#about">About</a><a href="#visit">Contact</a><a href="/faq">FAQs</a><a class="m-only" href="/join">Join
+          now</a></nav><label class="menu-btn" for="navt" aria-label="Open menu"><i class="fa-solid fa-bars"></i></label>
       <div class="cta"><a class="btn" href="/login">Sign in</a><a class="btn p" href="/join">Join now</a></div>
     </div>
   </header>
@@ -1973,7 +2358,8 @@
           <p class="lead">Train with coaches who know your name. Join online in minutes with a free seven-day trial,
             then pay cash at the desk or by GCash and manage everything in your member portal.</p>
           <div class="acts"><a class="btn p" href="/join">Join now <i class="fa-solid fa-arrow-right"></i></a><a
-              class="btn" href="#plans">View plans</a></div>
+              class="btn" href="#plans">View plans</a><button type="button" class="btn wl-install-btn" id="wlInstallBtn"><i
+                class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i><span>Install app</span></button></div>
           <span class="wl-motto">We lift and uplift.</span>
         </div>
         <div class="hero-media" id="heroCarousel" aria-roledescription="carousel" aria-label="Gym highlights">
@@ -1989,7 +2375,8 @@
             <div class="carousel-slide" aria-hidden="true"><img src="img/gal-4.jpg" alt="Weights and gym equipment"
                 loading="lazy"></div>
           </div>
-          <div class="chip b"><i class="fa-solid fa-bolt"></i><span>Free trial<small data-countup="7" data-suffix=" days" data-hero-count>7 days</small></span></div>
+          <div class="chip b"><i class="fa-solid fa-bolt"></i><span>Free trial<small data-countup="7"
+                data-suffix=" days" data-hero-count>7 days</small></span></div>
           <div class="chip a"><i class="fa-solid fa-location-dot"></i><span>Alfonso, Calabarzon<small>Luksuhin-Mangas
                 Road</small></span></div>
           <div class="carousel-ctrls">
@@ -2057,7 +2444,8 @@
           <div><span class="eyebrow">The Difference</span>
             <h2>Why ProFit is not your typical gym</h2>
           </div>
-          <p>We built Functional Fitness Gym to solve the friction of traditional gyms — from transparent pricing to
+          <p>We built Functional Fitness Gym to solve the friction of traditional gyms — from transparent pricing
+            to
             real coaching on the floor.</p>
         </div>
         <div class="diff-grid">
@@ -2176,13 +2564,17 @@
           <div><span class="eyebrow">Membership</span>
             <h2>Simple plans, no surprises</h2>
           </div>
-          <p>Sign up free for seven days, then choose a plan from a single Day pass (<span data-plan-price="daily" data-countup="80" data-prefix="&#8369;">₱80</span>) to an Annual membership and pay cash or by GCash.</p>
+          <p>Sign up free for seven days, then choose a plan from a single Day pass (<span data-plan-price="daily"
+              data-countup="80" data-prefix="&#8369;">&#8369;80</span>) to an Annual membership and pay cash or by
+            GCash.</p>
         </div>
         <div class="grid4 anim-plans">
 
           <div class="box plan">
             <h3>Daily</h3>
-            <div class="price"><span data-plan-price="daily" data-countup="80" data-prefix="&#8369;">₱80</span><small> / <span data-plan-days="daily" data-countup="1">1</span> day</small></div>
+            <div class="price"><span data-plan-price="daily" data-countup="80"
+                data-prefix="&#8369;">&#8369;80</span><small> / <span data-plan-days="daily" data-countup="1">1</span>
+                day</small></div>
             <ul>
               <li><i class="fa-solid fa-check"></i>Gym access</li>
               <li><i class="fa-solid fa-check"></i>Member portal</li>
@@ -2191,7 +2583,9 @@
           </div>
           <div class="box plan">
             <h3>Monthly</h3>
-            <div class="price"><span data-plan-price="monthly" data-countup="800" data-prefix="&#8369;">₱800</span><small> / <span data-plan-days="monthly" data-countup="30">30</span> days</small></div>
+            <div class="price"><span data-plan-price="monthly" data-countup="800"
+                data-prefix="&#8369;">&#8369;800</span><small> / <span data-plan-days="monthly"
+                  data-countup="30">30</span> days</small></div>
             <ul>
               <li><i class="fa-solid fa-check"></i>Gym access</li>
               <li><i class="fa-solid fa-check"></i>Member portal</li>
@@ -2200,7 +2594,9 @@
           </div>
           <div class="box plan hot"><span class="badge">MOST POPULAR</span>
             <h3>Quarterly</h3>
-            <div class="price"><span data-plan-price="quarterly" data-countup="2100" data-prefix="&#8369;">₱2,100</span><small> / <span data-plan-days="quarterly" data-countup="90">90</span> days</small></div>
+            <div class="price"><span data-plan-price="quarterly" data-countup="2100"
+                data-prefix="&#8369;">&#8369;2,100</span><small> / <span data-plan-days="quarterly"
+                  data-countup="90">90</span> days</small></div>
             <ul>
               <li><i class="fa-solid fa-check"></i>Gym access</li>
               <li><i class="fa-solid fa-check"></i>Member portal</li>
@@ -2209,7 +2605,9 @@
           </div>
           <div class="box plan">
             <h3>Annual</h3>
-            <div class="price"><span data-plan-price="annual" data-countup="7500" data-prefix="&#8369;">₱7,500</span><small> / <span data-plan-days="annual" data-countup="365">365</span> days</small></div>
+            <div class="price"><span data-plan-price="annual" data-countup="7500"
+                data-prefix="&#8369;">&#8369;7,500</span><small> / <span data-plan-days="annual"
+                  data-countup="365">365</span> days</small></div>
             <ul>
               <li><i class="fa-solid fa-check"></i>Gym access</li>
               <li><i class="fa-solid fa-check"></i>Member portal</li>
@@ -2220,48 +2618,48 @@
       </div>
     </section>
     <script>(function () {
-      function applyPlans(plans) {
-        if (!plans) return;
-        document.querySelectorAll('[data-plan-price]').forEach(function (el) {
-          var p = plans[el.dataset.planPrice];
-          if (p && p.price) {
-            var n = Math.round(Number(p.price));
-            if (isFinite(n) && n > 0) {
-              el.dataset.countup = String(n);
-              if (el.dataset.counted === '1') el.textContent = '\u20b1' + n.toLocaleString('en-US');
+        function applyPlans(plans) {
+          if (!plans) return;
+          document.querySelectorAll('[data-plan-price]').forEach(function (el) {
+            var p = plans[el.dataset.planPrice];
+            if (p && p.price) {
+              var n = Math.round(Number(p.price));
+              if (isFinite(n) && n > 0) {
+                el.dataset.countup = String(n);
+                if (el.dataset.counted === '1') el.textContent = '\u20b1' + n.toLocaleString('en-US');
+              }
             }
-          }
-        });
-        document.querySelectorAll('[data-plan-days]').forEach(function (el) {
-          var p = plans[el.dataset.planDays];
-          if (p && p.days) {
-            var d = Math.round(Number(p.days));
-            if (isFinite(d) && d > 0) {
-              el.dataset.countup = String(d);
-              if (el.dataset.counted === '1') el.textContent = d.toLocaleString('en-US');
+          });
+          document.querySelectorAll('[data-plan-days]').forEach(function (el) {
+            var p = plans[el.dataset.planDays];
+            if (p && p.days) {
+              var d = Math.round(Number(p.days));
+              if (isFinite(d) && d > 0) {
+                el.dataset.countup = String(d);
+                if (el.dataset.counted === '1') el.textContent = d.toLocaleString('en-US');
+              }
             }
-          }
-        });
-      }
-      function fetchPlans() {
-        try {
-          fetch('/api/plans/', { cache: 'no-store' })
-            .then(function (r) { return r.ok ? r.json() : null; })
-            .then(function (d) { if (d && d.plans) applyPlans(d.plans); })
-            .catch(function () { });
-        } catch (e) { }
-      }
-      fetchPlans();
-      document.addEventListener('visibilitychange', function () {
-        if (!document.hidden) fetchPlans();
-      });
-      window.addEventListener('pageshow', fetchPlans);
-      window.addEventListener('storage', function (e) {
-        if (e.key === 'profit-plan-prices-v1' && e.newValue) {
-          try { applyPlans(JSON.parse(e.newValue)); } catch (err) { }
+          });
         }
-      });
-    })();</script>
+        function fetchPlans() {
+          try {
+            fetch('/api/plans/', { cache: 'no-store' })
+              .then(function (r) { return r.ok ? r.json() : null; })
+              .then(function (d) { if (d && d.plans) applyPlans(d.plans); })
+              .catch(function () { });
+          } catch (e) { }
+        }
+        fetchPlans();
+        document.addEventListener('visibilitychange', function () {
+          if (!document.hidden) fetchPlans();
+        });
+        window.addEventListener('pageshow', fetchPlans);
+        window.addEventListener('storage', function (e) {
+          if (e.key === 'profit-plan-prices-v1' && e.newValue) {
+            try { applyPlans(JSON.parse(e.newValue)); } catch (err) { }
+          }
+        });
+      })();</script>
 
     <section class="s" id="about">
       <div class="wrap story">
@@ -2269,7 +2667,8 @@
             loading="lazy" onerror="this.remove()"><span class="wl-crew-pill">Alfonso crew</span></div>
         <div class="anim-story-text"><span class="eyebrow">Our story</span>
           <h2>A neighborhood gym built on community</h2>
-          <p>Functional Fitness Gym is a functional gym in Alfonso, Cavite. We focus on practical strength, steady habits
+          <p>Functional Fitness Gym is a functional gym in Alfonso, Cavite. We focus on practical strength, steady
+            habits
             and a friendly floor where everyone belongs.</p>
           <p>ProFit is the system behind it: join online, check in, and follow your progress without paperwork.</p>
           <ul>
@@ -2336,7 +2735,7 @@
       </div>
     </section>
   </main>
-  <script src="site-footer.js?v=7" defer></script>
+  <script src="site-footer.js?v=8" defer></script>
   <script>
     document.querySelectorAll('header nav a').forEach(function (a) { a.addEventListener('click', function () { document.getElementById('navt').checked = false; }); });
     (function () {
@@ -2629,6 +3028,115 @@
       });
       window.addEventListener('scroll', onScroll, { passive: true });
       update();
+    })();
+  </script>
+  <div class="wl-install-modal" id="wlInstallModal" hidden role="dialog" aria-modal="true" aria-labelledby="wlInstallTitle">
+    <div class="wl-install-dialog">
+      <div class="wl-install-head">
+        <div>
+          <h2 id="wlInstallTitle">Install ProFit app</h2>
+          <p>Add ProFit to your home screen for quick, app-like access.</p>
+        </div>
+        <button type="button" class="wl-install-x" id="wlInstallClose" aria-label="Close install instructions">&times;</button>
+      </div>
+      <div class="wl-install-steps">
+        <div class="wl-install-step">
+          <strong><i class="fa-brands fa-apple" aria-hidden="true"></i> iPhone &amp; iPad (Safari)</strong>
+          <ol>
+            <li>Tap the <b>Share</b> button in Safari's bottom bar.</li>
+            <li>Scroll down and tap <b>Add to Home Screen</b>.</li>
+            <li>Tap <b>Add</b> in the top corner.</li>
+          </ol>
+        </div>
+        <div class="wl-install-step">
+          <strong><i class="fa-brands fa-chrome" aria-hidden="true"></i> Android &amp; Desktop (Chrome / Edge / Brave)</strong>
+          <ol>
+            <li>Open the browser menu (<b>&#8942;</b>) or address-bar install icon.</li>
+            <li>Tap <b>Install app</b> or <b>Add to Home screen</b>.</li>
+            <li>Confirm by tapping <b>Install</b>.</li>
+          </ol>
+        </div>
+      </div>
+      <div class="wl-install-foot">
+        <button type="button" class="btn p" id="wlInstallDone">Got it</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var btn = document.getElementById('wlInstallBtn');
+      var modal = document.getElementById('wlInstallModal');
+      var closeBtn = document.getElementById('wlInstallClose');
+      var doneBtn = document.getElementById('wlInstallDone');
+      if (!btn) return;
+
+      var isStandalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+      if (isStandalone) {
+        btn.hidden = true;
+        return;
+      }
+
+      var deferredPrompt = null;
+      var busy = false;
+
+      function openModal() {
+        if (!modal) return;
+        modal.hidden = false;
+        document.body.style.overflow = 'hidden';
+        if (closeBtn) closeBtn.focus();
+      }
+
+      function closeModal() {
+        if (!modal || modal.hidden) return;
+        modal.hidden = true;
+        document.body.style.overflow = '';
+        btn.focus();
+      }
+
+      window.addEventListener('beforeinstallprompt', function (e) {
+        e.preventDefault();
+        deferredPrompt = e;
+      });
+
+      window.addEventListener('appinstalled', function () {
+        deferredPrompt = null;
+        btn.hidden = true;
+        if (modal && !modal.hidden) closeModal();
+      });
+
+      btn.addEventListener('click', async function () {
+        if (busy) return;
+        if (deferredPrompt) {
+          busy = true;
+          btn.disabled = true;
+          try {
+            deferredPrompt.prompt();
+            var choice = await deferredPrompt.userChoice;
+            if (choice && choice.outcome === 'accepted') {
+              btn.hidden = true;
+            }
+            deferredPrompt = null;
+          } catch (err) {
+            openModal();
+          } finally {
+            busy = false;
+            btn.disabled = false;
+          }
+          return;
+        }
+        openModal();
+      });
+
+      if (closeBtn) closeBtn.addEventListener('click', closeModal);
+      if (doneBtn) doneBtn.addEventListener('click', closeModal);
+      if (modal) {
+        modal.addEventListener('click', function (e) {
+          if (e.target === modal) closeModal();
+        });
+      }
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && modal && !modal.hidden) closeModal();
+      });
     })();
   </script>
 </body>

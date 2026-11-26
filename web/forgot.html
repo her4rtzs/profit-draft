@@ -1,646 +1,1147 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
-<title>Reset password — ProFit</title>
-<meta name="description" content="Reset your ProFit account password.">
-<link rel="icon" type="image/jpeg" href="logo.jpg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
-<script src="config.js?v=11"></script>
-<script src="api.js?v=6"></script>
-<style>
-  :root{
-    --gold:#e8b93a;
-    --lime:#e8b93a;
-    --lime-hi:#f2cb5c;
-    --on:#1a1407;
-    --bg:#07080c;
-    --bg2:#0b0d16;
-    --card:#111320;
-    --line:#232636;
-    --tx:#f6efdc;
-    --mu:#9a9788;
-    --field-line:#4A4E66;
-    --err:#f87171;
-    --ok:#4ade80;
-  }
-  html[data-theme="light"],body.light{
-    --bg:#f4f5f8;
-    --bg2:#ffffff;
-    --card:#ffffff;
-    --line:#d8dce6;
-    --tx:#111318;
-    --mu:#5b6070;
-    --field-line:#b8bfd0;
-    --err:#dc2626;
-    --ok:#15803d;
-  }
-  @media(prefers-color-scheme:light){
-    html[data-theme="auto"]{
-      --bg:#f4f5f8;
-      --bg2:#ffffff;
-      --card:#ffffff;
-      --line:#d8dce6;
-      --tx:#111318;
-      --mu:#5b6070;
-      --field-line:#b8bfd0;
-      --err:#dc2626;
-      --ok:#15803d;
+  <meta charset="utf-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <title>Reset password — ProFit</title>
+  <meta name="description" content="Reset your ProFit account password.">
+  <link rel="icon" type="image/jpeg" href="/logo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous">
+  <script src="config.js?v=11"></script>
+  <script src="api.js?v=6"></script>
+  <style>
+    :root {
+      --gold: #F5C518;
+      --lime: #F5C518;
+      --lime-hi: #FAD03C;
+      --on: #0B1530;
+      --bg: #070B18;
+      --bg2: #0A1124;
+      --card: #0F1A33;
+      --line: #1F2F55;
+      --tx: #F4F6FB;
+      --mu: #9FB0D6;
+      --field-line: #293D6B;
+      --err: #F87171;
+      --ok: #34D399;
     }
-  }
 
-  *{box-sizing:border-box}
-  html,body{margin:0;padding:0;overflow-x:hidden}
-  body{
-    min-height:100vh;
-    background:var(--bg);
-    color:var(--tx);
-    font:15px/1.6 Inter,system-ui,-apple-system,sans-serif;
-    -webkit-font-smoothing:antialiased;
-    display:flex;
-    flex-direction:column;
-  }
-  h1,h2,h3,button,.portal-brand strong{font-family:"Plus Jakarta Sans",Inter,system-ui,sans-serif}
-  :focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+    html[data-theme="light"],
+    body.light {
+      --bg: #F7F8FC;
+      --bg2: #EEF2FA;
+      --card: #FFFFFF;
+      --line: #DDE3F0;
+      --tx: #0B1530;
+      --mu: #4A5878;
+      --field-line: #CDD6E8;
+      --err: #dc2626;
+      --ok: #15803d;
+    }
 
-  /* Header matching landing, login & join */
-  .portal-nav{
-    height:68px;min-height:68px;
-    background:#0b0c10;
-    border-bottom:1px solid var(--line);
-    padding:0 clamp(16px,4vw,40px);
-    display:flex;align-items:center;justify-content:space-between;gap:16px;
-    position:sticky;top:0;z-index:40;flex:none;
-  }
-  .portal-brand{
-    display:inline-flex;align-items:center;gap:12px;
-    text-decoration:none;color:#f6efdc;min-height:44px;
-  }
-  .portal-brand img{width:36px;height:36px;border-radius:10px;object-fit:cover;display:block;flex:none}
-  .portal-brand strong{font-size:22px;font-weight:800;letter-spacing:-.02em;color:#f6efdc}
-  .back-link{
-    display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 10px;border-radius:10px;
-    color:#9a9788;text-decoration:none;font:600 14px/1 Inter,system-ui,sans-serif;
-    transition:background-color .15s ease,color .15s ease;white-space:nowrap;
-  }
-  .back-link:hover{background:rgba(255,255,255,.06);color:var(--tx)}
-  .back-link:active{background:rgba(255,255,255,.11)}
+    @media(prefers-color-scheme:light) {
+      html[data-theme="auto"] {
+        --bg: #F7F8FC;
+        --bg2: #EEF2FA;
+        --card: #FFFFFF;
+        --line: #DDE3F0;
+        --tx: #0B1530;
+        --mu: #4A5878;
+        --field-line: #CDD6E8;
+        --err: #dc2626;
+        --ok: #15803d;
+      }
+    }
 
-  /* Full-bleed hero with flat overlay */
-  .fp-shell{
-    position:relative;
-    flex:1 1 auto;
-    min-height:calc(100vh - 68px);
-    background:url("img/hero.jpg") center/cover no-repeat;
-    display:flex;align-items:center;
-    padding:clamp(16px,2.5vh,28px) clamp(16px,4vw,48px);
-    overflow:hidden;
-  }
-  .fp-shell::before{
-    content:"";position:absolute;inset:0;
-    background:rgba(7,8,12,.7);
-    z-index:0;
-  }
-  html[data-theme="light"] .fp-shell::before,
-  body.light .fp-shell::before{
-    background:rgba(244,245,248,.82);
-  }
-  .fp-wrap{
-    position:relative;z-index:1;
-    width:min(1160px,100%);margin-inline:auto;
-    display:grid;grid-template-columns:minmax(0,1fr) 410px;
-    gap:clamp(28px,5vw,64px);align-items:center;
-  }
+    * {
+      box-sizing: border-box
+    }
 
-  /* Left copy */
-  @keyframes pfRiseIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-  .fp-eyebrow{
-    display:inline-flex;align-items:center;gap:10px;
-    font:700 12px/1.2 "Plus Jakarta Sans",sans-serif;
-    letter-spacing:.16em;text-transform:uppercase;color:var(--gold);
-    margin:0 0 16px;
-    animation:pfRiseIn .45s cubic-bezier(.22,1,.36,1) both;
-  }
-  .fp-eyebrow::before{content:"";width:24px;height:2px;background:var(--gold);flex:none}
-  .fp-title{
-    margin:0 0 16px;
-    font-size:clamp(38px,5vw,60px);font-weight:800;line-height:1.04;letter-spacing:-.03em;
-    color:var(--tx);
-    animation:pfRiseIn .5s cubic-bezier(.22,1,.36,1) .06s both;
-  }
-  .fp-title .hl{color:var(--gold)}
-  .fp-desc{
-    margin:0 0 24px;max-width:460px;font-size:16.5px;line-height:1.6;color:var(--mu);
-    animation:pfRiseIn .5s cubic-bezier(.22,1,.36,1) .12s both;
-  }
-  .fp-checks{list-style:none;margin:0 0 24px;padding:0;display:grid;gap:12px;animation:pfRiseIn .5s cubic-bezier(.22,1,.36,1) .18s both}
-  .fp-checks li{display:flex;align-items:center;gap:10px;font-size:14.5px;font-weight:500;color:var(--tx)}
-  .fp-checks i{color:var(--gold);font-size:14px;flex:none}
-  .fp-gym-foot{margin:0;font-size:12.5px;color:var(--mu);animation:pfRiseIn .5s cubic-bezier(.22,1,.36,1) .24s both}
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden
+    }
 
-  /* Right card */
-  .fp-card{
-    width:100%;max-width:410px;justify-self:end;
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:16px;
-    padding:clamp(20px,2.5vh,28px) clamp(20px,2.5vw,28px);
-    box-shadow:0 24px 48px -20px rgba(0,0,0,.75);
-    animation:pfRiseIn .52s cubic-bezier(.22,1,.36,1) .08s both;
-  }
-  .fp-kicker{
-    margin:0 0 6px;font:700 12px/1.2 "Plus Jakarta Sans",sans-serif;
-    letter-spacing:.14em;text-transform:uppercase;color:var(--gold);
-  }
-  .fp-card h2{margin:0 0 4px;font-size:24px;font-weight:800;letter-spacing:-.02em;color:var(--tx)}
-  .fp-lead{margin:0 0 18px;font-size:13.5px;color:var(--mu)}
-  .fp-lead a{color:var(--gold);font-weight:600;text-decoration:none;text-underline-offset:3px}
-  .fp-lead a:hover,
-  .fp-lead a:focus-visible{color:var(--lime-hi);text-decoration:underline}
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--tx);
+      font: 15px/1.6 Inter, system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+    }
 
-  .fp-field-label{display:block;margin:0 0 5px;font:600 13px/1.2 Inter,system-ui,sans-serif;color:var(--tx)}
-  .fp-field{margin-bottom:12px}
-  .fp-input{
-    width:100%;height:44px;padding:0 14px;
-    border-radius:12px;border:1px solid var(--field-line);
-    background:var(--bg2);color:var(--tx);
-    font:400 14.5px/1.2 Inter,system-ui,sans-serif;
-    transition:border-color .16s ease,box-shadow .16s ease,background-color .16s ease;
-  }
-  .fp-input::placeholder{color:var(--mu)}
-  .fp-input:hover:not(:focus):not(:disabled){border-color:rgba(232,185,58,.5)}
-  .fp-input:focus{outline:1.5px solid var(--gold);outline-offset:0;border-color:var(--gold);box-shadow:none}
-  .fp-input:-webkit-autofill,
-  .fp-input:-webkit-autofill:hover,
-  .fp-input:-webkit-autofill:focus{
-    -webkit-box-shadow:0 0 0 100px var(--bg2) inset !important;
-    -webkit-text-fill-color:var(--tx) !important;
-    caret-color:var(--tx);
-    transition:background-color 5000s ease-in-out 0s;
-  }
+    h1,
+    h2,
+    h3,
+    button,
+    .portal-brand strong {
+      font-family: "Plus Jakarta Sans", Inter, system-ui, sans-serif
+    }
 
-  .fp-pw-wrap{position:relative}
-  .fp-pw-wrap .fp-input{padding-right:46px}
-  .fp-eye{
-    position:absolute;right:4px;top:50%;transform:translateY(-50%);
-    width:40px;height:40px;border:0;background:transparent;color:var(--mu);
-    display:grid;place-items:center;cursor:pointer;border-radius:10px;transition:background-color .15s ease,color .15s ease;
-  }
-  .fp-eye:hover{background:rgba(255,255,255,.06);color:var(--tx)}
-  .fp-eye:active{background:rgba(255,255,255,.11)}
+    :focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 2px
+    }
 
-  .fp-msg{
-    margin:0 0 12px;padding:10px 12px;border-radius:12px;font-size:13px;font-weight:500;
-    background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.35);color:var(--ok);
-  }
-  .fp-msg.error{background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.38);color:var(--err)}
-  .fp-msg[hidden]{display:none}
+    /* Header matching landing, login & join */
+    .portal-nav {
+      height: 68px;
+      min-height: 68px;
+      background: #0b0c10;
+      border-bottom: 1px solid var(--line);
+      padding: 0 clamp(16px, 4vw, 40px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      flex: none;
+    }
 
-  .fp-btn-gold{
-    width:100%;height:44px;border:0;border-radius:999px;
-    background:var(--gold);color:#0b0f19;
-    font:700 15px/1 "Plus Jakarta Sans",sans-serif;
-    display:inline-flex;align-items:center;justify-content:center;
-    cursor:pointer;transition:background-color .15s ease,opacity .15s ease;
-  }
-  .fp-btn-gold:hover:not(:disabled){background:#f0c44b;transform:none;box-shadow:none;filter:none}
-  .fp-btn-gold:active:not(:disabled){background:#b8860b;color:#0b0f19;transform:none;box-shadow:none}
-  .fp-btn-gold:disabled{opacity:.48;cursor:not-allowed;pointer-events:none;box-shadow:none;transform:none}
+    .portal-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: #f6efdc;
+      min-height: 44px;
+    }
 
-  .fp-resend-row{margin:10px 0 0;display:flex;justify-content:center}
-  .fp-resend-btn{
-    width:100%;height:42px;padding:0 16px;border-radius:999px;
-    border:1px solid var(--field-line);background:var(--bg2);color:var(--gold);
-    font:600 13.5px/1 "Plus Jakarta Sans",sans-serif;cursor:pointer;
-    transition:background-color .15s ease,opacity .15s ease;
-  }
-  .fp-resend-btn:hover:not(:disabled){background:rgba(255,255,255,.06)}
-  .fp-resend-btn:active:not(:disabled){background:rgba(255,255,255,.11)}
-  .fp-resend-btn:disabled{opacity:.48;color:var(--mu);cursor:not-allowed;pointer-events:none}
+    .portal-brand img {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      object-fit: cover;
+      display: block;
+      flex: none
+    }
 
-  .fp-steps{
-    display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
-    margin:0 0 18px;padding:0;list-style:none;
-  }
-  .fp-step{
-    display:flex;align-items:center;gap:6px;
-    padding:7px 9px;border-radius:10px;
-    border:1px solid var(--line);background:var(--bg2);
-    font:600 11.5px/1.15 "Plus Jakarta Sans",sans-serif;color:var(--mu);
-    transition:border-color .18s ease,color .18s ease,background-color .18s ease;
-  }
-  .fp-step-num{
-    width:18px;height:18px;border-radius:50%;flex:none;
-    display:grid;place-items:center;font-size:11px;font-weight:700;
-    background:var(--line);color:var(--tx);
-  }
-  .fp-step.is-active{border-color:var(--gold);color:var(--tx)}
-  .fp-step.is-active .fp-step-num{background:var(--gold);color:var(--on)}
-  .fp-step.is-done{border-color:rgba(74,222,128,.45);color:var(--ok)}
-  .fp-step.is-done .fp-step-num{background:var(--ok);color:var(--on)}
+    .portal-brand strong {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      color: #f6efdc
+    }
 
-  .fp-text-btn{
-    margin:8px auto 0;display:block;border:0;background:transparent;padding:6px 10px;
-    color:var(--mu);font:600 12.5px/1.2 Inter,system-ui,sans-serif;cursor:pointer;
-    text-decoration:none;text-underline-offset:3px;
-  }
-  .fp-text-btn:hover,
-  .fp-text-btn:focus-visible{color:var(--gold);text-decoration:underline}
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 0 10px;
+      border-radius: 10px;
+      color: #9a9788;
+      text-decoration: none;
+      font: 600 14px/1 Inter, system-ui, sans-serif;
+      transition: background-color .15s ease, color .15s ease;
+      white-space: nowrap;
+    }
 
-  .fp-links{margin:12px 0 0;text-align:center;font-size:13px;color:var(--mu)}
-  .fp-links a{
-    display:inline-flex;align-items:center;min-height:36px;
-    color:var(--gold);font-weight:600;text-decoration:none;text-underline-offset:3px;
-  }
-  .fp-links a:hover,
-  .fp-links a:focus-visible{color:var(--lime-hi);text-decoration:underline}
+    .back-link:hover {
+      background: rgba(255, 255, 255, .06);
+      color: var(--tx)
+    }
 
-  .fp-otp-boxes{
-    display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:4px;
-  }
-  .fp-otp-digit{
-    width:100%;height:48px;padding:0;text-align:center;
-    border-radius:12px;border:1px solid var(--field-line);
-    background:var(--bg2);color:var(--tx);
-    font:700 20px/1 "Plus Jakarta Sans",Inter,system-ui,sans-serif;
-    transition:border-color .16s ease,box-shadow .16s ease;
-  }
-  .fp-otp-digit:focus{outline:1.5px solid var(--gold);outline-offset:0;border-color:var(--gold);box-shadow:none}
-  .fp-done-box{text-align:center;padding:8px 0 4px}
-  .fp-done-box[hidden]{display:none}
-  .fp-done-icon{
-    width:64px;height:64px;margin:0 auto 14px;border-radius:50%;
-    background:rgba(74,222,128,.16);border:2px solid var(--ok);color:var(--ok);
-    display:grid;place-items:center;font-size:26px;
-  }
-  .fp-done-box p{margin:0 0 18px;font-size:14px;color:var(--mu)}
-  .fp-done-box a.fp-btn-gold{text-decoration:none}
-  @media(max-width:900px){
-    .fp-shell{min-height:calc(100vh - 68px);padding:24px 16px 32px;align-items:flex-start}
-    .fp-wrap{grid-template-columns:1fr;gap:22px}
-    .fp-card{max-width:480px;margin-inline:auto;justify-self:center}
-  }
-  @media(max-width:768px){
-    footer.site-footer,.site-footer{display:none!important}
-    .portal-nav{height:auto;min-height:58px;padding:env(safe-area-inset-top,0px) 16px 0}
-    .portal-brand img{width:32px;height:32px}
-    .portal-brand strong{font-size:20px}
-    .fp-shell{min-height:calc(100dvh - 58px);padding:20px 14px calc(28px + env(safe-area-inset-bottom,0px))}
-    .fp-title{font-size:clamp(30px,8vw,42px);margin-bottom:10px}
-    .fp-desc{font-size:14.5px;margin-bottom:16px}
-    .fp-checks{gap:8px;margin-bottom:14px}
-    .fp-card{padding:20px 18px}
-    .fp-input{height:46px;font-size:16px}
-    .fp-btn-gold{height:46px}
-  }
-  @media(max-width:400px){
-    .fp-card{padding:18px 14px}
-    .fp-steps{gap:5px}
-    .fp-step{flex-direction:column;text-align:center;padding:6px 4px;font-size:10.5px;gap:4px}
-    .fp-otp-boxes{gap:5px}
-    .fp-otp-digit{height:44px;font-size:18px}
-  }
-  @media(pointer:coarse){
-    .fp-input,.fp-otp-digit{font-size:16px}
-    button,a{touch-action:manipulation}
-  }
-  html{-webkit-tap-highlight-color:transparent;overscroll-behavior:none}
-  body{min-height:100dvh}
-  @media(prefers-reduced-motion:reduce){
-    *{transition:none !important;animation:none !important}
-  }
-</style>
-<script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script>
-<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17"><meta name="color-scheme" content="light dark"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
+    .back-link:active {
+      background: rgba(255, 255, 255, .11)
+    }
+
+    /* Full-bleed hero with flat overlay */
+    .fp-shell {
+      position: relative;
+      flex: 1 1 auto;
+      min-height: calc(100vh - 68px);
+      background: url("img/hero.jpg") center/cover no-repeat;
+      display: flex;
+      align-items: center;
+      padding: clamp(16px, 2.5vh, 28px) clamp(16px, 4vw, 48px);
+      overflow: hidden;
+    }
+
+    .fp-shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(7, 8, 12, .7);
+      z-index: 0;
+    }
+
+    html[data-theme="light"] .fp-shell::before,
+    body.light .fp-shell::before {
+      background: rgba(244, 245, 248, .82);
+    }
+
+    .fp-wrap {
+      position: relative;
+      z-index: 1;
+      width: min(1160px, 100%);
+      margin-inline: auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 410px;
+      gap: clamp(28px, 5vw, 64px);
+      align-items: center;
+    }
+
+    /* Left copy */
+    @keyframes pfRiseIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    .fp-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font: 700 12px/1.2 "Plus Jakarta Sans", sans-serif;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin: 0 0 16px;
+      animation: pfRiseIn .45s cubic-bezier(.22, 1, .36, 1) both;
+    }
+
+    .fp-eyebrow::before {
+      content: "";
+      width: 24px;
+      height: 2px;
+      background: var(--gold);
+      flex: none
+    }
+
+    .fp-title {
+      margin: 0 0 16px;
+      font-size: clamp(38px, 5vw, 60px);
+      font-weight: 800;
+      line-height: 1.04;
+      letter-spacing: -.03em;
+      color: var(--tx);
+      animation: pfRiseIn .5s cubic-bezier(.22, 1, .36, 1) .06s both;
+    }
+
+    .fp-title .hl {
+      color: var(--gold)
+    }
+
+    .fp-desc {
+      margin: 0 0 24px;
+      max-width: 460px;
+      font-size: 16.5px;
+      line-height: 1.6;
+      color: var(--mu);
+      animation: pfRiseIn .5s cubic-bezier(.22, 1, .36, 1) .12s both;
+    }
+
+    .fp-checks {
+      list-style: none;
+      margin: 0 0 24px;
+      padding: 0;
+      display: grid;
+      gap: 12px;
+      animation: pfRiseIn .5s cubic-bezier(.22, 1, .36, 1) .18s both
+    }
+
+    .fp-checks li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14.5px;
+      font-weight: 500;
+      color: var(--tx)
+    }
+
+    .fp-checks i {
+      color: var(--gold);
+      font-size: 14px;
+      flex: none
+    }
+
+    .fp-gym-foot {
+      margin: 0;
+      font-size: 12.5px;
+      color: var(--mu);
+      animation: pfRiseIn .5s cubic-bezier(.22, 1, .36, 1) .24s both
+    }
+
+    /* Right card */
+    .fp-card {
+      width: 100%;
+      max-width: 410px;
+      justify-self: end;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: clamp(20px, 2.5vh, 28px) clamp(20px, 2.5vw, 28px);
+      box-shadow: 0 24px 48px -20px rgba(0, 0, 0, .75);
+      animation: pfRiseIn .52s cubic-bezier(.22, 1, .36, 1) .08s both;
+    }
+
+    .fp-kicker {
+      margin: 0 0 6px;
+      font: 700 12px/1.2 "Plus Jakarta Sans", sans-serif;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .fp-card h2 {
+      margin: 0 0 4px;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      color: var(--tx)
+    }
+
+    .fp-lead {
+      margin: 0 0 18px;
+      font-size: 13.5px;
+      color: var(--mu)
+    }
+
+    .fp-lead a {
+      color: var(--gold);
+      font-weight: 600;
+      text-decoration: none;
+      text-underline-offset: 3px
+    }
+
+    .fp-lead a:hover,
+    .fp-lead a:focus-visible {
+      color: var(--lime-hi);
+      text-decoration: underline
+    }
+
+    .fp-field-label {
+      display: block;
+      margin: 0 0 5px;
+      font: 600 13px/1.2 Inter, system-ui, sans-serif;
+      color: var(--tx)
+    }
+
+    .fp-field {
+      margin-bottom: 12px
+    }
+
+    .fp-input {
+      width: 100%;
+      height: 44px;
+      padding: 0 14px;
+      border-radius: 12px;
+      border: 1px solid var(--field-line);
+      background: var(--bg2);
+      color: var(--tx);
+      font: 400 14.5px/1.2 Inter, system-ui, sans-serif;
+      transition: border-color .16s ease, box-shadow .16s ease, background-color .16s ease;
+    }
+
+    .fp-input::placeholder {
+      color: var(--mu)
+    }
+
+    .fp-input:hover:not(:focus):not(:disabled) {
+      border-color: rgba(232, 185, 58, .5)
+    }
+
+    .fp-input:focus {
+      outline: 1.5px solid var(--gold);
+      outline-offset: 0;
+      border-color: var(--gold);
+      box-shadow: none
+    }
+
+    .fp-input:-webkit-autofill,
+    .fp-input:-webkit-autofill:hover,
+    .fp-input:-webkit-autofill:focus {
+      -webkit-box-shadow: 0 0 0 100px var(--bg2) inset !important;
+      -webkit-text-fill-color: var(--tx) !important;
+      caret-color: var(--tx);
+      transition: background-color 5000s ease-in-out 0s;
+    }
+
+    .fp-pw-wrap {
+      position: relative
+    }
+
+    .fp-pw-wrap .fp-input {
+      padding-right: 46px
+    }
+
+    .fp-eye {
+      position: absolute;
+      right: 4px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      border: 0;
+      background: transparent;
+      color: var(--mu);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: background-color .15s ease, color .15s ease;
+    }
+
+    .fp-eye:hover {
+      background: rgba(255, 255, 255, .06);
+      color: var(--tx)
+    }
+
+    .fp-eye:active {
+      background: rgba(255, 255, 255, .11)
+    }
+
+    .fp-msg {
+      margin: 0 0 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 500;
+      background: rgba(74, 222, 128, .12);
+      border: 1px solid rgba(74, 222, 128, .35);
+      color: var(--ok);
+    }
+
+    .fp-msg.error {
+      background: rgba(248, 113, 113, .12);
+      border-color: rgba(248, 113, 113, .38);
+      color: var(--err)
+    }
+
+    .fp-msg[hidden] {
+      display: none
+    }
+
+    .fp-btn-gold {
+      width: 100%;
+      height: 44px;
+      border: 0;
+      border-radius: 999px;
+      background: var(--gold);
+      color: #0B1530;
+      font: 700 15px/1 "Plus Jakarta Sans", sans-serif;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color .15s ease, opacity .15s ease;
+    }
+
+    .fp-btn-gold:hover:not(:disabled) {
+      background: #FAD03C;
+      transform: none;
+      box-shadow: none;
+      filter: none
+    }
+
+    .fp-btn-gold:active:not(:disabled) {
+      background: #8A6A00;
+      color: #0B1530;
+      transform: none;
+      box-shadow: none
+    }
+
+    .fp-btn-gold:disabled {
+      opacity: .48;
+      cursor: not-allowed;
+      pointer-events: none;
+      box-shadow: none;
+      transform: none
+    }
+
+    .fp-resend-row {
+      margin: 10px 0 0;
+      display: flex;
+      justify-content: center
+    }
+
+    .fp-resend-btn {
+      width: 100%;
+      height: 42px;
+      padding: 0 16px;
+      border-radius: 999px;
+      border: 1px solid var(--field-line);
+      background: var(--bg2);
+      color: var(--gold);
+      font: 600 13.5px/1 "Plus Jakarta Sans", sans-serif;
+      cursor: pointer;
+      transition: background-color .15s ease, opacity .15s ease;
+    }
+
+    .fp-resend-btn:hover:not(:disabled) {
+      background: rgba(255, 255, 255, .06)
+    }
+
+    .fp-resend-btn:active:not(:disabled) {
+      background: rgba(255, 255, 255, .11)
+    }
+
+    .fp-resend-btn:disabled {
+      opacity: .48;
+      color: var(--mu);
+      cursor: not-allowed;
+      pointer-events: none
+    }
+
+    .fp-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 0 0 18px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .fp-step {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 9px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: var(--bg2);
+      font: 600 11.5px/1.15 "Plus Jakarta Sans", sans-serif;
+      color: var(--mu);
+      transition: border-color .18s ease, color .18s ease, background-color .18s ease;
+    }
+
+    .fp-step-num {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      flex: none;
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--line);
+      color: var(--tx);
+    }
+
+    .fp-step.is-active {
+      border-color: var(--gold);
+      color: var(--tx)
+    }
+
+    .fp-step.is-active .fp-step-num {
+      background: var(--gold);
+      color: var(--on)
+    }
+
+    .fp-step.is-done {
+      border-color: rgba(74, 222, 128, .45);
+      color: var(--ok)
+    }
+
+    .fp-step.is-done .fp-step-num {
+      background: var(--ok);
+      color: var(--on)
+    }
+
+    .fp-text-btn {
+      margin: 8px auto 0;
+      display: block;
+      border: 0;
+      background: transparent;
+      padding: 6px 10px;
+      color: var(--mu);
+      font: 600 12.5px/1.2 Inter, system-ui, sans-serif;
+      cursor: pointer;
+      text-decoration: none;
+      text-underline-offset: 3px;
+    }
+
+    .fp-text-btn:hover,
+    .fp-text-btn:focus-visible {
+      color: var(--gold);
+      text-decoration: underline
+    }
+
+    .fp-links {
+      margin: 12px 0 0;
+      text-align: center;
+      font-size: 13px;
+      color: var(--mu)
+    }
+
+    .fp-links a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+      color: var(--gold);
+      font-weight: 600;
+      text-decoration: none;
+      text-underline-offset: 3px;
+    }
+
+    .fp-links a:hover,
+    .fp-links a:focus-visible {
+      color: var(--lime-hi);
+      text-decoration: underline
+    }
+
+    .fp-otp-boxes {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .fp-otp-digit {
+      width: 100%;
+      height: 48px;
+      padding: 0;
+      text-align: center;
+      border-radius: 12px;
+      border: 1px solid var(--field-line);
+      background: var(--bg2);
+      color: var(--tx);
+      font: 700 20px/1 "Plus Jakarta Sans", Inter, system-ui, sans-serif;
+      transition: border-color .16s ease, box-shadow .16s ease;
+    }
+
+    .fp-otp-digit:focus {
+      outline: 1.5px solid var(--gold);
+      outline-offset: 0;
+      border-color: var(--gold);
+      box-shadow: none
+    }
+
+    .fp-done-box {
+      text-align: center;
+      padding: 8px 0 4px
+    }
+
+    .fp-done-box[hidden] {
+      display: none
+    }
+
+    .fp-done-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 14px;
+      border-radius: 50%;
+      background: rgba(74, 222, 128, .16);
+      border: 2px solid var(--ok);
+      color: var(--ok);
+      display: grid;
+      place-items: center;
+      font-size: 26px;
+    }
+
+    .fp-done-box p {
+      margin: 0 0 18px;
+      font-size: 14px;
+      color: var(--mu)
+    }
+
+    .fp-done-box a.fp-btn-gold {
+      text-decoration: none
+    }
+
+    @media(max-width:900px) {
+      .fp-shell {
+        min-height: calc(100vh - 68px);
+        padding: 24px 16px 32px;
+        align-items: flex-start
+      }
+
+      .fp-wrap {
+        grid-template-columns: 1fr;
+        gap: 22px
+      }
+
+      .fp-card {
+        max-width: 480px;
+        margin-inline: auto;
+        justify-self: center
+      }
+    }
+
+    @media(max-width:768px) {
+
+      footer.site-footer,
+      .site-footer {
+        display: none !important
+      }
+
+      .portal-nav {
+        height: auto;
+        min-height: 58px;
+        padding: env(safe-area-inset-top, 0px) 16px 0
+      }
+
+      .portal-brand img {
+        width: 32px;
+        height: 32px
+      }
+
+      .portal-brand strong {
+        font-size: 20px
+      }
+
+      .fp-shell {
+        min-height: calc(100dvh - 58px);
+        padding: 20px 14px calc(28px + env(safe-area-inset-bottom, 0px))
+      }
+
+      .fp-title {
+        font-size: clamp(30px, 8vw, 42px);
+        margin-bottom: 10px
+      }
+
+      .fp-desc {
+        font-size: 14.5px;
+        margin-bottom: 16px
+      }
+
+      .fp-checks {
+        gap: 8px;
+        margin-bottom: 14px
+      }
+
+      .fp-card {
+        padding: 20px 18px
+      }
+
+      .fp-input {
+        height: 46px;
+        font-size: 16px
+      }
+
+      .fp-btn-gold {
+        height: 46px
+      }
+    }
+
+    @media(max-width:400px) {
+      .fp-card {
+        padding: 18px 14px
+      }
+
+      .fp-steps {
+        gap: 5px
+      }
+
+      .fp-step {
+        flex-direction: column;
+        text-align: center;
+        padding: 6px 4px;
+        font-size: 10.5px;
+        gap: 4px
+      }
+
+      .fp-otp-boxes {
+        gap: 5px
+      }
+
+      .fp-otp-digit {
+        height: 44px;
+        font-size: 18px
+      }
+    }
+
+    @media(pointer:coarse) {
+
+      .fp-input,
+      .fp-otp-digit {
+        font-size: 16px
+      }
+
+      button,
+      a {
+        touch-action: manipulation
+      }
+    }
+
+    html {
+      -webkit-tap-highlight-color: transparent;
+      overscroll-behavior: none
+    }
+
+    body {
+      min-height: 100dvh
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+      * {
+        transition: none !important;
+        animation: none !important
+      }
+    }
+  </style>
+  <script
+    type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#0a0e17">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F7F8FC">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17">
+  <meta name="color-scheme" content="light dark">
+  <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="ProFit">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+</head>
+
 <body class="portal-body auth-page dark public-dark-theme">
-<header class="portal-nav">
-  <a class="portal-brand" href="/">
-    <img src="logo.jpg" alt="ProFit logo" width="36" height="36">
-    <strong>ProFit</strong>
-  </a>
-  <a class="back-link" href="/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i><span>Back to home</span></a>
-</header>
+  <header class="portal-nav">
+    <a class="portal-brand" href="/">
+      <img src="logo.jpg" alt="ProFit logo" width="36" height="36">
+      <strong>ProFit</strong>
+    </a>
+    <a class="back-link" href="/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i><span>Back to home</span></a>
+  </header>
 
-<main class="fp-shell">
-  <div class="fp-wrap">
-    <section class="fp-copy" aria-label="Password reset overview">
-      <p class="fp-eyebrow">Your gym. One platform.</p>
-      <h1 class="fp-title">Reset your<br><span class="hl">password.</span></h1>
-      <p class="fp-desc">We will email you a 6-digit code. Enter it with a new password and you are back in.</p>
-      <ul class="fp-checks">
-        <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>6-digit verification code sent by email</span></li>
-        <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Code expires after 10 minutes</span></li>
-        <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Your account stays protected</span></li>
-      </ul>
-      <p class="fp-gym-foot"><span data-gym-name>Functional Fitness Gym</span> · Alfonso, Calabarzon</p>
-    </section>
+  <main class="fp-shell">
+    <div class="fp-wrap">
+      <section class="fp-copy" aria-label="Password reset overview">
+        <p class="fp-eyebrow">Your gym. One platform.</p>
+        <h1 class="fp-title">Reset your<br><span class="hl">password.</span></h1>
+        <p class="fp-desc">We will email you a 6-digit code. Enter it with a new password and you are back in.</p>
+        <ul class="fp-checks">
+          <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>6-digit verification code sent by email</span>
+          </li>
+          <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Code expires after 10 minutes</span></li>
+          <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Your account stays protected</span></li>
+        </ul>
+        <p class="fp-gym-foot"><span data-gym-name>Functional Fitness Gym</span> · Alfonso, Calabarzon</p>
+      </section>
 
-    <section class="fp-card" aria-label="Password reset form">
-      <p class="fp-kicker">Password reset</p>
-      <ol class="fp-steps" aria-label="Password reset steps">
-        <li class="fp-step is-active" id="fpStep1"><span class="fp-step-num">1</span><span>Email</span></li>
-        <li class="fp-step" id="fpStep2"><span class="fp-step-num">2</span><span>OTP</span></li>
-        <li class="fp-step" id="fpStep3"><span class="fp-step-num">3</span><span>Password</span></li>
-      </ol>
-      <h2 id="fpTitle">Forgot your password?</h2>
-      <p class="fp-lead" id="fpSub">Enter the Gmail or email on your account and we will send you a 6-digit code.</p>
+      <section class="fp-card" aria-label="Password reset form">
+        <p class="fp-kicker">Password reset</p>
+        <ol class="fp-steps" aria-label="Password reset steps">
+          <li class="fp-step is-active" id="fpStep1"><span class="fp-step-num">1</span><span>Email</span></li>
+          <li class="fp-step" id="fpStep2"><span class="fp-step-num">2</span><span>OTP</span></li>
+          <li class="fp-step" id="fpStep3"><span class="fp-step-num">3</span><span>Password</span></li>
+        </ol>
+        <h2 id="fpTitle">Forgot your password?</h2>
+        <p class="fp-lead" id="fpSub">Enter the Gmail or email on your account and we will send you a 6-digit code.</p>
 
-      <form id="fpForm1" novalidate>
-        <div class="fp-field">
-          <label class="fp-field-label" for="fpEmail">Email</label>
-          <input class="fp-input" id="fpEmail" type="email" autocomplete="email" maxlength="254" required placeholder="you@gmail.com">
-        </div>
-        <div id="fpMsg1" class="fp-msg" role="alert" aria-live="polite" hidden></div>
-        <button class="fp-btn-gold" type="submit">Send code</button>
-      </form>
-
-      <form id="fpForm2" novalidate hidden>
-        <div class="fp-field">
-          <label class="fp-field-label" for="fpOtp1">6-digit verification code</label>
-          <input id="fpCode" type="hidden" value="">
-          <div class="fp-otp-boxes" id="fpOtpBoxes" role="group" aria-label="6-digit verification code">
-            <input class="fp-otp-digit" id="fpOtp1" type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 1">
-            <input class="fp-otp-digit" id="fpOtp2" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 2">
-            <input class="fp-otp-digit" id="fpOtp3" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 3">
-            <input class="fp-otp-digit" id="fpOtp4" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 4">
-            <input class="fp-otp-digit" id="fpOtp5" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 5">
-            <input class="fp-otp-digit" id="fpOtp6" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 6">
+        <form id="fpForm1" novalidate>
+          <div class="fp-field">
+            <label class="fp-field-label" for="fpEmail">Email</label>
+            <input class="fp-input" id="fpEmail" type="email" autocomplete="email" maxlength="254" required
+              placeholder="you@gmail.com">
           </div>
-        </div>
-        <div id="fpMsg2" class="fp-msg" role="alert" aria-live="polite" hidden></div>
-        <button class="fp-btn-gold" type="submit">Verify OTP</button>
-        <div class="fp-resend-row">
-          <button type="button" class="fp-resend-btn" id="fpResend" disabled>Resend code in 60s</button>
-        </div>
-        <button type="button" class="fp-text-btn" id="fpBackEmail">Use a different email</button>
-      </form>
+          <div id="fpMsg1" class="fp-msg" role="alert" aria-live="polite" hidden></div>
+          <button class="fp-btn-gold" type="submit">Send code</button>
+        </form>
 
-      <form id="fpForm3" novalidate hidden>
-        <div class="fp-field">
-          <label class="fp-field-label" for="fpNew">New password</label>
-          <div class="fp-pw-wrap">
-            <input class="fp-input" id="fpNew" type="password" autocomplete="new-password" maxlength="256" required placeholder="At least 8 characters">
-            <button type="button" class="fp-eye" id="toggleFpNew" aria-label="Show password" aria-pressed="false"><i class="fa-regular fa-eye"></i></button>
+        <form id="fpForm2" novalidate hidden>
+          <div class="fp-field">
+            <label class="fp-field-label" for="fpOtp1">6-digit verification code</label>
+            <input id="fpCode" type="hidden" value="">
+            <div class="fp-otp-boxes" id="fpOtpBoxes" role="group" aria-label="6-digit verification code">
+              <input class="fp-otp-digit" id="fpOtp1" type="text" inputmode="numeric" maxlength="1"
+                autocomplete="one-time-code" aria-label="Digit 1">
+              <input class="fp-otp-digit" id="fpOtp2" type="text" inputmode="numeric" maxlength="1"
+                aria-label="Digit 2">
+              <input class="fp-otp-digit" id="fpOtp3" type="text" inputmode="numeric" maxlength="1"
+                aria-label="Digit 3">
+              <input class="fp-otp-digit" id="fpOtp4" type="text" inputmode="numeric" maxlength="1"
+                aria-label="Digit 4">
+              <input class="fp-otp-digit" id="fpOtp5" type="text" inputmode="numeric" maxlength="1"
+                aria-label="Digit 5">
+              <input class="fp-otp-digit" id="fpOtp6" type="text" inputmode="numeric" maxlength="1"
+                aria-label="Digit 6">
+            </div>
           </div>
-        </div>
-        <div class="fp-field">
-          <label class="fp-field-label" for="fpConf">Confirm new password</label>
-          <div class="fp-pw-wrap">
-            <input class="fp-input" id="fpConf" type="password" autocomplete="new-password" maxlength="256" required placeholder="Type it again">
-            <button type="button" class="fp-eye" id="toggleFpConf" aria-label="Show confirm password" aria-pressed="false"><i class="fa-regular fa-eye"></i></button>
+          <div id="fpMsg2" class="fp-msg" role="alert" aria-live="polite" hidden></div>
+          <button class="fp-btn-gold" type="submit">Verify OTP</button>
+          <div class="fp-resend-row">
+            <button type="button" class="fp-resend-btn" id="fpResend" disabled>Resend code in 60s</button>
           </div>
+          <button type="button" class="fp-text-btn" id="fpBackEmail">Use a different email</button>
+        </form>
+
+        <form id="fpForm3" novalidate hidden>
+          <div class="fp-field">
+            <label class="fp-field-label" for="fpNew">New password</label>
+            <div class="fp-pw-wrap">
+              <input class="fp-input" id="fpNew" type="password" autocomplete="new-password" maxlength="256" required
+                placeholder="At least 8 characters">
+              <button type="button" class="fp-eye" id="toggleFpNew" aria-label="Show password" aria-pressed="false"><i
+                  class="fa-regular fa-eye"></i></button>
+            </div>
+          </div>
+          <div class="fp-field">
+            <label class="fp-field-label" for="fpConf">Confirm new password</label>
+            <div class="fp-pw-wrap">
+              <input class="fp-input" id="fpConf" type="password" autocomplete="new-password" maxlength="256" required
+                placeholder="Type it again">
+              <button type="button" class="fp-eye" id="toggleFpConf" aria-label="Show confirm password"
+                aria-pressed="false"><i class="fa-regular fa-eye"></i></button>
+            </div>
+          </div>
+          <div id="fpMsg3" class="fp-msg" role="alert" aria-live="polite" hidden></div>
+          <button class="fp-btn-gold" type="submit">Change password</button>
+          <button type="button" class="fp-text-btn" id="fpBackOtp">Back to OTP code</button>
+        </form>
+
+        <div class="fp-done-box" id="fpDoneBox" hidden>
+          <div class="fp-done-icon" aria-hidden="true"><i class="fa-solid fa-check"></i></div>
+          <p>Your password has been changed successfully. You can now sign in with your new password.</p>
+          <a class="fp-btn-gold" href="/login">Back to Sign In</a>
         </div>
-        <div id="fpMsg3" class="fp-msg" role="alert" aria-live="polite" hidden></div>
-        <button class="fp-btn-gold" type="submit">Change password</button>
-        <button type="button" class="fp-text-btn" id="fpBackOtp">Back to OTP code</button>
-      </form>
 
-      <div class="fp-done-box" id="fpDoneBox" hidden>
-        <div class="fp-done-icon" aria-hidden="true"><i class="fa-solid fa-check"></i></div>
-        <p>Your password has been changed successfully. You can now sign in with your new password.</p>
-        <a class="fp-btn-gold" href="/login">Back to Sign In</a>
-      </div>
+        <p class="fp-links"><a href="/login">Back to sign in</a></p>
+      </section>
+    </div>
+  </main>
 
-      <p class="fp-links"><a href="/login">Back to sign in</a></p>
-    </section>
-  </div>
-</main>
+  <script>
+    (() => {
+      const $ = id => document.getElementById(id);
+      const show = (el, text, bad) => { el.hidden = false; el.textContent = text; el.classList.toggle("error", !!bad); };
+      const api = (path, body) => window.ProFitAPI.post(path, body);
 
-<script>
-(() => {
-  const $ = id => document.getElementById(id);
-  const show = (el, text, bad) => { el.hidden = false; el.textContent = text; el.classList.toggle("error", !!bad); };
-  const api = (path, body) => window.ProFitAPI.post(path, body);
-
-  function bindToggle(btnId, inputId, labelWord) {
-    const btn = $(btnId), input = $(inputId);
-    if (!btn || !input) return;
-    btn.addEventListener("click", () => {
-      const showPw = input.type === "password";
-      input.type = showPw ? "text" : "password";
-      btn.setAttribute("aria-label", showPw ? `Hide ${labelWord}` : `Show ${labelWord}`);
-      btn.setAttribute("aria-pressed", String(showPw));
-      btn.innerHTML = `<i class="fa-regular ${showPw ? "fa-eye-slash" : "fa-eye"}"></i>`;
-    });
-  }
-  bindToggle("toggleFpNew", "fpNew", "new password");
-  bindToggle("toggleFpConf", "fpConf", "confirm password");
-
-  let email = "";
-  let verifiedCode = "";
-  let cooldownRemaining = 0;
-  let cooldownTimer = null;
-  let resendBusy = false;
-  const resendBtn = $("fpResend");
-
-  const otpDigits = Array.from(document.querySelectorAll("#fpOtpBoxes .fp-otp-digit"));
-  function syncOtpValue() {
-    $("fpCode").value = otpDigits.map(d => d.value.replace(/\D/g, "").slice(0, 1)).join("");
-  }
-  function clearOtpBoxes() {
-    otpDigits.forEach(d => { d.value = ""; });
-    $("fpCode").value = "";
-  }
-  function setHeading(title, sub) {
-    $("fpTitle").textContent = title;
-    $("fpSub").textContent = sub;
-    if ($("fpMobTitle")) $("fpMobTitle").textContent = title;
-    if ($("fpMobSub")) $("fpMobSub").textContent = sub;
-  }
-
-  otpDigits.forEach((box, idx) => {
-    box.addEventListener("input", () => {
-      const digits = box.value.replace(/\D/g, "");
-      if (digits.length > 1) {
-        digits.slice(0, 6).split("").forEach((ch, i) => {
-          if (otpDigits[i]) otpDigits[i].value = ch;
+      function bindToggle(btnId, inputId, labelWord) {
+        const btn = $(btnId), input = $(inputId);
+        if (!btn || !input) return;
+        btn.addEventListener("click", () => {
+          const showPw = input.type === "password";
+          input.type = showPw ? "text" : "password";
+          btn.setAttribute("aria-label", showPw ? `Hide ${labelWord}` : `Show ${labelWord}`);
+          btn.setAttribute("aria-pressed", String(showPw));
+          btn.innerHTML = `<i class="fa-regular ${showPw ? "fa-eye-slash" : "fa-eye"}"></i>`;
         });
-        syncOtpValue();
-        (otpDigits[Math.min(digits.length, 5)] || box).focus();
-        return;
       }
-      box.value = digits;
-      syncOtpValue();
-      if (digits && otpDigits[idx + 1]) otpDigits[idx + 1].focus();
-    });
-    box.addEventListener("keydown", e => {
-      if (e.key === "Backspace" && !box.value && otpDigits[idx - 1]) {
-        otpDigits[idx - 1].focus();
+      bindToggle("toggleFpNew", "fpNew", "new password");
+      bindToggle("toggleFpConf", "fpConf", "confirm password");
+
+      let email = "";
+      let verifiedCode = "";
+      let cooldownRemaining = 0;
+      let cooldownTimer = null;
+      let resendBusy = false;
+      const resendBtn = $("fpResend");
+
+      const otpDigits = Array.from(document.querySelectorAll("#fpOtpBoxes .fp-otp-digit"));
+      function syncOtpValue() {
+        $("fpCode").value = otpDigits.map(d => d.value.replace(/\D/g, "").slice(0, 1)).join("");
       }
-    });
-    box.addEventListener("paste", e => {
-      const text = (e.clipboardData || window.clipboardData)?.getData("text") || "";
-      const digits = text.replace(/\D/g, "").slice(0, 6);
-      if (!digits) return;
-      e.preventDefault();
-      digits.split("").forEach((ch, i) => { if (otpDigits[i]) otpDigits[i].value = ch; });
-      syncOtpValue();
-      (otpDigits[Math.min(digits.length, 5)] || box).focus();
-    });
-  });
-
-  function setStep(stepNum) {
-    $("fpForm1").hidden = stepNum !== 1;
-    $("fpForm2").hidden = stepNum !== 2;
-    $("fpForm3").hidden = stepNum !== 3;
-    if ($("fpDoneBox")) $("fpDoneBox").hidden = stepNum !== 4;
-    [1, 2, 3].forEach(n => {
-      const el = $("fpStep" + n);
-      if (!el) return;
-      el.classList.toggle("is-active", n === stepNum);
-      el.classList.toggle("is-done", n < stepNum || stepNum === 4);
-    });
-  }
-
-  function updateResendButton() {
-    if (!resendBtn || resendBusy) return;
-    if (cooldownRemaining > 0) {
-      resendBtn.disabled = true;
-      resendBtn.textContent = `Resend code in ${cooldownRemaining}s`;
-    } else {
-      resendBtn.disabled = false;
-      resendBtn.textContent = "Resend OTP";
-    }
-  }
-
-  function startResendCountdown(seconds) {
-    if (cooldownTimer) clearInterval(cooldownTimer);
-    cooldownRemaining = Math.max(0, Math.round(seconds || 0));
-    updateResendButton();
-    if (cooldownRemaining <= 0) return;
-    cooldownTimer = setInterval(() => {
-      cooldownRemaining = Math.max(0, cooldownRemaining - 1);
-      updateResendButton();
-      if (cooldownRemaining <= 0) {
-        clearInterval(cooldownTimer);
-        cooldownTimer = null;
+      function clearOtpBoxes() {
+        otpDigits.forEach(d => { d.value = ""; });
+        $("fpCode").value = "";
       }
-    }, 1000);
-  }
-
-  const sendInitial = async (msgEl) => {
-    try {
-      const res = await api("/auth/forgot-password", { email });
-      show(msgEl, "If that email has an account, a code is on its way. It expires in 10 minutes.", false);
-      return res || { cooldown_seconds: 60 };
-    } catch (e) {
-      show(msgEl, e.message || "Could not send the code. Please try again.", true);
-      return null;
-    }
-  };
-
-  $("fpBackEmail").addEventListener("click", () => {
-    verifiedCode = "";
-    $("fpMsg1").hidden = true;
-    $("fpMsg2").hidden = true;
-    setHeading("Forgot your password?", "Enter the Gmail or email on your account and we will send you a 6-digit code.");
-    setStep(1);
-    $("fpEmail").focus();
-  });
-
-  $("fpBackOtp").addEventListener("click", () => {
-    $("fpMsg3").hidden = true;
-    setHeading("Enter verification code", "Enter the 6-digit OTP we sent to your email.");
-    setStep(2);
-    if (otpDigits[0]) otpDigits[0].focus();
-  });
-
-  $("fpForm1").addEventListener("submit", async e => {
-    e.preventDefault(); email = $("fpEmail").value.trim();
-    const emailErr = window.ProFitAPI?.validateRealEmail
-      ? window.ProFitAPI.validateRealEmail(email)
-      : (!email || !email.includes("@") ? "Enter a valid email address." : "");
-    if (emailErr) return show($("fpMsg1"), emailErr, true);
-    const btn = e.submitter || e.target.querySelector("button[type=submit]");
-    btn.disabled = true;
-    try {
-      const res = await sendInitial($("fpMsg1"));
-      if (res) {
-        verifiedCode = "";
-        clearOtpBoxes();
-        setStep(2);
-        setHeading("Enter verification code", "Enter the 6-digit OTP we sent to your email.");
-        show($("fpMsg2"), "Verification code sent. Check your inbox (valid for 10 minutes).", false);
-        startResendCountdown(res.cooldown_seconds || 60);
-        if (otpDigits[0]) otpDigits[0].focus();
+      function setHeading(title, sub) {
+        $("fpTitle").textContent = title;
+        $("fpSub").textContent = sub;
+        if ($("fpMobTitle")) $("fpMobTitle").textContent = title;
+        if ($("fpMobSub")) $("fpMobSub").textContent = sub;
       }
-    } finally {
-      btn.disabled = false;
-    }
-  });
 
-  resendBtn.addEventListener("click", async () => {
-    if (resendBusy || cooldownRemaining > 0) return;
-    resendBusy = true;
-    resendBtn.disabled = true;
-    resendBtn.textContent = "Sending new OTP...";
-    try {
-      const res = await api("/auth/resend-otp", { email, purpose: "PASSWORD_RESET" });
-      resendBusy = false;
-      verifiedCode = "";
-      show($("fpMsg2"), res?.detail || "A new verification code has been sent to your email.", false);
-      clearOtpBoxes();
-      if (otpDigits[0]) otpDigits[0].focus();
-      startResendCountdown(res?.cooldown_seconds || 60);
-    } catch (err) {
-      resendBusy = false;
-      show($("fpMsg2"), err?.message || "Could not resend the code. Please try again.", true);
-      if (err?.status === 429) {
-        startResendCountdown(err?.payload?.retry_after || 60);
-      } else {
+      otpDigits.forEach((box, idx) => {
+        box.addEventListener("input", () => {
+          const digits = box.value.replace(/\D/g, "");
+          if (digits.length > 1) {
+            digits.slice(0, 6).split("").forEach((ch, i) => {
+              if (otpDigits[i]) otpDigits[i].value = ch;
+            });
+            syncOtpValue();
+            (otpDigits[Math.min(digits.length, 5)] || box).focus();
+            return;
+          }
+          box.value = digits;
+          syncOtpValue();
+          if (digits && otpDigits[idx + 1]) otpDigits[idx + 1].focus();
+        });
+        box.addEventListener("keydown", e => {
+          if (e.key === "Backspace" && !box.value && otpDigits[idx - 1]) {
+            otpDigits[idx - 1].focus();
+          }
+        });
+        box.addEventListener("paste", e => {
+          const text = (e.clipboardData || window.clipboardData)?.getData("text") || "";
+          const digits = text.replace(/\D/g, "").slice(0, 6);
+          if (!digits) return;
+          e.preventDefault();
+          digits.split("").forEach((ch, i) => { if (otpDigits[i]) otpDigits[i].value = ch; });
+          syncOtpValue();
+          (otpDigits[Math.min(digits.length, 5)] || box).focus();
+        });
+      });
+
+      function setStep(stepNum) {
+        $("fpForm1").hidden = stepNum !== 1;
+        $("fpForm2").hidden = stepNum !== 2;
+        $("fpForm3").hidden = stepNum !== 3;
+        if ($("fpDoneBox")) $("fpDoneBox").hidden = stepNum !== 4;
+        [1, 2, 3].forEach(n => {
+          const el = $("fpStep" + n);
+          if (!el) return;
+          el.classList.toggle("is-active", n === stepNum);
+          el.classList.toggle("is-done", n < stepNum || stepNum === 4);
+        });
+      }
+
+      function updateResendButton() {
+        if (!resendBtn || resendBusy) return;
+        if (cooldownRemaining > 0) {
+          resendBtn.disabled = true;
+          resendBtn.textContent = `Resend code in ${cooldownRemaining}s`;
+        } else {
+          resendBtn.disabled = false;
+          resendBtn.textContent = "Resend OTP";
+        }
+      }
+
+      function startResendCountdown(seconds) {
+        if (cooldownTimer) clearInterval(cooldownTimer);
+        cooldownRemaining = Math.max(0, Math.round(seconds || 0));
         updateResendButton();
+        if (cooldownRemaining <= 0) return;
+        cooldownTimer = setInterval(() => {
+          cooldownRemaining = Math.max(0, cooldownRemaining - 1);
+          updateResendButton();
+          if (cooldownRemaining <= 0) {
+            clearInterval(cooldownTimer);
+            cooldownTimer = null;
+          }
+        }, 1000);
       }
-    }
-  });
 
-  $("fpForm2").addEventListener("submit", async e => {
-    e.preventDefault();
-    syncOtpValue();
-    const code = $("fpCode").value.trim();
-    if (!/^\d{6}$/.test(code)) return show($("fpMsg2"), "Enter the 6-digit code from your email.", true);
-    const btn = e.submitter || e.target.querySelector("button[type=submit]");
-    btn.disabled = true;
-    try {
-      await api("/auth/verify-reset-otp", { email, code });
-      verifiedCode = code;
-      $("fpNew").value = "";
-      $("fpConf").value = "";
-      setStep(3);
-      setHeading("Set a new password", "Your code is verified. Enter and confirm your new password.");
-      show($("fpMsg3"), "OTP verified. Choose a strong password (at least 8 characters).", false);
-      $("fpNew").focus();
-    } catch (err) {
-      show($("fpMsg2"), err.message || "That code is not valid or has expired.", true);
-    } finally {
-      btn.disabled = false;
-    }
-  });
+      const sendInitial = async (msgEl) => {
+        try {
+          const res = await api("/auth/forgot-password", { email });
+          show(msgEl, "If that email has an account, a code is on its way. It expires in 10 minutes.", false);
+          return res || { cooldown_seconds: 60 };
+        } catch (e) {
+          show(msgEl, e.message || "Could not send the code. Please try again.", true);
+          return null;
+        }
+      };
 
-  $("fpForm3").addEventListener("submit", async e => {
-    e.preventDefault();
-    const pw = $("fpNew").value;
-    if (pw.length < 8) return show($("fpMsg3"), "Use at least 8 characters for the new password.", true);
-    if (pw !== $("fpConf").value) return show($("fpMsg3"), "The two passwords do not match.", true);
-    const btn = e.submitter || e.target.querySelector("button[type=submit]");
-    btn.disabled = true;
-    try {
-      await api("/auth/reset-password", { email, code: verifiedCode, new_password: pw });
-      if (cooldownTimer) { clearInterval(cooldownTimer); cooldownTimer = null; }
-      setStep(4);
-      setHeading("Password changed", "You can now sign in with your new password.");
-    } catch (err) {
-      show($("fpMsg3"), err.message || "Could not reset the password.", true);
-    } finally {
-      btn.disabled = false;
-    }
-  });
-})();
-</script>
-<script src="portal-fx.js?v=2"></script>
-<script src="site-footer.js?v=6" defer></script>
+      $("fpBackEmail").addEventListener("click", () => {
+        verifiedCode = "";
+        $("fpMsg1").hidden = true;
+        $("fpMsg2").hidden = true;
+        setHeading("Forgot your password?", "Enter the Gmail or email on your account and we will send you a 6-digit code.");
+        setStep(1);
+        $("fpEmail").focus();
+      });
+
+      $("fpBackOtp").addEventListener("click", () => {
+        $("fpMsg3").hidden = true;
+        setHeading("Enter verification code", "Enter the 6-digit OTP we sent to your email.");
+        setStep(2);
+        if (otpDigits[0]) otpDigits[0].focus();
+      });
+
+      $("fpForm1").addEventListener("submit", async e => {
+        e.preventDefault(); email = $("fpEmail").value.trim();
+        const emailErr = window.ProFitAPI?.validateRealEmail
+          ? window.ProFitAPI.validateRealEmail(email)
+          : (!email || !email.includes("@") ? "Enter a valid email address." : "");
+        if (emailErr) return show($("fpMsg1"), emailErr, true);
+        const btn = e.submitter || e.target.querySelector("button[type=submit]");
+        btn.disabled = true;
+        try {
+          const res = await sendInitial($("fpMsg1"));
+          if (res) {
+            verifiedCode = "";
+            clearOtpBoxes();
+            setStep(2);
+            setHeading("Enter verification code", "Enter the 6-digit OTP we sent to your email.");
+            show($("fpMsg2"), "Verification code sent. Check your inbox (valid for 10 minutes).", false);
+            startResendCountdown(res.cooldown_seconds || 60);
+            if (otpDigits[0]) otpDigits[0].focus();
+          }
+        } finally {
+          btn.disabled = false;
+        }
+      });
+
+      resendBtn.addEventListener("click", async () => {
+        if (resendBusy || cooldownRemaining > 0) return;
+        resendBusy = true;
+        resendBtn.disabled = true;
+        resendBtn.textContent = "Sending new OTP...";
+        try {
+          const res = await api("/auth/resend-otp", { email, purpose: "PASSWORD_RESET" });
+          resendBusy = false;
+          verifiedCode = "";
+          show($("fpMsg2"), res?.detail || "A new verification code has been sent to your email.", false);
+          clearOtpBoxes();
+          if (otpDigits[0]) otpDigits[0].focus();
+          startResendCountdown(res?.cooldown_seconds || 60);
+        } catch (err) {
+          resendBusy = false;
+          show($("fpMsg2"), err?.message || "Could not resend the code. Please try again.", true);
+          if (err?.status === 429) {
+            startResendCountdown(err?.payload?.retry_after || 60);
+          } else {
+            updateResendButton();
+          }
+        }
+      });
+
+      $("fpForm2").addEventListener("submit", async e => {
+        e.preventDefault();
+        syncOtpValue();
+        const code = $("fpCode").value.trim();
+        if (!/^\d{6}$/.test(code)) return show($("fpMsg2"), "Enter the 6-digit code from your email.", true);
+        const btn = e.submitter || e.target.querySelector("button[type=submit]");
+        btn.disabled = true;
+        try {
+          await api("/auth/verify-reset-otp", { email, code });
+          verifiedCode = code;
+          $("fpNew").value = "";
+          $("fpConf").value = "";
+          setStep(3);
+          setHeading("Set a new password", "Your code is verified. Enter and confirm your new password.");
+          show($("fpMsg3"), "OTP verified. Choose a strong password (at least 8 characters).", false);
+          $("fpNew").focus();
+        } catch (err) {
+          show($("fpMsg2"), err.message || "That code is not valid or has expired.", true);
+        } finally {
+          btn.disabled = false;
+        }
+      });
+
+      $("fpForm3").addEventListener("submit", async e => {
+        e.preventDefault();
+        const pw = $("fpNew").value;
+        if (pw.length < 8) return show($("fpMsg3"), "Use at least 8 characters for the new password.", true);
+        if (pw !== $("fpConf").value) return show($("fpMsg3"), "The two passwords do not match.", true);
+        const btn = e.submitter || e.target.querySelector("button[type=submit]");
+        btn.disabled = true;
+        try {
+          await api("/auth/reset-password", { email, code: verifiedCode, new_password: pw });
+          if (cooldownTimer) { clearInterval(cooldownTimer); cooldownTimer = null; }
+          setStep(4);
+          setHeading("Password changed", "You can now sign in with your new password.");
+        } catch (err) {
+          show($("fpMsg3"), err.message || "Could not reset the password.", true);
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    })();
+  </script>
+  <script src="portal-fx.js?v=2"></script>
+  <script src="site-footer.js?v=8" defer></script>
 </body>
+
 </html>

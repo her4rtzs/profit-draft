@@ -78,7 +78,7 @@
             <button type="button" class="account-menu-toggle" id="accountMenuToggle" aria-haspopup="menu" aria-expanded="false" aria-controls="accountMenu" aria-label="Account actions" title="Account"><i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i></button>
             <div class="account-menu" id="accountMenu" role="menu" aria-label="Account actions">
               <a href="/profile" role="menuitem" class="${current==='profile'?'active':''}"><i class="fa-regular fa-user" aria-hidden="true"></i> My profile</a>
-              <a href="/settings#appearance" role="menuitem" class="${current==='settings'?'active':''}"><i class="fa-solid fa-sliders" aria-hidden="true"></i> Settings</a>
+              <a href="/settings" role="menuitem" class="${current==='settings'?'active':''}"><i class="fa-solid fa-sliders" aria-hidden="true"></i> Settings</a>
               <button type="button" role="menuitem" data-logout><i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i> Log out</button>
             </div>
           </div>
@@ -203,7 +203,7 @@
       const moreItems = isCashier
         ? [
             { id: 'profile', label: 'My profile', icon: 'fa-regular fa-user', href: '/profile' },
-            { id: 'settings', label: 'Settings', icon: 'fa-solid fa-sliders', href: '/settings#appearance' },
+            { id: 'settings', label: 'Settings', icon: 'fa-solid fa-sliders', href: '/settings' },
           ]
         : [
             { id: 'attendance', label: 'Attendance', icon: 'fa-solid fa-calendar-check', href: '/attendance' },
@@ -211,7 +211,7 @@
             { id: 'trainers', label: 'Trainers', icon: 'fa-solid fa-dumbbell', href: '/trainers' },
             { id: 'cashiers', label: 'Cashiers', icon: 'fa-solid fa-cash-register', href: '/cashiers' },
             { id: 'profile', label: 'My profile', icon: 'fa-regular fa-user', href: '/profile' },
-            { id: 'settings', label: 'Settings', icon: 'fa-solid fa-sliders', href: '/settings#appearance' },
+            { id: 'settings', label: 'Settings', icon: 'fa-solid fa-sliders', href: '/settings' },
           ];
       const inMore = moreItems.some(x => x.id === current);
 

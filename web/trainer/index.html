@@ -5,26 +5,26 @@
   <meta charset="utf-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
-  <title>Coach Dashboard Ã¢â‚¬â€ ProFit Trainer</title>
-  <link rel="icon" href="/assets/img/logo.jpg">
+  <title>Coach Dashboard — ProFit Trainer</title>
+  <link rel="icon" type="image/jpeg" href="/logo.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="/assets/css/staff.css?v=12">
-  <link rel="stylesheet" href="/trainer/trainer.css?v=30">
+  <link rel="stylesheet" href="/trainer/trainer.css?v=40">
   <script src="/assets/js/staff-boot.js?v=13"></script>
   <link rel="manifest" href="/manifest.webmanifest">
   <meta name="theme-color" content="#0a0e17">
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F7F8FC">
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17">
   <meta name="color-scheme" content="light dark">
   <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="ProFit">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="stylesheet" href="/pf-system.css?v=34">
+  <link rel="stylesheet" href="/pf-system.css?v=48">
 </head>
 
 <body data-portal="trainer" data-page="dashboard" data-tagline="off" data-title="Dashboard"
@@ -41,7 +41,7 @@
         <section class="tw-dash-hero tw-anim" style="--i:0" aria-label="Coach overview">
           <div>
             <span class="tw-hero-eyebrow" id="heroCoachEyebrow">COACH,</span>
-            <h1 class="tw-hero-title">FLOOR IS<br>OPEN.</h1>
+            <h1 class="tw-hero-title">Floor is<br>open.</h1>
             <p class="tw-hero-sub">Check in your athletes as they arrive. Their streaks and calendars update right away.
             </p>
             <div class="tw-dash-hero-actions">
@@ -119,30 +119,35 @@
             </div>
 
             <div class="tw-donut-stage">
-              <div class="tw-donut-box">
+              <div class="tw-donut-box" id="twDonutBox">
                 <svg class="tw-donut-svg" viewBox="0 0 240 240" role="img"
                   aria-label="Assigned members by membership status">
                   <circle class="tw-donut-track" cx="120" cy="120" r="88" stroke-width="24"></circle>
                   <g id="donutArcs"></g>
+                  <g id="donutLabels" transform="rotate(90 120 120)"></g>
                 </svg>
                 <div class="tw-donut-center">
                   <div class="tw-donut-num" id="donutTotal">0</div>
-                  <div class="tw-donut-lbl">Assigned</div>
+                  <div class="tw-donut-lbl" id="donutCenterLbl">Assigned</div>
                 </div>
+                <div class="tw-donut-tooltip" id="twDonutTooltip" hidden role="status"></div>
               </div>
             </div>
 
             <div class="tw-status-list" aria-label="Status breakdown">
-              <div class="tw-status-row">
-                <span><i class="tw-status-dot" style="background:#10B981"></i>Active</span>
+              <div class="tw-status-row" data-status-key="active" tabindex="0" role="button"
+                aria-label="Active members">
+                <span><i class="tw-status-dot" style="background:#10B981;--dot-color:#10B981"></i>Active</span>
                 <strong id="ovActive">0</strong>
               </div>
-              <div class="tw-status-row">
-                <span><i class="tw-status-dot" style="background:#F59E0B"></i>Expiring soon</span>
+              <div class="tw-status-row" data-status-key="expiring" tabindex="0" role="button"
+                aria-label="Expiring soon members">
+                <span><i class="tw-status-dot" style="background:#F5C518;--dot-color:#F5C518"></i>Expiring soon</span>
                 <strong id="ovExpiring">0</strong>
               </div>
-              <div class="tw-status-row">
-                <span><i class="tw-status-dot" style="background:#EF4444"></i>Expired</span>
+              <div class="tw-status-row" data-status-key="expired" tabindex="0" role="button"
+                aria-label="Expired members">
+                <span><i class="tw-status-dot" style="background:#EF4444;--dot-color:#EF4444"></i>Expired</span>
                 <strong id="ovExpired">0</strong>
               </div>
             </div>
@@ -316,7 +321,7 @@
   <div class="modal-backdrop" id="dashQrModal" role="dialog" aria-modal="true" aria-labelledby="dashQrTitle">
     <div class="modal" style="max-width:440px">
       <div class="modal-head">
-        <h3 id="dashQrTitle"><i class="fa-solid fa-qrcode" style="color:#e8b93a;margin-right:8px"
+        <h3 id="dashQrTitle"><i class="fa-solid fa-qrcode" style="color:#F5C518;margin-right:8px"
             aria-hidden="true"></i>Scan Member QR</h3>
         <button type="button" class="modal-close" id="dashQrClose" aria-label="Close scanner">&times;</button>
       </div>
@@ -339,9 +344,9 @@
   <script src="/config.js?v=11"></script>
   <script src="/api.js?v=6"></script>
   <script src="/auth.js?v=7"></script>
-  <script src="/assets/js/staff-icons.js?v=5"></script>
+  <script src="/assets/js/staff-icons.js?v=6"></script>
   <script src="/assets/js/staff-data.js?v=12"></script>
-  <script src="/assets/js/staff.js?v=19"></script>
+  <script src="/assets/js/staff.js?v=21"></script>
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script>
   <script src="/trainer/trainer.js?v=14"></script>
   <script>
@@ -486,31 +491,90 @@
         const R = 88;
         const C = 2 * Math.PI * R;
         const g = $('donutArcs');
+        const labelG = $('donutLabels');
+        const donutBox = $('twDonutBox');
+        const donutTooltip = $('twDonutTooltip');
+        const donutCenterNum = $('donutTotal');
+        const donutCenterLbl = $('donutCenterLbl');
         const segments = [
-          { count: active, color: '#10B981' },
-          { count: expiring, color: '#F59E0B' },
-          { count: expired, color: '#EF4444' }
+          { key: 'active', label: 'Active', count: active, color: '#10B981' },
+          { key: 'expiring', label: 'Expiring soon', count: expiring, color: '#F5C518' },
+          { key: 'expired', label: 'Expired', count: expired, color: '#EF4444' }
         ].filter(s => s.count > 0);
 
         const sumSeg = segments.reduce((a, b) => a + b.count, 0);
+        if (labelG) labelG.innerHTML = '';
         if (!sumSeg) {
           g.innerHTML = '';
           return;
         }
 
+        const segByKey = {};
         let offset = 0;
+        const labelsHtml = [];
         const arcsHtml = segments.map(seg => {
           const frac = seg.count / sumSeg;
+          const pctText = `${(frac * 100).toFixed(1)}%`;
+          segByKey[seg.key] = { ...seg, pctText };
           const len = frac * C;
           const dashArray = `${len} ${C}`;
           const targetOffset = -offset;
           const initOffset = reduceMotion ? targetOffset : C;
+          if (frac >= 0.08) {
+            const midFrac = (offset + len / 2) / C;
+            const angle = -Math.PI / 2 + midFrac * Math.PI * 2;
+            const lx = 120 + Math.cos(angle) * R;
+            const ly = 120 + Math.sin(angle) * R;
+            labelsHtml.push(`<text class="tw-donut-pct-lbl" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}">${pctText}</text>`);
+          }
           offset += len;
-          return `<circle class="tw-donut-arc" cx="120" cy="120" r="${R}" stroke="${seg.color}" stroke-width="24"
-        stroke-dasharray="${dashArray}" stroke-dashoffset="${initOffset}" data-target-offset="${targetOffset}"></circle>`;
+          return `<circle class="tw-donut-arc" data-status-key="${seg.key}" cx="120" cy="120" r="${R}" stroke="${seg.color}" stroke-width="24"
+        stroke-dasharray="${dashArray}" stroke-dashoffset="${initOffset}" data-target-offset="${targetOffset}" tabindex="0" role="button" aria-label="${seg.label}: ${seg.count} (${pctText}). View members."></circle>`;
         }).join('');
 
         g.innerHTML = arcsHtml;
+        if (labelG) labelG.innerHTML = labelsHtml.join('');
+
+        const setHover = activeKey => {
+          const item = activeKey ? segByKey[activeKey] : null;
+          const has = Boolean(item);
+          if (donutBox) donutBox.classList.toggle('has-hover', has);
+          g.querySelectorAll('.tw-donut-arc').forEach(el => {
+            el.classList.toggle('is-hovered', has && el.dataset.statusKey === activeKey);
+          });
+          document.querySelectorAll('.tw-status-row[data-status-key]').forEach(el => {
+            el.classList.toggle('is-hovered', has && el.dataset.statusKey === activeKey);
+          });
+          if (!has) {
+            if (donutTooltip) donutTooltip.hidden = true;
+            if (donutCenterNum) donutCenterNum.textContent = String(total);
+            if (donutCenterLbl) donutCenterLbl.textContent = 'Assigned';
+            return;
+          }
+          if (donutCenterNum) donutCenterNum.textContent = String(item.count);
+          if (donutCenterLbl) donutCenterLbl.textContent = item.label;
+          if (donutTooltip) {
+            donutTooltip.innerHTML = `<strong>${item.label}</strong><small>${item.count} member${item.count === 1 ? '' : 's'} (${item.pctText}) &middot; Click to view</small>`;
+            donutTooltip.hidden = false;
+          }
+        };
+
+        const goMembers = () => { location.href = '/trainer/members'; };
+        [...g.querySelectorAll('.tw-donut-arc'), ...document.querySelectorAll('.tw-status-row[data-status-key]')].forEach(el => {
+          const key = el.dataset.statusKey;
+          el.onmouseenter = () => { if (segByKey[key]) setHover(key); };
+          el.onmouseleave = () => setHover(null);
+          el.onfocus = () => { if (segByKey[key]) setHover(key); };
+          el.onblur = () => setHover(null);
+          el.onclick = goMembers;
+          el.onkeydown = e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              goMembers();
+            }
+          };
+        });
+
         if (!reduceMotion) {
           requestAnimationFrame(() => requestAnimationFrame(() => {
             g.querySelectorAll('.tw-donut-arc').forEach(arc => {
@@ -636,10 +700,10 @@
           const sameYear = String(fromIso).slice(0, 4) === String(toIso).slice(0, 4);
           return d.toLocaleDateString('en-US', sameYear ? { month: 'short', day: 'numeric' } : { month: 'short', day: 'numeric', year: 'numeric' });
         })();
-        const spanText = `${granWord} Ã‚Â· ${fromShort} Ã¢â‚¬â€œ ${formatIsoNice(toIso)}`;
+        const spanText = `${granWord} · ${fromShort} – ${formatIsoNice(toIso)}`;
 
         if ($('attSubtitle')) {
-          $('attSubtitle').textContent = mLabel ? `${spanText} Ã‚Â· ${mLabel}` : spanText;
+          $('attSubtitle').textContent = mLabel ? `${spanText} · ${mLabel}` : spanText;
         }
       }
 
@@ -668,7 +732,7 @@
       }
 
       function formatRateDisplay(val) {
-        if (val === null || val === undefined || Number.isNaN(Number(val))) return 'Ã¢â‚¬â€';
+        if (val === null || val === undefined || Number.isNaN(Number(val))) return '—';
         const num = Number(val);
         return `${Math.round(num)}%`;
       }
@@ -683,7 +747,7 @@
         const stage = $('attChartStage');
         $('sumCheckedIn').textContent = '0';
         $('sumScheduled').textContent = '0';
-        $('sumRate').textContent = 'Ã¢â‚¬â€';
+        $('sumRate').textContent = '—';
         stage.innerHTML =
           emptyState('calendar', 'Pick a valid date range', detailMsg || 'Enter valid From and To dates (MM/DD/YYYY) within 60 buckets.') +
           '<div class="tw-chart-tip" id="attChartTip" role="status" aria-live="polite" hidden></div>';
@@ -1148,7 +1212,7 @@
         if ($('dutySessionName')) $('dutySessionName').textContent = firstClass ? firstClass.name : 'Open floor';
         if ($('dutySessionSub')) {
           $('dutySessionSub').textContent = firstClass
-            ? `${T.format.time(firstClass.time)} Ã‚Â· ${firstClass.coach || coachName}`
+            ? `${T.format.time(firstClass.time)} · ${firstClass.coach || coachName}`
             : 'No classes scheduled today';
         }
         if ($('dutyCheckedNum')) $('dutyCheckedNum').textContent = String(todayInCnt);
@@ -1246,7 +1310,7 @@
       <tr>
         <td>
           <div class="tw-member-cell">
-            ${PF.avatar(a.member_name, 'sm')}
+            ${PF.avatar(a.member_name, 'sm', a.member_photo)}
             <strong>${esc(a.member_name)}</strong>
           </div>
         </td>
@@ -1277,7 +1341,7 @@
         list.innerHTML = members.map(m => `
       <div class="tw-person">
         <div class="tw-person-main">
-          ${PF.avatar(m.name, 'sm')}
+          ${PF.avatar(m.name, 'sm', m.photo)}
           <div class="tw-person-text">
             <strong>${esc(m.name)}</strong>
             <small class="${m.today_checked_in ? 'is-in' : ''}">${m.today_checked_in ? 'In gym today' : 'Not yet in today'}</small>

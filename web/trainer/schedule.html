@@ -5,25 +5,27 @@
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
-  <title>ProFit Ã¢â‚¬â€ My Schedule (Trainer Portal)</title>
+  <title>ProFit — My Schedule (Trainer Portal)</title>
+  <link rel="icon" type="image/jpeg" href="/logo.jpg">
   <script>try { var t = localStorage.getItem('pf-theme') || localStorage.getItem('theme') || 'dark'; document.documentElement.setAttribute('data-theme', t); document.documentElement.setAttribute('data-accent', 'gold'); } catch (e) { }</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
     rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="../assets/css/staff.css?v=12">
-  <link rel="stylesheet" href="trainer.css?v=30">
+  <link rel="stylesheet" href="trainer.css?v=40">
   <link rel="manifest" href="/manifest.webmanifest">
   <meta name="theme-color" content="#0a0e17">
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F7F8FC">
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17">
   <meta name="color-scheme" content="light dark">
   <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="ProFit">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="stylesheet" href="../pf-system.css?v=34">
+  <link rel="stylesheet" href="../pf-system.css?v=48">
 </head>
 
 <body data-page="schedule" data-portal="trainer" data-head="none">
@@ -39,7 +41,7 @@
           <div class="tw-hero-left">
             <div class="tw-hero-ico" data-ico="calendar"></div>
             <div class="tw-hero-text">
-              <span class="tw-hero-eyebrow">Weekly Class Timetable Ã‚Â· Coach View</span>
+              <span class="tw-hero-eyebrow">Weekly Class Timetable · Coach View</span>
               <h1 class="tw-hero-title">My Coaching Schedule</h1>
               <p class="tw-hero-sub" id="schedCoachSub">Manage your weekly classes and send instant schedule updates to
                 your assigned athletes.</p>
@@ -87,7 +89,7 @@
                   <h2 class="tw-card-title">My Coaching Hours</h2>
                   <p class="tw-card-sub">Displayed to members on the trainer directory.</p>
                 </div>
-                <a href="/trainer/profile" class="tw-link">Update Ã¢â€ â€™</a>
+                <a href="/trainer/profile" class="tw-link">Update →</a>
               </div>
               <div
                 style="padding:14px 16px;border-radius:12px;border:1px solid var(--line);background:var(--card-2);font-size:13.5px;color:var(--text);line-height:1.55"
@@ -102,7 +104,7 @@
                   <h2 class="tw-card-title">Assigned Athletes</h2>
                   <p class="tw-card-sub">Message an individual athlete about a session.</p>
                 </div>
-                <a href="/trainer/members" class="tw-link">Roster Ã¢â€ â€™</a>
+                <a href="/trainer/members" class="tw-link">Roster →</a>
               </div>
               <div id="schedRosterList" class="tw-list">
                 <span class="tw-skel tw-skel-row"></span>
@@ -121,7 +123,8 @@
     <div class="modal" style="max-width:520px">
       <div class="modal-head">
         <h3 id="sessModalTitle">Add Coaching Class</h3>
-        <button type="button" class="modal-close" data-close-modal="sessionFormModal" aria-label="Close">&times;</button>
+        <button type="button" class="modal-close" data-close-modal="sessionFormModal"
+          aria-label="Close">&times;</button>
       </div>
       <form id="sessionForm">
         <input type="hidden" id="sessEditId" value="">
@@ -157,7 +160,8 @@
             </div>
             <div class="tw-field span-2">
               <label for="sessRoom">Room / Gym Zone</label>
-              <input type="text" id="sessRoom" maxlength="80" placeholder="e.g. Main Floor, Studio 1" value="Main Floor">
+              <input type="text" id="sessRoom" maxlength="80" placeholder="e.g. Main Floor, Studio 1"
+                value="Main Floor">
             </div>
             <div class="tw-field span-2">
               <label for="sessNotes">Session Notes (optional)</label>
@@ -191,7 +195,7 @@
         </div>
         <div class="tw-field" style="margin-bottom:14px">
           <label for="noteSession">Session / Class Name</label>
-          <input type="text" id="noteSession" maxlength="120" placeholder="e.g. Sunrise HIIT Ã‚Â· 6:00 AM">
+          <input type="text" id="noteSession" maxlength="120" placeholder="e.g. Sunrise HIIT · 6:00 AM">
         </div>
         <div class="tw-field">
           <label for="noteBody">Message to Athletes</label>
@@ -201,7 +205,8 @@
       </div>
       <div class="modal-foot">
         <button type="button" class="tw-btn" data-close-modal="schedNoteModal">Cancel</button>
-        <button type="button" class="tw-btn-primary" id="sendNoteSubmitBtn"><span data-ico="megaphone"></span> Send Update</button>
+        <button type="button" class="tw-btn-primary" id="sendNoteSubmitBtn"><span data-ico="megaphone"></span> Send
+          Update</button>
       </div>
     </div>
   </div>
@@ -209,9 +214,9 @@
   <script src="../config.js?v=11"></script>
   <script src="../api.js?v=6"></script>
   <script src="../auth.js?v=7"></script>
-  <script src="../assets/js/staff-icons.js?v=5"></script>
+  <script src="../assets/js/staff-icons.js?v=6"></script>
   <script src="../assets/js/staff-data.js?v=12"></script>
-  <script src="../assets/js/staff.js?v=19"></script>
+  <script src="../assets/js/staff.js?v=21"></script>
   <script src="trainer.js?v=14"></script>
   <script>
     PF.ready(async () => {
@@ -255,7 +260,7 @@
           const isToday = idx === new Date().getDay();
           return `
         <button type="button" class="tw-dow-btn ${idx === activeDow ? 'active' : ''}" data-dow="${idx}">
-          <span class="tw-dow-short">${DAYS_SHORT[idx]}${isToday ? ' Ã‚Â· Today' : ''}</span>
+          <span class="tw-dow-short">${DAYS_SHORT[idx]}${isToday ? ' · Today' : ''}</span>
           <span class="tw-dow-full">${fullName}</span>
           <span class="tw-dow-count">${daySessions.length} ${daySessions.length === 1 ? 'class' : 'classes'}</span>
         </button>
@@ -370,7 +375,7 @@
         rosterEl.innerHTML = roster.map(m => `
       <div class="tw-person">
         <div class="tw-person-main">
-          <div class="avatar">${PF.initials(m.name)}</div>
+          ${PF.avatar(m.name, '', m.photo)}
           <div class="tw-person-text">
             <strong>${PF.esc(m.name)}</strong>
             <small class="${m.today_checked_in ? 'is-in' : ''}">
@@ -386,7 +391,7 @@
           btn.addEventListener('click', () => {
             openBroadcastModal({
               recipient: btn.dataset.msgMember,
-              sessionName: `1-on-1 Coaching Ã‚Â· ${btn.dataset.msgName}`
+              sessionName: `1-on-1 Coaching · ${btn.dataset.msgName}`
             });
           });
         });

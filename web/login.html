@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <title>Sign in — ProFit</title>
-<link rel="icon" type="image/jpeg" href="logo.jpg">
+<link rel="icon" type="image/jpeg" href="/logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -12,40 +12,40 @@
 <script src="api.js?v=6"></script>
 <style>
   :root{
-    --gold:#e8b93a;
-    --lime:#e8b93a;
-    --lime-hi:#f2cb5c;
-    --on:#1a1407;
-    --bg:#07080c;
-    --bg2:#0b0d16;
-    --card:#111320;
-    --line:#232636;
-    --tx:#f6efdc;
-    --mu:#9a9788;
-    --field-line:#4A4E66;
-    --err:#f87171;
-    --ok:#4ade80;
+    --gold:#F5C518;
+    --lime:#F5C518;
+    --lime-hi:#FAD03C;
+    --on:#0B1530;
+    --bg:#070B18;
+    --bg2:#0A1124;
+    --card:#0F1A33;
+    --line:#1F2F55;
+    --tx:#F4F6FB;
+    --mu:#9FB0D6;
+    --field-line:#293D6B;
+    --err:#F87171;
+    --ok:#34D399;
   }
   html[data-theme="light"],body.light{
-    --bg:#f4f5f8;
-    --bg2:#ffffff;
-    --card:#ffffff;
-    --line:#d8dce6;
-    --tx:#111318;
-    --mu:#5b6070;
-    --field-line:#b8bfd0;
+    --bg:#F7F8FC;
+    --bg2:#EEF2FA;
+    --card:#FFFFFF;
+    --line:#DDE3F0;
+    --tx:#0B1530;
+    --mu:#4A5878;
+    --field-line:#CDD6E8;
     --err:#dc2626;
     --ok:#15803d;
   }
   @media(prefers-color-scheme:light){
     html[data-theme="auto"]{
-      --bg:#f4f5f8;
-      --bg2:#ffffff;
-      --card:#ffffff;
-      --line:#d8dce6;
-      --tx:#111318;
-      --mu:#5b6070;
-      --field-line:#b8bfd0;
+      --bg:#F7F8FC;
+      --bg2:#EEF2FA;
+      --card:#FFFFFF;
+      --line:#DDE3F0;
+      --tx:#0B1530;
+      --mu:#4A5878;
+      --field-line:#CDD6E8;
       --err:#dc2626;
       --ok:#15803d;
     }
@@ -253,13 +253,13 @@
 
   .lg-btn-gold{
     width:100%;height:44px;border:0;border-radius:999px;
-    background:var(--gold);color:#0b0f19;
+    background:var(--gold);color:#0B1530;
     font:700 15px/1 "Plus Jakarta Sans",sans-serif;
     display:inline-flex;align-items:center;justify-content:center;gap:8px;
     cursor:pointer;transition:background-color .15s ease,opacity .15s ease;
   }
-  .lg-btn-gold:hover:not(:disabled){background:#f0c44b;transform:none;box-shadow:none;filter:none}
-  .lg-btn-gold:active:not(:disabled){background:#b8860b;color:#0b0f19;transform:none;box-shadow:none;filter:none}
+  .lg-btn-gold:hover:not(:disabled){background:#FAD03C;transform:none;box-shadow:none;filter:none}
+  .lg-btn-gold:active:not(:disabled){background:#8A6A00;color:#0B1530;transform:none;box-shadow:none;filter:none}
   .lg-btn-gold:disabled{opacity:.48;cursor:not-allowed;pointer-events:none;box-shadow:none;transform:none}
 
   .lg-forgot-row{display:flex;justify-content:center;margin:8px 0 0}
@@ -349,9 +349,84 @@
     *{transition:none !important;animation:none !important}
   }
 </style>
+<script>
+  (function () {
+    var s = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+    if (s) document.documentElement.classList.add('pf-standalone');
+  })();
+</script>
+<style>
+  .pf-app-wave-head { display: none; }
+  html.pf-standalone .portal-nav,
+  html.pf-standalone .lg-copy,
+  html.pf-standalone footer.site-footer,
+  html.pf-standalone .site-footer { display: none !important; }
+  html.pf-standalone .pf-app-wave-head {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: calc(116px + env(safe-area-inset-top, 0px));
+    flex: none;
+    overflow: hidden;
+  }
+  html.pf-standalone .pf-app-wave-head svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  html.pf-standalone .pf-app-back {
+    position: absolute;
+    top: calc(14px + env(safe-area-inset-top, 0px));
+    left: 14px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgba(11, 21, 48, 0.72);
+    color: #F4F6FB;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    text-decoration: none;
+    font-size: 16px;
+  }
+  html.pf-standalone .lg-shell {
+    min-height: 0 !important;
+    padding: 8px 18px calc(28px + env(safe-area-inset-bottom, 0px)) !important;
+    align-items: flex-start !important;
+  }
+  html.pf-standalone .lg-wrap {
+    grid-template-columns: 1fr !important;
+    max-width: 440px !important;
+    margin: 0 auto !important;
+  }
+  html.pf-standalone .lg-card {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 8px 4px !important;
+    text-align: left;
+  }
+  html.pf-standalone .lg-card h2 {
+    text-align: center;
+    font-size: 26px !important;
+    margin-bottom: 4px !important;
+  }
+  html.pf-standalone .lg-card .lg-lead {
+    text-align: center;
+    margin-bottom: 20px !important;
+  }
+</style>
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script>
-<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17"><meta name="color-scheme" content="light dark"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
+<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><meta name="theme-color" media="(prefers-color-scheme: light)" content="#F7F8FC"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17"><meta name="color-scheme" content="light dark"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
 <body class="portal-body auth-page dark public-dark-theme">
+<div class="pf-app-wave-head">
+  <svg viewBox="0 0 400 120" preserveAspectRatio="none" aria-hidden="true">
+    <rect width="400" height="120" fill="#070B18" />
+    <path d="M0,0 L400,0 L400,82 C310,118 185,42 0,94 Z" fill="#0F1A33" />
+    <path d="M0,0 L400,0 L400,64 C305,102 185,28 0,78 Z" fill="#F5C518" fill-opacity="0.92" />
+  </svg>
+  <a class="pf-app-back" href="/" aria-label="Back"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></a>
+</div>
 <header class="portal-nav">
   <a class="portal-brand" href="/">
     <img src="logo.jpg" alt="ProFit logo" width="36" height="36">
@@ -511,6 +586,6 @@
 </script>
 <script src="google-auth.js?v=7"></script>
 <script src="portal-fx.js?v=2"></script>
-<script src="site-footer.js?v=7" defer></script>
+<script src="site-footer.js?v=8" defer></script>
 </body>
 </html>

@@ -30,6 +30,15 @@
       el.textContent = customName;
     });
   } catch (_) {}
+  // Register the offline shell service worker on public pages too.
+  if (typeof navigator !== "undefined" && "serviceWorker" in navigator && !window.__pfSwRegistered) {
+    if (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1") {
+      window.__pfSwRegistered = true;
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/sw.js", { scope: "/", updateViaCache: "none" }).catch(() => {});
+      }, { once: true });
+    }
+  }
   const pfPublicPage = location.pathname === "/" || /(welcome|login|join|forgot|faq|terms|privacy)(?:\.html)?$/.test(location.pathname);
   if (!pfPublicPage) return;
   if (document.querySelector(".site-footer")) return;

@@ -5,25 +5,27 @@
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
-  <title>ProFit Ã¢â‚¬â€ My Members (Trainer Portal)</title>
+  <title>ProFit — My Members (Trainer Portal)</title>
+  <link rel="icon" type="image/jpeg" href="/logo.jpg">
   <script>try { var t = localStorage.getItem('pf-theme') || localStorage.getItem('theme') || 'dark'; document.documentElement.setAttribute('data-theme', t); document.documentElement.setAttribute('data-accent', 'gold'); } catch (e) { }</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
     rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="../assets/css/staff.css?v=12">
-  <link rel="stylesheet" href="trainer.css?v=30">
+  <link rel="stylesheet" href="trainer.css?v=40">
   <link rel="manifest" href="/manifest.webmanifest">
   <meta name="theme-color" content="#0a0e17">
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F7F8FC">
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17">
   <meta name="color-scheme" content="light dark">
   <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="ProFit">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="stylesheet" href="../pf-system.css?v=34">
+  <link rel="stylesheet" href="../pf-system.css?v=48">
 </head>
 
 <body data-page="members" data-portal="trainer" data-head="none">
@@ -39,7 +41,7 @@
           <div class="tw-hero-left">
             <div class="tw-hero-ico" data-ico="users"></div>
             <div class="tw-hero-text">
-              <span class="tw-hero-eyebrow">Coaching Roster Ã‚Â· Module 1</span>
+              <span class="tw-hero-eyebrow">Coaching Roster · Module 1</span>
               <h1 class="tw-hero-title">My Assigned Athletes</h1>
               <p class="tw-hero-sub">Monitor membership validity, track gym attendance frequency, and record live
                 check-ins for your roster.</p>
@@ -142,9 +144,9 @@
   <script src="../config.js?v=11"></script>
   <script src="../api.js?v=6"></script>
   <script src="../auth.js?v=7"></script>
-  <script src="../assets/js/staff-icons.js?v=5"></script>
+  <script src="../assets/js/staff-icons.js?v=6"></script>
   <script src="../assets/js/staff-data.js?v=12"></script>
-  <script src="../assets/js/staff.js?v=19"></script>
+  <script src="../assets/js/staff.js?v=21"></script>
   <script src="trainer.js?v=14"></script>
   <script>
     PF.ready(async () => {
@@ -231,18 +233,18 @@
         <tr>
           <td>
             <div class="tw-member-cell">
-              <div class="avatar">${PF.initials(m.name)}</div>
+              ${PF.avatar(m.name, '', m.photo)}
               <div>
                 <strong>${PF.esc(m.name)}</strong>
                 <div style="font-size:11.5px;color:var(--muted)">${PF.esc(m.email || '')}</div>
               </div>
             </div>
           </td>
-          <td>${PF.esc(m.phone || 'Ã¢â‚¬â€')}</td>
+          <td>${PF.esc(m.phone || '—')}</td>
           <td>${renderStatusBadge(m)}</td>
           <td>${Trainer.format.date(m.expiry_date)}</td>
           <td><span class="tw-pill is-blue">${m.total_checkins || 0} visits</span></td>
-          <td>${m.last_checkin ? `${Trainer.format.date(m.last_checkin)} Ã‚Â· ${Trainer.format.time(m.last_checkin)}` : 'Never'}</td>
+          <td>${m.last_checkin ? `${Trainer.format.date(m.last_checkin)} · ${Trainer.format.time(m.last_checkin)}` : 'Never'}</td>
           <td>
             <div style="display:inline-flex;gap:6px;justify-content:flex-end">
               <button class="tw-btn" data-detail="${m.id}">History</button>
@@ -276,7 +278,7 @@
           <div>
             <div class="tw-athlete-head">
               <div class="tw-athlete-ident">
-                <div class="avatar">${PF.initials(m.name)}</div>
+                ${PF.avatar(m.name, '', m.photo)}
                 <div>
                   <strong>${PF.esc(m.name)}</strong>
                   <small>${PF.esc(m.email || m.phone || 'Assigned Athlete')}</small>
@@ -295,7 +297,7 @@
               </div>
               <div class="tw-athlete-metric">
                 <span>Phone</span>
-                <strong>${PF.esc(m.phone || 'Ã¢â‚¬â€')}</strong>
+                <strong>${PF.esc(m.phone || '—')}</strong>
               </div>
               <div class="tw-athlete-metric">
                 <span>Today</span>
@@ -372,10 +374,10 @@
         document.getElementById('mdBody').innerHTML = `
       <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding-bottom:14px;border-bottom:1px solid var(--line)">
         <div style="display:flex;align-items:center;gap:14px">
-          <div class="avatar" style="width:52px;height:52px;font-size:18px">${PF.initials(d.name)}</div>
+          ${PF.avatar(d.name, 'md', d.photo)}
           <div>
             <div style="font-weight:800;font-size:17px;color:var(--text)">${PF.esc(d.name)}</div>
-            <div style="font-size:12.5px;color:var(--muted)">${PF.esc(d.email || '')} Ã‚Â· ${PF.esc(d.phone || 'No phone')}</div>
+            <div style="font-size:12.5px;color:var(--muted)">${PF.esc(d.email || '')} · ${PF.esc(d.phone || 'No phone')}</div>
           </div>
         </div>
         ${renderStatusBadge(d)}

@@ -30457,16 +30457,24 @@ button,
     padding-top: calc(12px + env(safe-area-inset-top, 0px)) !important;
   }
 
-  /* Fix Monthly Revenue & Attendance period selector clipping off the left edge */
+  /* Fix Monthly Revenue & Attendance period selector clipping & active pill overflow */
   html body.pf-staff .panel-header {
     flex-direction: column !important;
     align-items: stretch !important;
     gap: 12px !important;
   }
 
+  html body.pf-staff .revenue-panel .panel-header,
+  html body.pf-staff .attendance-chart-panel .panel-header {
+    height: auto !important;
+    margin-bottom: 16px !important;
+    padding-bottom: 14px !important;
+  }
+
   html body.pf-staff #revenuePeriods,
   html body.pf-staff #attendancePeriods,
   html body.pf-staff .revenue-panel .panel-header .chip-row,
+  html body.pf-staff .attendance-chart-panel .chip-row,
   html body.pf-staff .revenue-panel .panel-header #revenuePeriods,
   html body.pf-staff .panel-header .chip-row {
     display: flex !important;
@@ -30475,6 +30483,8 @@ button,
     align-items: center !important;
     width: 100% !important;
     max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
     box-sizing: border-box !important;
     border-radius: 14px !important;
     padding: 6px !important;
@@ -30486,27 +30496,79 @@ button,
   html body.pf-staff #attendancePeriods .chip,
   html body.pf-staff .panel-header .chip-row .chip {
     flex: 1 1 calc(25% - 6px) !important;
-    min-width: 60px !important;
+    min-width: 0 !important;
     height: 34px !important;
-    padding: 0 10px !important;
+    min-height: 34px !important;
+    padding: 0 8px !important;
+    display: inline-flex !important;
+    align-items: center !important;
     justify-content: center !important;
     text-align: center !important;
     font-size: 12px !important;
+    line-height: 1 !important;
   }
 
   html body.pf-staff #revenuePeriods .chart-stepper,
   html body.pf-staff #attendancePeriods .chart-stepper,
   html body.pf-staff .panel-header .chart-stepper {
     width: 100% !important;
+    height: 36px !important;
+    min-height: 36px !important;
     margin-left: 0 !important;
     margin-top: 2px !important;
     justify-content: space-between !important;
-    padding: 4px 8px !important;
+    padding: 2px 8px !important;
+    border: 0 !important;
     border-top: 1px solid var(--border, rgba(255, 255, 255, .08)) !important;
     border-radius: 0 !important;
+    background: transparent !important;
   }
 
-  /* Fix Owner Dashboard — Recent registrations mobile cards (2-row layout prevents name/badge overlap) */
+  html body.pf-staff .chart-stepper .stepper-btn,
+  html body.pf-staff .year-stepper .stepper-btn {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    min-height: 28px !important;
+  }
+
+  /* Fix Owner Dashboard — Recent registrations header & compact mobile rows */
+  html body.pf-staff[data-page="dashboard"] .registrations-panel .panel-header {
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 10px !important;
+  }
+
+  html body.pf-staff[data-page="dashboard"] .registrations-panel .panel-header > .reg-title-wrap,
+  html body.pf-staff[data-page="dashboard"] .registrations-panel .panel-header > div:first-child {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+
+  html body.pf-staff[data-page="dashboard"] .registrations-panel .reg-title-wrap h2 {
+    font-size: 15px !important;
+    line-height: 1.2 !important;
+  }
+
+  html body.pf-staff[data-page="dashboard"] .registrations-panel .reg-title-wrap p {
+    font-size: 11.5px !important;
+    line-height: 1.3 !important;
+  }
+
+  html body.pf-staff[data-page="dashboard"] .registrations-panel .view-all {
+    flex: 0 0 auto !important;
+    margin: 0 !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    min-width: 0 !important;
+    padding: 0 11px !important;
+    font-size: 12px !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+  }
+
   html body.pf-staff[data-page="dashboard"] .registrations-panel .table-wrapper {
     overflow: visible !important;
   }
@@ -30529,6 +30591,8 @@ button,
     grid-template-columns: minmax(0, 1fr) auto !important;
     align-items: center !important;
     gap: 8px 10px !important;
+    height: auto !important;
+    min-height: 0 !important;
     padding: 13px 14px !important;
     margin: 0 !important;
     border-radius: 14px !important;
@@ -30545,6 +30609,8 @@ button,
   html body.pf-staff[data-page="dashboard"] .registrations-panel table tbody td {
     padding: 0 !important;
     border: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
     min-width: 0 !important;
     display: flex !important;
     align-items: center !important;
@@ -30558,15 +30624,17 @@ button,
     content: none !important;
   }
 
-  /* Hide ID (1st) and Registration date (3rd) on compact dashboard card */
+  /* Hide ID (1st), Registration date (3rd), and trailing status badge (4th) on compact mobile cards */
   html body.pf-staff[data-page="dashboard"] .registrations-panel table tbody td[data-label="ID"],
   html body.pf-staff[data-page="dashboard"] .registrations-panel table tbody td[data-label="Registration date"],
+  html body.pf-staff[data-page="dashboard"] .registrations-panel table tbody td[data-label="Status"],
   html body.pf-staff[data-page="dashboard"] .registrations-panel table tbody td:nth-child(1),
-  html body.pf-staff[data-page="dashboard"] .registrations-panel table tbody td:nth-child(3) {
+  html body.pf-staff[data-page="dashboard"] .registrations-panel table tbody td:nth-child(3),
+  html body.pf-staff[data-page="dashboard"] .registrations-panel table tbody td:nth-child(4) {
     display: none !important;
   }
 
-  /* Row 1: Member identity (left) + Action trigger (right); Row 2: Status pill aligned under name */
+  /* Single clean row: Member identity (left) + Action trigger (right) */
   html body.pf-staff[data-page="dashboard"] .registrations-panel table tbody td:nth-child(2) {
     grid-column: 1 / 2 !important;
     grid-row: 1 !important;
@@ -30591,13 +30659,6 @@ button,
     justify-self: end !important;
   }
 
-  html body.pf-staff[data-page="dashboard"] .registrations-panel table tbody td:nth-child(4) {
-    grid-column: 1 / -1 !important;
-    grid-row: 2 !important;
-    justify-content: flex-start !important;
-    padding-left: 44px !important;
-  }
-
   html body.pf-staff[data-page="dashboard"] .registrations-panel table tbody tr:has(td[colspan]) {
     display: block !important;
     border: 0 !important;
@@ -30614,17 +30675,56 @@ button,
   /* Trainers page mobile layout polish & icon-input padding protection */
   body[data-page="trainers"] .tr-dir-head,
   body[data-page="trainers"] .tr-dir-toolbar {
+    display: flex !important;
     flex-wrap: wrap !important;
+    align-items: center !important;
     gap: 10px !important;
   }
 
   body[data-page="trainers"] .tr-search-wrap,
   body[data-page="trainers"] .tr-search,
-  body[data-page="trainers"] .tr-spec-dd,
-  body[data-page="trainers"] #openAddTrainer {
+  body[data-page="trainers"] .tr-spec-dd {
     flex: 1 1 100% !important;
     width: 100% !important;
     min-width: 0 !important;
+  }
+
+  body[data-page="trainers"] .tr-spec-btn {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    box-sizing: border-box !important;
+  }
+
+  body[data-page="trainers"] .tr-dir-toolbar .tr-view-toggle {
+    flex: 0 0 auto !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    padding: 3px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    box-sizing: border-box !important;
+  }
+
+  body[data-page="trainers"] .tr-dir-toolbar .tr-view-btn {
+    width: 34px !important;
+    min-width: 34px !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  body[data-page="trainers"] .tr-dir-toolbar .tr-toolbar-add,
+  body[data-page="trainers"] #openAddTrainer {
+    flex: 1 1 0 !important;
+    width: auto !important;
+    min-width: 0 !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    margin-left: 0 !important;
+    justify-content: center !important;
   }
 
   html body.pf-staff[data-page="trainers"] .tr-search-wrap input,
@@ -30653,7 +30753,18 @@ button,
     padding: 18px !important;
   }
 
-  /* Cashiers page table as clean 2-row cards on mobile (Name + Status + Actions on Row 1, Email on Row 2) */
+  /* Cashiers page table as clean 2-row cards on mobile (Name + Actions on Row 1, Email + Status on Row 2) */
+  html body.pf-staff .ann-msg:empty {
+    display: none !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  html body.pf-staff[data-page="cashiers"] .dashboard > main.main-content {
+    padding-bottom: calc(124px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
   body[data-page="cashiers"] .csh-toolbar {
     flex-direction: column !important;
     align-items: stretch !important;
@@ -30685,9 +30796,11 @@ button,
 
   html body.pf-staff[data-page="cashiers"] .csh-table tbody tr {
     display: grid !important;
-    grid-template-columns: minmax(0, 1fr) auto auto !important;
-    gap: 10px 10px !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    gap: 8px 10px !important;
     align-items: center !important;
+    height: auto !important;
+    min-height: 0 !important;
     padding: 14px !important;
     border-radius: 14px !important;
     border: 1px solid var(--border, rgba(255, 255, 255, .10)) !important;
@@ -30703,6 +30816,8 @@ button,
   html body.pf-staff[data-page="cashiers"] .csh-table tbody td {
     padding: 0 !important;
     border: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
     min-width: 0 !important;
     width: auto !important;
     overflow-wrap: anywhere !important;
@@ -30718,14 +30833,8 @@ button,
     grid-row: 1 !important;
   }
 
-  html body.pf-staff[data-page="cashiers"] .csh-table tbody td:nth-child(3) {
-    grid-column: 2 / 3 !important;
-    grid-row: 1 !important;
-    justify-self: end !important;
-  }
-
   html body.pf-staff[data-page="cashiers"] .csh-table tbody td:nth-child(4) {
-    grid-column: 3 / 4 !important;
+    grid-column: 2 / 3 !important;
     grid-row: 1 !important;
     justify-self: end !important;
     display: flex !important;
@@ -30733,10 +30842,18 @@ button,
   }
 
   html body.pf-staff[data-page="cashiers"] .csh-table tbody td:nth-child(2) {
-    grid-column: 1 / -1 !important;
+    grid-column: 1 / 2 !important;
     grid-row: 2 !important;
     font-size: 12.5px !important;
     color: var(--muted, #94a3b8) !important;
+    padding-top: 8px !important;
+    border-top: 1px solid var(--border, rgba(255, 255, 255, .08)) !important;
+  }
+
+  html body.pf-staff[data-page="cashiers"] .csh-table tbody td:nth-child(3) {
+    grid-column: 2 / 3 !important;
+    grid-row: 2 !important;
+    justify-self: end !important;
     padding-top: 8px !important;
     border-top: 1px solid var(--border, rgba(255, 255, 255, .08)) !important;
   }

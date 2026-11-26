@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script>(function(){try{var d=localStorage.getItem('theme')!=='light';var h=document.documentElement;h.style.background=d?'#0a0e16':'#f0f2f5';h.style.colorScheme=d?'dark':'light';}catch(e){}})();</script><script src="splash.js?v=2"></script>
+<head><script>(function(){try{var d=localStorage.getItem('theme')!=='light';var h=document.documentElement;h.style.background=d?'#070B18':'#F7F8FC';h.style.colorScheme=d?'dark':'light';}catch(e){}})();</script><script src="splash.js?v=10"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
     <title>ProFit | Attendance</title>
+  <link rel="icon" type="image/jpeg" href="/logo.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Figtree:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="dashboard.css?v=18">
-    <link rel="stylesheet" href="attendance-ui.css?v=14">
+    <link rel="stylesheet" href="dashboard.css?v=19">
+    <link rel="stylesheet" href="attendance-ui.css?v=15">
     <script src="config.js?v=11"></script>
     <script src="api.js?v=6"></script>
     <script src="auth.js?v=7"></script>
 <script>document.documentElement.dataset.accent='gold'</script>
-<script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script><link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17"><meta name="color-scheme" content="light dark"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default">  <link rel="stylesheet" href="pf-system.css?v=34">
+<script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script><link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><meta name="theme-color" media="(prefers-color-scheme: light)" content="#F7F8FC"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17"><meta name="color-scheme" content="light dark"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default">  <link rel="stylesheet" href="pf-system.css?v=45">
 </head>
 
 <body class="pf-staff" data-page="attendance" data-title="Attendance" data-welcome="Who is training today">
@@ -67,7 +68,7 @@
             style="position:fixed;inset:0;z-index:9600;background:rgba(6,10,18,.74);backdrop-filter:blur(4px);display:grid;place-items:center;padding:18px">
             <div style="width:min(440px,100%);background:var(--card,#111827);border:1px solid var(--border,#263246);border-radius:20px;padding:22px;color:var(--text,#f3f4f6)">
                 <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px">
-                    <h2 id="qrScanTitle" style="margin:0;font-size:18px;font-weight:800;display:inline-flex;align-items:center;gap:8px"><i class="fa-solid fa-qrcode" style="color:#e8b93a" aria-hidden="true"></i> Scan Member QR</h2>
+                    <h2 id="qrScanTitle" style="margin:0;font-size:18px;font-weight:800;display:inline-flex;align-items:center;gap:8px"><i class="fa-solid fa-qrcode" style="color:#F5C518" aria-hidden="true"></i> Scan Member QR</h2>
                     <button type="button" id="qrScanClose" aria-label="Close scanner" style="width:34px;height:34px;border-radius:10px;border:1px solid var(--border,#263246);background:transparent;color:inherit;cursor:pointer;display:grid;place-items:center"><i class="fa-solid fa-xmark"></i></button>
                 </div>
                 <div id="qrReader" style="width:100%;min-height:240px;border-radius:14px;overflow:hidden;background:#070b14;border:1px solid var(--border,#263246)"></div>
@@ -136,15 +137,15 @@
 
 </div>
 
-<script src="layout.js?v=26"></script>
+<script src="layout.js?v=27"></script>
 <script src="sidebar.js?v=21"></script>
 <script src="data.js"></script>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script>
-<script src="pages.js?v=5"></script>
+<script src="pages.js?v=6"></script>
 <script src="chart-periods.js?v=918"></script>
 <script src="portal-fx.js?v=2"></script>
 <script src="change-password.js?v=4" defer></script>
 <script src="notifications-live.js?v=2" defer></script>
-<script src="site-footer.js?v=2" defer></script>
+<script src="site-footer.js?v=8" defer></script>
 </body>
 </html>

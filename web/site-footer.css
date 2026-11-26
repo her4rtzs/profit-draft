@@ -1,6 +1,6 @@
 /* Shared footer for public pages. Matches the approved design; same 1200px width as the landing page. */
-.site-footer{--foot-mu:#a9acb4;--foot-line:#262a33;--foot-gold:#e8b93a;margin-top:56px;background:#0b0c0f;border-top:1px solid var(--foot-gold);color:#f5f1e6;font:400 15px/1.6 Inter,system-ui,sans-serif;text-align:left}
-body:not(.dark) .site-footer{--foot-mu:#5d5f66;--foot-line:#e2ddd0;background:#f6f3ea;color:#1b1c20}
+.site-footer{--foot-mu:#9FB0D6;--foot-line:#1F2F55;--foot-gold:#F5C518;margin-top:56px;background:#070B18;border-top:1px solid var(--foot-gold);color:#F4F6FB;font:400 15px/1.6 Inter,system-ui,sans-serif;text-align:left}
+body:not(.dark) .site-footer{--foot-mu:#4A5878;--foot-line:#DDE3F0;background:#F7F8FC;color:#0B1530}
 .site-footer .foot-inner{max-width:1200px;margin:0 auto;padding:56px 24px 28px;display:flex;flex-direction:column;gap:40px}
 .site-footer .foot-top{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:48px;align-items:start}
 .site-footer .foot-lead{display:flex;flex-direction:column;gap:28px}

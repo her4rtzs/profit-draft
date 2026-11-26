@@ -180,11 +180,13 @@
     }
   };
 
+  let ownerPlansLoaded = false;
   async function initOwnerControls() {
-    if (isOwnerRole()) {
-      revealOwnerControls();
-      if (window.PLANS) paintPlanInputs(window.PLANS);
-    }
+    if (!isOwnerRole()) return;
+    revealOwnerControls();
+    if (window.PLANS) paintPlanInputs(window.PLANS);
+    if (ownerPlansLoaded) return;
+    ownerPlansLoaded = true;
     try {
       const res = await window.ProFitAPI.get("/staff/plans/", { silent: true });
       if (res && res.plans) {
@@ -193,13 +195,12 @@
         broadcastPlanUpdate(res.plans);
       }
     } catch {
-      if (isOwnerRole()) {
-        // Fallback to public read if local DB is not yet migrated or in demo mode
-        try {
-          const pub = await window.ProFitAPI.get("/plans/", { silent: true });
-          if (pub && pub.plans) paintPlanInputs(pub.plans);
-        } catch { /* keep cached/default values */ }
-      }
+      ownerPlansLoaded = false;
+      // Fallback to public read if local DB is not yet migrated or in demo mode
+      try {
+        const pub = await window.ProFitAPI.get("/plans/", { silent: true });
+        if (pub && pub.plans) paintPlanInputs(pub.plans);
+      } catch { /* keep cached/default values */ }
     }
   }
 
@@ -369,13 +370,11 @@
     window.addEventListener("scroll", scheduleSync, { passive: true });
     window.addEventListener("resize", scheduleSync, { passive: true });
 
-    const hashId = location.hash ? location.hash.slice(1) : "";
-    const hashTarget = hashId && sections.some(s => s.id === hashId) ? $(hashId) : null;
-    if (hashTarget) {
-      lockUntil = Date.now() + 700;
-      setOn(hashId);
-      requestAnimationFrame(() => hashTarget.scrollIntoView({ behavior: "auto", block: "start" }));
-    } else if (sections.length) {
+    if (location.hash === "#appearance") {
+      try { history.replaceState(null, "", location.pathname + location.search); } catch { /* ignore */ }
+      window.scrollTo({ top: 0, behavior: "auto" });
+    }
+    if (sections.length) {
       setOn(sections[0].id);
     }
   }

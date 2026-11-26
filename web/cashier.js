@@ -33,6 +33,8 @@
     paymentMap: new Map(),
     activeMethodFilter: '',
     activeLookupFilter: 'all',
+    methodScope: 'today',
+    overview: null,
     isSubmitting: false,
     inFlightLoad: null,
   };
@@ -673,6 +675,7 @@
           : (membersPayload && Array.isArray(membersPayload.results) ? membersPayload.results : []);
 
         state.members = membersList;
+        state.overview = overview;
         state.today = overview.today || '';
         if (overview.cashier && overview.cashier.name) {
           state.cashierName = overview.cashier.name;
@@ -687,6 +690,7 @@
         });
 
         renderKpis(overview);
+        renderCashierCharts();
         renderMemberSelect(preferredMemberId);
         renderTodayFeed(overview);
         renderHistoryTable();
@@ -695,6 +699,10 @@
       .catch(function (err) {
         var msg = (err && (err.detail || err.message)) || 'Unable to load cashier shift data.';
         showFormStatus('error', msg);
+        ['cshDailyChart', 'cshMethodChart', 'cshMemberChart'].forEach(function (id) {
+          var host = $(id);
+          if (host) host.innerHTML = emptyState(msg);
+        });
         var feed = $('cashierTodayFeed');
         if (feed && !state.payments.length) {
           feed.innerHTML = '<li>' + emptyState(msg) + '</li>';
@@ -898,6 +906,19 @@
       histSearch.addEventListener('input', renderHistoryTable);
     }
 
+    var methodScope = $('cshMethodScope');
+    if (methodScope) {
+      methodScope.addEventListener('click', function (event) {
+        var btn = event.target.closest('button[data-scope]');
+        if (!btn) return;
+        state.methodScope = btn.getAttribute('data-scope') === 'recent' ? 'recent' : 'today';
+        methodScope.querySelectorAll('button').forEach(function (b) {
+          b.classList.toggle('is-on', b === btn);
+        });
+        renderMethodDonutChart();
+      });
+    }
+
     var methodChips = $('cashierMethodChips');
     if (methodChips) {
       methodChips.addEventListener('click', function (event) {
@@ -995,6 +1016,294 @@
         state.cashierName = detailUser.name;
       }
     });
+  }
+
+  function shiftIsoDay(isoDate, deltaDays) {
+    var parts = String(isoDate || '').split('-').map(Number);
+    var d = parts.length === 3 ? new Date(Date.UTC(parts[0], parts[1] - 1, parts[2])) : new Date();
+    d.setUTCDate(d.getUTCDate() + deltaDays);
+    return d.toISOString().slice(0, 10);
+  }
+
+  function formatCompactPeso(centavos) {
+    var pesos = Number(centavos || 0) / 100;
+    if (pesos >= 1000) return '₱' + (pesos / 1000).toFixed(pesos % 1000 === 0 ? 0 : 1) + 'k';
+    return '₱' + Math.round(pesos).toLocaleString('en-PH');
+  }
+
+  function formatShortDay(isoDate, isToday) {
+    if (isToday) return 'Today';
+    var parts = String(isoDate || '').split('-').map(Number);
+    if (parts.length !== 3) return isoDate;
+    var d = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+  }
+
+  function prefersReducedMotion() {
+    return Boolean(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }
+
+  function animateCount(el, target) {
+    if (!el) return;
+    if (prefersReducedMotion() || target <= 0) {
+      el.textContent = String(target);
+      return;
+    }
+    var duration = 480;
+    var start = null;
+    function step(ts) {
+      if (start === null) start = ts;
+      var progress = Math.min((ts - start) / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = String(Math.round(eased * target));
+      if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  function renderDailyBarChart() {
+    var host = $('cshDailyChart');
+    if (!host) return;
+    var today = state.today || new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' });
+    var buckets = new Map();
+    var days = [];
+    for (var i = -6; i <= 0; i++) {
+      var key = shiftIsoDay(today, i);
+      days.push(key);
+      buckets.set(key, { total: 0, count: 0 });
+    }
+    state.payments.forEach(function (p) {
+      var d = p && p.paid_on;
+      if (buckets.has(d)) {
+        var b = buckets.get(d);
+        b.total += Number(p.amount_centavos || 0);
+        b.count += 1;
+      }
+    });
+    var maxTotal = days.reduce(function (mx, k) {
+      return Math.max(mx, buckets.get(k).total);
+    }, 0);
+    if (maxTotal <= 0) {
+      host.innerHTML = emptyState('No payments recorded in the last 7 days yet.');
+      return;
+    }
+    host.innerHTML =
+      '<div class="csh-bars-wrap" role="img" aria-label="7-day desk collections bar chart">' +
+      days.map(function (dayKey, idx) {
+        var b = buckets.get(dayKey);
+        var pct = b.total > 0 ? Math.max(10, Math.round((b.total / maxTotal) * 100)) : 0;
+        var isToday = dayKey === today;
+        return (
+          '<div class="csh-bar-col' + (isToday ? ' is-today' : '') + '" title="' + esc(dayKey) + ': ' + esc(fmtPeso(b.total)) + ' (' + b.count + ')">' +
+            '<span class="csh-bar-amt">' + esc(b.total > 0 ? formatCompactPeso(b.total) : '₱0') + '</span>' +
+            '<div class="csh-bar-track"><div class="csh-bar-fill" style="height:' + pct + '%;--bar-delay:' + (idx * 55) + 'ms"></div></div>' +
+            '<span class="csh-bar-lbl">' + esc(formatShortDay(dayKey, isToday)) + '</span>' +
+          '</div>'
+        );
+      }).join('') +
+      '</div>';
+  }
+
+  function renderMethodDonutChart() {
+    var host = $('cshMethodChart');
+    if (!host) return;
+    var subEl = $('cshMethodChartSub');
+    var cash = 0, gcash = 0, online = 0;
+
+    if (state.methodScope === 'recent') {
+      if (subEl) subEl.textContent = 'Breakdown across recent transactions';
+      state.payments.forEach(function (p) {
+        var amt = Number((p && p.amount_centavos) || 0);
+        if (isOnlinePayment(p)) online += amt;
+        else if (String((p && p.method) || '').toUpperCase() === 'GCASH') gcash += amt;
+        else cash += amt;
+      });
+    } else {
+      if (subEl) subEl.textContent = "Breakdown of today's collections";
+      var byMethod = (state.overview && state.overview.by_method_centavos) || {};
+      cash = Number(byMethod.CASH || 0);
+      gcash = Number(byMethod.GCASH || 0);
+      online = Number(byMethod.ONLINE || 0);
+    }
+
+    var total = cash + gcash + online;
+    var items = [
+      { label: 'Cash (Desk)', val: cash, color: '#10B981' },
+      { label: 'GCash', val: gcash, color: '#F5C518' },
+      { label: 'Old Online', val: online, color: '#38BDF8' },
+    ];
+
+    if (total <= 0) {
+      host.innerHTML = emptyState(state.methodScope === 'today' ? 'No collections recorded today yet.' : 'No recent payments found.');
+      return;
+    }
+
+    var reduceMotion = prefersReducedMotion();
+    var r = 60, cx = 86, cy = 86, circ = 2 * Math.PI * r, offset = 0;
+    var pctLabels = [];
+    var circles = items.map(function (it, idx) {
+      if (!(it.val > 0)) return '';
+      var frac = it.val / total;
+      var len = frac * circ;
+      var targetDash = len.toFixed(2) + ' ' + circ.toFixed(2);
+      var initialDash = reduceMotion ? targetDash : '0 ' + circ.toFixed(2);
+      var seg = '<circle class="csh-donut-seg" data-method-idx="' + idx + '" cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="' + it.color + '" stroke-width="24" stroke-dasharray="' + initialDash + '" data-target-dasharray="' + targetDash + '" stroke-dashoffset="' + (-offset).toFixed(2) + '" transform="rotate(-90 ' + cx + ' ' + cy + ')" tabindex="0" role="button" aria-label="' + esc(it.label + ': ' + fmtPesoWhole(it.val) + ' (' + (frac * 100).toFixed(1) + '%)') + '" />';
+      if (frac >= 0.08) {
+        var midFrac = (offset + len / 2) / circ;
+        var angle = -Math.PI / 2 + midFrac * Math.PI * 2;
+        var lx = cx + Math.cos(angle) * r;
+        var ly = cy + Math.sin(angle) * r;
+        pctLabels.push('<text class="csh-donut-pct-lbl" x="' + lx.toFixed(1) + '" y="' + ly.toFixed(1) + '">' + (frac * 100).toFixed(1) + '%</text>');
+      }
+      offset += len;
+      return seg;
+    }).join('');
+
+    var defaultAmt = formatCompactPeso(total);
+    var defaultLbl = state.methodScope === 'today' ? 'Today' : 'Recent';
+
+    host.innerHTML =
+      '<div class="csh-donut-wrap">' +
+        '<div class="csh-donut-svg-box">' +
+          '<svg viewBox="0 0 172 172" width="172" height="172" role="img" aria-label="Payment method mix donut chart">' +
+            '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="rgba(159,176,214,0.14)" stroke-width="24" />' +
+            circles +
+            pctLabels.join('') +
+          '</svg>' +
+          '<div class="csh-donut-center"><strong id="cshDonutCenterAmt">' + esc(defaultAmt) + '</strong><small id="cshDonutCenterLbl">' + esc(defaultLbl) + '</small><i class="fa-solid fa-wallet csh-donut-center-ico" aria-hidden="true"></i></div>' +
+          '<div class="csh-donut-tooltip" id="cshDonutTooltip" hidden role="status"></div>' +
+        '</div>' +
+        '<ul class="csh-donut-legend">' +
+          items.map(function (it, idx) {
+            var pctText = total > 0 ? ((it.val / total) * 100).toFixed(1) + '%' : '0.0%';
+            return '<li data-method-idx="' + idx + '" tabindex="0" role="button" aria-label="' + esc(it.label + ': ' + fmtPesoWhole(it.val) + ' (' + pctText + '). View payments.') + '" style="--leg-delay:' + (idx * 65) + 'ms"><span class="csh-leg-left"><span class="csh-leg-dot" style="background:' + it.color + ';--dot-color:' + it.color + '"></span><span class="csh-leg-meta"><strong>' + esc(it.label) + '</strong><small>' + esc(fmtPesoWhole(it.val)) + '</small></span></span><span class="csh-leg-pct">' + esc(pctText) + '</span></li>';
+          }).join('') +
+        '</ul>' +
+      '</div>';
+
+    var svgBox = host.querySelector('.csh-donut-svg-box');
+    var centerAmt = $('cshDonutCenterAmt');
+    var centerLbl = $('cshDonutCenterLbl');
+    var tooltip = $('cshDonutTooltip');
+    var setHover = function (idx) {
+      var has = idx !== null && items[idx];
+      if (svgBox) svgBox.classList.toggle('has-hover', Boolean(has));
+      host.querySelectorAll('.csh-donut-seg, .csh-donut-legend li').forEach(function (el) {
+        el.classList.toggle('is-hovered', Boolean(has) && el.getAttribute('data-method-idx') === String(idx));
+      });
+      if (!has) {
+        if (tooltip) tooltip.hidden = true;
+        if (centerAmt) centerAmt.textContent = defaultAmt;
+        if (centerLbl) centerLbl.textContent = defaultLbl;
+        return;
+      }
+      var it = items[idx];
+      var pctText = total > 0 ? ((it.val / total) * 100).toFixed(1) + '%' : '0.0%';
+      if (centerAmt) centerAmt.textContent = formatCompactPeso(it.val);
+      if (centerLbl) centerLbl.textContent = it.label;
+      if (tooltip) {
+        tooltip.innerHTML = '<strong>' + esc(it.label) + '</strong><small>' + esc(fmtPesoWhole(it.val)) + ' (' + esc(pctText) + ') &middot; Click to view</small>';
+        tooltip.hidden = false;
+      }
+    };
+    host.querySelectorAll('.csh-donut-seg, .csh-donut-legend li').forEach(function (el) {
+      var idx = Number(el.getAttribute('data-method-idx'));
+      var hasSeg = Boolean(host.querySelector('.csh-donut-seg[data-method-idx="' + idx + '"]'));
+      var activate = function () { setHover(hasSeg ? idx : null); };
+      var deactivate = function () { setHover(null); };
+      el.addEventListener('mouseenter', activate);
+      el.addEventListener('mouseleave', deactivate);
+      el.addEventListener('focus', activate);
+      el.addEventListener('blur', deactivate);
+      el.addEventListener('click', function () {
+        window.location.href = '/payments';
+      });
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          window.location.href = '/payments';
+        }
+      });
+    });
+
+    if (!reduceMotion) {
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          host.querySelectorAll('.csh-donut-seg').forEach(function (seg) {
+            var target = seg.getAttribute('data-target-dasharray');
+            if (target !== null) seg.setAttribute('stroke-dasharray', target);
+          });
+        });
+      });
+    }
+  }
+
+  function renderMemberHealthChart() {
+    var host = $('cshMemberChart');
+    if (!host) return;
+    var today = state.today || new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' });
+    var dueCutoff = shiftIsoDay(today, 7);
+    var active = 0, expiring = 0, expired = 0, trialOrPending = 0;
+
+    state.members.forEach(function (m) {
+      var st = String((m && m.membership_status) || 'PENDING').toUpperCase();
+      var exp = (m && m.expiry_date) || '';
+      if (st === 'ACTIVE') {
+        if (exp && exp <= dueCutoff) expiring += 1;
+        else active += 1;
+      } else if (st === 'EXPIRED') {
+        expired += 1;
+      } else {
+        trialOrPending += 1;
+      }
+    });
+
+    var total = active + expiring + expired + trialOrPending;
+    var subEl = $('cshMemberChartSub');
+    if (subEl) subEl.textContent = total + (total === 1 ? ' registered member' : ' registered members') + ' across statuses';
+
+    if (total <= 0) {
+      host.innerHTML = emptyState('No member profiles loaded yet.');
+      return;
+    }
+
+    var groups = [
+      { label: 'Active (>7d)', count: active, color: '#10B981' },
+      { label: 'Expiring <=7d', count: expiring, color: '#F5C518' },
+      { label: 'Expired', count: expired, color: '#EF4444' },
+      { label: 'Trial / Pending', count: trialOrPending, color: '#38BDF8' },
+    ];
+    var reduceMotion = prefersReducedMotion();
+
+    host.innerHTML =
+      '<div class="csh-health-stack" role="img" aria-label="Membership health stacked distribution">' +
+        groups.filter(function (g) { return g.count > 0; }).map(function (g, idx) {
+          var pct = (g.count / total) * 100;
+          return '<div class="csh-health-seg" style="width:' + pct.toFixed(1) + '%;background:' + g.color + ';--seg-delay:' + (idx * 70) + 'ms" title="' + esc(g.label + ': ' + g.count) + '"></div>';
+        }).join('') +
+      '</div>' +
+      '<div class="csh-health-rows">' +
+        groups.map(function (g, idx) {
+          var pct = Math.round((g.count / total) * 100);
+          return (
+            '<div class="csh-health-item">' +
+              '<div class="csh-health-top"><span>' + esc(g.label) + '</span><span>' + pct + '%</span></div>' +
+              '<strong class="csh-health-val" data-count="' + g.count + '">' + (reduceMotion ? g.count : 0) + '</strong>' +
+              '<div class="csh-health-bar"><span style="width:' + pct + '%;background:' + g.color + ';--seg-delay:' + (idx * 70) + 'ms"></span></div>' +
+            '</div>'
+          );
+        }).join('') +
+      '</div>';
+
+    host.querySelectorAll('.csh-health-val').forEach(function (el) {
+      animateCount(el, Number(el.getAttribute('data-count') || 0));
+    });
+  }
+
+  function renderCashierCharts() {
+    renderDailyBarChart();
+    renderMethodDonutChart();
+    renderMemberHealthChart();
   }
 
   document.addEventListener('DOMContentLoaded', function () {

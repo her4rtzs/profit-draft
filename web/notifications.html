@@ -2,25 +2,26 @@
 <html lang="en">
 
 <head>
-  <script>(function () { try { var t = localStorage.getItem('theme'); if (t === 'light' && !localStorage.getItem('pf-staff-explicit-light')) { t = 'dark'; try { localStorage.setItem('theme', 'dark'); } catch (_) { } } var d = t !== 'light'; var h = document.documentElement; h.style.background = d ? '#0a0e16' : '#fbf6ee'; h.style.colorScheme = d ? 'dark' : 'light'; h.dataset.theme = d ? 'dark' : 'light'; if (d) { h.classList.add('dark'); } else { h.classList.remove('dark'); } } catch (e) { } })();</script>
-  <script src="splash.js?v=3"></script>
+  <script>(function () { try { var t = localStorage.getItem('theme'); if (t === 'light' && !localStorage.getItem('pf-staff-explicit-light')) { t = 'dark'; try { localStorage.setItem('theme', 'dark'); } catch (_) { } } var d = t !== 'light'; var h = document.documentElement; h.style.background = d ? '#070B18' : '#F7F8FC'; h.style.colorScheme = d ? 'dark' : 'light'; h.dataset.theme = d ? 'dark' : 'light'; if (d) { h.classList.add('dark'); } else { h.classList.remove('dark'); } } catch (e) { } })();</script>
+  <script src="splash.js?v=10"></script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
   <title>ProFit | Notifications</title>
+  <link rel="icon" type="image/jpeg" href="/logo.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Figtree:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-  <link rel="stylesheet" href="dashboard.css?v=18">
+  <link rel="stylesheet" href="dashboard.css?v=19">
   <script src="config.js?v=11"></script>
   <script src="api.js?v=6"></script>
   <script src="auth.js?v=7"></script>
   <script>document.documentElement.dataset.accent = 'gold'</script>
   <link rel="manifest" href="/manifest.webmanifest">
   <meta name="theme-color" content="#0a0e17">
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F7F8FC">
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17">
   <meta name="color-scheme" content="light dark">
   <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
@@ -69,13 +70,13 @@
     }
 
     .ntf-seg button.on {
-      background: #e8b93a;
-      color: #0b0f19;
+      background: #F5C518;
+      color: #0B1530;
     }
 
     .ntf-seg button.on:active {
-      background: #b8860b;
-      color: #0b0f19;
+      background: #8A6A00;
+      color: #0B1530;
     }
 
     body:not(.dark) .ntf-seg {
@@ -93,14 +94,14 @@
     }
 
     body:not(.dark) .ntf-seg button.on {
-      background: #e8b93a;
-      color: #0b0f19;
+      background: #F5C518;
+      color: #0B1530;
     }
 
     .ntf-read-all {
       border: 1px solid var(--border, #263246);
       background: var(--card, #111827);
-      color: #e8b93a;
+      color: #F5C518;
       border-radius: 10px;
       padding: 9px 14px;
       font-size: 13px;
@@ -125,7 +126,7 @@
     body:not(.dark) .ntf-read-all {
       background: #ffffff;
       border-color: #eadfc8;
-      color: #8a6212;
+      color: #8A6A00;
     }
 
     .ntf-card {
@@ -172,7 +173,7 @@
     }
 
     .ntf-row.is-unread .ntf-dot {
-      background: #e8b93a;
+      background: #F5C518;
     }
 
     .ntf-body {
@@ -229,12 +230,12 @@
 
     .ntf-empty i {
       font-size: 28px;
-      color: #e8b93a;
+      color: #F5C518;
       margin-bottom: 10px;
       display: block;
     }
   </style>
-  <link rel="stylesheet" href="pf-system.css?v=34">
+  <link rel="stylesheet" href="pf-system.css?v=45">
 </head>
 
 <body class="pf-staff" data-page="notifications" data-title="Notifications" data-welcome="">
@@ -264,11 +265,11 @@
   </div>
 
   <script src="data.js?v=2"></script>
-  <script src="layout.js?v=26"></script>
+  <script src="layout.js?v=27"></script>
   <script src="sidebar.js?v=21"></script>
   <script src="notifications-live.js?v=2" defer></script>
   <script src="portal-fx.js?v=2"></script>
-  <script src="site-footer.js?v=2" defer></script>
+  <script src="site-footer.js?v=8" defer></script>
   <script>
       (() => {
         const listEl = document.getElementById("ntfList");

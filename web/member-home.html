@@ -2,11 +2,12 @@
 <html lang="en">
 
 <head>
-  <script src="splash.js?v=3"></script>
+  <script src="splash.js?v=10"></script>
   <meta charset="utf-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
   <title>My membership &middot; ProFit</title>
+  <link rel="icon" type="image/jpeg" href="/logo.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -18,16 +19,16 @@
   <script src="api.js?v=6"></script>
   <script src="auth.js?v=7"></script>
   <link rel="stylesheet" href="pro-theme.css">
-  <link rel="stylesheet" href="finance-ui.css?v=33">
-  <link rel="stylesheet" href="spotify.css?v=14">
+  <link rel="stylesheet" href="finance-ui.css?v=37">
+  <link rel="stylesheet" href="spotify.css?v=15">
   <link rel="stylesheet" href="portal-ui.css?v=13">
   <script>document.documentElement.dataset.accent = 'gold'</script>
   <link rel="stylesheet" href="hover-fx.css?v=3">
-  <link rel="stylesheet" href="announcements.css?v=9">
+  <link rel="stylesheet" href="announcements.css?v=12">
   <link rel="stylesheet" href="ui-polish.css?v=2">
   <link rel="stylesheet" href="ui-fixes.css?v=1">
   <link rel="stylesheet" href="pf-modern.css?v=2">
-  <link rel="stylesheet" href="member-shell.css?v=39">
+  <link rel="stylesheet" href="member-shell.css?v=41">
   <style>
     @keyframes mbDashRise {
       from {
@@ -97,7 +98,7 @@
       gap: 10px;
       margin-bottom: 10px;
       font: 700 13px/1 "Plus Jakarta Sans", Inter, sans-serif;
-      color: #e8b93a;
+      color: #F5C518;
     }
 
     .member-welcome.member-hero h1#memberGreeting {
@@ -156,7 +157,7 @@
 
     .mb-status-pill.is-trial {
       background: rgba(232, 185, 58, .16);
-      color: #e8b93a
+      color: #F5C518
     }
 
     .mb-status-pill.is-expired {
@@ -210,7 +211,7 @@
 
     .mb-ring-arc {
       fill: none;
-      stroke: #e8b93a;
+      stroke: #F5C518;
       stroke-width: 6;
       stroke-linecap: round;
       transition: stroke-dashoffset .85s cubic-bezier(.2, .8, .2, 1)
@@ -263,20 +264,20 @@
       padding: 9px 16px;
       border-radius: 10px;
       border: 0;
-      background: #e8b93a;
-      color: #0b0f19;
+      background: #F5C518;
+      color: #0B1530;
       font: 700 12.5px/1 "Plus Jakarta Sans", Inter, sans-serif;
       cursor: pointer;
       transition: background-color .15s ease;
     }
 
     .mb-mini-btn:hover:not(:disabled) {
-      background: #f0c44b;
+      background: #FAD03C;
       transform: none;
     }
 
     .mb-mini-btn:active:not(:disabled) {
-      background: #b8860b;
+      background: #8A6A00;
       transform: none;
     }
 
@@ -324,7 +325,7 @@
     .mb-tab-eyebrow {
       display: block;
       font: 700 12.5px/1 "Plus Jakarta Sans", Inter, sans-serif;
-      color: #e8b93a;
+      color: #F5C518;
       margin-bottom: 6px
     }
 
@@ -492,7 +493,7 @@
     }
 
     body.member-home:not(.dark) .mb-tab-eyebrow {
-      color: #8a6212 !important;
+      color: #8A6A00 !important;
     }
 
     body.member-home:not(.dark) .mb-tab-banner h2 {
@@ -516,12 +517,12 @@
     }
 
     body.member-home:not(.dark) .pp-cal-day.is-today {
-      border-color: #b8860b !important;
-      color: #8a6212 !important;
+      border-color: #8A6A00 !important;
+      color: #8A6A00 !important;
     }
 
     body.member-home:not(.dark) .pp-cal-day.is-today.is-checkin {
-      border-color: #8a6212 !important;
+      border-color: #8A6A00 !important;
       color: #2a1d04 !important;
     }
 
@@ -550,7 +551,7 @@
     }
 
     body.member-home:not(.dark) .pp-cal-summary {
-      background: #faf6ee !important;
+      background: #F7F8FC !important;
       border: 1px solid #eadfc8 !important;
       color: #2a2418 !important;
     }
@@ -592,14 +593,14 @@
     type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script>
   <link rel="manifest" href="/manifest.webmanifest">
   <meta name="theme-color" content="#0a0e17">
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F7F8FC">
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17">
   <meta name="color-scheme" content="light dark">
   <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="ProFit">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="stylesheet" href="pf-system.css?v=34">
+  <link rel="stylesheet" href="pf-system.css?v=45">
 </head>
 
 <body class="member-home" data-page="member-home">
@@ -1316,6 +1317,9 @@
             </div>
             <div id="paymentsHistoryRoot" hidden></div>
           </section>
+          <section class="panel member-panel" style="margin-top:16px">
+            <div id="trainerCard"></div>
+          </section>
         </div>
 
         <div class="pp-tool-panel" data-panel="attendance" hidden>
@@ -1326,7 +1330,7 @@
               <p class="mb-kpi-sub" id="attKpiMonthSub">Monthly goal: 12 visits</p>
             </article>
             <article class="member-panel mb-kpi-card">
-              <div class="mb-kpi-head"><i class="fa-solid fa-fire" style="color:#e8b93a"
+              <div class="mb-kpi-head"><i class="fa-solid fa-fire" style="color:#F5C518"
                   aria-hidden="true"></i><span>Best streak</span></div>
               <div class="mb-kpi-val"><strong id="attKpiStreak">0</strong><small>days</small></div>
               <p class="mb-kpi-sub">Consecutive gym days</p>
@@ -1391,9 +1395,6 @@
         </div>
 
         <div class="pp-tool-panel" data-panel="profile" hidden>
-          <section class="panel member-panel" style="margin-bottom:16px">
-            <div id="trainerCard"></div>
-          </section>
           <div class="pf-sk-wrap pf-sk-card" data-skeleton="profile">
             <div style="display:flex;align-items:center;gap:14px">
               <div class="pf-sk-circle"></div>
@@ -1443,7 +1444,7 @@
         const $ = id => document.getElementById(id);
         const safe = value => String(value ?? "&mdash;");
 
-        // ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ Date helpers ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬
+        // ── Date helpers ────────────────────────────────────────────────────────────
         // localDateStr: converts any date value to a Manila-local YYYY-MM-DD string,
         // avoiding the UTC-shift bug that occurs when you pass an ISO date string
         // (e.g. "2026-10-29") to `new Date()` &mdash; that parses as midnight UTC, which
@@ -1471,7 +1472,7 @@
         // weekMondayKey: ISO date string of the most recent Monday (or today if Monday)
         const weekMondayKey = () => {
           const d = new Date();
-          const dow = d.getDay(); // 0=Sun ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ 6=Sat
+          const dow = d.getDay(); // 0=Sun … 6=Sat
           const diffToMon = dow === 0 ? 6 : dow - 1; // days since last Monday
           d.setDate(d.getDate() - diffToMon);
           return localDateStr(d);
@@ -1491,7 +1492,7 @@
             user: window.ProFitAuth?.user || { name: "Demo Member", email: "member@profit.test", phone: "0917 000 0000" },
             membership: { planName: "Monthly Plan", plan: "Monthly", status: "Active", expiresAt: new Date(Date.now() + 18 * 86400000).toISOString(), daysRemaining: 18 },
             attendance: generated,
-            payments: [{ reference: "P-0008", date: new Date(Date.now() - 3 * 86400000).toISOString(), method: "GCash", amountFormatted: "â‚±800" }]
+            payments: [{ reference: "P-0008", date: new Date(Date.now() - 3 * 86400000).toISOString(), method: "GCash", amountFormatted: "₱800" }]
           };
         };
         const list = (id, items, empty, render) => {
@@ -1505,7 +1506,7 @@
           });
         };
 
-        // ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ Streak ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬
+        // ── Streak ──────────────────────────────────────────────────────────────────
         // Uses localDateStr() so UTC-midnight ISO timestamps don't shift the date.
         // If not checked in today, streak stays alive from yesterday until the day ends.
         function calcStreak(attendance) {
@@ -1521,7 +1522,7 @@
           return streak;
         }
 
-        // ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ Weekly goal ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬
+        // ── Weekly goal ─────────────────────────────────────────────────────────────
         // Counts distinct check-in dates from the start of the current ISO week
         // (Monday 00:00 local time), NOT a rolling 7-day window. This means 1 visit
         // on Monday of a new week resets the count to 1, exactly as expected.
@@ -1595,7 +1596,7 @@
           });
           const activeWeeks = activeWeeksSet.size;
 
-          // 4-card KPI strip (Overview) â€” smooth count-up animations
+          // 4-card KPI strip (Overview) — smooth count-up animations
           animateCountUp($("streakCount"), streak);
           animateCountUp($("weeklyGoalText"), Math.min(weekly, goal));
           if ($("weeklyGoalBar")) $("weeklyGoalBar").style.width = `${Math.min(100, (weekly / goal) * 100)}%`;
@@ -1827,8 +1828,8 @@
           $("membershipName").textContent = safe(raw.planName || raw.plan || "No active plan");
           $("membershipDetail").textContent = endIso
             ? (effStatus === "EXPIRED"
-              ? `Membership expired on ${date(endIso)} Â· 0 days remaining`
-              : `Expires ${date(endIso)} Â· ${remainingDays} day${remainingDays === 1 ? "" : "s"} remaining`)
+              ? `Membership expired on ${date(endIso)} · 0 days remaining`
+              : `Expires ${date(endIso)} · ${remainingDays} day${remainingDays === 1 ? "" : "s"} remaining`)
             : "No active membership period yet. Choose a plan to get started.";
           const badgeEl = $("membershipStatus");
           badgeEl.textContent = formatStatusLabel(effStatus);
@@ -1896,7 +1897,7 @@
           // Attendance dates from the API are already "YYYY-MM-DD" strings; use date()
           // which calls localDateStr() internally to avoid the UTC midnight shift.
           list("attendanceList", attendanceItems, "No attendance records yet.", x => `<span><b>${date(localDateStr(x.date))}</b><small>${safe(x.location || "Gym check-in")}</small></span><i class="fa-solid fa-arrow-right"></i>`);
-          list("paymentList", paymentItems, "No payment records yet.", x => `<span><b>${safe(x.reference || "Payment")}</b><small>${date(x.date)} Â· ${safe(x.method)} Â· ${safe(formatStatusLabel(x.status || "PAID"))}</small></span><strong>${safe(x.amountFormatted || x.amount)}</strong><button type="button" class="member-receipt" data-receipt="${safe(x.reference || "Payment")}" data-when="${safe(x.date)}" data-method="${safe(x.method)}" data-amount="${safe(x.amountFormatted || x.amount || "")}"><i class="fa-solid fa-receipt" aria-hidden="true"></i> Receipt</button>`);
+          list("paymentList", paymentItems, "No payment records yet.", x => `<span><b>${safe(x.reference || "Payment")}</b><small>${date(x.date)} · ${safe(x.method)} · ${safe(formatStatusLabel(x.status || "PAID"))}</small></span><strong>${safe(x.amountFormatted || x.amount)}</strong><button type="button" class="member-receipt" data-receipt="${safe(x.reference || "Payment")}" data-when="${safe(x.date)}" data-method="${safe(x.method)}" data-amount="${safe(x.amountFormatted || x.amount || "")}"><i class="fa-solid fa-receipt" aria-hidden="true"></i> Receipt</button>`);
           // Store attendance days as local YYYY-MM-DD strings so the calendar and
           // syncMemberChrome todayKey comparison are timezone-consistent.
           window.__pfAttendanceDays = attendanceItems.map(x => localDateStr(x.date));
@@ -1907,7 +1908,7 @@
         const payPlans = {};
 
         function payMoney(value) {
-          return "â‚±" + Number(value || 0).toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          return "₱" + Number(value || 0).toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
         function showPayStatus(kind, message) {
@@ -1949,7 +1950,7 @@
           const amount = $("memberPayAmount");
           if (!select || !amount) return;
           const plan = payPlans[select.value];
-          const formatted = plan ? payMoney(plan.price) : "â€”";
+          const formatted = plan ? payMoney(plan.price) : "—";
           amount.value = formatted;
           const amtSpan = $("memberPayConfirmAmtVal");
           if (amtSpan) amtSpan.textContent = plan ? formatted : "the plan amount";
@@ -1962,7 +1963,7 @@
           if (!select) return;
           const current = select.value;
           select.innerHTML = Object.entries(payPlans)
-            .map(([key, plan]) => `<option value="${key}">${plan.label} â€” ${payMoney(plan.price)}</option>`)
+            .map(([key, plan]) => `<option value="${key}">${plan.label} — ${payMoney(plan.price)}</option>`)
             .join("");
           if (current && payPlans[current]) select.value = current;
           updatePayAmount();
@@ -2081,7 +2082,7 @@
 
           button.disabled = true;
           const original = button.innerHTML;
-          button.innerHTML = '<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i><span>Submittingâ€¦</span>';
+          button.innerHTML = '<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i><span>Submitting…</span>';
           showPayStatus("", "");
           try {
             await ProFitAPI.post("/member/claims", {
@@ -2271,7 +2272,7 @@
           const datePill = $("heroDatePill");
           if (datePill) {
             const now = new Date();
-            datePill.textContent = `${now.toLocaleDateString(undefined, { weekday: "short" }).toUpperCase()} Â· ${now.toLocaleDateString(undefined, { month: "short", day: "numeric" }).toUpperCase()}`;
+            datePill.textContent = `${now.toLocaleDateString(undefined, { weekday: "short" }).toUpperCase()} · ${now.toLocaleDateString(undefined, { month: "short", day: "numeric" }).toUpperCase()}`;
           }
           const greeting = $("memberGreeting");
           const displayFirst = first ? (first.charAt(0).toUpperCase() + first.slice(1)) : "Member";
@@ -2411,7 +2412,7 @@
           document.documentElement.classList.toggle("dark", !!dark);
           document.documentElement.dataset.theme = dark ? "dark" : "light";
           document.documentElement.style.colorScheme = dark ? "dark" : "light";
-          document.documentElement.style.background = dark ? "#0a0e16" : "#fbf6ee";
+          document.documentElement.style.background = dark ? "#070B18" : "#F7F8FC";
           if (themeButton) {
             themeButton.innerHTML = dark
               ? '<i class="fa-regular fa-sun" aria-hidden="true"></i>'
@@ -2450,7 +2451,7 @@
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
         <h2 id="mbQrTitle"
           style="margin:0;font-size:18px;font-weight:800;display:inline-flex;align-items:center;gap:8px"><i
-            class="fa-solid fa-qrcode" style="color:#e8b93a" aria-hidden="true"></i> Check-in QR Pass</h2>
+            class="fa-solid fa-qrcode" style="color:#F5C518" aria-hidden="true"></i> Check-in QR Pass</h2>
         <button type="button" id="mbQrClose" aria-label="Close QR pass"
           style="width:34px;height:34px;border-radius:10px;border:1px solid var(--border,#263246);background:transparent;color:inherit;cursor:pointer;display:grid;place-items:center"><i
             class="fa-solid fa-xmark"></i></button>
@@ -2493,7 +2494,7 @@
         const code = String(u.memberId || u.id || "").trim();
         const st = String(m.status || "").toUpperCase();
         if ($("mbQrName")) $("mbQrName").textContent = u.name || "Member";
-        if ($("mbQrId")) $("mbQrId").textContent = code ? `Member ID Â· ${code}` : "No Member ID yet";
+        if ($("mbQrId")) $("mbQrId").textContent = code ? `Member ID · ${code}` : "No Member ID yet";
         const box = $("mbQrCodeBox");
         const wrap = $("mbQrCanvasWrap");
         const hint = $("mbQrHint");
@@ -2695,7 +2696,7 @@
     </div>
   </div>
   <script src="/static/js/install-help.js" defer></script>
-  <script src="site-footer.js?v=2" defer></script>
+  <script src="site-footer.js?v=8" defer></script>
 </body>
 
 </html>

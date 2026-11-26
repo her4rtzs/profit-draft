@@ -2,12 +2,13 @@
 <html lang="en">
 
 <head>
-  <script>(function () { try { var d = localStorage.getItem('theme') !== 'light'; var h = document.documentElement; h.style.background = d ? '#0a0e16' : '#f0f2f5'; h.style.colorScheme = d ? 'dark' : 'light'; } catch (e) { } })();</script>
-  <script src="splash.js?v=2"></script>
+  <script>(function () { try { var d = localStorage.getItem('theme') !== 'light'; var h = document.documentElement; h.style.background = d ? '#070B18' : '#F7F8FC'; h.style.colorScheme = d ? 'dark' : 'light'; } catch (e) { } })();</script>
+  <script src="splash.js?v=10"></script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
   <title>ProFit | My profile</title>
+  <link rel="icon" type="image/jpeg" href="/logo.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet"
@@ -35,7 +36,7 @@
       height: 116px;
       padding: 0;
       border-radius: 50%;
-      border: 3px solid #e8b93a;
+      border: 3px solid #F5C518;
       background: #161f30;
       cursor: pointer;
       overflow: hidden;
@@ -140,7 +141,7 @@
 
     .pf-hero-id .pp-eyebrow {
       margin: 0;
-      color: #e8b93a;
+      color: #F5C518;
       font-size: 11px;
       font-weight: 800;
       letter-spacing: .09em;
@@ -148,7 +149,7 @@
     }
 
     body:not(.dark) .pf-hero-id .pp-eyebrow {
-      color: #8a6212;
+      color: #8A6A00;
     }
 
     .pf-hero-id h2 {
@@ -171,7 +172,7 @@
       border-radius: 99px;
       background: rgba(232, 185, 58, .14);
       border: 1px solid rgba(232, 185, 58, .28);
-      color: #e8b93a;
+      color: #F5C518;
       font-size: 12.5px;
       font-weight: 700;
     }
@@ -179,7 +180,7 @@
     body:not(.dark) .pf-role-pill {
       background: #fef9eb;
       border-color: #ebd594;
-      color: #8a6212;
+      color: #8A6A00;
     }
 
     .pf-hero-meta {
@@ -269,7 +270,7 @@
 
     .pf-comp-arc {
       fill: none;
-      stroke: #e8b93a;
+      stroke: #F5C518;
       stroke-width: 6;
       stroke-linecap: round;
       transition: stroke-dashoffset .35s ease;
@@ -325,8 +326,22 @@
     @media (max-width: 780px) {
       .pf-hero-v2 {
         grid-template-columns: 1fr !important;
-        justify-items: start !important;
+        justify-items: center !important;
         gap: 18px !important;
+      }
+
+      .pf-ava-trigger-wrap {
+        margin-inline: auto;
+      }
+
+      .pf-hero-id {
+        align-items: center;
+        text-align: center;
+        width: 100%;
+      }
+
+      .pf-hero-meta {
+        justify-content: center;
       }
 
       .pf-comp-box {
@@ -397,15 +412,15 @@
 
     .pf-ava-badge {
       position: absolute;
-      right: 2px;
-      bottom: 2px;
-      width: 30px;
-      height: 30px;
-      min-width: 0;
-      min-height: 0;
+      right: 0;
+      bottom: 0;
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      min-height: 36px;
       padding: 0;
       border-radius: 50%;
-      background: #e8b93a;
+      background: #F5C518;
       color: #161209;
       border: 2.5px solid var(--card, #111827);
       display: grid;
@@ -470,7 +485,7 @@
       height: 62px;
       border-radius: 14px;
       border: 1.5px solid var(--border, #263246);
-      background: var(--bg, #0a0e17);
+      background: var(--bg, #070B18);
       display: grid;
       place-items: center;
       cursor: pointer;
@@ -492,7 +507,7 @@
     }
 
     .pf-ava-opt.sel {
-      border-color: #e8b93a;
+      border-color: #F5C518;
       background: rgba(232, 185, 58, .12);
     }
 
@@ -536,7 +551,7 @@
       padding: 10px 12px;
       border-radius: 13px;
       border: 1px solid var(--border, #263246);
-      background: var(--bg, #0a0e17);
+      background: var(--bg, #070B18);
     }
 
     body:not(.dark) .pf-pv-mini {
@@ -596,7 +611,7 @@
     .pf-pv-paper em {
       font-style: normal;
       font-weight: 800;
-      color: #e8b93a;
+      color: #F5C518;
     }
 
     body:not(.dark) .pf-pv-paper {
@@ -611,7 +626,7 @@
     }
 
     body:not(.dark) .pf-pv-paper em {
-      color: #8a6212;
+      color: #8A6A00;
     }
 
     #profileNotice {
@@ -695,14 +710,14 @@
     type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script>
   <link rel="manifest" href="/manifest.webmanifest">
   <meta name="theme-color" content="#0a0e17">
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F7F8FC">
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17">
   <meta name="color-scheme" content="light dark">
   <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="ProFit">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="stylesheet" href="pf-system.css?v=34">
+  <link rel="stylesheet" href="pf-system.css?v=45">
 </head>
 
 <body class="pf-staff" data-page="profile" data-title="My profile" data-welcome="Your staff account">
@@ -839,14 +854,14 @@
       }
     });
   </script>
-  <script src="layout.js?v=26"></script>
+  <script src="layout.js?v=27"></script>
   <script src="sidebar.js?v=21"></script>
   <script src="data.js"></script>
   <script src="profile.js?v=20"></script>
   <script src="portal-fx.js?v=2"></script>
   <script src="change-password.js?v=4" defer></script>
   <script src="notifications-live.js?v=2" defer></script>
-  <script src="site-footer.js?v=2" defer></script>
+  <script src="site-footer.js?v=8" defer></script>
 </body>
 
 </html>

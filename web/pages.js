@@ -507,9 +507,10 @@
                 todayFeed.innerHTML = list.length ? list.map(p => {
                     const m = DB.member(p.memberId);
                     const name = m ? m.name : p.memberId;
+                    const avaSrc = window.ProFitAvatar ? window.ProFitAvatar.resolve(m && m.photo, (m && m.email) || name || p.memberId) : "";
                     return `
                     <li>
-                        <div class="mini-avatar">${initials(name)}</div>
+                        <div class="mini-avatar">${avaSrc ? `<img src="${avaSrc}" alt="">` : initials(name)}</div>
                         <div class="grow"><strong>${esc(name)}</strong><small>${esc(planLabel(p.plan))}, ${esc(p.method)}</small></div>
                         <span class="amt">${peso(p.amount)}</span>
                     </li>`;

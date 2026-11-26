@@ -60,6 +60,15 @@
             const dayWord = waiting === 1 ? "day" : "days";
             const initials = String(c.member_name || "").trim().split(/\s+/)
               .slice(0, 2).map((w) => w[0] || "").join("").toUpperCase();
+            const matchedMember = (window.DB && typeof window.DB.member === "function" && c.member_id)
+              ? window.DB.member(c.member_id)
+              : null;
+            const avaSrc = window.ProFitAvatar
+              ? window.ProFitAvatar.resolve(c.member_photo || c.photo || (matchedMember && matchedMember.photo), c.member_email || (matchedMember && matchedMember.email) || c.member_name || c.member_id)
+              : "";
+            const avaHtml = avaSrc
+              ? '<span class="pp-avatar" aria-hidden="true"><img src="' + esc(avaSrc) + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block"></span>'
+              : '<span class="pp-avatar" aria-hidden="true">' + esc(initials) + '</span>';
             return '<tr>'
               + '<td><strong>' + member + '</strong></td>'
               + '<td>' + plan + '</td>'
@@ -74,7 +83,7 @@
               + '<td class="review-card-cell" colspan="7">'
               + '<article class="pp-member review-card">'
               + '<header>'
-              + '<span class="pp-avatar" aria-hidden="true">' + esc(initials) + '</span>'
+              + avaHtml
               + '<div class="pp-member-title"><h3>' + member + '</h3><span>' + submitted + '</span></div>'
               + '</header>'
               + '<dl class="pp-kv">'

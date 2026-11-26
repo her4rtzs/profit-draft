@@ -2,33 +2,34 @@
 <html lang="en">
 
 <head>
-  <script>(function () { try { var t = localStorage.getItem('theme'); if (t === 'light' && !localStorage.getItem('pf-staff-explicit-light')) { t = 'dark'; try { localStorage.setItem('theme', 'dark'); } catch (_) { } } var d = t !== 'light'; var h = document.documentElement; h.style.background = d ? '#0a0e16' : '#F7F4EE'; h.style.colorScheme = d ? 'dark' : 'light'; if (d) { h.classList.add('dark'); } else { h.classList.remove('dark'); } } catch (e) { } })();</script>
-  <script src="splash.js?v=3"></script>
+  <script>(function () { try { var t = localStorage.getItem('theme'); if (t === 'light' && !localStorage.getItem('pf-staff-explicit-light')) { t = 'dark'; try { localStorage.setItem('theme', 'dark'); } catch (_) { } } var d = t !== 'light'; var h = document.documentElement; h.style.background = d ? '#070B18' : '#F7F8FC'; h.style.colorScheme = d ? 'dark' : 'light'; if (d) { h.classList.add('dark'); } else { h.classList.remove('dark'); } } catch (e) { } })();</script>
+  <script src="splash.js?v=10"></script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
-  <title>Cashier Portal Ã‚Â· ProFit</title>
+  <title>Cashier Portal · ProFit</title>
+  <link rel="icon" type="image/jpeg" href="/logo.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Figtree:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-  <link rel="stylesheet" href="dashboard.css?v=18">
-  <link rel="stylesheet" href="finance-ui.css?v=33">
+  <link rel="stylesheet" href="dashboard.css?v=19">
+  <link rel="stylesheet" href="finance-ui.css?v=37">
   <script src="config.js?v=11"></script>
   <script src="api.js?v=6"></script>
   <script src="auth.js?v=7"></script>
   <script>document.documentElement.dataset.accent = 'gold'</script>
   <link rel="manifest" href="/manifest.webmanifest">
   <meta name="theme-color" content="#0a0e17">
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F7F8FC">
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17">
   <meta name="color-scheme" content="light dark">
   <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="ProFit">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="stylesheet" href="pf-system.css?v=34">
+  <link rel="stylesheet" href="pf-system.css?v=45">
 </head>
 
 <body class="pf-staff" data-page="cashier" data-title="Dashboard" data-welcome="Front desk billing &amp; payments">
@@ -48,7 +49,7 @@
           <h1>Front desk,<br>live.</h1>
           <p>Take cash payments, review GCash claims, enroll walk-ins, and record gym check-ins from one desk.</p>
           <div class="csh-hero-actions">
-            <a class="csh-btn-gold" href="#cashierPayForm"><i class="fa-solid fa-peso-sign" aria-hidden="true"></i>
+            <a class="csh-btn-gold" href="/payments"><i class="fa-solid fa-peso-sign" aria-hidden="true"></i>
               Record payment</a>
             <a class="csh-btn-dark" href="/attendance"><i class="fa-regular fa-calendar-check" aria-hidden="true"></i>
               Record attendance</a>
@@ -75,7 +76,7 @@
             </span>
             <i class="fa-solid fa-chevron-right pf-hs-chev" aria-hidden="true"></i>
           </a>
-          <a class="pf-hero-shortcut" href="#cashierPayForm">
+          <a class="pf-hero-shortcut" href="/payments">
             <span class="pf-hs-ico is-cyan" aria-hidden="true"><i class="fa-solid fa-peso-sign"></i></span>
             <span class="pf-hs-body">
               <span class="pf-hs-label">2. Record payment</span>
@@ -141,7 +142,7 @@
           font-size: 11px;
           font-weight: 800;
           letter-spacing: .09em;
-          color: #e8b93a;
+          color: #F5C518;
           margin-bottom: 8px;
         }
 
@@ -174,8 +175,8 @@
           min-height: 42px;
           padding: 0 18px;
           border-radius: 12px;
-          background: #e8b93a;
-          color: #0B0F19;
+          background: #F5C518;
+          color: #0B1530;
           font-size: 13.5px;
           font-weight: 800;
           text-decoration: none;
@@ -183,11 +184,11 @@
         }
 
         .csh-btn-gold:hover {
-          background: #f0c44b;
+          background: #FAD03C;
         }
 
         .csh-btn-gold:active {
-          background: #b8860b;
+          background: #8A6A00;
         }
 
         .csh-btn-dark {
@@ -285,8 +286,8 @@
           min-height: 34px;
           padding: 0 14px;
           border-radius: 10px;
-          background: #e8b93a;
-          color: #0B0F19;
+          background: #F5C518;
+          color: #0B1530;
           font-size: 12.5px;
           font-weight: 800;
           text-decoration: none;
@@ -294,11 +295,11 @@
         }
 
         .csh-mini-gold:hover {
-          background: #f0c44b;
+          background: #FAD03C;
         }
 
         .csh-mini-gold:active {
-          background: #b8860b;
+          background: #8A6A00;
         }
 
         .csh-qa-grid {
@@ -336,7 +337,7 @@
           height: 38px;
           border-radius: 50%;
           background: rgba(232, 185, 58, .14);
-          color: #e8b93a;
+          color: #F5C518;
           display: inline-grid;
           place-items: center;
           flex: none;
@@ -366,7 +367,7 @@
           height: 26px;
           border-radius: 50%;
           background: rgba(255, 255, 255, .05);
-          color: #e8b93a;
+          color: #F5C518;
           display: inline-grid;
           place-items: center;
           flex: none;
@@ -388,12 +389,12 @@
 
         body:not(.dark) .csh-qa-ico {
           background: #fdf4db;
-          color: #9a6b0d;
+          color: #8A6A00;
         }
 
         body:not(.dark) .csh-qa-arrow {
-          background: #faf6ee;
-          color: #9a6b0d;
+          background: #F7F8FC;
+          color: #8A6A00;
         }
 
         @media (max-width: 1080px) {
@@ -440,7 +441,7 @@
             <span class="pf-sk sk-val"></span>
             <span class="pf-sk sk-sub"></span>
           </div>
-          <h2 class="fn-kpi-val" id="kpiCollectedVal">Ã¢â€šÂ±0</h2>
+          <h2 class="fn-kpi-val" id="kpiCollectedVal">₱0</h2>
           <div class="fn-kpi-foot">
             <span class="fn-kpi-cap" id="kpiCollectedSub">0 payments recorded today</span>
           </div>
@@ -455,7 +456,7 @@
             <span class="pf-sk sk-val"></span>
             <span class="pf-sk sk-sub"></span>
           </div>
-          <h2 class="fn-kpi-val" id="kpiCashVal">Ã¢â€šÂ±0</h2>
+          <h2 class="fn-kpi-val" id="kpiCashVal">₱0</h2>
           <div class="fn-kpi-foot">
             <span class="fn-kpi-cap" id="kpiCashSub">Cash drawer at desk</span>
           </div>
@@ -470,7 +471,7 @@
             <span class="pf-sk sk-val"></span>
             <span class="pf-sk sk-sub"></span>
           </div>
-          <h2 class="fn-kpi-val" id="kpiDigitalVal">Ã¢â€šÂ±0</h2>
+          <h2 class="fn-kpi-val" id="kpiDigitalVal">₱0</h2>
           <div class="fn-kpi-foot">
             <span class="fn-kpi-cap" id="kpiDigitalSub">GCash and old online payments</span>
           </div>
@@ -492,381 +493,813 @@
         </article>
       </section>
 
-      <!-- Hero Banner + Tab Switcher (mirrors Payments & Browse Members layout) -->
-      <section class="fn-header-card">
-        <div class="fn-header-title" id="cashierHeaderBlock">
-          <span class="fn-header-ico is-amber" id="cashierHeaderIco" aria-hidden="true"><i
-              class="fa-solid fa-cash-register"></i></span>
-          <div class="fn-header-copy">
-            <h2 id="cashierHeaderTitle" aria-live="polite">Process Payment</h2>
-            <p id="cashierHeaderSub">Collect desk cash or GCash payments and issue official receipts.</p>
-          </div>
-        </div>
-        <div class="fn-tabs" role="tablist" aria-label="Cashier desk sections">
-          <button class="tab active" type="button" role="tab" id="tab-terminal" aria-selected="true"
-            aria-controls="pane-terminal" data-tab="terminal">
-            <span class="fn-tab-icon is-amber" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <rect x="2" y="5" width="20" height="14" rx="2" />
-                <line x1="2" y1="10" x2="22" y2="10" />
-              </svg>
-            </span>
-            <span class="fn-tab-full">Process payment</span>
-            <span class="fn-tab-short">Pay</span>
-          </button>
-          <button class="tab" type="button" role="tab" id="tab-history" aria-selected="false"
-            aria-controls="pane-history" data-tab="history">
-            <span class="fn-tab-icon is-emerald" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <polyline points="14 2 14 8 20 8" />
-                <line x1="8" y1="13" x2="16" y2="13" />
-                <line x1="8" y1="17" x2="13" y2="17" />
-              </svg>
-            </span>
-            <span class="fn-tab-full">Transaction history</span>
-            <span class="fn-tab-short">History</span>
-          </button>
-          <button class="tab" type="button" role="tab" id="tab-lookup" aria-selected="false" aria-controls="pane-lookup"
-            data-tab="lookup">
-            <span class="fn-tab-icon is-cyan" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <circle cx="12" cy="12" r="9" />
-                <polyline points="12 7 12 12 15.5 14" />
-              </svg>
-            </span>
-            <span class="fn-tab-full">Member lookup &amp; renewals</span>
-            <span class="fn-tab-short">Lookup</span>
-          </button>
-        </div>
-        <div class="fn-header-bg" aria-hidden="true"></div>
-      </section>
+      <!-- Cashier Shift Graphs (replaces duplicate payment form) -->
+      <style>
+        .csh-graphs-grid {
+          display: grid;
+          grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+          gap: 18px;
+          margin-top: 4px;
+        }
 
-      <!-- Pane 1: Process Payment + Today's Shift Feed -->
-      <section class="pane active" id="pane-terminal" role="tabpanel" aria-labelledby="tab-terminal"
-        data-pane="terminal">
-        <div class="fn-daily-grid">
-          <article class="fn-card fn-card--amber">
-            <header class="fn-card-head">
-              <div class="fn-card-head-left">
-                <span class="fn-icon-box" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round">
-                    <rect x="2" y="5" width="20" height="14" rx="2" />
-                    <line x1="2" y1="10" x2="22" y2="10" />
-                    <line x1="6" y1="15" x2="10" y2="15" />
-                  </svg>
-                </span>
-                <div>
-                  <h2 class="fn-card-title">Record a payment <span class="pf-pay-method-pill">Cash &amp; GCash</span></h2>
-                  <p class="fn-card-sub">Collect desk cash or GCash payment and issue an official receipt.</p>
-                </div>
-              </div>
-              <span class="fn-card-meta" id="cashierMemberCount">Loading...</span>
-            </header>
+        .csh-graph-card {
+          background: #0F1A33;
+          border: 1px solid #1F2F55;
+          border-radius: 16px;
+          padding: 20px 22px;
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+          animation: cshCardIn 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+          transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1), border-color 180ms ease, box-shadow 200ms ease;
+        }
 
-            <div class="pf-pay-steps" id="cashierPaySteps" aria-label="Payment recording steps">
-              <div class="pf-pay-step is-active" data-step="1">
-                <span class="pf-pay-step-num">1</span>
-                <span>Select member &amp; plan</span>
-              </div>
-              <span class="pf-pay-step-line" aria-hidden="true"></span>
-              <div class="pf-pay-step" data-step="2">
-                <span class="pf-pay-step-num">2</span>
-                <span>Collect payment</span>
-              </div>
-              <span class="pf-pay-step-line" aria-hidden="true"></span>
-              <div class="pf-pay-step" data-step="3">
-                <span class="pf-pay-step-num">3</span>
-                <span>Issue receipt</span>
-              </div>
-            </div>
+        .csh-graph-card:nth-child(2) {
+          animation-delay: 80ms;
+        }
 
-            <div class="pf-gcash-pay-layout">
-              <aside class="pf-gcash-qr-panel" id="cashierGcashQrCard" aria-label="GCash payment QR code">
-                <span class="pf-gcash-qr-kicker">Scan to pay</span>
-                <button type="button" class="pf-gcash-qr-thumb" data-gcash-qr-open
-                  title="Click to enlarge QR" aria-label="Enlarge GCash payment QR code">
-                  <img src="img/gcash-qr.jpg" alt="ProFit GCash payment QR code" loading="lazy">
-                </button>
-                <div class="pf-gcash-qr-actions">
-                  <a class="pf-qr-ghost-btn" href="img/gcash-qr.jpg" download="profit-gcash-qr.jpg">
-                    <i class="fa-solid fa-download" aria-hidden="true"></i>
-                    <span>Save QR</span>
-                  </a>
-                </div>
-              </aside>
+        .csh-graph-card:nth-child(3) {
+          animation-delay: 160ms;
+        }
 
-              <form class="fn-form" id="cashierPayForm" novalidate>
-                <div class="fn-field-row">
-                  <div class="fn-field">
-                    <label for="cashierMemberSearch">Search member</label>
-                    <input class="fn-input" id="cashierMemberSearch" type="search"
-                      placeholder="Filter by name, email, or phone..." autocomplete="off">
-                  </div>
-                  <div class="fn-field">
-                    <label for="cashierMember">Member</label>
-                    <select class="fn-input" id="cashierMember" name="member_id" required>
-                      <option value="">Loading members...</option>
-                    </select>
-                  </div>
-                </div>
+        .csh-graph-card--wide {
+          grid-column: 1 / -1;
+        }
 
-                <div class="cashier-member-card" id="cashierMemberPreview" aria-live="polite">
-                  <div class="cashier-member-meta">
-                    <strong>No member selected</strong>
-                    <small>Choose a member above to inspect current plan and expiry date.</small>
-                  </div>
-                </div>
+        .csh-graph-head {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 12px;
+          flex-wrap: wrap;
+        }
 
-                <div class="fn-field-row">
-                  <div class="fn-field">
-                    <label for="cashierPlan">Subscription plan</label>
-                    <select class="fn-input" id="cashierPlan" name="plan" required>
-                      <option value="daily">Daily Pass - Ã¢â€šÂ±80</option>
-                      <option value="monthly" selected>Monthly Membership - Ã¢â€šÂ±800</option>
-                      <option value="quarterly">Quarterly Membership - Ã¢â€šÂ±2,100</option>
-                      <option value="annual">Annual Membership - Ã¢â€šÂ±7,500</option>
-                    </select>
-                  </div>
-                  <div class="fn-field">
-                    <label for="cashierAmount">Official amount (PHP)</label>
-                    <input class="fn-input pf-pay-amount-input" id="cashierAmount" type="text" value="Ã¢â€šÂ±800.00" readonly>
-                  </div>
-                </div>
+        .csh-graph-title-wrap {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          min-width: 0;
+        }
 
-                <div class="fn-field-row">
-                  <div class="fn-field">
-                    <label for="cashierMethod">Payment method</label>
-                    <select class="fn-input" id="cashierMethod" name="method" required>
-                      <option value="CASH">Cash (Desk)</option>
-                      <option value="GCASH">GCash (Desk)</option>
-                    </select>
-                  </div>
-                  <div class="fn-field">
-                    <label for="cashierReference">GCash reference number</label>
-                    <input class="fn-input" id="cashierReference" maxlength="20" inputmode="numeric"
-                      placeholder="Enter reference (GCash only)">
-                    <small>Required for GCash. Digits and spaces only.</small>
-                  </div>
-                </div>
+        .csh-graph-ico {
+          width: 38px;
+          height: 38px;
+          border-radius: 10px;
+          background: rgba(245, 197, 24, 0.14);
+          border: 1px solid rgba(245, 197, 24, 0.28);
+          color: #F5C518;
+          display: grid;
+          place-items: center;
+          font-size: 15px;
+          flex: none;
+          transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease;
+        }
 
-                <script>
-                  (function () {
-                    function syncCashierPlans() {
-                      var P = window.PLANS;
-                      var sel = document.getElementById('cashierPlan');
-                      var amt = document.getElementById('cashierAmount');
-                      if (!P || !sel) return;
-                      var labels = { daily: 'Daily Pass', monthly: 'Monthly Membership', quarterly: 'Quarterly Membership', annual: 'Annual Membership' };
-                      Array.from(sel.options).forEach(function (opt) {
-                        var p = P[opt.value];
-                        if (p && p.price) {
-                          opt.textContent = (labels[opt.value] || p.label) + ' - \u20B1' + Number(p.price).toLocaleString('en-US');
-                        }
-                      });
-                      var cur = P[sel.value];
-                      if (amt && cur && cur.price) {
-                        amt.value = '\u20B1' + Number(cur.price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                      }
-                    }
-                    window.addEventListener('profit:plans-updated', syncCashierPlans);
-                    document.addEventListener('DOMContentLoaded', syncCashierPlans);
-                  })();
-                </script>
+        .csh-graph-title-wrap h2 {
+          margin: 0 0 2px;
+          font-size: 16px;
+          font-weight: 700;
+          color: #F4F6FB;
+        }
 
-                <p class="fn-status-msg" id="cashierFormStatus" role="status" aria-live="polite" hidden></p>
+        .csh-graph-title-wrap p {
+          margin: 0;
+          font-size: 12.5px;
+          color: #9FB0D6;
+        }
 
-                <div class="pf-pay-submit-row">
-                  <button class="fn-btn-gold" type="submit" id="cashierSubmitBtn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"
-                      stroke-linejoin="round" aria-hidden="true">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                    <span>Record payment &amp; issue receipt</span>
-                  </button>
-                </div>
-              </form>
-            </div>
-          </article>
+        .csh-graph-link {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          min-height: 34px;
+          padding: 0 12px;
+          border-radius: 9px;
+          background: #0A1124;
+          border: 1px solid #1F2F55;
+          color: #F4F6FB;
+          font-size: 12.5px;
+          font-weight: 600;
+          text-decoration: none;
+          transition: background-color .15s ease, border-color .15s ease, color .15s ease;
+        }
 
-          <div class="fn-daily-right fn-daily-right--single">
-            <article class="fn-card fn-card--amber">
-              <header class="fn-card-head">
-                <div class="fn-card-head-left">
-                  <span class="fn-icon-box" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                      stroke-linejoin="round">
-                      <path d="M4 2v20l3-2 3 2 3-2 3 2 4-2V2l-4 2-3-2-3 2-3-2z" />
-                      <line x1="8" y1="9" x2="16" y2="9" />
-                      <line x1="8" y1="13" x2="14" y2="13" />
-                    </svg>
-                  </span>
-                  <div>
-                    <h2 class="fn-card-title">Today&apos;s receipts</h2>
-                    <p class="fn-card-sub" id="cashierShiftDate">Desk payments and confirmed GCash payments for today.</p>
-                  </div>
-                </div>
-                <div style="display:flex;align-items:center;gap:8px;">
-                  <span class="fn-card-meta" id="cashierTodayCount">0 today</span>
-                  <button type="button" class="fn-btn-dark fn-btn-sm" id="cashierRefreshBtn" title="Refresh shift totals">
-                    <i class="fa-solid fa-rotate" aria-hidden="true"></i> Refresh
-                  </button>
-                </div>
-              </header>
-              <div class="fn-feed-cols"><span>Member &amp; method</span><span>Amount</span></div>
-              <ul class="fn-feed" id="cashierTodayFeed" aria-live="polite">
-                <li><span class="pf-sk pf-sk--sm" style="width:70%"></span></li>
-                <li><span class="pf-sk pf-sk--sm" style="width:56%"></span></li>
-                <li><span class="pf-sk pf-sk--sm" style="width:64%"></span></li>
-              </ul>
-            </article>
-          </div>
-        </div>
-      </section>
+        .csh-graph-link i {
+          transition: transform 180ms ease;
+        }
 
-      <!-- Pane 2: Transaction History (Read-Only for Cashier + Receipt Reprint) -->
-      <section class="pane" id="pane-history" role="tabpanel" aria-labelledby="tab-history" data-pane="history">
-        <article class="fn-card fn-card--amber">
-          <header class="fn-card-head">
-            <div class="fn-card-head-left">
-              <span class="fn-icon-box" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                  stroke-linejoin="round">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                  <polyline points="14 2 14 8 20 8" />
-                  <line x1="8" y1="13" x2="16" y2="13" />
-                  <line x1="8" y1="17" x2="13" y2="17" />
-                </svg>
-              </span>
+        .csh-graph-link:hover {
+          background: #162547;
+          border-color: #F5C518;
+          color: #F5C518;
+        }
+
+        .csh-seg {
+          display: inline-flex;
+          padding: 3px;
+          border-radius: 10px;
+          background: #0A1124;
+          border: 1px solid #1F2F55;
+          gap: 3px;
+        }
+
+        .csh-seg button {
+          border: 0;
+          background: transparent;
+          color: #9FB0D6;
+          font-size: 12px;
+          font-weight: 600;
+          padding: 6px 12px;
+          border-radius: 7px;
+          cursor: pointer;
+          transition: background-color .15s ease, color .15s ease;
+        }
+
+        .csh-seg button:hover:not(.is-on) {
+          background: #162547;
+          color: #F4F6FB;
+        }
+
+        .csh-seg button.is-on {
+          background: #F5C518;
+          color: #0B1530;
+          font-weight: 700;
+        }
+
+        .csh-chart-host {
+          min-height: 210px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        }
+
+        .csh-bars-wrap {
+          display: grid;
+          grid-template-columns: repeat(7, minmax(0, 1fr));
+          gap: 10px;
+          align-items: end;
+          height: 196px;
+          padding-top: 12px;
+        }
+
+        .csh-bar-col {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: flex-end;
+          gap: 6px;
+          height: 100%;
+          min-width: 0;
+          cursor: pointer;
+          transition: opacity 180ms ease;
+        }
+
+        .csh-bar-amt {
+          font-size: 11px;
+          font-weight: 700;
+          color: #9FB0D6;
+          font-variant-numeric: tabular-nums;
+          white-space: nowrap;
+          transition: color 180ms ease, transform 180ms ease;
+        }
+
+        .csh-bar-col.is-today .csh-bar-amt {
+          color: #F5C518;
+        }
+
+        .csh-bar-track {
+          width: 100%;
+          max-width: 34px;
+          flex: 1 1 auto;
+          background: #0A1124;
+          border: 1px solid #182747;
+          border-radius: 8px;
+          display: flex;
+          align-items: flex-end;
+          overflow: hidden;
+        }
+
+        .csh-bar-fill {
+          width: 100%;
+          background: #38BDF8;
+          border-radius: 7px 7px 0 0;
+          transform-origin: bottom;
+          animation: cshBarGrow 550ms cubic-bezier(0.22, 1, 0.36, 1) var(--bar-delay, 0ms) both;
+          transition: height .35s ease, filter .2s ease, transform .2s ease, box-shadow .2s ease;
+        }
+
+        .csh-bar-col.is-today .csh-bar-fill {
+          background: #F5C518;
+        }
+
+        .csh-bar-lbl {
+          font-size: 11.5px;
+          font-weight: 600;
+          color: #9FB0D6;
+          white-space: nowrap;
+          transition: color 180ms ease;
+        }
+
+        .csh-bar-col.is-today .csh-bar-lbl {
+          color: #F4F6FB;
+          font-weight: 700;
+        }
+
+        .csh-donut-wrap {
+          display: flex;
+          align-items: center;
+          gap: 22px;
+          flex-wrap: wrap;
+        }
+
+        .csh-donut-svg-box {
+          position: relative;
+          width: 172px;
+          height: 172px;
+          flex: none;
+          margin-inline: auto;
+          overflow: visible;
+        }
+
+        .csh-donut-svg-box svg {
+          display: block;
+          overflow: visible;
+        }
+
+        .csh-donut-center {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          pointer-events: none;
+        }
+
+        .csh-donut-center strong {
+          font-size: 20px;
+          font-weight: 800;
+          line-height: 1.05;
+          letter-spacing: -0.02em;
+          color: #F4F6FB;
+          font-variant-numeric: tabular-nums;
+        }
+
+        .csh-donut-center small {
+          font-size: 11px;
+          font-weight: 600;
+          color: #9FB0D6;
+          margin-top: 3px;
+          max-width: 96px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .csh-donut-center-ico {
+          font-size: 11px;
+          color: #F5C518;
+          margin-top: 3px;
+          opacity: 0.95;
+        }
+
+        .csh-donut-tooltip {
+          position: absolute;
+          left: 50%;
+          bottom: calc(100% + 6px);
+          transform: translateX(-50%);
+          padding: 8px 12px;
+          border-radius: 10px;
+          background: #070B18;
+          color: #F4F6FB;
+          border: 1px solid rgba(245, 197, 24, 0.45);
+          box-shadow: 0 12px 28px rgba(0, 0, 0, 0.42);
+          font-size: 12px;
+          line-height: 1.35;
+          white-space: nowrap;
+          pointer-events: none;
+          z-index: 25;
+          text-align: center;
+          animation: cshTipIn 160ms cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .csh-donut-tooltip strong {
+          display: block;
+          font-weight: 700;
+          color: #F5C518;
+        }
+
+        .csh-donut-tooltip small {
+          display: block;
+          font-size: 11px;
+          color: #CBD5E1;
+          margin-top: 2px;
+        }
+
+        @keyframes cshTipIn {
+          from {
+            opacity: 0;
+            transform: translate(-50%, 4px);
+          }
+          to {
+            opacity: 1;
+            transform: translate(-50%, 0);
+          }
+        }
+
+        .csh-donut-pct-lbl {
+          fill: #ffffff;
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: -0.02em;
+          text-anchor: middle;
+          dominant-baseline: central;
+          pointer-events: none;
+          text-shadow: 0 1px 3px rgba(0, 0, 0, 0.75);
+        }
+
+        .csh-donut-legend {
+          flex: 1 1 200px;
+          display: grid;
+          gap: 10px;
+          margin: 0;
+          padding: 0;
+          list-style: none;
+        }
+
+        .csh-donut-legend li {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 12px;
+          padding: 10px 14px;
+          border-radius: 14px;
+          background: rgba(255, 255, 255, 0.035);
+          border: 1px solid #182747;
+          font-size: 12.5px;
+          cursor: pointer;
+          animation: cshCardIn 380ms cubic-bezier(0.22, 1, 0.36, 1) var(--leg-delay, 0ms) both;
+          transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1), background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+        }
+
+        .csh-donut-legend li:focus-visible {
+          outline: 2px solid #F5C518;
+          outline-offset: 2px;
+        }
+
+        .csh-leg-left {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          min-width: 0;
+          color: #F4F6FB;
+        }
+
+        .csh-leg-meta {
+          display: flex;
+          flex-direction: column;
+          min-width: 0;
+        }
+
+        .csh-leg-meta strong {
+          font-size: 13px;
+          font-weight: 700;
+          color: #F4F6FB;
+          line-height: 1.25;
+        }
+
+        .csh-leg-meta small {
+          font-size: 11.5px;
+          color: #9FB0D6;
+          font-variant-numeric: tabular-nums;
+          margin-top: 2px;
+        }
+
+        .csh-leg-dot {
+          width: 11px;
+          height: 11px;
+          border-radius: 50%;
+          flex: none;
+          box-shadow: 0 0 10px var(--dot-color, rgba(245, 197, 24, 0.4));
+          transition: transform 180ms ease;
+        }
+
+        .csh-leg-pct {
+          flex: none;
+          padding: 4px 10px;
+          border-radius: 999px;
+          background: rgba(255, 255, 255, 0.06);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          color: #F4F6FB;
+          font-size: 12px;
+          font-weight: 700;
+          font-variant-numeric: tabular-nums;
+        }
+
+        .csh-donut-seg {
+          cursor: pointer;
+          outline: none;
+          transition: stroke-width 200ms cubic-bezier(0.22, 1, 0.36, 1), opacity 200ms ease, stroke-dasharray 680ms cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .csh-donut-seg.is-hovered,
+        .csh-donut-seg:hover,
+        .csh-donut-seg:focus-visible {
+          stroke-width: 29;
+        }
+
+        .csh-donut-svg-box.has-hover .csh-donut-seg:not(.is-hovered) {
+          opacity: 0.4;
+        }
+
+        .csh-donut-legend li.is-hovered,
+        .csh-donut-legend li:hover {
+          background: rgba(245, 197, 24, 0.08);
+          border-color: rgba(245, 197, 24, 0.48);
+          transform: translateX(3px);
+          box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25), 0 0 14px rgba(245, 197, 24, 0.14);
+        }
+
+        .csh-donut-legend li.is-hovered .csh-leg-dot,
+        .csh-donut-legend li:hover .csh-leg-dot {
+          transform: scale(1.25);
+        }
+
+        .csh-health-stack {
+          height: 14px;
+          border-radius: 999px;
+          background: #0A1124;
+          border: 1px solid #1F2F55;
+          overflow: hidden;
+          display: flex;
+          margin-bottom: 14px;
+        }
+
+        .csh-health-seg {
+          height: 100%;
+          cursor: pointer;
+          transform-origin: left;
+          animation: cshBarSlide 560ms cubic-bezier(0.22, 1, 0.36, 1) var(--seg-delay, 0ms) both;
+          transition: width .35s ease, filter 180ms ease, transform 180ms ease;
+        }
+
+        .csh-health-rows {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 12px;
+        }
+
+        .csh-health-item {
+          padding: 12px 14px;
+          border-radius: 12px;
+          background: #0A1124;
+          border: 1px solid #182747;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+          transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), border-color 180ms ease, background-color 180ms ease;
+        }
+
+        .csh-health-top {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 8px;
+          font-size: 12px;
+          font-weight: 600;
+          color: #9FB0D6;
+        }
+
+        .csh-health-val {
+          font-size: 20px;
+          font-weight: 800;
+          color: #F4F6FB;
+          font-variant-numeric: tabular-nums;
+          transition: color 180ms ease, transform 180ms ease;
+        }
+
+        .csh-health-bar {
+          height: 6px;
+          border-radius: 999px;
+          background: #162547;
+          overflow: hidden;
+        }
+
+        .csh-health-bar span {
+          display: block;
+          height: 100%;
+          border-radius: 999px;
+          transform-origin: left;
+          animation: cshBarSlide 560ms cubic-bezier(0.22, 1, 0.36, 1) var(--seg-delay, 0ms) both;
+          transition: width .35s ease, filter 180ms ease;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+          .csh-graph-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(245, 197, 24, 0.36);
+            box-shadow: 0 12px 28px rgba(4, 9, 22, 0.34);
+          }
+
+          body:not(.dark) .csh-graph-card:hover {
+            box-shadow: 0 10px 24px rgba(15, 27, 51, 0.09);
+            border-color: rgba(138, 106, 0, 0.32);
+          }
+
+          .csh-graph-card:hover .csh-graph-ico {
+            transform: scale(1.06);
+            border-color: rgba(245, 197, 24, 0.55);
+          }
+
+          .csh-graph-link:hover i {
+            transform: translateX(3px);
+          }
+
+          .csh-bars-wrap:hover .csh-bar-col:not(:hover) {
+            opacity: 0.65;
+          }
+
+          .csh-bar-col:hover .csh-bar-fill {
+            filter: brightness(1.18);
+            box-shadow: 0 -4px 16px rgba(56, 189, 248, 0.35);
+          }
+
+          .csh-bar-col.is-today:hover .csh-bar-fill {
+            box-shadow: 0 -4px 16px rgba(245, 197, 24, 0.4);
+          }
+
+          .csh-bar-col:hover .csh-bar-amt {
+            color: #F4F6FB;
+            transform: translateY(-2px);
+          }
+
+          body:not(.dark) .csh-bar-col:hover .csh-bar-amt {
+            color: #0B1530;
+          }
+
+          .csh-bar-col.is-today:hover .csh-bar-amt {
+            color: #F5C518;
+          }
+
+          body:not(.dark) .csh-bar-col.is-today:hover .csh-bar-amt {
+            color: #8A6A00;
+          }
+
+          .csh-bar-col:hover .csh-bar-lbl {
+            color: #F4F6FB;
+          }
+
+          body:not(.dark) .csh-bar-col:hover .csh-bar-lbl {
+            color: #0B1530;
+          }
+
+          .csh-health-seg:hover {
+            filter: brightness(1.16);
+            transform: scaleY(1.25);
+          }
+
+          .csh-health-item:hover {
+            transform: translateY(-2px);
+            border-color: rgba(245, 197, 24, 0.38);
+            background: #132140;
+          }
+
+          body:not(.dark) .csh-health-item:hover {
+            background: #FFFFFF;
+            border-color: rgba(138, 106, 0, 0.38);
+          }
+
+          .csh-health-item:hover .csh-health-val {
+            color: #F5C518;
+            transform: scale(1.03);
+            transform-origin: left;
+          }
+
+          body:not(.dark) .csh-health-item:hover .csh-health-val {
+            color: #8A6A00;
+          }
+
+          .csh-health-item:hover .csh-health-bar span {
+            filter: brightness(1.15);
+          }
+        }
+
+        @keyframes cshCardIn {
+          from {
+            opacity: 0;
+            transform: translateY(12px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes cshBarGrow {
+          from {
+            transform: scaleY(0);
+          }
+          to {
+            transform: scaleY(1);
+          }
+        }
+
+        @keyframes cshBarSlide {
+          from {
+            transform: scaleX(0);
+          }
+          to {
+            transform: scaleX(1);
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .csh-graph-card,
+          .csh-bar-fill,
+          .csh-donut-legend li,
+          .csh-health-seg,
+          .csh-health-bar span {
+            animation: none !important;
+          }
+
+          .csh-graph-card,
+          .csh-graph-ico,
+          .csh-graph-link,
+          .csh-graph-link i,
+          .csh-bar-col,
+          .csh-bar-amt,
+          .csh-bar-lbl,
+          .csh-donut-seg,
+          .csh-donut-legend li,
+          .csh-leg-dot,
+          .csh-bar-fill,
+          .csh-health-seg,
+          .csh-health-item,
+          .csh-health-val,
+          .csh-health-bar span {
+            transition: none !important;
+            transform: none !important;
+          }
+        }
+
+        body:not(.dark) .csh-graph-card {
+          background: #FFFFFF;
+          border-color: #DDE3F0;
+        }
+
+        body:not(.dark) .csh-graph-ico {
+          color: #8A6A00;
+        }
+
+        body:not(.dark) .csh-graph-title-wrap h2,
+        body:not(.dark) .csh-donut-center strong,
+        body:not(.dark) .csh-leg-left,
+        body:not(.dark) .csh-leg-meta strong,
+        body:not(.dark) .csh-leg-pct,
+        body:not(.dark) .csh-health-val,
+        body:not(.dark) .csh-bar-col.is-today .csh-bar-lbl {
+          color: #0B1530;
+        }
+
+        body:not(.dark) .csh-graph-title-wrap p,
+        body:not(.dark) .csh-bar-amt,
+        body:not(.dark) .csh-bar-lbl,
+        body:not(.dark) .csh-donut-center small,
+        body:not(.dark) .csh-leg-meta small,
+        body:not(.dark) .csh-health-top {
+          color: #4A5878;
+        }
+
+        body:not(.dark) .csh-donut-center-ico {
+          color: #8A6A00;
+        }
+
+        body:not(.dark) .csh-bar-col.is-today .csh-bar-amt {
+          color: #8A6A00;
+        }
+
+        body:not(.dark) .csh-graph-link,
+        body:not(.dark) .csh-seg,
+        body:not(.dark) .csh-bar-track,
+        body:not(.dark) .csh-donut-legend li,
+        body:not(.dark) .csh-health-stack,
+        body:not(.dark) .csh-health-item {
+          background: #EEF2FA;
+          border-color: #DDE3F0;
+          color: #0B1530;
+        }
+
+        body:not(.dark) .csh-leg-pct {
+          background: #FFFFFF;
+          border-color: #DDE3F0;
+        }
+
+        body:not(.dark) .csh-donut-legend li.is-hovered,
+        body:not(.dark) .csh-donut-legend li:hover {
+          background: #FFFBEB;
+          border-color: rgba(138, 106, 0, 0.48);
+          box-shadow: 0 4px 12px rgba(245, 197, 24, 0.14);
+        }
+
+        body:not(.dark) .csh-graph-link:hover {
+          background: #E6ECF7;
+          border-color: #8A6A00;
+          color: #8A6A00;
+        }
+
+        body:not(.dark) .csh-seg button:hover:not(.is-on) {
+          background: #E6ECF7;
+          border-color: #9FB0D6;
+          color: #0B1530;
+        }
+
+        body:not(.dark) .csh-seg button {
+          color: #4A5878;
+        }
+
+        body:not(.dark) .csh-seg button.is-on {
+          color: #0B1530;
+        }
+
+        body:not(.dark) .csh-health-bar {
+          background: #DDE3F0;
+        }
+
+        @media (max-width: 960px) {
+          .csh-graphs-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .csh-health-rows {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+        }
+
+        @media (max-width: 560px) {
+          .csh-graph-card {
+            padding: 16px;
+          }
+
+          .csh-bars-wrap {
+            gap: 6px;
+          }
+
+          .csh-health-rows {
+            grid-template-columns: 1fr;
+          }
+        }
+      </style>
+
+      <section class="csh-graphs-grid" aria-label="Cashier shift analytics">
+        <article class="csh-graph-card" id="cshDailyChartCard">
+          <header class="csh-graph-head">
+            <div class="csh-graph-title-wrap">
+              <span class="csh-graph-ico" aria-hidden="true"><i class="fa-solid fa-chart-column"></i></span>
               <div>
-                <h2 class="fn-card-title">Transaction history</h2>
-                <p class="fn-card-sub">Read-only payment history. Select Receipt to print or save PDF.</p>
+                <h2>7-Day Desk Collections</h2>
+                <p id="cshDailyChartSub">Recent recorded payments over the last 7 days</p>
               </div>
             </div>
-            <span class="fn-card-meta" id="cashierHistCount">0 payments</span>
+            <a class="csh-graph-link" href="/payments">Open Payments <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
           </header>
-
-          <div class="fn-toolbar">
-            <div class="fn-toolbar-left">
-              <label for="cashierHistSearch"
-                style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Search
-                transactions</label>
-              <div class="fn-search-pill">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                  stroke-linejoin="round" aria-hidden="true">
-                  <circle cx="11" cy="11" r="8" />
-                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                </svg>
-                <input id="cashierHistSearch" type="search" placeholder="Search member, reference, or method..."
-                  autocomplete="off">
-              </div>
-            </div>
-            <div class="fn-filter-chips" id="cashierMethodChips" role="group" aria-label="Filter by payment method">
-              <button class="chip active" type="button" data-method="">All</button>
-              <button class="chip" type="button" data-method="CASH">Cash</button>
-              <button class="chip" type="button" data-method="GCASH">GCash</button>
-              <button class="chip" type="button" data-method="ONLINE">paymongo (old)</button>
-            </div>
-          </div>
-
-          <div class="fn-table-scroll">
-            <table class="fn-table fn-table--cashier-hist" id="cashierHistTable">
-              <thead>
-                <tr>
-                  <th>Reference</th>
-                  <th>Member</th>
-                  <th class="fn-center">Plan</th>
-                  <th>Method</th>
-                  <th>Date paid</th>
-                  <th class="num">Amount</th>
-                  <th class="fn-right">Receipt</th>
-                </tr>
-              </thead>
-              <tbody id="cashierHistRows">
-                <tr class="pf-skel">
-                  <td colspan="7"><span class="pf-sk pf-sk--sm" style="width:100%"></span></td>
-                </tr>
-                <tr class="pf-skel">
-                  <td colspan="7"><span class="pf-sk pf-sk--sm" style="width:100%"></span></td>
-                </tr>
-                <tr class="pf-skel">
-                  <td colspan="7"><span class="pf-sk pf-sk--sm" style="width:100%"></span></td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="csh-chart-host" id="cshDailyChart">
+            <div class="pf-sk" style="height:160px;width:100%;border-radius:12px;"></div>
           </div>
         </article>
-      </section>
 
-      <!-- Pane 3: Member Lookup & Renewals -->
-      <section class="pane" id="pane-lookup" role="tabpanel" aria-labelledby="tab-lookup" data-pane="lookup">
-        <article class="fn-card fn-card--amber">
-          <header class="fn-card-head">
-            <div class="fn-card-head-left">
-              <span class="fn-icon-box" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                  stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="9" />
-                  <polyline points="12 7 12 12 15.5 14" />
-                </svg>
-              </span>
+        <article class="csh-graph-card" id="cshMethodChartCard">
+          <header class="csh-graph-head">
+            <div class="csh-graph-title-wrap">
+              <span class="csh-graph-ico" aria-hidden="true"><i class="fa-solid fa-chart-pie"></i></span>
               <div>
-                <h2 class="fn-card-title">Member lookup &amp; renewals</h2>
-                <p class="fn-card-sub">Verify membership status and expiry before collecting desk payment.</p>
+                <h2>Payment Method Mix</h2>
+                <p id="cshMethodChartSub">Cash vs GCash vs Online share</p>
               </div>
             </div>
-            <span class="fn-card-meta" id="cashierLookupCount">0 members</span>
+            <div class="csh-seg" id="cshMethodScope" role="group" aria-label="Collection timeframe">
+              <button type="button" class="is-on" data-scope="today">Today</button>
+              <button type="button" data-scope="recent">Recent</button>
+            </div>
           </header>
+          <div class="csh-chart-host" id="cshMethodChart">
+            <div class="pf-sk" style="height:160px;width:100%;border-radius:12px;"></div>
+          </div>
+        </article>
 
-          <div class="fn-toolbar">
-            <div class="fn-toolbar-left">
-              <label for="cashierLookupSearch"
-                style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Search members</label>
-              <div class="fn-search-pill">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                  stroke-linejoin="round" aria-hidden="true">
-                  <circle cx="11" cy="11" r="8" />
-                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                </svg>
-                <input id="cashierLookupSearch" type="search" placeholder="Search name, email, or phone..."
-                  autocomplete="off">
+        <article class="csh-graph-card csh-graph-card--wide" id="cshMemberChartCard">
+          <header class="csh-graph-head">
+            <div class="csh-graph-title-wrap">
+              <span class="csh-graph-ico" aria-hidden="true"><i class="fa-solid fa-users"></i></span>
+              <div>
+                <h2>Membership &amp; Renewal Health</h2>
+                <p id="cshMemberChartSub">Breakdown of active, expiring within 7 days, expired, and trial members</p>
               </div>
             </div>
-            <div class="fn-filter-chips" id="cashierLookupChips" role="group" aria-label="Filter by membership status">
-              <button class="chip active" type="button" data-status="all">All</button>
-              <button class="chip" type="button" data-status="due">Due / Expired</button>
-              <button class="chip" type="button" data-status="active">Active</button>
-              <button class="chip" type="button" data-status="pending">Pending</button>
-            </div>
-          </div>
-
-          <div class="fn-table-scroll">
-            <table class="fn-table fn-table--sub" id="cashierLookupTable">
-              <thead>
-                <tr>
-                  <th>Member</th>
-                  <th>Ends</th>
-                  <th>Contact</th>
-                  <th class="fn-center">Status</th>
-                  <th class="fn-right">Action</th>
-                </tr>
-              </thead>
-              <tbody id="cashierLookupRows">
-                <tr class="pf-skel">
-                  <td colspan="5"><span class="pf-sk pf-sk--sm" style="width:100%"></span></td>
-                </tr>
-                <tr class="pf-skel">
-                  <td colspan="5"><span class="pf-sk pf-sk--sm" style="width:100%"></span></td>
-                </tr>
-                <tr class="pf-skel">
-                  <td colspan="5"><span class="pf-sk pf-sk--sm" style="width:100%"></span></td>
-                </tr>
-              </tbody>
-            </table>
+            <a class="csh-graph-link" href="/members">Browse Members <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+          </header>
+          <div class="csh-chart-host" id="cshMemberChart" style="min-height:130px;">
+            <div class="pf-sk" style="height:110px;width:100%;border-radius:12px;"></div>
           </div>
         </article>
       </section>
@@ -874,93 +1307,14 @@
     </main>
   </div>
 
-  <!-- Official Printable Receipt Modal -->
-  <div class="pay-modal" id="cashierReceiptModal" hidden role="dialog" aria-modal="true"
-    aria-labelledby="receiptModalTitle">
-    <div class="pay-modal-card fn-receipt-card" id="receiptPrintArea">
-      <div class="fn-receipt-head">
-        <div>
-          <small>ProFit &middot; Functional Fitness Gym</small>
-          <h3 id="receiptModalTitle">Official Payment Receipt</h3>
-        </div>
-        <span class="fn-locked-pill">PAID</span>
-      </div>
-
-      <dl class="fn-receipt-rows">
-        <div class="fn-receipt-row">
-          <dt>Reference No.</dt>
-          <dd id="recRef">Ã¢â‚¬â€</dd>
-        </div>
-        <div class="fn-receipt-row">
-          <dt>Payment Date</dt>
-          <dd id="recDate">Ã¢â‚¬â€</dd>
-        </div>
-        <div class="fn-receipt-row">
-          <dt>Member</dt>
-          <dd id="recMember">Ã¢â‚¬â€</dd>
-        </div>
-        <div class="fn-receipt-row">
-          <dt>Member Code</dt>
-          <dd id="recMemberCode">Ã¢â‚¬â€</dd>
-        </div>
-        <div class="fn-receipt-row">
-          <dt>Plan</dt>
-          <dd id="recPlan">Ã¢â‚¬â€</dd>
-        </div>
-        <div class="fn-receipt-row">
-          <dt>Method</dt>
-          <dd id="recMethod">Ã¢â‚¬â€</dd>
-        </div>
-        <div class="fn-receipt-row">
-          <dt>Recorded By</dt>
-          <dd id="recCashier">Ã¢â‚¬â€</dd>
-        </div>
-        <div class="fn-receipt-row">
-          <dt>New Expiry</dt>
-          <dd id="recExpiry">Ã¢â‚¬â€</dd>
-        </div>
-      </dl>
-
-      <div class="fn-receipt-total">
-        <span>Total Paid</span>
-        <strong id="recAmount">Ã¢â€šÂ±0.00</strong>
-      </div>
-
-      <div class="pay-modal-actions">
-        <button class="fn-btn-dark" type="button" id="receiptCloseBtn">Close</button>
-        <button class="fn-btn-gold" type="button" id="receiptPrintBtn">
-          <i class="fa-solid fa-print" aria-hidden="true"></i>
-          <span>Print / Save PDF</span>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- GCash Payment QR Lightbox -->
-  <div class="pay-modal" id="gcashQrModal" hidden role="dialog" aria-modal="true"
-    aria-labelledby="gcashQrModalTitle">
-    <div class="pay-modal-card pf-gcash-qr-modal-card">
-      <h3 id="gcashQrModalTitle">GCash Payment QR</h3>
-      <p class="pay-note">Ask the member to scan this QR code in their GCash app, then enter the reference number.</p>
-      <img class="pf-gcash-qr-modal-img" src="img/gcash-qr.jpg" alt="ProFit GCash payment QR code">
-      <div class="pay-modal-actions">
-        <button class="fn-btn-dark" type="button" id="gcashQrClose">Close</button>
-        <a class="fn-btn-gold" href="img/gcash-qr.jpg" download="profit-gcash-qr.jpg">
-          <i class="fa-solid fa-download" aria-hidden="true"></i>
-          <span>Save QR</span>
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <script src="layout.js?v=26"></script>
+  <script src="layout.js?v=27"></script>
   <script src="sidebar.js?v=21"></script>
   <script src="data.js"></script>
   <script src="portal-fx.js?v=2"></script>
   <script src="change-password.js?v=4" defer></script>
   <script src="notifications-live.js?v=2" defer></script>
-  <script src="cashier.js?v=6" defer></script>
-  <script src="site-footer.js?v=2" defer></script>
+  <script src="cashier.js?v=10" defer></script>
+  <script src="site-footer.js?v=8" defer></script>
 </body>
 
 </html>

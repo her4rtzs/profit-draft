@@ -1,4 +1,4 @@
-"""Installable-app tests: manifest, icons, head tags, install card, no service worker."""
+"""Installable-app & safe offline-read tests: manifest, icons, head tags, install card, service worker."""
 
 import json
 import struct
@@ -114,6 +114,19 @@ class HeadTagTests(TestCase):
                 page.name,
             )
 
+    def test_no_utf8_mojibake_in_static_pages(self):
+        markers = ("\u00c3\u201a", "\u00c3\u00a2", "\u00c3\u0192", "\u00e2\u201a\u00ac")
+        pages = sorted(WEB.rglob("*.html"))
+        self.assertTrue(pages, "no web pages found")
+        for page in pages:
+            html = page.read_text(encoding="utf-8")
+            for marker in markers:
+                self.assertNotIn(
+                    marker,
+                    html,
+                    f"Mojibake sequence {marker!r} found in {page.name}",
+                )
+
 
 CARD_PAGES = (
     WEB / "settings.html",
@@ -145,13 +158,36 @@ class InstallCardTests(TestCase):
         self.assertIn("addEventListener", source)
 
 
-class NoServiceWorkerTests(TestCase):
-    def test_no_service_worker_files(self):
-        for name in ("sw.js", "pwa.js"):
-            self.assertFalse((WEB / name).exists(), f"web/{name} should be gone")
+@override_settings(STORAGES=_PLAIN_STATIC)
+class OfflineSupportTests(TestCase):
+    def test_service_worker_is_served_at_root_as_javascript(self):
+        self.assertTrue((WEB / "sw.js").is_file(), "web/sw.js is missing")
+        response = self.client.get("/sw.js")
+        self.assertEqual(response.status_code, 200)
+        ctype = response["Content-Type"].lower()
+        self.assertTrue(
+            "javascript" in ctype,
+            f"Unexpected Content-Type for /sw.js: {response['Content-Type']}",
+        )
 
-    def test_no_page_registers_a_service_worker(self):
-        for page in WEB.rglob("*.html"):
-            html = page.read_text(encoding="utf-8", errors="surrogateescape")
-            self.assertNotIn("serviceWorker", html, str(page))
-            self.assertNotIn("pwa.js", html, str(page))
+    def test_service_worker_never_caches_api_and_wipes_pages_on_logout(self):
+        sw_src = (WEB / "sw.js").read_text(encoding="utf-8")
+        self.assertIn("url.pathname.startsWith('/api/')", sw_src)
+        self.assertIn("CLEAR_PRIVATE_CACHES", sw_src)
+        self.assertIn("caches.delete(PAGES_CACHE)", sw_src)
+        self.assertIn("OFFLINE_FALLBACK_HTML", sw_src)
+
+    def test_api_client_and_public_footer_register_sw_and_wipe_on_logout(self):
+        api_src = (WEB / "api.js").read_text(encoding="utf-8")
+        self.assertIn('register("/sw.js"', api_src)
+        self.assertIn("pf-api-cache:v1:", api_src)
+        self.assertIn("clearOfflineData", api_src)
+        self.assertIn("profit-back-online", api_src)
+        self.assertIn("Reconnect to the internet to save changes.", api_src)
+
+        footer_src = (WEB / "site-footer.js").read_text(encoding="utf-8")
+        self.assertIn('register("/sw.js"', footer_src)
+
+        auth_src = (WEB / "auth.js").read_text(encoding="utf-8")
+        self.assertIn("clearOfflineData", auth_src)
+        self.assertIn("profit-offline-user", auth_src)

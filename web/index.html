@@ -2,12 +2,13 @@
 <html lang="en">
 
 <head>
-  <script>(function () { try { var t = localStorage.getItem('theme'); if (t === 'light' && !localStorage.getItem('pf-staff-explicit-light')) { t = 'dark'; try { localStorage.setItem('theme', 'dark'); } catch (_) { } } var d = t !== 'light'; var h = document.documentElement; h.style.background = d ? '#0a0e16' : '#F7F4EE'; h.style.colorScheme = d ? 'dark' : 'light'; if (d) { h.classList.add('dark'); } else { h.classList.remove('dark'); } } catch (e) { } })();</script>
-  <script src="splash.js?v=3"></script>
+  <script>(function () { try { var t = localStorage.getItem('theme'); if (t === 'light' && !localStorage.getItem('pf-staff-explicit-light')) { t = 'dark'; try { localStorage.setItem('theme', 'dark'); } catch (_) { } } var d = t !== 'light'; var h = document.documentElement; h.style.background = d ? '#070B18' : '#F7F8FC'; h.style.colorScheme = d ? 'dark' : 'light'; if (d) { h.classList.add('dark'); } else { h.classList.remove('dark'); } } catch (e) { } })();</script>
+  <script src="splash.js?v=10"></script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
   <title>ProFit | Dashboard</title>
+  <link rel="icon" type="image/jpeg" href="/logo.jpg">
 
   <!-- Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,7 +20,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="dashboard.css?v=18">
+  <link rel="stylesheet" href="dashboard.css?v=19">
   <style>
     /* Editorial Owner Dashboard Hero + Staggered Motion (UI polish only) */
     @keyframes pfDashRise {
@@ -78,7 +79,7 @@
       font: 800 11.5px/1 "Figtree", Inter, sans-serif;
       letter-spacing: .12em;
       text-transform: uppercase;
-      color: #e8b93a !important;
+      color: #F5C518 !important;
       margin-bottom: 10px;
     }
 
@@ -117,16 +118,16 @@
     }
 
     .ow-btn-gold {
-      background: #e8b93a !important;
-      color: #0B0F19 !important
+      background: #F5C518 !important;
+      color: #0B1530 !important
     }
 
     .ow-btn-gold:hover {
-      background: #f0c44b !important
+      background: #FAD03C !important
     }
 
     .ow-btn-gold:active {
-      background: #b8860b !important
+      background: #8A6A00 !important
     }
 
     .ow-btn-dark {
@@ -216,7 +217,7 @@
 
     .ow-ring-arc {
       fill: none;
-      stroke: #e8b93a;
+      stroke: #F5C518;
       stroke-width: 6;
       stroke-linecap: round;
       transition: stroke-dashoffset .85s cubic-bezier(.2, .8, .2, 1)
@@ -268,19 +269,19 @@
     .ow-mini-btn {
       padding: 8px 14px;
       border-radius: 10px;
-      background: #e8b93a !important;
-      color: #0B0F19 !important;
+      background: #F5C518 !important;
+      color: #0B1530 !important;
       font: 700 12.5px/1 "Plus Jakarta Sans", Inter, sans-serif;
       text-decoration: none;
       transition: background-color .15s ease;
     }
 
     .ow-mini-btn:hover {
-      background: #f0c44b !important
+      background: #FAD03C !important
     }
 
     .ow-mini-btn:active {
-      background: #b8860b !important
+      background: #8A6A00 !important
     }
 
     /* Staggered card entrance (no hover lift/glow) */
@@ -349,14 +350,14 @@
     type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script>
   <link rel="manifest" href="/manifest.webmanifest">
   <meta name="theme-color" content="#0a0e17">
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F7F8FC">
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17">
   <meta name="color-scheme" content="light dark">
   <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="ProFit">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="stylesheet" href="pf-system.css?v=34">
+  <link rel="stylesheet" href="pf-system.css?v=45">
 </head>
 
 <body class="pf-staff" data-page="dashboard" data-title="Dashboard" data-welcome="">
@@ -753,7 +754,7 @@
   </div>
 
   <script src="data.js?v=2"></script>
-  <script src="layout.js?v=26"></script>
+  <script src="layout.js?v=27"></script>
   <script src="sidebar.js?v=21"></script>
   <script src="chart-periods.js?v=918"></script>
   <script src="portal-fx.js?v=2"></script>
@@ -1256,7 +1257,7 @@
     })();
   </script>
   <script src="notifications-live.js?v=2" defer></script>
-  <script src="site-footer.js?v=2" defer></script>
+  <script src="site-footer.js?v=8" defer></script>
 </body>
 
 </html>

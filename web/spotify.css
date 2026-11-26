@@ -18,20 +18,20 @@
     color-scheme: light;
 
     /* Surfaces */
-    --bg: #eceff4;
-    --card: #ffffff;
-    --hover: #e4e8ee;
-    --border: #dcdfe6;
-    --line: #e2e5ea;
-    --surface: #ffffff;
-    --canvas: #eceff4;
-    --chrome: #eceff4;
+    --bg: #F7F8FC;
+    --card: #FFFFFF;
+    --hover: #E6ECF7;
+    --border: #DDE3F0;
+    --line: #E7ECF6;
+    --surface: #FFFFFF;
+    --canvas: #F7F8FC;
+    --chrome: #F7F8FC;
 
     /* Text */
-    --text: #0d0d0d;
-    --muted: #545a66;
-    --faint: #868d9b;
-    --ink: #0d0d0d;
+    --text: #0B1530;
+    --muted: #4A5878;
+    --faint: #697D9E;
+    --ink: #0B1530;
 
     /* Brand & accent */
     --brand: #c99a32;
@@ -40,17 +40,17 @@
     --gold: #b8891c;
     --gold-deep: #8d6512;
     --gold-soft: rgba(184, 137, 28, .16);
-    --gold-grad: linear-gradient(135deg, #f2cb5c 0%, #e8b93a 55%, #b8891c 100%);
+    --gold-grad: linear-gradient(135deg, #f2cb5c 0%, #F5C518 55%, #b8891c 100%);
     --on-accent: #1a1407;
     --pf-gold: #F2BD32;
     --pf-gold-hi: #f5c85b;
-    --pf-lime: #e8b93a;
+    --pf-lime: #F5C518;
     --pf-lime-hi: #f2cb5c;
     --pf-lime-deep: #8a6200;
-    --pf-grad: linear-gradient(135deg, #f4d27a 0%, #e8b93a 50%, #b8891c 100%);
-    --ui-gold: #e8b93a;
+    --pf-grad: linear-gradient(135deg, #f4d27a 0%, #F5C518 50%, #b8891c 100%);
+    --ui-gold: #F5C518;
     --ui-ring: rgba(232, 185, 58, .45);
-    --sb-gold: #e8b93a;
+    --sb-gold: #F5C518;
     --sb-gold-2: #f2cb5c;
     --sb-ink: #1a1407;
 
@@ -69,12 +69,12 @@
     --notif-ring: #eceff4;
 
     /* Sidebar */
-    --sidebar: #131822;
-    --sidebar-text: #b4bac7;
-    --sidebar-line: #242b38;
-    --sidebar-hover: rgba(255, 255, 255, .07);
-    --sidebar-hover-text: #f1f3f7;
-    --sidebar-faint: #7d8697;
+    --sidebar: #1F2F55;
+    --sidebar-text: #DCE7F8;
+    --sidebar-line: #2D4273;
+    --sidebar-hover: rgba(255, 255, 255, .11);
+    --sidebar-hover-text: #FFFFFF;
+    --sidebar-faint: #9AB3D8;
     --sidebar-w: 260px;
     --sidebar-w-closed: 104px;
     --pf-sb-w: 260px;
@@ -178,29 +178,28 @@
 body.dark {
   color-scheme: dark;
 
-  /* The original ProFit dark ladder — deep navy rather than flat grey, which
-     is what the app looked like before the redesign. */
-  --bg: #0a0e17;
-  --card: #111827;
-  --hover: #1b2433;
-  --border: #263246;
-  --line: #263246;
-  --surface: #111827;
-  --canvas: #0a0e17;
-  --ink: #f3f4f6;
+  /* Deep Midnight Navy & Gold dark ladder — rich navy tint, strong text contrast */
+  --bg: #070B18;
+  --card: #0F1A33;
+  --hover: #162547;
+  --border: #1F2F55;
+  --line: #1F2F55;
+  --surface: #0F1A33;
+  --canvas: #070B18;
+  --ink: #F4F6FB;
 
-  --text: #f3f4f6;
-  --muted: #a5b1c2;
-  --faint: #758399;
+  --text: #F4F6FB;
+  --muted: #9FB0D6;
+  --faint: #7A91B8;
 
-  /* the left rail: the lighter navy the original used, not near-black */
-  --sidebar: #151b24;
-  --sidebar-text: #b9b8ae;
-  --sidebar-line: #1d293b;
-  --sidebar-hover: rgba(255, 255, 255, .08);
-  --sidebar-hover-text: #f1f3f7;
-  --sidebar-faint: #758399;
-  --chrome: #121824;
+  /* the left rail: deep midnight navy */
+  --sidebar: #070B18;
+  --sidebar-text: #B8C5DC;
+  --sidebar-line: #1F2F55;
+  --sidebar-hover: rgba(96, 165, 250, .10);
+  --sidebar-hover-text: #F4F6FB;
+  --sidebar-faint: #7A91B8;
+  --chrome: #070B18;
   --sidebar-w: 268px;
   --sidebar-w-closed: 104px;
 

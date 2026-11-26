@@ -4,12 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <title>Welcome Setup &middot; ProFit</title>
+  <link rel="icon" type="image/jpeg" href="/logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@600;700;800;900&family=Inter:wght@500;600;700&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <script src="config.js?v=11"></script><script src="api.js?v=6"></script><script src="auth.js?v=7"></script>
 <link rel="manifest" href="/manifest.webmanifest">
-<meta name="theme-color" content="#0a0e17"><meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17"><meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#0a0e17"><meta name="theme-color" media="(prefers-color-scheme: light)" content="#F7F8FC"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17"><meta name="color-scheme" content="light dark">
 <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ProFit">
@@ -17,14 +18,14 @@
 <style>
   :root{
     color-scheme:dark;
-    --bg:#0a0e17;
+    --bg:#070B18;
     --card:#111827;
     --hover:#1b2433;
     --line:#263246;
     --text:#f3f4f6;
     --mut:#a5b1c2;
     --faint:#758399;
-    --gold:#e8b93a;
+    --gold:#F5C518;
     --gold-d:#b8891c;
     --ink:#1a1407;
     --ok:#3ddc84;
@@ -113,9 +114,9 @@
   .ob-tile:hover:not(.is-sel):not(:disabled){background:rgba(232,185,58,.10)}
   .ob-tile:active:not(:disabled){background:rgba(255,255,255,.11);transform:none;box-shadow:none}
   .ob-tile:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-  .ob-tile.is-sel{border-color:var(--gold);background:var(--gold);color:#0b0f19;box-shadow:none}
-  .ob-tile.is-sel .ob-ico{color:#0b0f19}
-  .ob-tile.is-sel:active{background:#b8860b;border-color:#b8860b}
+  .ob-tile.is-sel{border-color:var(--gold);background:var(--gold);color:#0B1530;box-shadow:none}
+  .ob-tile.is-sel .ob-ico{color:#0B1530}
+  .ob-tile.is-sel:active{background:#8A6A00;border-color:#8A6A00}
   .ob-tile .ob-ico{font-size:24px;color:var(--gold)}
   .ob-tile.ob-av{padding:14px 8px 11px}
   .ob-tile.ob-av img{width:84px;height:84px;border-radius:50%;display:block;border:2px solid rgba(255,255,255,.12)}
@@ -129,8 +130,8 @@
   .ob-chip:hover:not(.is-sel):not(:disabled){background:rgba(232,185,58,.12)}
   .ob-chip:active:not(.is-sel):not(:disabled){background:rgba(255,255,255,.11)}
   .ob-chip:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-  .ob-chip.is-sel{border-color:var(--gold);background:var(--gold);color:#0b0f19;box-shadow:none}
-  .ob-chip.is-sel:active:not(:disabled){background:#b8860b;border-color:#b8860b}
+  .ob-chip.is-sel{border-color:var(--gold);background:var(--gold);color:#0B1530;box-shadow:none}
+  .ob-chip.is-sel:active:not(:disabled){background:#8A6A00;border-color:#8A6A00}
   .ob-field{margin-bottom:14px}
   .ob-field label{display:block;font-size:14px;color:var(--mut);margin-bottom:6px;font-weight:800}
   .ob-field input,.ob-field textarea{
@@ -180,11 +181,11 @@
   .ob-btn{
     flex:1;border:0;border-radius:18px;padding:16px;font-weight:900;font-size:15.5px;
     letter-spacing:.05em;text-transform:uppercase;cursor:pointer;text-decoration:none;
-    background:var(--gold);color:#0b0f19;box-shadow:none;
+    background:var(--gold);color:#0B1530;box-shadow:none;
     transition:background-color .15s ease,opacity .15s ease;display:inline-flex;align-items:center;justify-content:center;gap:8px;
   }
-  .ob-btn:hover:not(.is-ghost):not(:disabled){background:#f0c44b;transform:none;box-shadow:none}
-  .ob-btn:active:not(.is-ghost):not(:disabled){background:#b8860b;color:#0b0f19;transform:none;box-shadow:none}
+  .ob-btn:hover:not(.is-ghost):not(:disabled){background:#FAD03C;transform:none;box-shadow:none}
+  .ob-btn:active:not(.is-ghost):not(:disabled){background:#8A6A00;color:#0B1530;transform:none;box-shadow:none}
   .ob-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
   .ob-btn.is-ghost{
     flex:0 0 auto;padding:16px 22px;background:transparent;color:var(--mut);
@@ -256,7 +257,7 @@
         <svg viewBox="0 0 120 130" aria-hidden="true">
           <ellipse cx="60" cy="122" rx="38" ry="6" fill="#151b24"/>
           <path d="M38 40q0-30 22-30t22 30" fill="none" stroke="#b8891c" stroke-width="10" stroke-linecap="round"/>
-          <circle cx="60" cy="78" r="42" fill="#e8b93a"/>
+          <circle cx="60" cy="78" r="42" fill="#F5C518"/>
           <path d="M30 56q30-14 60 0" stroke="#3ddc84" stroke-width="9" fill="none" stroke-linecap="round"/>
           <ellipse cx="45" cy="76" rx="11" ry="13" fill="#fff"/>
           <ellipse cx="75" cy="76" rx="11" ry="13" fill="#fff"/>

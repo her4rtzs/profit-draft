@@ -1,3 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root,
+html[data-theme="profitLight"],
+html[data-theme="light"] {
+  --pf-canvas: #F7F8FC;
+  --pf-surface: #FFFFFF;
+  --pf-surface-inset: #EEF2FA;
+  --pf-border: #DDE3F0;
+  --pf-text: #0B1530;
+  --pf-muted: #4A5878;
+  --pf-gold: #F5C518;
+}
+
+html.dark,
+html[data-theme="profitDark"],
+html[data-theme="dark"] {
+  --pf-canvas: #070B18;
+  --pf-surface: #0F1A33;
+  --pf-surface-inset: #0A1124;
+  --pf-border: #1F2F55;
+  --pf-text: #F4F6FB;
+  --pf-muted: #9FB0D6;
+  --pf-gold: #F5C518;
+}

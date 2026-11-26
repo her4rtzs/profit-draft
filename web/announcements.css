@@ -1,7 +1,7 @@
 /* ==========================================================================
    ProFit Staff Portal — Announcements Module (`web/announcements.css`)
    Uses the existing Staff Portal dark navy theme, card tokens, and accents
-   (amber #e8b93a, emerald/teal #10b981, blue #3b82f6, purple #8b5cf6).
+   (amber #F5C518, emerald/teal #10b981, blue #3b82f6, purple #8b5cf6).
    Also preserves shared `.ann-*` classes used by `trainers.html` & member page.
    ========================================================================== */
 
@@ -9,8 +9,8 @@
 .ann-filters { display: flex; gap: 8px; flex-wrap: wrap; margin: 4px 0 18px; }
 .ann-chip { border: 1px solid var(--border); background: transparent; color: var(--muted); border-radius: 999px; padding: 8px 14px; font: 600 13px/1 Inter, system-ui, sans-serif; cursor: pointer; transition: background-color .2s ease, color .2s ease; }
 .ann-chip:hover { color: var(--text); }
-.ann-chip.is-on { background: linear-gradient(110deg, #f2cb5c, #e8b93a); color: #1a1407; border-color: transparent; }
-.ann-chip:focus-visible, .ann-btn:focus-visible { outline: 2px solid #e8b93a; outline-offset: 2px; }
+.ann-chip.is-on { background: linear-gradient(110deg, #FAD03C, #F5C518); color: #0B1530; border-color: transparent; }
+.ann-chip:focus-visible, .ann-btn:focus-visible { outline: 2px solid #F5C518; outline-offset: 2px; }
 .ann-list { display: grid; gap: 14px; }
 .ann-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 18px 20px; display: grid; gap: 10px; }
 .ann-card h3 { margin: 0; font-size: 17px; color: var(--text); }
@@ -19,7 +19,7 @@
 .ann-badge.draft { background: rgba(245, 158, 11, 0.16); color: #fbbf24; }
 .ann-badge.published { background: rgba(16, 185, 129, 0.16); color: #34d399; }
 .ann-badge.archived { background: rgba(59, 130, 246, 0.16); color: #60a5fa; }
-.ann-badge.pin { background: rgba(232, 185, 58, 0.16); color: #e8b93a; }
+.ann-badge.pin { background: rgba(245, 197, 24, 0.16); color: #F5C518; }
 .ann-body { margin: 0; color: var(--text); line-height: 1.6; white-space: pre-line; }
 .ann-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .ann-btn {
@@ -37,17 +37,17 @@
   gap: 8px;
   transition: border-color .18s ease, background-color .18s ease, transform .15s ease, box-shadow .18s ease;
 }
-.ann-btn:hover { border-color: #e8b93a; background: rgba(232, 185, 58, 0.08); }
+.ann-btn:hover { border-color: #F5C518; background: rgba(245, 197, 24, 0.08); }
 .ann-btn.primary {
-  background: linear-gradient(110deg, #f2cb5c, #e8b93a);
-  color: #1a1407 !important;
+  background: linear-gradient(110deg, #FAD03C, #F5C518);
+  color: #0B1530 !important;
   border-color: transparent;
   font-weight: 700;
-  box-shadow: 0 8px 20px rgba(232, 185, 58, 0.22);
+  box-shadow: 0 8px 20px rgba(245, 197, 24, 0.22);
 }
 .ann-btn.primary:hover {
   background: linear-gradient(110deg, #f7d56e, #dfa922);
-  box-shadow: 0 10px 24px rgba(232, 185, 58, 0.32);
+  box-shadow: 0 10px 24px rgba(245, 197, 24, 0.32);
 }
 .ann-btn.danger {
   background: rgba(239, 68, 68, 0.16);
@@ -75,16 +75,16 @@ body:not(.dark) .ann-field select {
   background: var(--card);
 }
 .ann-field textarea { min-height: 110px; resize: vertical; }
-.ann-field input:focus-visible, .ann-field textarea:focus-visible, .ann-field select:focus-visible { outline: 2px solid #e8b93a; outline-offset: 1px; }
+.ann-field input:focus-visible, .ann-field textarea:focus-visible, .ann-field select:focus-visible { outline: 2px solid #F5C518; outline-offset: 1px; }
 .ann-members { display: grid; gap: 4px; max-height: 240px; overflow: auto; padding: 10px; border: 1px solid var(--border); border-radius: 14px; }
 .ann-members label { display: flex; gap: 10px; align-items: center; padding: 8px; border-radius: 10px; font-weight: 500; color: var(--text); cursor: pointer; }
-.ann-members label:hover { background: rgba(232, 185, 58, .08); }
+.ann-members label:hover { background: rgba(245, 197, 24, .08); }
 .ann-members small { color: var(--muted); }
 .ann-check { display: flex; gap: 10px; align-items: center; font-weight: 600; color: var(--text); }
 .ann-msg { min-height: 20px; font-size: 13px; color: var(--muted); }
 .ann-msg.err { color: #f87171; }
 .ann-empty { text-align: center; padding: 44px 20px; color: var(--muted); border: 1px dashed var(--border); border-radius: 20px; display: grid; justify-items: center; gap: 10px; }
-.ann-empty i { font-size: 24px; color: #e8b93a; }
+.ann-empty i { font-size: 24px; color: #F5C518; }
 .ann-overview { margin-top: 14px; margin-bottom: 24px !important; }
 
 /* ==========================================================================
@@ -113,7 +113,7 @@ body:not(.dark) .ann-field select {
 }
 
 .ann-breadcrumb a:hover {
-  color: #e8b93a;
+  color: #F5C518;
 }
 
 .ann-breadcrumb i {
@@ -139,9 +139,9 @@ body:not(.dark) .ann-field select {
   display: grid;
   place-items: center;
   flex: 0 0 48px;
-  background: rgba(232, 185, 58, 0.12);
-  border: 1px solid rgba(232, 185, 58, 0.25);
-  color: #e8b93a;
+  background: rgba(245, 197, 24, 0.12);
+  border: 1px solid rgba(245, 197, 24, 0.25);
+  color: #F5C518;
   font-size: 20px;
   box-shadow: none;
 }
@@ -169,7 +169,7 @@ body:not(.dark) .ann-field select {
 .ann-hero-tagline {
   margin-left: auto;
   font: 700 28px/0.98 'Caveat', cursive;
-  color: #e8b93a;
+  color: #F5C518;
   opacity: 0.78;
   transform: rotate(-5deg);
   text-align: right;
@@ -207,7 +207,7 @@ body:not(.dark) .ann-field select {
   gap: 14px;
   padding: 16px 18px;
   border-radius: 14px;
-  background: #131C2E;
+  background: #0F1A33;
   border: 1px solid rgba(255, 255, 255, 0.06);
   box-shadow: none;
 }
@@ -216,7 +216,7 @@ body:not(.dark) .ann-field select {
   position: absolute;
   inset: 0 0 auto 0;
   height: 2px;
-  background: #e8b93a;
+  background: #F5C518;
   opacity: 0.9;
 }
 .ann-kpi-card.is-green::before { background: #16A34A; }
@@ -235,8 +235,8 @@ body:not(.dark) .ann-kpi-card {
   place-items: center;
   font-size: 16px;
   flex-shrink: 0;
-  background: rgba(232, 185, 58, 0.12);
-  color: #e8b93a;
+  background: rgba(245, 197, 24, 0.12);
+  color: #F5C518;
 }
 .ann-kpi-card.is-green .ann-kpi-ico { background: rgba(22, 163, 74, 0.14); color: #4ADE80; }
 .ann-kpi-card.is-amber .ann-kpi-ico { background: rgba(245, 158, 11, 0.14); color: #FBBF24; }
@@ -266,7 +266,7 @@ body:not(.dark) .ann-kpi-card.is-slate .ann-kpi-ico { color: #475569; }
   padding: 16px 18px;
   min-height: 76px;
   border-radius: 14px;
-  background: #131C2E;
+  background: #0F1A33;
   border: 1px solid rgba(255, 255, 255, 0.06);
   box-shadow: none;
   text-align: left;
@@ -278,8 +278,8 @@ body:not(.dark) .ann-kpi-card.is-slate .ann-kpi-ico { color: #475569; }
 
 .ann-action-tile:hover {
   transform: translateY(-1px);
-  border-color: rgba(232, 185, 58, 0.45);
-  background: color-mix(in srgb, #e8b93a 6%, #131C2E);
+  border-color: rgba(245, 197, 24, 0.45);
+  background: color-mix(in srgb, #F5C518 6%, #0F1A33);
 }
 
 .ann-action-tile:active {
@@ -287,9 +287,9 @@ body:not(.dark) .ann-kpi-card.is-slate .ann-kpi-ico { color: #475569; }
 }
 
 .ann-action-tile.tone-amber .ann-tile-ico {
-  background: rgba(232, 185, 58, 0.14);
-  color: #e8b93a;
-  border: 1px solid rgba(232, 185, 58, 0.24);
+  background: rgba(245, 197, 24, 0.14);
+  color: #F5C518;
+  border: 1px solid rgba(245, 197, 24, 0.24);
 }
 
 .ann-action-tile.tone-teal .ann-tile-ico {
@@ -317,8 +317,8 @@ body:not(.dark) .ann-action-tile {
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 }
 body:not(.dark) .ann-action-tile:hover {
-  background: color-mix(in srgb, #e8b93a 6%, #FFFFFF);
-  border-color: rgba(232, 185, 58, 0.55);
+  background: color-mix(in srgb, #F5C518 6%, #FFFFFF);
+  border-color: rgba(245, 197, 24, 0.55);
 }
 body:not(.dark) .ann-action-tile.tone-amber,
 body:not(.dark) .ann-action-tile.tone-teal,
@@ -413,7 +413,7 @@ body:not(.dark) .ann-tile-arrow {
    ========================================================================== */
 .ann-panel {
   padding: 22px 24px !important;
-  background: #131C2E !important;
+  background: #0F1A33 !important;
   border: 1px solid rgba(255, 255, 255, 0.06) !important;
   border-radius: 16px !important;
   box-shadow: none !important;
@@ -486,13 +486,13 @@ body:not(.dark) .ann-panel {
 }
 
 .ann-pill:hover {
-  border-color: rgba(232, 185, 58, 0.5);
+  border-color: rgba(245, 197, 24, 0.5);
   color: var(--text);
 }
 
 .ann-pill.active {
-  background: linear-gradient(110deg, #f2cb5c, #e8b93a);
-  color: #1a1407 !important;
+  background: linear-gradient(110deg, #FAD03C, #F5C518);
+  color: #0B1530 !important;
   border-color: transparent;
   font-weight: 700;
 }
@@ -513,7 +513,7 @@ body:not(.dark) .ann-panel {
 
 .ann-pill.active .ann-pill-count {
   background: rgba(26, 20, 7, 0.18);
-  color: #1a1407;
+  color: #0B1530;
 }
 
 .ann-toolbar-right {
@@ -565,8 +565,8 @@ body:not(.dark) .ann-search-box {
 }
 
 .ann-search-box:focus-within {
-  border-color: #e8b93a;
-  box-shadow: 0 0 0 3px rgba(232, 185, 58, 0.15);
+  border-color: #F5C518;
+  box-shadow: 0 0 0 3px rgba(245, 197, 24, 0.15);
 }
 
 .ann-search-box i {
@@ -676,12 +676,12 @@ body:not(.dark) .ann-item {
 }
 
 .ann-item:hover {
-  border-color: rgba(232, 185, 58, 0.4);
-  background: color-mix(in srgb, #e8b93a 6%, #131C2E);
+  border-color: rgba(245, 197, 24, 0.4);
+  background: color-mix(in srgb, #F5C518 6%, #0F1A33);
 }
 
 body:not(.dark) .ann-item:hover {
-  background: color-mix(in srgb, #e8b93a 5%, #FFFFFF);
+  background: color-mix(in srgb, #F5C518 5%, #FFFFFF);
 }
 
 /* Optional Uploaded Image Thumbnail (preserves aspect ratio) */
@@ -730,7 +730,7 @@ body:not(.dark) .ann-thumb {
   box-sizing: border-box;
 }
 .ann-image-upload input[type="file"]:hover {
-  border-color: rgba(232, 185, 58, 0.55);
+  border-color: rgba(245, 197, 24, 0.55);
   background: rgba(15, 23, 42, 0.65);
 }
 .ann-image-upload input[type="file"]::file-selector-button,
@@ -738,8 +738,8 @@ body:not(.dark) .ann-thumb {
   margin-right: 12px;
   padding: 7px 14px;
   border-radius: 8px;
-  border: 1px solid rgba(232, 185, 58, 0.42);
-  background: rgba(232, 185, 58, 0.16);
+  border: 1px solid rgba(245, 197, 24, 0.42);
+  background: rgba(245, 197, 24, 0.16);
   color: #f5b73b;
   font: 700 12.5px/1.2 "Plus Jakarta Sans", Inter, system-ui, sans-serif;
   cursor: pointer;
@@ -747,8 +747,8 @@ body:not(.dark) .ann-thumb {
 }
 .ann-image-upload input[type="file"]::file-selector-button:hover,
 .ann-image-upload input[type="file"]::-webkit-file-upload-button:hover {
-  background: rgba(232, 185, 58, 0.28);
-  border-color: rgba(232, 185, 58, 0.72);
+  background: rgba(245, 197, 24, 0.28);
+  border-color: rgba(245, 197, 24, 0.72);
 }
 body:not(.dark) .ann-image-upload input[type="file"] {
   border-color: #d6cbb5;
@@ -917,8 +917,8 @@ body:not(.dark) .ann-status-pill.archived { color: #475569; }
 
 .ann-kebab-btn:hover,
 .ann-kebab-btn[aria-expanded="true"] {
-  background: rgba(232, 185, 58, 0.14);
-  border-color: rgba(232, 185, 58, 0.5);
+  background: rgba(245, 197, 24, 0.14);
+  border-color: rgba(245, 197, 24, 0.5);
   color: var(--text);
 }
 
@@ -970,7 +970,7 @@ body:not(.dark) .ann-dropdown-menu {
 }
 
 .ann-dropdown-menu button:hover {
-  background: rgba(232, 185, 58, 0.14);
+  background: rgba(245, 197, 24, 0.14);
 }
 
 .ann-dropdown-menu button:hover i {
@@ -1049,12 +1049,12 @@ body:not(.dark) .ann-dropdown-menu {
 }
 
 .ann-page-btn:hover:not(:disabled) {
-  border-color: #e8b93a;
+  border-color: #F5C518;
 }
 
 .ann-page-btn.active {
-  background: linear-gradient(110deg, #f2cb5c, #e8b93a);
-  color: #1a1407;
+  background: linear-gradient(110deg, #FAD03C, #F5C518);
+  color: #0B1530;
   border-color: transparent;
 }
 
@@ -1086,8 +1086,8 @@ body:not(.dark) .ann-empty-state {
   width: 68px;
   height: 68px;
   border-radius: 20px;
-  background: rgba(232, 185, 58, 0.14);
-  border: 1px solid rgba(232, 185, 58, 0.3);
+  background: rgba(245, 197, 24, 0.14);
+  border: 1px solid rgba(245, 197, 24, 0.3);
   color: #fbbf24;
   display: grid;
   place-items: center;
@@ -1190,7 +1190,7 @@ body:not(.dark) .ann-modal {
 
 .ann-modal-close:hover {
   color: var(--text);
-  border-color: #e8b93a;
+  border-color: #F5C518;
 }
 
 .ann-modal-form,

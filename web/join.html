@@ -1,838 +1,1772 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
-<title>Join online — ProFit · Functional Fitness Gym</title>
-<meta name="description" content="Create a free ProFit account and start a seven-day trial. Add a gym membership with cash or a reviewed GCash payment.">
-<link rel="canonical" href="https://functionalfitnessgym.site/join">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://functionalfitnessgym.site/join">
-<meta property="og:title" content="Join ProFit · Functional Fitness Gym">
-<meta property="og:description" content="Create a free ProFit account and start a seven-day trial. Add a gym membership with cash or a reviewed GCash payment.">
-<meta property="og:image" content="https://functionalfitnessgym.site/logo.jpg">
-<meta property="og:image:width" content="1254">
-<meta property="og:image:height" content="1254">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Join ProFit · Functional Fitness Gym">
-<meta name="twitter:description" content="Create a free ProFit account and start a seven-day trial. Add a gym membership with cash or a reviewed GCash payment.">
-<meta name="twitter:image" content="https://functionalfitnessgym.site/logo.jpg">
-<link rel="icon" type="image/jpeg" href="logo.jpg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
-<script src="api.js?v=6"></script>
-<style>
-  :root{
-    --gold:#e8b93a;
-    --lime:#e8b93a;
-    --lime-hi:#f2cb5c;
-    --on:#1a1407;
-    --bg:#07080c;
-    --bg2:#0b0d16;
-    --card:#111320;
-    --line:#232636;
-    --tx:#f6efdc;
-    --mu:#9a9788;
-    --field-line:#4A4E66;
-    --err:#f87171;
-    --ok:#4ade80;
-  }
-  html[data-theme="light"],body.light{
-    --bg:#f4f5f8;
-    --bg2:#ffffff;
-    --card:#ffffff;
-    --line:#d8dce6;
-    --tx:#111318;
-    --mu:#5b6070;
-    --field-line:#b8bfd0;
-    --err:#dc2626;
-    --ok:#15803d;
-  }
-  @media(prefers-color-scheme:light){
-    html[data-theme="auto"]{
-      --bg:#f4f5f8;
-      --bg2:#ffffff;
-      --card:#ffffff;
-      --line:#d8dce6;
-      --tx:#111318;
-      --mu:#5b6070;
-      --field-line:#b8bfd0;
-      --err:#dc2626;
-      --ok:#15803d;
+  <meta charset="utf-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <title>Join online — ProFit · Functional Fitness Gym</title>
+  <meta name="description"
+    content="Create a free ProFit account and start a seven-day trial. Add a gym membership with cash or a reviewed GCash payment.">
+  <link rel="canonical" href="https://functionalfitnessgym.site/join">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://functionalfitnessgym.site/join">
+  <meta property="og:title" content="Join ProFit · Functional Fitness Gym">
+  <meta property="og:description"
+    content="Create a free ProFit account and start a seven-day trial. Add a gym membership with cash or a reviewed GCash payment.">
+  <meta property="og:image" content="https://functionalfitnessgym.site/logo.jpg">
+  <meta property="og:image:width" content="1254">
+  <meta property="og:image:height" content="1254">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Join ProFit · Functional Fitness Gym">
+  <meta name="twitter:description"
+    content="Create a free ProFit account and start a seven-day trial. Add a gym membership with cash or a reviewed GCash payment.">
+  <meta name="twitter:image" content="https://functionalfitnessgym.site/logo.jpg">
+  <link rel="icon" type="image/jpeg" href="/logo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous">
+  <script src="api.js?v=6"></script>
+  <style>
+    :root {
+      --gold: #F5C518;
+      --lime: #F5C518;
+      --lime-hi: #FAD03C;
+      --on: #0B1530;
+      --bg: #070B18;
+      --bg2: #0A1124;
+      --card: #0F1A33;
+      --line: #1F2F55;
+      --tx: #F4F6FB;
+      --mu: #9FB0D6;
+      --field-line: #293D6B;
+      --err: #F87171;
+      --ok: #34D399;
     }
-  }
 
-  *{box-sizing:border-box}
-  html,body{margin:0;padding:0;overflow-x:hidden}
-  body{
-    min-height:100vh;
-    background:var(--bg);
-    color:var(--tx);
-    font:15px/1.6 Inter,system-ui,-apple-system,sans-serif;
-    -webkit-font-smoothing:antialiased;
-    display:flex;
-    flex-direction:column;
-  }
-  h1,h2,h3,button,.portal-brand strong{font-family:"Plus Jakarta Sans",Inter,system-ui,sans-serif}
-  :focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+    html[data-theme="light"],
+    body.light {
+      --bg: #F7F8FC;
+      --bg2: #EEF2FA;
+      --card: #FFFFFF;
+      --line: #DDE3F0;
+      --tx: #0B1530;
+      --mu: #4A5878;
+      --field-line: #CDD6E8;
+      --err: #dc2626;
+      --ok: #15803d;
+    }
 
-  /* Header matching landing & login */
-  .portal-nav{
-    height:68px;min-height:68px;
-    background:#0b0c10;
-    border-bottom:1px solid var(--line);
-    padding:0 clamp(16px,4vw,40px);
-    display:flex;align-items:center;justify-content:space-between;gap:16px;
-    position:sticky;top:0;z-index:40;flex:none;
-  }
-  .portal-brand{
-    display:inline-flex;align-items:center;gap:12px;
-    text-decoration:none;color:#f6efdc;min-height:44px;
-  }
-  .portal-brand img{width:36px;height:36px;border-radius:10px;object-fit:cover;display:block;flex:none}
-  .portal-brand strong{font-size:22px;font-weight:800;letter-spacing:-.02em;color:#f6efdc}
-  .back-link{
-    display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 10px;border-radius:10px;
-    color:#9a9788;text-decoration:none;font:600 14px/1 Inter,system-ui,sans-serif;
-    transition:background-color .15s ease,color .15s ease;white-space:nowrap;
-  }
-  .back-link:hover{background:rgba(255,255,255,.06);color:var(--tx)}
-  .back-link:active{background:rgba(255,255,255,.11)}
-
-  /* Full-bleed hero with flat overlay */
-  .jn-shell{
-    position:relative;
-    flex:1 1 auto;
-    min-height:calc(100vh - 68px);
-    background:url("img/hero.jpg") center/cover no-repeat;
-    display:flex;align-items:center;
-    padding:clamp(14px,2vh,24px) clamp(16px,4vw,48px);
-    overflow:hidden;
-  }
-  .jn-shell::before{
-    content:"";position:absolute;inset:0;
-    background:rgba(7,8,12,.7);
-    z-index:0;
-  }
-  html[data-theme="light"] .jn-shell::before,
-  body.light .jn-shell::before{
-    background:rgba(244,245,248,.82);
-  }
-  .jn-wrap{
-    position:relative;z-index:1;
-    width:min(1180px,100%);margin-inline:auto;
-    display:grid;grid-template-columns:minmax(0,1fr) 600px;
-    gap:clamp(28px,4.5vw,56px);align-items:center;
-  }
-
-  /* Left copy */
-  @keyframes pfRiseIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-  .jn-eyebrow{
-    display:inline-flex;align-items:center;gap:10px;
-    font:700 12px/1.2 "Plus Jakarta Sans",sans-serif;
-    letter-spacing:.16em;text-transform:uppercase;color:var(--gold);
-    margin:0 0 16px;
-    animation:pfRiseIn .45s cubic-bezier(.22,1,.36,1) both;
-  }
-  .jn-eyebrow::before{content:"";width:24px;height:2px;background:var(--gold);flex:none}
-  .jn-title{
-    margin:0 0 16px;
-    font-size:clamp(38px,4.8vw,58px);font-weight:800;line-height:1.04;letter-spacing:-.03em;
-    color:var(--tx);
-    animation:pfRiseIn .5s cubic-bezier(.22,1,.36,1) .06s both;
-  }
-  .jn-title .hl{color:var(--gold);display:block}
-  .jn-desc{
-    margin:0 0 24px;max-width:440px;font-size:16px;line-height:1.6;color:var(--mu);
-    animation:pfRiseIn .5s cubic-bezier(.22,1,.36,1) .12s both;
-  }
-  .jn-checks{list-style:none;margin:0 0 24px;padding:0;display:grid;gap:12px;animation:pfRiseIn .5s cubic-bezier(.22,1,.36,1) .18s both}
-  .jn-checks li{
-    display:flex;align-items:center;gap:10px;font-size:14.5px;font-weight:500;color:var(--tx);
-  }
-  .jn-checks i{color:var(--gold);font-size:14px;flex:none}
-  .jn-gym-foot{margin:0;font-size:12.5px;color:var(--mu);animation:pfRiseIn .5s cubic-bezier(.22,1,.36,1) .24s both}
-
-  /* Right 550px Card */
-  .jn-card{
-    width:100%;max-width:550px;justify-self:end;
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:16px;
-    padding:clamp(18px,2.2vh,24px) clamp(18px,2.4vw,26px);
-    box-shadow:0 24px 48px -20px rgba(0,0,0,.75);
-    animation:pfRiseIn .52s cubic-bezier(.22,1,.36,1) .08s both;
-  }
-  .jn-card h2{margin:0 0 2px;font-size:23px;font-weight:800;letter-spacing:-.02em;color:var(--tx)}
-  .jn-lead{margin:0 0 12px;font-size:13px;color:var(--mu)}
-
-  .jn-lbl{display:block;margin:0 0 4px;font:600 12.5px/1.2 Inter,system-ui,sans-serif;color:var(--tx)}
-
-  .jn-note{
-    margin-bottom:12px;padding:10px 12px;border-radius:12px;font-size:13px;font-weight:500;
-    background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.38);color:var(--err);
-  }
-
-  /* 44px Fields, radius 12px */
-  .jn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .jn-field{margin-bottom:6px}
-  .jn-input{
-    width:100%;height:44px;padding:0 13px;
-    border-radius:12px;border:1px solid var(--field-line);
-    background:var(--bg2);color:var(--tx);
-    font:400 14px/1.2 Inter,system-ui,sans-serif;
-    transition:border-color .16s ease,box-shadow .16s ease,background-color .16s ease;
-  }
-  .jn-input::placeholder{color:var(--mu)}
-  .jn-input:hover:not(:focus):not(:disabled){border-color:rgba(232,185,58,.5)}
-  .jn-input:focus{outline:1.5px solid var(--gold);outline-offset:0;border-color:var(--gold);box-shadow:none}
-  .jn-input.is-invalid{border-color:var(--err)}
-  .jn-input:-webkit-autofill,
-  .jn-input:-webkit-autofill:hover,
-  .jn-input:-webkit-autofill:focus{
-    -webkit-box-shadow:0 0 0 100px var(--bg2) inset !important;
-    -webkit-text-fill-color:var(--tx) !important;
-    caret-color:var(--tx);
-    transition:background-color 5000s ease-in-out 0s;
-  }
-
-  .jn-phone-wrap{display:flex;align-items:center}
-  .jn-prefix{
-    height:44px;padding:0 12px;display:inline-flex;align-items:center;
-    background:var(--bg2);border:1px solid var(--field-line);border-right:0;
-    border-radius:12px 0 0 12px;font:600 13.5px/1 Inter,sans-serif;color:var(--tx);flex:none;
-  }
-  .jn-phone-wrap .jn-input{border-radius:0 12px 12px 0}
-
-  .jn-pw-wrap{position:relative}
-  .jn-pw-wrap .jn-input{padding-right:46px}
-  .jn-eye{
-    position:absolute;right:4px;top:50%;transform:translateY(-50%);
-    width:40px;height:40px;border:0;background:transparent;color:var(--mu);
-    display:grid;place-items:center;cursor:pointer;border-radius:10px;
-    transition:background-color .15s ease,color .15s ease;
-  }
-  .jn-eye:hover{background:rgba(255,255,255,.06);color:var(--tx)}
-  .jn-eye:active{background:rgba(255,255,255,.11)}
-
-  .jn-f-err{display:block;min-height:0;margin-top:2px;font-size:11.5px;font-weight:500;color:var(--err)}
-
-  /* Strength & live checklist */
-  .jn-strength{margin:2px 0 8px}
-  .jn-strength-track{height:4px;border-radius:99px;background:var(--line);overflow:hidden;margin-bottom:5px}
-  .jn-strength-fill{height:100%;width:0%;transition:width .2s ease,background-color .2s ease}
-  .jn-strength-meta{display:flex;justify-content:space-between;font-size:11.5px;color:var(--mu);margin-bottom:6px}
-  .jn-checklist{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px 14px}
-  .jn-checklist li{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--mu)}
-  .jn-checklist li.ok{color:var(--ok)}
-
-  /* 20px Checkbox aligned with first line of text */
-  .jn-terms{
-    display:flex;align-items:center;gap:10px;margin:0 0 8px;
-    font-size:12.5px;line-height:1.4;color:var(--tx);cursor:pointer;min-height:36px;
-  }
-  .jn-terms input[type="checkbox"]{
-    appearance:none;-webkit-appearance:none;
-    width:20px;height:20px;margin:0;flex:none;
-    border-radius:6px;border:1px solid var(--field-line);background:var(--bg2);
-    display:grid;place-items:center;cursor:pointer;
-    transition:border-color .15s ease,background-color .15s ease;
-  }
-  .jn-terms input[type="checkbox"]:focus-visible{
-    outline:2px solid var(--gold);outline-offset:2px;box-shadow:none;
-  }
-  .jn-terms input[type="checkbox"]:checked{background:var(--gold);border-color:var(--gold)}
-  .jn-terms input[type="checkbox"]:checked::after{
-    content:"";width:5px;height:9px;border:solid var(--on);border-width:0 2px 2px 0;
-    transform:rotate(45deg);margin-bottom:2px;
-  }
-  .jn-terms a{color:var(--gold);font-weight:600;text-decoration:none;text-underline-offset:3px}
-  .jn-terms a:hover,
-  .jn-terms a:focus-visible{color:var(--lime-hi);text-decoration:underline}
-
-  .jn-err{margin:0 0 6px;min-height:0;font-size:12px;font-weight:500;color:var(--err)}
-
-  .jn-btn-gold{
-    width:100%;height:44px;border:0;border-radius:999px;
-    background:var(--gold);color:#0b0f19;
-    font:700 15px/1 "Plus Jakarta Sans",sans-serif;
-    display:inline-flex;align-items:center;justify-content:center;
-    cursor:pointer;transition:background-color .15s ease,opacity .15s ease;
-  }
-  .jn-btn-gold:hover:not(:disabled){background:#f0c44b;transform:none;box-shadow:none;filter:none}
-  .jn-btn-gold:active:not(:disabled){background:#b8860b;color:#0b0f19;transform:none;box-shadow:none}
-  .jn-btn-gold:disabled{opacity:.48;cursor:not-allowed;pointer-events:none;box-shadow:none;transform:none}
-
-  .jn-divider{display:flex;align-items:center;gap:12px;margin:10px 0 10px;font-size:12px;color:var(--mu)}
-  .jn-divider::before,.jn-divider::after{content:"";flex:1;height:1px;background:var(--line)}
-  .jn-sso-btn{
-    width:100%;height:44px;padding:0 16px;border-radius:999px;
-    border:1px solid var(--field-line);background:var(--bg2);color:var(--tx);
-    font:600 14px/1 "Plus Jakarta Sans",sans-serif;
-    display:inline-flex;align-items:center;justify-content:center;gap:10px;
-    cursor:pointer;transition:background-color .15s ease;
-  }
-  .jn-sso-btn:hover:not(:disabled){background:rgba(255,255,255,.06);transform:none;box-shadow:none}
-  .jn-sso-btn:active:not(:disabled){background:rgba(255,255,255,.11);transform:none}
-  .jn-sso-btn:disabled{opacity:.48;cursor:not-allowed;pointer-events:none}
-  .jn-sso-btn svg{width:18px;height:18px;flex:none}
-  .jn-google-msg{margin:8px 0 0;font-size:12.5px;font-weight:500;text-align:center}
-  .jn-google-msg[hidden]{display:none}
-
-  .jn-alt{margin:4px 0 0;text-align:center;font-size:13px;color:var(--mu)}
-  .jn-alt a{
-    display:inline-flex;align-items:center;min-height:36px;
-    color:var(--gold);font-weight:600;text-decoration:none;text-underline-offset:3px;
-  }
-  .jn-alt a:hover,
-  .jn-alt a:focus-visible{color:var(--lime-hi);text-decoration:underline}
-
-  .jn-ok{text-align:center;padding:24px 8px}
-  .jn-ok i{font-size:40px;color:var(--ok);margin-bottom:12px}
-  .jn-ok h2{margin-bottom:8px}
-  .jn-ok p{color:var(--mu);font-size:14px;margin:0 0 18px}
-
-  @media(max-width:1160px) and (min-width:901px){
-    .jn-wrap{grid-template-columns:minmax(0,1fr) minmax(380px,500px);gap:32px}
-  }
-  @media(max-width:900px){
-    .jn-shell{min-height:auto;padding:24px 16px calc(36px + env(safe-area-inset-bottom,0px));align-items:flex-start}
-    .jn-wrap{grid-template-columns:1fr;gap:24px}
-    .jn-card{max-width:600px;margin-inline:auto;justify-self:center}
-  }
-  @media(max-width:480px){
-    .portal-nav{height:auto;min-height:58px;padding:env(safe-area-inset-top,0px) 14px 0}
-    .jn-row{grid-template-columns:1fr}
-    .jn-input{font-size:16px}
-    .jn-card{padding:18px 14px}
-  }
-  @media(pointer:coarse){
-    .jn-input{font-size:16px}
-    button,a{touch-action:manipulation}
-  }
-  html{-webkit-tap-highlight-color:transparent;overscroll-behavior:none}
-  body{min-height:100dvh}
-  @media(prefers-reduced-motion:reduce){
-    *{transition:none !important;animation:none !important}
-  }
-
-  /* Legal Modal matching ProFit tokens */
-  .jn-legal-backdrop{position:fixed;inset:0;z-index:1200;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(7,8,12,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;visibility:hidden;transition:opacity .2s ease,visibility .2s ease}
-  .jn-legal-backdrop.is-open{opacity:1;visibility:visible}
-  .jn-legal-modal{width:min(760px,100%);max-height:min(88vh,780px);display:flex;flex-direction:column;background:var(--card);color:var(--tx);border:1px solid var(--line);border-radius:16px;overflow:hidden;transform:translateY(10px) scale(.98);transition:transform .2s cubic-bezier(.2,.8,.2,1)}
-  .jn-legal-backdrop.is-open .jn-legal-modal{transform:none}
-  .jn-legal-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 22px;background:var(--bg2);border-bottom:1px solid var(--line)}
-  .jn-legal-head-left{display:flex;align-items:center;gap:12px;min-width:0}
-  .jn-legal-ico{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:var(--gold);color:var(--on);font-size:16px;flex:none}
-  .jn-legal-head h3{margin:0;font-size:18px;font-weight:700;color:var(--tx)}
-  .jn-legal-head p{margin:2px 0 0;font-size:12px;color:var(--mu)}
-  .jn-legal-x{width:44px;height:44px;border-radius:10px;border:1px solid var(--field-line);background:var(--bg2);color:var(--tx);font-size:20px;line-height:1;display:grid;place-items:center;cursor:pointer;transition:background-color .15s ease}
-  .jn-legal-x:hover{background:rgba(255,255,255,.06)}
-  .jn-legal-x:active{background:rgba(255,255,255,.11)}
-  .jn-legal-tabs{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 22px;background:var(--bg);border-bottom:1px solid var(--line)}
-  .jn-legal-tab-group{display:flex;gap:8px;flex-wrap:wrap}
-  .jn-legal-tab{display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--field-line);background:var(--bg2);color:var(--tx);font:600 13px/1 "Plus Jakarta Sans",sans-serif;cursor:pointer;transition:background-color .15s ease}
-  .jn-legal-tab:hover:not(.is-active){background:rgba(232,185,58,.12)}
-  .jn-legal-tab.is-active{background:var(--gold);color:#0b0f19;border-color:var(--gold)}
-  .jn-legal-tab.is-active:active{background:#b8860b;border-color:#b8860b;color:#0b0f19}
-  .jn-legal-tab .chk{display:none;color:var(--ok);font-weight:800}
-  .jn-legal-tab.is-read .chk{display:inline}
-  .jn-legal-tab.is-active.is-read .chk{color:var(--on)}
-  .jn-legal-prog{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:600;color:var(--mu)}
-  .jn-legal-prog-bar{width:90px;height:6px;background:var(--line);border-radius:99px;overflow:hidden}
-  .jn-legal-prog-fill{height:100%;width:0%;background:var(--ok);transition:width .25s ease}
-  .jn-legal-body{flex:1 1 auto;overflow-y:auto;padding:20px 22px;font-size:14px;line-height:1.65;color:var(--tx);background:var(--bg2)}
-  .jn-legal-body .legal-sec{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--line)}
-  .jn-legal-body .legal-sec:last-child{border-bottom:0;margin-bottom:0}
-  .jn-legal-body h2{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:700;color:var(--tx);margin:0 0 8px}
-  .jn-legal-body .legal-num{width:24px;height:24px;border-radius:6px;display:inline-grid;place-items:center;background:var(--gold);color:var(--on);font-size:12px;font-weight:800;flex:none}
-  .jn-legal-body p{margin:0 0 8px}
-  .jn-legal-body ul{margin:6px 0 0;padding-left:20px;display:grid;gap:5px}
-  .jn-legal-body a{color:var(--gold);font-weight:600;text-decoration:none;text-underline-offset:3px}
-  .jn-legal-body a:hover,
-  .jn-legal-body a:focus-visible{text-decoration:underline}
-  .jn-legal-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 22px;border-top:1px solid var(--line);background:var(--bg)}
-  .jn-legal-note{margin:0;font-size:12.5px;color:var(--mu)}
-  .jn-legal-acts{display:flex;align-items:center;gap:10px;margin-left:auto}
-  .jn-legal-btn{height:44px;padding:0 18px;border-radius:999px;font:600 13.5px/1 "Plus Jakarta Sans",sans-serif;border:1px solid var(--field-line);background:var(--bg2);color:var(--tx);cursor:pointer;transition:background-color .15s ease}
-  .jn-legal-btn:hover:not(.primary):not(:disabled){background:rgba(255,255,255,.06)}
-  .jn-legal-btn:active:not(.primary):not(:disabled){background:rgba(255,255,255,.11)}
-  .jn-legal-btn.primary{background:var(--gold);color:#0b0f19;border-color:var(--gold);font-weight:700}
-  .jn-legal-btn.primary:hover:not(:disabled){background:#f0c44b;border-color:#f0c44b}
-  .jn-legal-btn.primary:active:not(:disabled){background:#b8860b;border-color:#b8860b}
-  .jn-legal-btn.primary:disabled{opacity:.48;cursor:not-allowed;pointer-events:none}
-  @media(max-width:768px){
-    footer.site-footer,.site-footer{display:none!important}
-    .portal-nav{height:58px;min-height:58px;padding:0 16px}
-    .portal-brand img{width:32px;height:32px}
-    .portal-brand strong{font-size:20px}
-    .jn-shell{min-height:calc(100vh - 58px);padding:20px 14px 28px;align-items:flex-start}
-    .jn-title{font-size:clamp(30px,8vw,42px);margin-bottom:10px}
-    .jn-desc{font-size:14.5px;margin-bottom:16px}
-    .jn-checks{gap:8px;margin-bottom:14px}
-    .jn-card{padding:20px 16px}
-    .jn-row{grid-template-columns:1fr}
-    .jn-input{height:46px;font-size:16px}
-    .jn-btn-gold,.jn-sso-btn{height:46px}
-  }
-  @media(max-width:560px){.jn-legal-backdrop{padding:10px}.jn-legal-head,.jn-legal-tabs,.jn-legal-body,.jn-legal-foot{padding-left:14px;padding-right:14px}.jn-legal-foot{flex-direction:column;align-items:stretch}.jn-legal-acts{justify-content:flex-end}}
-</style>
-<script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script>
-<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17"><meta name="color-scheme" content="light dark"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
-<body class="portal-body auth-page dark public-dark-theme">
-<header class="portal-nav">
-  <a class="portal-brand" href="/">
-    <img src="logo.jpg" alt="ProFit logo" width="36" height="36">
-    <strong>ProFit</strong>
-  </a>
-  <a class="back-link" href="/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i><span>Back to home</span></a>
-</header>
-
-<main class="jn-shell">
-  <div class="jn-wrap">
-    <section class="jn-copy" aria-label="Self-enrollment overview">
-      <p class="jn-eyebrow">Join the gym</p>
-      <h1 class="jn-title">Start free.<span class="hl">Train with us.</span></h1>
-      <p class="jn-desc">Create your free account and get 7 days of app access. Add a gym membership any time by paying at the desk or by GCash.</p>
-      <ul class="jn-checks">
-        <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>No waiting for staff approval</span></li>
-        <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>No payment needed at sign-up</span></li>
-      </ul>
-      <p class="jn-gym-foot"><span data-gym-name>Functional Fitness Gym</span> · Alfonso, Calabarzon</p>
-    </section>
-
-    <section class="jn-card" id="box" aria-label="Create your account">
-      <h2>Create your account</h2>
-
-      <form id="f" novalidate>
-        <div id="cancel" class="jn-note" hidden>Payment was cancelled. No account was created and you were not charged.</div>
-
-        <div class="jn-field">
-          <label class="jn-lbl" for="name">Full name</label>
-          <input class="jn-input" id="name" autocomplete="name" maxlength="100" placeholder="Enter your full name">
-          <small class="jn-f-err" id="nameErr"></small>
-        </div>
-
-        <div class="jn-row">
-          <div class="jn-field">
-            <label class="jn-lbl" for="email">Email</label>
-            <input class="jn-input" id="email" type="email" autocomplete="email" maxlength="254" placeholder="you@example.com">
-            <small class="jn-f-err" id="emailErr"></small>
-          </div>
-          <div class="jn-field">
-            <label class="jn-lbl" for="phone">Mobile number</label>
-            <div class="jn-phone-wrap">
-              <span class="jn-prefix" aria-hidden="true">+63</span>
-              <input class="jn-input" id="phone" type="tel" inputmode="numeric" autocomplete="tel" maxlength="12" placeholder="9XX XXX XXXX">
-            </div>
-            <small class="jn-f-err" id="phoneErr"></small>
-          </div>
-        </div>
-
-        <div class="jn-row">
-          <div class="jn-field">
-            <label class="jn-lbl" for="pw">Password</label>
-            <div class="jn-pw-wrap">
-              <input class="jn-input" id="pw" type="password" autocomplete="new-password" minlength="8" maxlength="128" placeholder="Create a password">
-              <button type="button" class="jn-eye" id="togglePw" aria-label="Show password" aria-pressed="false"><i class="fa-regular fa-eye"></i></button>
-            </div>
-            <small class="jn-f-err" id="pwErr"></small>
-          </div>
-          <div class="jn-field">
-            <label class="jn-lbl" for="pw2">Confirm password</label>
-            <div class="jn-pw-wrap">
-              <input class="jn-input" id="pw2" type="password" autocomplete="new-password" minlength="8" maxlength="128" placeholder="Repeat password">
-              <button type="button" class="jn-eye" id="togglePw2" aria-label="Show confirm password" aria-pressed="false"><i class="fa-regular fa-eye"></i></button>
-            </div>
-            <small class="jn-f-err" id="pw2Err"></small>
-          </div>
-        </div>
-
-        <div class="jn-strength" aria-live="polite" hidden>
-          <div class="jn-strength-track"><div class="jn-strength-fill" id="pwStrengthBar"></div></div>
-          <div class="jn-strength-meta"><span>Password strength</span><span id="pwStrengthLabel">Enter password</span></div>
-          <ul class="jn-checklist" id="pwChecklist">
-            <li id="chkLen"><i class="fa-regular fa-circle"></i> 8+ characters</li>
-            <li id="chkCase"><i class="fa-regular fa-circle"></i> Upper &amp; lowercase</li>
-            <li id="chkNum"><i class="fa-regular fa-circle"></i> Number or symbol</li>
-            <li id="chkMatch"><i class="fa-regular fa-circle"></i> Passwords match</li>
-          </ul>
-        </div>
-
-        <label class="jn-terms">
-          <input type="checkbox" id="terms">
-          <span>I have read and agree to the <a href="/terms" data-legal="terms">Terms of Service</a> and <a href="/privacy" data-legal="privacy">Privacy Policy</a>.</span>
-        </label>
-
-        <p class="jn-err" id="err" role="alert"></p>
-        <button class="jn-btn-gold" id="go" type="submit" disabled>Create my account</button>
-      </form>
-
-      <div id="joinGoogleWrap">
-        <div class="jn-divider"><span>Or continue with</span></div>
-        <button type="button" class="jn-sso-btn" id="googleJoinBtn">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z"/>
-            <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24Z"/>
-            <path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14Z"/>
-            <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96Z"/>
-          </svg>
-          <span>Continue with Google</span>
-        </button>
-        <p class="jn-google-msg" id="joinGoogleMsg" role="alert" aria-live="polite" hidden></p>
-      </div>
-
-      <div class="jn-ok" id="ok" hidden>
-        <i class="fa-solid fa-circle-check"></i>
-        <h2>Payment received</h2>
-        <p id="okmsg">We're creating your account now. This usually takes a few seconds.</p>
-        <a class="jn-btn-gold" id="okgo" href="/login" style="text-decoration:none">Sign in</a>
-      </div>
-
-      <p class="jn-alt" id="alt">Already a member? <a href="/login">Sign in</a></p>
-    </section>
-  </div>
-</main>
-
-<div id="legalModalBackdrop" class="jn-legal-backdrop" hidden aria-hidden="true">
-  <div id="legalModal" class="jn-legal-modal" role="dialog" aria-modal="true" aria-labelledby="legalModalTitle">
-    <div class="jn-legal-head">
-      <div class="jn-legal-head-left">
-        <span class="jn-legal-ico" aria-hidden="true"><i class="fa-regular fa-file-lines"></i></span>
-        <div>
-          <h3 id="legalModalTitle">Terms of Service</h3>
-          <p id="legalModalSub">ProFit · Functional Fitness Gym · Last updated: October 2026</p>
-        </div>
-      </div>
-      <button type="button" class="jn-legal-x" id="legalModalCloseX" aria-label="Close modal">&times;</button>
-    </div>
-    <div class="jn-legal-tabs">
-      <div class="jn-legal-tab-group" role="tablist" aria-label="Legal documents">
-        <button type="button" class="jn-legal-tab is-active" role="tab" aria-selected="true" data-doc="terms">
-          <i class="fa-regular fa-file-lines" aria-hidden="true"></i> Terms of Service <span class="chk" aria-hidden="true">✓</span>
-        </button>
-        <button type="button" class="jn-legal-tab" role="tab" aria-selected="false" data-doc="privacy">
-          <i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Privacy Policy <span class="chk" aria-hidden="true">✓</span>
-        </button>
-      </div>
-      <div class="jn-legal-prog" aria-live="polite">
-        <span id="legalProgText">0 of 2 documents reviewed</span>
-        <div class="jn-legal-prog-bar"><div class="jn-legal-prog-fill" id="legalProgFill"></div></div>
-      </div>
-    </div>
-    <div class="jn-legal-body" id="legalModalBody" tabindex="0"></div>
-    <div class="jn-legal-foot">
-      <p class="jn-legal-note" id="legalFootNote">Scroll to the end of both documents to enable “I agree”.</p>
-      <div class="jn-legal-acts">
-        <button type="button" class="jn-legal-btn" id="legalModalCloseBtn">Cancel</button>
-        <button type="button" class="jn-legal-btn primary" id="legalModalAgreeBtn" disabled>I agree</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-(() => {
-  const $ = id => document.getElementById(id);
-
-  function bindToggle(btnId, inputId, labelWord) {
-    const btn = $(btnId), input = $(inputId);
-    if (!btn || !input) return;
-    btn.addEventListener("click", () => {
-      const show = input.type === "password";
-      input.type = show ? "text" : "password";
-      btn.setAttribute("aria-label", show ? `Hide ${labelWord}` : `Show ${labelWord}`);
-      btn.setAttribute("aria-pressed", String(show));
-      btn.innerHTML = `<i class="fa-regular ${show ? "fa-eye-slash" : "fa-eye"}"></i>`;
-    });
-  }
-  bindToggle("togglePw", "pw", "password");
-  bindToggle("togglePw2", "pw2", "confirm password");
-
-  // +63 mobile formatting as you type (9XX XXX XXXX)
-  const phoneEl = $("phone");
-  function formatPHPhone(raw) {
-    let d = String(raw || "").replace(/\D/g, "");
-    if (d.startsWith("63")) d = d.slice(2);
-    if (d.startsWith("0")) d = d.slice(1);
-    d = d.slice(0, 10);
-    if (d.length <= 3) return d;
-    if (d.length <= 6) return d.slice(0, 3) + " " + d.slice(3);
-    return d.slice(0, 3) + " " + d.slice(3, 6) + " " + d.slice(6);
-  }
-  phoneEl.addEventListener("input", () => {
-    const raw = phoneEl.value;
-    const caret = phoneEl.selectionStart ?? raw.length;
-    const digitsBefore = raw.slice(0, caret).replace(/\D/g, "").length;
-    const formatted = formatPHPhone(raw);
-    phoneEl.value = formatted;
-    if (document.activeElement === phoneEl && typeof phoneEl.setSelectionRange === "function") {
-      let nextPos = 0;
-      let seen = 0;
-      while (nextPos < formatted.length && seen < digitsBefore) {
-        if (/\d/.test(formatted[nextPos])) seen++;
-        nextPos++;
+    @media(prefers-color-scheme:light) {
+      html[data-theme="auto"] {
+        --bg: #F7F8FC;
+        --bg2: #EEF2FA;
+        --card: #FFFFFF;
+        --line: #DDE3F0;
+        --tx: #0B1530;
+        --mu: #4A5878;
+        --field-line: #CDD6E8;
+        --err: #dc2626;
+        --ok: #15803d;
       }
-      phoneEl.setSelectionRange(nextPos, nextPos);
-    }
-    updateFormState(false);
-  });
-
-  // Password strength bar & live checklist — hidden until the password form is used
-  const pwEl = $("pw"), pw2El = $("pw2");
-  const strengthWrap = document.querySelector(".jn-strength");
-  function revealStrength() {
-    if (strengthWrap) strengthWrap.hidden = false;
-  }
-  pwEl?.addEventListener("focus", revealStrength);
-  pw2El?.addEventListener("focus", revealStrength);
-  pwEl?.addEventListener("input", revealStrength);
-  pw2El?.addEventListener("input", revealStrength);
-
-  function updateStrength() {
-    const v = pwEl.value || "";
-    const v2 = pw2El.value || "";
-    const hasLen = v.length >= 8;
-    const hasCase = /[a-z]/.test(v) && /[A-Z]/.test(v);
-    const hasNumSym = /[\d\W_]/.test(v);
-    const matches = v.length > 0 && v === v2;
-
-    const setChk = (id, ok) => {
-      const el = $(id);
-      if (!el) return;
-      el.classList.toggle("ok", ok);
-      el.querySelector("i").className = ok ? "fa-solid fa-circle-check" : "fa-regular fa-circle";
-    };
-    setChk("chkLen", hasLen);
-    setChk("chkCase", hasCase);
-    setChk("chkNum", hasNumSym);
-    setChk("chkMatch", matches);
-
-    let score = 0;
-    if (v.length >= 8) score++;
-    if (v.length >= 11) score++;
-    if (hasCase) score++;
-    if (hasNumSym) score++;
-
-    const bar = $("pwStrengthBar"), lbl = $("pwStrengthLabel");
-    if (!v) {
-      bar.style.width = "0%"; lbl.textContent = "Enter password";
-    } else if (!hasLen) {
-      bar.style.width = "25%"; bar.style.backgroundColor = "#f87171"; lbl.textContent = "Too short (8+ chars)";
-    } else if (score <= 2) {
-      bar.style.width = "50%"; bar.style.backgroundColor = "#f59e0b"; lbl.textContent = "Fair";
-    } else if (score === 3) {
-      bar.style.width = "75%"; bar.style.backgroundColor = "#60a5fa"; lbl.textContent = "Good";
-    } else {
-      bar.style.width = "100%"; bar.style.backgroundColor = "#4ade80"; lbl.textContent = "Strong";
-    }
-  }
-
-  function isFormValid(showErrors) {
-    const name = $("name").value.trim();
-    const email = $("email").value.trim();
-    const phoneDigits = phoneEl.value.replace(/\D/g, "");
-    const pw = pwEl.value;
-    const pw2 = pw2El.value;
-    const termsOk = $("terms").checked;
-
-    const nameParts = name.split(/\s+/).filter(Boolean);
-    const hasFirstLast = nameParts.length >= 2 && /[A-Za-z]/.test(nameParts[0]) && /[A-Za-z]/.test(nameParts[nameParts.length - 1]);
-    const eName = !hasFirstLast ? "Enter your first and last name." : "";
-    const eEmail = window.ProFitAPI?.validateRealEmail
-      ? window.ProFitAPI.validateRealEmail(email)
-      : (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) ? "Enter a valid email address." : "");
-    const ePhone = phoneDigits.length !== 10 ? "Enter a 10-digit PH mobile number (e.g. 917 123 4567)." : "";
-    const ePw = pw.length < 8 ? "Password must be at least 8 characters." : "";
-    const ePw2 = pw !== pw2 ? "Passwords do not match." : "";
-
-    if (showErrors) {
-      $("nameErr").textContent = eName;
-      $("emailErr").textContent = eEmail;
-      $("phoneErr").textContent = ePhone;
-      $("pwErr").textContent = ePw;
-      $("pw2Err").textContent = ePw2;
-      $("name").classList.toggle("is-invalid", !!eName);
-      $("email").classList.toggle("is-invalid", !!eEmail);
-      phoneEl.classList.toggle("is-invalid", !!ePhone);
-      pwEl.classList.toggle("is-invalid", !!ePw);
-      pw2El.classList.toggle("is-invalid", !!ePw2);
     }
 
-    return !eName && !eEmail && !ePhone && !ePw && !ePw2 && termsOk;
-  }
-
-  function updateFormState(showErrors) {
-    updateStrength();
-    $("go").disabled = !isFormValid(!!showErrors);
-  }
-
-  ["name", "email", "pw", "pw2"].forEach(id => {
-    const el = $(id);
-    el.addEventListener("input", () => updateFormState(false));
-    el.addEventListener("blur", () => {
-      if (el.value) isFormValid(true);
-    });
-  });
-  $("terms").addEventListener("change", () => updateFormState(false));
-  updateFormState(false);
-
-  $("f").addEventListener("submit", async e => {
-    e.preventDefault();
-    const err = $("err"), btn = $("go"); err.textContent = "";
-    if (!isFormValid(true)) {
-      if (!$("terms").checked) err.textContent = "Please read and agree to the Terms of Service and Privacy Policy.";
-      return;
+    * {
+      box-sizing: border-box
     }
-    const digits = phoneEl.value.replace(/\D/g, "");
-    const body = {
-      name: $("name").value.trim(),
-      email: $("email").value.trim(),
-      phone: "0" + digits,
-      password: pwEl.value
-    };
-    btn.disabled = true; btn.textContent = "Creating your account...";
-    try {
-      const r = await window.ProFitAPI.post("/join/checkout", body);
-      try {
-        sessionStorage.removeItem("profit-logged-out");
-        const sess = await window.ProFitAPI.get("/auth/session");
-        if (sess && sess.user) {
-          sessionStorage.setItem("profit-verified-session", JSON.stringify(sess.user));
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--tx);
+      font: 15px/1.6 Inter, system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h1,
+    h2,
+    h3,
+    button,
+    .portal-brand strong {
+      font-family: "Plus Jakarta Sans", Inter, system-ui, sans-serif
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 2px
+    }
+
+    /* Header matching landing & login */
+    .portal-nav {
+      height: 68px;
+      min-height: 68px;
+      background: #0b0c10;
+      border-bottom: 1px solid var(--line);
+      padding: 0 clamp(16px, 4vw, 40px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      flex: none;
+    }
+
+    .portal-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: #f6efdc;
+      min-height: 44px;
+    }
+
+    .portal-brand img {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      object-fit: cover;
+      display: block;
+      flex: none
+    }
+
+    .portal-brand strong {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      color: #f6efdc
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 0 10px;
+      border-radius: 10px;
+      color: #9a9788;
+      text-decoration: none;
+      font: 600 14px/1 Inter, system-ui, sans-serif;
+      transition: background-color .15s ease, color .15s ease;
+      white-space: nowrap;
+    }
+
+    .back-link:hover {
+      background: rgba(255, 255, 255, .06);
+      color: var(--tx)
+    }
+
+    .back-link:active {
+      background: rgba(255, 255, 255, .11)
+    }
+
+    /* Full-bleed hero with flat overlay */
+    .jn-shell {
+      position: relative;
+      flex: 1 1 auto;
+      min-height: calc(100vh - 68px);
+      background: url("img/hero.jpg") center/cover no-repeat;
+      display: flex;
+      align-items: center;
+      padding: clamp(14px, 2vh, 24px) clamp(16px, 4vw, 48px);
+      overflow: hidden;
+    }
+
+    .jn-shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(7, 8, 12, .7);
+      z-index: 0;
+    }
+
+    html[data-theme="light"] .jn-shell::before,
+    body.light .jn-shell::before {
+      background: rgba(244, 245, 248, .82);
+    }
+
+    .jn-wrap {
+      position: relative;
+      z-index: 1;
+      width: min(1180px, 100%);
+      margin-inline: auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 600px;
+      gap: clamp(28px, 4.5vw, 56px);
+      align-items: center;
+    }
+
+    /* Left copy */
+    @keyframes pfRiseIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    .jn-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font: 700 12px/1.2 "Plus Jakarta Sans", sans-serif;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin: 0 0 16px;
+      animation: pfRiseIn .45s cubic-bezier(.22, 1, .36, 1) both;
+    }
+
+    .jn-eyebrow::before {
+      content: "";
+      width: 24px;
+      height: 2px;
+      background: var(--gold);
+      flex: none
+    }
+
+    .jn-title {
+      margin: 0 0 16px;
+      font-size: clamp(38px, 4.8vw, 58px);
+      font-weight: 800;
+      line-height: 1.04;
+      letter-spacing: -.03em;
+      color: var(--tx);
+      animation: pfRiseIn .5s cubic-bezier(.22, 1, .36, 1) .06s both;
+    }
+
+    .jn-title .hl {
+      color: var(--gold);
+      display: block
+    }
+
+    .jn-desc {
+      margin: 0 0 24px;
+      max-width: 440px;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--mu);
+      animation: pfRiseIn .5s cubic-bezier(.22, 1, .36, 1) .12s both;
+    }
+
+    .jn-checks {
+      list-style: none;
+      margin: 0 0 24px;
+      padding: 0;
+      display: grid;
+      gap: 12px;
+      animation: pfRiseIn .5s cubic-bezier(.22, 1, .36, 1) .18s both
+    }
+
+    .jn-checks li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14.5px;
+      font-weight: 500;
+      color: var(--tx);
+    }
+
+    .jn-checks i {
+      color: var(--gold);
+      font-size: 14px;
+      flex: none
+    }
+
+    .jn-gym-foot {
+      margin: 0;
+      font-size: 12.5px;
+      color: var(--mu);
+      animation: pfRiseIn .5s cubic-bezier(.22, 1, .36, 1) .24s both
+    }
+
+    /* Right 550px Card */
+    .jn-card {
+      width: 100%;
+      max-width: 550px;
+      justify-self: end;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: clamp(18px, 2.2vh, 24px) clamp(18px, 2.4vw, 26px);
+      box-shadow: 0 24px 48px -20px rgba(0, 0, 0, .75);
+      animation: pfRiseIn .52s cubic-bezier(.22, 1, .36, 1) .08s both;
+    }
+
+    .jn-card h2 {
+      margin: 0 0 2px;
+      font-size: 23px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      color: var(--tx)
+    }
+
+    .jn-lead {
+      margin: 0 0 12px;
+      font-size: 13px;
+      color: var(--mu)
+    }
+
+    .jn-lbl {
+      display: block;
+      margin: 0 0 4px;
+      font: 600 12.5px/1.2 Inter, system-ui, sans-serif;
+      color: var(--tx)
+    }
+
+    .jn-note {
+      margin-bottom: 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 500;
+      background: rgba(248, 113, 113, .12);
+      border: 1px solid rgba(248, 113, 113, .38);
+      color: var(--err);
+    }
+
+    /* 44px Fields, radius 12px */
+    .jn-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px
+    }
+
+    .jn-field {
+      margin-bottom: 6px
+    }
+
+    .jn-input {
+      width: 100%;
+      height: 44px;
+      padding: 0 13px;
+      border-radius: 12px;
+      border: 1px solid var(--field-line);
+      background: var(--bg2);
+      color: var(--tx);
+      font: 400 14px/1.2 Inter, system-ui, sans-serif;
+      transition: border-color .16s ease, box-shadow .16s ease, background-color .16s ease;
+    }
+
+    .jn-input::placeholder {
+      color: var(--mu)
+    }
+
+    .jn-input:hover:not(:focus):not(:disabled) {
+      border-color: rgba(232, 185, 58, .5)
+    }
+
+    .jn-input:focus {
+      outline: 1.5px solid var(--gold);
+      outline-offset: 0;
+      border-color: var(--gold);
+      box-shadow: none
+    }
+
+    .jn-input.is-invalid {
+      border-color: var(--err)
+    }
+
+    .jn-input:-webkit-autofill,
+    .jn-input:-webkit-autofill:hover,
+    .jn-input:-webkit-autofill:focus {
+      -webkit-box-shadow: 0 0 0 100px var(--bg2) inset !important;
+      -webkit-text-fill-color: var(--tx) !important;
+      caret-color: var(--tx);
+      transition: background-color 5000s ease-in-out 0s;
+    }
+
+    .jn-phone-wrap {
+      display: flex;
+      align-items: center
+    }
+
+    .jn-prefix {
+      height: 44px;
+      padding: 0 12px;
+      display: inline-flex;
+      align-items: center;
+      background: var(--bg2);
+      border: 1px solid var(--field-line);
+      border-right: 0;
+      border-radius: 12px 0 0 12px;
+      font: 600 13.5px/1 Inter, sans-serif;
+      color: var(--tx);
+      flex: none;
+    }
+
+    .jn-phone-wrap .jn-input {
+      border-radius: 0 12px 12px 0
+    }
+
+    .jn-pw-wrap {
+      position: relative
+    }
+
+    .jn-pw-wrap .jn-input {
+      padding-right: 46px
+    }
+
+    .jn-eye {
+      position: absolute;
+      right: 4px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      border: 0;
+      background: transparent;
+      color: var(--mu);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: background-color .15s ease, color .15s ease;
+    }
+
+    .jn-eye:hover {
+      background: rgba(255, 255, 255, .06);
+      color: var(--tx)
+    }
+
+    .jn-eye:active {
+      background: rgba(255, 255, 255, .11)
+    }
+
+    .jn-f-err {
+      display: block;
+      min-height: 0;
+      margin-top: 2px;
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--err)
+    }
+
+    /* Strength & live checklist */
+    .jn-strength {
+      margin: 2px 0 8px
+    }
+
+    .jn-strength-track {
+      height: 4px;
+      border-radius: 99px;
+      background: var(--line);
+      overflow: hidden;
+      margin-bottom: 5px
+    }
+
+    .jn-strength-fill {
+      height: 100%;
+      width: 0%;
+      transition: width .2s ease, background-color .2s ease
+    }
+
+    .jn-strength-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11.5px;
+      color: var(--mu);
+      margin-bottom: 6px
+    }
+
+    .jn-checklist {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 14px
+    }
+
+    .jn-checklist li {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      color: var(--mu)
+    }
+
+    .jn-checklist li.ok {
+      color: var(--ok)
+    }
+
+    /* 20px Checkbox aligned with first line of text */
+    .jn-terms {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 8px;
+      font-size: 12.5px;
+      line-height: 1.4;
+      color: var(--tx);
+      cursor: pointer;
+      min-height: 36px;
+    }
+
+    .jn-terms input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      margin: 0;
+      flex: none;
+      border-radius: 6px;
+      border: 1px solid var(--field-line);
+      background: var(--bg2);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: border-color .15s ease, background-color .15s ease;
+    }
+
+    .jn-terms input[type="checkbox"]:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 2px;
+      box-shadow: none;
+    }
+
+    .jn-terms input[type="checkbox"]:checked {
+      background: var(--gold);
+      border-color: var(--gold)
+    }
+
+    .jn-terms input[type="checkbox"]:checked::after {
+      content: "";
+      width: 5px;
+      height: 9px;
+      border: solid var(--on);
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+      margin-bottom: 2px;
+    }
+
+    .jn-terms a {
+      color: var(--gold);
+      font-weight: 600;
+      text-decoration: none;
+      text-underline-offset: 3px
+    }
+
+    .jn-terms a:hover,
+    .jn-terms a:focus-visible {
+      color: var(--lime-hi);
+      text-decoration: underline
+    }
+
+    .jn-err {
+      margin: 0 0 6px;
+      min-height: 0;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--err)
+    }
+
+    .jn-btn-gold {
+      width: 100%;
+      height: 44px;
+      border: 0;
+      border-radius: 999px;
+      background: var(--gold);
+      color: #0B1530;
+      font: 700 15px/1 "Plus Jakarta Sans", sans-serif;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color .15s ease, opacity .15s ease;
+    }
+
+    .jn-btn-gold:hover:not(:disabled) {
+      background: #FAD03C;
+      transform: none;
+      box-shadow: none;
+      filter: none
+    }
+
+    .jn-btn-gold:active:not(:disabled) {
+      background: #8A6A00;
+      color: #0B1530;
+      transform: none;
+      box-shadow: none
+    }
+
+    .jn-btn-gold:disabled {
+      opacity: .48;
+      cursor: not-allowed;
+      pointer-events: none;
+      box-shadow: none;
+      transform: none
+    }
+
+    .jn-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 10px 0 10px;
+      font-size: 12px;
+      color: var(--mu)
+    }
+
+    .jn-divider::before,
+    .jn-divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--line)
+    }
+
+    .jn-sso-btn {
+      width: 100%;
+      height: 44px;
+      padding: 0 16px;
+      border-radius: 999px;
+      border: 1px solid var(--field-line);
+      background: var(--bg2);
+      color: var(--tx);
+      font: 600 14px/1 "Plus Jakarta Sans", sans-serif;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: background-color .15s ease;
+    }
+
+    .jn-sso-btn:hover:not(:disabled) {
+      background: rgba(255, 255, 255, .06);
+      transform: none;
+      box-shadow: none
+    }
+
+    .jn-sso-btn:active:not(:disabled) {
+      background: rgba(255, 255, 255, .11);
+      transform: none
+    }
+
+    .jn-sso-btn:disabled {
+      opacity: .48;
+      cursor: not-allowed;
+      pointer-events: none
+    }
+
+    .jn-sso-btn svg {
+      width: 18px;
+      height: 18px;
+      flex: none
+    }
+
+    .jn-google-msg {
+      margin: 8px 0 0;
+      font-size: 12.5px;
+      font-weight: 500;
+      text-align: center
+    }
+
+    .jn-google-msg[hidden] {
+      display: none
+    }
+
+    .jn-alt {
+      margin: 4px 0 0;
+      text-align: center;
+      font-size: 13px;
+      color: var(--mu)
+    }
+
+    .jn-alt a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+      color: var(--gold);
+      font-weight: 600;
+      text-decoration: none;
+      text-underline-offset: 3px;
+    }
+
+    .jn-alt a:hover,
+    .jn-alt a:focus-visible {
+      color: var(--lime-hi);
+      text-decoration: underline
+    }
+
+    .jn-ok {
+      text-align: center;
+      padding: 24px 8px
+    }
+
+    .jn-ok i {
+      font-size: 40px;
+      color: var(--ok);
+      margin-bottom: 12px
+    }
+
+    .jn-ok h2 {
+      margin-bottom: 8px
+    }
+
+    .jn-ok p {
+      color: var(--mu);
+      font-size: 14px;
+      margin: 0 0 18px
+    }
+
+    @media(max-width:1160px) and (min-width:901px) {
+      .jn-wrap {
+        grid-template-columns: minmax(0, 1fr) minmax(380px, 500px);
+        gap: 32px
+      }
+    }
+
+    @media(max-width:900px) {
+      .jn-shell {
+        min-height: auto;
+        padding: 24px 16px calc(36px + env(safe-area-inset-bottom, 0px));
+        align-items: flex-start
+      }
+
+      .jn-wrap {
+        grid-template-columns: 1fr;
+        gap: 24px
+      }
+
+      .jn-card {
+        max-width: 600px;
+        margin-inline: auto;
+        justify-self: center
+      }
+    }
+
+    @media(max-width:480px) {
+      .portal-nav {
+        height: auto;
+        min-height: 58px;
+        padding: env(safe-area-inset-top, 0px) 14px 0
+      }
+
+      .jn-row {
+        grid-template-columns: 1fr
+      }
+
+      .jn-input {
+        font-size: 16px
+      }
+
+      .jn-card {
+        padding: 18px 14px
+      }
+    }
+
+    @media(pointer:coarse) {
+      .jn-input {
+        font-size: 16px
+      }
+
+      button,
+      a {
+        touch-action: manipulation
+      }
+    }
+
+    html {
+      -webkit-tap-highlight-color: transparent;
+      overscroll-behavior: none
+    }
+
+    body {
+      min-height: 100dvh
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+      * {
+        transition: none !important;
+        animation: none !important
+      }
+    }
+
+    /* Legal Modal matching ProFit tokens */
+    .jn-legal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 1200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(7, 8, 12, .82);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .2s ease, visibility .2s ease
+    }
+
+    .jn-legal-backdrop.is-open {
+      opacity: 1;
+      visibility: visible
+    }
+
+    .jn-legal-modal {
+      width: min(760px, 100%);
+      max-height: min(88vh, 780px);
+      display: flex;
+      flex-direction: column;
+      background: var(--card);
+      color: var(--tx);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+      transform: translateY(10px) scale(.98);
+      transition: transform .2s cubic-bezier(.2, .8, .2, 1)
+    }
+
+    .jn-legal-backdrop.is-open .jn-legal-modal {
+      transform: none
+    }
+
+    .jn-legal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 16px 22px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--line)
+    }
+
+    .jn-legal-head-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0
+    }
+
+    .jn-legal-ico {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: var(--gold);
+      color: var(--on);
+      font-size: 16px;
+      flex: none
+    }
+
+    .jn-legal-head h3 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--tx)
+    }
+
+    .jn-legal-head p {
+      margin: 2px 0 0;
+      font-size: 12px;
+      color: var(--mu)
+    }
+
+    .jn-legal-x {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      border: 1px solid var(--field-line);
+      background: var(--bg2);
+      color: var(--tx);
+      font-size: 20px;
+      line-height: 1;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: background-color .15s ease
+    }
+
+    .jn-legal-x:hover {
+      background: rgba(255, 255, 255, .06)
+    }
+
+    .jn-legal-x:active {
+      background: rgba(255, 255, 255, .11)
+    }
+
+    .jn-legal-tabs {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 22px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--line)
+    }
+
+    .jn-legal-tab-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap
+    }
+
+    .jn-legal-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 44px;
+      padding: 0 16px;
+      border-radius: 999px;
+      border: 1px solid var(--field-line);
+      background: var(--bg2);
+      color: var(--tx);
+      font: 600 13px/1 "Plus Jakarta Sans", sans-serif;
+      cursor: pointer;
+      transition: background-color .15s ease
+    }
+
+    .jn-legal-tab:hover:not(.is-active) {
+      background: rgba(232, 185, 58, .12)
+    }
+
+    .jn-legal-tab.is-active {
+      background: var(--gold);
+      color: #0B1530;
+      border-color: var(--gold)
+    }
+
+    .jn-legal-tab.is-active:active {
+      background: #8A6A00;
+      border-color: #8A6A00;
+      color: #0B1530
+    }
+
+    .jn-legal-tab .chk {
+      display: none;
+      color: var(--ok);
+      font-weight: 800
+    }
+
+    .jn-legal-tab.is-read .chk {
+      display: inline
+    }
+
+    .jn-legal-tab.is-active.is-read .chk {
+      color: var(--on)
+    }
+
+    .jn-legal-prog {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--mu)
+    }
+
+    .jn-legal-prog-bar {
+      width: 90px;
+      height: 6px;
+      background: var(--line);
+      border-radius: 99px;
+      overflow: hidden
+    }
+
+    .jn-legal-prog-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--ok);
+      transition: width .25s ease
+    }
+
+    .jn-legal-body {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      padding: 20px 22px;
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--tx);
+      background: var(--bg2)
+    }
+
+    .jn-legal-body .legal-sec {
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line)
+    }
+
+    .jn-legal-body .legal-sec:last-child {
+      border-bottom: 0;
+      margin-bottom: 0
+    }
+
+    .jn-legal-body h2 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--tx);
+      margin: 0 0 8px
+    }
+
+    .jn-legal-body .legal-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      display: inline-grid;
+      place-items: center;
+      background: var(--gold);
+      color: var(--on);
+      font-size: 12px;
+      font-weight: 800;
+      flex: none
+    }
+
+    .jn-legal-body p {
+      margin: 0 0 8px
+    }
+
+    .jn-legal-body ul {
+      margin: 6px 0 0;
+      padding-left: 20px;
+      display: grid;
+      gap: 5px
+    }
+
+    .jn-legal-body a {
+      color: var(--gold);
+      font-weight: 600;
+      text-decoration: none;
+      text-underline-offset: 3px
+    }
+
+    .jn-legal-body a:hover,
+    .jn-legal-body a:focus-visible {
+      text-decoration: underline
+    }
+
+    .jn-legal-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 22px;
+      border-top: 1px solid var(--line);
+      background: var(--bg)
+    }
+
+    .jn-legal-note {
+      margin: 0;
+      font-size: 12.5px;
+      color: var(--mu)
+    }
+
+    .jn-legal-acts {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto
+    }
+
+    .jn-legal-btn {
+      height: 44px;
+      padding: 0 18px;
+      border-radius: 999px;
+      font: 600 13.5px/1 "Plus Jakarta Sans", sans-serif;
+      border: 1px solid var(--field-line);
+      background: var(--bg2);
+      color: var(--tx);
+      cursor: pointer;
+      transition: background-color .15s ease
+    }
+
+    .jn-legal-btn:hover:not(.primary):not(:disabled) {
+      background: rgba(255, 255, 255, .06)
+    }
+
+    .jn-legal-btn:active:not(.primary):not(:disabled) {
+      background: rgba(255, 255, 255, .11)
+    }
+
+    .jn-legal-btn.primary {
+      background: var(--gold);
+      color: #0B1530;
+      border-color: var(--gold);
+      font-weight: 700
+    }
+
+    .jn-legal-btn.primary:hover:not(:disabled) {
+      background: #FAD03C;
+      border-color: #FAD03C
+    }
+
+    .jn-legal-btn.primary:active:not(:disabled) {
+      background: #8A6A00;
+      border-color: #8A6A00
+    }
+
+    .jn-legal-btn.primary:disabled {
+      opacity: .48;
+      cursor: not-allowed;
+      pointer-events: none
+    }
+
+    @media(max-width:768px) {
+
+      footer.site-footer,
+      .site-footer {
+        display: none !important
+      }
+
+      .portal-nav {
+        height: 58px;
+        min-height: 58px;
+        padding: 0 16px
+      }
+
+      .portal-brand img {
+        width: 32px;
+        height: 32px
+      }
+
+      .portal-brand strong {
+        font-size: 20px
+      }
+
+      .jn-shell {
+        min-height: calc(100vh - 58px);
+        padding: 20px 14px 28px;
+        align-items: flex-start
+      }
+
+      .jn-title {
+        font-size: clamp(30px, 8vw, 42px);
+        margin-bottom: 10px
+      }
+
+      .jn-desc {
+        font-size: 14.5px;
+        margin-bottom: 16px
+      }
+
+      .jn-checks {
+        gap: 8px;
+        margin-bottom: 14px
+      }
+
+      .jn-card {
+        padding: 20px 16px
+      }
+
+      .jn-row {
+        grid-template-columns: 1fr
+      }
+
+      .jn-input {
+        height: 46px;
+        font-size: 16px
+      }
+
+      .jn-btn-gold,
+      .jn-sso-btn {
+        height: 46px
+      }
+    }
+
+    @media(max-width:560px) {
+      .jn-legal-backdrop {
+        padding: 10px
+      }
+
+      .jn-legal-head,
+      .jn-legal-tabs,
+      .jn-legal-body,
+      .jn-legal-foot {
+        padding-left: 14px;
+        padding-right: 14px
+      }
+
+      .jn-legal-foot {
+        flex-direction: column;
+        align-items: stretch
+      }
+
+      .jn-legal-acts {
+        justify-content: flex-end
+      }
+    }
+  </style>
+  <script>
+    (function () {
+      var s = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+      if (s) document.documentElement.classList.add('pf-standalone');
+    })();
+  </script>
+  <style>
+    .pf-app-wave-head { display: none; }
+    html.pf-standalone .portal-nav,
+    html.pf-standalone .jn-copy,
+    html.pf-standalone footer.site-footer,
+    html.pf-standalone .site-footer { display: none !important; }
+    html.pf-standalone .pf-app-wave-head {
+      display: block;
+      position: relative;
+      width: 100%;
+      height: calc(116px + env(safe-area-inset-top, 0px));
+      flex: none;
+      overflow: hidden;
+    }
+    html.pf-standalone .pf-app-wave-head svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    html.pf-standalone .pf-app-back {
+      position: absolute;
+      top: calc(14px + env(safe-area-inset-top, 0px));
+      left: 14px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: rgba(11, 21, 48, 0.72);
+      color: #F4F6FB;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      text-decoration: none;
+      font-size: 16px;
+    }
+    html.pf-standalone .jn-shell {
+      min-height: 0 !important;
+      padding: 8px 16px calc(28px + env(safe-area-inset-bottom, 0px)) !important;
+      align-items: flex-start !important;
+    }
+    html.pf-standalone .jn-wrap {
+      grid-template-columns: 1fr !important;
+      max-width: 460px !important;
+      margin: 0 auto !important;
+    }
+    html.pf-standalone .jn-card {
+      background: transparent !important;
+      border: 0 !important;
+      box-shadow: none !important;
+      padding: 6px 4px !important;
+    }
+    html.pf-standalone .jn-card h2 {
+      text-align: center;
+      font-size: 25px !important;
+      margin-bottom: 16px !important;
+    }
+  </style>
+  <script
+    type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#0a0e17">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F7F8FC">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17">
+  <meta name="color-scheme" content="light dark">
+  <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="ProFit">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+</head>
+
+<body class="portal-body auth-page dark public-dark-theme">
+  <div class="pf-app-wave-head">
+    <svg viewBox="0 0 400 120" preserveAspectRatio="none" aria-hidden="true">
+      <rect width="400" height="120" fill="#070B18" />
+      <path d="M0,0 L400,0 L400,82 C310,118 185,42 0,94 Z" fill="#0F1A33" />
+      <path d="M0,0 L400,0 L400,64 C305,102 185,28 0,78 Z" fill="#F5C518" fill-opacity="0.92" />
+    </svg>
+    <a class="pf-app-back" href="/" aria-label="Back"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></a>
+  </div>
+  <header class="portal-nav">
+    <a class="portal-brand" href="/">
+      <img src="logo.jpg" alt="ProFit logo" width="36" height="36">
+      <strong>ProFit</strong>
+    </a>
+    <a class="back-link" href="/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i><span>Back to home</span></a>
+  </header>
+
+  <main class="jn-shell">
+    <div class="jn-wrap">
+      <section class="jn-copy" aria-label="Self-enrollment overview">
+        <p class="jn-eyebrow">Join the gym</p>
+        <h1 class="jn-title">Start free.<span class="hl">Train with us.</span></h1>
+        <p class="jn-desc">Create your free account and get 7 days of app access. Add a gym membership any time by
+          paying at the desk or by GCash.</p>
+        <ul class="jn-checks">
+          <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>No waiting for staff approval</span></li>
+          <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>No payment needed at sign-up</span></li>
+        </ul>
+        <p class="jn-gym-foot"><span data-gym-name>Functional Fitness Gym</span> · Alfonso, Calabarzon</p>
+      </section>
+
+      <section class="jn-card" id="box" aria-label="Create your account">
+        <h2>Create your account</h2>
+
+        <form id="f" novalidate>
+          <div id="cancel" class="jn-note" hidden>Payment was cancelled. No account was created and you were not
+            charged.</div>
+
+          <div class="jn-field">
+            <label class="jn-lbl" for="name">Full name</label>
+            <input class="jn-input" id="name" autocomplete="name" maxlength="100" placeholder="Enter your full name">
+            <small class="jn-f-err" id="nameErr"></small>
+          </div>
+
+          <div class="jn-row">
+            <div class="jn-field">
+              <label class="jn-lbl" for="email">Email</label>
+              <input class="jn-input" id="email" type="email" autocomplete="email" maxlength="254"
+                placeholder="you@example.com">
+              <small class="jn-f-err" id="emailErr"></small>
+            </div>
+            <div class="jn-field">
+              <label class="jn-lbl" for="phone">Mobile number</label>
+              <div class="jn-phone-wrap">
+                <span class="jn-prefix" aria-hidden="true">+63</span>
+                <input class="jn-input" id="phone" type="tel" inputmode="numeric" autocomplete="tel" maxlength="12"
+                  placeholder="9XX XXX XXXX">
+              </div>
+              <small class="jn-f-err" id="phoneErr"></small>
+            </div>
+          </div>
+
+          <div class="jn-row">
+            <div class="jn-field">
+              <label class="jn-lbl" for="pw">Password</label>
+              <div class="jn-pw-wrap">
+                <input class="jn-input" id="pw" type="password" autocomplete="new-password" minlength="8"
+                  maxlength="128" placeholder="Create a password">
+                <button type="button" class="jn-eye" id="togglePw" aria-label="Show password" aria-pressed="false"><i
+                    class="fa-regular fa-eye"></i></button>
+              </div>
+              <small class="jn-f-err" id="pwErr"></small>
+            </div>
+            <div class="jn-field">
+              <label class="jn-lbl" for="pw2">Confirm password</label>
+              <div class="jn-pw-wrap">
+                <input class="jn-input" id="pw2" type="password" autocomplete="new-password" minlength="8"
+                  maxlength="128" placeholder="Repeat password">
+                <button type="button" class="jn-eye" id="togglePw2" aria-label="Show confirm password"
+                  aria-pressed="false"><i class="fa-regular fa-eye"></i></button>
+              </div>
+              <small class="jn-f-err" id="pw2Err"></small>
+            </div>
+          </div>
+
+          <div class="jn-strength" aria-live="polite" hidden>
+            <div class="jn-strength-track">
+              <div class="jn-strength-fill" id="pwStrengthBar"></div>
+            </div>
+            <div class="jn-strength-meta"><span>Password strength</span><span id="pwStrengthLabel">Enter password</span>
+            </div>
+            <ul class="jn-checklist" id="pwChecklist">
+              <li id="chkLen"><i class="fa-regular fa-circle"></i> 8+ characters</li>
+              <li id="chkCase"><i class="fa-regular fa-circle"></i> Upper &amp; lowercase</li>
+              <li id="chkNum"><i class="fa-regular fa-circle"></i> Number or symbol</li>
+              <li id="chkMatch"><i class="fa-regular fa-circle"></i> Passwords match</li>
+            </ul>
+          </div>
+
+          <label class="jn-terms">
+            <input type="checkbox" id="terms">
+            <span>I have read and agree to the <a href="/terms" data-legal="terms">Terms of Service</a> and <a
+                href="/privacy" data-legal="privacy">Privacy Policy</a>.</span>
+          </label>
+
+          <p class="jn-err" id="err" role="alert"></p>
+          <button class="jn-btn-gold" id="go" type="submit" disabled>Create my account</button>
+        </form>
+
+        <div id="joinGoogleWrap">
+          <div class="jn-divider"><span>Or continue with</span></div>
+          <button type="button" class="jn-sso-btn" id="googleJoinBtn">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="#4285F4"
+                d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z" />
+              <path fill="#34A853"
+                d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24Z" />
+              <path fill="#FBBC05"
+                d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14Z" />
+              <path fill="#EA4335"
+                d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96Z" />
+            </svg>
+            <span>Continue with Google</span>
+          </button>
+          <p class="jn-google-msg" id="joinGoogleMsg" role="alert" aria-live="polite" hidden></p>
+        </div>
+
+        <div class="jn-ok" id="ok" hidden>
+          <i class="fa-solid fa-circle-check"></i>
+          <h2>Payment received</h2>
+          <p id="okmsg">We're creating your account now. This usually takes a few seconds.</p>
+          <a class="jn-btn-gold" id="okgo" href="/login" style="text-decoration:none">Sign in</a>
+        </div>
+
+        <p class="jn-alt" id="alt">Already a member? <a href="/login">Sign in</a></p>
+      </section>
+    </div>
+  </main>
+
+  <div id="legalModalBackdrop" class="jn-legal-backdrop" hidden aria-hidden="true">
+    <div id="legalModal" class="jn-legal-modal" role="dialog" aria-modal="true" aria-labelledby="legalModalTitle">
+      <div class="jn-legal-head">
+        <div class="jn-legal-head-left">
+          <span class="jn-legal-ico" aria-hidden="true"><i class="fa-regular fa-file-lines"></i></span>
+          <div>
+            <h3 id="legalModalTitle">Terms of Service</h3>
+            <p id="legalModalSub">ProFit · Functional Fitness Gym · Last updated: October 2026</p>
+          </div>
+        </div>
+        <button type="button" class="jn-legal-x" id="legalModalCloseX" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="jn-legal-tabs">
+        <div class="jn-legal-tab-group" role="tablist" aria-label="Legal documents">
+          <button type="button" class="jn-legal-tab is-active" role="tab" aria-selected="true" data-doc="terms">
+            <i class="fa-regular fa-file-lines" aria-hidden="true"></i> Terms of Service <span class="chk"
+              aria-hidden="true">✓</span>
+          </button>
+          <button type="button" class="jn-legal-tab" role="tab" aria-selected="false" data-doc="privacy">
+            <i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Privacy Policy <span class="chk"
+              aria-hidden="true">✓</span>
+          </button>
+        </div>
+        <div class="jn-legal-prog" aria-live="polite">
+          <span id="legalProgText">0 of 2 documents reviewed</span>
+          <div class="jn-legal-prog-bar">
+            <div class="jn-legal-prog-fill" id="legalProgFill"></div>
+          </div>
+        </div>
+      </div>
+      <div class="jn-legal-body" id="legalModalBody" tabindex="0"></div>
+      <div class="jn-legal-foot">
+        <p class="jn-legal-note" id="legalFootNote">Scroll to the end of both documents to enable “I agree”.</p>
+        <div class="jn-legal-acts">
+          <button type="button" class="jn-legal-btn" id="legalModalCloseBtn">Cancel</button>
+          <button type="button" class="jn-legal-btn primary" id="legalModalAgreeBtn" disabled>I agree</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const $ = id => document.getElementById(id);
+
+      function bindToggle(btnId, inputId, labelWord) {
+        const btn = $(btnId), input = $(inputId);
+        if (!btn || !input) return;
+        btn.addEventListener("click", () => {
+          const show = input.type === "password";
+          input.type = show ? "text" : "password";
+          btn.setAttribute("aria-label", show ? `Hide ${labelWord}` : `Show ${labelWord}`);
+          btn.setAttribute("aria-pressed", String(show));
+          btn.innerHTML = `<i class="fa-regular ${show ? "fa-eye-slash" : "fa-eye"}"></i>`;
+        });
+      }
+      bindToggle("togglePw", "pw", "password");
+      bindToggle("togglePw2", "pw2", "confirm password");
+
+      // +63 mobile formatting as you type (9XX XXX XXXX)
+      const phoneEl = $("phone");
+      function formatPHPhone(raw) {
+        let d = String(raw || "").replace(/\D/g, "");
+        if (d.startsWith("63")) d = d.slice(2);
+        if (d.startsWith("0")) d = d.slice(1);
+        d = d.slice(0, 10);
+        if (d.length <= 3) return d;
+        if (d.length <= 6) return d.slice(0, 3) + " " + d.slice(3);
+        return d.slice(0, 3) + " " + d.slice(3, 6) + " " + d.slice(6);
+      }
+      phoneEl.addEventListener("input", () => {
+        const raw = phoneEl.value;
+        const caret = phoneEl.selectionStart ?? raw.length;
+        const digitsBefore = raw.slice(0, caret).replace(/\D/g, "").length;
+        const formatted = formatPHPhone(raw);
+        phoneEl.value = formatted;
+        if (document.activeElement === phoneEl && typeof phoneEl.setSelectionRange === "function") {
+          let nextPos = 0;
+          let seen = 0;
+          while (nextPos < formatted.length && seen < digitsBefore) {
+            if (/\d/.test(formatted[nextPos])) seen++;
+            nextPos++;
+          }
+          phoneEl.setSelectionRange(nextPos, nextPos);
         }
-      } catch (_) {}
-      location.href = r.next_url || "/onboarding";
-    } catch (ex) {
-      err.textContent = ex.message || "Could not create your account.";
+        updateFormState(false);
+      });
+
+      // Password strength bar & live checklist — hidden until the password form is used
+      const pwEl = $("pw"), pw2El = $("pw2");
+      const strengthWrap = document.querySelector(".jn-strength");
+      function revealStrength() {
+        if (strengthWrap) strengthWrap.hidden = false;
+      }
+      pwEl?.addEventListener("focus", revealStrength);
+      pw2El?.addEventListener("focus", revealStrength);
+      pwEl?.addEventListener("input", revealStrength);
+      pw2El?.addEventListener("input", revealStrength);
+
+      function updateStrength() {
+        const v = pwEl.value || "";
+        const v2 = pw2El.value || "";
+        const hasLen = v.length >= 8;
+        const hasCase = /[a-z]/.test(v) && /[A-Z]/.test(v);
+        const hasNumSym = /[\d\W_]/.test(v);
+        const matches = v.length > 0 && v === v2;
+
+        const setChk = (id, ok) => {
+          const el = $(id);
+          if (!el) return;
+          el.classList.toggle("ok", ok);
+          el.querySelector("i").className = ok ? "fa-solid fa-circle-check" : "fa-regular fa-circle";
+        };
+        setChk("chkLen", hasLen);
+        setChk("chkCase", hasCase);
+        setChk("chkNum", hasNumSym);
+        setChk("chkMatch", matches);
+
+        let score = 0;
+        if (v.length >= 8) score++;
+        if (v.length >= 11) score++;
+        if (hasCase) score++;
+        if (hasNumSym) score++;
+
+        const bar = $("pwStrengthBar"), lbl = $("pwStrengthLabel");
+        if (!v) {
+          bar.style.width = "0%"; lbl.textContent = "Enter password";
+        } else if (!hasLen) {
+          bar.style.width = "25%"; bar.style.backgroundColor = "#f87171"; lbl.textContent = "Too short (8+ chars)";
+        } else if (score <= 2) {
+          bar.style.width = "50%"; bar.style.backgroundColor = "#f59e0b"; lbl.textContent = "Fair";
+        } else if (score === 3) {
+          bar.style.width = "75%"; bar.style.backgroundColor = "#60a5fa"; lbl.textContent = "Good";
+        } else {
+          bar.style.width = "100%"; bar.style.backgroundColor = "#4ade80"; lbl.textContent = "Strong";
+        }
+      }
+
+      function isFormValid(showErrors) {
+        const name = $("name").value.trim();
+        const email = $("email").value.trim();
+        const phoneDigits = phoneEl.value.replace(/\D/g, "");
+        const pw = pwEl.value;
+        const pw2 = pw2El.value;
+        const termsOk = $("terms").checked;
+
+        const nameParts = name.split(/\s+/).filter(Boolean);
+        const hasFirstLast = nameParts.length >= 2 && /[A-Za-z]/.test(nameParts[0]) && /[A-Za-z]/.test(nameParts[nameParts.length - 1]);
+        const eName = !hasFirstLast ? "Enter your first and last name." : "";
+        const eEmail = window.ProFitAPI?.validateRealEmail
+          ? window.ProFitAPI.validateRealEmail(email)
+          : (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) ? "Enter a valid email address." : "");
+        const ePhone = phoneDigits.length !== 10 ? "Enter a 10-digit PH mobile number (e.g. 917 123 4567)." : "";
+        const ePw = pw.length < 8 ? "Password must be at least 8 characters." : "";
+        const ePw2 = pw !== pw2 ? "Passwords do not match." : "";
+
+        if (showErrors) {
+          $("nameErr").textContent = eName;
+          $("emailErr").textContent = eEmail;
+          $("phoneErr").textContent = ePhone;
+          $("pwErr").textContent = ePw;
+          $("pw2Err").textContent = ePw2;
+          $("name").classList.toggle("is-invalid", !!eName);
+          $("email").classList.toggle("is-invalid", !!eEmail);
+          phoneEl.classList.toggle("is-invalid", !!ePhone);
+          pwEl.classList.toggle("is-invalid", !!ePw);
+          pw2El.classList.toggle("is-invalid", !!ePw2);
+        }
+
+        return !eName && !eEmail && !ePhone && !ePw && !ePw2 && termsOk;
+      }
+
+      function updateFormState(showErrors) {
+        updateStrength();
+        $("go").disabled = !isFormValid(!!showErrors);
+      }
+
+      ["name", "email", "pw", "pw2"].forEach(id => {
+        const el = $(id);
+        el.addEventListener("input", () => updateFormState(false));
+        el.addEventListener("blur", () => {
+          if (el.value) isFormValid(true);
+        });
+      });
+      $("terms").addEventListener("change", () => updateFormState(false));
       updateFormState(false);
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "Create my account";
-    }
-  });
 
-  // Legal Modal: scroll-both-documents rule + focus trap
-  const backdrop = $("legalModalBackdrop"), modal = $("legalModal"), bodyEl = $("legalModalBody");
-  const titleEl = $("legalModalTitle"), subEl = $("legalModalSub"), icoEl = document.querySelector(".jn-legal-ico");
-  const tabs = document.querySelectorAll(".jn-legal-tab[data-doc]");
-  const closeX = $("legalModalCloseX"), closeBtn = $("legalModalCloseBtn"), agreeBtn = $("legalModalAgreeBtn");
-  const progText = $("legalProgText"), progFill = $("legalProgFill");
-  const DOCS = {
-    terms: { url: "/terms", title: "Terms of Service", sub: "ProFit · Functional Fitness Gym · Last updated: October 2026", icon: "fa-regular fa-file-lines" },
-    privacy: { url: "/privacy", title: "Privacy Policy", sub: "R.A. No. 10173 (Data Privacy Act of 2012) · Last updated: October 2026", icon: "fa-solid fa-shield-halved" }
-  };
-  const cache = {}, reviewed = { terms: false, privacy: false };
-  let activeDoc = "terms", lastTrigger = null;
+      $("f").addEventListener("submit", async e => {
+        e.preventDefault();
+        const err = $("err"), btn = $("go"); err.textContent = "";
+        if (!isFormValid(true)) {
+          if (!$("terms").checked) err.textContent = "Please read and agree to the Terms of Service and Privacy Policy.";
+          return;
+        }
+        const digits = phoneEl.value.replace(/\D/g, "");
+        const body = {
+          name: $("name").value.trim(),
+          email: $("email").value.trim(),
+          phone: "0" + digits,
+          password: pwEl.value
+        };
+        btn.disabled = true; btn.textContent = "Creating your account...";
+        try {
+          const r = await window.ProFitAPI.post("/join/checkout", body);
+          try {
+            sessionStorage.removeItem("profit-logged-out");
+            const sess = await window.ProFitAPI.get("/auth/session");
+            if (sess && sess.user) {
+              sessionStorage.setItem("profit-verified-session", JSON.stringify(sess.user));
+            }
+          } catch (_) { }
+          location.href = r.next_url || "/onboarding";
+        } catch (ex) {
+          err.textContent = ex.message || "Could not create your account.";
+          updateFormState(false);
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "Create my account";
+        }
+      });
 
-  function updateReviewUI() {
-    const count = (reviewed.terms ? 1 : 0) + (reviewed.privacy ? 1 : 0);
-    progText.textContent = `${count} of 2 documents reviewed`;
-    progFill.style.width = (count * 50) + "%";
-    tabs.forEach(t => t.classList.toggle("is-read", !!reviewed[t.getAttribute("data-doc")]));
-    agreeBtn.disabled = count < 2;
-  }
+      // Legal Modal: scroll-both-documents rule + focus trap
+      const backdrop = $("legalModalBackdrop"), modal = $("legalModal"), bodyEl = $("legalModalBody");
+      const titleEl = $("legalModalTitle"), subEl = $("legalModalSub"), icoEl = document.querySelector(".jn-legal-ico");
+      const tabs = document.querySelectorAll(".jn-legal-tab[data-doc]");
+      const closeX = $("legalModalCloseX"), closeBtn = $("legalModalCloseBtn"), agreeBtn = $("legalModalAgreeBtn");
+      const progText = $("legalProgText"), progFill = $("legalProgFill");
+      const DOCS = {
+        terms: { url: "/terms", title: "Terms of Service", sub: "ProFit · Functional Fitness Gym · Last updated: October 2026", icon: "fa-regular fa-file-lines" },
+        privacy: { url: "/privacy", title: "Privacy Policy", sub: "R.A. No. 10173 (Data Privacy Act of 2012) · Last updated: October 2026", icon: "fa-solid fa-shield-halved" }
+      };
+      const cache = {}, reviewed = { terms: false, privacy: false };
+      let activeDoc = "terms", lastTrigger = null;
 
-  function checkScrolledToEnd() {
-    if (reviewed[activeDoc]) return;
-    if (bodyEl.scrollTop + bodyEl.clientHeight >= bodyEl.scrollHeight - 18) {
-      reviewed[activeDoc] = true;
-      updateReviewUI();
-    }
-  }
-  bodyEl.addEventListener("scroll", checkScrolledToEnd);
+      function updateReviewUI() {
+        const count = (reviewed.terms ? 1 : 0) + (reviewed.privacy ? 1 : 0);
+        progText.textContent = `${count} of 2 documents reviewed`;
+        progFill.style.width = (count * 50) + "%";
+        tabs.forEach(t => t.classList.toggle("is-read", !!reviewed[t.getAttribute("data-doc")]));
+        agreeBtn.disabled = count < 2;
+      }
 
-  function loadDoc(key) {
-    activeDoc = DOCS[key] ? key : "terms";
-    const cfg = DOCS[activeDoc];
-    titleEl.textContent = cfg.title;
-    subEl.textContent = cfg.sub;
-    icoEl.innerHTML = `<i class="${cfg.icon}" aria-hidden="true"></i>`;
-    tabs.forEach(t => {
-      const on = t.getAttribute("data-doc") === activeDoc;
-      t.classList.toggle("is-active", on);
-      t.setAttribute("aria-selected", String(on));
-    });
-    if (cache[activeDoc]) {
-      bodyEl.innerHTML = cache[activeDoc];
-      bodyEl.scrollTop = 0;
-      requestAnimationFrame(checkScrolledToEnd);
-      return;
-    }
-    bodyEl.innerHTML = `<p style="color:#9a9788">Loading ${cfg.title}...</p>`;
-    fetch(cfg.url, { cache: "no-store" })
-      .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
-      .then(html => {
-        const doc = new DOMParser().parseFromString(html, "text/html");
-        const card = doc.querySelector(".legal-card");
-        cache[activeDoc] = card ? card.innerHTML : "<p>Could not load this document.</p>";
-        bodyEl.innerHTML = cache[activeDoc];
-        bodyEl.scrollTop = 0;
-        requestAnimationFrame(checkScrolledToEnd);
-      })
-      .catch(() => { bodyEl.innerHTML = "<p>Could not load this document. Please try again.</p>"; });
-  }
+      function checkScrolledToEnd() {
+        if (reviewed[activeDoc]) return;
+        if (bodyEl.scrollTop + bodyEl.clientHeight >= bodyEl.scrollHeight - 18) {
+          reviewed[activeDoc] = true;
+          updateReviewUI();
+        }
+      }
+      bodyEl.addEventListener("scroll", checkScrolledToEnd);
 
-  function openModal(key, trigger) {
-    lastTrigger = trigger || document.activeElement;
-    document.body.style.overflow = "hidden";
-    backdrop.hidden = false;
-    backdrop.setAttribute("aria-hidden", "false");
-    loadDoc(key);
-    requestAnimationFrame(() => backdrop.classList.add("is-open"));
-    setTimeout(() => closeX && closeX.focus(), 30);
-  }
+      function loadDoc(key) {
+        activeDoc = DOCS[key] ? key : "terms";
+        const cfg = DOCS[activeDoc];
+        titleEl.textContent = cfg.title;
+        subEl.textContent = cfg.sub;
+        icoEl.innerHTML = `<i class="${cfg.icon}" aria-hidden="true"></i>`;
+        tabs.forEach(t => {
+          const on = t.getAttribute("data-doc") === activeDoc;
+          t.classList.toggle("is-active", on);
+          t.setAttribute("aria-selected", String(on));
+        });
+        if (cache[activeDoc]) {
+          bodyEl.innerHTML = cache[activeDoc];
+          bodyEl.scrollTop = 0;
+          requestAnimationFrame(checkScrolledToEnd);
+          return;
+        }
+        bodyEl.innerHTML = `<p style="color:#9a9788">Loading ${cfg.title}...</p>`;
+        fetch(cfg.url, { cache: "no-store" })
+          .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
+          .then(html => {
+            const doc = new DOMParser().parseFromString(html, "text/html");
+            const card = doc.querySelector(".legal-card");
+            cache[activeDoc] = card ? card.innerHTML : "<p>Could not load this document.</p>";
+            bodyEl.innerHTML = cache[activeDoc];
+            bodyEl.scrollTop = 0;
+            requestAnimationFrame(checkScrolledToEnd);
+          })
+          .catch(() => { bodyEl.innerHTML = "<p>Could not load this document. Please try again.</p>"; });
+      }
 
-  function closeModal() {
-    backdrop.classList.remove("is-open");
-    backdrop.setAttribute("aria-hidden", "true");
-    document.body.style.overflow = "";
-    setTimeout(() => { if (!backdrop.classList.contains("is-open")) backdrop.hidden = true; }, 200);
-    if (lastTrigger && typeof lastTrigger.focus === "function") lastTrigger.focus();
-  }
+      function openModal(key, trigger) {
+        lastTrigger = trigger || document.activeElement;
+        document.body.style.overflow = "hidden";
+        backdrop.hidden = false;
+        backdrop.setAttribute("aria-hidden", "false");
+        loadDoc(key);
+        requestAnimationFrame(() => backdrop.classList.add("is-open"));
+        setTimeout(() => closeX && closeX.focus(), 30);
+      }
 
-  // Clicking either link OR the unchecked checkbox opens the dialog
-  document.querySelectorAll("a[data-legal]").forEach(a => {
-    a.addEventListener("click", e => {
-      e.preventDefault();
-      openModal(a.getAttribute("data-legal"), a);
-    });
-  });
-  $("terms").addEventListener("click", e => {
-    if (!(reviewed.terms && reviewed.privacy)) {
-      e.preventDefault();
-      openModal("terms", $("terms"));
-    }
-  });
+      function closeModal() {
+        backdrop.classList.remove("is-open");
+        backdrop.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+        setTimeout(() => { if (!backdrop.classList.contains("is-open")) backdrop.hidden = true; }, 200);
+        if (lastTrigger && typeof lastTrigger.focus === "function") lastTrigger.focus();
+      }
 
-  tabs.forEach(t => t.addEventListener("click", () => loadDoc(t.getAttribute("data-doc"))));
-  [closeX, closeBtn].forEach(b => b && b.addEventListener("click", closeModal));
-  agreeBtn.addEventListener("click", () => {
-    if (reviewed.terms && reviewed.privacy) {
-      $("terms").checked = true;
-      updateFormState(false);
-      closeModal();
-    }
-  });
-  backdrop.addEventListener("click", e => { if (e.target === backdrop) closeModal(); });
+      // Clicking either link OR the unchecked checkbox opens the dialog
+      document.querySelectorAll("a[data-legal]").forEach(a => {
+        a.addEventListener("click", e => {
+          e.preventDefault();
+          openModal(a.getAttribute("data-legal"), a);
+        });
+      });
+      $("terms").addEventListener("click", e => {
+        if (!(reviewed.terms && reviewed.privacy)) {
+          e.preventDefault();
+          openModal("terms", $("terms"));
+        }
+      });
 
-  // Focus trap & Esc
-  document.addEventListener("keydown", e => {
-    if (backdrop.hidden) return;
-    if (e.key === "Escape") { e.preventDefault(); closeModal(); return; }
-    if (e.key === "Tab") {
-      const focusables = Array.from(modal.querySelectorAll('button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'));
-      if (!focusables.length) return;
-      const first = focusables[0], last = focusables[focusables.length - 1];
-      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-    }
-  });
-})();
-</script>
-<script src="google-auth.js?v=7"></script>
-<script src="portal-fx.js?v=2"></script>
-<script src="site-footer.js?v=6" defer></script>
+      tabs.forEach(t => t.addEventListener("click", () => loadDoc(t.getAttribute("data-doc"))));
+      [closeX, closeBtn].forEach(b => b && b.addEventListener("click", closeModal));
+      agreeBtn.addEventListener("click", () => {
+        if (reviewed.terms && reviewed.privacy) {
+          $("terms").checked = true;
+          updateFormState(false);
+          closeModal();
+        }
+      });
+      backdrop.addEventListener("click", e => { if (e.target === backdrop) closeModal(); });
+
+      // Focus trap & Esc
+      document.addEventListener("keydown", e => {
+        if (backdrop.hidden) return;
+        if (e.key === "Escape") { e.preventDefault(); closeModal(); return; }
+        if (e.key === "Tab") {
+          const focusables = Array.from(modal.querySelectorAll('button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'));
+          if (!focusables.length) return;
+          const first = focusables[0], last = focusables[focusables.length - 1];
+          if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+          else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        }
+      });
+    })();
+  </script>
+  <script src="google-auth.js?v=7"></script>
+  <script src="portal-fx.js?v=2"></script>
+  <script src="site-footer.js?v=8" defer></script>
 </body>
+
 </html>

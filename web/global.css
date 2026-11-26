@@ -1162,7 +1162,6 @@ body.dark .mini-avatar { color: var(--gold); }
     .main-content {
         margin-left: 0;
     }
-}
 
     .topbar {
         flex-wrap: wrap;

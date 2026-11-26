@@ -2,12 +2,13 @@
 <html lang="en">
 
 <head>
-  <script>(function () { try { var t = localStorage.getItem('theme'); if (t === 'light' && !localStorage.getItem('pf-staff-explicit-light')) { t = 'dark'; try { localStorage.setItem('theme', 'dark'); } catch (_) { } } var d = t !== 'light'; var h = document.documentElement; h.style.background = d ? '#0a0e16' : '#fbf6ee'; h.style.colorScheme = d ? 'dark' : 'light'; h.dataset.theme = d ? 'dark' : 'light'; if (d) { h.classList.add('dark'); } else { h.classList.remove('dark'); } } catch (e) { } })();</script>
-  <script src="splash.js?v=3"></script>
+  <script>(function () { try { var t = localStorage.getItem('theme'); if (t === 'light' && !localStorage.getItem('pf-staff-explicit-light')) { t = 'dark'; try { localStorage.setItem('theme', 'dark'); } catch (_) { } } var d = t !== 'light'; var h = document.documentElement; h.style.background = d ? '#070B18' : '#F7F8FC'; h.style.colorScheme = d ? 'dark' : 'light'; h.dataset.theme = d ? 'dark' : 'light'; if (d) { h.classList.add('dark'); } else { h.classList.remove('dark'); } } catch (e) { } })();</script>
+  <script src="splash.js?v=10"></script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
   <title>ProFit | Settings</title>
+  <link rel="icon" type="image/jpeg" href="/logo.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet"
@@ -20,7 +21,7 @@
   <script src="auth.js?v=7"></script>
   <link rel="manifest" href="/manifest.webmanifest">
   <meta name="theme-color" content="#0a0e17">
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F7F8FC">
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17">
   <meta name="color-scheme" content="light dark">
   <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
@@ -75,14 +76,14 @@
 
     .st-sidenav a.on,
     body:not(.dark) .st-sidenav a.on {
-      background: #e8b93a;
-      color: #0b0f19;
+      background: #F5C518;
+      color: #0B1530;
     }
 
     .st-sidenav a.on:active,
     body:not(.dark) .st-sidenav a.on:active {
-      background: #b8860b;
-      color: #0b0f19;
+      background: #8A6A00;
+      color: #0B1530;
     }
 
     .st-sidenav a.on::before {
@@ -166,7 +167,7 @@
       height: 36px;
       border-radius: 10px;
       background: rgba(232, 185, 58, .12);
-      color: #e8b93a;
+      color: #F5C518;
       display: grid;
       place-items: center;
       flex: none;
@@ -175,7 +176,7 @@
 
     body:not(.dark) .st-row-ico {
       background: #fdf4da;
-      color: #9a6b0d;
+      color: #8A6A00;
     }
 
     .st-row-lead {
@@ -210,7 +211,7 @@
 
     body:not(.dark) .st-open-pill.is-closed {
       background: #fef3c7;
-      color: #b45309;
+      color: #8A6A00;
     }
 
     .st-font-prev {
@@ -275,16 +276,16 @@
     }
 
     .st-card {
-      background: var(--card, #111827);
-      border: 1px solid var(--border, #263246);
+      background: var(--card, #0F1A33);
+      border: 1px solid var(--border, #1F2F55);
       border-radius: 16px;
       overflow: hidden;
     }
 
     body:not(.dark) .st-card {
-      background: #ffffff;
-      border-color: #eadfc8;
-      box-shadow: 0 1px 3px rgba(15, 23, 42, .04);
+      background: #FFFFFF;
+      border-color: #DDE3F0;
+      box-shadow: 0 1px 3px rgba(15, 27, 51, .06);
     }
 
     .st-head {
@@ -306,11 +307,11 @@
     .st-head i {
       width: 16px;
       text-align: center;
-      color: #e8b93a;
+      color: #F5C518;
     }
 
     body:not(.dark) .st-head i {
-      color: #8a6212;
+      color: #8A6A00;
     }
 
     .st-row {
@@ -349,7 +350,7 @@
 
     body:not(.dark) a.st-row:hover,
     body:not(.dark) button.st-row:hover {
-      background: #faf6ee;
+      background: #F7F8FC;
     }
 
     .st-row-copy {
@@ -421,7 +422,7 @@
     }
 
     .st-switch input:checked+span {
-      background: #e8b93a;
+      background: #F5C518;
     }
 
     .st-switch input:checked+span::after {
@@ -481,16 +482,16 @@
 
     .st-pills button.active,
     body:not(.dark) .st-pills button.active {
-      background: #e8b93a !important;
-      border-color: #e8b93a !important;
-      color: #0b0f19 !important;
+      background: #F5C518 !important;
+      border-color: #F5C518 !important;
+      color: #0B1530 !important;
     }
 
     .st-pills button.active:active,
     body:not(.dark) .st-pills button.active:active {
-      background: #b8860b !important;
-      border-color: #b8860b !important;
-      color: #0b0f19 !important;
+      background: #8A6A00 !important;
+      border-color: #8A6A00 !important;
+      color: #0B1530 !important;
     }
 
     /* Help & Support Modal Popup */
@@ -570,7 +571,7 @@
       padding: 12px 14px;
       border-radius: 12px;
       border: 1px solid var(--border, #263246);
-      background: var(--bg, #0a0e17);
+      background: var(--bg, #070B18);
       text-decoration: none;
       color: inherit;
     }
@@ -581,13 +582,13 @@
     }
 
     .st-help-item i {
-      color: #e8b93a;
+      color: #F5C518;
       width: 18px;
       text-align: center;
     }
 
     body:not(.dark) .st-help-item i {
-      color: #b8860b;
+      color: #8A6A00;
     }
 
     .st-help-item strong {
@@ -631,8 +632,20 @@
       }
 
       .st-row {
-        flex-wrap: wrap;
-        gap: 10px;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .st-row-lead,
+      .st-row-copy {
+        flex: 1 1 auto;
+        min-width: 0;
+      }
+
+      .st-row-end,
+      .st-switch {
+        flex: none;
       }
 
       .st-sidenav {
@@ -689,7 +702,7 @@
       padding: 0 12px 0 28px;
       border-radius: 10px;
       border: 1px solid var(--border, #263246);
-      background: var(--bg, #0a0e17);
+      background: var(--bg, #070B18);
       color: var(--text, #f3f4f6);
       font-size: 14px;
       font-weight: 700;
@@ -697,7 +710,7 @@
     }
 
     body:not(.dark) .st-peso-wrap input {
-      background: #faf6ee;
+      background: #F7F8FC;
       border-color: #eadfc8;
       color: #2a2418;
     }
@@ -708,20 +721,20 @@
       margin-top: 6px;
       border: 0;
       border-radius: 12px;
-      background: #e8b93a;
-      color: #0b0f19;
+      background: #F5C518;
+      color: #0B1530;
       font-size: 14px;
       font-weight: 800;
       cursor: pointer;
     }
 
     .st-save-btn:hover:not(:disabled) {
-      background: #f0c44b;
+      background: #FAD03C;
     }
 
     .st-save-btn:active:not(:disabled) {
-      background: #b8860b;
-      color: #0b0f19;
+      background: #8A6A00;
+      color: #0B1530;
     }
 
     .st-save-btn:disabled {
@@ -817,7 +830,7 @@
       padding: 0 12px;
       border-radius: 10px;
       border: 1px solid var(--border, #263246);
-      background: var(--bg, #0a0e17);
+      background: var(--bg, #070B18);
       color: var(--text, #f3f4f6);
       font-size: 14px;
       font-weight: 600;
@@ -829,7 +842,7 @@
       color: #2a2418;
     }
   </style>
-  <link rel="stylesheet" href="pf-system.css?v=34">
+  <link rel="stylesheet" href="pf-system.css?v=45">
 </head>
 
 <body class="pf-staff" data-page="settings" data-title="Settings" data-welcome="Manage your account and preferences">
@@ -881,13 +894,13 @@
                 <span class="st-row-ico" aria-hidden="true"><i class="fa-brands fa-google"></i></span>
                 <div class="st-row-copy">
                   <span>Google Account</span>
-                  <small data-gc-sub>Checking Google connectionÃ¢â‚¬Â¦</small>
+                  <small data-gc-sub>Checking Google connection…</small>
                 </div>
               </div>
               <span class="st-row-end"><i class="fa-solid fa-chevron-right pf-gc-chev" aria-hidden="true"></i></span>
             </button>
             <div class="st-drawer pf-gc-drawer" id="pfGoogleAccountRow" hidden>
-              <p class="pf-gc-note" data-gc-note>Checking your Google account linkÃ¢â‚¬Â¦</p>
+              <p class="pf-gc-note" data-gc-note>Checking your Google account link…</p>
               <div class="pf-gc-actions" data-gc-actions></div>
               <div class="pf-gc-msg" data-gc-msg role="status" aria-live="polite" hidden></div>
             </div>
@@ -972,7 +985,7 @@
                 <div class="st-field">
                   <label for="gymAddressInput">Address</label>
                   <input type="text" id="gymAddressInput" maxlength="160"
-                    placeholder="Alfonso, Calabarzon Ã‚Â· Luksuhin-Mangas Road">
+                    placeholder="Alfonso, Calabarzon · Luksuhin-Mangas Road">
                 </div>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
                   <div class="st-field">
@@ -1058,12 +1071,12 @@
             </button>
           </article>
 
-          <!-- Help & Support Popup Modal (Tabbed: Contact / FAQs / Terms / Privacy Ã¢â‚¬â€ exact OG info) -->
+          <!-- Help & Support Popup Modal (Tabbed: Contact / FAQs / Terms / Privacy — exact OG info) -->
           <div class="st-modal-backdrop" id="stHelpModal" role="dialog" aria-modal="true" aria-labelledby="stHelpTitle"
             hidden>
             <div class="st-modal" style="max-width:580px">
               <div class="st-modal-head">
-                <h2 id="stHelpTitle"><i class="fa-regular fa-circle-question" style="color:#e8b93a"
+                <h2 id="stHelpTitle"><i class="fa-regular fa-circle-question" style="color:#F5C518"
                     aria-hidden="true"></i> Help &amp; Support</h2>
                 <button type="button" class="st-modal-close" id="stHelpClose" aria-label="Close help popup"><i
                     class="fa-solid fa-xmark"></i></button>
@@ -1227,17 +1240,17 @@
     </main>
   </div>
 
-  <script src="layout.js?v=26"></script>
+  <script src="layout.js?v=27"></script>
   <script src="sidebar.js?v=21"></script>
   <script src="data.js?v=3"></script>
-  <script src="settings.js?v=20"></script>
+  <script src="settings.js?v=21"></script>
   <script src="portal-fx.js?v=2"></script>
   <script src="/static/js/install-help.js" defer></script>
   <script src="change-password.js?v=4" defer></script>
   <script src="google-connect.js?v=2" defer></script>
   <script src="activity-log.js?v=1" defer></script>
   <script src="notifications-live.js?v=2" defer></script>
-  <script src="site-footer.js?v=2" defer></script>
+  <script src="site-footer.js?v=8" defer></script>
 </body>
 
 </html>

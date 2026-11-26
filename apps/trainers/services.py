@@ -294,6 +294,7 @@ def get_trainer_assigned_members(profile) -> tuple[set[int], list[dict]]:
         {
             "id": a.member_id,
             "name": _name(a.member.user),
+            "photo": getattr(a.member.user, "avatar_data", "") or "",
         }
         for a in assignments
     ]

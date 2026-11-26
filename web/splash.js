@@ -50,8 +50,8 @@
   loader.innerHTML = `
     <style id="pf-loader-style">
       #pf-loader {
-        --bg: #070a12; --bg2: #101728; --gold: #f2b632; --gold-soft: #ffd873;
-        --text: #f4f6fb; --muted: #9aa3b5;
+        --bg: #070B18; --bg2: #0F1A33; --gold: #F5C518; --gold-soft: #FAD03C;
+        --text: #F4F6FB; --muted: #9FB0D6;
         position: fixed !important; inset: 0 !important; z-index: 99999999 !important;
         display: grid !important; place-items: center !important; overflow: hidden !important;
         background: radial-gradient(ellipse at 50% 40%, var(--bg2) 0%, var(--bg) 68%) !important;
@@ -114,7 +114,7 @@
 
       #pf-loader .pf-logo {
         position: relative; width: 108px; height: 108px; border-radius: 50%; display: grid; place-items: center;
-        background: #0b0f19; border: 1px solid rgba(242,182,50,.4); overflow: hidden; opacity: 0;
+        background: #070B18; border: 1px solid rgba(242,182,50,.4); overflow: hidden; opacity: 0;
         box-shadow: 0 0 0 6px rgba(242,182,50,.06), 0 0 40px rgba(242,182,50,.25);
       }
       #pf-loader .pf-logo img { width: 100%; height: 100%; object-fit: cover; display: block; filter: none !important; }
@@ -181,6 +181,40 @@
       #pf-loader .pf-msg.swap { opacity: 0; transform: translateY(5px); }
       #pf-loader .pf-pct { font-variant-numeric: tabular-nums; color: var(--gold-soft); font-weight: 700; min-width: 3ch; text-align: right; }
 
+      #pf-loader .pf-skip {
+        position: fixed;
+        bottom: max(28px, env(safe-area-inset-bottom));
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 5;
+        min-height: 40px;
+        padding: 0 18px;
+        border-radius: 999px;
+        background: rgba(15, 26, 51, 0.86);
+        border: 1px solid #1F2F55;
+        color: #F4F6FB;
+        font: 700 13px/1 "Plus Jakarta Sans", Inter, sans-serif;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        pointer-events: auto;
+        transition: border-color .16s ease, color .16s ease, background-color .16s ease;
+      }
+      #pf-loader .pf-skip:hover {
+        border-color: var(--gold);
+        color: var(--gold);
+        background: rgba(15, 26, 51, 0.96);
+      }
+      #pf-loader .pf-skip:focus-visible {
+        border-color: var(--gold);
+        color: var(--gold);
+        background: rgba(15, 26, 51, 0.96);
+        outline: 2px solid var(--gold);
+        outline-offset: 2px;
+      }
+      #pf-loader.done .pf-skip { opacity: 0; pointer-events: none; }
+
       @media (prefers-reduced-motion: reduce) {
         #pf-loader *, #pf-loader::before { animation-duration: .01s !important; animation-iteration-count: 1 !important; }
         #pf-loader .pf-dial, #pf-loader .pf-logo, #pf-loader .pf-brand span, #pf-loader .pf-tag,
@@ -188,6 +222,7 @@
       }
     </style>
     <canvas id="pf-canvas" aria-hidden="true"></canvas>
+    <button type="button" id="pf-skip" class="pf-skip" aria-label="Skip loading animation">Skip <span aria-hidden="true">&rarr;</span></button>
     <div class="pf-wrap">
       <div class="pf-stage">
         <svg class="pf-dial" viewBox="0 0 220 220" aria-hidden="true">
@@ -367,9 +402,33 @@
   startCanvas();
   paint(0);
   loader.classList.add("play");
+  const skipBtn = loader.querySelector("#pf-skip");
+  let dismissed = false;
+  function onKeyDown(e) {
+    if (e.key === "Escape") dismiss(true);
+  }
+  function dismiss(immediate) {
+    if (dismissed) return;
+    dismissed = true;
+    canvasOn = false;
+    cancelAnimationFrame(raf);
+    cancelAnimationFrame(craf);
+    window.removeEventListener("resize", size);
+    window.removeEventListener("keydown", onKeyDown);
+    if (immediate) loader.classList.add("finish");
+    loader.classList.add("done");
+    try { window.dispatchEvent(new CustomEvent("pf:splash-done")); } catch (_) {}
+    setTimeout(() => {
+      try { loader.remove(); } catch (_) {}
+    }, 700);
+  }
+  if (skipBtn) skipBtn.addEventListener("click", () => dismiss(true));
+  window.addEventListener("keydown", onKeyDown);
+
   const start = performance.now() + 550;
   let p = 0, fin = false, f0 = 0, from = 0;
   function frame(now) {
+    if (dismissed) return;
     if (!fin) {
       const t = Math.max(0, Math.min((now - start) / MIN_MS, 1));
       p = inOut(t) * 92;
@@ -382,16 +441,7 @@
         setMsg("Let’s go!");
         loader.classList.add("finish");
         burst();
-        setTimeout(() => {
-          loader.classList.add("done");
-          try { window.dispatchEvent(new CustomEvent("pf:splash-done")); } catch (_) {}
-        }, 450);
-        setTimeout(() => {
-          canvasOn = false;
-          cancelAnimationFrame(craf);
-          window.removeEventListener("resize", size);
-          try { loader.remove(); } catch (_) {}
-        }, 1150);
+        setTimeout(() => dismiss(false), 450);
         return;
       }
     }
