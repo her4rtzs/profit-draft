@@ -3900,3 +3900,14 @@ Add the provided GCash QR code image to both the member payment page and the cas
 - Added a markup and asset test in `apps/billing/tests/test_claim_review.py` covering all four payment pages.
 ### Decision-log skill
 Include both an enlarge lightbox and a direct `download` action alongside payment QR codes: desk staff need a large screen view for walk-ins, while members paying on their own phone need to save the QR to import it into GCash.
+
+## 2026-11-26 17:44 (Asia/Manila): Fix Light Mode hero cards, dark buttons, Cashier tab banner, and Expiring Soon badges
+### What I asked for
+Fix the Light Mode UI bugs across the staff pages so switching to Light Mode stays visually consistent without broken white-on-white cards, invisible dark-on-dark buttons, mismatched tab banners, or wrong status pill colors.
+### What the agent decided and why
+- Locked `.csh-hero`, `.csh-hero-card`, `.csh-hero .csh-btn-dark`, `.ow-hero .ow-btn-dark`, `.mb-ticket-card`, and `.mb-hero-book-btn` in `web/pf-system.css` (`?v=20`) so `dashboard.css`'s `[class$="-card"]` wildcard and Light Mode text/hover rules can never turn Cashier/Owner/Member dark-hero cards white-on-white or hero buttons dark-on-dark.
+- Upgraded `web/cashier.html`'s `.fn-header-card` with the left `.fn-header-title` block and color-coded `.fn-tab-icon` classes (`is-amber`, `is-emerald`, `is-cyan`) synced via `setTab()` in `web/cashier.js` (`?v=6`) so it matches `members.html`, `payments.html`, and `reports.html`.
+- Fixed `--pf-st-expiring-*` tokens in `web/pf-system.css` (`?v=20`) from red to amber in both Light Mode (`#FEF3C7` / `#B45309` / `#D97706`) and Dark Mode (`rgba(245, 158, 11, 0.16)` / `#FBBF24`) so `EXPIRING SOON` is clearly distinct from `EXPIRED`, and excluded `.md-id-card` from `body:not(.dark) .md-card` in `web/members-ui.css` (`?v=31`).
+- Bumped `pf-system.css?v=20` across all 22 portal pages and verified `cashier.html`, `members.html`, `payments.html`, and `index.html` live in Light Mode via browser preview.
+### Decision-log skill
+Any floating card inside a dark photo hero (`-card` class suffix) must be explicitly locked to dark glass in `pf-system.css` with `!important` (alongside its dark-glass CTA buttons and their hover/active states) to prevent wildcard `[class$="-card"]` Light Mode rules from turning them white-on-white.

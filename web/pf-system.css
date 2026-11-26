@@ -31,6 +31,22 @@
   --pf-tbl-row-hover: rgba(255, 255, 255, 0.045);
   --pf-text: #F4F6FB;
   --pf-muted: #94A3B8;
+
+  /* Consistent amber warning tokens for EXPIRING SOON badges (distinct from EXPIRED red) */
+  --pf-st-expiring-bg: rgba(245, 158, 11, 0.16);
+  --pf-st-expiring-fg: #FBBF24;
+  --pf-st-expiring-dot: #F59E0B;
+  --pf-st-expiring-bd: rgba(245, 158, 11, 0.44);
+}
+
+html.dark,
+body.dark,
+body.pf-staff.dark,
+body.member-home.dark {
+  --pf-st-expiring-bg: rgba(245, 158, 11, 0.16);
+  --pf-st-expiring-fg: #FBBF24;
+  --pf-st-expiring-dot: #F59E0B;
+  --pf-st-expiring-bd: rgba(245, 158, 11, 0.44);
 }
 
 html[data-theme="light"],
@@ -52,6 +68,12 @@ html:not([data-theme="dark"]) body[data-portal="trainer"] {
   --pf-tbl-row-hover: rgba(42, 36, 24, 0.04);
   --pf-text: #1C1917;
   --pf-muted: #6B6254;
+
+  /* Light Mode amber warning tokens for EXPIRING SOON badges */
+  --pf-st-expiring-bg: #FEF3C7;
+  --pf-st-expiring-fg: #B45309;
+  --pf-st-expiring-dot: #D97706;
+  --pf-st-expiring-bd: #FCD34D;
 }
 
 /* Smooth background/border/color transitions only (no scale/lift jitter) */
@@ -2880,4 +2902,95 @@ html body .tr-grid>* {
   html body .revenue-panel .panel-header #revenuePeriods {
     flex-wrap: wrap !important;
   }
+}
+
+/* =========================================================
+   14. LIGHT MODE HERO CONSISTENCY (Owner, Cashier, Member)
+       Keep floating hero cards & dark-glass hero CTA buttons
+       crisp dark-on-photo in Light Mode (prevents [class$="-card"]
+       white-on-white leaks and dark-on-dark button text).
+   ========================================================= */
+html body.pf-staff .csh-hero,
+html body.pf-staff:not(.dark) .csh-hero {
+  background: #101521 !important;
+  border: 1px solid rgba(42, 36, 24, 0.14) !important;
+  color: #f8fafc !important;
+}
+
+html body.pf-staff .csh-hero-card,
+html body.pf-staff:not(.dark) .csh-hero-card {
+  background: rgba(15, 21, 34, 0.88) !important;
+  background-color: rgba(15, 21, 34, 0.88) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  color: #f8fafc !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(12px);
+}
+
+html body.pf-staff .csh-hero-card h3,
+html body.pf-staff:not(.dark) .csh-hero-card h3,
+html body.pf-staff .csh-hero-card .csh-hero-card-foot strong,
+html body.pf-staff:not(.dark) .csh-hero-card .csh-hero-card-foot strong {
+  color: #f8fafc !important;
+}
+
+html body.pf-staff .csh-hero-card .csh-shift-sub,
+html body.pf-staff:not(.dark) .csh-hero-card .csh-shift-sub,
+html body.pf-staff .csh-hero-card .csh-hero-card-foot small,
+html body.pf-staff:not(.dark) .csh-hero-card .csh-hero-card-foot small {
+  color: #94a3b8 !important;
+}
+
+html body.pf-staff .csh-hero-card .csh-live-pill,
+html body.pf-staff:not(.dark) .csh-hero-card .csh-live-pill {
+  background: rgba(34, 197, 94, 0.16) !important;
+  color: #4ade80 !important;
+}
+
+html body.pf-staff .csh-hero .csh-btn-dark,
+html body.pf-staff:not(.dark) .csh-hero .csh-btn-dark,
+html body.pf-staff .ow-hero .ow-btn-dark,
+html body.pf-staff:not(.dark) .ow-hero .ow-btn-dark {
+  background: rgba(15, 23, 42, 0.82) !important;
+  background-color: rgba(15, 23, 42, 0.82) !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  color: #f8fafc !important;
+}
+
+html body.pf-staff .csh-hero .csh-btn-dark:not(:disabled):hover,
+html body.pf-staff:not(.dark) .csh-hero .csh-btn-dark:not(:disabled):hover,
+html body.pf-staff .ow-hero .ow-btn-dark:not(:disabled):hover,
+html body.pf-staff:not(.dark) .ow-hero .ow-btn-dark:not(:disabled):hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  background-color: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.34) !important;
+  color: #ffffff !important;
+}
+
+html body.pf-staff .csh-hero .csh-btn-dark:not(:disabled):active,
+html body.pf-staff:not(.dark) .csh-hero .csh-btn-dark:not(:disabled):active,
+html body.pf-staff .ow-hero .ow-btn-dark:not(:disabled):active,
+html body.pf-staff:not(.dark) .ow-hero .ow-btn-dark:not(:disabled):active {
+  background: rgba(255, 255, 255, 0.18) !important;
+  background-color: rgba(255, 255, 255, 0.18) !important;
+  color: #ffffff !important;
+}
+
+html body.member-home .mb-ticket-card,
+html body.member-home:not(.dark) .mb-ticket-card {
+  background: rgba(16, 22, 36, 0.90) !important;
+  background-color: rgba(16, 22, 36, 0.90) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #f8fafc !important;
+}
+
+html body.member-home:not(.dark) .mb-hero-book-btn {
+  background: rgba(15, 23, 42, 0.80) !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  color: #f8fafc !important;
+}
+
+html body.member-home:not(.dark) .mb-hero-book-btn:hover {
+  background: rgba(255, 255, 255, 0.14) !important;
+  color: #ffffff !important;
 }

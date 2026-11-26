@@ -28,7 +28,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="ProFit">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="stylesheet" href="pf-system.css?v=19">
+  <link rel="stylesheet" href="pf-system.css?v=20">
 </head>
 
 <body class="pf-staff" data-page="cashier" data-title="Dashboard" data-welcome="Front desk billing &amp; payments">
@@ -492,13 +492,20 @@
         </article>
       </section>
 
-      <!-- Hero Banner + Tab Switcher (mirrors Payments layout) -->
+      <!-- Hero Banner + Tab Switcher (mirrors Payments & Browse Members layout) -->
       <section class="fn-header-card">
-        <div class="fn-header-bg" aria-hidden="true"></div>
+        <div class="fn-header-title" id="cashierHeaderBlock">
+          <span class="fn-header-ico is-amber" id="cashierHeaderIco" aria-hidden="true"><i
+              class="fa-solid fa-cash-register"></i></span>
+          <div class="fn-header-copy">
+            <h2 id="cashierHeaderTitle" aria-live="polite">Process Payment</h2>
+            <p id="cashierHeaderSub">Collect desk cash or GCash payments and issue official receipts.</p>
+          </div>
+        </div>
         <div class="fn-tabs" role="tablist" aria-label="Cashier desk sections">
           <button class="tab active" type="button" role="tab" id="tab-terminal" aria-selected="true"
             aria-controls="pane-terminal" data-tab="terminal">
-            <span class="fn-tab-icon" aria-hidden="true">
+            <span class="fn-tab-icon is-amber" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                 stroke-linejoin="round">
                 <rect x="2" y="5" width="20" height="14" rx="2" />
@@ -510,7 +517,7 @@
           </button>
           <button class="tab" type="button" role="tab" id="tab-history" aria-selected="false"
             aria-controls="pane-history" data-tab="history">
-            <span class="fn-tab-icon" aria-hidden="true">
+            <span class="fn-tab-icon is-emerald" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                 stroke-linejoin="round">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -524,7 +531,7 @@
           </button>
           <button class="tab" type="button" role="tab" id="tab-lookup" aria-selected="false" aria-controls="pane-lookup"
             data-tab="lookup">
-            <span class="fn-tab-icon" aria-hidden="true">
+            <span class="fn-tab-icon is-cyan" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                 stroke-linejoin="round">
                 <circle cx="12" cy="12" r="9" />
@@ -535,6 +542,7 @@
             <span class="fn-tab-short">Lookup</span>
           </button>
         </div>
+        <div class="fn-header-bg" aria-hidden="true"></div>
       </section>
 
       <!-- Pane 1: Process Payment + Today's Shift Feed -->
@@ -951,7 +959,7 @@
   <script src="portal-fx.js?v=2"></script>
   <script src="change-password.js?v=2" defer></script>
   <script src="notifications-live.js?v=2" defer></script>
-  <script src="cashier.js?v=5" defer></script>
+  <script src="cashier.js?v=6" defer></script>
   <script src="site-footer.js?v=2" defer></script>
 </body>
 
