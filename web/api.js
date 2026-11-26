@@ -22,12 +22,38 @@
   };
   const csrfToken = () => (document.cookie.match(/(?:^|;\s*)csrftoken=([^;]+)/) || [])[1] || "";
 
-  // ---- Service Worker registration (all portals) ----
+  // ---- Service Worker registration (HTTPS production only; clean up on local HTTP dev) ----
+  function isLocalHttpHost() {
+    return (
+      location.protocol !== "https:" &&
+      (location.hostname === "localhost" ||
+        location.hostname === "127.0.0.1" ||
+        location.hostname === "[::1]")
+    );
+  }
+  function unregisterLocalServiceWorkers() {
+    try {
+      navigator.serviceWorker.getRegistrations().then(regs => {
+        regs.forEach(reg => reg.unregister().catch(() => {}));
+      }).catch(() => {});
+    } catch (_) {}
+    try {
+      if (typeof caches !== "undefined" && caches.keys) {
+        caches.keys().then(keys => {
+          keys.filter(k => k.startsWith("profit-")).forEach(k => caches.delete(k).catch(() => {}));
+        }).catch(() => {});
+      }
+    } catch (_) {}
+  }
   function registerServiceWorker() {
     if (typeof navigator === "undefined" || !("serviceWorker" in navigator)) return;
     if (window.__pfSwRegistered) return;
-    if (location.protocol !== "https:" && location.hostname !== "localhost" && location.hostname !== "127.0.0.1") return;
     window.__pfSwRegistered = true;
+    if (isLocalHttpHost()) {
+      unregisterLocalServiceWorkers();
+      return;
+    }
+    if (location.protocol !== "https:") return;
     navigator.serviceWorker.register("/sw.js", { scope: "/", updateViaCache: "none" }).catch(() => {});
   }
   if (typeof window !== "undefined") {
@@ -536,14 +562,6 @@
   var standaloneQuery = window.matchMedia("(display-mode: standalone)");
   function isStandalone() {
     return standaloneQuery.matches || window.navigator.standalone === true;
-  }
-
-  if ("serviceWorker" in navigator && location.protocol === "https:") {
-    window.addEventListener("load", function () {
-      navigator.serviceWorker
-        .register("/sw.js", { scope: "/" })
-        .catch(function () {});
-    });
   }
 
   function showHint() {

@@ -10,4 +10,7 @@ class ProtectedWhiteNoiseMiddleware(WhiteNoiseMiddleware):
         path = (request.path_info or "").lower()
         if path.endswith((".html", ".htm")):
             return self.get_response(request)
-        return super().__call__(request)
+        response = super().__call__(request)
+        if path == "/sw.js":
+            response["Cache-Control"] = "no-cache, must-revalidate"
+        return response

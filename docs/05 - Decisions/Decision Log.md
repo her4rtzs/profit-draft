@@ -116,3 +116,9 @@ One note per decision, oldest first; entries with an `Unknown` date are listed l
 
 - [[2026-11-27 Unify staff tablet navigation at 980px]]: Hide Owner/Cashier fixed sidebar and clear main-content left offset at `<= 980px` in `web/pf-system.css` so portrait tablets use the bottom tab bar cleanly without double navigation.
 - [[2026-11-27 Safe offline read mode with auto-refresh and logout wipe]]: Added `web/sw.js` (Network-First HTML + static asset cache, never `/api/*`) and per-user offline `GET` caching in `web/api.js` with auto-refresh on reconnect, offline write blocking, and immediate cache wipe on logout or 401/403 (supersedes 2026-11-16 no-service-worker decision).
+
+- [[2026-11-27 Align Trainer mobile UI and resolve cartoon avatars]]: Lock Trainer toggle switches at 46x26, align mobile 2-col hero buttons/2x2 filter grids/full-width search, center tablet/phone profile heroes at <=780px, and resolve Trainer/member avatars through ProFitAvatar.
+
+- [[2026-11-27 Disable service worker on localhost HTTP]]: Keep Service Worker registration HTTPS-only, make web/sw.js bypass and self-unregister on local HTTP with an only-if-cached guard, and serve /sw.js with no-cache headers.
+
+- [[2026-11-27 Circular logo crest and standalone auth UX]]: Put the gym logo inside the circular crest badge (removing text badges and duplicate square logo), fix clipped arches/collapsed phone pill/bleeding hero photo, add standalone Reset Password and smooth animations, and play the standalone splash once per launch.

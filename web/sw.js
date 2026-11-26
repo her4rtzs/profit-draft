@@ -10,9 +10,15 @@
  */
 'use strict';
 
-const ASSETS_CACHE = 'profit-assets-v2';
+const IS_LOCAL_DEV =
+  self.location.protocol !== 'https:' &&
+  (self.location.hostname === 'localhost' ||
+    self.location.hostname === '127.0.0.1' ||
+    self.location.hostname === '[::1]');
+
+const ASSETS_CACHE = 'profit-assets-v3';
 const PAGES_CACHE = 'profit-pages-v1';
-const PUBLIC_PAGES_CACHE = 'profit-public-pages-v1';
+const PUBLIC_PAGES_CACHE = 'profit-public-pages-v2';
 const KEEP_CACHES = new Set([ASSETS_CACHE, PAGES_CACHE, PUBLIC_PAGES_CACHE]);
 
 const PUBLIC_PATHS = new Set([
@@ -129,6 +135,10 @@ const OFFLINE_FALLBACK_HTML = `<!doctype html>
 </html>`;
 
 self.addEventListener('install', (event) => {
+  if (IS_LOCAL_DEV) {
+    event.waitUntil(self.skipWaiting());
+    return;
+  }
   event.waitUntil(
     Promise.all([
       caches.open(ASSETS_CACHE).then((cache) =>
@@ -154,6 +164,15 @@ self.addEventListener('install', (event) => {
 });
 
 self.addEventListener('activate', (event) => {
+  if (IS_LOCAL_DEV) {
+    event.waitUntil(
+      caches.keys()
+        .then((keys) => Promise.all(keys.map((k) => caches.delete(k))))
+        .then(() => self.clients.claim())
+        .then(() => self.registration.unregister())
+    );
+    return;
+  }
   event.waitUntil(
     caches.keys()
       .then((keys) => Promise.all(keys.filter((k) => !KEEP_CACHES.has(k)).map((k) => caches.delete(k))))
@@ -232,8 +251,10 @@ async function handleStaticAsset(request) {
 }
 
 self.addEventListener('fetch', (event) => {
+  if (IS_LOCAL_DEV) return;
   const request = event.request;
   if (request.method !== 'GET') return;
+  if (request.cache === 'only-if-cached' && request.mode !== 'same-origin') return;
 
   const url = new URL(request.url);
   if (url.protocol !== 'http:' && url.protocol !== 'https:') return;

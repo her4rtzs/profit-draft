@@ -1,663 +1,1567 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
-<title>Sign in — ProFit</title>
-<link rel="icon" type="image/jpeg" href="/logo.jpg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
-<script src="api.js?v=6"></script>
-<style>
-  :root{
-    --gold:#F5C518;
-    --lime:#F5C518;
-    --lime-hi:#FAD03C;
-    --on:#0B1530;
-    --bg:#070B18;
-    --bg2:#0A1124;
-    --card:#0F1A33;
-    --line:#1F2F55;
-    --tx:#F4F6FB;
-    --mu:#9FB0D6;
-    --field-line:#293D6B;
-    --err:#F87171;
-    --ok:#34D399;
-  }
-  html[data-theme="light"],body.light{
-    --bg:#F7F8FC;
-    --bg2:#EEF2FA;
-    --card:#FFFFFF;
-    --line:#DDE3F0;
-    --tx:#0B1530;
-    --mu:#4A5878;
-    --field-line:#CDD6E8;
-    --err:#dc2626;
-    --ok:#15803d;
-  }
-  @media(prefers-color-scheme:light){
-    html[data-theme="auto"]{
-      --bg:#F7F8FC;
-      --bg2:#EEF2FA;
-      --card:#FFFFFF;
-      --line:#DDE3F0;
-      --tx:#0B1530;
-      --mu:#4A5878;
-      --field-line:#CDD6E8;
-      --err:#dc2626;
-      --ok:#15803d;
+  <meta charset="utf-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <title>Sign in — ProFit</title>
+  <link rel="icon" type="image/jpeg" href="/logo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous">
+  <script src="api.js?v=7"></script>
+  <style>
+    :root {
+      --gold: #F5C518;
+      --lime: #F5C518;
+      --lime-hi: #FAD03C;
+      --on: #0B1530;
+      --bg: #070B18;
+      --bg2: #0A1124;
+      --card: #0F1A33;
+      --line: #1F2F55;
+      --tx: #F4F6FB;
+      --mu: #9FB0D6;
+      --field-line: #293D6B;
+      --err: #F87171;
+      --ok: #34D399;
     }
-  }
 
-  *{box-sizing:border-box}
-  html,body{margin:0;padding:0;overflow-x:hidden}
-  body{
-    min-height:100vh;
-    background:var(--bg);
-    color:var(--tx);
-    font:15px/1.6 Inter,system-ui,-apple-system,sans-serif;
-    -webkit-font-smoothing:antialiased;
-    display:flex;
-    flex-direction:column;
-  }
-  h1,h2,h3,button,.portal-brand strong{font-family:"Plus Jakarta Sans",Inter,system-ui,sans-serif}
-  :focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-
-  /* Header matching landing & join */
-  .portal-nav{
-    height:68px;min-height:68px;
-    background:#0b0c10;
-    border-bottom:1px solid var(--line);
-    padding:0 clamp(16px,4vw,40px);
-    display:flex;align-items:center;justify-content:space-between;gap:16px;
-    position:sticky;top:0;z-index:40;flex:none;
-  }
-  .portal-brand{
-    display:inline-flex;align-items:center;gap:12px;
-    text-decoration:none;color:#f6efdc;min-height:44px;
-  }
-  .portal-brand img{
-    width:36px;height:36px;border-radius:10px;object-fit:cover;display:block;flex:none;
-  }
-  .portal-brand strong{font-size:22px;font-weight:800;letter-spacing:-.02em;color:#f6efdc}
-  .back-link{
-    display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 10px;border-radius:10px;
-    color:#9a9788;text-decoration:none;font:600 14px/1 Inter,system-ui,sans-serif;
-    transition:background-color .15s ease,color .15s ease;white-space:nowrap;
-  }
-  .back-link:hover{background:rgba(255,255,255,.06);color:var(--tx)}
-  .back-link:active{background:rgba(255,255,255,.11)}
-
-  /* Full-bleed hero with flat overlay & subtle parallax layer */
-  @keyframes pfPageFade{from{opacity:0}to{opacity:1}}
-  .lg-shell{
-    position:relative;
-    flex:1 1 auto;
-    min-height:calc(100vh - 68px);
-    display:flex;align-items:center;
-    padding:clamp(16px,2.5vh,28px) clamp(16px,4vw,48px);
-    overflow:hidden;
-    animation:pfPageFade .35s ease-out both;
-  }
-  .lg-shell::after{
-    content:"";position:absolute;inset:0;
-    background:url("img/hero.jpg") center/cover no-repeat;
-    z-index:-1;
-  }
-  .lg-shell::before{
-    content:"";position:absolute;inset:0;
-    background:rgba(7,8,12,.7);
-    z-index:0;
-  }
-  html[data-theme="light"] .lg-shell::before,
-  body.light .lg-shell::before{
-    background:rgba(244,245,248,.82);
-  }
-  .lg-wrap{
-    position:relative;z-index:1;
-    width:min(1160px,100%);margin-inline:auto;
-    display:grid;grid-template-columns:minmax(0,1fr) 440px;
-    gap:clamp(28px,5vw,64px);align-items:center;
-  }
-
-  /* Left copy */
-  @keyframes pfRiseIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-  @keyframes pfCardSlideIn{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
-  @keyframes pfCheckPop{0%{transform:rotate(45deg) scale(.35);opacity:0}70%{transform:rotate(45deg) scale(1.15);opacity:1}100%{transform:rotate(45deg) scale(1);opacity:1}}
-  .lg-eyebrow{
-    display:inline-flex;align-items:center;gap:10px;
-    font:700 12px/1.2 "Plus Jakarta Sans",sans-serif;
-    letter-spacing:.16em;text-transform:uppercase;color:var(--gold);
-    margin:0 0 16px;
-    animation:pfRiseIn .45s cubic-bezier(.22,1,.36,1) both;
-  }
-  .lg-eyebrow::before{content:"";width:24px;height:2px;background:var(--gold);flex:none}
-  .lg-title{
-    margin:0 0 16px;
-    font-size:clamp(38px,5vw,60px);font-weight:800;line-height:1.04;letter-spacing:-.03em;
-    color:var(--tx);
-    animation:pfRiseIn .5s cubic-bezier(.22,1,.36,1) .06s both;
-  }
-  .lg-title .hl{color:var(--gold)}
-  .lg-desc{
-    margin:0 0 24px;max-width:460px;font-size:16.5px;line-height:1.6;color:var(--mu);
-    animation:pfRiseIn .5s cubic-bezier(.22,1,.36,1) .12s both;
-  }
-  .lg-checks{list-style:none;margin:0 0 24px;padding:0;display:grid;gap:12px}
-  .lg-checks li{
-    display:flex;align-items:center;gap:10px;font-size:14.5px;font-weight:500;color:var(--tx);
-    animation:pfRiseIn .45s cubic-bezier(.22,1,.36,1) both;
-  }
-  .lg-checks li:nth-child(1){animation-delay:.18s}
-  .lg-checks li:nth-child(2){animation-delay:.24s}
-  .lg-checks li:nth-child(3){animation-delay:.30s}
-  .lg-checks i{color:var(--gold);font-size:14px;flex:none}
-  .lg-gym-foot{margin:0;font-size:12.5px;color:var(--mu);animation:pfRiseIn .5s cubic-bezier(.22,1,.36,1) .34s both}
-
-  /* Right card */
-  .lg-card{
-    width:100%;max-width:410px;justify-self:end;
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:16px;
-    padding:clamp(18px,2.4vh,24px) clamp(20px,2.5vw,28px);
-    box-shadow:0 24px 48px -20px rgba(0,0,0,.75);
-    animation:pfCardSlideIn .52s cubic-bezier(.22,1,.36,1) .08s both;
-  }
-  .lg-card form > *{animation:pfRiseIn .42s cubic-bezier(.22,1,.36,1) both}
-  .lg-card form > *:nth-child(1){animation-delay:.14s}
-  .lg-card form > *:nth-child(2){animation-delay:.17s}
-  .lg-card form > *:nth-child(4){animation-delay:.20s}
-  .lg-card form > *:nth-child(5){animation-delay:.23s}
-  .lg-card form > *:nth-child(8){animation-delay:.26s}
-  .lg-card form > *:nth-child(10){animation-delay:.29s}
-  .lg-card form > *:nth-child(11){animation-delay:.32s}
-  .lg-card h2{margin:0 0 3px;font-size:24px;font-weight:800;letter-spacing:-.02em;color:var(--tx)}
-  .lg-lead{margin:0 0 14px;font-size:13.5px;color:var(--mu)}
-
-  .lg-field-label{
-    display:block;margin:0 0 5px;
-    font:600 13px/1.2 Inter,system-ui,sans-serif;color:var(--tx);
-  }
-  .lg-input{
-    width:100%;height:44px;padding:0 14px;
-    border-radius:12px;border:1px solid var(--field-line);
-    background:var(--bg2);color:var(--tx);
-    font:400 14.5px/1.2 Inter,system-ui,sans-serif;
-    transition:border-color .16s ease,box-shadow .16s ease,background-color .16s ease;
-  }
-  .lg-input::placeholder{color:var(--mu)}
-  .lg-input:hover:not(:focus):not(:disabled){border-color:rgba(232,185,58,.5)}
-  .lg-input:focus{
-    outline:1.5px solid var(--gold);outline-offset:0;border-color:var(--gold);
-    box-shadow:none;
-  }
-  .lg-input:-webkit-autofill,
-  .lg-input:-webkit-autofill:hover,
-  .lg-input:-webkit-autofill:focus{
-    -webkit-box-shadow:0 0 0 100px var(--bg2) inset !important;
-    -webkit-text-fill-color:var(--tx) !important;
-    caret-color:var(--tx);
-    transition:background-color 5000s ease-in-out 0s;
-  }
-
-  .lg-pw-wrap{position:relative}
-  .lg-pw-wrap .lg-input{padding-right:48px}
-  .lg-eye{
-    position:absolute;right:4px;top:50%;transform:translateY(-50%);
-    width:44px;height:44px;border:0;background:transparent;color:var(--mu);
-    display:grid;place-items:center;cursor:pointer;border-radius:10px;
-    transition:background-color .15s ease,color .15s ease;
-  }
-  .lg-eye:hover{background:rgba(255,255,255,.06);color:var(--tx)}
-  .lg-eye:active{background:rgba(255,255,255,.11)}
-
-  .lg-err-sm{display:block;min-height:0;margin:3px 0 8px;font-size:12px;font-weight:500;color:var(--err)}
-  .lg-caps{display:flex;align-items:center;gap:6px;margin:4px 0 0;font-size:12px;font-weight:600;color:var(--gold)}
-  .lg-caps[hidden]{display:none}
-
-  .lg-remember{
-    display:inline-flex;align-items:center;gap:10px;
-    margin:0 0 12px;font-size:13.5px;font-weight:500;color:var(--tx);
-    cursor:pointer;min-height:36px;
-  }
-  .lg-remember input[type="checkbox"]{
-    appearance:none;-webkit-appearance:none;
-    width:20px;height:20px;margin:0;flex:none;
-    border-radius:6px;border:1px solid var(--field-line);background:var(--bg2);
-    display:grid;place-items:center;cursor:pointer;
-    transition:border-color .15s ease,background-color .15s ease;
-  }
-  .lg-remember input[type="checkbox"]:focus-visible{
-    outline:2px solid var(--gold);outline-offset:2px;box-shadow:none;
-  }
-  .lg-remember input[type="checkbox"]:checked{
-    background:var(--gold);border-color:var(--gold);
-  }
-  .lg-remember input[type="checkbox"]:checked::after{
-    content:"";width:5px;height:9px;border:solid var(--on);border-width:0 2px 2px 0;
-    transform:rotate(45deg);margin-bottom:2px;
-    animation:pfCheckPop .22s cubic-bezier(.22,1,.36,1) both;
-  }
-
-  .lg-msg{
-    margin:0 0 14px;padding:11px 14px;border-radius:12px;font-size:13px;font-weight:500;
-    background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.35);color:var(--ok);
-  }
-  .lg-msg.error{
-    background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.38);color:var(--err);
-  }
-  .lg-msg[hidden]{display:none}
-
-  .lg-btn-gold{
-    width:100%;height:44px;border:0;border-radius:999px;
-    background:var(--gold);color:#0B1530;
-    font:700 15px/1 "Plus Jakarta Sans",sans-serif;
-    display:inline-flex;align-items:center;justify-content:center;gap:8px;
-    cursor:pointer;transition:background-color .15s ease,opacity .15s ease;
-  }
-  .lg-btn-gold:hover:not(:disabled){background:#FAD03C;transform:none;box-shadow:none;filter:none}
-  .lg-btn-gold:active:not(:disabled){background:#8A6A00;color:#0B1530;transform:none;box-shadow:none;filter:none}
-  .lg-btn-gold:disabled{opacity:.48;cursor:not-allowed;pointer-events:none;box-shadow:none;transform:none}
-
-  .lg-forgot-row{display:flex;justify-content:center;margin:8px 0 0}
-  .lg-forgot{
-    position:relative;
-    display:inline-flex;align-items:center;min-height:36px;padding:0 10px;
-    font-size:13px;font-weight:600;color:var(--gold);
-    text-decoration:none;transition:color .16s ease;
-  }
-  .lg-forgot::after{
-    content:"";position:absolute;left:10px;right:10px;bottom:8px;height:1.5px;
-    background:currentColor;transform:scaleX(0);transform-origin:center;opacity:0;
-    transition:transform .2s cubic-bezier(.22,1,.36,1),opacity .2s ease;
-  }
-  .lg-forgot:hover,
-  .lg-forgot:focus-visible{color:var(--lime-hi)}
-  .lg-forgot:hover::after,
-  .lg-forgot:focus-visible::after{transform:scaleX(1);opacity:1}
-
-  .lg-divider{
-    display:flex;align-items:center;gap:12px;margin:8px 0 10px;
-    font-size:12px;color:var(--mu);
-  }
-  .lg-divider::before,.lg-divider::after{content:"";flex:1;height:1px;background:var(--line)}
-
-  .lg-sso{display:grid;grid-template-columns:1fr;gap:10px}
-  .lg-sso-btn{
-    height:44px;padding:0 14px;border-radius:999px;
-    border:1px solid var(--field-line);background:var(--bg2);color:var(--tx);
-    font:600 14px/1 "Plus Jakarta Sans",sans-serif;
-    display:inline-flex;align-items:center;justify-content:center;gap:9px;
-    cursor:pointer;transition:background-color .15s ease;
-  }
-  .lg-sso-btn:hover:not(:disabled){background:rgba(255,255,255,.06);transform:none;box-shadow:none}
-  .lg-sso-btn:active:not(:disabled){background:rgba(255,255,255,.11);transform:none}
-  .lg-sso-btn:disabled{opacity:.48;cursor:not-allowed;pointer-events:none}
-  .lg-sso-btn svg{width:18px;height:18px;flex:none}
-
-  .lg-join-row{
-    margin:10px 0 0;text-align:center;font-size:13.5px;color:var(--mu);
-  }
-  .lg-join-row a{
-    position:relative;
-    display:inline-flex;align-items:center;min-height:36px;
-    color:var(--gold);font-weight:600;text-decoration:none;transition:color .16s ease;
-  }
-  .lg-join-row a::after{
-    content:"";position:absolute;left:0;right:0;bottom:8px;height:1.5px;
-    background:currentColor;transform:scaleX(0);transform-origin:left;opacity:0;
-    transition:transform .2s cubic-bezier(.22,1,.36,1),opacity .2s ease;
-  }
-  .lg-join-row a:hover,
-  .lg-join-row a:focus-visible{color:var(--lime-hi)}
-  .lg-join-row a:hover::after,
-  .lg-join-row a:focus-visible::after{transform:scaleX(1);opacity:1}
-
-  @media(max-width:900px){
-    .lg-shell{min-height:calc(100vh - 68px);padding:24px 16px 32px;align-items:flex-start}
-    .lg-wrap{grid-template-columns:1fr;gap:22px}
-    .lg-card{max-width:480px;margin-inline:auto;justify-self:center}
-  }
-  @media(max-width:768px){
-    footer.site-footer,.site-footer{display:none!important}
-    .portal-nav{height:auto;min-height:58px;padding:env(safe-area-inset-top,0px) 16px 0}
-    .portal-brand img{width:32px;height:32px}
-    .portal-brand strong{font-size:20px}
-    .lg-shell{min-height:calc(100dvh - 58px);padding:20px 14px calc(28px + env(safe-area-inset-bottom,0px))}
-    .lg-title{font-size:clamp(30px,8vw,42px);margin-bottom:10px}
-    .lg-desc{font-size:14.5px;margin-bottom:16px}
-    .lg-checks{gap:8px;margin-bottom:14px}
-    .lg-checks li{font-size:13.5px}
-    .lg-card{padding:20px 18px}
-    .lg-input{height:46px;font-size:16px}
-    .lg-btn-gold,.lg-sso-btn{height:46px}
-  }
-  @media(max-width:380px){
-    .lg-card{padding:18px 14px}
-    .portal-nav{padding:env(safe-area-inset-top,0px) 12px 0}
-  }
-  @media(pointer:coarse){
-    .lg-input{font-size:16px}
-    button,a{touch-action:manipulation}
-  }
-  html{-webkit-tap-highlight-color:transparent;overscroll-behavior:none}
-  body{min-height:100dvh}
-  @media(prefers-reduced-motion:reduce){
-    *{transition:none !important;animation:none !important}
-  }
-</style>
-<script>
-  (function () {
-    var s = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
-    if (s) document.documentElement.classList.add('pf-standalone');
-  })();
-</script>
-<style>
-  .pf-app-arch-head,
-  .pf-app-arch-badge { display: none; }
-  html.pf-standalone .portal-nav,
-  html.pf-standalone .lg-copy,
-  html.pf-standalone footer.site-footer,
-  html.pf-standalone .site-footer { display: none !important; }
-  html.pf-standalone body {
-    background: #F7F8FC !important;
-    min-height: 100dvh !important;
-    max-width: 480px;
-    margin: 0 auto !important;
-  }
-  html.pf-standalone .pf-app-arch-head {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    width: 100%;
-    height: calc(186px + env(safe-area-inset-top, 0px));
-    padding: calc(18px + env(safe-area-inset-top, 0px)) 20px 44px;
-    background: #F7F8FC;
-    overflow: hidden;
-    flex: none;
-  }
-  html.pf-standalone .pf-app-ring {
-    position: absolute;
-    border-radius: 50%;
-    border: 7px solid rgba(15, 26, 51, 0.10);
-    pointer-events: none;
-  }
-  html.pf-standalone .pf-app-ring.r1 { width: 92px; height: 92px; top: -24px; right: -22px; border-color: rgba(245, 197, 24, 0.35); }
-  html.pf-standalone .pf-app-ring.r2 { width: 78px; height: 78px; bottom: 24px; left: -38px; border-color: rgba(15, 26, 51, 0.14); }
-  html.pf-standalone .pf-app-arch-art {
-    width: 82px;
-    height: 82px;
-    border-radius: 22px;
-    padding: 3px;
-    background: linear-gradient(145deg, #F5C518, #0F1A33);
-    box-shadow: 0 14px 28px -12px rgba(11, 21, 48, 0.28);
-    position: relative;
-    z-index: 1;
-  }
-  html.pf-standalone .pf-app-arch-art img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 19px;
-    display: block;
-  }
-  html.pf-standalone .pf-app-back {
-    position: absolute;
-    top: calc(14px + env(safe-area-inset-top, 0px));
-    left: 14px;
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    background: #0F1A33;
-    color: #F4F6FB;
-    border: 1.5px solid rgba(245, 197, 24, 0.55);
-    text-decoration: none;
-    font-size: 14px;
-    z-index: 2;
-  }
-  html.pf-standalone .lg-shell {
-    position: relative;
-    flex: 1 1 auto !important;
-    min-height: 0 !important;
-    margin-top: -34px;
-    padding: 58px 20px calc(28px + env(safe-area-inset-bottom, 0px)) !important;
-    align-items: flex-start !important;
-    background: linear-gradient(180deg, #0F1A33 0%, #070B18 100%) !important;
-    border-top-left-radius: 52% 50px;
-    border-top-right-radius: 52% 50px;
-    box-shadow: 0 -10px 28px rgba(7, 11, 24, 0.16);
-  }
-  html.pf-standalone .pf-app-arch-badge {
-    display: grid;
-    place-items: center;
-    position: absolute;
-    top: -44px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 88px;
-    height: 88px;
-    border-radius: 50%;
-    background: #0F1A33;
-    border: 3px solid #F5C518;
-    box-shadow: 0 12px 26px rgba(7, 11, 24, 0.42);
-    font-family: "Plus Jakarta Sans", Inter, sans-serif;
-    font-size: 13px;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    color: #F5C518;
-    text-transform: uppercase;
-    z-index: 3;
-  }
-  html.pf-standalone .lg-wrap {
-    grid-template-columns: 1fr !important;
-    max-width: 380px !important;
-    width: 100% !important;
-    margin: 0 auto !important;
-  }
-  html.pf-standalone .lg-card {
-    background: transparent !important;
-    border: 0 !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-  }
-  html.pf-standalone .lg-card > h2,
-  html.pf-standalone .lg-card > .lg-lead { display: none !important; }
-  html.pf-standalone .lg-field-label { color: #CBD5E1 !important; font-size: 12.5px !important; }
-  html.pf-standalone .lg-input {
-    border-radius: 999px !important;
-    background: rgba(7, 11, 24, 0.55) !important;
-    border: 1.5px solid rgba(244, 246, 251, 0.35) !important;
-    color: #F4F6FB !important;
-    padding-left: 18px !important;
-  }
-  html.pf-standalone .lg-input:focus {
-    border-color: #F5C518 !important;
-  }
-  html.pf-standalone .lg-btn-gold {
-    border-radius: 999px !important;
-    background: #F5C518 !important;
-    color: #0B1530 !important;
-    font-weight: 800 !important;
-  }
-  html.pf-standalone .lg-sso-btn {
-    border-radius: 999px !important;
-  }
-</style>
-<script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script>
-<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><meta name="theme-color" media="(prefers-color-scheme: light)" content="#F7F8FC"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17"><meta name="color-scheme" content="light dark"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
-<body class="portal-body auth-page dark public-dark-theme">
-<div class="pf-app-arch-head">
-  <span class="pf-app-ring r1" aria-hidden="true"></span>
-  <span class="pf-app-ring r2" aria-hidden="true"></span>
-  <a class="pf-app-back" href="/" aria-label="Back"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></a>
-  <div class="pf-app-arch-art"><img src="logo.jpg" alt="ProFit logo" width="82" height="82"></div>
-</div>
-<header class="portal-nav">
-  <a class="portal-brand" href="/">
-    <img src="logo.jpg" alt="ProFit logo" width="36" height="36">
-    <strong>ProFit</strong>
-  </a>
-  <a class="back-link" href="/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i><span>Back to home</span></a>
-</header>
-
-<main class="lg-shell">
-  <div class="pf-app-arch-badge" aria-hidden="true">SIGN IN</div>
-  <div class="lg-wrap">
-    <section class="lg-copy" aria-label="ProFit member portal overview">
-      <p class="lg-eyebrow">Your gym. One platform.</p>
-      <h1 class="lg-title">Progress starts<br>with <span class="hl">ProFit.</span></h1>
-      <p class="lg-desc">A focused space for your fitness journey and the people who keep your gym moving.</p>
-      <ul class="lg-checks">
-        <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>One secure sign-in</span></li>
-        <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Your account opens the right workspace</span></li>
-        <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Member and admin access kept separate</span></li>
-      </ul>
-      <p class="lg-gym-foot"><span data-gym-name>Functional Fitness Gym</span> · Alfonso, Calabarzon</p>
-    </section>
-
-    <section class="lg-card" aria-label="Sign in form">
-      <h2>Sign in</h2>
-      <p class="lg-lead">Use the account details provided by your gym.</p>
-
-      <form id="signInForm" method="post" action="javascript:void(0)" novalidate>
-        <label class="lg-field-label" for="identity">Email or username</label>
-        <input class="lg-input" id="identity" name="identity" autocomplete="username" maxlength="254" required placeholder="Enter your email or username">
-        <small class="lg-err-sm" id="identityError"></small>
-
-        <label class="lg-field-label" for="password">Password</label>
-        <div class="lg-pw-wrap">
-          <input class="lg-input" id="password" name="password" type="password" autocomplete="current-password" required maxlength="256" placeholder="Enter your password">
-          <button type="button" class="lg-eye" id="showPassword" aria-label="Show password" aria-pressed="false"><i class="fa-regular fa-eye"></i></button>
-        </div>
-        <div class="lg-caps" id="capsWarn" hidden><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Caps Lock is on</div>
-        <small class="lg-err-sm" id="passwordError"></small>
-
-
-
-        <div id="authMessage" class="lg-msg" role="alert" aria-live="polite" hidden></div>
-
-        <button class="lg-btn-gold" type="submit">Sign in</button>
-
-        <div class="lg-forgot-row">
-          <a class="lg-forgot" href="/forgot">Forgot password?</a>
-        </div>
-      </form>
-
-      <div class="lg-divider"><span>Or continue with</span></div>
-      <div class="lg-sso">
-        <button type="button" class="lg-sso-btn" id="googleSignInBtn" aria-label="Sign in with Google">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z"/>
-            <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24Z"/>
-            <path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14Z"/>
-            <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96Z"/>
-          </svg>
-          <span>Continue with Google</span>
-        </button>
-      </div>
-
-      <p class="lg-join-row">New to ProFit? <a href="/join">Create a free account</a></p>
-    </section>
-  </div>
-</main>
-
-<script>
-(() => {
-  const $ = id => document.getElementById(id);
-  const form = $('signInForm'), submit = form.querySelector('[type=submit]');
-  const HOME = { admin: '/dashboard', cashier: '/dashboard', trainer: '/dashboard', member: '/dashboard' };
-
-  const pwEl = $('password'), eyeBtn = $('showPassword'), capsEl = $('capsWarn');
-  eyeBtn.addEventListener('click', () => {
-    const show = pwEl.type === 'password';
-    pwEl.type = show ? 'text' : 'password';
-    eyeBtn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
-    eyeBtn.setAttribute('aria-pressed', String(show));
-    eyeBtn.innerHTML = `<i class="fa-regular ${show ? 'fa-eye-slash' : 'fa-eye'}"></i>`;
-  });
-
-  const checkCaps = e => {
-    if (e && typeof e.getModifierState === 'function') {
-      capsEl.hidden = !e.getModifierState('CapsLock');
+    html[data-theme="light"],
+    body.light {
+      --bg: #F7F8FC;
+      --bg2: #EEF2FA;
+      --card: #FFFFFF;
+      --line: #DDE3F0;
+      --tx: #0B1530;
+      --mu: #4A5878;
+      --field-line: #CDD6E8;
+      --err: #dc2626;
+      --ok: #15803d;
     }
-  };
-  pwEl.addEventListener('keydown', checkCaps);
-  pwEl.addEventListener('keyup', checkCaps);
-  pwEl.addEventListener('blur', () => { capsEl.hidden = true; });
 
-  function message(text, error) {
-    const box = $('authMessage');
-    box.hidden = false;
-    box.classList.toggle('error', !!error);
-    box.textContent = text;
-  }
-
-  function setBusy(busy) {
-    submit.disabled = busy;
-    submit.textContent = busy ? 'Signing in…' : 'Sign in';
-  }
-
-  form.addEventListener('submit', async e => {
-    e.preventDefault();
-    $('identityError').textContent = '';
-    $('passwordError').textContent = '';
-    $('authMessage').hidden = true;
-    const identity = $('identity').value.trim(), password = pwEl.value;
-    if (!identity) { $('identityError').textContent = 'Enter your email or username.'; $('identity').focus(); return; }
-    if (identity.includes('@') && window.ProFitAPI?.validateRealEmail) {
-      const emailErr = window.ProFitAPI.validateRealEmail(identity);
-      if (emailErr) { $('identityError').textContent = emailErr; $('identity').focus(); return; }
-    }
-    if (!password) { $('passwordError').textContent = 'Enter your password.'; pwEl.focus(); return; }
-    setBusy(true);
-    try {
-      try { sessionStorage.removeItem('profit-logged-out'); } catch (_) {}
-      if (window.PROFIT_CONFIG?.DEMO_MODE && !window.PROFIT_CONFIG?.API_BASE_URL) {
-        const hint = identity.toLowerCase(), role = /coach|trainer/.test(hint) ? 'trainer' : /member/.test(hint) ? 'member' : 'admin';
-        const isTrainer = role === 'trainer', isMember = role === 'member';
-        const session = { name: isMember ? 'Demo Member' : isTrainer ? 'Coach Mika' : 'Administrator', role: isTrainer ? 'TRAINER' : isMember ? 'MEMBER' : 'ADMIN', demo: true };
-        sessionStorage.setItem('profit-demo-session', JSON.stringify(session));
-        sessionStorage.setItem('profit-verified-session', JSON.stringify(session));
-        sessionStorage.setItem('pf-auth-just-logged-in', '1');
-        localStorage.removeItem('profit-demo-session');
-        message('Signed in successfully. Opening your workspace…', false);
-        setTimeout(() => location.replace(HOME[role]), 350);
-      } else {
-        const next = new URLSearchParams(location.search).get('next') || '';
-        const loginResult = await window.ProFitAPI.post('/auth/login', { identity, password, next });
-        const session = await window.ProFitAPI.get('/auth/session');
-        const user = session.user;
-        const r = String(user?.role || '').toUpperCase();
-        const isOwner = ['ADMIN', 'OWNER'].includes(r);
-        const needsOnboarding = (r === 'MEMBER' || r === 'CASHIER' || r === 'TRAINER') && user?.onboarding_completed === false;
-        const home = needsOnboarding ? '/onboarding'
-          : (isOwner || r === 'CASHIER' || r === 'TRAINER' || r === 'COACH' || r === 'MEMBER') ? '/dashboard'
-          : null;
-        if (home) {
-          sessionStorage.setItem('profit-verified-session', JSON.stringify(user));
-          sessionStorage.setItem('pf-auth-just-logged-in', '1');
-          location.replace(loginResult.redirect || home);
-        } else {
-          message('Your account role could not be verified. Contact the gym administrator.', true);
-          setBusy(false);
-        }
+    @media(prefers-color-scheme:light) {
+      html[data-theme="auto"] {
+        --bg: #F7F8FC;
+        --bg2: #EEF2FA;
+        --card: #FFFFFF;
+        --line: #DDE3F0;
+        --tx: #0B1530;
+        --mu: #4A5878;
+        --field-line: #CDD6E8;
+        --err: #dc2626;
+        --ok: #15803d;
       }
-    } catch (err) {
-      message(err.status === 401 ? 'Those sign-in details were not accepted. Check them and try again.' : err.message || 'Sign-in is currently unavailable.', true);
-      setBusy(false);
-      pwEl.value = '';
     }
-  });
-})();
-</script>
-<script src="google-auth.js?v=7"></script>
-<script src="portal-fx.js?v=2"></script>
-<script src="site-footer.js?v=8" defer></script>
+
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--tx);
+      font: 15px/1.6 Inter, system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h1,
+    h2,
+    h3,
+    button,
+    .portal-brand strong {
+      font-family: "Plus Jakarta Sans", Inter, system-ui, sans-serif
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 2px
+    }
+
+    /* Header matching landing & join */
+    .portal-nav {
+      height: 68px;
+      min-height: 68px;
+      background: #0b0c10;
+      border-bottom: 1px solid var(--line);
+      padding: 0 clamp(16px, 4vw, 40px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      flex: none;
+    }
+
+    .portal-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: #f6efdc;
+      min-height: 44px;
+    }
+
+    .portal-brand img {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      object-fit: cover;
+      display: block;
+      flex: none;
+    }
+
+    .portal-brand strong {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      color: #f6efdc
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 0 10px;
+      border-radius: 10px;
+      color: #9a9788;
+      text-decoration: none;
+      font: 600 14px/1 Inter, system-ui, sans-serif;
+      transition: background-color .15s ease, color .15s ease;
+      white-space: nowrap;
+    }
+
+    .back-link:hover {
+      background: rgba(255, 255, 255, .06);
+      color: var(--tx)
+    }
+
+    .back-link:active {
+      background: rgba(255, 255, 255, .11)
+    }
+
+    /* Full-bleed hero with flat overlay & subtle parallax layer */
+    @keyframes pfPageFade {
+      from {
+        opacity: 0
+      }
+
+      to {
+        opacity: 1
+      }
+    }
+
+    .lg-shell {
+      position: relative;
+      flex: 1 1 auto;
+      min-height: calc(100vh - 68px);
+      display: flex;
+      align-items: center;
+      padding: clamp(16px, 2.5vh, 28px) clamp(16px, 4vw, 48px);
+      overflow: hidden;
+      animation: pfPageFade .35s ease-out both;
+    }
+
+    .lg-shell::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: url("img/hero.jpg") center/cover no-repeat;
+      z-index: -1;
+    }
+
+    .lg-shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(7, 8, 12, .7);
+      z-index: 0;
+    }
+
+    html[data-theme="light"] .lg-shell::before,
+    body.light .lg-shell::before {
+      background: rgba(244, 245, 248, .82);
+    }
+
+    .lg-wrap {
+      position: relative;
+      z-index: 1;
+      width: min(1160px, 100%);
+      margin-inline: auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 440px;
+      gap: clamp(28px, 5vw, 64px);
+      align-items: center;
+    }
+
+    /* Left copy */
+    @keyframes pfRiseIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    @keyframes pfCardSlideIn {
+      from {
+        opacity: 0;
+        transform: translateX(18px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    @keyframes pfCheckPop {
+      0% {
+        transform: rotate(45deg) scale(.35);
+        opacity: 0
+      }
+
+      70% {
+        transform: rotate(45deg) scale(1.15);
+        opacity: 1
+      }
+
+      100% {
+        transform: rotate(45deg) scale(1);
+        opacity: 1
+      }
+    }
+
+    .lg-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font: 700 12px/1.2 "Plus Jakarta Sans", sans-serif;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin: 0 0 16px;
+      animation: pfRiseIn .45s cubic-bezier(.22, 1, .36, 1) both;
+    }
+
+    .lg-eyebrow::before {
+      content: "";
+      width: 24px;
+      height: 2px;
+      background: var(--gold);
+      flex: none
+    }
+
+    .lg-title {
+      margin: 0 0 16px;
+      font-size: clamp(38px, 5vw, 60px);
+      font-weight: 800;
+      line-height: 1.04;
+      letter-spacing: -.03em;
+      color: var(--tx);
+      animation: pfRiseIn .5s cubic-bezier(.22, 1, .36, 1) .06s both;
+    }
+
+    .lg-title .hl {
+      color: var(--gold)
+    }
+
+    .lg-desc {
+      margin: 0 0 24px;
+      max-width: 460px;
+      font-size: 16.5px;
+      line-height: 1.6;
+      color: var(--mu);
+      animation: pfRiseIn .5s cubic-bezier(.22, 1, .36, 1) .12s both;
+    }
+
+    .lg-checks {
+      list-style: none;
+      margin: 0 0 24px;
+      padding: 0;
+      display: grid;
+      gap: 12px
+    }
+
+    .lg-checks li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14.5px;
+      font-weight: 500;
+      color: var(--tx);
+      animation: pfRiseIn .45s cubic-bezier(.22, 1, .36, 1) both;
+    }
+
+    .lg-checks li:nth-child(1) {
+      animation-delay: .18s
+    }
+
+    .lg-checks li:nth-child(2) {
+      animation-delay: .24s
+    }
+
+    .lg-checks li:nth-child(3) {
+      animation-delay: .30s
+    }
+
+    .lg-checks i {
+      color: var(--gold);
+      font-size: 14px;
+      flex: none
+    }
+
+    .lg-gym-foot {
+      margin: 0;
+      font-size: 12.5px;
+      color: var(--mu);
+      animation: pfRiseIn .5s cubic-bezier(.22, 1, .36, 1) .34s both
+    }
+
+    /* Right card */
+    .lg-card {
+      width: 100%;
+      max-width: 410px;
+      justify-self: end;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: clamp(18px, 2.4vh, 24px) clamp(20px, 2.5vw, 28px);
+      box-shadow: 0 24px 48px -20px rgba(0, 0, 0, .75);
+      animation: pfCardSlideIn .52s cubic-bezier(.22, 1, .36, 1) .08s both;
+    }
+
+    .lg-card form>* {
+      animation: pfRiseIn .42s cubic-bezier(.22, 1, .36, 1) both
+    }
+
+    .lg-card form>*:nth-child(1) {
+      animation-delay: .14s
+    }
+
+    .lg-card form>*:nth-child(2) {
+      animation-delay: .17s
+    }
+
+    .lg-card form>*:nth-child(4) {
+      animation-delay: .20s
+    }
+
+    .lg-card form>*:nth-child(5) {
+      animation-delay: .23s
+    }
+
+    .lg-card form>*:nth-child(8) {
+      animation-delay: .26s
+    }
+
+    .lg-card form>*:nth-child(10) {
+      animation-delay: .29s
+    }
+
+    .lg-card form>*:nth-child(11) {
+      animation-delay: .32s
+    }
+
+    .lg-card h2 {
+      margin: 0 0 3px;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      color: var(--tx)
+    }
+
+    .lg-lead {
+      margin: 0 0 14px;
+      font-size: 13.5px;
+      color: var(--mu)
+    }
+
+    .lg-field-label {
+      display: block;
+      margin: 0 0 5px;
+      font: 600 13px/1.2 Inter, system-ui, sans-serif;
+      color: var(--tx);
+    }
+
+    .lg-input {
+      width: 100%;
+      height: 44px;
+      padding: 0 14px;
+      border-radius: 12px;
+      border: 1px solid var(--field-line);
+      background: var(--bg2);
+      color: var(--tx);
+      font: 400 14.5px/1.2 Inter, system-ui, sans-serif;
+      transition: border-color .16s ease, box-shadow .16s ease, background-color .16s ease;
+    }
+
+    .lg-input::placeholder {
+      color: var(--mu)
+    }
+
+    .lg-input:hover:not(:focus):not(:disabled) {
+      border-color: rgba(232, 185, 58, .5)
+    }
+
+    .lg-input:focus {
+      outline: 1.5px solid var(--gold);
+      outline-offset: 0;
+      border-color: var(--gold);
+      box-shadow: none;
+    }
+
+    .lg-input:-webkit-autofill,
+    .lg-input:-webkit-autofill:hover,
+    .lg-input:-webkit-autofill:focus {
+      -webkit-box-shadow: 0 0 0 100px var(--bg2) inset !important;
+      -webkit-text-fill-color: var(--tx) !important;
+      caret-color: var(--tx);
+      transition: background-color 5000s ease-in-out 0s;
+    }
+
+    .lg-pw-wrap {
+      position: relative
+    }
+
+    .lg-pw-wrap .lg-input {
+      padding-right: 48px
+    }
+
+    .lg-eye {
+      position: absolute;
+      right: 4px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 44px;
+      height: 44px;
+      border: 0;
+      background: transparent;
+      color: var(--mu);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: background-color .15s ease, color .15s ease;
+    }
+
+    .lg-eye:hover {
+      background: rgba(255, 255, 255, .06);
+      color: var(--tx)
+    }
+
+    .lg-eye:active {
+      background: rgba(255, 255, 255, .11)
+    }
+
+    .lg-err-sm {
+      display: block;
+      min-height: 0;
+      margin: 3px 0 8px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--err)
+    }
+
+    .lg-caps {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 4px 0 0;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gold)
+    }
+
+    .lg-caps[hidden] {
+      display: none
+    }
+
+    .lg-remember {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 12px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--tx);
+      cursor: pointer;
+      min-height: 36px;
+    }
+
+    .lg-remember input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      margin: 0;
+      flex: none;
+      border-radius: 6px;
+      border: 1px solid var(--field-line);
+      background: var(--bg2);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: border-color .15s ease, background-color .15s ease;
+    }
+
+    .lg-remember input[type="checkbox"]:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 2px;
+      box-shadow: none;
+    }
+
+    .lg-remember input[type="checkbox"]:checked {
+      background: var(--gold);
+      border-color: var(--gold);
+    }
+
+    .lg-remember input[type="checkbox"]:checked::after {
+      content: "";
+      width: 5px;
+      height: 9px;
+      border: solid var(--on);
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+      margin-bottom: 2px;
+      animation: pfCheckPop .22s cubic-bezier(.22, 1, .36, 1) both;
+    }
+
+    .lg-msg {
+      margin: 0 0 14px;
+      padding: 11px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 500;
+      background: rgba(74, 222, 128, .12);
+      border: 1px solid rgba(74, 222, 128, .35);
+      color: var(--ok);
+    }
+
+    .lg-msg.error {
+      background: rgba(248, 113, 113, .12);
+      border-color: rgba(248, 113, 113, .38);
+      color: var(--err);
+    }
+
+    .lg-msg[hidden] {
+      display: none
+    }
+
+    .lg-btn-gold {
+      width: 100%;
+      height: 44px;
+      border: 0;
+      border-radius: 999px;
+      background: var(--gold);
+      color: #0B1530;
+      font: 700 15px/1 "Plus Jakarta Sans", sans-serif;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: background-color .15s ease, opacity .15s ease;
+    }
+
+    .lg-btn-gold:hover:not(:disabled) {
+      background: #FAD03C;
+      transform: none;
+      box-shadow: none;
+      filter: none
+    }
+
+    .lg-btn-gold:active:not(:disabled) {
+      background: #8A6A00;
+      color: #0B1530;
+      transform: none;
+      box-shadow: none;
+      filter: none
+    }
+
+    .lg-btn-gold:disabled {
+      opacity: .48;
+      cursor: not-allowed;
+      pointer-events: none;
+      box-shadow: none;
+      transform: none
+    }
+
+    .lg-forgot-row {
+      display: flex;
+      justify-content: center;
+      margin: 8px 0 0
+    }
+
+    .lg-forgot {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+      padding: 0 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gold);
+      text-decoration: none;
+      transition: color .16s ease;
+    }
+
+    .lg-forgot::after {
+      content: "";
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      bottom: 8px;
+      height: 1.5px;
+      background: currentColor;
+      transform: scaleX(0);
+      transform-origin: center;
+      opacity: 0;
+      transition: transform .2s cubic-bezier(.22, 1, .36, 1), opacity .2s ease;
+    }
+
+    .lg-forgot:hover,
+    .lg-forgot:focus-visible {
+      color: var(--lime-hi)
+    }
+
+    .lg-forgot:hover::after,
+    .lg-forgot:focus-visible::after {
+      transform: scaleX(1);
+      opacity: 1
+    }
+
+    .lg-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 8px 0 10px;
+      font-size: 12px;
+      color: var(--mu);
+    }
+
+    .lg-divider::before,
+    .lg-divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--line)
+    }
+
+    .lg-sso {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px
+    }
+
+    .lg-sso-btn {
+      height: 44px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid var(--field-line);
+      background: var(--bg2);
+      color: var(--tx);
+      font: 600 14px/1 "Plus Jakarta Sans", sans-serif;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      cursor: pointer;
+      transition: background-color .15s ease;
+    }
+
+    .lg-sso-btn:hover:not(:disabled) {
+      background: rgba(255, 255, 255, .06);
+      transform: none;
+      box-shadow: none
+    }
+
+    .lg-sso-btn:active:not(:disabled) {
+      background: rgba(255, 255, 255, .11);
+      transform: none
+    }
+
+    .lg-sso-btn:disabled {
+      opacity: .48;
+      cursor: not-allowed;
+      pointer-events: none
+    }
+
+    .lg-sso-btn svg {
+      width: 18px;
+      height: 18px;
+      flex: none
+    }
+
+    .lg-join-row {
+      margin: 10px 0 0;
+      text-align: center;
+      font-size: 13.5px;
+      color: var(--mu);
+    }
+
+    .lg-join-row a {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+      color: var(--gold);
+      font-weight: 600;
+      text-decoration: none;
+      transition: color .16s ease;
+    }
+
+    .lg-join-row a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 8px;
+      height: 1.5px;
+      background: currentColor;
+      transform: scaleX(0);
+      transform-origin: left;
+      opacity: 0;
+      transition: transform .2s cubic-bezier(.22, 1, .36, 1), opacity .2s ease;
+    }
+
+    .lg-join-row a:hover,
+    .lg-join-row a:focus-visible {
+      color: var(--lime-hi)
+    }
+
+    .lg-join-row a:hover::after,
+    .lg-join-row a:focus-visible::after {
+      transform: scaleX(1);
+      opacity: 1
+    }
+
+    @media(max-width:900px) {
+      .lg-shell {
+        min-height: calc(100vh - 68px);
+        padding: 24px 16px 32px;
+        align-items: flex-start
+      }
+
+      .lg-wrap {
+        grid-template-columns: 1fr;
+        gap: 22px
+      }
+
+      .lg-card {
+        max-width: 480px;
+        margin-inline: auto;
+        justify-self: center
+      }
+    }
+
+    @media(max-width:768px) {
+
+      footer.site-footer,
+      .site-footer {
+        display: none !important
+      }
+
+      .portal-nav {
+        height: auto;
+        min-height: 58px;
+        padding: env(safe-area-inset-top, 0px) 16px 0
+      }
+
+      .portal-brand img {
+        width: 32px;
+        height: 32px
+      }
+
+      .portal-brand strong {
+        font-size: 20px
+      }
+
+      .lg-shell {
+        min-height: calc(100dvh - 58px);
+        padding: 20px 14px calc(28px + env(safe-area-inset-bottom, 0px))
+      }
+
+      .lg-title {
+        font-size: clamp(30px, 8vw, 42px);
+        margin-bottom: 10px
+      }
+
+      .lg-desc {
+        font-size: 14.5px;
+        margin-bottom: 16px
+      }
+
+      .lg-checks {
+        gap: 8px;
+        margin-bottom: 14px
+      }
+
+      .lg-checks li {
+        font-size: 13.5px
+      }
+
+      .lg-card {
+        padding: 20px 18px
+      }
+
+      .lg-input {
+        height: 46px;
+        font-size: 16px
+      }
+
+      .lg-btn-gold,
+      .lg-sso-btn {
+        height: 46px
+      }
+    }
+
+    @media(max-width:380px) {
+      .lg-card {
+        padding: 18px 14px
+      }
+
+      .portal-nav {
+        padding: env(safe-area-inset-top, 0px) 12px 0
+      }
+    }
+
+    @media(pointer:coarse) {
+      .lg-input {
+        font-size: 16px
+      }
+
+      button,
+      a {
+        touch-action: manipulation
+      }
+    }
+
+    html {
+      -webkit-tap-highlight-color: transparent;
+      overscroll-behavior: none
+    }
+
+    body {
+      min-height: 100dvh
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+      * {
+        transition: none !important;
+        animation: none !important
+      }
+    }
+  </style>
+  <script>
+    (function () {
+      var s = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+      if (s) document.documentElement.classList.add('pf-standalone');
+    })();
+  </script>
+  <style>
+    .pf-app-arch-head,
+    .pf-app-arch-badge {
+      display: none;
+    }
+
+    html.pf-standalone {
+      background: #070B18 !important;
+      overflow-x: clip !important;
+      overscroll-behavior: none;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    html.pf-standalone .portal-nav,
+    html.pf-standalone .lg-copy,
+    html.pf-standalone footer.site-footer,
+    html.pf-standalone .site-footer {
+      display: none !important;
+    }
+
+    html.pf-standalone body {
+      background: #F7F8FC !important;
+      min-height: 100dvh !important;
+      width: 100% !important;
+      max-width: none !important;
+      margin: 0 !important;
+      overflow-x: clip !important;
+    }
+
+    @keyframes pfRingFloatA {
+      0% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      100% {
+        transform: translate(-10px, 12px) scale(1.06);
+      }
+    }
+
+    @keyframes pfRingFloatB {
+      0% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      100% {
+        transform: translate(12px, -10px) scale(1.08);
+      }
+    }
+
+    @keyframes pfSheetUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pfBadgePop {
+      0% {
+        opacity: 0;
+        transform: translateX(-50%) scale(0.68) rotate(-8deg);
+      }
+
+      70% {
+        opacity: 1;
+        transform: translateX(-50%) scale(1.04) rotate(0deg);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateX(-50%) scale(1) rotate(0deg);
+      }
+    }
+
+    @keyframes pfLogoGlow {
+
+      0%,
+      100% {
+        box-shadow: 0 14px 30px rgba(7, 11, 24, 0.48), 0 0 0 6px rgba(245, 197, 24, 0.12);
+      }
+
+      50% {
+        box-shadow: 0 18px 36px rgba(7, 11, 24, 0.56), 0 0 0 10px rgba(245, 197, 24, 0.22), 0 0 26px rgba(245, 197, 24, 0.30);
+      }
+    }
+
+    @keyframes pfSheenSweep {
+
+      0%,
+      62% {
+        transform: translateX(-140%) rotate(22deg);
+      }
+
+      82%,
+      100% {
+        transform: translateX(160%) rotate(22deg);
+      }
+    }
+
+    @keyframes pfStaggerUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    html.pf-standalone .pf-app-arch-head {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      width: 100%;
+      min-height: calc(144px + env(safe-area-inset-top, 0px));
+      padding: calc(18px + env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-right, 20px)) 56px max(20px, env(safe-area-inset-left, 20px));
+      background: radial-gradient(circle at 50% 90%, rgba(245, 197, 24, 0.14) 0%, transparent 62%), linear-gradient(180deg, #FFFFFF 0%, #EEF2FA 100%);
+      overflow: hidden;
+      flex: none;
+    }
+
+    html.pf-standalone .pf-app-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 7px solid rgba(15, 26, 51, 0.08);
+      pointer-events: none;
+    }
+
+    html.pf-standalone .pf-app-ring.r1 {
+      width: 106px;
+      height: 106px;
+      top: -28px;
+      right: -24px;
+      border-color: rgba(245, 197, 24, 0.36);
+      animation: pfRingFloatA 7.5s ease-in-out infinite alternate;
+    }
+
+    html.pf-standalone .pf-app-ring.r2 {
+      width: 86px;
+      height: 86px;
+      bottom: 18px;
+      left: -38px;
+      border-color: rgba(15, 26, 51, 0.12);
+      animation: pfRingFloatB 8.5s ease-in-out infinite alternate;
+    }
+
+    html.pf-standalone .pf-app-ring.r3 {
+      width: 44px;
+      height: 44px;
+      top: 24px;
+      right: 24%;
+      border-width: 4.5px;
+      border-color: rgba(245, 197, 24, 0.24);
+      animation: pfRingFloatB 6.2s ease-in-out infinite alternate-reverse;
+    }
+
+    html.pf-standalone .pf-app-back {
+      position: absolute;
+      top: calc(14px + env(safe-area-inset-top, 0px));
+      left: max(16px, env(safe-area-inset-left, 16px));
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #0F1A33;
+      color: #F4F6FB;
+      border: 1.5px solid rgba(245, 197, 24, 0.58);
+      text-decoration: none;
+      z-index: 4;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      transition: transform .12s ease-out, background-color .15s ease, border-color .15s ease;
+    }
+
+    html.pf-standalone .pf-app-back svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+    }
+
+    html.pf-standalone .pf-app-back:active {
+      transform: scale(0.94);
+      background: #19294E;
+      border-color: #F5C518;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      html.pf-standalone .pf-app-back:hover {
+        background: #19294E;
+        border-color: #F5C518;
+      }
+    }
+
+    html.pf-standalone .lg-shell {
+      position: relative;
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+      margin-top: -34px;
+      padding: 72px max(20px, env(safe-area-inset-right, 20px)) calc(32px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 20px)) !important;
+      align-items: flex-start !important;
+      background: linear-gradient(180deg, #0F1A33 0%, #070B18 100%) !important;
+      border-top-left-radius: 50% 44px;
+      border-top-right-radius: 50% 44px;
+      box-shadow: 0 -10px 28px rgba(7, 11, 24, 0.14), inset 0 1px 0 rgba(245, 197, 24, 0.24);
+      overflow: visible !important;
+      animation: pfSheetUp .46s cubic-bezier(.22, 1, .36, 1) both !important;
+    }
+
+    html.pf-standalone .lg-shell::before,
+    html.pf-standalone .lg-shell::after {
+      display: none !important;
+      content: none !important;
+    }
+
+    html.pf-standalone .pf-app-arch-badge {
+      display: grid;
+      place-items: center;
+      position: absolute;
+      top: -49px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 98px;
+      height: 98px;
+      border-radius: 50%;
+      background: #070B18;
+      border: 3.5px solid #F5C518;
+      box-shadow: 0 14px 30px rgba(7, 11, 24, 0.48), 0 0 0 6px rgba(245, 197, 24, 0.12);
+      overflow: hidden;
+      z-index: 3;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      animation: pfBadgePop .56s cubic-bezier(.22, 1.15, .36, 1) .05s both, pfLogoGlow 3.8s ease-in-out .85s infinite;
+    }
+
+    html.pf-standalone .pf-app-arch-badge img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      display: block;
+    }
+
+    html.pf-standalone .pf-app-arch-badge::after {
+      content: "";
+      position: absolute;
+      inset: -20%;
+      background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, 0.34) 50%, transparent 62%);
+      transform: translateX(-140%) rotate(22deg);
+      animation: pfSheenSweep 4.8s ease-in-out 1.4s infinite;
+      pointer-events: none;
+    }
+
+    html.pf-standalone .lg-wrap {
+      grid-template-columns: 1fr !important;
+      max-width: 400px !important;
+      width: 100% !important;
+      margin: 0 auto !important;
+    }
+
+    html.pf-standalone .lg-card {
+      background: transparent !important;
+      border: 0 !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+      max-width: 100% !important;
+      width: 100% !important;
+      animation: none !important;
+    }
+
+    html.pf-standalone .lg-card form>*,
+    html.pf-standalone .lg-divider,
+    html.pf-standalone .lg-sso,
+    html.pf-standalone .lg-join-row {
+      animation: pfStaggerUp .42s cubic-bezier(.22, 1, .36, 1) both !important;
+    }
+
+    html.pf-standalone .lg-card form>*:nth-child(1),
+    html.pf-standalone .lg-card form>*:nth-child(2) {
+      animation-delay: .10s !important;
+    }
+
+    html.pf-standalone .lg-card form>*:nth-child(4),
+    html.pf-standalone .lg-card form>*:nth-child(5) {
+      animation-delay: .16s !important;
+    }
+
+    html.pf-standalone .lg-card form>.lg-btn-gold {
+      animation-delay: .22s !important;
+    }
+
+    html.pf-standalone .lg-card form>.lg-forgot-row {
+      animation-delay: .26s !important;
+    }
+
+    html.pf-standalone .lg-divider {
+      animation-delay: .30s !important;
+    }
+
+    html.pf-standalone .lg-sso {
+      animation-delay: .34s !important;
+    }
+
+    html.pf-standalone .lg-join-row {
+      animation-delay: .38s !important;
+    }
+
+    html.pf-standalone .lg-card>h2,
+    html.pf-standalone .lg-card>.lg-lead {
+      display: none !important;
+    }
+
+    html.pf-standalone .lg-field-label {
+      color: #CBD5E1 !important;
+      font-size: 13px !important;
+      margin-bottom: 6px !important;
+    }
+
+    html.pf-standalone .lg-input {
+      height: 48px !important;
+      font-size: 16px !important;
+      border-radius: 999px !important;
+      background: rgba(7, 11, 24, 0.58) !important;
+      border: 1.5px solid rgba(159, 176, 214, 0.34) !important;
+      color: #F4F6FB !important;
+      padding: 0 18px !important;
+    }
+
+    html.pf-standalone .lg-input::placeholder {
+      color: #8FA3CC !important;
+    }
+
+    html.pf-standalone .lg-input:focus {
+      border-color: #F5C518 !important;
+      outline: none !important;
+      box-shadow: 0 0 0 3px rgba(245, 197, 24, 0.22) !important;
+    }
+
+    html.pf-standalone .lg-pw-wrap .lg-input {
+      padding-right: 52px !important;
+    }
+
+    html.pf-standalone .lg-eye {
+      right: 5px;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      color: #9FB0D6;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    html.pf-standalone .lg-err-sm {
+      margin: 4px 0 10px;
+      padding-left: 6px;
+    }
+
+    html.pf-standalone .lg-btn-gold {
+      position: relative;
+      overflow: hidden;
+      height: 50px !important;
+      border-radius: 999px !important;
+      background: #F5C518 !important;
+      color: #0B1530 !important;
+      font-size: 15.5px !important;
+      font-weight: 800 !important;
+      box-shadow: 0 10px 24px -10px rgba(245, 197, 24, 0.5) !important;
+      user-select: none;
+      -webkit-user-select: none;
+      transition: transform .12s ease-out, background-color .15s ease, opacity .15s ease !important;
+    }
+
+    html.pf-standalone .lg-btn-gold::after {
+      content: "";
+      position: absolute;
+      inset: -40% -20%;
+      background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.42) 50%, transparent 60%);
+      transform: translateX(-140%) rotate(22deg);
+      animation: pfSheenSweep 5.5s ease-in-out 2.2s infinite;
+      pointer-events: none;
+    }
+
+    html.pf-standalone .lg-btn-gold:active:not(:disabled) {
+      transform: scale(0.975) !important;
+      background: #D9AD0F !important;
+    }
+
+    html.pf-standalone .lg-forgot-row {
+      margin-top: 10px;
+    }
+
+    html.pf-standalone .lg-forgot {
+      min-height: 44px;
+      font-size: 13.5px;
+    }
+
+    html.pf-standalone .lg-divider {
+      margin: 10px 0 12px;
+      color: #8FA3CC;
+    }
+
+    html.pf-standalone .lg-divider::before,
+    html.pf-standalone .lg-divider::after {
+      background: rgba(159, 176, 214, 0.22);
+    }
+
+    html.pf-standalone .lg-sso-btn {
+      height: 48px !important;
+      border-radius: 999px !important;
+      background: rgba(255, 255, 255, 0.06) !important;
+      border: 1.5px solid rgba(159, 176, 214, 0.30) !important;
+      color: #F4F6FB !important;
+      user-select: none;
+      -webkit-user-select: none;
+      transition: transform .12s ease-out, background-color .15s ease !important;
+    }
+
+    html.pf-standalone .lg-sso-btn:active:not(:disabled) {
+      transform: scale(0.975) !important;
+      background: rgba(255, 255, 255, 0.12) !important;
+    }
+
+    html.pf-standalone .lg-join-row {
+      margin-top: 14px;
+      font-size: 14px;
+      color: #9FB0D6;
+    }
+
+    html.pf-standalone .lg-join-row a {
+      min-height: 44px;
+    }
+
+    @media (min-width: 600px) {
+      html.pf-standalone .lg-shell {
+        border-top-left-radius: 50% 56px;
+        border-top-right-radius: 50% 56px;
+      }
+    }
+
+    @media (max-height: 520px) {
+      html.pf-standalone .pf-app-arch-head {
+        min-height: calc(96px + env(safe-area-inset-top, 0px));
+        padding: calc(12px + env(safe-area-inset-top, 0px)) 20px 42px;
+      }
+
+      html.pf-standalone .pf-app-arch-badge {
+        width: 78px;
+        height: 78px;
+        top: -39px;
+        border-width: 3px;
+      }
+
+      html.pf-standalone .lg-shell {
+        margin-top: -26px;
+        padding-top: 52px !important;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      html.pf-standalone *,
+      html.pf-standalone *::before,
+      html.pf-standalone *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+  <script
+    type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#0a0e17">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F7F8FC">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17">
+  <meta name="color-scheme" content="light dark">
+  <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="ProFit">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+</head>
+
+<body class="portal-body auth-page dark public-dark-theme">
+  <div class="pf-app-arch-head">
+    <span class="pf-app-ring r1" aria-hidden="true"></span>
+    <span class="pf-app-ring r2" aria-hidden="true"></span>
+    <span class="pf-app-ring r3" aria-hidden="true"></span>
+    <a class="pf-app-back" href="/" aria-label="Back to welcome"><svg viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="15 18 9 12 15 6" />
+      </svg></a>
+  </div>
+  <header class="portal-nav">
+    <a class="portal-brand" href="/">
+      <img src="logo.jpg" alt="ProFit logo" width="36" height="36">
+      <strong>ProFit</strong>
+    </a>
+    <a class="back-link" href="/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i><span>Back to home</span></a>
+  </header>
+
+  <main class="lg-shell">
+    <div class="pf-app-arch-badge"><img src="/logo.jpg" alt="ProFit logo" width="98" height="98"></div>
+    <div class="lg-wrap">
+      <section class="lg-copy" aria-label="ProFit member portal overview">
+        <p class="lg-eyebrow">Your gym. One platform.</p>
+        <h1 class="lg-title">Progress starts<br>with <span class="hl">ProFit.</span></h1>
+        <p class="lg-desc">A focused space for your fitness journey and the people who keep your gym moving.</p>
+        <ul class="lg-checks">
+          <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>One secure sign-in</span></li>
+          <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Your account opens the right workspace</span>
+          </li>
+          <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Member and admin access kept separate</span>
+          </li>
+        </ul>
+        <p class="lg-gym-foot"><span data-gym-name>Functional Fitness Gym</span> · Alfonso, Calabarzon</p>
+      </section>
+
+      <section class="lg-card" aria-label="Sign in form">
+        <h2>Sign in</h2>
+        <p class="lg-lead">Use the account details provided by your gym.</p>
+
+        <form id="signInForm" method="post" action="javascript:void(0)" novalidate>
+          <label class="lg-field-label" for="identity">Email or username</label>
+          <input class="lg-input" id="identity" name="identity" autocomplete="username" autocapitalize="none"
+            autocorrect="off" spellcheck="false" enterkeyhint="next" maxlength="254" required
+            placeholder="Enter your email or username">
+          <small class="lg-err-sm" id="identityError"></small>
+
+          <label class="lg-field-label" for="password">Password</label>
+          <div class="lg-pw-wrap">
+            <input class="lg-input" id="password" name="password" type="password" autocomplete="current-password"
+              enterkeyhint="go" required maxlength="256" placeholder="Enter your password">
+            <button type="button" class="lg-eye" id="showPassword" aria-label="Show password" aria-pressed="false"><svg
+                width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg></button>
+          </div>
+          <div class="lg-caps" id="capsWarn" hidden><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+            Caps Lock is on</div>
+          <small class="lg-err-sm" id="passwordError"></small>
+
+
+
+          <div id="authMessage" class="lg-msg" role="alert" aria-live="polite" hidden></div>
+
+          <button class="lg-btn-gold" type="submit">Sign in</button>
+
+          <div class="lg-forgot-row">
+            <a class="lg-forgot" href="/forgot">Forgot password?</a>
+          </div>
+        </form>
+
+        <div class="lg-divider"><span>Or continue with</span></div>
+        <div class="lg-sso">
+          <button type="button" class="lg-sso-btn" id="googleSignInBtn" aria-label="Sign in with Google">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="#4285F4"
+                d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z" />
+              <path fill="#34A853"
+                d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24Z" />
+              <path fill="#FBBC05"
+                d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14Z" />
+              <path fill="#EA4335"
+                d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96Z" />
+            </svg>
+            <span>Continue with Google</span>
+          </button>
+        </div>
+
+        <p class="lg-join-row">New to ProFit? <a href="/join">Create a free account</a></p>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    (() => {
+      const $ = id => document.getElementById(id);
+      const form = $('signInForm'), submit = form.querySelector('[type=submit]');
+      const HOME = { admin: '/dashboard', cashier: '/dashboard', trainer: '/dashboard', member: '/dashboard' };
+
+      const pwEl = $('password'), eyeBtn = $('showPassword'), capsEl = $('capsWarn');
+      const EYE_OPEN_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>';
+      const EYE_OFF_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-6.5 0-10-7-10-7a21.8 21.8 0 0 1 5.06-5.94"/><path d="M9.9 4.24A10.9 10.9 0 0 1 12 5c6.5 0 10 7 10 7a21.8 21.8 0 0 1-3.17 4.49"/><line x1="2" y1="2" x2="22" y2="22"/></svg>';
+      eyeBtn.addEventListener('click', () => {
+        const show = pwEl.type === 'password';
+        pwEl.type = show ? 'text' : 'password';
+        eyeBtn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+        eyeBtn.setAttribute('aria-pressed', String(show));
+        eyeBtn.innerHTML = show ? EYE_OFF_SVG : EYE_OPEN_SVG;
+      });
+
+      const checkCaps = e => {
+        if (e && typeof e.getModifierState === 'function') {
+          capsEl.hidden = !e.getModifierState('CapsLock');
+        }
+      };
+      pwEl.addEventListener('keydown', checkCaps);
+      pwEl.addEventListener('keyup', checkCaps);
+      pwEl.addEventListener('blur', () => { capsEl.hidden = true; });
+
+      function message(text, error) {
+        const box = $('authMessage');
+        box.hidden = false;
+        box.classList.toggle('error', !!error);
+        box.textContent = text;
+      }
+
+      function setBusy(busy) {
+        submit.disabled = busy;
+        submit.textContent = busy ? 'Signing in…' : 'Sign in';
+      }
+
+      form.addEventListener('submit', async e => {
+        e.preventDefault();
+        $('identityError').textContent = '';
+        $('passwordError').textContent = '';
+        $('authMessage').hidden = true;
+        const identity = $('identity').value.trim(), password = pwEl.value;
+        if (!identity) { $('identityError').textContent = 'Enter your email or username.'; $('identity').focus(); return; }
+        if (identity.includes('@') && window.ProFitAPI?.validateRealEmail) {
+          const emailErr = window.ProFitAPI.validateRealEmail(identity);
+          if (emailErr) { $('identityError').textContent = emailErr; $('identity').focus(); return; }
+        }
+        if (!password) { $('passwordError').textContent = 'Enter your password.'; pwEl.focus(); return; }
+        setBusy(true);
+        try {
+          try { sessionStorage.removeItem('profit-logged-out'); } catch (_) { }
+          if (window.PROFIT_CONFIG?.DEMO_MODE && !window.PROFIT_CONFIG?.API_BASE_URL) {
+            const hint = identity.toLowerCase(), role = /coach|trainer/.test(hint) ? 'trainer' : /member/.test(hint) ? 'member' : 'admin';
+            const isTrainer = role === 'trainer', isMember = role === 'member';
+            const session = { name: isMember ? 'Demo Member' : isTrainer ? 'Coach Mika' : 'Administrator', role: isTrainer ? 'TRAINER' : isMember ? 'MEMBER' : 'ADMIN', demo: true };
+            sessionStorage.setItem('profit-demo-session', JSON.stringify(session));
+            sessionStorage.setItem('profit-verified-session', JSON.stringify(session));
+            sessionStorage.setItem('pf-auth-just-logged-in', '1');
+            localStorage.removeItem('profit-demo-session');
+            message('Signed in successfully. Opening your workspace…', false);
+            setTimeout(() => location.replace(HOME[role]), 350);
+          } else {
+            const next = new URLSearchParams(location.search).get('next') || '';
+            const loginResult = await window.ProFitAPI.post('/auth/login', { identity, password, next });
+            const session = await window.ProFitAPI.get('/auth/session');
+            const user = session.user;
+            const r = String(user?.role || '').toUpperCase();
+            const isOwner = ['ADMIN', 'OWNER'].includes(r);
+            const needsOnboarding = (r === 'MEMBER' || r === 'CASHIER' || r === 'TRAINER') && user?.onboarding_completed === false;
+            const home = needsOnboarding ? '/onboarding'
+              : (isOwner || r === 'CASHIER' || r === 'TRAINER' || r === 'COACH' || r === 'MEMBER') ? '/dashboard'
+                : null;
+            if (home) {
+              sessionStorage.setItem('profit-verified-session', JSON.stringify(user));
+              sessionStorage.setItem('pf-auth-just-logged-in', '1');
+              location.replace(loginResult.redirect || home);
+            } else {
+              message('Your account role could not be verified. Contact the gym administrator.', true);
+              setBusy(false);
+            }
+          }
+        } catch (err) {
+          message(err.status === 401 ? 'Those sign-in details were not accepted. Check them and try again.' : err.message || 'Sign-in is currently unavailable.', true);
+          setBusy(false);
+          pwEl.value = '';
+        }
+      });
+    })();
+  </script>
+  <script src="google-auth.js?v=7"></script>
+  <script src="portal-fx.js?v=2"></script>
+  <script src="site-footer.js?v=9" defer></script>
 </body>
+
 </html>

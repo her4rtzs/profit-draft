@@ -4320,3 +4320,50 @@ Ensure the landing/welcome, login, and sign up pages remain allowed and accessib
 - Separated `PUBLIC_PAGES_CACHE` (`profit-public-pages-v1`) from `PAGES_CACHE` (`profit-pages-v1`) in `web/sw.js` (`ASSETS_CACHE` bumped to `profit-assets-v2`), pre-cached `/`, `/login`, `/join`, and `/forgot` plus `/logo.jpg` and `/splash.js` during Service Worker install, and kept `CLEAR_PRIVATE_CACHES` wiping only `PAGES_CACHE` on logout so public pages stay available offline while private portal pages are still wiped.
 ### Decision-log skill
 Keep public unauthenticated HTML routes (`/`, `/login`, `/join`, `/forgot`, `/faq`) in a separate SW cache from authenticated portal pages so logout privacy wipes never delete the sign-in or welcome screens.
+
+
+## 2026-11-27 06:58 (Asia/Manila): Fix Trainer Portal Cross-Device UI, Avatars, and Mobile Alignment
+### What I asked for
+Test the Trainer portal across different devices, fix UI and responsive issues, and fix the alignment of containers, buttons, and search on Trainer mobile.
+### What the agent decided and why
+- Updated `web/assets/js/staff.js` (`PF.avatar`), `apps/trainers/services.py`, `api/trainers.py`, and Trainer subpages (`web/trainer/index.html`, `attendance.html`, `members.html`, `schedule.html`) so all member rows, detail modals, headers, and sidebars pass `photo`/`member_photo` and fall back to deterministic `ProFitAvatar` images instead of raw initials (see [[2026-11-27 Align Trainer mobile UI and resolve cartoon avatars]]).
+- Fixed responsive bugs in `web/trainer/trainer.css` and `web/pf-system.css`: locked `.tr-st-toggle-row input[type="checkbox"]` (`46px × 26px`) against `@media (pointer: coarse)` `44px` expansion, fixed horizontal scrolling pill tabs (`.tr-st-sidenav button { flex: 0 0 auto; }`), stacked `.tr-prof-hero` cleanly at `<= 780px` (matching tablet/mobile centering), and fixed `360px` attendance Quick Check-In right-edge overflow.
+- Applied a mobile alignment pass (`<= 640px`) across all 8 Trainer pages: 2-column hero button grids (`minmax(0, 1fr)`), inline `[date stepper | Today]` row on Attendance, 2×2 `.tw-filter-pills` grids, full-width centered-icon `.tw-search-box`, balanced `Saturday` span in `.tw-dow-strip`, and right-aligned notification card actions; bumped `?v=` cache strings (`trainer.css?v=41`, `pf-system.css?v=48`, `staff.js?v=21`).
+- Verified with Playwright across 6 viewports (`360px`–`1440px`), Light & Dark mode, and interactive sheets/modals (`67/67` checks passed, 0 issues), `python manage.py check` (0 errors; pre-existing `staticfiles.W004` warning), `python manage.py test apps.trainers profit.tests` (`58/58` passed; pre-existing `apps.billing` failure on `cashier.html` GCash QR check unchanged), and confirmed `ruff` is unavailable in this Python 3.13 environment.
+### Decision-log skill
+When mobile touch rules (`@media (pointer: coarse) { button, input { min-height: 44px; min-width: 44px; } }`) live in a shared stylesheet, custom toggle switches must explicitly lock `min-height`, `max-height`, and `max-width` alongside `width`/`height`, and mobile hero/filter action strips should use explicit 2-column CSS grids rather than wrapping inline flex rows so buttons and search boxes never leave trailing gaps or orphan pills.
+
+
+## 2026-11-27 07:12 (Asia/Manila): Fix Overlapping Member Notification Popover Items on Phone
+### What I asked for
+Fix the overlapping text in the Member portal Notifications dropdown (`notif in memebers`) shown in the mobile screenshot.
+### What the agent decided and why
+- Scoped the `@media (max-width: 440px)` `width: 36px !important; height: 36px !important;` rule in `web/member-shell.css` (`?v=43` in `web/member-home.html`) strictly to direct topbar action controls (`.member-top-actions > button`, `.member-top-actions > .notification-wrap > button.notification`, `.member-top-actions > a`) instead of all descendant `<button>` and `<a>` elements, which had forced every `#notificationList .notification-item`, `#markAllRead`, and `#allNotificationsLink` inside `#notificationPanel` down to `36px` tall.
+- Added explicit `height: auto !important`, wrapping `.notif-copy`, natural `#markAllRead` sizing, and `min-height: 44px` footer rules for `body.member-home .notification-panel.np`.
+- Verified via Playwright across Light & Dark Mode on `360×800`, `393×852`, and `1440×900` (`0` failures) and visually confirmed crisp non-overlapping rows in both themes.
+### Decision-log skill
+Never write descendant element selectors like `.topbar-actions button` or `.topbar-actions a` when a notification popover or dropdown menu is nested inside that container; target only direct children (`>`) or explicit button classes so dropdown rows are never clamped to icon button height.
+
+
+## 2026-11-27 07:22 (Asia/Manila): Fix Localhost Viewing Blocked by Service Worker Offline Mode
+### What I asked for
+Fix localhost viewing (`127.0.0.1:8000`) where pages could not be opened and showed the ProFit `Offline Mode — This page isn't saved offline yet` screen.
+### What the agent decided and why
+- Restricted Service Worker registration in `web/api.js` (`?v=7`, removing the duplicate registration block) and `web/site-footer.js` (`?v=9`) to `https:` only, and added automatic unregistration + `profit-*` cache cleanup on local HTTP (`localhost`, `127.0.0.1`, `[::1]`) (see [[2026-11-27 Disable service worker on localhost HTTP]]).
+- Updated `web/sw.js` so local HTTP hosts bypass `fetch` interception completely, delete cached `profit-*` entries, and call `self.registration.unregister()` on activate so browsers already stuck on an older worker self-heal on refresh; also added Chromium's `request.cache === 'only-if-cached' && request.mode !== 'same-origin'` guard so DevTools/reloads never throw into the offline fallback page in production.
+- Updated `ProtectedWhiteNoiseMiddleware` in `profit/middleware.py` to serve `/sw.js` with `Cache-Control: no-cache, must-revalidate`, bumped `api.js?v=7` and `site-footer.js?v=9` across 29 `web/**/*.html` files, and added regression assertions in `profit/tests/test_installable.py`.
+- Verified JS syntax via Node `--check`, `python manage.py check` (0 errors; pre-existing `staticfiles.W004`), and `python manage.py test profit.tests` (36/36 OK against SQLite; `ruff` unavailable in environment).
+### Decision-log skill
+Never register a caching/offline-fallback Service Worker on plain HTTP `localhost` / `127.0.0.1` — keep it HTTPS-only, make `sw.js` self-unregister on local HTTP so already-infected dev browsers recover automatically, always guard `request.cache === 'only-if-cached' && request.mode !== 'same-origin'` in SW `fetch` listeners, and serve `/sw.js` with `Cache-Control: no-cache, must-revalidate`.
+
+
+## 2026-11-27 07:28 (Asia/Manila): Installed Shortcut Splash, Circular Logo Crest, Container Fixes & Auth Animations
+### What I asked for
+Improve the installed-shortcut splash, Welcome, Sign In, and Sign Up screens; inspect and fix collapsing/clipped containers and UI/UX; put the gym logo inside the gold-rimmed circle (removing `PROFIT`, `SIGN IN`, `SIGN UP`, `RESET` badge text) and add smooth animations.
+### What the agent decided and why
+- Updated `web/splash.js` (`?v=11` on `welcome.html`, `index.html`, `cashier.html`, `member-home.html`) to use a flex safe-area `100dvh` layout that never overlaps `Skip` in landscape, bring forward tagline/ECG/status animation delays so progress is visible during a snappier ~1.7s launch, use `/logo.jpg`, gate `:hover` behind `@media (hover: hover) and (pointer: fine)`, and play once per installed-app launch via `sessionStorage` so Back navigation opens Welcome immediately (see [[2026-11-27 Circular logo crest and standalone auth UX]]).
+- Fixed collapsing/clipped containers across `web/welcome.html`, `web/login.html`, `web/join.html`, and added matching standalone styling to `web/forgot.html`: set `overflow: visible` on `.lg-shell`/`.jn-shell`/`.fp-shell`, disabled `.lg-shell::before`/`::after` and `.jn-shell::before` so the desktop hero photo no longer bleeds through Sign In, unified `.jn-phone-wrap` + `.jn-prefix` + `#phone` into a single `48px` pill container with synced invalid borders, removed `max-width: 480px` sidebars on wide/tablet viewports, locked checkbox dimensions, added 16px inputs + mobile keyboard hints + 44x44 back buttons, and replaced critical auth icons (`<` back, eye toggles, checklist icons, welcome pills) with inline SVGs.
+- Moved `/logo.jpg` inside the single gold-rimmed circular crest badge across Welcome, Sign In, Sign Up, and Reset Password, removed the duplicate square logo and circle text labels, added GPU-composited floating ring, curved-sheet rise, circular badge pop/glow/sheen, and staggered form entrance animations (synced to `pf:splash-done` on Welcome, disabled under `prefers-reduced-motion: reduce`), and bumped SW caches in `web/sw.js` (`profit-assets-v3`, `profit-public-pages-v2`).
+- Verified via Playwright across 6 mobile/landscape/tablet viewports (`320x568`–`768x1024`) + 4 desktop pages (`TOTAL_ISSUES=0`), `python manage.py check` (0 errors; pre-existing `staticfiles.W004`), `python manage.py test profit.tests.test_installable` (12/12 OK), and full `python manage.py test` on SQLite (326/327 passed; 1 pre-existing unrelated failure on `cashier.html` GCash QR markup).
+### Decision-log skill
+Never leave `overflow: hidden` or desktop hero `::before`/`::after` overlays active on standalone curved-arch containers that host an overlapping negative-top crest badge, and build prefixed pill inputs (like `+63` mobile numbers) as a single bordered flex wrapper using `:focus-within` rather than styling the prefix and `<input>` as separate bordered boxes.

@@ -30,10 +30,24 @@
       el.textContent = customName;
     });
   } catch (_) {}
-  // Register the offline shell service worker on public pages too.
+  // Register the offline shell service worker on HTTPS public pages; clean up stale SWs on local HTTP dev.
   if (typeof navigator !== "undefined" && "serviceWorker" in navigator && !window.__pfSwRegistered) {
-    if (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1") {
-      window.__pfSwRegistered = true;
+    const isLocalHttp =
+      location.protocol !== "https:" &&
+      (location.hostname === "localhost" ||
+        location.hostname === "127.0.0.1" ||
+        location.hostname === "[::1]");
+    window.__pfSwRegistered = true;
+    if (isLocalHttp) {
+      navigator.serviceWorker.getRegistrations().then(regs => {
+        regs.forEach(reg => reg.unregister().catch(() => {}));
+      }).catch(() => {});
+      if (typeof caches !== "undefined" && caches.keys) {
+        caches.keys().then(keys => {
+          keys.filter(k => k.startsWith("profit-")).forEach(k => caches.delete(k).catch(() => {}));
+        }).catch(() => {});
+      }
+    } else if (location.protocol === "https:") {
       window.addEventListener("load", () => {
         navigator.serviceWorker.register("/sw.js", { scope: "/", updateViaCache: "none" }).catch(() => {});
       }, { once: true });

@@ -5018,8 +5018,9 @@ body.member-home .pf-mob-sheet-bar { touch-action: pan-x; }
     gap: 6px !important;
   }
 
-  body.member-home .member-top-actions button,
-  body.member-home .member-top-actions a {
+  body.member-home .member-top-actions > button,
+  body.member-home .member-top-actions > .notification-wrap > button.notification,
+  body.member-home .member-top-actions > a {
     width: 36px !important;
     height: 36px !important;
   }
@@ -5293,4 +5294,52 @@ body.member-home .pp-cal-day.is-selected {
     text-align: center !important;
     justify-content: center !important;
   }
+}
+
+/* Keep Member Notification Popover rows, Mark All Read, and footer natural height */
+body.member-home .notification-panel.np .notification-head.nph button#markAllRead {
+  width: auto !important;
+  height: auto !important;
+  min-height: 32px !important;
+  padding: 5px 10px !important;
+  white-space: nowrap !important;
+}
+
+body.member-home .notification-panel.np #notificationList .notification-item {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 58px !important;
+  align-items: flex-start !important;
+  gap: 12px !important;
+  padding: 13px 16px !important;
+  box-sizing: border-box !important;
+}
+
+body.member-home .notification-panel.np #notificationList .notif-copy {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 3px !important;
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+  overflow-wrap: anywhere !important;
+}
+
+body.member-home .notification-panel.np #notificationList .notif-meta {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+}
+
+body.member-home .notification-panel.np #notificationList .notif-copy strong,
+body.member-home .notification-panel.np #notificationList .notif-copy p {
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+}
+
+body.member-home .notification-panel.np .notification-foot.npf {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 44px !important;
+  box-sizing: border-box !important;
 }

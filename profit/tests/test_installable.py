@@ -169,6 +169,7 @@ class OfflineSupportTests(TestCase):
             "javascript" in ctype,
             f"Unexpected Content-Type for /sw.js: {response['Content-Type']}",
         )
+        self.assertIn("no-cache", response.get("Cache-Control", "").lower())
 
     def test_service_worker_never_caches_api_and_wipes_pages_on_logout(self):
         sw_src = (WEB / "sw.js").read_text(encoding="utf-8")
@@ -176,6 +177,21 @@ class OfflineSupportTests(TestCase):
         self.assertIn("CLEAR_PRIVATE_CACHES", sw_src)
         self.assertIn("caches.delete(PAGES_CACHE)", sw_src)
         self.assertIn("OFFLINE_FALLBACK_HTML", sw_src)
+
+    def test_service_worker_bypasses_and_unregisters_on_localhost_http(self):
+        sw_src = (WEB / "sw.js").read_text(encoding="utf-8")
+        self.assertIn("IS_LOCAL_DEV", sw_src)
+        self.assertIn("if (IS_LOCAL_DEV) return;", sw_src)
+        self.assertIn("self.registration.unregister()", sw_src)
+        self.assertIn("request.cache === 'only-if-cached'", sw_src)
+
+        api_src = (WEB / "api.js").read_text(encoding="utf-8")
+        self.assertIn("unregisterLocalServiceWorkers", api_src)
+        self.assertIn('if (location.protocol !== "https:") return;', api_src)
+
+        footer_src = (WEB / "site-footer.js").read_text(encoding="utf-8")
+        self.assertIn("getRegistrations", footer_src)
+        self.assertIn('else if (location.protocol === "https:")', footer_src)
 
     def test_api_client_and_public_footer_register_sw_and_wipe_on_logout(self):
         api_src = (WEB / "api.js").read_text(encoding="utf-8")
