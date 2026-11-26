@@ -5,6 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <title>Join online — ProFit · Functional Fitness Gym</title>
 <meta name="description" content="Create a free ProFit account and start a seven-day trial. Add a gym membership with cash or a reviewed GCash payment.">
+<link rel="canonical" href="https://functionalfitnessgym.site/join">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://functionalfitnessgym.site/join">
+<meta property="og:title" content="Join ProFit · Functional Fitness Gym">
+<meta property="og:description" content="Create a free ProFit account and start a seven-day trial. Add a gym membership with cash or a reviewed GCash payment.">
+<meta property="og:image" content="https://functionalfitnessgym.site/logo.jpg">
+<meta property="og:image:width" content="1254">
+<meta property="og:image:height" content="1254">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Join ProFit · Functional Fitness Gym">
+<meta name="twitter:description" content="Create a free ProFit account and start a seven-day trial. Add a gym membership with cash or a reviewed GCash payment.">
+<meta name="twitter:image" content="https://functionalfitnessgym.site/logo.jpg">
 <link rel="icon" type="image/jpeg" href="logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -269,7 +281,6 @@
   .jn-google-msg{margin:8px 0 0;font-size:12.5px;font-weight:500;text-align:center}
   .jn-google-msg[hidden]{display:none}
 
-  .jn-paynote{margin:8px 0 0;text-align:center;font-size:12px;color:var(--mu)}
   .jn-alt{margin:4px 0 0;text-align:center;font-size:13px;color:var(--mu)}
   .jn-alt a{
     display:inline-flex;align-items:center;min-height:36px;
@@ -394,11 +405,8 @@
 
     <section class="jn-card" id="box" aria-label="Create your account">
       <h2>Create your account</h2>
-      <p class="jn-lead">Add your details to create your free account.</p>
 
       <form id="f" novalidate>
-        <p class="jn-note">Your account starts with a 7-day free trial — no payment is needed to sign up.</p>
-
         <div id="cancel" class="jn-note" hidden>Payment was cancelled. No account was created and you were not charged.</div>
 
         <div class="jn-field">
@@ -427,7 +435,7 @@
           <div class="jn-field">
             <label class="jn-lbl" for="pw">Password</label>
             <div class="jn-pw-wrap">
-              <input class="jn-input" id="pw" type="password" autocomplete="new-password" minlength="8" maxlength="128" placeholder="8+ characters">
+              <input class="jn-input" id="pw" type="password" autocomplete="new-password" minlength="8" maxlength="128" placeholder="Create a password">
               <button type="button" class="jn-eye" id="togglePw" aria-label="Show password" aria-pressed="false"><i class="fa-regular fa-eye"></i></button>
             </div>
             <small class="jn-f-err" id="pwErr"></small>
@@ -442,7 +450,7 @@
           </div>
         </div>
 
-        <div class="jn-strength" aria-live="polite">
+        <div class="jn-strength" aria-live="polite" hidden>
           <div class="jn-strength-track"><div class="jn-strength-fill" id="pwStrengthBar"></div></div>
           <div class="jn-strength-meta"><span>Password strength</span><span id="pwStrengthLabel">Enter password</span></div>
           <ul class="jn-checklist" id="pwChecklist">
@@ -483,7 +491,6 @@
         <a class="jn-btn-gold" id="okgo" href="/login" style="text-decoration:none">Sign in</a>
       </div>
 
-      <p class="jn-paynote" id="paynote">Your account starts with a 7-day free trial. Pay by GCash or cash at the desk to activate your gym membership.</p>
       <p class="jn-alt" id="alt">Already a member? <a href="/login">Sign in</a></p>
     </section>
   </div>
@@ -573,8 +580,17 @@
     updateFormState(false);
   });
 
-  // Password strength bar & live checklist
+  // Password strength bar & live checklist — hidden until the password form is used
   const pwEl = $("pw"), pw2El = $("pw2");
+  const strengthWrap = document.querySelector(".jn-strength");
+  function revealStrength() {
+    if (strengthWrap) strengthWrap.hidden = false;
+  }
+  pwEl?.addEventListener("focus", revealStrength);
+  pw2El?.addEventListener("focus", revealStrength);
+  pwEl?.addEventListener("input", revealStrength);
+  pw2El?.addEventListener("input", revealStrength);
+
   function updateStrength() {
     const v = pwEl.value || "";
     const v2 = pw2El.value || "";

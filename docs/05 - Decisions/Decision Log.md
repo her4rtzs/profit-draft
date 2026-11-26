@@ -107,6 +107,7 @@ One note per decision, oldest first; entries with an `Unknown` date are listed l
 - [[2026-11-26 Allow new Google members on login via OTP gate]]: Route `/login` Google Sign-In through `authenticate_google_member` so brand-new Google users connect & enter `OTP -> Terms & Privacy` while unlinked Staff/Owner emails still redirect to `/login?error=not-linked`.
 
 - [[2026-11-26 Enforce strict portal RBAC and unified dashboard URL]]: Block unauthenticated and cross-role access across all portals (including raw `.html` files via `ProtectedWhiteNoiseMiddleware`), redirect anonymous visitors to `/login`, and serve every role's workspace at `/dashboard`.
-
 - [[2026-11-26 Database-backed trainer schedule and real API errors]]: Replaced hardcoded trainer timetable and silent `Trainer.demo` fallbacks with a DB-backed `TrainerSession` model/CRUD API, active-user RBAC checks, and real error/empty states across all 8 Trainer Portal pages.
 - [[2026-11-27 Aggregate Activity Log from existing ORM tables]]: Build the per-user Settings Activity Log by querying existing ORM tables in `apps/accounts/activity.py` instead of adding a new ActivityLog table.
+- [[Use noindex instead of robots.txt Disallow]]: Private pages are noindex by default while robots.txt stays permissive.
+- [[Target local search terms with Google Business Profile plus on-page clarity]]: Local terms are targeted with GBP plus one clear keyword line, FAQ answers and HealthClub data.

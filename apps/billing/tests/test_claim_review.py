@@ -249,7 +249,6 @@ class ReviewPageMarkupTests(TestCase):
         web = Path(__file__).resolve().parents[3] / "web"
         member_html = (web / "member-home.html").read_text(encoding="utf-8")
         member_css = (web / "member-shell.css").read_text(encoding="utf-8")
-        claim_html = (web / "claim.html").read_text(encoding="utf-8")
 
         # Hidden by default until the member opens "Renew membership"
         self.assertIn('id="memberPayCard" hidden', member_html)
@@ -267,9 +266,6 @@ class ReviewPageMarkupTests(TestCase):
         self.assertIn('id="memberPayReference"', member_html)
         self.assertIn('id="memberPayProof"', member_html)
         self.assertNotIn('id="memberPayMethod"', member_html)
-        # Standalone claim page also submits the required plan field
-        self.assertIn('id="claimPlan"', claim_html)
-        self.assertIn("plan: planSelect.value", claim_html)
 
     def test_gcash_qr_code_is_present_on_member_and_cashier_payment_pages(self):
         web = Path(__file__).resolve().parents[3] / "web"
@@ -277,7 +273,7 @@ class ReviewPageMarkupTests(TestCase):
         self.assertTrue(qr_asset.is_file())
         self.assertGreater(qr_asset.stat().st_size, 0)
 
-        for filename in ("member-home.html", "claim.html", "payments.html", "cashier.html"):
+        for filename in ("member-home.html", "payments.html", "cashier.html"):
             with self.subTest(page=filename):
                 html = (web / filename).read_text(encoding="utf-8")
                 self.assertIn('src="img/gcash-qr.jpg"', html)

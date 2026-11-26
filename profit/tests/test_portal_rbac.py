@@ -78,7 +78,6 @@ class PortalRBACTests(TestCase):
             "/settings",
             "/notifications",
             "/profile",
-            "/claim",
             "/member-home",
             "/member-home.html",
             "/onboarding",
@@ -100,9 +99,12 @@ class PortalRBACTests(TestCase):
                 self.assertTrue(res["Location"].startswith("/login?next="))
 
     def test_public_pages_and_css_assets_remain_accessible(self):
-        for path in ("/", "/welcome", "/login", "/join", "/forgot", "/faq", "/terms", "/privacy"):
+        for path in ("/", "/login", "/join", "/forgot", "/faq", "/terms", "/privacy"):
             with self.subTest(path=path):
                 self.assertEqual(self.client.get(path).status_code, 200)
+        self.assertRedirects(
+            self.client.get("/welcome"), "/", status_code=301, fetch_redirect_response=False
+        )
         self.assertRedirects(self.client.get("/login.html"), "/login", fetch_redirect_response=False)
         self.assertEqual(self.client.get("/pf-system.css").status_code, 200)
 
@@ -132,7 +134,7 @@ class PortalRBACTests(TestCase):
         self.assertIn(b'href="/dashboard"', owner_cashier.content)
         self.assertNotIn(b"Cashier access required", owner_cashier.content)
 
-        for path in ("/cashier", "/cashier.html", "/trainer/index", "/trainer/attendance", "/member-home", "/claim"):
+        for path in ("/cashier", "/cashier.html", "/trainer/index", "/trainer/attendance", "/member-home"):
             self.assertEqual(owner_client.get(path).status_code, 403, f"Owner must be blocked on {path}")
 
         cashier_client = Client()
@@ -140,7 +142,7 @@ class PortalRBACTests(TestCase):
         self.assertRedirects(cashier_client.get("/cashier.html"), "/dashboard", fetch_redirect_response=False)
         for path in ("/payments", "/members", "/attendance", "/settings", "/notifications", "/profile"):
             self.assertEqual(cashier_client.get(path).status_code, 200, path)
-        for path in ("/index", "/index.html", "/reports", "/reports.html", "/trainers", "/cashiers", "/announcements", "/trainer/index", "/member-home", "/claim"):
+        for path in ("/index", "/index.html", "/reports", "/reports.html", "/trainers", "/cashiers", "/announcements", "/trainer/index", "/member-home"):
             self.assertEqual(cashier_client.get(path).status_code, 403, f"Cashier must be blocked on {path}")
 
         trainer_client = Client()
@@ -148,13 +150,13 @@ class PortalRBACTests(TestCase):
         self.assertRedirects(trainer_client.get("/trainer/index"), "/dashboard", fetch_redirect_response=False)
         for path in ("/trainer/members", "/trainer/attendance", "/trainer/schedule", "/trainer/settings"):
             self.assertEqual(trainer_client.get(path).status_code, 200, path)
-        for path in ("/cashier", "/cashier.html", "/index", "/payments", "/reports", "/members", "/profile", "/member-home", "/claim"):
+        for path in ("/cashier", "/cashier.html", "/index", "/payments", "/reports", "/members", "/profile", "/member-home"):
             self.assertEqual(trainer_client.get(path).status_code, 403, f"Trainer must be blocked on {path}")
 
         member_client = Client()
         member_client.force_login(self.member)
         self.assertRedirects(member_client.get("/member-home"), "/dashboard", fetch_redirect_response=False)
-        for path in ("/claim", "/profile"):
+        for path in ("/profile",):
             self.assertEqual(member_client.get(path).status_code, 200, path)
         for path in ("/cashier", "/cashier.html", "/index", "/payments", "/reports", "/members", "/trainer/index", "/trainer/attendance"):
             self.assertEqual(member_client.get(path).status_code, 403, f"Member must be blocked on {path}")

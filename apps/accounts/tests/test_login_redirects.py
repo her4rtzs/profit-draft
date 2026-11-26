@@ -19,12 +19,12 @@ class LoginRedirectTests(TestCase):
             data=json.dumps({
                 "identity": "redirect@example.com",
                 "password": "pw-12345",
-                "next": "/claim",
+                "next": "/profile",
             }),
             content_type="application/json",
         )
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(res.json()["redirect"], "/claim")
+        self.assertEqual(res.json()["redirect"], "/profile")
 
     def test_json_login_disallowed_role_next_falls_back_to_dashboard(self):
         res = Client().post(

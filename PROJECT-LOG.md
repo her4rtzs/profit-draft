@@ -3949,6 +3949,28 @@ Remove gradients on Enroll & Payments, apply 60/30/10 plan card hover, align and
 Keep `flex-direction: column` with `margin-top: auto` on the submit row inside an `align-items: stretch` CSS grid alongside a full-height media panel so left and right columns align flush regardless of responsive field wrapping.
 
 
+## 2026-11-26 23:23 (Asia/Manila): SEO-1 crawl control and canonical pages
+### What I asked for
+Add robots.txt and sitemap.xml, make noindex the default for private pages, redirect /welcome to /, add canonical and social tags to public pages, remove orphan HTML pages, and report public-page metadata issues.
+### What the agent decided and why
+- Kept robots.txt permissive and used X-Robots-Tag noindex for private pages so crawlers can see the noindex signal; see [[Use noindex instead of robots.txt Disallow]].
+- Raw .html URLs already pass through Django via ProtectedWhiteNoiseMiddleware, so no WhiteNoise header hook was added.
+- Deleted claim.html and member-portal.html after confirming no live links, and updated the tests that referenced them.
+- Added canonical, Open Graph and Twitter tags plus HealthClub structured data to the five public pages, and a 301 from /welcome to /.
+### Decision-log skill
+Use noindex headers, not robots.txt Disallow, when you want crawlers to see and honor the signal.
+
+## 2026-11-26 23:50 (Asia/Manila): Local search clarity on public pages
+### What I asked for
+Target local search terms with a Google Business Profile plus on-page clarity, keeping the hero headline and one H1, adding local FAQ answers and extending HealthClub structured data without hours, rating, price or FAQPage markup.
+### What the agent decided and why
+- Updated the homepage title, meta description, eyebrow line and About sentence to use "Alfonso, Cavite" and "functional gym"; see [[Target local search terms with Google Business Profile plus on-page clarity]].
+- Extended HealthClub JSON-LD with the address, international phone, image and Facebook link already shown on the page; omitted geo, opening hours, rating, price and FAQPage.
+- Added three short local FAQs and gave the lightbox image a fallback alt; updated SEO tests and ran the checks.
+### Decision-log skill
+Use on-page wording and structured data to reinforce local identity, but let the owner confirm public brand names and resolve conflicting contact details before changing them.
+
+
 ## 2026-11-27 00:35 (Asia/Manila): Settings nav/install redesign and auth/landing polish
 ### What I asked for
 Fix Settings jumping straight to General on load and improve scroll/click behavior; redesign the Install the app card in Settings to match the system; remove moving background photo on landing/login/signup; remove idle underlines on Forgot password, Sign up, and related links until hovered.

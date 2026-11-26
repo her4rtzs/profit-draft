@@ -24,6 +24,7 @@ from apps.membership.services import (
 PORTAL_LOGIN_URL = "/login"
 
 PUBLIC_PAGES = frozenset({"welcome", "login", "join", "forgot", "faq", "terms", "privacy"})
+INDEXABLE_PAGES = frozenset({"join", "faq", "terms", "privacy"})
 LEGACY_HOME_ROLE = {
     "index": "OWNER",
     "cashier": "CASHIER",
@@ -32,7 +33,7 @@ LEGACY_HOME_ROLE = {
 }
 OWNER_ONLY_PAGES = frozenset({"reports", "trainers", "cashiers", "announcements"})
 STAFF_SHARED_PAGES = frozenset({"payments", "members", "attendance", "settings", "notifications"})
-MEMBER_ONLY_PAGES = frozenset({"claim"})
+MEMBER_ONLY_PAGES = frozenset()
 TRAINER_PAGES = frozenset({
     "members",
     "attendance",
@@ -45,12 +46,18 @@ TRAINER_PAGES = frozenset({
 ONBOARDING_ROLES = frozenset({"CASHIER", "TRAINER", "MEMBER"})
 
 
-def _serve_web_page(relative):
-    """Return a static web/ page by its path relative to web/, or 404."""
+def _serve_web_page(relative, *, indexable=False):
+    """Return a static web/ page by its path relative to web/, or 404.
+
+    Private pages are noindex by default so crawlers cannot index app shells.
+    """
     path = settings.BASE_DIR / "web" / f"{relative}.html"
     if not path.is_file():
         raise Http404
-    return HttpResponse(path.read_text(encoding="utf-8"), content_type="text/html; charset=utf-8")
+    response = HttpResponse(path.read_text(encoding="utf-8"), content_type="text/html; charset=utf-8")
+    if not indexable:
+        response["X-Robots-Tag"] = "noindex, nofollow"
+    return response
 
 
 DEFAULT_PORTAL_NOT_FOUND_MSG = "The URL you entered doesn't exist or isn't available for your account."
@@ -182,6 +189,8 @@ def dashboard(request):
 
 def web_page(request, page):
     """Serve a top-level web/ page at an extensionless URL with strict RBAC."""
+    if page == "welcome":
+        return redirect("/", permanent=True)
     if page == "member-portal":
         return redirect("/join")
     if page == "login":
@@ -189,7 +198,7 @@ def web_page(request, page):
             return redirect("/dashboard")
         return _serve_web_page("login")
     if page in PUBLIC_PAGES:
-        return _serve_web_page(page)
+        return _serve_web_page(page, indexable=page in INDEXABLE_PAGES)
 
     known_protected = (
         page in LEGACY_HOME_ROLE
