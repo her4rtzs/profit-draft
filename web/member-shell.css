@@ -2420,8 +2420,11 @@ body.member-home .pp-cal-dow {
 }
 
 body.member-home .pp-cal-day {
-  width: 30px !important;
-  height: 30px !important;
+  width: 38px !important;
+  height: 38px !important;
+  aspect-ratio: 1 / 1 !important;
+  margin: 0 auto !important;
+  border-radius: 50% !important;
   font-size: 12.5px !important;
 }
 
@@ -4072,7 +4075,10 @@ body.member-home .mb-st-toggle-row input[type="checkbox"] {
   -webkit-appearance: none !important;
   width: 46px !important;
   min-width: 46px !important;
+  max-width: 46px !important;
   height: 26px !important;
+  min-height: 26px !important;
+  max-height: 26px !important;
   border-radius: 99px !important;
   border: 0 !important;
   background: #334155 !important;
@@ -5232,5 +5238,59 @@ body.member-home .mb-ava-opt img {
 @media (max-width: 360px) {
   body.member-home .member-content {
     padding: 10px 10px calc(112px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+/* ==========================================================================
+   Member UI Polish (Notification Dot, Settings Topbar, Profile, Calendar)
+   ========================================================================== */
+body.member-home .member-top .icon-btn,
+body.member-home .member-top .notification,
+body.member-home .member-top .theme-toggle {
+  overflow: visible !important;
+}
+
+body.member-home .pp-cal-head {
+  padding: 10px 12px !important;
+  border-radius: 14px !important;
+  background: rgba(250, 204, 21, 0.08) !important;
+  border: 1px solid rgba(250, 204, 21, 0.16) !important;
+}
+
+body.member-home .pp-cal-nav {
+  border-radius: 50% !important;
+}
+
+body.member-home .pp-cal-day.is-today {
+  border: 2px solid var(--accent, #facc15) !important;
+  font-weight: 700 !important;
+}
+
+body.member-home .pp-cal-day.is-selected {
+  background: var(--accent, #facc15) !important;
+  color: #0b1120 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 12px rgba(250, 204, 21, 0.32) !important;
+}
+
+@media (max-width: 780px) {
+  body.member-home .member-content {
+    padding-top: 16px !important;
+  }
+
+  body.member-home .mb-st-pills {
+    margin-top: 4px !important;
+    padding-top: 4px !important;
+  }
+
+  body.member-home .mb-prof-hero,
+  body.member-home .mb-prof-hero-left,
+  body.member-home .mb-prof-ava-wrap,
+  body.member-home .mb-prof-hero-copy,
+  body.member-home .mb-prof-meta,
+  body.member-home .mb-prof-hero-btns {
+    align-items: center !important;
+    text-align: center !important;
+    justify-content: center !important;
   }
 }

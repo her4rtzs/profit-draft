@@ -5916,7 +5916,16 @@ body[data-portal="trainer"] .topbar .tr-top-title {
   min-width: 0 !important;
 }
 
-body[data-portal="trainer"] .topbar .icon-btn,
+body[data-portal="trainer"] .topbar .icon-btn {
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+  flex: 0 0 42px !important;
+  border-radius: 50% !important;
+  aspect-ratio: 1 / 1 !important;
+  overflow: visible !important;
+}
+
 body[data-portal="trainer"] .topbar .avatar-btn,
 body[data-portal="trainer"] .topbar .avatar-btn .avatar {
   width: 42px !important;
@@ -6740,4 +6749,178 @@ html[data-theme="light"] body[data-portal="trainer"] .tr-prof-checks li.is-done 
 html:not([data-theme="dark"]) body[data-portal="trainer"] .tr-st-toggle-row input[type="checkbox"]:not(:checked),
 html[data-theme="light"] body[data-portal="trainer"] .tr-st-toggle-row input[type="checkbox"]:not(:checked) {
   background: #CBD5E1 !important;
+}
+
+/* ============================================================================
+   Mobile Alignment Pass: Hero Actions, Filter Grids, Search & Cards (<= 640px)
+   ============================================================================ */
+@media (max-width: 640px) {
+  body[data-portal="trainer"] .tw-page-hero {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 14px !important;
+  }
+
+  body[data-portal="trainer"] .tw-page-hero .tw-hero-left {
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+
+  body[data-portal="trainer"] .tw-page-hero .tw-hero-actions {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  body[data-portal="trainer"] .tw-page-hero .tw-hero-actions:has(.tw-date-stepper) {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: center !important;
+  }
+
+  body[data-portal="trainer"] .tw-page-hero .tw-hero-actions > .tw-btn,
+  body[data-portal="trainer"] .tw-page-hero .tw-hero-actions > .tw-btn-primary {
+    width: 100% !important;
+    min-width: 0 !important;
+    justify-content: center !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    padding: 0 10px !important;
+    font-size: 12.5px !important;
+    box-sizing: border-box !important;
+  }
+
+  body[data-portal="trainer"] .tw-page-hero .tw-hero-actions .tw-date-stepper {
+    width: 100% !important;
+    height: 42px !important;
+    min-height: 42px !important;
+  }
+
+  body[data-portal="trainer"] .tw-page-hero .tw-hero-actions:has(.tw-date-stepper) > .tw-btn {
+    width: auto !important;
+    padding: 0 16px !important;
+  }
+
+  body[data-portal="trainer"] .tw-dash-hero-actions {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  body[data-portal="trainer"] .tw-dash-hero-actions > .tw-btn,
+  body[data-portal="trainer"] .tw-dash-hero-actions > .tw-btn-primary {
+    width: 100% !important;
+    min-width: 0 !important;
+    justify-content: center !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    padding: 0 10px !important;
+    font-size: 12.5px !important;
+    box-sizing: border-box !important;
+  }
+
+  body[data-portal="trainer"] .tw-toolbar {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    padding: 12px !important;
+    gap: 10px !important;
+  }
+
+  body[data-portal="trainer"] .tw-toolbar-left,
+  body[data-portal="trainer"] .tw-toolbar-right {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+    min-width: 0 !important;
+  }
+
+  body[data-portal="trainer"] .tw-toolbar .tw-filter-pills {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+    padding: 5px !important;
+    box-sizing: border-box !important;
+  }
+
+  body[data-portal="trainer"] .tw-toolbar .tw-filter-pill {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 38px !important;
+    padding: 6px 10px !important;
+    justify-content: space-between !important;
+    box-sizing: border-box !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  body[data-portal="trainer"] .tw-toolbar-right .tw-filter-pills .tw-filter-pill {
+    justify-content: center !important;
+  }
+
+  body[data-portal="trainer"] .tw-search-box {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    flex: none !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  body[data-portal="trainer"] .tw-search-box > span[data-ico="search"] {
+    left: 13px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 16px !important;
+    height: 16px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1 !important;
+  }
+
+  body[data-portal="trainer"] .tw-search-input {
+    width: 100% !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    padding: 0 14px 0 38px !important;
+    box-sizing: border-box !important;
+  }
+
+  body[data-portal="trainer"] .tw-att-filters {
+    gap: 10px !important;
+  }
+
+  body[data-portal="trainer"] .tw-att-filters .tw-ctrl-field:not(.is-member) {
+    flex: 1 1 calc(50% - 5px) !important;
+    min-width: 0 !important;
+  }
+
+  body[data-portal="trainer"] .tw-att-filters .tw-ctrl-field .pfc-wrap,
+  body[data-portal="trainer"] .tw-att-filters .tw-ctrl-field .pfc-trigger,
+  body[data-portal="trainer"] .tw-att-filters .tw-date-wrap,
+  body[data-portal="trainer"] .tw-att-filters .tw-date-text {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  body[data-portal="trainer"] .tw-notif-item > div:last-child {
+    width: 100% !important;
+    justify-content: flex-end !important;
+    flex-wrap: wrap !important;
+  }
+}
+
+@media (max-width: 540px) {
+  body[data-portal="trainer"] .tw-dow-strip > .tw-dow-btn:nth-child(7) {
+    grid-column: 1 / -1;
+  }
 }

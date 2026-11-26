@@ -75,8 +75,7 @@ html[data-theme="dark"] body[data-portal="trainer"] {
 
 html[data-theme="light"],
 :root[data-theme="light"],
-body.pf-staff:not(.dark),
-body.member-home:not(.dark) {
+body.pf-staff:not(.dark) {
   --pf-state-hover-bg: rgba(232, 185, 58, 0.14);
   --pf-state-hover-neutral: rgba(35, 30, 22, 0.055);
   --pf-state-pressed-bg: rgba(35, 30, 22, 0.11);
@@ -109,9 +108,10 @@ body.member-home:not(.dark) {
   --pf-st-expiring-bd: #FCD34D;
 }
 
-/* Trainer Portal Light Mode Parity (Warm Cream #FAF6EE + White #FFFFFF + Warm #EADFC8) */
+/* Trainer & Member Portal Light Mode Parity (Warm Cream #FAF6EE + White #FFFFFF + Warm #EADFC8) */
 html:not([data-theme="dark"]) body[data-portal="trainer"],
-html[data-theme="light"] body[data-portal="trainer"] {
+html[data-theme="light"] body[data-portal="trainer"],
+body.member-home:not(.dark) {
   --pf-state-hover-bg: rgba(232, 185, 58, 0.14);
   --pf-state-hover-neutral: rgba(42, 36, 24, 0.055);
   --pf-state-pressed-bg: rgba(42, 36, 24, 0.11);
@@ -1125,13 +1125,6 @@ body.pf-staff:not(.dark),
 body.pf-staff:not(.dark) .dashboard,
 body.pf-staff:not(.dark) main.main-content,
 body.pf-staff:not(.dark) .topbar,
-body.member-home:not(.dark),
-body.member-home:not(.dark) .member-main,
-body.member-home:not(.dark) .member-topbar {
-  background-color: #F7F8FC !important;
-  color: #0B1530;
-}
-
 html:not([data-theme="dark"]) body[data-portal="trainer"],
 html:not([data-theme="dark"]) body[data-portal="trainer"] .app,
 html:not([data-theme="dark"]) body[data-portal="trainer"] .main,
@@ -1141,7 +1134,10 @@ html[data-theme="light"] body[data-portal="trainer"],
 html[data-theme="light"] body[data-portal="trainer"] .app,
 html[data-theme="light"] body[data-portal="trainer"] .main,
 html[data-theme="light"] body[data-portal="trainer"] .main-content,
-html[data-theme="light"] body[data-portal="trainer"] .topbar {
+html[data-theme="light"] body[data-portal="trainer"] .topbar,
+body.member-home:not(.dark),
+body.member-home:not(.dark) .member-main,
+body.member-home:not(.dark) .member-topbar {
   background-color: #FAF6EE !important;
   color: #2A2418;
 }
@@ -1473,15 +1469,16 @@ html[data-theme="dark"] body[data-portal="trainer"] .topbar {
 html body.pf-staff.dark .sidebar,
 html[data-theme="dark"] body[data-portal="trainer"] .sidebar,
 html[data-theme="light"] body[data-portal="trainer"] .sidebar,
-html:not([data-theme="dark"]) body[data-portal="trainer"] .sidebar {
+html:not([data-theme="dark"]) body[data-portal="trainer"] .sidebar,
+html body.member-home .member-sidebar,
+html body.member-home:not(.dark) .member-sidebar {
   background: linear-gradient(180deg, #0F1A33 0%, #070B18 100%) !important;
   border-right-color: #1F2F55 !important;
   color: #DCE7F8 !important;
 }
 
 /* Light Mode Classic Navy Sidebar (lighter than Dark Mode Midnight Navy) */
-html body.pf-staff:not(.dark) .sidebar,
-html body.member-home:not(.dark) .member-sidebar {
+html body.pf-staff:not(.dark) .sidebar {
   background: linear-gradient(180deg, #243866 0%, #1F2F55 100%) !important;
   border-right-color: #2D4273 !important;
   color: #DCE7F8 !important;
@@ -2395,7 +2392,9 @@ html:not([data-theme="dark"]):not(.dark) body:not(.dark) .pfc-popover {
 html[data-theme="light"] body[data-portal="trainer"] .pfc-wrap,
 html[data-theme="light"] body[data-portal="trainer"] .pfc-popover,
 html:not([data-theme="dark"]) body[data-portal="trainer"] .pfc-wrap,
-html:not([data-theme="dark"]) body[data-portal="trainer"] .pfc-popover {
+html:not([data-theme="dark"]) body[data-portal="trainer"] .pfc-popover,
+body.member-home:not(.dark) .pfc-wrap,
+body.member-home:not(.dark) .pfc-popover {
   --pfc-bg: #FAF6EE;
   --pfc-bg-hover: #F6ECD9;
   --pfc-bg-active: #EFE2C6;

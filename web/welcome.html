@@ -2192,61 +2192,103 @@
       width: 100%;
       max-width: 480px;
       margin: 0 auto;
-      background: #070B18;
-      padding-bottom: max(28px, env(safe-area-inset-bottom, 28px));
-    }
-    .pf-app-wave {
+      background: #F7F8FC;
       position: relative;
-      width: 100%;
-      height: calc(132px + env(safe-area-inset-top, 0px));
-      flex: none;
       overflow: hidden;
     }
-    .pf-app-wave svg {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
-    .pf-app-body {
-      flex: 1 1 auto;
+    .pf-arch-top {
+      position: relative;
+      flex: 0 0 auto;
+      min-height: calc(250px + env(safe-area-inset-top, 0px));
+      padding: calc(28px + env(safe-area-inset-top, 0px)) 24px 56px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      text-align: center;
-      padding: 12px 28px 24px;
-      gap: 18px;
+      background: #F7F8FC;
+      overflow: hidden;
     }
-    .pf-app-logo {
+    .pf-arch-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 8px solid rgba(15, 26, 51, 0.10);
+      pointer-events: none;
+    }
+    .pf-arch-ring.r1 { width: 110px; height: 110px; top: -28px; right: -26px; border-color: rgba(245, 197, 24, 0.35); }
+    .pf-arch-ring.r2 { width: 92px; height: 92px; bottom: 44px; left: -46px; border-color: rgba(15, 26, 51, 0.14); }
+    .pf-arch-art {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .pf-arch-art-badge {
       width: 112px;
       height: 112px;
       border-radius: 28px;
       padding: 4px;
       background: linear-gradient(145deg, #F5C518, #0F1A33);
-      box-shadow: 0 18px 40px -16px rgba(245, 197, 24, 0.35);
-      overflow: hidden;
+      box-shadow: 0 18px 36px -14px rgba(11, 21, 48, 0.32);
     }
-    .pf-app-logo img {
+    .pf-arch-art-badge img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       border-radius: 24px;
       display: block;
     }
+    .pf-arch-sheet {
+      position: relative;
+      flex: 1 1 auto;
+      background: linear-gradient(180deg, #0F1A33 0%, #070B18 100%);
+      border-top-left-radius: 52% 54px;
+      border-top-right-radius: 52% 54px;
+      margin-top: -36px;
+      padding: 66px 26px max(30px, env(safe-area-inset-bottom, 30px));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      color: #F4F6FB;
+      box-shadow: 0 -10px 30px rgba(7, 11, 24, 0.16);
+    }
+    .pf-arch-pill-circle {
+      position: absolute;
+      top: -46px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 92px;
+      height: 92px;
+      border-radius: 50%;
+      background: #0F1A33;
+      border: 3px solid #F5C518;
+      box-shadow: 0 12px 26px rgba(7, 11, 24, 0.42);
+      display: grid;
+      place-items: center;
+      font-family: "Plus Jakarta Sans", Inter, sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: #F5C518;
+      text-transform: uppercase;
+    }
     .pf-app-title {
       margin: 4px 0 0;
       font-family: "Plus Jakarta Sans", Inter, sans-serif;
-      font-size: 30px;
+      font-size: 21px;
       font-weight: 800;
-      letter-spacing: -0.025em;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
       color: #F4F6FB;
-      line-height: 1.15;
+      line-height: 1.25;
     }
     .pf-app-sub {
-      margin: 0;
+      margin: 10px 0 0;
       max-width: 300px;
-      font-size: 14px;
-      line-height: 1.5;
+      font-size: 13.5px;
+      line-height: 1.55;
       color: #9FB0D6;
     }
     .pf-app-pills {
@@ -2254,6 +2296,7 @@
       flex-wrap: wrap;
       justify-content: center;
       gap: 8px;
+      margin-top: 16px;
     }
     .pf-app-pill {
       display: inline-flex;
@@ -2261,8 +2304,8 @@
       gap: 6px;
       padding: 6px 12px;
       border-radius: 999px;
-      background: #0F1A33;
-      border: 1px solid #1F2F55;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       color: #F4F6FB;
       font-size: 12px;
       font-weight: 600;
@@ -2270,34 +2313,37 @@
     .pf-app-pill i { color: #F5C518; font-size: 11px; }
     .pf-app-actions {
       width: 100%;
+      max-width: 320px;
       display: flex;
       flex-direction: column;
       gap: 12px;
-      margin-top: 8px;
+      margin-top: auto;
+      padding-top: 26px;
     }
     .pf-app-btn {
       display: flex;
       align-items: center;
       justify-content: center;
       width: 100%;
-      height: 50px;
+      height: 48px;
       border-radius: 999px;
       font-family: "Plus Jakarta Sans", Inter, sans-serif;
       font-size: 15px;
       font-weight: 700;
       text-decoration: none;
-      transition: transform 0.15s ease, filter 0.15s ease, background-color 0.15s ease;
+      transition: transform 0.15s ease, filter 0.15s ease;
     }
     .pf-app-btn:active { transform: scale(0.98); }
     .pf-app-btn-primary {
       background: #F5C518;
       color: #0B1530;
       border: 1px solid #F5C518;
+      box-shadow: 0 8px 20px -8px rgba(245, 197, 24, 0.55);
     }
     .pf-app-btn-secondary {
-      background: #0F1A33;
-      color: #F4F6FB;
-      border: 1.5px solid #293D6B;
+      background: #FFFFFF;
+      color: #0B1530;
+      border: 1px solid #FFFFFF;
     }
   </style>
   <link rel="manifest" href="/manifest.webmanifest">
@@ -2313,30 +2359,28 @@
 
 <body class="dark">
   <main id="pf-app-welcome" aria-label="ProFit app welcome">
-    <div class="pf-app-wave" aria-hidden="true">
-      <svg viewBox="0 0 400 140" preserveAspectRatio="none">
-        <rect width="400" height="140" fill="#070B18" />
-        <path d="M0,0 L400,0 L400,92 C310,136 185,48 0,104 Z" fill="#0F1A33" />
-        <path d="M0,0 L400,0 L400,72 C305,118 185,34 0,88 Z" fill="#F5C518" fill-opacity="0.92" />
-      </svg>
+    <div class="pf-arch-top">
+      <span class="pf-arch-ring r1" aria-hidden="true"></span>
+      <span class="pf-arch-ring r2" aria-hidden="true"></span>
+      <div class="pf-arch-art">
+        <div class="pf-arch-art-badge">
+          <img src="logo.jpg" alt="ProFit logo" width="112" height="112">
+        </div>
+      </div>
     </div>
-    <div class="pf-app-body">
-      <div class="pf-app-logo">
-        <img src="logo.jpg" alt="ProFit logo" width="112" height="112">
-      </div>
-      <div>
-        <p class="pf-app-title" role="heading" aria-level="1">Welcome!</p>
-        <p class="pf-app-sub" style="margin-top:8px">Functional Fitness Gym · Alfonso, Cavite. Start your 7-day free trial or sign in to continue.</p>
-      </div>
+    <section class="pf-arch-sheet">
+      <div class="pf-arch-pill-circle" aria-hidden="true">PROFIT</div>
+      <p class="pf-app-title" role="heading" aria-level="1">Functional Fitness Gym</p>
+      <p class="pf-app-sub">Alfonso, Cavite · Start your 7-day free trial or sign in to access your gym account.</p>
       <div class="pf-app-pills" aria-label="Membership highlights">
         <span class="pf-app-pill"><i class="fa-solid fa-bolt" aria-hidden="true"></i> 7-day free trial</span>
         <span class="pf-app-pill"><i class="fa-solid fa-wallet" aria-hidden="true"></i> Cash &amp; GCash</span>
       </div>
       <div class="pf-app-actions">
-        <a class="pf-app-btn pf-app-btn-primary" href="/join">Sign Up</a>
-        <a class="pf-app-btn pf-app-btn-secondary" href="/login">Login</a>
+        <a class="pf-app-btn pf-app-btn-primary" href="/login">Sign in</a>
+        <a class="pf-app-btn pf-app-btn-secondary" href="/join">Sign up</a>
       </div>
-    </div>
+    </section>
   </main>
   <input id="navt" type="checkbox" hidden>
   <header class="top">
