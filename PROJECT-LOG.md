@@ -4293,3 +4293,30 @@ In the installed app, remove the marketing landing page and match the uploaded m
 - In `web/login.html` and `web/join.html`, added matching ProFit curved wave headers with a `<` back button to `/` and clean centered single-column app forms preserving all existing fields, validation, and Google Sign-In.
 ### Decision-log skill
 Keep `manifest.webmanifest` `start_url` at `/` and toggle `html.pf-standalone` synchronously in `<head>` so installed PWA users bypass the marketing landing page without breaking normal web visitors or manifest contract tests.
+
+
+## 2026-11-27 06:40 (Asia/Manila): Curved Arch & Circular Badge Design for Installed App Welcome, Sign In & Sign Up
+### What I asked for
+Update the installed app's splash -> welcome -> login / sign up screens to match the uploaded curved-arch + overlapping circular badge reference while keeping ProFit's colors and real information.
+### What the agent decided and why
+- Updated `html.pf-standalone` styles and markup across `web/welcome.html`, `web/login.html`, and `web/join.html` to pair a clean light top section (`#F7F8FC` with subtle navy/gold ring accents and ProFit emblem) with a deep navy curved arch (`#0F1A33` to `#070B18`) and an overlapping gold-rimmed circular badge (`PROFIT`, `SIGN IN`, `SIGN UP`) centered on the crest.
+- Kept all existing form inputs, validation, Google Sign-In, forgot password, and legal agreement flows intact inside pill-styled inputs and gold/white pill CTAs (`Sign in`, `Sign up`), with `<` back buttons returning to `/` on Sign In and Sign Up.
+### Decision-log skill
+Style the `html.pf-standalone` shell with `border-top-left-radius / border-top-right-radius: 52% 50px` + `margin-top: -34px` and an absolutely centered circular crest badge so the curved arch and overlapping emblem stay responsive across phone widths.
+
+## 2026-11-27 06:51 (Asia/Manila): Member portal UI polish
+### What I asked for
+Fix Member Portal UI: settings topbar overlap on mobile, toggle switches rendering as full circles, profile centering on mobile, Book a Class calendar day circles & header design, and notification red dot clipping.
+### What the agent decided and why
+Updated `web/member-shell.css` (and bumped `member-shell.css?v=42` in `web/member-home.html`) to lock toggle switch dimensions (`46x26px`), make `.pp-cal-day` a `38x38px` circle with tinted `.pp-cal-head`, set `overflow: visible` on `.member-top` icon buttons, add mobile top padding above `.mb-st-pills`, and center `.mb-prof-*` elements below `780px`.
+### Decision-log skill
+Lock `min-height`/`max-height` and `max-width` on custom `appearance: none` toggle checkboxes so mobile `@media (pointer: coarse)` tap-target rules do not turn them into `44x44` circles.
+
+
+## 2026-11-27 06:52 (Asia/Manila): Keep Public Landing, Login & Sign Up Pages Available Offline
+### What I asked for
+Ensure the landing/welcome, login, and sign up pages remain allowed and accessible offline (instead of showing "This page isn't saved offline yet" after logout or before visiting them).
+### What the agent decided and why
+- Separated `PUBLIC_PAGES_CACHE` (`profit-public-pages-v1`) from `PAGES_CACHE` (`profit-pages-v1`) in `web/sw.js` (`ASSETS_CACHE` bumped to `profit-assets-v2`), pre-cached `/`, `/login`, `/join`, and `/forgot` plus `/logo.jpg` and `/splash.js` during Service Worker install, and kept `CLEAR_PRIVATE_CACHES` wiping only `PAGES_CACHE` on logout so public pages stay available offline while private portal pages are still wiped.
+### Decision-log skill
+Keep public unauthenticated HTML routes (`/`, `/login`, `/join`, `/forgot`, `/faq`) in a separate SW cache from authenticated portal pages so logout privacy wipes never delete the sign-in or welcome screens.

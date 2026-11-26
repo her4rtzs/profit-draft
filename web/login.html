@@ -356,76 +356,147 @@
   })();
 </script>
 <style>
-  .pf-app-wave-head { display: none; }
+  .pf-app-arch-head,
+  .pf-app-arch-badge { display: none; }
   html.pf-standalone .portal-nav,
   html.pf-standalone .lg-copy,
   html.pf-standalone footer.site-footer,
   html.pf-standalone .site-footer { display: none !important; }
-  html.pf-standalone .pf-app-wave-head {
-    display: block;
+  html.pf-standalone body {
+    background: #F7F8FC !important;
+    min-height: 100dvh !important;
+    max-width: 480px;
+    margin: 0 auto !important;
+  }
+  html.pf-standalone .pf-app-arch-head {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: relative;
     width: 100%;
-    height: calc(116px + env(safe-area-inset-top, 0px));
-    flex: none;
+    height: calc(186px + env(safe-area-inset-top, 0px));
+    padding: calc(18px + env(safe-area-inset-top, 0px)) 20px 44px;
+    background: #F7F8FC;
     overflow: hidden;
+    flex: none;
   }
-  html.pf-standalone .pf-app-wave-head svg {
-    display: block;
+  html.pf-standalone .pf-app-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 7px solid rgba(15, 26, 51, 0.10);
+    pointer-events: none;
+  }
+  html.pf-standalone .pf-app-ring.r1 { width: 92px; height: 92px; top: -24px; right: -22px; border-color: rgba(245, 197, 24, 0.35); }
+  html.pf-standalone .pf-app-ring.r2 { width: 78px; height: 78px; bottom: 24px; left: -38px; border-color: rgba(15, 26, 51, 0.14); }
+  html.pf-standalone .pf-app-arch-art {
+    width: 82px;
+    height: 82px;
+    border-radius: 22px;
+    padding: 3px;
+    background: linear-gradient(145deg, #F5C518, #0F1A33);
+    box-shadow: 0 14px 28px -12px rgba(11, 21, 48, 0.28);
+    position: relative;
+    z-index: 1;
+  }
+  html.pf-standalone .pf-app-arch-art img {
     width: 100%;
     height: 100%;
+    object-fit: cover;
+    border-radius: 19px;
+    display: block;
   }
   html.pf-standalone .pf-app-back {
     position: absolute;
     top: calc(14px + env(safe-area-inset-top, 0px));
     left: 14px;
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
     display: grid;
     place-items: center;
-    background: rgba(11, 21, 48, 0.72);
+    background: #0F1A33;
     color: #F4F6FB;
-    border: 1px solid rgba(255, 255, 255, 0.16);
+    border: 1.5px solid rgba(245, 197, 24, 0.55);
     text-decoration: none;
-    font-size: 16px;
+    font-size: 14px;
+    z-index: 2;
   }
   html.pf-standalone .lg-shell {
+    position: relative;
+    flex: 1 1 auto !important;
     min-height: 0 !important;
-    padding: 8px 18px calc(28px + env(safe-area-inset-bottom, 0px)) !important;
+    margin-top: -34px;
+    padding: 58px 20px calc(28px + env(safe-area-inset-bottom, 0px)) !important;
     align-items: flex-start !important;
+    background: linear-gradient(180deg, #0F1A33 0%, #070B18 100%) !important;
+    border-top-left-radius: 52% 50px;
+    border-top-right-radius: 52% 50px;
+    box-shadow: 0 -10px 28px rgba(7, 11, 24, 0.16);
+  }
+  html.pf-standalone .pf-app-arch-badge {
+    display: grid;
+    place-items: center;
+    position: absolute;
+    top: -44px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: #0F1A33;
+    border: 3px solid #F5C518;
+    box-shadow: 0 12px 26px rgba(7, 11, 24, 0.42);
+    font-family: "Plus Jakarta Sans", Inter, sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #F5C518;
+    text-transform: uppercase;
+    z-index: 3;
   }
   html.pf-standalone .lg-wrap {
     grid-template-columns: 1fr !important;
-    max-width: 440px !important;
+    max-width: 380px !important;
+    width: 100% !important;
     margin: 0 auto !important;
   }
   html.pf-standalone .lg-card {
     background: transparent !important;
     border: 0 !important;
     box-shadow: none !important;
-    padding: 8px 4px !important;
-    text-align: left;
+    padding: 0 !important;
   }
-  html.pf-standalone .lg-card h2 {
-    text-align: center;
-    font-size: 26px !important;
-    margin-bottom: 4px !important;
+  html.pf-standalone .lg-card > h2,
+  html.pf-standalone .lg-card > .lg-lead { display: none !important; }
+  html.pf-standalone .lg-field-label { color: #CBD5E1 !important; font-size: 12.5px !important; }
+  html.pf-standalone .lg-input {
+    border-radius: 999px !important;
+    background: rgba(7, 11, 24, 0.55) !important;
+    border: 1.5px solid rgba(244, 246, 251, 0.35) !important;
+    color: #F4F6FB !important;
+    padding-left: 18px !important;
   }
-  html.pf-standalone .lg-card .lg-lead {
-    text-align: center;
-    margin-bottom: 20px !important;
+  html.pf-standalone .lg-input:focus {
+    border-color: #F5C518 !important;
+  }
+  html.pf-standalone .lg-btn-gold {
+    border-radius: 999px !important;
+    background: #F5C518 !important;
+    color: #0B1530 !important;
+    font-weight: 800 !important;
+  }
+  html.pf-standalone .lg-sso-btn {
+    border-radius: 999px !important;
   }
 </style>
 <script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script>
 <link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><meta name="theme-color" media="(prefers-color-scheme: light)" content="#F7F8FC"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17"><meta name="color-scheme" content="light dark"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
 <body class="portal-body auth-page dark public-dark-theme">
-<div class="pf-app-wave-head">
-  <svg viewBox="0 0 400 120" preserveAspectRatio="none" aria-hidden="true">
-    <rect width="400" height="120" fill="#070B18" />
-    <path d="M0,0 L400,0 L400,82 C310,118 185,42 0,94 Z" fill="#0F1A33" />
-    <path d="M0,0 L400,0 L400,64 C305,102 185,28 0,78 Z" fill="#F5C518" fill-opacity="0.92" />
-  </svg>
+<div class="pf-app-arch-head">
+  <span class="pf-app-ring r1" aria-hidden="true"></span>
+  <span class="pf-app-ring r2" aria-hidden="true"></span>
   <a class="pf-app-back" href="/" aria-label="Back"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></a>
+  <div class="pf-app-arch-art"><img src="logo.jpg" alt="ProFit logo" width="82" height="82"></div>
 </div>
 <header class="portal-nav">
   <a class="portal-brand" href="/">
@@ -436,6 +507,7 @@
 </header>
 
 <main class="lg-shell">
+  <div class="pf-app-arch-badge" aria-hidden="true">SIGN IN</div>
   <div class="lg-wrap">
     <section class="lg-copy" aria-label="ProFit member portal overview">
       <p class="lg-eyebrow">Your gym. One platform.</p>

@@ -10,15 +10,34 @@
  */
 'use strict';
 
-const ASSETS_CACHE = 'profit-assets-v1';
+const ASSETS_CACHE = 'profit-assets-v2';
 const PAGES_CACHE = 'profit-pages-v1';
-const KEEP_CACHES = new Set([ASSETS_CACHE, PAGES_CACHE]);
+const PUBLIC_PAGES_CACHE = 'profit-public-pages-v1';
+const KEEP_CACHES = new Set([ASSETS_CACHE, PAGES_CACHE, PUBLIC_PAGES_CACHE]);
+
+const PUBLIC_PATHS = new Set([
+  '/',
+  '/welcome',
+  '/welcome.html',
+  '/login',
+  '/login.html',
+  '/join',
+  '/join.html',
+  '/forgot',
+  '/forgot.html',
+  '/faq',
+  '/faq.html'
+]);
+
+const PUBLIC_PRECACHED = ['/', '/login', '/join', '/forgot'];
 
 const CORE_ASSETS = [
   '/manifest.webmanifest',
   '/static/icons/icon-192.png',
   '/static/icons/icon-512.png',
   '/static/icons/apple-touch-icon.png',
+  '/logo.jpg',
+  '/splash.js',
   '/config.js',
   '/api.js',
   '/auth.js',
@@ -102,7 +121,7 @@ const OFFLINE_FALLBACK_HTML = `<!doctype html>
     <p>You can still open pages you already visited while online. Once your internet reconnects, ProFit will update automatically.</p>
     <div class="actions">
       <button type="button" class="primary" onclick="location.reload()">Try again</button>
-      <a class="secondary" href="/dashboard">Back to Dashboard</a>
+      <a class="secondary" href="/">Back to Home</a>
     </div>
   </main>
   <script>window.addEventListener('online', function () { location.reload(); });</script>
@@ -111,15 +130,26 @@ const OFFLINE_FALLBACK_HTML = `<!doctype html>
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(ASSETS_CACHE).then((cache) =>
-      Promise.allSettled(
-        CORE_ASSETS.map((url) =>
-          fetch(url, { cache: 'no-cache' })
-            .then((res) => (res && res.ok ? cache.put(url, res.clone()) : null))
-            .catch(() => null)
+    Promise.all([
+      caches.open(ASSETS_CACHE).then((cache) =>
+        Promise.allSettled(
+          CORE_ASSETS.map((url) =>
+            fetch(url, { cache: 'no-cache' })
+              .then((res) => (res && res.ok ? cache.put(url, res.clone()) : null))
+              .catch(() => null)
+          )
+        )
+      ),
+      caches.open(PUBLIC_PAGES_CACHE).then((cache) =>
+        Promise.allSettled(
+          PUBLIC_PRECACHED.map((url) =>
+            fetch(url, { cache: 'no-cache' })
+              .then((res) => (res && res.ok ? cache.put(url, res.clone()) : null))
+              .catch(() => null)
+          )
         )
       )
-    ).then(() => self.skipWaiting())
+    ]).then(() => self.skipWaiting())
   );
 });
 
@@ -156,6 +186,7 @@ function isCacheableNavigationPath(pathname) {
 
 async function handleNavigation(request, url) {
   const cacheKey = new Request(url.origin + url.pathname, { method: 'GET' });
+  const targetCacheName = PUBLIC_PATHS.has(url.pathname) ? PUBLIC_PAGES_CACHE : PAGES_CACHE;
   try {
     const response = await fetch(request);
     if (
@@ -165,12 +196,12 @@ async function handleNavigation(request, url) {
       isCacheableNavigationPath(url.pathname) &&
       (response.headers.get('content-type') || '').includes('text/html')
     ) {
-      const cache = await caches.open(PAGES_CACHE);
+      const cache = await caches.open(targetCacheName);
       cache.put(cacheKey, response.clone()).catch(() => {});
     }
     return response;
   } catch (_) {
-    const cache = await caches.open(PAGES_CACHE);
+    const cache = await caches.open(targetCacheName);
     const hit = (await cache.match(request)) || (await cache.match(cacheKey));
     if (hit) return hit;
     return new Response(OFFLINE_FALLBACK_HTML, {
