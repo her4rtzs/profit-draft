@@ -35,7 +35,6 @@ from django.views.decorators.http import require_GET, require_POST
 from apps.accounts.google_auth import (
     GOOGLE_SCOPES,
     GoogleAuthError,
-    authenticate_google_login,
     authenticate_google_member,
     connect_google_account,
     disconnect_google_account,
@@ -567,18 +566,13 @@ def google_auth_view(request):
     if not has_cred and not has_access:
         return JsonResponse({"detail": "Missing Google credential."}, status=400)
 
-    source = str(data.get("source") or "login").strip().lower()
     try:
         claims = (
             verify_google_id_token(credential.strip())
             if has_cred
             else verify_google_access_token(access_token.strip())
         )
-        outcome = (
-            authenticate_google_member(claims)
-            if source == "join"
-            else authenticate_google_login(claims)
-        )
+        outcome = authenticate_google_member(claims)
     except GoogleAuthError as exc:
         body = {"detail": exc.message, "code": exc.code}
         if exc.code == "not_linked":
@@ -862,11 +856,7 @@ def google_oauth_callback_view(request):
         return HttpResponseRedirect("/accounts/onboarding/")
 
     try:
-        outcome = (
-            authenticate_google_member(claims)
-            if source == "join"
-            else authenticate_google_login(claims)
-        )
+        outcome = authenticate_google_member(claims)
     except GoogleAuthError as exc:
         return _error_redirect("not_linked" if exc.code == "not_linked" else exc.code, exc.message)
     except DatabaseError as exc:

@@ -172,7 +172,7 @@ class GoogleAuthTests(TestCase):
         with (
             patch("api.auth.verify_google_id_token", return_value=claims),
             patch(
-                "api.auth.authenticate_google_login",
+                "api.auth.authenticate_google_member",
                 return_value=GoogleAuthOutcome(
                     status="authenticated", user=self.member_pw
                 ),
@@ -479,22 +479,22 @@ class GoogleAuthTests(TestCase):
         self.assertEqual(bad_state.status_code, 302)
         self.assertIn("/login?google_error=invalid_state", bad_state["Location"])
 
-        # Unlinked Google account on /login redirects to /login?error=not-linked
+        # Unlinked Staff/Owner Google account on /login redirects to /login?error=not-linked
         start_unlinked = self.client.get("/api/auth/google/login/?source=login")
         state_unlinked = urllib.parse.parse_qs(urllib.parse.urlparse(start_unlinked["Location"]).query)["state"][0]
         unlinked_claims = GoogleClaims(
-            sub="google-sub-unlinked-99",
-            email="unlinkeduser@gmail.com",
+            sub="google-sub-unlinked-staff-99",
+            email=self.owner.email,
             email_verified=True,
-            name="Unlinked User",
+            name="Owner Unlinked",
         )
         with patch("api.auth.exchange_google_code", return_value=unlinked_claims):
             cb_unlinked = self.client.get(f"/api/auth/google/callback/?code=valid-code&state={state_unlinked}")
         self.assertEqual(cb_unlinked.status_code, 302)
         self.assertEqual(cb_unlinked["Location"], "/login?error=not-linked")
 
-        # /join creates & logs in Member and sends them to /accounts/onboarding/
-        start3 = self.client.get("/api/auth/google/login/?source=join")
+        # Brand-new Gmail on /login creates a Member and enters OTP -> Terms & Privacy onboarding gate
+        start3 = self.client.get("/api/auth/google/login/?source=login")
         state3 = urllib.parse.parse_qs(urllib.parse.urlparse(start3["Location"]).query)["state"][0]
 
         mock_claims = GoogleClaims(

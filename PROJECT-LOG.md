@@ -3977,3 +3977,11 @@ Redesign both the Member GCash payment form and the Staff/Cashier Record a payme
 - Verified Dark Mode and Light Mode live in the browser across `payments.html`, `cashier.html`, and `member-home.html`.
 ### Decision-log skill
 When visually framing a tall vertical QR image inside a compact blue card, calculate CSS vertical percentage margins relative to the image width (not height) so only the clean white QR box is displayed inline while preserving the full original image for zoom and download.
+
+## 2026-11-26 19:16 (Asia/Manila): Allow New Google Users on /login to Enter Google -> OTP -> Consent Flow
+### What I asked for
+Allow new users signing in with Google on `/login` to connect directly and proceed through `Google -> OTP -> Terms of Service -> Privacy Policy`, instead of seeing the unlinked account error.
+### What the agent decided and why
+- Updated `google_auth_view` and `google_oauth_callback_view` in `api/auth.py` to call `authenticate_google_member(claims)` for both `/login` and `/join`, so brand-new Gmail users enter `/accounts/onboarding/` (`OTP -> Terms & Privacy`), linked Owner/Staff/Member users sign in cleanly, and unlinked Staff/Owner emails still redirect to `/login?error=not-linked`; see [[2026-11-26 Allow new Google members on login via OTP gate]].
+### Decision-log skill
+Keep public Google Member creation safe on both `/login` and `/join` by gating every new Google session behind Email OTP + legal consent while rejecting unlinked privileged roles cleanly.

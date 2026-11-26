@@ -515,7 +515,7 @@ def exchange_google_code(
 def _assert_member_eligible(user: User) -> None:
     if user.role != Role.MEMBER or user.is_staff or user.is_superuser:
         raise GoogleAuthError(
-            "This Google account is not connected to a ProFit account. Sign in with your email and password first, then connect Google in Settings.",
+            "This staff account is not connected to Google yet. Sign in with your email and password first, then connect Google in Settings.",
             status_code=403,
             code="not_linked",
         )

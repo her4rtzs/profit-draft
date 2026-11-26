@@ -1,7 +1,8 @@
 ---
 date: 2026-11-26
-status: accepted
+status: superseded
 tags: [decision]
+Superseded by: [[2026-11-26 Allow new Google members on login via OTP gate]]
 ---
 # Linked Google login and first-login gate
 - Decision: Allow all roles (`OWNER`, `CASHIER`, `TRAINER`, `MEMBER`) to sign in via Google on `/login` only when `google_sub` is already connected (unlinked Google accounts redirect with `?error=not-linked`), enforce a two-step first-login onboarding gate (Email OTP first, then Terms of Service + Privacy Policy consent) via `FirstLoginOnboardingGateMiddleware` before dashboard/API access, redesign staff invite acceptance with password + matching-email Google activation + `revoked_at`, and provide Connect/Disconnect Google (with passwordless lockout guard) in Settings across all portals.

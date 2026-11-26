@@ -103,3 +103,5 @@ One note per decision, oldest first; entries with an `Unknown` date are listed l
 - [[2026-11-26 Light mode 60-30-10 surfaces and animated empty-state mascot]]: Standardized light-mode 60/30/10 container/form surfaces in `web/pf-system.css?v=3` and `web/claim.html`, and added animated `web/img/empty-mascot.svg` across empty states.
 
 - [[2026-11-26 Linked Google login and first-login gate]]: Allow linked Google login for all roles, enforce first-login OTP then ToS/Privacy consent gate, redesign invite accept with Google email-match & revocation, and add Settings Google connect/disconnect.
+
+- [[2026-11-26 Allow new Google members on login via OTP gate]]: Route `/login` Google Sign-In through `authenticate_google_member` so brand-new Google users connect & enter `OTP -> Terms & Privacy` while unlinked Staff/Owner emails still redirect to `/login?error=not-linked`.

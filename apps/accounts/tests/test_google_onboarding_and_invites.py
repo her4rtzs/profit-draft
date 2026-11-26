@@ -101,6 +101,39 @@ class LinkedGoogleAndOnboardingGateTests(TestCase):
                 self.assertEqual(body["role"], web_role)
                 self.assertEqual(body["redirect"], expected_home)
 
+    def test_new_google_user_on_login_goes_through_otp_then_consent_to_dashboard(self):
+        claims = GoogleClaims(
+            sub="brand-new-google-sub",
+            email="brandnewvisitor@gmail.com",
+            email_verified=True,
+            name="Brand New",
+        )
+        mail.outbox.clear()
+        with patch("api.auth.verify_google_id_token", return_value=claims):
+            resp = self.client.post(
+                "/api/auth/google/",
+                data=json.dumps({"credential": "fake-id-token", "source": "login"}),
+                content_type="application/json",
+                HTTP_X_CSRFTOKEN=self._csrf(),
+            )
+        self.assertEqual(resp.status_code, 200)
+        body = resp.json()
+        self.assertTrue(body["created"])
+        self.assertEqual(body["role"], "MEMBER")
+        self.assertEqual(body["redirect"], "/accounts/onboarding/")
+
+        # Dashboard blocked until OTP -> Terms & Privacy completed
+        self.assertEqual(self.client.get("/member-home").status_code, 302)
+        self.assertEqual(self.client.get("/accounts/onboarding/otp/").status_code, 200)
+        code = re.search(r"\b(\d{6})\b", mail.outbox[-1].body).group(1)
+        self.client.post("/accounts/onboarding/otp/", {"code": code}, HTTP_X_CSRFTOKEN=self._csrf())
+        self.client.post(
+            "/accounts/onboarding/consent/",
+            {"accept_terms": "on", "accept_privacy": "on"},
+            HTTP_X_CSRFTOKEN=self._csrf(),
+        )
+        self.assertEqual(self.client.get("/member-home").status_code, 200)
+
     def test_first_login_gate_blocks_dashboard_until_otp_and_consent_complete(self):
         # Owner connected Google via Settings, first time using Google -> needs OTP + Consent
         self.owner.google_sub = "owner-first-sub"
