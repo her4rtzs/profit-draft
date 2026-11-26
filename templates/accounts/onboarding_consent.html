@@ -4,83 +4,103 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0A0E17">
-<title>Terms of Service &amp; Privacy Policy · ProFit</title>
+<title>Terms &amp; Privacy Review · ProFit</title>
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
 <style>
   :root{
-    --bg:#0A0E17;--surface:#111726;--surface-2:#171F33;--line:rgba(255,255,255,.11);
-    --field:#0C111E;--field-line:rgba(255,255,255,.22);--tx:#F6EFDC;--mu:#9EA7B8;
-    --gold:#E8B93A;--gold-hi:#F2C94C;--gold-ink:#141005;--err:#F87171;--ok:#34D399;
+    --gold:#e8b93a;--on:#1a1407;--bg:#07080c;--bg2:#0b0d16;--card:#111320;
+    --line:#232636;--tx:#f6efdc;--mu:#9a9788;--field-line:#4A4E66;--err:#f87171;--ok:#4ade80;
   }
   *{box-sizing:border-box}
-  html,body{margin:0;min-height:100%;background:radial-gradient(900px 520px at 14% -8%,rgba(232,185,58,.14),transparent 62%),var(--bg);color:var(--tx);font-family:Inter,system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
-  .ob-wrap{min-height:100dvh;display:grid;place-items:center;padding:24px 16px}
-  .ob-card{width:min(560px,100%);background:var(--surface);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 28px 70px rgba(0,0,0,.6)}
-  .ob-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 22px;border-bottom:1px solid var(--line)}
-  .ob-head-lead{display:flex;align-items:center;gap:12px}
-  .ob-ico{width:36px;height:36px;border-radius:10px;background:rgba(232,185,58,.14);border:1px solid rgba(232,185,58,.32);display:grid;place-items:center;color:var(--gold);font-weight:800;font-size:15px}
-  .ob-head h1{margin:0;font-family:"Plus Jakarta Sans",Inter,sans-serif;font-size:16.5px;line-height:1.25}
-  .ob-head p{margin:2px 0 0;font-size:12px;color:var(--mu)}
-  .ob-close{width:34px;height:34px;border-radius:999px;border:0;background:transparent;color:var(--mu);font-size:20px;cursor:pointer;display:grid;place-items:center}
-  .ob-close:hover{background:rgba(255,255,255,.07);color:var(--tx)}
-  .ob-body{max-height:46vh;overflow-y:auto;padding:18px 22px;display:grid;gap:14px}
-  .ob-part{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;font-weight:700;letter-spacing:.06em;color:var(--gold);text-transform:uppercase;padding-bottom:6px;border-bottom:1px solid var(--line)}
-  .ob-box{font-size:13px;line-height:1.6;color:var(--mu)}
-  .ob-box h2{margin:0 0 6px;font-size:14px;color:var(--tx)}
-  .ob-box a{color:var(--gold);font-weight:600}
-  .ob-callout{padding:12px 14px;border-radius:12px;background:rgba(232,185,58,.08);border:1px solid rgba(232,185,58,.28);font-size:12.5px;line-height:1.5;color:var(--tx)}
-  .ob-foot{padding:16px 22px 20px;border-top:1px solid var(--line);background:rgba(0,0,0,.16);display:grid;gap:12px}
-  .ob-note{padding:9px 12px;border-radius:10px;border:1px solid rgba(232,185,58,.28);background:rgba(232,185,58,.08);color:var(--gold);font-size:12.5px;text-align:center}
-  .ob-checks{display:grid;gap:8px}
-  .ob-chk{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--tx);cursor:pointer}
+  html,body{margin:0;min-height:100%;background:radial-gradient(900px 520px at 14% -8%,rgba(232,185,58,.12),transparent 62%),var(--bg);color:var(--tx);font-family:Inter,system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+  .ob-legal-wrap{min-height:100dvh;display:grid;place-items:center;padding:20px}
+  .jn-legal-modal{width:min(760px,100%);max-height:min(88dvh,780px);display:flex;flex-direction:column;background:var(--card);color:var(--tx);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 28px 70px rgba(0,0,0,.65)}
+  .jn-legal-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 22px;background:var(--bg2);border-bottom:1px solid var(--line)}
+  .jn-legal-head-left{display:flex;align-items:center;gap:12px;min-width:0}
+  .jn-legal-ico{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:var(--gold);color:var(--on);font-size:16px;flex:none}
+  .jn-legal-head h1{margin:0;font:700 18px/1.25 "Plus Jakarta Sans",sans-serif;color:var(--tx)}
+  .jn-legal-head p{margin:2px 0 0;font-size:12px;color:var(--mu)}
+  .jn-legal-x{width:44px;height:44px;border-radius:10px;border:1px solid var(--field-line);background:var(--bg2);color:var(--tx);font-size:20px;line-height:1;display:grid;place-items:center;cursor:pointer}
+  .jn-legal-x:hover{background:rgba(255,255,255,.06)}
+  .jn-legal-tabs{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 22px;background:var(--bg);border-bottom:1px solid var(--line)}
+  .jn-legal-tab-group{display:flex;gap:8px;flex-wrap:wrap}
+  .jn-legal-tab{display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--field-line);background:var(--bg2);color:var(--tx);font:600 13px/1 "Plus Jakarta Sans",sans-serif;cursor:pointer;transition:background-color .15s ease}
+  .jn-legal-tab:hover:not(.is-active){background:rgba(232,185,58,.12)}
+  .jn-legal-tab.is-active{background:var(--gold);color:#0b0f19;border-color:var(--gold)}
+  .jn-legal-tab .chk{display:none;color:var(--ok);font-weight:800}
+  .jn-legal-tab.is-read .chk{display:inline}
+  .jn-legal-tab.is-active.is-read .chk{color:var(--on)}
+  .jn-legal-prog{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:600;color:var(--mu)}
+  .jn-legal-prog-bar{width:90px;height:6px;background:var(--line);border-radius:99px;overflow:hidden}
+  .jn-legal-prog-fill{height:100%;width:0%;background:var(--ok);transition:width .25s ease}
+  .jn-legal-body{flex:1 1 auto;overflow-y:auto;padding:20px 22px;font-size:14px;line-height:1.65;color:var(--tx);background:var(--bg2)}
+  .jn-legal-body .legal-sec{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+  .jn-legal-body .legal-sec:last-child{border-bottom:0;margin-bottom:0}
+  .jn-legal-body h2{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:700;color:var(--tx);margin:0 0 8px}
+  .jn-legal-body .legal-num{width:24px;height:24px;border-radius:6px;display:inline-grid;place-items:center;background:var(--gold);color:var(--on);font-size:12px;font-weight:800;flex:none}
+  .jn-legal-body p{margin:0 0 8px}
+  .jn-legal-body ul{margin:6px 0 0;padding-left:20px;display:grid;gap:5px}
+  .jn-legal-body a{color:var(--gold);font-weight:600;text-decoration:underline}
+  .jn-legal-foot{display:grid;gap:10px;padding:12px 22px 16px;border-top:1px solid var(--line);background:var(--bg)}
+  .ob-checks{display:flex;flex-wrap:wrap;gap:10px 20px}
+  .ob-chk{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--tx);cursor:pointer;user-select:none}
+  .ob-chk.is-locked{opacity:.58;cursor:not-allowed}
   .ob-chk input{width:17px;height:17px;accent-color:var(--gold);cursor:pointer}
-  .ob-err-box{padding:10px 12px;border-radius:10px;font-size:12.5px;border:1px solid rgba(248,113,113,.38);background:rgba(248,113,113,.1);color:#FECACA}
-  .ob-acts{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
-  .ob-cancel{height:40px;padding:0 16px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);color:var(--tx);font:600 13px/1 Inter,sans-serif;cursor:pointer}
-  .ob-btn{height:40px;padding:0 18px;border-radius:10px;border:0;background:var(--gold);color:var(--gold-ink);font:700 13px/1 "Plus Jakarta Sans",Inter,sans-serif;cursor:pointer}
-  .ob-btn:hover{background:var(--gold-hi)}
+  .ob-chk.is-locked input{cursor:not-allowed}
+  .ob-err-box{padding:9px 12px;border-radius:10px;font-size:12.5px;border:1px solid rgba(248,113,113,.38);background:rgba(248,113,113,.1);color:#FECACA}
+  .ob-err-box[hidden]{display:none}
+  .jn-legal-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .jn-legal-note{margin:0;font-size:12.5px;color:var(--mu)}
+  .jn-legal-acts{display:flex;align-items:center;gap:10px;margin-left:auto}
+  .jn-legal-btn{height:44px;padding:0 18px;border-radius:999px;font:600 13.5px/1 "Plus Jakarta Sans",sans-serif;border:1px solid var(--field-line);background:var(--bg2);color:var(--tx);cursor:pointer}
+  .jn-legal-btn:hover:not(.primary):not(:disabled){background:rgba(255,255,255,.06)}
+  .jn-legal-btn.primary{background:var(--gold);color:#0b0f19;border-color:var(--gold);font-weight:700}
+  .jn-legal-btn.primary:hover:not(:disabled){background:#f0c44b;border-color:#f0c44b}
+  .jn-legal-btn.primary:disabled{opacity:.48;cursor:not-allowed}
+  @media(max-width:560px){.ob-legal-wrap{padding:10px}.jn-legal-head,.jn-legal-tabs,.jn-legal-body,.jn-legal-foot{padding-left:14px;padding-right:14px}.jn-legal-row{flex-direction:column;align-items:stretch}.jn-legal-acts{justify-content:flex-end}}
 </style>
 </head>
 <body>
-<main class="ob-wrap">
-  <section class="ob-card" aria-labelledby="consentTitle">
-    <div class="ob-head">
-      <div class="ob-head-lead">
-        <span class="ob-ico" aria-hidden="true">&#128196;</span>
+<main class="ob-legal-wrap">
+  <section class="jn-legal-modal" role="dialog" aria-modal="true" aria-labelledby="legalModalTitle">
+    <div class="jn-legal-head">
+      <div class="jn-legal-head-left">
+        <span class="jn-legal-ico" id="legalModalIco" aria-hidden="true"><i class="fa-regular fa-file-lines"></i></span>
         <div>
-          <h1 id="consentTitle">Terms of Service &amp; Privacy Policy</h1>
-          <p>ProFit &middot; Functional Fitness Gym</p>
+          <h1 id="legalModalTitle">Terms of Service</h1>
+          <p id="legalModalSub">ProFit &middot; Functional Fitness Gym &middot; Last updated: October 2026</p>
         </div>
       </div>
       <form method="post" action="{% url 'accounts:logout' %}">
         {% csrf_token %}
         <input type="hidden" name="next" value="/login">
-        <button type="submit" class="ob-close" aria-label="Cancel and return to sign in">&times;</button>
+        <button type="submit" class="jn-legal-x" aria-label="Cancel and return to sign in">&times;</button>
       </form>
     </div>
 
-    <div class="ob-body">
-      <div class="ob-part"><span>Part I &middot; Terms of Service</span><span>Functional Fitness Gym</span></div>
-      <div class="ob-box">
-        <h2>1. Acceptance of Terms &amp; Account Rules</h2>
-        By activating or signing into your ProFit account, you agree to use the portal only for your authorized membership or assigned gym staff responsibilities and follow Functional Fitness Gym house rules. <a href="/terms" target="_blank" rel="noopener">Read full Terms</a>.
+    <div class="jn-legal-tabs">
+      <div class="jn-legal-tab-group" role="tablist" aria-label="Legal documents">
+        <button type="button" class="jn-legal-tab is-active" role="tab" aria-selected="true" data-doc="terms">
+          <i class="fa-regular fa-file-lines" aria-hidden="true"></i> Terms of Service <span class="chk" aria-hidden="true">&#10003;</span>
+        </button>
+        <button type="button" class="jn-legal-tab" role="tab" aria-selected="false" data-doc="privacy">
+          <i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Privacy Policy <span class="chk" aria-hidden="true">&#10003;</span>
+        </button>
       </div>
-      <div class="ob-part"><span>Part II &middot; Privacy Policy</span><span>R.A. No. 10173 Compliant</span></div>
-      <div class="ob-box">
-        <h2>2. Data Collection, Security &amp; Your Rights</h2>
-        Functional Fitness Gym collects only the profile, attendance, and payment verification details necessary to operate gym services under the Data Privacy Act of 2012 (R.A. 10173). We never sell your personal information. <a href="/privacy" target="_blank" rel="noopener">Read full Privacy Policy</a>.
-      </div>
-      <div class="ob-callout">
-        By clicking <strong>&ldquo;I Agree&rdquo;</strong> below, you confirm that you have read, understood, and accepted the ProFit Terms of Service and Privacy Policy.
+      <div class="jn-legal-prog" aria-live="polite">
+        <span id="legalProgText">0 of 2 documents reviewed</span>
+        <div class="jn-legal-prog-bar"><div class="jn-legal-prog-fill" id="legalProgFill"></div></div>
       </div>
     </div>
 
-    <div class="ob-foot">
-      <div class="ob-note">&#10003; Click &ldquo;I Agree&rdquo; to confirm and complete registration.</div>
+    <div class="jn-legal-body" id="legalModalBody" tabindex="0">Loading Terms of Service...</div>
 
+    <form class="jn-legal-foot" method="post" action="{% url 'accounts:onboarding_consent' %}" novalidate>
+      {% csrf_token %}
       {% if form.errors %}
         <div class="ob-err-box" role="alert">
           {% for field, errs in form.errors.items %}
@@ -88,30 +108,140 @@
           {% endfor %}
         </div>
       {% endif %}
+      <div class="ob-err-box" id="legalLockWarn" role="alert" hidden></div>
 
-      <form method="post" action="{% url 'accounts:onboarding_consent' %}" novalidate>
-        {% csrf_token %}
-        <div class="ob-checks">
-          <label class="ob-chk" for="id_accept_terms">
-            <input type="checkbox" id="id_accept_terms" name="accept_terms" value="on" {% if form.accept_terms.value %}checked{% endif %} required>
-            <span>I agree to the Terms of Service</span>
-          </label>
-          <label class="ob-chk" for="id_accept_privacy">
-            <input type="checkbox" id="id_accept_privacy" name="accept_privacy" value="on" {% if form.accept_privacy.value %}checked{% endif %} required>
-            <span>I agree to the Privacy Policy</span>
-          </label>
+      <div class="ob-checks">
+        <label class="ob-chk is-locked" id="lblAcceptTerms" for="id_accept_terms">
+          <input type="checkbox" id="id_accept_terms" name="accept_terms" value="on" {% if form.accept_terms.value %}checked{% endif %} required disabled>
+          <span>I have read and agree to the Terms of Service</span>
+        </label>
+        <label class="ob-chk is-locked" id="lblAcceptPrivacy" for="id_accept_privacy">
+          <input type="checkbox" id="id_accept_privacy" name="accept_privacy" value="on" {% if form.accept_privacy.value %}checked{% endif %} required disabled>
+          <span>I have read and agree to the Privacy Policy</span>
+        </label>
+      </div>
+
+      <div class="jn-legal-row">
+        <p class="jn-legal-note" id="legalFootNote">Scroll to the end of both documents to unlock the checkboxes and &ldquo;I agree&rdquo;.</p>
+        <div class="jn-legal-acts">
+          <button type="submit" form="consentCancelForm" class="jn-legal-btn">Cancel</button>
+          <button type="submit" class="jn-legal-btn primary" id="legalAgreeBtn" disabled>I agree</button>
         </div>
-        <div class="ob-acts" style="margin-top:12px">
-          <button type="submit" form="consentCancelForm" class="ob-cancel">Cancel</button>
-          <button type="submit" class="ob-btn">&#10003; I Agree</button>
-        </div>
-      </form>
-      <form id="consentCancelForm" method="post" action="{% url 'accounts:logout' %}" style="display:none">
-        {% csrf_token %}
-        <input type="hidden" name="next" value="/login">
-      </form>
-    </div>
+      </div>
+    </form>
+    <form id="consentCancelForm" method="post" action="{% url 'accounts:logout' %}" style="display:none">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="/login">
+    </form>
   </section>
 </main>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const bodyEl = $("legalModalBody"), titleEl = $("legalModalTitle"), subEl = $("legalModalSub"), icoEl = $("legalModalIco");
+  const progText = $("legalProgText"), progFill = $("legalProgFill"), noteEl = $("legalFootNote"), warnEl = $("legalLockWarn");
+  const tosChk = $("id_accept_terms"), privChk = $("id_accept_privacy"), agreeBtn = $("legalAgreeBtn");
+  const lblTos = $("lblAcceptTerms"), lblPriv = $("lblAcceptPrivacy");
+  const tabs = document.querySelectorAll(".jn-legal-tab[data-doc]");
+
+  const DOCS = {
+    terms: { url: "/terms", title: "Terms of Service", sub: "ProFit · Functional Fitness Gym · Last updated: October 2026", icon: "fa-regular fa-file-lines" },
+    privacy: { url: "/privacy", title: "Privacy Policy", sub: "R.A. No. 10173 (Data Privacy Act of 2012) · Last updated: October 2026", icon: "fa-solid fa-shield-halved" }
+  };
+  const cache = {}, loaded = { terms: false, privacy: false }, reviewed = { terms: false, privacy: false };
+  let activeDoc = "terms";
+
+  function syncUI() {
+    const count = (reviewed.terms ? 1 : 0) + (reviewed.privacy ? 1 : 0);
+    progText.textContent = `${count} of 2 documents reviewed`;
+    progFill.style.width = `${count * 50}%`;
+    tabs.forEach(t => t.classList.toggle("is-read", !!reviewed[t.dataset.doc]));
+    if (tosChk) {
+      tosChk.disabled = !reviewed.terms;
+      if (!reviewed.terms) tosChk.checked = false;
+      lblTos?.classList.toggle("is-locked", !reviewed.terms);
+    }
+    if (privChk) {
+      privChk.disabled = !reviewed.privacy;
+      if (!reviewed.privacy) privChk.checked = false;
+      lblPriv?.classList.toggle("is-locked", !reviewed.privacy);
+    }
+    const bothReviewed = reviewed.terms && reviewed.privacy;
+    const bothChecked = Boolean(tosChk?.checked && privChk?.checked);
+    agreeBtn.disabled = !(bothReviewed && bothChecked);
+    if (!reviewed.terms || !reviewed.privacy) {
+      noteEl.textContent = "Scroll to the end of both documents to unlock the checkboxes and “I agree”.";
+    } else if (!bothChecked) {
+      noteEl.textContent = "Both documents reviewed. Check both boxes above to enable “I agree”.";
+    } else {
+      noteEl.textContent = "Ready — click “I agree” to continue.";
+    }
+  }
+
+  function checkScroll() {
+    if (!loaded[activeDoc] || reviewed[activeDoc]) return;
+    if (bodyEl.scrollTop + bodyEl.clientHeight >= bodyEl.scrollHeight - 18) {
+      reviewed[activeDoc] = true;
+      warnEl.hidden = true;
+      syncUI();
+    }
+  }
+  bodyEl.addEventListener("scroll", checkScroll);
+
+  function loadDoc(key) {
+    activeDoc = DOCS[key] ? key : "terms";
+    const cfg = DOCS[activeDoc];
+    titleEl.textContent = cfg.title;
+    subEl.textContent = cfg.sub;
+    icoEl.innerHTML = `<i class="${cfg.icon}" aria-hidden="true"></i>`;
+    tabs.forEach(t => {
+      const on = t.dataset.doc === activeDoc;
+      t.classList.toggle("is-active", on);
+      t.setAttribute("aria-selected", String(on));
+    });
+    if (cache[activeDoc]) {
+      bodyEl.innerHTML = cache[activeDoc];
+      loaded[activeDoc] = true;
+      bodyEl.scrollTop = 0;
+      requestAnimationFrame(checkScroll);
+      return;
+    }
+    loaded[activeDoc] = false;
+    bodyEl.innerHTML = `<p style="color:#9a9788">Loading ${cfg.title}...</p>`;
+    fetch(cfg.url, { cache: "no-store" })
+      .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
+      .then(html => {
+        const doc = new DOMParser().parseFromString(html, "text/html");
+        const card = doc.querySelector(".legal-card");
+        cache[activeDoc] = card ? card.innerHTML : "<p>Could not load this document.</p>";
+        loaded[activeDoc] = Boolean(card);
+        bodyEl.innerHTML = cache[activeDoc];
+        bodyEl.scrollTop = 0;
+        requestAnimationFrame(checkScroll);
+      })
+      .catch(() => { bodyEl.innerHTML = "<p>Could not load this document. Please reload and try again.</p>"; });
+  }
+
+  tabs.forEach(t => t.addEventListener("click", () => loadDoc(t.dataset.doc)));
+  [
+    [lblTos, "terms", "Terms of Service"],
+    [lblPriv, "privacy", "Privacy Policy"],
+  ].forEach(([lbl, key, name]) => {
+    lbl?.addEventListener("click", e => {
+      if (!reviewed[key]) {
+        e.preventDefault();
+        loadDoc(key);
+        warnEl.hidden = false;
+        warnEl.textContent = `Please read and scroll to the bottom of the ${name} first.`;
+      }
+    });
+  });
+  tosChk?.addEventListener("change", () => { warnEl.hidden = true; syncUI(); });
+  privChk?.addEventListener("change", () => { warnEl.hidden = true; syncUI(); });
+
+  syncUI();
+  loadDoc("terms");
+})();
+</script>
 </body>
 </html>

@@ -234,16 +234,17 @@
     const st = document.createElement("style");
     st.id = "pfOnboardingModalStyles";
     st.textContent = `
-      dialog.pf-ob-dlg{margin:auto;inset:0;width:min(430px,92vw);max-height:92dvh;padding:0;border-radius:18px;border:1px solid rgba(255,255,255,.12);background:#0F1420;color:#F6EFDC;box-shadow:0 32px 80px rgba(0,0,0,.72);font-family:Inter,system-ui,-apple-system,sans-serif;overflow:hidden}
-      dialog.pf-ob-dlg.is-wide{width:min(580px,94vw)}
-      dialog.pf-ob-dlg::backdrop{background:rgba(4,7,14,.74);backdrop-filter:blur(6px)}
+      dialog.pf-ob-dlg{margin:auto;inset:0;width:min(430px,92vw);max-height:92dvh;padding:0;border-radius:18px;border:1px solid #232636;background:#111320;color:#F6EFDC;box-shadow:0 32px 80px rgba(0,0,0,.72);font-family:Inter,system-ui,-apple-system,sans-serif;overflow:hidden}
+      dialog.pf-ob-dlg.is-legal{width:min(760px,94vw);max-height:min(88dvh,780px);border-radius:16px}
+      dialog.pf-ob-dlg.is-legal[open]{display:flex;flex-direction:column}
+      dialog.pf-ob-dlg::backdrop{background:rgba(7,8,12,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
       .pf-ob-box{padding:24px;display:grid;gap:14px}
       .pf-ob-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
       .pf-ob-badge{width:38px;height:38px;border-radius:11px;background:rgba(232,185,58,.14);border:1px solid rgba(232,185,58,.32);color:#E8B93A;display:grid;place-items:center;font-weight:800;font-size:16px;flex:none}
       .pf-ob-x{width:32px;height:32px;border-radius:999px;border:0;background:transparent;color:#9EA7B8;font-size:20px;line-height:1;cursor:pointer;display:grid;place-items:center}
       .pf-ob-x:hover{background:rgba(255,255,255,.08);color:#F6EFDC}
-      .pf-ob-dlg h3{margin:0;font:800 20px/1.25 "Plus Jakarta Sans",Inter,sans-serif;color:#F6EFDC}
-      .pf-ob-lead{margin:0;font-size:13.5px;line-height:1.55;color:#9EA7B8}
+      .pf-ob-dlg h3{margin:0;font:700 20px/1.25 "Plus Jakarta Sans",Inter,sans-serif;color:#F6EFDC}
+      .pf-ob-lead{margin:0;font-size:13.5px;line-height:1.55;color:#9a9788}
       .pf-ob-lead strong{color:#E8B93A;word-break:break-word}
       .pf-ob-lbl{display:block;font-size:12.5px;font-weight:600;color:#D6DCE8;margin-bottom:6px}
       .pf-ob-code{width:100%;height:48px;padding:0 14px;border-radius:11px;border:1px solid rgba(255,255,255,.18);background:#0A0E17;color:#F6EFDC;font:700 22px/1 Consolas,Menlo,monospace;letter-spacing:.45em;text-align:center}
@@ -255,28 +256,53 @@
       .pf-ob-btn:hover:not(:disabled){background:#F2C94C}
       .pf-ob-btn:disabled{opacity:.6;cursor:not-allowed}
       .pf-ob-btn.full{width:100%}
-      .pf-ob-cancel{height:40px;padding:0 16px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#171F33;color:#F6EFDC;font:600 13px/1 Inter,sans-serif;cursor:pointer}
-      .pf-ob-cancel:disabled{opacity:.6;cursor:not-allowed}
-      .pf-ob-footrow{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:#9EA7B8;margin-top:2px}
+      .pf-ob-footrow{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:#9a9788;margin-top:2px}
       .pf-ob-resend{border:0;background:transparent;color:#F6EFDC;font:600 12px/1 Inter,sans-serif;cursor:pointer;padding:4px 0}
       .pf-ob-resend:hover:not(:disabled){color:#E8B93A}
       .pf-ob-resend:disabled{opacity:.5;cursor:not-allowed}
-      .pf-ob-chead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 22px;border-bottom:1px solid rgba(255,255,255,.1)}
-      .pf-ob-clead{display:flex;align-items:center;gap:12px}
-      .pf-ob-clead small{display:block;font-size:12px;color:#9EA7B8;margin-top:2px}
-      .pf-ob-scroll{max-height:min(44vh,340px);overflow-y:auto;padding:18px 22px;display:grid;gap:14px;font-size:13px;line-height:1.6;color:#AEB7C8}
-      .pf-ob-part{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#E8B93A;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,.1)}
-      .pf-ob-doc h1,.pf-ob-doc h2,.pf-ob-doc h3{color:#F6EFDC;font-size:14px;margin:10px 0 4px}
-      .pf-ob-doc p,.pf-ob-doc li{color:#AEB7C8;font-size:12.5px;line-height:1.58;margin:4px 0}
-      .pf-ob-doc ul,.pf-ob-doc ol{margin:4px 0 8px;padding-left:18px}
-      .pf-ob-doc a{color:#E8B93A}
-      .pf-ob-shield{padding:11px 13px;border-radius:11px;background:rgba(232,185,58,.08);border:1px solid rgba(232,185,58,.28);color:#F6EFDC;font-size:12.5px;line-height:1.45}
-      .pf-ob-cfoot{padding:14px 22px 18px;border-top:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.2);display:grid;gap:10px}
-      .pf-ob-pill{padding:8px 12px;border-radius:9px;background:rgba(232,185,58,.08);border:1px solid rgba(232,185,58,.28);color:#E8B93A;font-size:12px;font-weight:600;text-align:center}
-      .pf-ob-checks{display:grid;gap:7px}
-      .pf-ob-chk{display:flex;align-items:center;gap:9px;font-size:13px;color:#F6EFDC;cursor:pointer}
-      .pf-ob-chk input{width:17px;height:17px;accent-color:#E8B93A;cursor:pointer}
-      .pf-ob-acts{display:flex;justify-content:flex-end;gap:10px;margin-top:4px}
+      /* Join-style Legal Modal for Onboarding */
+      .pf-lg-form{display:flex;flex-direction:column;min-height:0;flex:1 1 auto;overflow:hidden}
+      .pf-lg-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 22px;background:#0b0d16;border-bottom:1px solid #232636}
+      .pf-lg-head-l{display:flex;align-items:center;gap:12px;min-width:0}
+      .pf-lg-ico{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:#e8b93a;color:#1a1407;font-size:16px;flex:none}
+      .pf-lg-head h3{margin:0;font-size:18px;font-weight:700;color:#f6efdc}
+      .pf-lg-head p{margin:2px 0 0;font-size:12px;color:#9a9788}
+      .pf-lg-x{width:44px;height:44px;border-radius:10px;border:1px solid #4A4E66;background:#0b0d16;color:#f6efdc;font-size:20px;line-height:1;display:grid;place-items:center;cursor:pointer;flex:none}
+      .pf-lg-x:hover{background:rgba(255,255,255,.06)}
+      .pf-lg-tabs{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 22px;background:#07080c;border-bottom:1px solid #232636}
+      .pf-lg-tabgrp{display:flex;gap:8px;flex-wrap:wrap}
+      .pf-lg-tab{display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid #4A4E66;background:#0b0d16;color:#f6efdc;font:600 13px/1 "Plus Jakarta Sans",sans-serif;cursor:pointer;transition:background-color .15s ease}
+      .pf-lg-tab:hover:not(.is-active){background:rgba(232,185,58,.12)}
+      .pf-lg-tab.is-active{background:#e8b93a;color:#0b0f19;border-color:#e8b93a}
+      .pf-lg-tab .chk{display:none;color:#4ade80;font-weight:800}
+      .pf-lg-tab.is-read .chk{display:inline}
+      .pf-lg-tab.is-active.is-read .chk{color:#1a1407}
+      .pf-lg-prog{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:600;color:#9a9788}
+      .pf-lg-progbar{width:90px;height:6px;background:#232636;border-radius:99px;overflow:hidden}
+      .pf-lg-progfill{height:100%;width:0%;background:#4ade80;transition:width .25s ease}
+      .pf-lg-body{flex:1 1 auto;min-height:220px;overflow-y:auto;padding:20px 22px;font-size:14px;line-height:1.65;color:#f6efdc;background:#0b0d16}
+      .pf-lg-body .legal-sec{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid #232636}
+      .pf-lg-body .legal-sec:last-child{border-bottom:0;margin-bottom:0}
+      .pf-lg-body h2{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:700;color:#f6efdc;margin:0 0 8px}
+      .pf-lg-body .legal-num{width:24px;height:24px;border-radius:6px;display:inline-grid;place-items:center;background:#e8b93a;color:#1a1407;font-size:12px;font-weight:800;flex:none}
+      .pf-lg-body p{margin:0 0 8px;color:#f6efdc}
+      .pf-lg-body ul{margin:6px 0 0;padding-left:20px;display:grid;gap:5px;color:#f6efdc}
+      .pf-lg-body a{color:#e8b93a;font-weight:600;text-decoration:underline}
+      .pf-lg-foot{display:grid;gap:10px;padding:12px 22px 16px;border-top:1px solid #232636;background:#07080c}
+      .pf-lg-checks{display:flex;flex-wrap:wrap;gap:10px 20px}
+      .pf-lg-chk{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:#f6efdc;cursor:pointer;user-select:none}
+      .pf-lg-chk.is-locked{opacity:.58;cursor:not-allowed}
+      .pf-lg-chk input{width:17px;height:17px;accent-color:#e8b93a;cursor:pointer}
+      .pf-lg-chk.is-locked input{cursor:not-allowed}
+      .pf-lg-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+      .pf-lg-note{margin:0;font-size:12.5px;color:#9a9788}
+      .pf-lg-acts{display:flex;align-items:center;gap:10px;margin-left:auto}
+      .pf-lg-btn{height:44px;padding:0 18px;border-radius:999px;font:600 13.5px/1 "Plus Jakarta Sans",sans-serif;border:1px solid #4A4E66;background:#0b0d16;color:#f6efdc;cursor:pointer;transition:background-color .15s ease}
+      .pf-lg-btn:hover:not(.primary):not(:disabled){background:rgba(255,255,255,.06)}
+      .pf-lg-btn.primary{background:#e8b93a;color:#0b0f19;border-color:#e8b93a;font-weight:700}
+      .pf-lg-btn.primary:hover:not(:disabled){background:#f0c44b;border-color:#f0c44b}
+      .pf-lg-btn.primary:disabled{opacity:.48;cursor:not-allowed;pointer-events:none}
+      @media(max-width:560px){.pf-lg-head,.pf-lg-tabs,.pf-lg-body,.pf-lg-foot{padding-left:14px;padding-right:14px}.pf-lg-row{flex-direction:column;align-items:stretch}.pf-lg-acts{justify-content:flex-end}}
     `;
     document.head.appendChild(st);
   }
@@ -325,76 +351,57 @@
     return dlg;
   }
 
-  async function loadLegalSections() {
-    if (legalCache) return legalCache;
-    const fallback = {
-      terms: "<h2>1. Acceptance of Terms</h2><p>By accessing ProFit, you agree to abide by Functional Fitness Gym policies, keep your account credentials secure, and use the portal strictly for your authorized role.</p>",
-      privacy: "<h2>2. Data Privacy Act of 2012 (R.A. No. 10173)</h2><p>Functional Fitness Gym collects only the profile, attendance, and payment verification information required to manage gym operations and protect your account.</p>"
-    };
-    try {
-      const [tRes, pRes] = await Promise.all([
-        fetch("/terms", { cache: "no-store" }),
-        fetch("/privacy", { cache: "no-store" })
-      ]);
-      const parseCard = async res => {
-        if (!res.ok) return "";
-        const html = await res.text();
-        const doc = new DOMParser().parseFromString(html, "text/html");
-        const card = doc.querySelector(".legal-card");
-        return card ? card.innerHTML : "";
-      };
-      const [termsHtml, privacyHtml] = await Promise.all([parseCard(tRes), parseCard(pRes)]);
-      legalCache = {
-        terms: termsHtml || fallback.terms,
-        privacy: privacyHtml || fallback.privacy
-      };
-    } catch (_) {
-      legalCache = fallback;
-    }
-    return legalCache;
-  }
-
   function ensureConsentDialog() {
     if (consentDialog) return consentDialog;
     ensureOnboardingStyles();
     const dlg = document.createElement("dialog");
     dlg.id = "pfOnboardingConsentDialog";
-    dlg.className = "pf-ob-dlg is-wide";
+    dlg.className = "pf-ob-dlg is-legal";
     dlg.setAttribute("aria-labelledby", "pfObConsentTitle");
-    dlg.innerHTML = `<form method="dialog" novalidate>
-      <div class="pf-ob-chead">
-        <div class="pf-ob-clead">
-          <span class="pf-ob-badge" aria-hidden="true">&#128196;</span>
+    dlg.innerHTML = `<form class="pf-lg-form" method="dialog" novalidate>
+      <div class="pf-lg-head">
+        <div class="pf-lg-head-l">
+          <span class="pf-lg-ico" id="pfObLegalIco" aria-hidden="true"><i class="fa-regular fa-file-lines"></i></span>
           <div>
-            <h3 id="pfObConsentTitle" style="font-size:17px">Terms of Service &amp; Privacy Policy</h3>
-            <small>ProFit · Functional Fitness Gym</small>
+            <h3 id="pfObConsentTitle">Terms of Service</h3>
+            <p id="pfObLegalSub">ProFit · Functional Fitness Gym · Last updated: October 2026</p>
           </div>
         </div>
-        <button type="button" class="pf-ob-x" id="pfObConsentClose" aria-label="Cancel">&times;</button>
+        <button type="button" class="pf-lg-x" id="pfObConsentClose" aria-label="Close modal">&times;</button>
       </div>
-      <div class="pf-ob-scroll" id="pfObConsentScroll">
-        <div class="pf-ob-part"><span>Part I &middot; Terms of Service</span><span>Functional Fitness Gym</span></div>
-        <div class="pf-ob-doc" id="pfObTermsBody">Loading Terms of Service…</div>
-        <div class="pf-ob-part"><span>Part II &middot; Privacy Policy</span><span>R.A. No. 10173 Compliant</span></div>
-        <div class="pf-ob-doc" id="pfObPrivacyBody">Loading Privacy Policy…</div>
-        <div class="pf-ob-shield">By clicking <strong>&ldquo;I Agree&rdquo;</strong> below, you confirm that you have read, understood, and accepted the ProFit Terms of Service and Privacy Policy.</div>
+      <div class="pf-lg-tabs">
+        <div class="pf-lg-tabgrp" role="tablist" aria-label="Legal documents">
+          <button type="button" class="pf-lg-tab is-active" role="tab" aria-selected="true" data-doc="terms">
+            <i class="fa-regular fa-file-lines" aria-hidden="true"></i> Terms of Service <span class="chk" aria-hidden="true">&#10003;</span>
+          </button>
+          <button type="button" class="pf-lg-tab" role="tab" aria-selected="false" data-doc="privacy">
+            <i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Privacy Policy <span class="chk" aria-hidden="true">&#10003;</span>
+          </button>
+        </div>
+        <div class="pf-lg-prog" aria-live="polite">
+          <span id="pfObLegalProgText">0 of 2 documents reviewed</span>
+          <div class="pf-lg-progbar"><div class="pf-lg-progfill" id="pfObLegalProgFill"></div></div>
+        </div>
       </div>
-      <div class="pf-ob-cfoot">
-        <div class="pf-ob-pill">&#10003; Click &ldquo;I Agree&rdquo; to confirm and complete registration.</div>
-        <div class="pf-ob-checks">
-          <label class="pf-ob-chk" for="pfObAcceptTerms">
-            <input type="checkbox" id="pfObAcceptTerms">
-            <span>I agree to the Terms of Service</span>
+      <div class="pf-lg-body" id="pfObLegalBody" tabindex="0"></div>
+      <div class="pf-lg-foot">
+        <div class="pf-ob-alert" id="pfObConsentMsg" role="alert" hidden></div>
+        <div class="pf-lg-checks">
+          <label class="pf-lg-chk is-locked" id="pfObLblTerms" for="pfObAcceptTerms">
+            <input type="checkbox" id="pfObAcceptTerms" disabled>
+            <span>I have read and agree to the Terms of Service</span>
           </label>
-          <label class="pf-ob-chk" for="pfObAcceptPrivacy">
-            <input type="checkbox" id="pfObAcceptPrivacy">
-            <span>I agree to the Privacy Policy</span>
+          <label class="pf-lg-chk is-locked" id="pfObLblPrivacy" for="pfObAcceptPrivacy">
+            <input type="checkbox" id="pfObAcceptPrivacy" disabled>
+            <span>I have read and agree to the Privacy Policy</span>
           </label>
         </div>
-        <div class="pf-ob-alert" id="pfObConsentMsg" role="alert" hidden></div>
-        <div class="pf-ob-acts">
-          <button type="button" class="pf-ob-cancel" id="pfObConsentCancel">Cancel</button>
-          <button type="submit" class="pf-ob-btn" id="pfObConsentSubmit">&#10003; I Agree</button>
+        <div class="pf-lg-row">
+          <p class="pf-lg-note" id="pfObLegalNote">Scroll to the end of both documents to enable checkboxes and &ldquo;I agree&rdquo;.</p>
+          <div class="pf-lg-acts">
+            <button type="button" class="pf-lg-btn" id="pfObConsentCancel">Cancel</button>
+            <button type="submit" class="pf-lg-btn primary" id="pfObConsentSubmit" disabled>I agree</button>
+          </div>
         </div>
       </div>
     </form>`;
@@ -405,27 +412,134 @@
 
   function openConsentModal(statusInfo) {
     const dlg = ensureConsentDialog();
+    const form = dlg.querySelector("form");
+    const bodyEl = dlg.querySelector("#pfObLegalBody");
+    const titleEl = dlg.querySelector("#pfObConsentTitle");
+    const subEl = dlg.querySelector("#pfObLegalSub");
+    const icoEl = dlg.querySelector("#pfObLegalIco");
+    const progText = dlg.querySelector("#pfObLegalProgText");
+    const progFill = dlg.querySelector("#pfObLegalProgFill");
+    const noteEl = dlg.querySelector("#pfObLegalNote");
+    const msgEl = dlg.querySelector("#pfObConsentMsg");
+    const lblTos = dlg.querySelector("#pfObLblTerms");
+    const lblPriv = dlg.querySelector("#pfObLblPrivacy");
     const tosChk = dlg.querySelector("#pfObAcceptTerms");
     const privChk = dlg.querySelector("#pfObAcceptPrivacy");
-    const msgEl = dlg.querySelector("#pfObConsentMsg");
     const submitBtn = dlg.querySelector("#pfObConsentSubmit");
     const cancelBtn = dlg.querySelector("#pfObConsentCancel");
     const closeBtn = dlg.querySelector("#pfObConsentClose");
-    const form = dlg.querySelector("form");
+    const tabs = dlg.querySelectorAll(".pf-lg-tab[data-doc]");
 
-    if (tosChk) tosChk.checked = false;
-    if (privChk) privChk.checked = false;
+    const DOCS = {
+      terms: { url: "/terms", title: "Terms of Service", sub: "ProFit · Functional Fitness Gym · Last updated: October 2026", icon: "fa-regular fa-file-lines" },
+      privacy: { url: "/privacy", title: "Privacy Policy", sub: "R.A. No. 10173 (Data Privacy Act of 2012) · Last updated: October 2026", icon: "fa-solid fa-shield-halved" }
+    };
+    const cache = legalCache || (legalCache = {});
+    const loaded = { terms: false, privacy: false };
+    const reviewed = { terms: false, privacy: false };
+    let activeDoc = "terms";
+    let submitting = false;
+
+    const syncUI = () => {
+      const count = (reviewed.terms ? 1 : 0) + (reviewed.privacy ? 1 : 0);
+      if (progText) progText.textContent = `${count} of 2 documents reviewed`;
+      if (progFill) progFill.style.width = `${count * 50}%`;
+      tabs.forEach(t => t.classList.toggle("is-read", !!reviewed[t.dataset.doc]));
+      if (tosChk) {
+        tosChk.disabled = !reviewed.terms;
+        if (!reviewed.terms) tosChk.checked = false;
+        lblTos?.classList.toggle("is-locked", !reviewed.terms);
+      }
+      if (privChk) {
+        privChk.disabled = !reviewed.privacy;
+        if (!reviewed.privacy) privChk.checked = false;
+        lblPriv?.classList.toggle("is-locked", !reviewed.privacy);
+      }
+      const bothReviewed = reviewed.terms && reviewed.privacy;
+      const bothChecked = Boolean(tosChk?.checked && privChk?.checked);
+      submitBtn.disabled = submitting || !(bothReviewed && bothChecked);
+      if (noteEl) {
+        if (!bothReviewed) {
+          noteEl.textContent = "Scroll to the end of both documents to enable checkboxes and “I agree”.";
+        } else if (!bothChecked) {
+          noteEl.textContent = "Both documents reviewed. Check both boxes above to enable “I agree”.";
+        } else {
+          noteEl.textContent = "Ready — click “I agree” to finish signing in.";
+        }
+      }
+    };
+
+    const checkScrolledToEnd = () => {
+      if (!loaded[activeDoc] || reviewed[activeDoc]) return;
+      if (bodyEl.scrollTop + bodyEl.clientHeight >= bodyEl.scrollHeight - 18) {
+        reviewed[activeDoc] = true;
+        msgEl.hidden = true;
+        syncUI();
+      }
+    };
+    bodyEl.onscroll = checkScrolledToEnd;
+
+    const loadDoc = key => {
+      activeDoc = DOCS[key] ? key : "terms";
+      const cfg = DOCS[activeDoc];
+      if (titleEl) titleEl.textContent = cfg.title;
+      if (subEl) subEl.textContent = cfg.sub;
+      if (icoEl) icoEl.innerHTML = `<i class="${cfg.icon}" aria-hidden="true"></i>`;
+      tabs.forEach(t => {
+        const on = t.dataset.doc === activeDoc;
+        t.classList.toggle("is-active", on);
+        t.setAttribute("aria-selected", String(on));
+      });
+      if (cache[activeDoc]) {
+        bodyEl.innerHTML = cache[activeDoc];
+        loaded[activeDoc] = true;
+        bodyEl.scrollTop = 0;
+        requestAnimationFrame(checkScrolledToEnd);
+        return;
+      }
+      loaded[activeDoc] = false;
+      bodyEl.innerHTML = `<p style="color:#9a9788">Loading ${cfg.title}...</p>`;
+      fetch(cfg.url, { cache: "no-store" })
+        .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
+        .then(html => {
+          const doc = new DOMParser().parseFromString(html, "text/html");
+          const card = doc.querySelector(".legal-card");
+          cache[activeDoc] = card ? card.innerHTML : "<p>Could not load this document.</p>";
+          loaded[activeDoc] = Boolean(card);
+          bodyEl.innerHTML = cache[activeDoc];
+          bodyEl.scrollTop = 0;
+          requestAnimationFrame(checkScrolledToEnd);
+        })
+        .catch(() => {
+          bodyEl.innerHTML = "<p>Could not load this document. Please close and try again.</p>";
+        });
+    };
+
+    tabs.forEach(t => { t.onclick = () => loadDoc(t.dataset.doc); });
+
+    [
+      [lblTos, "terms", "Terms of Service"],
+      [lblPriv, "privacy", "Privacy Policy"]
+    ].forEach(([lbl, key, labelName]) => {
+      if (!lbl) return;
+      lbl.onclick = e => {
+        if (!reviewed[key]) {
+          e.preventDefault();
+          loadDoc(key);
+          msgEl.hidden = false;
+          msgEl.className = "pf-ob-alert";
+          msgEl.textContent = `Please scroll to the end of the ${labelName} before checking this box.`;
+        }
+      };
+    });
+
+    if (tosChk) tosChk.onchange = () => { msgEl.hidden = true; syncUI(); };
+    if (privChk) privChk.onchange = () => { msgEl.hidden = true; syncUI(); };
+
     msgEl.hidden = true;
     msgEl.textContent = "";
-    submitBtn.disabled = false;
-    submitBtn.innerHTML = "&#10003; I Agree";
-
-    loadLegalSections().then(docs => {
-      const tb = dlg.querySelector("#pfObTermsBody");
-      const pb = dlg.querySelector("#pfObPrivacyBody");
-      if (tb) tb.innerHTML = docs.terms;
-      if (pb) pb.innerHTML = docs.privacy;
-    });
+    submitBtn.textContent = "I agree";
+    syncUI();
 
     closeBtn.onclick = () => cancelOnboardingSession(dlg);
     cancelBtn.onclick = () => cancelOnboardingSession(dlg);
@@ -437,15 +551,23 @@
     form.onsubmit = async e => {
       e.preventDefault();
       msgEl.hidden = true;
+      if (!reviewed.terms || !reviewed.privacy) {
+        msgEl.hidden = false;
+        msgEl.className = "pf-ob-alert";
+        msgEl.textContent = "Please scroll to the end of both Terms of Service and Privacy Policy first.";
+        loadDoc(!reviewed.terms ? "terms" : "privacy");
+        return;
+      }
       if (!tosChk?.checked || !privChk?.checked) {
         msgEl.hidden = false;
         msgEl.className = "pf-ob-alert";
         msgEl.textContent = "Please check both Terms of Service and Privacy Policy to continue.";
         return;
       }
-      submitBtn.disabled = true;
+      submitting = true;
       cancelBtn.disabled = true;
-      submitBtn.textContent = "Completing registration…";
+      submitBtn.textContent = "Completing…";
+      syncUI();
       try {
         const res = await window.ProFitAPI.post("/auth/onboarding/consent", {
           accept_terms: true,
@@ -458,15 +580,17 @@
         msgEl.className = "pf-ob-alert";
         msgEl.textContent = err?.message || "Could not record consent. Please try again.";
       } finally {
-        submitBtn.disabled = false;
+        submitting = false;
         cancelBtn.disabled = false;
-        submitBtn.innerHTML = "&#10003; I Agree";
+        submitBtn.textContent = "I agree";
+        syncUI();
       }
     };
 
     if (typeof dlg.showModal === "function" && !dlg.open) {
       dlg.showModal();
     }
+    loadDoc("terms");
   }
 
   function openOtpModal(statusInfo) {

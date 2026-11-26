@@ -3994,3 +3994,11 @@ Replace the plain full-page `/accounts/onboarding/otp/` screen with blurred moda
 - Added CSRF-protected JSON endpoints (`GET /api/auth/onboarding/status/`, `POST /api/auth/onboarding/otp/verify/`, `POST /api/auth/onboarding/otp/resend/`, `POST /api/auth/onboarding/consent/`) in `api/auth.py`, exempted `/login`, `/join`, and `/api/auth/onboarding/` in `FirstLoginOnboardingGateMiddleware`, and added matching ProFit obsidian/gold `<dialog>` modal overlays in `web/google-auth.js?v=5` (plus polished fallback templates).
 ### Decision-log skill
 Keep server-side HTML middleware enforcement intact on all protected dashboards and APIs while exposing thin CSRF-protected JSON onboarding endpoints so login screens can run multi-step OTP + Terms & Privacy dialogs seamlessly without page jumps.
+
+## 2026-11-26 19:42 (Asia/Manila): Match Legal Consent Modal to /join Tabbed UI & Enforce Scroll-Before-Check
+### What I asked for
+Make the Google first-login Terms of Service & Privacy Policy modal match the `/join` legal modal UI (`Terms of Service` / `Privacy Policy` tabs, progress bar, numbered gold sections) and prevent checking either agreement box until scrolling through both full documents.
+### What the agent decided and why
+- Updated `#pfOnboardingConsentDialog` in `web/google-auth.js` (`?v=6`) and fallback `templates/accounts/onboarding_consent.html` to mirror the exact `.jn-legal-*` design from `web/join.html` (fetching `/terms` and `/privacy` `.legal-card` content, displaying `0 of 2 documents reviewed`, locking each checkbox until scrolled to the bottom of its respective document, and disabling `I agree` until both documents are read and both boxes checked).
+### Decision-log skill
+Wait to run `checkScrolledToEnd()` until after fetched document HTML is inserted (never on placeholder loading text) and disable each legal checkbox independently until its matching document has been scrolled to the bottom.
