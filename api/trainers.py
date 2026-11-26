@@ -209,13 +209,18 @@ class StaffTrainerListView(APIView):
         return Response([_trainer_json(t) for t in rows])
 
     def post(self, request):
+        if not (_has_phone_column() and _has_status_column()):
+            return Response(
+                {"detail": "Database migration pending. Please run python manage.py migrate first."},
+                status=503,
+            )
         User = get_user_model()
         user_id = request.data.get("user_id")
         if user_id:
             user = User.objects.filter(pk=user_id, role="TRAINER").first()
             if user is None:
                 return Response({"detail": "Pick a user whose role is Trainer."}, status=400)
-            if TrainerProfile.objects.filter(user=user).exists():
+            if _trainer_qs().filter(user=user).exists():
                 return Response({"detail": "This trainer already has a profile."}, status=400)
             profile = TrainerProfile.objects.create(user=user, **_profile_fields(request.data, creating=True))
             return Response(_trainer_json(profile), status=201)

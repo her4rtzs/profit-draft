@@ -2518,7 +2518,7 @@ html body .membership-type-panel .mt-body {
   width: 100% !important;
   max-width: 100% !important;
   min-width: 0 !important;
-  padding: 12px 0 6px !important;
+  padding: 36px 0 8px !important;
   box-sizing: border-box !important;
 }
 
@@ -2569,18 +2569,26 @@ html body .membership-type-panel .mt-card-pct {
 }
 
 html body .membership-type-panel .mt-tooltip {
-  top: calc(100% + 8px) !important;
-  bottom: auto !important;
+  bottom: calc(100% + 8px) !important;
+  top: auto !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
-  z-index: 45 !important;
+  z-index: 60 !important;
   background: #070B14 !important;
   color: #F8FAFC !important;
   opacity: 1 !important;
   border: 1px solid rgba(245, 158, 11, 0.55) !important;
   box-shadow: 0 14px 32px rgba(0, 0, 0, 0.58) !important;
-  max-width: min(260px, 85vw) !important;
-  white-space: normal !important;
+  padding: 7px 14px !important;
+  width: max-content !important;
+  max-width: min(300px, 88vw) !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 420px) {
+  html body .membership-type-panel .mt-tooltip {
+    white-space: normal !important;
+  }
 }
 
 html body:not(.dark) .membership-type-panel .mt-tooltip {

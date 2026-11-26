@@ -3872,3 +3872,20 @@ Fix the HTTP 500 "Request failed (500)" error shown on `/trainer/index` when new
 - Keyed the introspection cache by `(connection.alias, DB name)` so PostgreSQL Dev and in-memory SQLite tests never share stale schema cache, returned empty session lists cleanly on GET when `trainers_trainersession` does not exist yet, and instructed the owner to run `python manage.py migrate` on Dev and enable RLS with no policies on `trainers_trainersession` in Supabase.
 ### Decision-log skill
 Always defer unmigrated columns and guard newly added tables with DB-keyed introspection checks across shared `select_related` / `prefetch_related` / dashboard paths so pages never return HTTP 500 between deployment and running `migrate`.
+
+## 2026-11-26 16:42 (Asia/Manila): Place Membership Type Hover Tooltip Cleanly Above Donut
+### What I asked for
+Move the Membership Type hover tooltip box above the donut instead of below it over the footer note.
+### What the agent decided and why
+- Updated `.membership-type-panel .mt-body` top padding (`36px 0 8px`) and `.mt-tooltip` positioning (`bottom: calc(100% + 8px)`, `top: auto`, `width: max-content`, `white-space: nowrap`, `z-index: 60`) in `web/pf-system.css` (`?v=19`) so the opaque tooltip sits cleanly above the donut without covering either the header subtitle or the bottom helper note.
+### Decision-log skill
+When positioning a donut hover tooltip above the chart, pair `bottom: calc(100% + 8px)` with extra top padding on `.mt-body` and horizontal `width: max-content` so the tooltip stays compact and never overlaps neighboring card headers or footer copy.
+
+## 2026-11-26 16:48 (Asia/Manila): Guard Add Trainer Endpoint Against Pending Migrations
+### What I asked for
+Fix the `Request failed (500)` error on Add Trainer (`https://functionalfitnessgym.site/trainers`).
+### What the agent decided and why
+- Guarded `StaffTrainerListView.post()` in `api/trainers.py` with `_has_phone_column() and _has_status_column()` (returning HTTP 503 with a clear migration prompt instead of a PostgreSQL `ProgrammingError` 500) and switched its existence check to `_trainer_qs()`.
+- Gave the owner step-by-step instructions to apply the new migrations (`0003_trainerprofile_status` and `0004_trainersession`) to Prod Supabase and enable RLS with no policies on `trainers_trainersession`.
+### Decision-log skill
+Vercel deploys run `collectstatic` only and never `migrate`, so every `POST` handler creating rows on recently migrated models should check column readiness upfront and return an actionable 503 instead of a 500.
