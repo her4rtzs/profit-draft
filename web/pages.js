@@ -447,6 +447,29 @@
         const payMethod = $("#payMethod");
         if (payMethod) payMethod.innerHTML = methodOptions();
 
+        const syncGcashQrHighlight = () => {
+            const qrCard = $("#dailyGcashQrCard");
+            if (!qrCard || !payMethod) return;
+            const code = METHOD_CODE[payMethod.value] || String(payMethod.value || "").toUpperCase();
+            qrCard.classList.toggle("is-gcash-active", code === "GCASH");
+        };
+        payMethod?.addEventListener("change", syncGcashQrHighlight);
+        syncGcashQrHighlight();
+
+        const gcashQrModal = $("#gcashQrModal");
+        const openGcashQrModal = () => {
+            if (!gcashQrModal) return;
+            gcashQrModal.hidden = false;
+            $("#gcashQrClose")?.focus();
+        };
+        const closeGcashQrModal = () => {
+            if (gcashQrModal) gcashQrModal.hidden = true;
+        };
+        $$("[data-gcash-qr-open]").forEach(btn => btn.addEventListener("click", openGcashQrModal));
+        $("#gcashQrClose")?.addEventListener("click", closeGcashQrModal);
+        gcashQrModal?.addEventListener("click", e => { if (e.target === gcashQrModal) closeGcashQrModal(); });
+        document.addEventListener("keydown", e => { if (e.key === "Escape" && gcashQrModal && !gcashQrModal.hidden) closeGcashQrModal(); });
+
         const syncAmount = () => {
             if (!amount || !planSel) return;
             amount.value = peso(planPrice(planSel.value));

@@ -3935,3 +3935,45 @@ Allow Owner/Staff/Member Google login only for linked accounts (`?error=not-link
 - Redesigned `templates/accounts/accept_invite.html` in ProFit obsidian/gold with password setup, matching-email Google activation, and explicit `revoked_at` checking, and added `web/google-connect.js` + passwordless disconnect lockout protection in Owner/Cashier, Trainer, and Member Settings.
 ### Decision-log skill
 Keep first-login security gates on `User` flags defaulted to `False` and enforced by a single middleware so existing password users stay undisturbed while every new Google-based entry path (signup, invite, linked login) is uniformly gated before dashboards or `/api/` endpoints respond.
+
+## 2026-11-26 17:17 (Asia/Manila): Add GCash payment QR code to member and cashier payment pages
+### What I asked for
+Add the provided GCash QR code image to both the member payment page and the cashier daily payment page.
+### What the agent decided and why
+- Saved the supplied GCash QR image unmodified to `web/img/gcash-qr.jpg` so mobile cameras and GCash scanners read it cleanly without cropping or compression loss.
+- Added shared Light/Dark responsive `.pf-gcash-*` styles in `web/finance-ui.css` (`?v=27`) and button variables in `web/member-shell.css` (`?v=38`), with clickable enlarge (`#gcashQrModal`) and `Save QR` download actions so members on phones can upload the QR inside GCash and cashiers can show a large scannable QR at the desk.
+- Displayed the QR panel beside the member renewal form in `web/member-home.html` (`#memberPayCard`) and `web/claim.html`, and added a dedicated GCash QR card plus inline `Show GCash QR` trigger on the cashier daily payment pages (`web/payments.html` `#pane-daily` and `web/cashier.html` `#pane-terminal`) that highlights when `GCash` is selected (`web/pages.js?v=5`, `web/cashier.js?v=5`).
+- Added a markup and asset test in `apps/billing/tests/test_claim_review.py` covering all four payment pages.
+### Decision-log skill
+Include both an enlarge lightbox and a direct `download` action alongside payment QR codes: desk staff need a large screen view for walk-ins, while members paying on their own phone need to save the QR to import it into GCash.
+
+## 2026-11-26 17:44 (Asia/Manila): Fix Light Mode hero cards, dark buttons, Cashier tab banner, and Expiring Soon badges
+### What I asked for
+Fix the Light Mode UI bugs across the staff pages so switching to Light Mode stays visually consistent without broken white-on-white cards, invisible dark-on-dark buttons, mismatched tab banners, or wrong status pill colors.
+### What the agent decided and why
+- Locked `.csh-hero`, `.csh-hero-card`, `.csh-hero .csh-btn-dark`, `.ow-hero .ow-btn-dark`, `.mb-ticket-card`, and `.mb-hero-book-btn` in `web/pf-system.css` (`?v=20`) so `dashboard.css`'s `[class$="-card"]` wildcard and Light Mode text/hover rules can never turn Cashier/Owner/Member dark-hero cards white-on-white or hero buttons dark-on-dark.
+- Upgraded `web/cashier.html`'s `.fn-header-card` with the left `.fn-header-title` block and color-coded `.fn-tab-icon` classes (`is-amber`, `is-emerald`, `is-cyan`) synced via `setTab()` in `web/cashier.js` (`?v=6`) so it matches `members.html`, `payments.html`, and `reports.html`.
+- Fixed `--pf-st-expiring-*` tokens in `web/pf-system.css` (`?v=20`) from red to amber in both Light Mode (`#FEF3C7` / `#B45309` / `#D97706`) and Dark Mode (`rgba(245, 158, 11, 0.16)` / `#FBBF24`) so `EXPIRING SOON` is clearly distinct from `EXPIRED`, and excluded `.md-id-card` from `body:not(.dark) .md-card` in `web/members-ui.css` (`?v=31`).
+- Bumped `pf-system.css?v=20` across all 22 portal pages and verified `cashier.html`, `members.html`, `payments.html`, and `index.html` live in Light Mode via browser preview.
+### Decision-log skill
+Any floating card inside a dark photo hero (`-card` class suffix) must be explicitly locked to dark glass in `pf-system.css` with `!important` (alongside its dark-glass CTA buttons and their hover/active states) to prevent wildcard `[class$="-card"]` Light Mode rules from turning them white-on-white.
+
+## 2026-11-26 18:01 (Asia/Manila): Blend My Profile receipt preview into Dark Mode
+### What I asked for
+Fix the `Receipts you send` preview card on the My Profile page (`web/profile.html`) so it blends seamlessly with Dark Mode instead of rendering as bright cream paper.
+### What the agent decided and why
+- Updated `.pf-pv-paper` in `web/profile.html` to use the dark inset surface (`var(--pf-surface-inset, #0d121d)`), dark border (`var(--border, #263246)`), subtle gold top edge, light text (`#f8fafc` heading / `#cbd5e1` body), and ProFit gold accent (`#e8b93a`) for the staff/cashier name in Dark Mode, matching `.pf-pv-mini` directly above it.
+- Preserved the warm cream paper appearance (`#f6f1e3` / `#2a2418` / `#8a6212`) explicitly under `body:not(.dark) .pf-pv-paper` for Light Mode.
+### Decision-log skill
+Style decorative preview widgets (like `.pf-pv-paper`) with dark inset tokens by default and scope light-paper colors strictly to `body:not(.dark)` so every preview widget blends naturally with both themes.
+
+## 2026-11-26 18:27 (Asia/Manila): Redesign GCash & Record Payment forms with 3-step bar and blue QR card
+### What I asked for
+Redesign both the Member GCash payment form and the Staff/Cashier Record a payment form to match the attached reference layout (3-step stepper bar, vibrant GCash blue left QR card with framed white QR box, numbered steps, Enlarge/Save QR buttons, bold gold amount readout, and pre-submission checklist).
+### What the agent decided and why
+- Built a single shared `.pf-pay-steps` + `.pf-gcash-pay-layout` + `.pf-gcash-qr-panel` + `.pf-pay-checklist` system in `web/finance-ui.css` (`?v=30`), `web/pf-system.css` (`?v=21`), and `web/member-shell.css` (`?v=39`) so `web/member-home.html`, `web/claim.html`, `web/payments.html`, and `web/cashier.html` all share the exact same card hierarchy in both Dark Mode and Light Mode.
+- Framed `web/img/gcash-qr.jpg` inside `.pf-gcash-qr-thumb` so only the crisp white rounded QR box floats cleanly inside the vibrant GCash blue panel (with zero half-cut top logo), while keeping the full unmodified `gcash-qr.jpg` for the `#gcashQrModal` enlarge popup and `Save QR` download.
+- Added live 3-step highlight progress and the two `Before you submit` confirmation checkboxes (including live plan amount sync) in `web/member-home.html`, and expanded `.fn-daily-grid` / `.fn-daily-right` so **Record a payment** spans full width with `Collected today` + `Today's payments` / `Today's receipts` spanning cleanly below it.
+- Verified Dark Mode and Light Mode live in the browser across `payments.html`, `cashier.html`, and `member-home.html`.
+### Decision-log skill
+When visually framing a tall vertical QR image inside a compact blue card, calculate CSS vertical percentage margins relative to the image width (not height) so only the clean white QR box is displayed inline while preserving the full original image for zoom and download.

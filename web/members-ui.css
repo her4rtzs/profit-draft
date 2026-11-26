@@ -1496,7 +1496,7 @@ body[data-page="members"] .pp-switch-row input:checked + .pp-switch-track {
   border-radius: 18px;
   padding: 20px 22px;
 }
-body:not(.dark) .md-card {
+body:not(.dark) .md-card:not(.md-id-card) {
   background: #ffffff;
   border-color: #eadfc8;
 }

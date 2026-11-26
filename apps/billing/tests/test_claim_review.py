@@ -270,3 +270,17 @@ class ReviewPageMarkupTests(TestCase):
         # Standalone claim page also submits the required plan field
         self.assertIn('id="claimPlan"', claim_html)
         self.assertIn("plan: planSelect.value", claim_html)
+
+    def test_gcash_qr_code_is_present_on_member_and_cashier_payment_pages(self):
+        web = Path(__file__).resolve().parents[3] / "web"
+        qr_asset = web / "img" / "gcash-qr.jpg"
+        self.assertTrue(qr_asset.is_file())
+        self.assertGreater(qr_asset.stat().st_size, 0)
+
+        for filename in ("member-home.html", "claim.html", "payments.html", "cashier.html"):
+            with self.subTest(page=filename):
+                html = (web / filename).read_text(encoding="utf-8")
+                self.assertIn('src="img/gcash-qr.jpg"', html)
+                self.assertIn('id="gcashQrModal"', html)
+                self.assertIn("data-gcash-qr-open", html)
+                self.assertIn('download="profit-gcash-qr.jpg"', html)

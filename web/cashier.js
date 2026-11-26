@@ -131,6 +131,27 @@
     el.hidden = false;
   }
 
+  var TAB_HEADER_META = {
+    terminal: {
+      title: 'Process Payment',
+      sub: 'Collect desk cash or GCash payments and issue official receipts.',
+      cls: 'is-amber',
+      ico: 'fa-cash-register',
+    },
+    history: {
+      title: 'Transaction History',
+      sub: 'Browse, filter, and reprint recorded front desk payment receipts.',
+      cls: 'is-emerald',
+      ico: 'fa-file-invoice',
+    },
+    lookup: {
+      title: 'Member Lookup & Renewals',
+      sub: 'Verify membership status and expiry before collecting desk payment.',
+      cls: 'is-cyan',
+      ico: 'fa-clock',
+    },
+  };
+
   function setTab(tabName, updateHash) {
     var valid = { terminal: true, history: true, lookup: true };
     var target = valid[tabName] ? tabName : 'terminal';
@@ -145,6 +166,18 @@
       var active = pane.getAttribute('data-pane') === target;
       pane.classList.toggle('active', active);
     });
+
+    var meta = TAB_HEADER_META[target] || TAB_HEADER_META.terminal;
+    var titleEl = $('cashierHeaderTitle');
+    var subEl = $('cashierHeaderSub');
+    var icoBox = $('cashierHeaderIco');
+    if (titleEl) titleEl.textContent = meta.title;
+    if (subEl) subEl.textContent = meta.sub;
+    if (icoBox) {
+      icoBox.className = 'fn-header-ico ' + meta.cls;
+      var iconTag = icoBox.querySelector('i');
+      if (iconTag) iconTag.className = 'fa-solid ' + meta.ico;
+    }
 
     if (updateHash && window.history && window.history.replaceState) {
       window.history.replaceState(null, '', '#' + target);
@@ -839,6 +872,17 @@
     if (planSelect) {
       planSelect.addEventListener('change', syncAmountFromPlan);
     }
+
+    var methodSelect = $('cashierMethod');
+    var syncGcashQrHighlight = function () {
+      var qrCard = $('cashierGcashQrCard');
+      if (!qrCard || !methodSelect) return;
+      qrCard.classList.toggle('is-gcash-active', String(methodSelect.value || '').toUpperCase() === 'GCASH');
+    };
+    if (methodSelect) {
+      methodSelect.addEventListener('change', syncGcashQrHighlight);
+      syncGcashQrHighlight();
+    }
     hydrateLivePlanPrices();
     window.addEventListener('profit:plans-updated', function (ev) {
       if (ev && ev.detail) applyLivePlanPrices(ev.detail);
@@ -903,6 +947,27 @@
     var closeBtn = $('receiptCloseBtn');
     var printBtn = $('receiptPrintBtn');
     var modal = $('cashierReceiptModal');
+    var qrModal = $('gcashQrModal');
+    var qrCloseBtn = $('gcashQrClose');
+
+    var openQrModal = function () {
+      if (!qrModal) return;
+      qrModal.hidden = false;
+      if (qrCloseBtn) qrCloseBtn.focus();
+    };
+    var closeQrModal = function () {
+      if (qrModal) qrModal.hidden = true;
+    };
+
+    document.querySelectorAll('[data-gcash-qr-open]').forEach(function (btn) {
+      btn.addEventListener('click', openQrModal);
+    });
+    if (qrCloseBtn) qrCloseBtn.addEventListener('click', closeQrModal);
+    if (qrModal) {
+      qrModal.addEventListener('click', function (event) {
+        if (event.target === qrModal) closeQrModal();
+      });
+    }
 
     if (closeBtn) closeBtn.addEventListener('click', closeReceiptModal);
     if (printBtn) printBtn.addEventListener('click', printReceipt);
@@ -913,8 +978,14 @@
     }
 
     document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape' && modal && !modal.hidden) {
-        closeReceiptModal();
+      if (event.key === 'Escape') {
+        if (qrModal && !qrModal.hidden) {
+          closeQrModal();
+          return;
+        }
+        if (modal && !modal.hidden) {
+          closeReceiptModal();
+        }
       }
     });
 
