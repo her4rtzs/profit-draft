@@ -4013,3 +4013,13 @@ Add robots.txt and sitemap.xml, make noindex the default for private pages, redi
 - Added canonical, Open Graph and Twitter tags plus HealthClub structured data to the five public pages, and a 301 from /welcome to /.
 ### Decision-log skill
 Use noindex headers, not robots.txt Disallow, when you want crawlers to see and honor the signal.
+
+## 2026-11-26 23:50 (Asia/Manila): Local search clarity on public pages
+### What I asked for
+Target local search terms with a Google Business Profile plus on-page clarity, keeping the hero headline and one H1, adding local FAQ answers and extending HealthClub structured data without hours, rating, price or FAQPage markup.
+### What the agent decided and why
+- Updated the homepage title, meta description, eyebrow line and About sentence to use "Alfonso, Cavite" and "functional gym"; see [[Target local search terms with Google Business Profile plus on-page clarity]].
+- Extended HealthClub JSON-LD with the address, international phone, image and Facebook link already shown on the page; omitted geo, opening hours, rating, price and FAQPage.
+- Added three short local FAQs and gave the lightbox image a fallback alt; updated SEO tests and ran the checks.
+### Decision-log skill
+Use on-page wording and structured data to reinforce local identity, but let the owner confirm public brand names and resolve conflicting contact details before changing them.

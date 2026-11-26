@@ -1,6 +1,8 @@
+import re
 import xml.etree.ElementTree as ET
 from urllib.parse import urlsplit
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 
@@ -55,3 +57,39 @@ class SEOTests(TestCase):
         self.assertRedirects(
             self.client.get("/login.html"), "/login", fetch_redirect_response=False
         )
+
+    def test_homepage_targets_local_search_terms(self):
+        html = (settings.BASE_DIR / "web" / "welcome.html").read_text(encoding="utf-8")
+        self.assertIn("<title>Functional Fitness Gym in Alfonso | ProFit</title>", html)
+        description = re.search(
+            r'<meta name="description"\s+content="(.*?)">', html, re.DOTALL
+        ).group(1)
+        self.assertTrue(120 <= len(description) <= 160)
+        self.assertIn("Alfonso, Cavite", description)
+        self.assertIn(
+            '<span class="eyebrow">Functional Fitness Gym in Alfonso, Cavite</span>',
+            html,
+        )
+        self.assertEqual(html.count("<h1"), 1)
+        self.assertIn('"telephone":"+639122617663"', html)
+        self.assertIn('"addressRegion":"Cavite"', html)
+        self.assertNotIn("openingHours", html)
+        self.assertNotIn("aggregateRating", html)
+        self.assertNotIn("FAQPage", html)
+
+    def test_faq_has_local_questions(self):
+        html = (settings.BASE_DIR / "web" / "faq.html").read_text(encoding="utf-8")
+        for question in (
+            "Where is Functional Fitness Gym located?",
+            "Is Functional Fitness Gym a functional gym?",
+            "How do I join a gym in Alfonso?",
+        ):
+            with self.subTest(question=question):
+                self.assertIn(question, html)
+
+    def test_public_gym_images_have_alt_text(self):
+        html = (settings.BASE_DIR / "web" / "welcome.html").read_text(encoding="utf-8")
+        for tag in re.findall(r"<img[^>]*>", html):
+            if 'src="img/' in tag or 'src=""' in tag:
+                with self.subTest(tag=tag):
+                    self.assertRegex(tag, r'\balt="[^"]+"')

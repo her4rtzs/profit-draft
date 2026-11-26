@@ -108,3 +108,4 @@ One note per decision, oldest first; entries with an `Unknown` date are listed l
 
 - [[2026-11-26 Enforce strict portal RBAC and unified dashboard URL]]: Block unauthenticated and cross-role access across all portals (including raw `.html` files via `ProtectedWhiteNoiseMiddleware`), redirect anonymous visitors to `/login`, and serve every role's workspace at `/dashboard`.
 - [[Use noindex instead of robots.txt Disallow]]: Private pages are noindex by default while robots.txt stays permissive.
+- [[Target local search terms with Google Business Profile plus on-page clarity]]: Local terms are targeted with GBP plus one clear keyword line, FAQ answers and HealthClub data.
