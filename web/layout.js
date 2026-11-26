@@ -2,7 +2,7 @@
 (() => {
   const ownerGroups = [
     { label: 'WORKSPACE', items: [
-      { id: 'dashboard', label: 'Dashboard', icon: 'fa-house', href: '/index' },
+      { id: 'dashboard', label: 'Dashboard', icon: 'fa-house', href: '/dashboard' },
       { id: 'announcements', label: 'Announcements', icon: 'fa-bullhorn', href: '/announcements' },
     ]},
     { label: 'MEMBERSHIP', items: [
@@ -20,7 +20,7 @@
   ];
   const cashierGroups = [
     { label: 'WORKSPACE', items: [
-      { id: 'cashier', label: 'Dashboard', icon: 'fa-house', href: '/cashier' },
+      { id: 'cashier', label: 'Dashboard', icon: 'fa-house', href: '/dashboard' },
       { id: 'payments', label: 'Payments & Billing', icon: 'fa-wallet', href: '/payments' },
     ]},
     { label: 'FRONT DESK', items: [
@@ -56,7 +56,7 @@
   if (nav) {
     const isCashier = renderedRole === 'CASHIER';
     const groups = isCashier ? cashierGroups : ownerGroups;
-    const homeHref = isCashier ? '/cashier' : '/index';
+    const homeHref = '/dashboard';
     const defaultName = isCashier ? 'Cashier' : 'Administrator';
     const defaultRoleLabel = isCashier ? 'Cashier' : 'Gym administrator';
     nav.setAttribute('aria-label', 'Main navigation');
@@ -176,7 +176,7 @@
         const scrollEl = nav.querySelector('.sidebar-scroll');
         if (scrollEl) scrollEl.innerHTML = renderSidebarGroups(isCashier ? cashierGroups : ownerGroups);
         const brandLink = nav.querySelector('.imgbrand');
-        if (brandLink) brandLink.setAttribute('href', isCashier ? '/cashier' : '/index');
+        if (brandLink) brandLink.setAttribute('href', '/dashboard');
         const allNotif = document.getElementById('allNotificationsLink');
         if (allNotif) allNotif.setAttribute('href', '/notifications');
         renderMobileBar(isCashier);
@@ -189,13 +189,13 @@
       if (!nav) return;
       const primary = isCashier
         ? [
-            { id: 'cashier', label: 'Cashier', icon: 'fa-cash-register', href: '/cashier' },
+            { id: 'cashier', label: 'Cashier', icon: 'fa-cash-register', href: '/dashboard' },
             { id: 'payments', label: 'Payments', icon: 'fa-wallet', href: '/payments' },
             { id: 'members', label: 'Members', icon: 'fa-users', href: '/members' },
             { id: 'attendance', label: 'Check-ins', icon: 'fa-calendar-check', href: '/attendance' },
           ]
         : [
-            { id: 'dashboard', label: 'Home', icon: 'fa-house', href: '/index' },
+            { id: 'dashboard', label: 'Home', icon: 'fa-house', href: '/dashboard' },
             { id: 'members', label: 'Members', icon: 'fa-users', href: '/members' },
             { id: 'payments', label: 'Payments', icon: 'fa-wallet', href: '/payments' },
             { id: 'reports', label: 'Reports', icon: 'fa-chart-column', href: '/reports' },
@@ -313,9 +313,9 @@
   });
 
   // When navigating from another page back to Home / Dashboard, mark the intent for a smooth transition
-  if (current !== 'dashboard') {
+  if (current !== 'dashboard' && current !== 'cashier') {
     document.addEventListener('click', e => {
-      const a = e.target.closest('a[href*="/index"]');
+      const a = e.target.closest('a[href*="/dashboard"]');
       if (a) {
         try { sessionStorage.setItem('pf-nav-returning-home', '1'); } catch (_) {}
       }

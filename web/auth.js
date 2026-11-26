@@ -24,10 +24,11 @@
     "/profile"
   ]);
   const adminPages = new Set([...ownerOnlyPages, ...cashierPages]);
-  const memberPages = new Set(["/member-home"]);
+  const memberPages = new Set(["/member-home", "/claim"]);
+  const dashboardPage = file === "/dashboard";
   const onboardingPage = file === "/onboarding";
   const loginPage = file === "/login";
-  const loginTarget = isTrainerSection || isStaffSection ? "/login" : "/login";
+  const loginTarget = "/login";
 
   async function performLogout() {
     try {
@@ -39,7 +40,7 @@
       sessionStorage.removeItem("profit-verified-session");
       sessionStorage.removeItem("pf-auth-just-logged-in");
       sessionStorage.setItem("profit-logged-out", "1");
-    } catch (e) {}
+    } catch (e) { }
     if (window.ProFitAPI) {
       try {
         await window.ProFitAPI.post("/auth/logout", {});
@@ -170,7 +171,7 @@
     };
     try {
       localStorage.setItem("profit-demo-session", JSON.stringify(storedUser));
-    } catch {}
+    } catch { }
   }
 
   if (isDemoForced) {
@@ -202,18 +203,12 @@
   const isAdmin = (adminPages.has(file) || isStaffSection) && !isTrainerSection;
   const isMember = memberPages.has(file);
   const isTrainer = isTrainerSection;
-  if (!loginPage && !onboardingPage && !isAdmin && !isMember && !isTrainer) return;
+  if (!loginPage && !onboardingPage && !dashboardPage && !isAdmin && !isMember && !isTrainer) return;
 
   const isCashierRole = r => String(r || "").toUpperCase() === "CASHIER";
   const isOwnerRole = r => ["ADMIN", "OWNER"].includes(String(r || "").toUpperCase());
   const isStaffRole = r => isOwnerRole(r) || isCashierRole(r);
-  const homeForRole = r => {
-    const up = String(r || "").toUpperCase();
-    if (up === "CASHIER") return "/cashier";
-    if (up === "TRAINER" || up === "COACH") return "/trainer/index";
-    if (up === "MEMBER") return "/member-home";
-    return "/index";
-  };
+  const homeForRole = () => "/dashboard";
 
   if (!storedUser && !loginPage) {
     document.documentElement.classList.add("auth-pending");
@@ -239,7 +234,7 @@
       try {
         sessionStorage.removeItem("profit-logged-out");
         sessionStorage.setItem("profit-verified-session", JSON.stringify(user));
-      } catch {}
+      } catch { }
       if (loginPage) {
         if (user.requires_first_login_gate) {
           document.documentElement.classList.remove("auth-checking", "auth-pending");
@@ -260,26 +255,39 @@
         return;
       }
       if (onboardingPage && isOwnerRole(role)) {
-        location.replace("/index");
+        location.replace("/dashboard");
         return;
       }
-      if (isAdmin && !isStaffRole(role)) {
+      const portalAttr = String(document.body?.dataset?.portal || "").toLowerCase();
+      const pageAttr = String(document.body?.dataset?.page || "").toLowerCase();
+      const pageIsTrainer = isTrainer || portalAttr === "trainer";
+      const pageIsCashierDash = file === "/cashier" || pageAttr === "cashier";
+      const pageIsMemberDash = isMember || pageAttr === "member-home";
+      const pageIsOwnerDash = file === "/index" || (dashboardPage && !pageIsTrainer && !pageIsCashierDash && !pageIsMemberDash);
+      const pageIsOwnerOnly = pageIsOwnerDash || ownerOnlyPages.has(file);
+      const pageIsStaffShared = !pageIsTrainer && !pageIsMemberDash && !pageIsCashierDash && !pageIsOwnerOnly && isAdmin;
+
+      if (pageIsTrainer && role !== "TRAINER") {
         location.replace(homeForRole(role));
         return;
       }
-      if (isAdmin && isCashierRole(role) && ownerOnlyPages.has(file)) {
-        location.replace("/cashier");
-        return;
-      }
-      if (isMember && role !== "MEMBER") {
+      if (pageIsMemberDash && role !== "MEMBER") {
         location.replace(homeForRole(role));
         return;
       }
-      if (isTrainer && role !== "TRAINER" && !isOwnerRole(role)) {
+      if (pageIsCashierDash && !isCashierRole(role)) {
         location.replace(homeForRole(role));
         return;
       }
-      if (user.must_change_password && isTrainer && file !== "/settings") {
+      if (pageIsOwnerOnly && !isOwnerRole(role)) {
+        location.replace(homeForRole(role));
+        return;
+      }
+      if (pageIsStaffShared && !isStaffRole(role)) {
+        location.replace(homeForRole(role));
+        return;
+      }
+      if (user.must_change_password && pageIsTrainer && file !== "/settings") {
         location.replace("/trainer/settings?force_password_change=1");
         return;
       }
@@ -306,7 +314,7 @@
           sessionStorage.removeItem("profit-verified-session");
           localStorage.removeItem("profit-demo-session");
           sessionStorage.removeItem("profit-demo-session");
-        } catch {}
+        } catch { }
       }
       if (storedUser && !isAuthFailure) {
         document.documentElement.classList.remove("auth-checking", "auth-pending");
@@ -322,7 +330,7 @@
         return;
       }
       if (loginPage) document.documentElement.classList.remove("auth-checking", "auth-pending");
-      else location.replace(file === "/index" && !isTrainerSection && !isStaffSection ? "/" : `${loginTarget}?reason=session`);
+      else location.replace(`${loginTarget}?reason=session`);
       window.dispatchEvent(new CustomEvent("profit-auth-error", { detail: error }));
     }
   });

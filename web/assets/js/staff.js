@@ -241,26 +241,36 @@
   };
 
   const STAFF_NAV = [
-    { label: 'WORKSPACE', items: [
-      { id: 'dashboard', label: 'Dashboard', icon: 'home', href: '/index' },
-      { id: 'announcements', label: 'Announcements', icon: 'megaphone', href: '/announcements', roles: ['Owner', 'Cashier'] }] },
-    { label: 'MEMBERSHIP', items: [
-      { id: 'members', label: 'Member List', icon: 'users', href: '/members' },
-      { id: 'attendance', label: 'Attendance', icon: 'calendar-check', href: '/attendance' },
-      { id: 'trainers', label: 'Trainers', icon: 'dumbbell', href: '/trainers', roles: ['Owner', 'Cashier'] }] },
-    { label: 'FINANCE', items: [
-      { id: 'payments', label: 'Payments & Billing', icon: 'wallet', href: '/payments', roles: ['Owner', 'Cashier'] },
-      { id: 'reports', label: 'Financial Reports', icon: 'chart', href: '/reports', roles: ['Owner'] }] }
+    {
+      label: 'WORKSPACE', items: [
+        { id: 'dashboard', label: 'Dashboard', icon: 'home', href: '/dashboard' },
+        { id: 'announcements', label: 'Announcements', icon: 'megaphone', href: '/announcements', roles: ['Owner', 'Cashier'] }]
+    },
+    {
+      label: 'MEMBERSHIP', items: [
+        { id: 'members', label: 'Member List', icon: 'users', href: '/members' },
+        { id: 'attendance', label: 'Attendance', icon: 'calendar-check', href: '/attendance' },
+        { id: 'trainers', label: 'Trainers', icon: 'dumbbell', href: '/trainers', roles: ['Owner', 'Cashier'] }]
+    },
+    {
+      label: 'FINANCE', items: [
+        { id: 'payments', label: 'Payments & Billing', icon: 'wallet', href: '/payments', roles: ['Owner', 'Cashier'] },
+        { id: 'reports', label: 'Financial Reports', icon: 'chart', href: '/reports', roles: ['Owner'] }]
+    }
   ];
 
   const TRAINER_NAV = [
-    { label: 'WORKSPACE', items: [
-      { id: 'dashboard', label: 'Dashboard', icon: 'home', href: '/trainer/index' },
-      { id: 'announcements', label: 'Announcements', icon: 'megaphone', href: '/trainer/announcements' }] },
-    { label: 'TRAINING', items: [
-      { id: 'members', label: 'My Members', icon: 'users', href: '/trainer/members' },
-      { id: 'attendance', label: 'Attendance', icon: 'calendar-check', href: '/trainer/attendance' },
-      { id: 'schedule', label: 'My Schedule', icon: 'calendar', href: '/trainer/schedule' }] }
+    {
+      label: 'WORKSPACE', items: [
+        { id: 'dashboard', label: 'Dashboard', icon: 'home', href: '/dashboard' },
+        { id: 'announcements', label: 'Announcements', icon: 'megaphone', href: '/trainer/announcements' }]
+    },
+    {
+      label: 'TRAINING', items: [
+        { id: 'members', label: 'My Members', icon: 'users', href: '/trainer/members' },
+        { id: 'attendance', label: 'Attendance', icon: 'calendar-check', href: '/trainer/attendance' },
+        { id: 'schedule', label: 'My Schedule', icon: 'calendar', href: '/trainer/schedule' }]
+    }
   ];
 
   const getNav = () => (isTrainerContext() ? TRAINER_NAV : STAFF_NAV);
@@ -303,7 +313,7 @@
     const navItems = getNav();
     const isTrainer = isTrainerContext();
     const base = isTrainer ? '/trainer' : '';
-    const homeHref = `${base}/index`;
+    const homeHref = '/dashboard';
     const tagline = isTrainer ? 'TRAINER WORKSPACE' : (gym.tagline || 'FUNCTIONAL FITNESS');
     const displayRole = isTrainer ? 'Personal Trainer' : (me.role || 'Staff');
     return `<div class="brand"><a href="${homeHref}" style="display:flex;align-items:center;gap:12px;min-width:0" aria-label="${esc(gym.name)} dashboard"><img class="brand-logo" src="${esc(gym.logo || PF.assetBase + 'img/logo.jpg')}" alt=""><span class="brand-txt"><strong>${esc(gym.name)}</strong><small>${esc(tagline)}</small></span></a><button class="collapse-btn" id="collapseBtn" type="button" aria-label="Collapse sidebar" title="Collapse sidebar">${PF.icon('chevrons-left')}</button></div>
@@ -342,12 +352,12 @@
     const cur = document.body.dataset.page;
     const isTrainer = isTrainerContext();
     const items = isTrainer ? [
-      ['dashboard', 'Home', 'home', '/trainer/index'],
+      ['dashboard', 'Home', 'home', '/dashboard'],
       ['members', 'Members', 'users', '/trainer/members'],
       ['attendance', 'Attendance', 'calendar-check', '/trainer/attendance'],
       ['schedule', 'Schedule', 'calendar', '/trainer/schedule']
     ] : [
-      ['dashboard', 'Home', 'home', '/index'],
+      ['dashboard', 'Home', 'home', '/dashboard'],
       ['members', 'Members', 'users', '/members'],
       ['attendance', 'Attendance', 'calendar-check', '/attendance'],
       ['payments', 'Payments', 'wallet', '/payments', ['Owner', 'Cashier']]
@@ -628,7 +638,7 @@
     }
     $$('.nav-link').forEach(a => a.addEventListener('click', () => setDrawer(false)));
     $('#collapseBtn').onclick = () => { const on = body.classList.toggle('mini'); try { localStorage.setItem('pf-mini', on ? '1' : '0'); } catch (e) { /* ignore */ } document.dispatchEvent(new CustomEvent('pf:resize')); setTimeout(() => window.dispatchEvent(new Event('resize')), 260); };
-    const bb = $('#backBtn'); if (bb) bb.onclick = () => (history.length > 1 ? history.back() : (location.href = '/index'));
+    const bb = $('#backBtn'); if (bb) bb.onclick = () => (history.length > 1 ? history.back() : (location.href = '/dashboard'));
     $('#themeBtn').onclick = () => PF.setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
     const bell = $('#bellBtn'), panel = $('#npanel');
     bell.onclick = e => {

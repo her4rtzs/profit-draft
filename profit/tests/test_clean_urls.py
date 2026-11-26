@@ -1,4 +1,4 @@
-"""Clean, extensionless URLs for the static web/ pages."""
+"""Clean, extensionless URLs and anonymous access rules for static web/ pages."""
 
 from pathlib import Path
 
@@ -17,30 +17,29 @@ class CleanUrlTests(SimpleTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"Functional Fitness Gym", response.content)
 
-    def test_top_level_pages_serve_at_extensionless_urls(self):
-        for url in ("/login", "/join", "/members", "/settings"):
+    def test_public_pages_serve_at_extensionless_urls(self):
+        for url in ("/login", "/join", "/faq", "/terms", "/privacy"):
             with self.subTest(url=url):
                 response = self.client.get(url)
                 self.assertEqual(response.status_code, 200)
                 self.assertEqual(response["Content-Type"], "text/html; charset=utf-8")
 
-    def test_role_home_pages_redirect_anonymous_users_to_login(self):
-        for url in ("/index", "/member-home"):
+    def test_protected_pages_redirect_anonymous_users_to_login(self):
+        for url in (
+            "/dashboard",
+            "/index",
+            "/cashier",
+            "/member-home",
+            "/members",
+            "/settings",
+            "/trainer/index",
+            "/trainer/attendance",
+            "/trainer/settings",
+        ):
             with self.subTest(url=url):
                 response = self.client.get(url)
                 self.assertEqual(response.status_code, 302)
-                self.assertIn("next=", response.url)
-                self.assertIn(url, response.url)
-
-    def test_grouped_pages_serve_at_extensionless_urls(self):
-        for url in ("/trainer/attendance", "/trainer/settings"):
-            with self.subTest(url=url):
-                self.assertEqual(self.client.get(url).status_code, 200)
-
-    def test_trainer_home_redirects_anonymous_users_to_login(self):
-        response = self.client.get("/trainer/index")
-        self.assertEqual(response.status_code, 302)
-        self.assertIn("next=", response.url)
+                self.assertTrue(response.url.startswith("/login?next="))
 
     def test_unknown_page_is_404(self):
         self.assertEqual(self.client.get("/does-not-exist").status_code, 404)
@@ -48,14 +47,16 @@ class CleanUrlTests(SimpleTestCase):
 
     def test_no_static_html_links_remain_in_web_pages(self):
         import re
+
         pattern = re.compile(r'["\'](?:\.\./|/)?[a-z0-9_/-]+\.html')
         for page in Path(settings.BASE_DIR, "web").rglob("*.html"):
             with self.subTest(page=page.name):
                 self.assertFalse(pattern.search(page.read_text(encoding="utf-8", errors="replace")))
 
     def test_reverse_names(self):
+        self.assertEqual(reverse("dashboard"), "/dashboard")
         self.assertEqual(reverse("web-page", kwargs={"page": "login"}), "/login")
         self.assertEqual(
-            reverse("web-page-group", kwargs={"group": "trainer", "page": "index"}),
-            "/trainer/index",
+            reverse("web-page-group", kwargs={"group": "trainer", "page": "attendance"}),
+            "/trainer/attendance",
         )

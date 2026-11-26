@@ -122,7 +122,9 @@ def login_view(request):
         allowed_hosts={request.get_host()},
         require_https=request.is_secure(),
     ):
-        redirect_url = next_url
+        from profit.views import resolve_post_login_redirect
+
+        redirect_url = resolve_post_login_redirect(user, next_url)
     else:
         redirect_url = role_home_url(user)
     return JsonResponse({
@@ -523,7 +525,7 @@ def _default_settings_url_for(user):
     if role == "TRAINER":
         return "/trainer/settings"
     if role == "MEMBER":
-        return "/member-home#settings"
+        return "/dashboard#settings"
     return "/settings"
 
 

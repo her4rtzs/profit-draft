@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="global.css?v=18">
   <script src="config.js?v=9"></script>
   <script src="api.js"></script>
-  <script src="auth.js?v=4"></script>
+  <script src="auth.js?v=6"></script>
   <link rel="manifest" href="/manifest.webmanifest">
   <meta name="theme-color" content="#0a0e17">
   <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee">
@@ -832,7 +832,7 @@
       color: #2a2418;
     }
   </style>
-  <link rel="stylesheet" href="pf-system.css?v=25">
+  <link rel="stylesheet" href="pf-system.css?v=26">
 </head>
 
 <body class="pf-staff" data-page="settings" data-title="Settings" data-welcome="Manage your account and preferences">
@@ -878,17 +878,20 @@
               </div>
               <span class="st-row-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
             </button>
-            <div class="st-row pf-google-row" id="pfGoogleAccountRow">
-              <div class="pf-gc-top">
-                <div class="st-row-lead">
-                  <span class="st-row-ico" aria-hidden="true"><i class="fa-brands fa-google"></i></span>
-                  <div class="st-row-copy">
-                    <span>Google Account</span>
-                    <small data-gc-sub>Checking Google connection…</small>
-                  </div>
+            <button class="st-row pf-gc-toggle" type="button" id="pfGoogleToggle" aria-expanded="false"
+              aria-controls="pfGoogleAccountRow">
+              <div class="st-row-lead">
+                <span class="st-row-ico" aria-hidden="true"><i class="fa-brands fa-google"></i></span>
+                <div class="st-row-copy">
+                  <span>Google Account</span>
+                  <small data-gc-sub>Checking Google connection…</small>
                 </div>
-                <div class="pf-gc-actions" data-gc-actions></div>
               </div>
+              <span class="st-row-end"><i class="fa-solid fa-chevron-right pf-gc-chev" aria-hidden="true"></i></span>
+            </button>
+            <div class="st-drawer pf-gc-drawer" id="pfGoogleAccountRow" hidden>
+              <p class="pf-gc-note" data-gc-note>Checking your Google account link…</p>
+              <div class="pf-gc-actions" data-gc-actions></div>
               <div class="pf-gc-msg" data-gc-msg role="status" aria-live="polite" hidden></div>
             </div>
 
@@ -1199,14 +1202,14 @@
     </main>
   </div>
 
-  <script src="layout.js?v=25"></script>
+  <script src="layout.js?v=26"></script>
   <script src="sidebar.js?v=21"></script>
   <script src="data.js?v=3"></script>
   <script src="settings.js?v=19"></script>
   <script src="portal-fx.js?v=2"></script>
   <script src="/static/js/install-help.js" defer></script>
   <script src="change-password.js?v=2" defer></script>
-  <script src="google-connect.js?v=1" defer></script>
+  <script src="google-connect.js?v=2" defer></script>
   <script src="notifications-live.js?v=2" defer></script>
   <script src="site-footer.js?v=2" defer></script>
 </body>

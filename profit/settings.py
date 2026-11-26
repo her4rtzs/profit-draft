@@ -92,8 +92,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    # WhiteNoise serves static files; must sit immediately after SecurityMiddleware.
-    "whitenoise.middleware.WhiteNoiseMiddleware",
+    # WhiteNoise serves static files, excluding raw .html pages which must go through Django RBAC.
+    "profit.middleware.ProtectedWhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",

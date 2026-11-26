@@ -423,7 +423,7 @@
 (() => {
   const $ = id => document.getElementById(id);
   const form = $('signInForm'), submit = form.querySelector('[type=submit]');
-  const HOME = { admin: '/index', cashier: '/cashier', trainer: '/trainer/index', member: '/member-home' };
+  const HOME = { admin: '/dashboard', cashier: '/dashboard', trainer: '/dashboard', member: '/dashboard' };
 
   const pwEl = $('password'), eyeBtn = $('showPassword'), capsEl = $('capsWarn');
   eyeBtn.addEventListener('click', () => {
@@ -489,10 +489,7 @@
         const isOwner = ['ADMIN', 'OWNER'].includes(r);
         const needsOnboarding = (r === 'MEMBER' || r === 'CASHIER' || r === 'TRAINER') && user?.onboarding_completed === false;
         const home = needsOnboarding ? '/onboarding'
-          : isOwner ? '/index'
-          : r === 'CASHIER' ? '/cashier'
-          : (r === 'TRAINER' || r === 'COACH') ? '/trainer/index'
-          : r === 'MEMBER' ? '/member-home'
+          : (isOwner || r === 'CASHIER' || r === 'TRAINER' || r === 'COACH' || r === 'MEMBER') ? '/dashboard'
           : null;
         if (home) {
           sessionStorage.setItem('profit-verified-session', JSON.stringify(user));
@@ -533,7 +530,7 @@
   });
 })();
 </script>
-<script src="google-auth.js?v=6"></script>
+<script src="google-auth.js?v=7"></script>
 <script src="portal-fx.js?v=2"></script>
 <script src="site-footer.js?v=7" defer></script>
 </body>

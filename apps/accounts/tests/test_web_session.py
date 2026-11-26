@@ -74,17 +74,20 @@ class WebSessionTests(TestCase):
             role=Role.TRAINER,
         )
 
-        # Cashier gets CASHIER role, 200 on /cashier, 403 on owner-only pages
+        # Cashier gets CASHIER role, 200 on /dashboard, redirect on /cashier, 403 on owner/trainer/member pages
         self.assertEqual(self._login("cashier_portal_test", "Password123!").status_code, 200)
         self.assertEqual(self.client.get("/api/auth/session/").json()["user"]["role"], "CASHIER")
-        self.assertEqual(self.client.get("/cashier").status_code, 200)
-        for path in ("/reports", "/trainers", "/announcements"):
+        self.assertEqual(self.client.get("/dashboard").status_code, 200)
+        self.assertRedirects(self.client.get("/cashier"), "/dashboard", fetch_redirect_response=False)
+        for path in ("/index", "/reports", "/trainers", "/announcements"):
             self.assertEqual(self.client.get(path).status_code, 403, f"Cashier should be forbidden on {path}")
 
-        # Owner can open both /cashier and owner-only pages
+        # Owner can open /dashboard and owner-only pages, but is forbidden on other roles' dashboards
         self.assertEqual(self._login("owner1").status_code, 200)
-        for path in ("/cashier", "/reports", "/trainers", "/announcements"):
+        for path in ("/dashboard", "/reports", "/trainers", "/announcements"):
             self.assertEqual(self.client.get(path).status_code, 200, f"Owner should access {path}")
+        for path in ("/cashier", "/trainer/index", "/member-home"):
+            self.assertEqual(self.client.get(path).status_code, 403, f"Owner should be forbidden on {path}")
 
         # Member and Trainer are forbidden on /cashier
         self.assertEqual(self._login("ana").status_code, 200)

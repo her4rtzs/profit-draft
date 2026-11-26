@@ -24,7 +24,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="ProFit">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="stylesheet" href="../pf-system.css?v=25">
+  <link rel="stylesheet" href="../pf-system.css?v=26">
 </head>
 
 <body data-page="settings" data-portal="trainer" data-head="none" data-eyebrow="App Preferences" data-title="Settings">
@@ -69,17 +69,20 @@
                 </div>
                 <span class="tr-st-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
               </button>
-              <div class="tr-st-row pf-google-row" id="pfGoogleAccountRow">
-                <div class="pf-gc-top">
-                  <div class="tr-st-lead">
-                    <span class="tr-st-ico" aria-hidden="true"><i class="fa-brands fa-google"></i></span>
-                    <div class="tr-st-copy">
-                      <span>Google Account</span>
-                      <small data-gc-sub>Checking Google connection…</small>
-                    </div>
+              <button class="tr-st-row pf-gc-toggle" type="button" id="pfGoogleToggle" aria-expanded="false"
+                aria-controls="pfGoogleAccountRow">
+                <div class="tr-st-lead">
+                  <span class="tr-st-ico" aria-hidden="true"><i class="fa-brands fa-google"></i></span>
+                  <div class="tr-st-copy">
+                    <span>Google Account</span>
+                    <small data-gc-sub>Checking Google connection…</small>
                   </div>
-                  <div class="pf-gc-actions" data-gc-actions></div>
                 </div>
+                <span class="tr-st-end"><i class="fa-solid fa-chevron-right pf-gc-chev" aria-hidden="true"></i></span>
+              </button>
+              <div class="tr-st-drawer pf-gc-drawer" id="pfGoogleAccountRow" hidden>
+                <p class="pf-gc-note" data-gc-note>Checking your Google account link…</p>
+                <div class="pf-gc-actions" data-gc-actions></div>
                 <div class="pf-gc-msg" data-gc-msg role="status" aria-live="polite" hidden></div>
               </div>
             </article>
@@ -99,7 +102,8 @@
 
             <!-- Appearance & Accessibility -->
             <article class="tr-st-card" id="trStAppearance">
-              <div class="tr-st-head"><i class="fa-regular fa-sun" aria-hidden="true"></i> Appearance &amp; Accessibility</div>
+              <div class="tr-st-head"><i class="fa-regular fa-sun" aria-hidden="true"></i> Appearance &amp;
+                Accessibility</div>
               <label class="tr-st-row tr-st-toggle-row">
                 <div class="tr-st-copy"><span>Dark Mode</span><small>Switch between dark obsidian and warm ivory</small>
                 </div>
@@ -119,11 +123,13 @@
                 <span>Your assigned athletes' check-ins and schedule updates appear here.</span>
               </div>
               <label class="tr-st-row tr-st-toggle-row">
-                <div class="tr-st-copy"><span>High Contrast Mode</span><small>Increase contrast for text, borders, inputs, and buttons in both Light and Dark themes.</small></div>
+                <div class="tr-st-copy"><span>High Contrast Mode</span><small>Increase contrast for text, borders,
+                    inputs, and buttons in both Light and Dark themes.</small></div>
                 <input type="checkbox" id="trPrefHighContrast" data-a11y="contrast">
               </label>
               <label class="tr-st-row tr-st-toggle-row">
-                <div class="tr-st-copy"><span>Enhanced Focus Indicators</span><small>Show a prominent orange focus outline around the currently focused button, input, link, or menu item.</small></div>
+                <div class="tr-st-copy"><span>Enhanced Focus Indicators</span><small>Show a prominent orange focus
+                    outline around the currently focused button, input, link, or menu item.</small></div>
                 <input type="checkbox" id="trPrefEnhancedFocus" data-a11y="focus">
               </label>
             </article>
@@ -248,12 +254,12 @@
 
   <script src="../config.js?v=9"></script>
   <script src="../api.js?v=5"></script>
-  <script src="../auth.js?v=5"></script>
+  <script src="../auth.js?v=6"></script>
   <script src="../change-password.js?v=1"></script>
-  <script src="../google-connect.js?v=1" defer></script>
+  <script src="../google-connect.js?v=2" defer></script>
   <script src="../assets/js/staff-icons.js?v=5"></script>
   <script src="../assets/js/staff-data.js?v=12"></script>
-  <script src="../assets/js/staff.js?v=17"></script>
+  <script src="../assets/js/staff.js?v=18"></script>
   <script src="trainer.js?v=12"></script>
   <script>
     (function () {

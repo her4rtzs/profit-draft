@@ -77,12 +77,8 @@
     }
   }
 
-  function defaultRedirectForRole(role) {
-    const r = String(role || "").toUpperCase();
-    if (r === "ADMIN" || r === "OWNER") return "/index";
-    if (r === "CASHIER") return "/cashier";
-    if (r === "TRAINER" || r === "COACH") return "/trainer/index";
-    return "/member-home";
+  function defaultRedirectForRole() {
+    return "/dashboard";
   }
 
   function finishLogin(user, targetRedirect, msgText) {

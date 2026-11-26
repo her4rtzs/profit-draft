@@ -19,12 +19,25 @@ class LoginRedirectTests(TestCase):
             data=json.dumps({
                 "identity": "redirect@example.com",
                 "password": "pw-12345",
-                "next": "/member-home",
+                "next": "/claim",
             }),
             content_type="application/json",
         )
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(res.json()["redirect"], "/member-home")
+        self.assertEqual(res.json()["redirect"], "/claim")
+
+    def test_json_login_disallowed_role_next_falls_back_to_dashboard(self):
+        res = Client().post(
+            "/api/auth/login/",
+            data=json.dumps({
+                "identity": "redirect@example.com",
+                "password": "pw-12345",
+                "next": "/cashier",
+            }),
+            content_type="application/json",
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.json()["redirect"], "/dashboard")
 
     def test_json_login_external_next_is_rejected(self):
         res = Client().post(
@@ -37,7 +50,7 @@ class LoginRedirectTests(TestCase):
             content_type="application/json",
         )
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(res.json()["redirect"], "/member-home")
+        self.assertEqual(res.json()["redirect"], "/dashboard")
 
     def test_authenticated_login_pages_redirect_to_role_home(self):
         c = Client()
@@ -45,10 +58,10 @@ class LoginRedirectTests(TestCase):
         for url in ("/login", "/accounts/login/"):
             with self.subTest(url=url):
                 res = c.get(url)
-                self.assertRedirects(res, "/member-home", fetch_redirect_response=False)
+                self.assertRedirects(res, "/dashboard", fetch_redirect_response=False)
 
     def test_anonymous_protected_page_preserves_next(self):
-        res = Client().get("/member-home")
+        res = Client().get("/dashboard")
         self.assertEqual(res.status_code, 302)
-        self.assertIn("next=", res.url)
-        self.assertIn("/member-home", res.url)
+        self.assertTrue(res.url.startswith("/login?next="))
+        self.assertIn("/dashboard", res.url)

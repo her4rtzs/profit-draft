@@ -417,7 +417,7 @@ class OwnerCashierManagementTests(TestCase):
         self.assertEqual(sess["role"], "CASHIER")
         self.assertFalse(sess["onboarding_completed"])
 
-        # 4. Finish onboarding -> /cashier desk opens cleanly
+        # 4. Finish onboarding -> /dashboard opens cleanly and /cashier redirects to /dashboard
         finish = web.patch(
             "/api/auth/profile/",
             data='{"name":"Liza Cruz","photo":"av-2","onboarding":{"shift":"Afternoon","ack":true,"completed":true}}',
@@ -425,7 +425,8 @@ class OwnerCashierManagementTests(TestCase):
         )
         self.assertEqual(finish.status_code, 200)
         self.assertTrue(finish.json()["user"]["onboarding_completed"])
-        self.assertEqual(web.get("/cashier").status_code, 200)
+        self.assertEqual(web.get("/dashboard").status_code, 200)
+        self.assertRedirects(web.get("/cashier"), "/dashboard", fetch_redirect_response=False)
 
     def test_owner_can_add_cashier_with_temp_password_mode(self):
         self.client.force_authenticate(user=self.owner)

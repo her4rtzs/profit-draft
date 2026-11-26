@@ -1,8 +1,15 @@
-/* In-portal Google Account Connect & Disconnect for Settings (Owner, Cashier, Trainer, Member). */
+/* In-portal Google Account Connect & Disconnect drawer for Settings (Owner, Cashier, Trainer, Member). */
 (() => {
   "use strict";
 
   const FALLBACK_CLIENT_ID = "752296461739-tpcmop84u41b31bo3eer33uv2v6fkauq.apps.googleusercontent.com";
+  const GOOGLE_LOGO_SVG = `<svg class="pf-g-logo" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+    <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z"/>
+    <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24Z"/>
+    <path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14Z"/>
+    <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96Z"/>
+  </svg>`;
+
   let clientId = FALLBACK_CLIENT_ID;
   let oauthRedirectEnabled = false;
   let configPromise = null;
@@ -43,18 +50,34 @@
     return gsiPromise;
   }
 
-  function showStatus(root, text, isErr) {
-    const el = root.querySelector("[data-gc-msg]");
+  function getToggle() {
+    return document.getElementById("pfGoogleToggle");
+  }
+
+  function setDrawerOpen(toggle, drawer, open) {
+    if (drawer) drawer.hidden = !open;
+    if (toggle) toggle.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+
+  function setConnBtnContent(btn, label) {
+    btn.innerHTML = `${GOOGLE_LOGO_SVG}<span>${label}</span>`;
+    btn.dataset.gcState = label === "Connecting…" ? "busy" : "idle";
+  }
+
+  function showStatus(drawer, text, isErr) {
+    const el = drawer.querySelector("[data-gc-msg]");
     if (!el) return;
     el.hidden = !text;
     el.textContent = text || "";
     el.classList.toggle("is-err", !!isErr);
   }
 
-  function renderState(root, user) {
-    const sub = root.querySelector("[data-gc-sub]");
-    const actions = root.querySelector("[data-gc-actions]");
-    if (!sub || !actions) return;
+  function renderState(drawer, user, toggleEl) {
+    const toggle = toggleEl || getToggle();
+    const sub = toggle ? toggle.querySelector("[data-gc-sub]") : document.querySelector("[data-gc-sub]");
+    const note = drawer.querySelector("[data-gc-note]");
+    const actions = drawer.querySelector("[data-gc-actions]");
+    if (!actions) return;
 
     const connected = Boolean(user && user.google_connected);
     const hasPw = Boolean(user && user.has_password);
@@ -62,36 +85,44 @@
 
     actions.innerHTML = "";
     if (connected) {
-      sub.textContent = gEmail ? `Connected as ${gEmail}` : "Google account connected";
+      if (sub) sub.textContent = gEmail ? `Connected as ${gEmail}` : "Google account connected";
+      if (note) {
+        note.textContent = gEmail
+          ? `Your ProFit account is linked to ${gEmail} for quick Google Sign-In.`
+          : "Your ProFit account is linked to Google for quick Google Sign-In.";
+      }
       if (!hasPw) {
         const setBtn = document.createElement("button");
         setBtn.type = "button";
         setBtn.className = "pf-gc-btn pf-gc-setpw";
         setBtn.textContent = "Set Password";
-        setBtn.addEventListener("click", () => openSetPasswordDialog(root));
+        setBtn.addEventListener("click", () => openSetPasswordDialog(drawer));
         actions.appendChild(setBtn);
       }
       const discBtn = document.createElement("button");
       discBtn.type = "button";
       discBtn.className = "pf-gc-btn pf-gc-disc";
-      discBtn.textContent = "Disconnect";
-      discBtn.addEventListener("click", () => handleDisconnect(root, discBtn));
+      discBtn.textContent = "Disconnect Google";
+      discBtn.addEventListener("click", () => handleDisconnect(drawer, discBtn));
       actions.appendChild(discBtn);
     } else {
-      sub.textContent = "Not connected — link Gmail for quick Google Sign-In";
+      if (sub) sub.textContent = "Not connected — link Gmail for quick Google Sign-In";
+      if (note) {
+        note.textContent = "Link your Gmail account to sign in quickly with one click on the login page.";
+      }
       const connBtn = document.createElement("button");
       connBtn.type = "button";
       connBtn.className = "pf-gc-btn pf-gc-conn";
-      connBtn.textContent = "Connect Google";
-      connBtn.addEventListener("click", () => handleConnect(root, connBtn));
+      setConnBtnContent(connBtn, "Connect with Google");
+      connBtn.addEventListener("click", () => handleConnect(drawer, connBtn));
       actions.appendChild(connBtn);
     }
   }
 
-  async function handleConnect(root, btn) {
-    showStatus(root, "", false);
+  async function handleConnect(drawer, btn) {
+    showStatus(drawer, "", false);
     btn.disabled = true;
-    btn.textContent = "Connecting…";
+    setConnBtnContent(btn, "Connecting…");
     try {
       await loadConfig();
       try {
@@ -105,27 +136,27 @@
           callback: async resp => {
             if (!resp || resp.error || !resp.access_token) {
               btn.disabled = false;
-              btn.textContent = "Connect Google";
-              showStatus(root, resp?.error === "access_denied" ? "Google connection cancelled." : "Could not authorize Google.", true);
+              setConnBtnContent(btn, "Connect with Google");
+              showStatus(drawer, resp?.error === "access_denied" ? "Google connection cancelled." : "Could not authorize Google.", true);
               return;
             }
             try {
               const out = await window.ProFitAPI.post("/auth/google/connect", { access_token: resp.access_token });
               if (out && out.user) {
                 try { sessionStorage.setItem("profit-verified-session", JSON.stringify(out.user)); } catch (_) {}
-                renderState(root, out.user);
-                showStatus(root, "Google account connected.", false);
+                renderState(drawer, out.user);
+                showStatus(drawer, "Google account connected.", false);
               }
             } catch (err) {
               btn.disabled = false;
-              btn.textContent = "Connect Google";
-              showStatus(root, err?.message || "Could not connect Google account.", true);
+              setConnBtnContent(btn, "Connect with Google");
+              showStatus(drawer, err?.message || "Could not connect Google account.", true);
             }
           },
           error_callback: () => {
             btn.disabled = false;
-            btn.textContent = "Connect Google";
-            showStatus(root, "Google popup closed or blocked. Allow popups and try again.", true);
+            setConnBtnContent(btn, "Connect with Google");
+            showStatus(drawer, "Google popup closed or blocked. Allow popups and try again.", true);
           },
         });
         client.requestAccessToken({ prompt: "select_account" });
@@ -137,32 +168,32 @@
         location.href = `/api/auth/google/login/?source=connect&next=${encodeURIComponent(nextUrl)}`;
         return;
       }
-      showStatus(root, "Google Sign-In is currently unavailable. Try again shortly.", true);
+      showStatus(drawer, "Google Sign-In is currently unavailable. Try again shortly.", true);
     } catch (err) {
-      showStatus(root, err?.message || "Could not start Google connection.", true);
+      showStatus(drawer, err?.message || "Could not start Google connection.", true);
     } finally {
-      if (btn.isConnected && btn.textContent === "Connecting…") {
+      if (btn.isConnected && btn.dataset.gcState === "busy") {
         btn.disabled = false;
-        btn.textContent = "Connect Google";
+        setConnBtnContent(btn, "Connect with Google");
       }
     }
   }
 
-  async function handleDisconnect(root, btn) {
-    showStatus(root, "", false);
+  async function handleDisconnect(drawer, btn) {
+    showStatus(drawer, "", false);
     btn.disabled = true;
     btn.textContent = "Disconnecting…";
     try {
       const out = await window.ProFitAPI.post("/auth/google/disconnect", {});
       if (out && out.user) {
         try { sessionStorage.setItem("profit-verified-session", JSON.stringify(out.user)); } catch (_) {}
-        renderState(root, out.user);
-        showStatus(root, "Google account disconnected.", false);
+        renderState(drawer, out.user);
+        showStatus(drawer, "Google account disconnected.", false);
       }
     } catch (err) {
-      showStatus(root, err?.message || "Could not disconnect Google account.", true);
+      showStatus(drawer, err?.message || "Could not disconnect Google account.", true);
       btn.disabled = false;
-      btn.textContent = "Disconnect";
+      btn.textContent = "Disconnect Google";
     }
   }
 
@@ -185,7 +216,7 @@
     return dlg;
   }
 
-  function openSetPasswordDialog(root) {
+  function openSetPasswordDialog(drawer) {
     const dlg = ensureSetPasswordDialog();
     const form = dlg.querySelector("form");
     const msg = dlg.querySelector(".pf-cp-msg");
@@ -217,8 +248,8 @@
         });
         if (out && out.user) {
           try { sessionStorage.setItem("profit-verified-session", JSON.stringify(out.user)); } catch (_) {}
-          renderState(root, out.user);
-          showStatus(root, "Password saved. You can now disconnect Google anytime.", false);
+          renderState(drawer, out.user);
+          showStatus(drawer, "Password saved. You can now disconnect Google anytime.", false);
         }
         dlg.close();
       } catch (err) {
@@ -233,25 +264,36 @@
   }
 
   async function mount() {
-    const root = document.getElementById("pfGoogleAccountRow");
-    if (!root || !window.ProFitAPI) return;
+    const drawer = document.getElementById("pfGoogleAccountRow");
+    const toggle = getToggle();
+    if (!drawer || !window.ProFitAPI) return;
+
+    if (toggle && toggle.dataset.gcBound !== "1") {
+      toggle.dataset.gcBound = "1";
+      toggle.addEventListener("click", () => {
+        setDrawerOpen(toggle, drawer, drawer.hidden);
+      });
+    }
+
     try {
       const sess = await window.ProFitAPI.get("/auth/session", { silent: true });
       if (sess && sess.user) {
-        renderState(root, sess.user);
+        renderState(drawer, sess.user, toggle);
       }
     } catch (_) {}
 
     const q = new URLSearchParams(location.search);
     if (q.get("google_connected") === "1") {
-      showStatus(root, "Google account connected.", false);
+      setDrawerOpen(toggle, drawer, true);
+      showStatus(drawer, "Google account connected.", false);
       q.delete("google_connected");
       const clean = location.pathname + (q.toString() ? `?${q.toString()}` : "") + (location.hash || "");
       history.replaceState(null, "", clean);
     } else if (q.get("google_error")) {
       const code = q.get("google_error");
+      setDrawerOpen(toggle, drawer, true);
       showStatus(
-        root,
+        drawer,
         code === "google_sub_in_use"
           ? "That Google account is already connected to another ProFit user."
           : "Could not connect Google account. Please try again.",

@@ -281,8 +281,8 @@ class GoogleAuthTests(TestCase):
         self.assertEqual(user.member_profile.membership_status, MemberProfile.MembershipStatus.TRIAL)
         self.assertIsNotNone(user.member_profile.trial_ends_at)
 
-        # Onboarding gate blocks /member-home until OTP + Terms/Privacy consent complete
-        blocked = self.client.get("/member-home")
+        # Onboarding gate blocks /dashboard until OTP + Terms/Privacy consent complete
+        blocked = self.client.get("/dashboard")
         self.assertEqual(blocked.status_code, 302)
         self.assertEqual(blocked["Location"], "/accounts/onboarding/")
 
@@ -294,7 +294,7 @@ class GoogleAuthTests(TestCase):
             {"accept_terms": "on", "accept_privacy": "on"},
             HTTP_X_CSRFTOKEN=self._csrf(),
         )
-        self.assertEqual(self.client.get("/member-home").status_code, 200)
+        self.assertEqual(self.client.get("/dashboard").status_code, 200)
 
         # Session endpoint reflects authenticated MEMBER
         sess = self.client.get("/api/auth/session/")

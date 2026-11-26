@@ -38,21 +38,21 @@
     MEMBER: {
       pill: "New member",
       intro: "Your gym. One platform. Let's set up your member profile in a few quick steps.",
-      homeHref: "/member-home",
+      homeHref: "/dashboard",
       homeLabel: "Open my dashboard",
       does: "Explore your profile now, then pay in cash at the desk or submit a GCash payment whenever you are ready."
     },
     CASHIER: {
       pill: "Cashier onboarding",
       intro: "You were invited to the front desk team at Functional Fitness Gym. Complete your quick setup below.",
-      homeHref: "/cashier",
+      homeHref: "/dashboard",
       homeLabel: "Open cashier desk",
       does: "Record cash payments at the desk and review GCash payments."
     },
     TRAINER: {
       pill: "Trainer onboarding",
       intro: "You were invited to the coaching team at Functional Fitness Gym. Complete your quick setup below.",
-      homeHref: "/trainer/index",
+      homeHref: "/dashboard",
       homeLabel: "Open trainer portal",
       does: "Check in your assigned members and view their training notes."
     }
@@ -693,7 +693,7 @@
           sessionStorage.setItem("profit-verified-session", JSON.stringify(sess.user));
           if (window.ProFitAuth) window.ProFitAuth.user = sess.user;
         }
-      } catch (_) {}
+      } catch (_) { }
       state.returnToReview = false;
       state.step = steps().length - 1;
       render();

@@ -1523,17 +1523,20 @@
           </div>
           <span class="mb-st-end"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
         </button>
-        <div class="mb-st-row pf-google-row" id="pfGoogleAccountRow">
-          <div class="pf-gc-top">
-            <div class="mb-st-lead">
-              <span class="mb-st-ico" aria-hidden="true"><i class="fa-brands fa-google"></i></span>
-              <div class="mb-st-copy">
-                <span>Google Account</span>
-                <small data-gc-sub>Checking Google connection…</small>
-              </div>
+        <button class="mb-st-row pf-gc-toggle" type="button" id="pfGoogleToggle" aria-expanded="false"
+          aria-controls="pfGoogleAccountRow">
+          <div class="mb-st-lead">
+            <span class="mb-st-ico" aria-hidden="true"><i class="fa-brands fa-google"></i></span>
+            <div class="mb-st-copy">
+              <span>Google Account</span>
+              <small data-gc-sub>Checking Google connection…</small>
             </div>
-            <div class="pf-gc-actions" data-gc-actions></div>
           </div>
+          <span class="mb-st-end"><i class="fa-solid fa-chevron-right pf-gc-chev" aria-hidden="true"></i></span>
+        </button>
+        <div class="mb-st-drawer pf-gc-drawer" id="pfGoogleAccountRow" hidden>
+          <p class="pf-gc-note" data-gc-note>Checking your Google account link…</p>
+          <div class="pf-gc-actions" data-gc-actions></div>
           <div class="pf-gc-msg" data-gc-msg role="status" aria-live="polite" hidden></div>
         </div>
       </article>

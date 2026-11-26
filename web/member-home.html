@@ -2,26 +2,6 @@
 <html lang="en">
 
 <head>
-  <script>
-    (function () {
-      try {
-        var isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.protocol === 'file:' || location.search.indexOf('demo=1') > -1;
-        var hasSession = !!(sessionStorage.getItem('profit-verified-session') || sessionStorage.getItem('profit-demo-session') || localStorage.getItem('profit-demo-session'));
-        var explicitLogout = sessionStorage.getItem('profit-logged-out') === '1';
-        if (!isLocal && (!hasSession || explicitLogout)) {
-          document.documentElement.classList.add('auth-pending');
-          location.replace('/login');
-        }
-      } catch (e) { }
-    })();
-  </script>
-  <style>
-    html.auth-pending,
-    html.auth-pending body {
-      display: none !important;
-      visibility: hidden !important;
-    }
-  </style>
   <script src="splash.js?v=3"></script>
   <meta charset="utf-8">
   <meta name="viewport"
@@ -36,7 +16,7 @@
   <link rel="stylesheet" href="styles.css">
   <script src="config.js?v=9"></script>
   <script src="api.js"></script>
-  <script src="auth.js?v=4"></script>
+  <script src="auth.js?v=6"></script>
   <link rel="stylesheet" href="pro-theme.css">
   <link rel="stylesheet" href="finance-ui.css?v=30">
   <link rel="stylesheet" href="spotify.css?v=14">
@@ -619,14 +599,14 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="ProFit">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="stylesheet" href="pf-system.css?v=25">
+  <link rel="stylesheet" href="pf-system.css?v=26">
 </head>
 
 <body class="member-home">
   <div class="member-app-shell">
     <aside class="member-sidebar" id="memberSidebar" aria-label="Member navigation">
       <div class="brand">
-        <a class="brand-link" href="/member-home" aria-label="ProFit Member Portal">
+        <a class="brand-link" href="/dashboard" aria-label="ProFit Member Portal">
           <span class="brand-logo-wrap"><img id="homeLogoImg" src="logo.jpg" alt="ProFit Functional Fitness Gym"></span>
           <span class="brand-txt"><strong id="homeGymName">ProFit</strong><small>MEMBER PORTAL</small></span>
         </a>
@@ -1223,7 +1203,8 @@
                 </span>
                 <div>
                   <h2 class="fn-card-title">Renew with GCash <span class="member-gcash-pill">GCash only</span></h2>
-                  <p class="fn-card-sub">Pay the exact plan amount, then send us your reference number and proof. Cash payments are made at the front desk.</p>
+                  <p class="fn-card-sub">Pay the exact plan amount, then send us your reference number and proof. Cash
+                    payments are made at the front desk.</p>
                 </div>
               </div>
               <button type="button" class="member-pay-close" id="memberPayClose" aria-label="Close renewal form"
@@ -1295,13 +1276,15 @@
                   <label for="memberPayProof">Google Drive link (proof of payment)</label>
                   <input class="fn-input" id="memberPayProof" type="url" maxlength="500" autocomplete="off"
                     placeholder="https://drive.google.com/..." required>
-                  <small>Set sharing to &ldquo;Anyone with the link can view&rdquo; and crop out private details.</small>
+                  <small>Set sharing to &ldquo;Anyone with the link can view&rdquo; and crop out private
+                    details.</small>
                 </div>
                 <div class="pf-pay-checklist">
                   <span class="pf-pay-checklist-label">Before you submit</span>
                   <label class="pf-pay-check" for="memberPayConfirmAmt">
                     <input type="checkbox" id="memberPayConfirmAmt">
-                    <span>I sent exactly <strong id="memberPayConfirmAmtVal">the plan amount</strong> to the GCash account shown in the QR.</span>
+                    <span>I sent exactly <strong id="memberPayConfirmAmtVal">the plan amount</strong> to the GCash
+                      account shown in the QR.</span>
                   </label>
                   <label class="pf-pay-check" for="memberPayConfirmShare">
                     <input type="checkbox" id="memberPayConfirmShare">
@@ -1954,7 +1937,7 @@
           try {
             const u = new URL(proofVal);
             proofOk = u.protocol === "https:" && ["drive.google.com", "docs.google.com"].includes(u.hostname.toLowerCase());
-          } catch {}
+          } catch { }
           steps.forEach((el) => {
             const n = Number(el.dataset.step);
             el.classList.remove("is-active", "is-done");
@@ -2554,10 +2537,10 @@
     })();
   </script>
   <script src="pf-common.js"></script>
-  <script src="member-tabs.js?v=12"></script>
+  <script src="member-tabs.js?v=14"></script>
   <script src="member-shell.js?v=4"></script>
   <script src="change-password.js?v=1"></script>
-  <script src="google-connect.js?v=1" defer></script>
+  <script src="google-connect.js?v=2" defer></script>
   <script src="portal-fx.js?v=2"></script>
   <nav class="pf-bottomnav" aria-label="Member sections">
     <button type="button" data-go-tab="overview"><i class="fa-solid fa-house"

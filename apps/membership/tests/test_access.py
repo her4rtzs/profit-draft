@@ -108,7 +108,8 @@ class MemberPageAccessTests(_MemberFixture):
         start_trial(self.profile, now=timezone.now() - timedelta(days=8))
         self.web.force_login(self.user)
 
-        self.assertEqual(self.web.get("/member-home").status_code, 200)
+        self.assertEqual(self.web.get("/dashboard").status_code, 200)
+        self.assertRedirects(self.web.get("/member-home"), "/dashboard", fetch_redirect_response=False)
         self.assertEqual(self.web.get("/profile").status_code, 200)
         res = self.web.get("/payments")
         self.assertEqual(res.status_code, 403)
@@ -118,7 +119,7 @@ class MemberPageAccessTests(_MemberFixture):
         start_trial(self.profile)
         self.web.force_login(self.user)
 
-        self.assertEqual(self.web.get("/member-home").status_code, 200)
+        self.assertEqual(self.web.get("/dashboard").status_code, 200)
         self.assertEqual(self.web.get("/profile").status_code, 200)
         res = self.web.get("/payments")
         self.assertEqual(res.status_code, 403)
@@ -131,4 +132,4 @@ class MemberPageAccessTests(_MemberFixture):
             created_by=self.staff,
         )
         self.web.force_login(self.user)
-        self.assertEqual(self.web.get("/member-home").status_code, 200)
+        self.assertEqual(self.web.get("/dashboard").status_code, 200)

@@ -3680,44 +3680,80 @@ html body:not(.dark)[data-page="cashiers"] .csh-modal-actions {
 /* =========================================================
    Settings Google Account Connect / Disconnect Row
    ========================================================= */
-html body .pf-google-row {
+html body .pf-g-logo {
+  display: block;
+  flex-shrink: 0;
+}
+
+html body .pf-gc-chev {
+  transition: transform 0.2s ease;
+}
+
+html body .pf-gc-toggle[aria-expanded="true"] .pf-gc-chev {
+  transform: rotate(90deg);
+}
+
+html body .pf-gc-drawer {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 8px;
-}
-
-html body .pf-google-row .pf-gc-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   gap: 12px;
-  flex-wrap: wrap;
+  padding: 14px 16px 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
 }
 
-html body .pf-google-row .pf-gc-actions {
+html body:not(.dark) .pf-gc-drawer {
+  border-top-color: #E2E8F0;
+  background: #F8FAFC;
+}
+
+html body .pf-gc-drawer[hidden] {
+  display: none !important;
+}
+
+html body .pf-gc-note {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: rgba(241, 245, 249, 0.78);
+}
+
+html body:not(.dark) .pf-gc-note {
+  color: #475569;
+}
+
+html body .pf-gc-drawer .pf-gc-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
 html body .pf-gc-btn {
-  min-height: 36px;
-  padding: 0 14px;
-  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 38px;
+  padding: 0 16px;
+  border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.16);
   background: rgba(255, 255, 255, 0.06);
   color: inherit;
-  font-size: 12.5px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
 }
 
 html body .pf-gc-btn.pf-gc-conn {
-  border-color: transparent;
-  background: var(--pf-state-gold);
-  color: var(--pf-state-gold-ink);
+  background: #FFFFFF;
+  color: #1F2937;
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+html body .pf-gc-btn.pf-gc-conn:hover:not(:disabled) {
+  background: #F8FAFC;
 }
 
 html body .pf-gc-btn.pf-gc-disc:hover:not(:disabled) {
@@ -3727,8 +3763,18 @@ html body .pf-gc-btn.pf-gc-disc:hover:not(:disabled) {
 
 html body:not(.dark) .pf-gc-btn:not(.pf-gc-conn) {
   border-color: #CBD5E1;
-  background: #F8FAFC;
+  background: #FFFFFF;
   color: #0F172A;
+}
+
+html body:not(.dark) .pf-gc-btn.pf-gc-conn {
+  background: #FFFFFF;
+  color: #0F172A;
+  border-color: #CBD5E1;
+}
+
+html body:not(.dark) .pf-gc-btn.pf-gc-conn:hover:not(:disabled) {
+  background: #F1F5F9;
 }
 
 html body:not(.dark) .pf-gc-btn.pf-gc-disc:hover:not(:disabled) {

@@ -65,10 +65,10 @@ class LinkedGoogleAndOnboardingGateTests(TestCase):
 
     def test_linked_google_login_works_for_owner_cashier_trainer_member(self):
         cases = [
-            (self.owner, "ADMIN", "/index"),
-            (self.cashier, "CASHIER", "/cashier"),
-            (self.trainer, "TRAINER", "/trainer/index"),
-            (self.member, "MEMBER", "/member-home"),
+            (self.owner, "ADMIN", "/dashboard"),
+            (self.cashier, "CASHIER", "/dashboard"),
+            (self.trainer, "TRAINER", "/dashboard"),
+            (self.member, "MEMBER", "/dashboard"),
         ]
         now = timezone.now()
         for user, web_role, expected_home in cases:
@@ -123,7 +123,7 @@ class LinkedGoogleAndOnboardingGateTests(TestCase):
         self.assertEqual(body["redirect"], "/accounts/onboarding/")
 
         # Dashboard blocked until OTP -> Terms & Privacy completed
-        self.assertEqual(self.client.get("/member-home").status_code, 302)
+        self.assertEqual(self.client.get("/dashboard").status_code, 302)
         self.assertEqual(self.client.get("/accounts/onboarding/otp/").status_code, 200)
         code = re.search(r"\b(\d{6})\b", mail.outbox[-1].body).group(1)
         self.client.post("/accounts/onboarding/otp/", {"code": code}, HTTP_X_CSRFTOKEN=self._csrf())
@@ -132,7 +132,7 @@ class LinkedGoogleAndOnboardingGateTests(TestCase):
             {"accept_terms": "on", "accept_privacy": "on"},
             HTTP_X_CSRFTOKEN=self._csrf(),
         )
-        self.assertEqual(self.client.get("/member-home").status_code, 200)
+        self.assertEqual(self.client.get("/dashboard").status_code, 200)
 
     def test_first_login_gate_blocks_dashboard_until_otp_and_consent_complete(self):
         # Owner connected Google via Settings, first time using Google -> needs OTP + Consent
@@ -159,7 +159,7 @@ class LinkedGoogleAndOnboardingGateTests(TestCase):
         self.assertEqual(resp.json()["redirect"], "/accounts/onboarding/")
 
         # Dashboards & APIs are blocked
-        dash_resp = self.client.get("/index")
+        dash_resp = self.client.get("/dashboard")
         self.assertEqual(dash_resp.status_code, 302)
         self.assertEqual(dash_resp["Location"], "/accounts/onboarding/")
         api_resp = self.client.get("/api/staff/members/")
@@ -185,7 +185,7 @@ class LinkedGoogleAndOnboardingGateTests(TestCase):
         )
         self.assertEqual(verify_resp.status_code, 302)
         self.assertEqual(verify_resp["Location"], "/accounts/onboarding/consent/")
-        self.assertEqual(self.client.get("/index").status_code, 302)
+        self.assertEqual(self.client.get("/dashboard").status_code, 302)
 
         # Step 2: Consent POST without both checkboxes is rejected (400) and stays blocked
         for bad_data in ({}, {"accept_terms": "on"}, {"accept_privacy": "on"}):
@@ -195,7 +195,7 @@ class LinkedGoogleAndOnboardingGateTests(TestCase):
                 HTTP_X_CSRFTOKEN=self._csrf(),
             )
             self.assertEqual(bad_consent.status_code, 400)
-            self.assertEqual(self.client.get("/index").status_code, 302)
+            self.assertEqual(self.client.get("/dashboard").status_code, 302)
 
         # Consent POST with both checkboxes unlocks dashboard
         ok_consent = self.client.post(
@@ -204,8 +204,8 @@ class LinkedGoogleAndOnboardingGateTests(TestCase):
             HTTP_X_CSRFTOKEN=self._csrf(),
         )
         self.assertEqual(ok_consent.status_code, 302)
-        self.assertEqual(ok_consent["Location"], "/index")
-        self.assertEqual(self.client.get("/index").status_code, 200)
+        self.assertEqual(ok_consent["Location"], "/dashboard")
+        self.assertEqual(self.client.get("/dashboard").status_code, 200)
 
     def test_first_login_otp_attempts_lock_expiry_and_resend_cooldown(self):
         self.owner.needs_first_login_otp = True
@@ -444,9 +444,9 @@ class LinkedGoogleAndOnboardingGateTests(TestCase):
         self.assertEqual(g_resp.status_code, 200)
         self.assertTrue(g_resp.json()["requires_onboarding_gate"])
 
-        # /login remains accessible (serves login.html for the modal backdrop) while /member-home is blocked
+        # /login remains accessible (serves login.html for the modal backdrop) while /dashboard is blocked
         self.assertEqual(self.client.get("/login").status_code, 200)
-        self.assertEqual(self.client.get("/member-home").status_code, 302)
+        self.assertEqual(self.client.get("/dashboard").status_code, 302)
 
         # Modal status endpoint issues OTP email once and enforces resend cooldown
         st_resp = self.client.get("/api/auth/onboarding/status/")
@@ -499,5 +499,5 @@ class LinkedGoogleAndOnboardingGateTests(TestCase):
             HTTP_X_CSRFTOKEN=self._csrf(),
         )
         self.assertEqual(ok_consent.status_code, 200)
-        self.assertEqual(ok_consent.json()["redirect"], "/member-home")
-        self.assertEqual(self.client.get("/member-home").status_code, 200)
+        self.assertEqual(ok_consent.json()["redirect"], "/dashboard")
+        self.assertEqual(self.client.get("/dashboard").status_code, 200)
