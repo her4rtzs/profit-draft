@@ -164,10 +164,10 @@ Safety rules:
 ## 14. Open decisions (owner to confirm)
 
 These are assumptions made while writing this plan. Change this file if any are wrong.
-1. **Plans:** a plan is defined by a price and a number of days (daily pass = 1 day, monthly = 30 days). Which plans does the gym actually sell, and at what prices?
-2. **Is there a one-time enrollment fee** in addition to the subscription, or is the first subscription payment all?
-3. **Who may deactivate members** — only the Owner, or Cashiers too?
-4. **Attendance:** is staff check-in at the front desk enough, or should members check themselves in (for example by showing a QR code)?
-5. **Reports:** is printing to PDF from the browser enough, or does the owner need a downloadable PDF/Excel file?
-6. **Installing on phones:** members add the site to their home screen from the browser. Is that acceptable instead of an app store listing?
+1. **Plans:** a plan is defined by a price and a number of days (daily pass = 1 day, monthly = 30 days). Which plans does the gym actually sell, and at what prices? yes
+2. **Is there a one-time enrollment fee** in addition to the subscription, or is the first subscription payment all? no
+3. **Who may deactivate members** — only the Owner, or Cashiers too? owner
+4. **Attendance:** is staff check-in at the front desk enough, or should members check themselves in (for example by showing a QR code)? staff check in and qr code in their account scanned by staff
+5. **Reports:** is printing to PDF from the browser enough, or does the owner need a downloadable PDF/Excel file? downloadable PDF and Excel
+6. **Installing on phones:** members add the site to their home screen from the browser. Is that acceptable instead of an app store listing? Yes
 7. **End of trial:** when the 7 days end with no approved payment, does the member keep app access to submit a claim, or does the account fall back to `expired` with no access? Confirm.
