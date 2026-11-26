@@ -102,10 +102,34 @@ def has_room(trainer, *, ignore_member=None):
     return qs.count() < trainer.max_members
 
 
+def _unassignable_reason(trainer):
+    """Return a clear message if this trainer cannot accept members right now."""
+    if trainer is None:
+        return "Trainer not found."
+    user = getattr(trainer, "user", None)
+    if user is None or not user.is_active:
+        return "This trainer is pending activation or deactivated and cannot accept members."
+    if has_trainer_status_column():
+        status = getattr(trainer, "status", None)
+        if status == TrainerProfile.Status.ON_LEAVE:
+            return "This trainer is currently on leave and cannot accept members."
+        if status and status != TrainerProfile.Status.ACTIVE:
+            return "This trainer is not accepting members right now."
+    if not trainer.is_active:
+        return "This trainer is not accepting members right now."
+    return None
+
+
+def is_trainer_assignable(trainer):
+    """True only when the trainer has an active user account and active status."""
+    return _unassignable_reason(trainer) is None
+
+
 def assign_trainer(member, trainer, *, actor):
     """Give a member a trainer, or change their trainer. The old assignment is ended, not deleted."""
-    if not trainer.is_active:
-        raise ValidationError("This trainer is not accepting members right now.")
+    reason = _unassignable_reason(trainer)
+    if reason:
+        raise ValidationError(reason)
     current = current_assignment(member)
     if current and current.trainer_id == trainer.pk:
         raise ValidationError("This member already has that trainer.")
@@ -147,8 +171,10 @@ def remove_trainer(member, *, actor):
 def request_trainer(member, *, trainer=None, note=""):
     if TrainerRequest.objects.filter(member=member, status=TrainerRequest.Status.PENDING).exists():
         raise ValidationError("You already have a pending trainer request.")
-    if trainer is not None and not trainer.is_active:
-        raise ValidationError("That trainer is not accepting members right now.")
+    if trainer is not None:
+        reason = _unassignable_reason(trainer)
+        if reason:
+            raise ValidationError(reason)
     with transaction.atomic():
         req = TrainerRequest.objects.create(member=member, trainer=trainer, note=note[:500])
         owners = get_user_model().objects.filter(role="OWNER", is_active=True)

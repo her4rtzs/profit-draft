@@ -1539,6 +1539,18 @@
           <div class="pf-gc-actions" data-gc-actions></div>
           <div class="pf-gc-msg" data-gc-msg role="status" aria-live="polite" hidden></div>
         </div>
+        <button class="mb-st-row pf-act-toggle" type="button" id="pfActivityToggle" aria-expanded="false"
+          aria-controls="pfActivityDrawer">
+          <div class="mb-st-lead">
+            <span class="mb-st-ico" aria-hidden="true"><i class="fa-solid fa-clock-rotate-left"></i></span>
+            <div class="mb-st-copy">
+              <span>Activity Log</span>
+              <small data-act-sub>View your recent sign-ins, actions, and updates</small>
+            </div>
+          </div>
+          <span class="mb-st-end"><i class="fa-solid fa-chevron-right pf-act-chev" aria-hidden="true"></i></span>
+        </button>
+        <div class="mb-st-drawer pf-act-drawer" id="pfActivityDrawer" hidden></div>
       </article>
 
       <!-- Notifications -->
@@ -1607,21 +1619,36 @@
       <!-- Install the app -->
       <article class="mb-st-card" id="mbStInstall">
         <div class="mb-st-head"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i> Install the app</div>
-        <div class="mb-st-install-body">
-          <p id="installHelpStatus" role="status" style="margin:0 0 10px;font-weight:600">You can add ProFit to your home screen.</p>
-          <div data-install-steps>
-            <p style="margin:0 0 6px;font-weight:700">iPhone (Safari)</p>
-            <ol style="margin:0 0 12px 18px;padding:0">
-              <li>Open ProFit in Safari.</li>
-              <li>Tap the Share button.</li>
-              <li>Tap Add to Home Screen, then Add.</li>
-            </ol>
-            <p style="margin:0 0 6px;font-weight:700">Android (Chrome)</p>
-            <ol style="margin:0 0 0 18px;padding:0">
-              <li>Open ProFit in Chrome.</li>
-              <li>Tap the three-dot menu.</li>
-              <li>Tap Install app (or Add to Home screen), then Install.</li>
-            </ol>
+        <div class="pf-install-body">
+          <div class="pf-install-status">
+            <span class="pf-install-status-ico" aria-hidden="true"><i class="fa-solid fa-mobile-screen-button"></i></span>
+            <p id="installHelpStatus" class="pf-install-status-copy" role="status">You can add ProFit to your home screen.</p>
+          </div>
+          <div class="pf-install-grid" data-install-steps>
+            <div class="pf-install-card">
+              <div class="pf-install-card-head">
+                <span class="pf-install-plat-ico" aria-hidden="true"><i class="fa-brands fa-apple"></i></span>
+                <h3 class="pf-install-plat-title">iPhone</h3>
+                <span class="pf-install-chip">Safari</span>
+              </div>
+              <ol class="pf-install-steps">
+                <li><span>Open ProFit in <strong>Safari</strong>.</span></li>
+                <li><span>Tap the <strong>Share</strong> button.</span></li>
+                <li><span>Tap <strong>Add to Home Screen</strong>, then <strong>Add</strong>.</span></li>
+              </ol>
+            </div>
+            <div class="pf-install-card">
+              <div class="pf-install-card-head">
+                <span class="pf-install-plat-ico" aria-hidden="true"><i class="fa-brands fa-android"></i></span>
+                <h3 class="pf-install-plat-title">Android</h3>
+                <span class="pf-install-chip">Chrome</span>
+              </div>
+              <ol class="pf-install-steps">
+                <li><span>Open ProFit in <strong>Chrome</strong>.</span></li>
+                <li><span>Tap the <strong>three-dot menu</strong>.</span></li>
+                <li><span>Tap <strong>Install app</strong> (or Add to Home screen), then <strong>Install</strong>.</span></li>
+              </ol>
+            </div>
           </div>
         </div>
       </article>
@@ -1643,14 +1670,77 @@
       </div>
     </section>`;
 
-    // Side section jump-nav
+    // Side section jump-nav scrollspy
+    if (typeof window.__pfMbSettingsScrollCleanup === "function") {
+      try { window.__pfMbSettingsScrollCleanup(); } catch { /* ignore */ }
+    }
     window.PFGoogleConnect?.mount?.();
+    window.PFActivityLog?.mount?.();
     const navBtns = [...root.querySelectorAll("[data-st-jump]")];
-    navBtns.forEach(btn => btn.addEventListener("click", () => {
-      navBtns.forEach(b => b.classList.toggle("on", b === btn));
-      const target = document.getElementById(btn.dataset.stJump);
-      target?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }));
+    if (navBtns.length) {
+      const sections = navBtns
+        .map(b => ({ id: b.dataset.stJump, el: document.getElementById(b.dataset.stJump) }))
+        .filter(s => s.el);
+      let activeId = "";
+      let lockUntil = 0;
+      let raf = 0;
+
+      const setOn = id => {
+        if (!id || activeId === id) return;
+        activeId = id;
+        navBtns.forEach(b => {
+          const on = b.dataset.stJump === id;
+          b.classList.toggle("on", on);
+          if (on) b.setAttribute("aria-current", "location");
+          else b.removeAttribute("aria-current");
+        });
+      };
+
+      const syncActive = () => {
+        if (!sections.length || Date.now() < lockUntil) return;
+        const y = window.scrollY || document.documentElement.scrollTop || 0;
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        if (y <= 24) {
+          setOn(sections[0].id);
+          return;
+        }
+        if (maxScroll > 24 && y >= maxScroll - 16) {
+          setOn(sections[sections.length - 1].id);
+          return;
+        }
+        let current = sections[0].id;
+        for (const s of sections) {
+          if (s.el.getBoundingClientRect().top <= 140) current = s.id;
+        }
+        setOn(current);
+      };
+
+      const scheduleSync = () => {
+        if (raf) return;
+        raf = requestAnimationFrame(() => {
+          raf = 0;
+          syncActive();
+        });
+      };
+
+      navBtns.forEach(btn => btn.addEventListener("click", e => {
+        const id = btn.dataset.stJump;
+        const target = document.getElementById(id);
+        if (!target) return;
+        e.preventDefault();
+        lockUntil = Date.now() + 700;
+        setOn(id);
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }));
+
+      window.addEventListener("scroll", scheduleSync, { passive: true });
+      window.addEventListener("resize", scheduleSync, { passive: true });
+      window.__pfMbSettingsScrollCleanup = () => {
+        window.removeEventListener("scroll", scheduleSync);
+        window.removeEventListener("resize", scheduleSync);
+      };
+      if (sections.length) setOn(sections[0].id);
+    }
 
     // Change Password modal trigger inside Settings
     root.querySelector("#mbStChangePwBtn")?.addEventListener("click", () => {

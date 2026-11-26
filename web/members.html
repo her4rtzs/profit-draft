@@ -14,10 +14,10 @@
     href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Figtree:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="dashboard.css?v=18">
-  <link rel="stylesheet" href="members-ui.css?v=31">
-  <script src="config.js?v=9"></script>
-  <script src="api.js"></script>
-  <script src="auth.js?v=6"></script>
+  <link rel="stylesheet" href="members-ui.css?v=33">
+  <script src="config.js?v=11"></script>
+  <script src="api.js?v=6"></script>
+  <script src="auth.js?v=7"></script>
   <script>document.documentElement.dataset.accent = 'gold'</script>
   <script
     type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script>
@@ -30,7 +30,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="ProFit">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="stylesheet" href="pf-system.css?v=26">
+  <link rel="stylesheet" href="pf-system.css?v=34">
 </head>
 
 <body class="pf-staff" data-page="members" data-title="Members" data-welcome="Memberships and enrollment">
@@ -223,8 +223,13 @@
             <div class="pp-field"><label for="eMethod">Payment method</label><select id="eMethod"></select></div>
             <div class="pp-field"><label for="eAmount">Amount due</label><input id="eAmount" readonly></div>
           </div>
-          <label class="pp-check pp-switch-row"><input id="eRecord" type="checkbox" checked><span
-              class="pp-switch-track" aria-hidden="true"></span><span>Record the first payment now</span></label>
+          <label class="pp-switch-row" for="eRecord">
+            <span class="pp-switch-label">Record the first payment now</span>
+            <span class="pp-switch-ctrl">
+              <input id="eRecord" type="checkbox" checked>
+              <span class="pp-switch-track" aria-hidden="true"></span>
+            </span>
+          </label>
           <div class="pp-actions pp-actions-end">
             <button class="pp-btn" type="reset">Clear form</button>
             <button class="pp-btn pp-btn-primary" type="submit"><i class="fa-solid fa-user-plus"></i> Enroll
@@ -239,9 +244,9 @@
   <script src="sidebar.js?v=21"></script>
   <script src="data.js"></script>
   <script src="pf-common.js"></script>
-  <script src="members.js?v=11"></script>
+  <script src="members.js?v=12"></script>
   <script src="portal-fx.js?v=2"></script>
-  <script src="change-password.js?v=2" defer></script>
+  <script src="change-password.js?v=4" defer></script>
   <script src="notifications-live.js?v=2" defer></script>
   <script src="site-footer.js?v=2" defer></script>
 </body>

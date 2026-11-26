@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
-  <title>ProFit — My Profile (Trainer Portal)</title>
+  <title>ProFit Ã¢â‚¬â€ My Profile (Trainer Portal)</title>
   <script>try { var t = localStorage.getItem('pf-theme') || localStorage.getItem('theme') || 'dark'; document.documentElement.setAttribute('data-theme', t); document.documentElement.setAttribute('data-accent', 'gold'); } catch (e) { }</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,7 +24,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="ProFit">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="stylesheet" href="../pf-system.css?v=26">
+  <link rel="stylesheet" href="../pf-system.css?v=34">
 </head>
 
 <body data-page="profile" data-portal="trainer" data-head="none" data-eyebrow="Your Account Details"
@@ -62,7 +62,7 @@
                     id="profRoleStatus">Personal Trainer &middot; Active</span></span>
                 <p class="tr-prof-meta">
                   <span><i class="fa-regular fa-envelope" aria-hidden="true"></i> <span
-                      id="profEmail">coach@example.com</span></span>
+                      id="profEmail">Loading...</span></span>
                   <span><i class="fa-solid fa-users" aria-hidden="true"></i> <span id="profLoadText">0 / 20
                       Athletes</span></span>
                 </p>
@@ -197,14 +197,14 @@
     <nav class="bottom-nav" id="bottomNav" aria-label="Quick navigation"></nav>
   </div>
 
-  <script src="../config.js?v=9"></script>
-  <script src="../api.js?v=5"></script>
-  <script src="../auth.js?v=6"></script>
-  <script src="../change-password.js?v=2"></script>
+  <script src="../config.js?v=11"></script>
+  <script src="../api.js?v=6"></script>
+  <script src="../auth.js?v=7"></script>
+  <script src="../change-password.js?v=4"></script>
   <script src="../assets/js/staff-icons.js?v=5"></script>
   <script src="../assets/js/staff-data.js?v=12"></script>
-  <script src="../assets/js/staff.js?v=18"></script>
-  <script src="trainer.js?v=13"></script>
+  <script src="../assets/js/staff.js?v=19"></script>
+  <script src="trainer.js?v=14"></script>
   <script>
     PF.ready(async () => {
       const $ = id => document.getElementById(id);
@@ -257,7 +257,7 @@
         const seed = currentProf.email || nm || 'Coach';
 
         $('profName').textContent = nm || 'Coach';
-        $('profRoleStatus').textContent = `Personal Trainer · ${isAct ? 'Active' : 'Paused'}`;
+        $('profRoleStatus').textContent = `Personal Trainer Ã‚Â· ${isAct ? 'Active' : 'Paused'}`;
         $('trPrevName').textContent = nm || 'Coach';
         $('trPrevSpec').textContent = sp || 'Functional Fitness';
         $('trPrevAvail').textContent = av || 'Schedule not set';
@@ -379,11 +379,17 @@
 
       $('profileForm').addEventListener('submit', async (e) => {
         e.preventDefault();
+        const fullName = inpName.value.trim();
+        if (fullName.split(/\s+/).filter(Boolean).length < 2) {
+          PF.toast('Enter your first and last name.', 'error');
+          inpName.focus();
+          return;
+        }
         const saveBtn = $('saveProfBtn');
         saveBtn.disabled = true;
         try {
           const payload = {
-            full_name: inpName.value.trim(),
+            full_name: fullName,
             phone: inpPhone.value.trim(),
             specialization: inpSpec.value.trim(),
             availability: inpAvail.value.trim(),
@@ -401,8 +407,13 @@
         }
       });
 
-      const prof = await Trainer.api.getProfile();
-      renderProfile(prof);
+      try {
+        const prof = await Trainer.api.getProfile();
+        renderProfile(prof);
+      } catch (err) {
+        $('profEmail').textContent = 'Unavailable';
+        PF.toast(err.message || 'Could not load trainer profile.', 'error');
+      }
     });
   </script>
 </body>

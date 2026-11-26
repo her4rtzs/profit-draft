@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
-<script src="config.js?v=9"></script>
-<script src="api.js?v=5"></script>
+<script src="config.js?v=11"></script>
+<script src="api.js?v=6"></script>
 <style>
   :root{
     --gold:#e8b93a;
@@ -158,7 +158,9 @@
   }
   .fp-card h2{margin:0 0 4px;font-size:24px;font-weight:800;letter-spacing:-.02em;color:var(--tx)}
   .fp-lead{margin:0 0 18px;font-size:13.5px;color:var(--mu)}
-  .fp-lead a{color:var(--gold);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+  .fp-lead a{color:var(--gold);font-weight:600;text-decoration:none;text-underline-offset:3px}
+  .fp-lead a:hover,
+  .fp-lead a:focus-visible{color:var(--lime-hi);text-decoration:underline}
 
   .fp-field-label{display:block;margin:0 0 5px;font:600 13px/1.2 Inter,system-ui,sans-serif;color:var(--tx)}
   .fp-field{margin-bottom:12px}
@@ -244,16 +246,18 @@
   .fp-text-btn{
     margin:8px auto 0;display:block;border:0;background:transparent;padding:6px 10px;
     color:var(--mu);font:600 12.5px/1.2 Inter,system-ui,sans-serif;cursor:pointer;
-    text-decoration:underline;text-underline-offset:3px;
+    text-decoration:none;text-underline-offset:3px;
   }
-  .fp-text-btn:hover{color:var(--gold)}
+  .fp-text-btn:hover,
+  .fp-text-btn:focus-visible{color:var(--gold);text-decoration:underline}
 
   .fp-links{margin:12px 0 0;text-align:center;font-size:13px;color:var(--mu)}
   .fp-links a{
     display:inline-flex;align-items:center;min-height:36px;
-    color:var(--gold);font-weight:600;text-decoration:underline;text-underline-offset:3px;
+    color:var(--gold);font-weight:600;text-decoration:none;text-underline-offset:3px;
   }
-  .fp-links a:hover{color:var(--lime-hi)}
+  .fp-links a:hover,
+  .fp-links a:focus-visible{color:var(--lime-hi);text-decoration:underline}
 
   .fp-otp-boxes{
     display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:4px;

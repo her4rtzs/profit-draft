@@ -297,12 +297,17 @@
   const currentId = () => { const p = document.body.dataset.page; return PARENT[p] || p; };
 
   function currentProfile() {
-    const base = PF.db ? PF.db.profile() : { name: 'Coach', role: 'Personal Trainer' };
+    const isTrainer = isTrainerContext();
+    const base = isTrainer
+      ? { name: 'Coach', email: '', role: 'Personal Trainer', photo: '' }
+      : (PF.db ? PF.db.profile() : { name: 'Staff', role: 'Staff', photo: '' });
     try {
-      const u = window.ProFitAuth && ProFitAuth.getUser ? ProFitAuth.getUser() : null;
+      const u = window.ProFitAuth
+        ? (typeof ProFitAuth.getUser === 'function' ? ProFitAuth.getUser() : ProFitAuth.user)
+        : null;
       if (u) {
         const full = [u.first_name, u.last_name].filter(Boolean).join(' ').trim() || u.full_name || u.name || u.username;
-        if (full) return Object.assign({}, base, { name: full, email: u.email || base.email || '' });
+        if (full) return Object.assign({}, base, { name: full, email: u.email || base.email || '', photo: u.photo || base.photo || '' });
       }
     } catch (_) { /* ignore */ }
     return base;
@@ -376,8 +381,16 @@
     const isTrainer = isTrainerContext();
     const base = isTrainer ? '/trainer' : '';
     let link = String(rawLink || '').trim();
-    if (link === '/trainer-portal') link = `${base}/members`;
-    if (isTrainer && link.startsWith('trainer/')) link = '/' + link;
+    if (isTrainer) {
+      if (link === '/trainer-portal' || link === 'members.html' || link === '/members') link = '/trainer/members';
+      else if (link === 'schedule.html' || link === '/schedule') link = '/trainer/schedule';
+      else if (link === 'attendance.html' || link === '/attendance') link = '/trainer/attendance';
+      else if (link === 'announcements.html' || link === '/announcements') link = '/trainer/announcements';
+      else if (link === 'notifications.html' || link === '/notifications') link = '/trainer/notifications';
+      else if (link.startsWith('trainer/')) link = '/' + link;
+    } else if (link === '/trainer-portal') {
+      link = '/trainers';
+    }
     if (!link) {
       const k = String(kind || '').toUpperCase();
       if (k === 'ANNOUNCEMENT') return `${base}/announcements`;
@@ -469,11 +482,12 @@
 
   function renderNotifPanel() {
     const p = $('#npanel'); if (!p) return;
+    const notifPage = isTrainerContext() ? '/trainer/notifications' : '/notifications';
     const list = PF.db.notifications().slice(0, 6);
     const unreadCount = PF.db.unread();
     p.innerHTML = `<div class="npanel-head"><div><strong>Notifications</strong><div class="muted">${unreadCount ? unreadCount + ' unread' : 'You\'re all caught up'}</div></div><button class="link-btn" id="markAll" type="button" ${unreadCount ? '' : 'disabled'}>Mark all read</button></div>
       <div class="nlist">${list.length ? list.map(PF.notifItem).join('') : '<div class="empty compact">' + PF.icon('bell') + '<span>No notifications yet</span></div>'}</div>
-      <div class="npanel-foot"><a class="link-btn" href="/notifications">View all notifications</a></div>`;
+      <div class="npanel-foot"><a class="link-btn" href="${notifPage}">View all notifications</a></div>`;
     const markAllBtn = $('#markAll', p);
     if (markAllBtn) {
       markAllBtn.onclick = async e => {
@@ -485,16 +499,17 @@
       b.onclick = async e => {
         e.stopPropagation();
         await PF.markNotificationRead(b.dataset.id);
-        const target = b.dataset.href || '/notifications';
+        const target = b.dataset.href || notifPage;
         location.href = target;
       };
     });
   }
-  PF.notifItem = n => `<button class="nitem ${n.read ? '' : 'unread'}" type="button" data-id="${esc(n.id)}" data-href="${esc(n.href || '/notifications')}"><span class="ni tone-${n.tone || 'gold'}">${PF.icon(n.icon || 'bell')}</span><span><strong>${esc(n.title)}</strong><small>${esc(n.text ? n.text + ' · ' : '')}${timeAgo(n.at)}</small></span></button>`;
+  PF.notifItem = n => `<button class="nitem ${n.read ? '' : 'unread'}" type="button" data-id="${esc(n.id)}" data-href="${esc(n.href || (isTrainerContext() ? '/trainer/notifications' : '/notifications'))}"><span class="ni tone-${n.tone || 'gold'}">${PF.icon(n.icon || 'bell')}</span><span><strong>${esc(n.title)}</strong><small>${esc(n.text ? n.text + ' · ' : '')}${timeAgo(n.at)}</small></span></button>`;
 
   function syncBadges() {
     const n = PF.db.unread(), b = $('#bellBadge');
-    if (b) { b.textContent = n; b.hidden = !n; }
+    const badgeOff = (() => { try { return localStorage.getItem('pref-badge') === 'off'; } catch (_) { return false; } })();
+    if (b) { b.textContent = n; b.hidden = !n || badgeOff; b.style.display = badgeOff ? 'none' : ''; }
     const set = (id, v) => { const el = $(`[data-badge="${id}"]`); if (el) { el.textContent = v; el.hidden = !v; } };
     set('notifications', n);
     renderNotifPanel();
@@ -503,8 +518,8 @@
 
   PF.syncShellProfile = (prof) => {
     if (!prof) return;
-    if (PF.db && PF.db.saveProfile) {
-      PF.db.saveProfile({ name: prof.name || 'Coach', email: prof.email || '', role: prof.role || 'Personal Trainer' });
+    if (!isTrainerContext() && PF.db && PF.db.saveProfile) {
+      PF.db.saveProfile({ name: prof.name || 'Staff', email: prof.email || '', role: prof.role || 'Staff' });
     }
     const whoName = $('.side-user .who strong');
     const whoRole = $('.side-user .who small');
@@ -515,8 +530,9 @@
     const topAv = $('.topbar .avatar-btn');
     if (topAv && prof.name && PF.avatar) topAv.innerHTML = PF.avatar(prof.name, 'md', prof.photo);
     if (prof.unread != null) {
+      const badgeOff = (() => { try { return localStorage.getItem('pref-badge') === 'off'; } catch (_) { return false; } })();
       const b = $('#bellBadge');
-      if (b) { b.textContent = prof.unread; b.hidden = !prof.unread; }
+      if (b) { b.textContent = prof.unread; b.hidden = !prof.unread || badgeOff; b.style.display = badgeOff ? 'none' : ''; }
     }
   };
 
@@ -559,7 +575,7 @@
       const ts = !isTrainer ? PF.db.trainers().filter(t => t.name.toLowerCase().includes(q)).slice(0, 3) : [];
       const pg = pages.filter(p => p.label.toLowerCase().includes(q)).slice(0, 4);
       let h = '';
-      if (ms.length) h += '<div class="grp">MEMBERS</div>' + ms.map(m => `<a href="/members#detail=${m.id}">${PF.avatar(m.name, 'sm')}<span><b>${esc(m.name)}</b><small>#${m.id} · ${esc(m.email || '')}</small></span></a>`).join('');
+      if (ms.length) h += '<div class="grp">MEMBERS</div>' + ms.map(m => `<a href="${isTrainer ? '/trainer/members' : '/members'}#detail=${m.id}">${PF.avatar(m.name, 'sm')}<span><b>${esc(m.name)}</b><small>#${m.id} · ${esc(m.email || '')}</small></span></a>`).join('');
       if (ps.length) h += '<div class="grp">PAYMENTS</div>' + ps.map(p => `<a href="/transactions?q=${encodeURIComponent(p.id)}"><span class="stat-ico tone-gold" style="width:30px;height:30px;border-radius:9px">${PF.icon('receipt')}</span><span><b>${p.id} · ${peso(p.amount)}</b><small>${esc((PF.db.member(p.memberId) || {}).name || '')} · ${esc(p.method)}</small></span></a>`).join('');
       if (ts.length) h += '<div class="grp">TRAINERS</div>' + ts.map(t => `<a href="/trainers">${PF.avatar(t.name, 'sm')}<span><b>${esc(t.name)}</b><small>${esc(t.tags.join(' · '))}</small></span></a>`).join('');
       if (pg.length) h += '<div class="grp">PAGES</div>' + pg.map(p => `<a href="${p.href}"><span class="stat-ico tone-blue" style="width:30px;height:30px;border-radius:9px">${PF.icon(p.icon)}</span><b>${esc(p.label)}</b></a>`).join('');

@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
-  <title>ProFit — Attendance Log (Trainer Portal)</title>
+  <title>ProFit Ã¢â‚¬â€ Attendance Log (Trainer Portal)</title>
   <script>try { var t = localStorage.getItem('pf-theme') || localStorage.getItem('theme') || 'dark'; document.documentElement.setAttribute('data-theme', t); document.documentElement.setAttribute('data-accent', 'gold'); } catch (e) { }</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,7 +23,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="ProFit">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="stylesheet" href="../pf-system.css?v=26">
+  <link rel="stylesheet" href="../pf-system.css?v=34">
 </head>
 
 <body data-page="attendance" data-portal="trainer" data-head="none">
@@ -39,7 +39,7 @@
           <div class="tw-hero-left">
             <div class="tw-hero-ico" data-ico="check"></div>
             <div class="tw-hero-text">
-              <span class="tw-hero-eyebrow">Gym Floor · Daily Check-Ins</span>
+              <span class="tw-hero-eyebrow">Gym Floor Ã‚Â· Daily Check-Ins</span>
               <h1 class="tw-hero-title">Attendance &amp; Floor Check-In</h1>
               <p class="tw-hero-sub">Log live session arrivals for your assigned athletes and inspect daily gym floor
                 activity.</p>
@@ -134,7 +134,7 @@
               <h2 class="tw-card-title" id="attTableTitle">Check-In Log</h2>
               <p class="tw-card-sub">Verified entry timestamps recorded at the front desk or by coaches.</p>
             </div>
-            <a href="/dashboard#twChartStage" class="tw-link">View Analytics Chart →</a>
+            <a href="/dashboard#attChartStage" class="tw-link">View Analytics Chart Ã¢â€ â€™</a>
           </div>
           <div class="tw-table-wrap">
             <table class="tw-table">
@@ -162,20 +162,20 @@
     <nav class="bottom-nav" id="bottomNav" aria-label="Quick navigation"></nav>
   </div>
 
-  <script src="../config.js?v=9"></script>
-  <script src="../api.js?v=5"></script>
-  <script src="../auth.js?v=6"></script>
+  <script src="../config.js?v=11"></script>
+  <script src="../api.js?v=6"></script>
+  <script src="../auth.js?v=7"></script>
   <script src="../assets/js/staff-icons.js?v=5"></script>
   <script src="../assets/js/staff-data.js?v=12"></script>
-  <script src="../assets/js/staff.js?v=18"></script>
+  <script src="../assets/js/staff.js?v=19"></script>
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script>
-  <script src="trainer.js?v=13"></script>
+  <script src="trainer.js?v=14"></script>
   <script>
     PF.ready(async () => {
       const dateInput = document.getElementById('attDate');
       const searchInput = document.getElementById('attSearchInput');
       const quickSelect = document.getElementById('quickCheckinSelect');
-      const todayIso = new Date().toISOString().slice(0, 10);
+      const todayIso = Trainer.format.localIsoDate();
       dateInput.value = todayIso;
 
       let currentFilter = 'mine';
@@ -183,11 +183,21 @@
       let rosterMembers = [];
 
       async function populateQuickCheckin() {
-        rosterMembers = await Trainer.api.getMembers();
-        const unchecked = rosterMembers.filter(m => !m.today_checked_in);
-        const list = unchecked.length ? unchecked : rosterMembers;
-        quickSelect.innerHTML = `<option value="">Select an athlete to check in (${rosterMembers.length} assigned)...</option>` +
-          list.map(m => `<option value="${m.id}">${PF.esc(m.name)}${m.today_checked_in ? ' (Already in today)' : ''}</option>`).join('');
+        try {
+          rosterMembers = await Trainer.api.getMembers();
+          const eligible = rosterMembers.filter(m => m.is_active && !m.today_checked_in);
+          const alreadyIn = rosterMembers.filter(m => m.is_active && m.today_checked_in);
+          const inactive = rosterMembers.filter(m => !m.is_active);
+          const ordered = [...eligible, ...alreadyIn, ...inactive];
+          quickSelect.innerHTML = `<option value="">Select an athlete to check in (${eligible.length} ready)...</option>` +
+            ordered.map(m => {
+              const suffix = !m.is_active ? ' (Inactive)' : (m.today_checked_in ? ' (Already in today)' : '');
+              const disabled = !m.is_active ? ' disabled' : '';
+              return `<option value="${m.id}"${disabled}>${PF.esc(m.name)}${suffix}</option>`;
+            }).join('');
+        } catch (err) {
+          quickSelect.innerHTML = `<option value="">Could not load roster</option>`;
+        }
       }
 
       function renderTable() {
@@ -227,7 +237,7 @@
             ? '<span class="tw-pill is-amber">My Athlete</span>'
             : '<span class="tw-pill is-gray">General Member</span>'}
         </td>
-        <td>${PF.esc(a.member_phone || '—')}</td>
+        <td>${PF.esc(a.member_phone || 'Ã¢â‚¬â€')}</td>
         <td>${Trainer.format.statusPill(a.membership_status, a.membership_status === 'ACTIVE')}</td>
         <td>${PF.esc(a.recorded_by || 'Staff')}</td>
       </tr>
@@ -235,41 +245,60 @@
       }
 
       async function loadAttendance() {
-        const res = await Trainer.api.getAttendance(dateInput.value, currentFilter);
-        currentRows = res.attendances || [];
+        const tbody = document.getElementById('attBody');
+        try {
+          const res = await Trainer.api.getAttendance(dateInput.value, currentFilter);
+          currentRows = res.attendances || [];
 
-        const myCount = res.my_members_count ?? currentRows.filter(r => r.is_my_member).length;
-        const totalCount = res.total ?? currentRows.length;
+          const myCount = res.my_members_count ?? currentRows.filter(r => r.is_my_member).length;
+          const totalCount = res.total ?? currentRows.length;
 
-        let morning = res.morning_count;
-        let evening = res.evening_count;
-        if (morning === undefined || evening === undefined) {
-          morning = 0;
-          evening = 0;
-          currentRows.forEach(r => {
-            const dt = new Date(r.check_in_at);
-            if (!isNaN(dt.getTime()) && dt.getHours() < 12) morning++;
-            else evening++;
-          });
+          let morning = res.morning_count;
+          let evening = res.evening_count;
+          if (morning === undefined || evening === undefined) {
+            morning = 0;
+            evening = 0;
+            currentRows.forEach(r => {
+              const dt = new Date(r.check_in_at);
+              if (!isNaN(dt.getTime()) && dt.getHours() < 12) morning++;
+              else evening++;
+            });
+          }
+
+          const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+          setTxt('statMyMembers', myCount);
+          setTxt('statTotalDay', totalCount);
+          setTxt('statMorning', morning);
+          setTxt('statEvening', evening);
+
+          setTxt('cntAttMine', myCount);
+          setTxt('cntAttAll', totalCount);
+          setTxt('attTableTitle', `Check-In Log Ã‚Â· ${Trainer.format.date(dateInput.value)}`);
+
+          renderTable();
+        } catch (err) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="6">
+                <div class="tw-empty">
+                  <div class="tw-empty-ico">${PF.icon('alert-circle')}</div>
+                  <strong>Could not load attendance log</strong>
+                  <p>${PF.esc(err.message || 'Please check your connection and try again.')}</p>
+                  <button type="button" class="tw-btn" id="retryAttBtn" style="margin-top:8px">Retry</button>
+                </div>
+              </td>
+            </tr>
+          `;
+          document.getElementById('retryAttBtn')?.addEventListener('click', loadAttendance);
         }
-
-        const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-        setTxt('statMyMembers', myCount);
-        setTxt('statTotalDay', totalCount);
-        setTxt('statMorning', morning);
-        setTxt('statEvening', evening);
-
-        setTxt('cntAttMine', myCount);
-        setTxt('cntAttAll', totalCount);
-        setTxt('attTableTitle', `Check-In Log · ${Trainer.format.date(dateInput.value)}`);
-
-        renderTable();
       }
 
       function stepDate(days) {
-        const d = new Date(dateInput.value || todayIso);
+        const raw = dateInput.value || todayIso;
+        const parts = raw.split('-').map(Number);
+        const d = (parts.length === 3) ? new Date(parts[0], parts[1] - 1, parts[2]) : new Date();
         d.setDate(d.getDate() + days);
-        dateInput.value = d.toISOString().slice(0, 10);
+        dateInput.value = Trainer.format.localIsoDate(d);
         loadAttendance();
       }
 

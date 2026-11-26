@@ -524,7 +524,7 @@ window.PROFIT_CONFIG = window.PROFIT_CONFIG || { API_BASE_URL: "/api", DEMO_MODE
   if (!document.getElementById("pf-controls-js")) {
     const sc = document.createElement("script");
     sc.id = "pf-controls-js";
-    sc.src = "/pf-controls.js?v=4";
+    sc.src = "/pf-controls.js?v=6";
     sc.defer = true;
     (document.head || document.documentElement).appendChild(sc);
   }

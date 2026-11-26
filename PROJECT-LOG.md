@@ -3879,126 +3879,123 @@ Move the Membership Type hover tooltip box above the donut instead of below it o
 ### What the agent decided and why
 - Updated `.membership-type-panel .mt-body` top padding (`36px 0 8px`) and `.mt-tooltip` positioning (`bottom: calc(100% + 8px)`, `top: auto`, `width: max-content`, `white-space: nowrap`, `z-index: 60`) in `web/pf-system.css` (`?v=19`) so the opaque tooltip sits cleanly above the donut without covering either the header subtitle or the bottom helper note.
 ### Decision-log skill
-When positioning a donut hover tooltip above the chart, pair `bottom: calc(100% + 8px)` with extra top padding on `.mt-body` and horizontal `width: max-content` so the tooltip stays compact and never overlaps neighboring card headers or footer copy.
+... [truncated for diff preview]
 
-## 2026-11-26 16:48 (Asia/Manila): Guard Add Trainer Endpoint Against Pending Migrations
-### What I asked for
-Fix the `Request failed (500)` error on Add Trainer (`https://functionalfitnessgym.site/trainers`).
-### What the agent decided and why
-- Guarded `StaffTrainerListView.post()` in `api/trainers.py` with `_has_phone_column() and _has_status_column()` (returning HTTP 503 with a clear migration prompt instead of a PostgreSQL `ProgrammingError` 500) and switched its existence check to `_trainer_qs()`.
-- Gave the owner step-by-step instructions to apply the new migrations (`0003_trainerprofile_status` and `0004_trainersession`) to Prod Supabase and enable RLS with no policies on `trainers_trainersession`.
-### Decision-log skill
-Vercel deploys run `collectstatic` only and never `migrate`, so every `POST` handler creating rows on recently migrated models should check column readiness upfront and return an actionable 503 instead of a 500.
 
-## 2026-11-26 17:12 (Asia/Manila): Hide Add Trainer Form Cleanly When Showing Success Screen
+## 2026-11-26 23:30 (Asia/Manila): Fix Profile Notice Auto-Dismiss, Remove Duplicate Save Bar, and Move Record Renewal Inside Member Name Card
 ### What I asked for
-Ensure clicking Add Trainer replaces the form with the Trainer Added Successfully view instead of appending the success view beneath the form.
+Make the `/profile` notification banner auto-dismiss instead of staying on screen, remove the duplicate floating Save/Discard bar at the bottom of `/profile`, and move the `Record renewal` button inside the member name banner card on `/members#detail`.
 ### What the agent decided and why
-- Scoped `#trForm` grid rules in `web/pf-system.css` (`?v=20`) with `:not([hidden])`, added explicit `[hidden] { display: none !important; }` guards for `#trForm`, `#trModalHead`, `#trSuccessView`, and modal sections, and sized the success view compactly at `580px`.
-- Scrolled `.tr-modal` to the top in `showSuccessScreen()` (`web/trainers-staff.js?v=16`).
+- Updated `flash()` in `web/profile.js` (`profile.html?v=20`) to auto-hide after 3.5s (6s for errors) and added a manual dismiss button so notices never linger after photo or profile updates.
+- Removed `#pfDirtyBar` markup, styles, and toggle handlers from `web/profile.html` and `web/profile.js` so the inline `Discard changes` / `Save profile` actions at the bottom of the form are the single clear save bar.
+- Moved `Record renewal` from `.md-top-acts` into `.md-id-head` on the right side of the `FULL NAME` banner card in `web/members.js` (`members.html?v=12`) and added `.md-id-head` / `.md-renew-btn` responsive styling in `web/members-ui.css` (`?v=32`).
 ### Decision-log skill
-Whenever overriding `display: grid !important` or `display: flex !important` on toggleable elements, always include `:not([hidden])` and an explicit `[hidden] { display: none !important; }` rule so setting `.hidden = true` actually hides the element.
+Auto-dismiss inline page notices with a manual close control so feedback never sticks permanently, avoid duplicating form save bars with fixed floating bars on short single forms, and colocate primary member actions inside the member header card.
 
-## 2026-11-26 17:23 (Asia/Manila): Match Add Cashier Modal & Access Modes to Add Trainer
-### What I asked for
-Make the Add Cashier modal match the same 2-column design and flow as Add Trainer.
-### What the agent decided and why
-- Extended `StaffCashierListView.post()` in `api/cashiers.py` to support both `access_mode="invite"` (default 72-hour invite link) and `access_mode="temp_password"` (immediate active cashier with `must_change_password=True` and password validation).
-- Rebuilt `#inviteModalBackdrop` in `web/cashiers.html`, `web/cashiers.js` (`?v=3`), and `web/pf-system.css` (`?v=21`) with the exact 2-column Add Trainer modal styling (Cashier Information + Account Access for Cashier cards) and the compact "Cashier Added Successfully" confirmation screen (copyable link or credentials, Add Another, Done) in both Dark and Light Mode.
-- Added `test_owner_can_add_cashier_with_temp_password_mode` in `apps/membership/tests/test_name_phone_and_cashiers.py`.
-### Decision-log skill
-Keep dual staff-onboarding flows (email invite vs temporary password) consistent between Owner -> Trainers and Owner -> Cashiers while preserving backward-compatible `access_mode="invite"` defaults on the API.
 
-## 2026-11-26 17:36 (Asia/Manila): Align Modal Section Heights & Temp Password Button Grid (Trainers & Cashiers)
-### What I asked for
-Fix the Add Trainer and Add Cashier modal containers so both columns align cleanly and the Generate / Copy buttons don't wrap unevenly.
-### What the agent decided and why
-- Set both `#trForm` (Add mode) and `#inviteCashierForm` in `web/pf-system.css` (`?v=22`) to `minmax(0, 1fr) minmax(0, 1fr)` with `align-items: stretch` and `height: 100%` on `.tr-modal-section` / `.csh-modal-section`.
-- Switched `.tr-temp-pw-box .tr-temp-pw-row` and `.csh-temp-pw-box .csh-temp-pw-row` to a full-width password field over two even 50/50 `Generate` and `Copy` buttons, kept success-view copy rows single-line on desktop, and unified input borders/surfaces in Dark and Light Mode.
-### Decision-log skill
-Use a full-span input over a 2-column button grid inside narrow side-by-side cards instead of `flex-wrap` so action buttons never leave an orphan button wrapped alone on a second line.
+... [truncated for diff preview]
 
-## 2026-11-26 17:53 (Asia/Manila): Fix Active Sidebar Icon Contrast on Gold Pills
-### What I asked for
-Fix the active sidebar icon color where the icon blended into the gold active pill instead of showing dark contrast.
-### What the agent decided and why
-- Raised CSS selector specificity in `web/pf-system.css` (`?v=23`) for active sidebar links and their child icons (`.icon`, `i.icon`, `i`, `.ico`, `svg`, `span`, `.text`) across Staff/Owner/Cashier, Member, and Trainer portals in both Dark and Light Mode (resting, `:hover`, `:focus-visible`, and `:active` states) so they beat legacy `#F4C542` / `#F7D36B` rules in `web/dashboard.css`.
-- Added `background: var(--pf-state-gold) !important` on active sidebar hover so the solid gold pill stays uniform instead of falling back to `dashboard.css` gradient hover styles.
-### Decision-log skill
-When overriding legacy component CSS that uses deep theme selectors (`body.dark nav.sidebar ... .icon:hover`) and shorthand properties (`background: ... !important`), match or exceed that full selector specificity across all interaction states and override both `background` and `background-color`.
 
-## 2026-11-26 18:35 (Asia/Manila): Linked Google Login (All Roles), First-Login OTP+Consent Gate, Branded Invite & Settings Connect
+## 2026-11-26 23:46 (Asia/Manila): Light Mode Frosted Photo Banners with Reduced Image Opacity
 ### What I asked for
-Allow Owner/Staff/Member Google login only for linked accounts (`?error=not-linked` otherwise), enforce Email OTP then Terms/Privacy consent on first Google login, redesign the staff invite acceptance page with Google email-match activation, and add Connect/Disconnect Google in Settings with lockout protection.
+Reduce the opacity of photo banners across the system in Light Mode because they appear too dark.
 ### What the agent decided and why
-- Updated `apps/accounts/models.py` (`0008_google_onboarding_and_invite_revoke`), `apps/accounts/google_auth.py`, `apps/accounts/services.py`, `api/auth.py`, and `apps/accounts/middleware.py` (`FirstLoginOnboardingGateMiddleware`) so Google login works for all linked roles (`OWNER`, `CASHIER`, `TRAINER`, `MEMBER`) while blocking unlinked accounts (`?error=not-linked`) and gating first-time Google sessions behind Email OTP (`FIRST_LOGIN`) followed by dual-checkbox Terms/Privacy consent; see [[2026-11-26 Linked Google login and first-login gate]].
-- Redesigned `templates/accounts/accept_invite.html` in ProFit obsidian/gold with password setup, matching-email Google activation, and explicit `revoked_at` checking, and added `web/google-connect.js` + passwordless disconnect lockout protection in Owner/Cashier, Trainer, and Member Settings.
+- Replaced the dark-only Light Mode hero overrides in `web/pf-system.css` (`?v=30`) with shared warm-cream frosted banner tokens (`--pf-lb-bg`, `--pf-lb-scrim-h`, `--pf-lb-scrim-v`, `--pf-lb-photo-opacity: 0.22`) while keeping Dark Mode rules scoped under `.dark` unchanged.
+- Applied light frosted cream overlays, lower photo opacity (`0.16`–`0.22`), and high-contrast dark text across all 8 photo banner surfaces (Members header, Member Detail name card, Payments & Reports headers, Owner Dashboard hero, Cashier Dashboard hero, Member Portal hero/tab/bento banners, Claim hero, and Trainer Portal heroes), and bumped `pf-system.css?v=30` across the HTML pages.
 ### Decision-log skill
-Keep first-login security gates on `User` flags defaulted to `False` and enforced by a single middleware so existing password users stay undisturbed while every new Google-based entry path (signup, invite, linked login) is uniformly gated before dashboards or `/api/` endpoints respond.
+Style Light Mode photo banners with a soft warm cream scrim and reduced photo opacity (`0.16`–`0.22`) plus dark typography rather than locking light-mode headers to a heavy dark slate overlay.
 
-## 2026-11-26 17:17 (Asia/Manila): Add GCash payment QR code to member and cashier payment pages
-### What I asked for
-Add the provided GCash QR code image to both the member payment page and the cashier daily payment page.
-### What the agent decided and why
-- Saved the supplied GCash QR image unmodified to `web/img/gcash-qr.jpg` so mobile cameras and GCash scanners read it cleanly without cropping or compression loss.
-- Added shared Light/Dark responsive `.pf-gcash-*` styles in `web/finance-ui.css` (`?v=27`) and button variables in `web/member-shell.css` (`?v=38`), with clickable enlarge (`#gcashQrModal`) and `Save QR` download actions so members on phones can upload the QR inside GCash and cashiers can show a large scannable QR at the desk.
-- Displayed the QR panel beside the member renewal form in `web/member-home.html` (`#memberPayCard`) and `web/claim.html`, and added a dedicated GCash QR card plus inline `Show GCash QR` trigger on the cashier daily payment pages (`web/payments.html` `#pane-daily` and `web/cashier.html` `#pane-terminal`) that highlights when `GCash` is selected (`web/pages.js?v=5`, `web/cashier.js?v=5`).
-- Added a markup and asset test in `apps/billing/tests/test_claim_review.py` covering all four payment pages.
-### Decision-log skill
-Include both an enlarge lightbox and a direct `download` action alongside payment QR codes: desk staff need a large screen view for walk-ins, while members paying on their own phone need to save the QR to import it into GCash.
 
-## 2026-11-26 17:44 (Asia/Manila): Fix Light Mode hero cards, dark buttons, Cashier tab banner, and Expiring Soon badges
+## 2026-11-26 23:52 (Asia/Manila): Remove Change Password Item from Sidebar & Account Menus
 ### What I asked for
-Fix the Light Mode UI bugs across the staff pages so switching to Light Mode stays visually consistent without broken white-on-white cards, invisible dark-on-dark buttons, mismatched tab banners, or wrong status pill colors.
+Remove the Change password entry from the sidebar because Change Password is already inside Settings.
 ### What the agent decided and why
-- Locked `.csh-hero`, `.csh-hero-card`, `.csh-hero .csh-btn-dark`, `.ow-hero .ow-btn-dark`, `.mb-ticket-card`, and `.mb-hero-book-btn` in `web/pf-system.css` (`?v=20`) so `dashboard.css`'s `[class$="-card"]` wildcard and Light Mode text/hover rules can never turn Cashier/Owner/Member dark-hero cards white-on-white or hero buttons dark-on-dark.
-- Upgraded `web/cashier.html`'s `.fn-header-card` with the left `.fn-header-title` block and color-coded `.fn-tab-icon` classes (`is-amber`, `is-emerald`, `is-cyan`) synced via `setTab()` in `web/cashier.js` (`?v=6`) so it matches `members.html`, `payments.html`, and `reports.html`.
-- Fixed `--pf-st-expiring-*` tokens in `web/pf-system.css` (`?v=20`) from red to amber in both Light Mode (`#FEF3C7` / `#B45309` / `#D97706`) and Dark Mode (`rgba(245, 158, 11, 0.16)` / `#FBBF24`) so `EXPIRING SOON` is clearly distinct from `EXPIRED`, and excluded `.md-id-card` from `body:not(.dark) .md-card` in `web/members-ui.css` (`?v=31`).
-- Bumped `pf-system.css?v=20` across all 22 portal pages and verified `cashier.html`, `members.html`, `payments.html`, and `index.html` live in Light Mode via browser preview.
+- Removed `decorate()`, `.pf-cp-item`, and the `MutationObserver` auto-injector from `web/change-password.js` (`?v=4` across 14 HTML pages) while keeping `window.PFChangePassword.open` and `window.openChangePasswordModal` so Settings and Profile buttons still open the Change Password dialog cleanly.
 ### Decision-log skill
-Any floating card inside a dark photo hero (`-card` class suffix) must be explicitly locked to dark glass in `pf-system.css` with `!important` (alongside its dark-glass CTA buttons and their hover/active states) to prevent wildcard `[class$="-card"]` Light Mode rules from turning them white-on-white.
+Keep shared dialog scripts focused on exposing explicit modal openers instead of auto-injecting duplicate menu entries next to `[data-logout]` controls once Settings owns that action.
 
-## 2026-11-26 18:01 (Asia/Manila): Blend My Profile receipt preview into Dark Mode
-### What I asked for
-Fix the `Receipts you send` preview card on the My Profile page (`web/profile.html`) so it blends seamlessly with Dark Mode instead of rendering as bright cream paper.
-### What the agent decided and why
-- Updated `.pf-pv-paper` in `web/profile.html` to use the dark inset surface (`var(--pf-surface-inset, #0d121d)`), dark border (`var(--border, #263246)`), subtle gold top edge, light text (`#f8fafc` heading / `#cbd5e1` body), and ProFit gold accent (`#e8b93a`) for the staff/cashier name in Dark Mode, matching `.pf-pv-mini` directly above it.
-- Preserved the warm cream paper appearance (`#f6f1e3` / `#2a2418` / `#8a6212`) explicitly under `body:not(.dark) .pf-pv-paper` for Light Mode.
-### Decision-log skill
-Style decorative preview widgets (like `.pf-pv-paper`) with dark inset tokens by default and scope light-paper colors strictly to `body:not(.dark)` so every preview widget blends naturally with both themes.
 
-## 2026-11-26 18:27 (Asia/Manila): Redesign GCash & Record Payment forms with 3-step bar and blue QR card
+## 2026-11-26 23:55 (Asia/Manila): System Dark Navy Shortcut Dock & Flat Yellow Banner Tabs
 ### What I asked for
-Redesign both the Member GCash payment form and the Staff/Cashier Record a payment form to match the attached reference layout (3-step stepper bar, vibrant GCash blue left QR card with framed white QR box, numbered steps, Enlarge/Save QR buttons, bold gold amount readout, and pre-submission checklist).
+Change the hero shortcut dock background to system dark navy blue, and make photo banner tab hovers/active states clean editorial yellow without AI glass/glow effects.
 ### What the agent decided and why
-- Built a single shared `.pf-pay-steps` + `.pf-gcash-pay-layout` + `.pf-gcash-qr-panel` + `.pf-pay-checklist` system in `web/finance-ui.css` (`?v=30`), `web/pf-system.css` (`?v=21`), and `web/member-shell.css` (`?v=39`) so `web/member-home.html`, `web/claim.html`, `web/payments.html`, and `web/cashier.html` all share the exact same card hierarchy in both Dark Mode and Light Mode.
-- Framed `web/img/gcash-qr.jpg` inside `.pf-gcash-qr-thumb` so only the crisp white rounded QR box floats cleanly inside the vibrant GCash blue panel (with zero half-cut top logo), while keeping the full unmodified `gcash-qr.jpg` for the `#gcashQrModal` enlarge popup and `Save QR` download.
-- Added live 3-step highlight progress and the two `Before you submit` confirmation checkboxes (including live plan amount sync) in `web/member-home.html`, and expanded `.fn-daily-grid` / `.fn-daily-right` so **Record a payment** spans full width with `Collected today` + `Today's payments` / `Today's receipts` spanning cleanly below it.
-- Verified Dark Mode and Light Mode live in the browser across `payments.html`, `cashier.html`, and `member-home.html`.
+- Updated `.pf-hero-dock` in `web/pf-system.css` (`?v=31` across 22 HTML pages) to solid system dark navy `#0f172a` (with `#17233a` hover and `#1e2d4a` active) instead of translucent grey glass.
+- Replaced `.pp-page-tab` (Members) and `.fn-tabs .tab` (Payments & Reports) glassmorphism, glow shadows, and hover lift in `web/pf-system.css` with flat editorial styling across Dark and Light modes: warm yellow hover (`#fef3c7` light / `rgba(232,185,58,0.18)` dark with `#e8b93a` border) and solid ProFit gold (`#E8B93A`) with dark ink (`#0B0F19`) active pills.
 ### Decision-log skill
-When visually framing a tall vertical QR image inside a compact blue card, calculate CSS vertical percentage margins relative to the image width (not height) so only the clean white QR box is displayed inline while preserving the full original image for zoom and download.
+Use solid system navy (`#0f172a`) for dark structural docks inside light banners, and keep banner tab interactions flat (no blur/glow/translateY) with solid gold active states and crisp yellow hover borders.
 
-## 2026-11-26 19:16 (Asia/Manila): Allow New Google Users on /login to Enter Google -> OTP -> Consent Flow
-### What I asked for
-Allow new users signing in with Google on `/login` to connect directly and proceed through `Google -> OTP -> Terms of Service -> Privacy Policy`, instead of seeing the unlinked account error.
-### What the agent decided and why
-- Updated `google_auth_view` and `google_oauth_callback_view` in `api/auth.py` to call `authenticate_google_member(claims)` for both `/login` and `/join`, so brand-new Gmail users enter `/accounts/onboarding/` (`OTP -> Terms & Privacy`), linked Owner/Staff/Member users sign in cleanly, and unlinked Staff/Owner emails still redirect to `/login?error=not-linked`; see [[2026-11-26 Allow new Google members on login via OTP gate]].
-### Decision-log skill
-Keep public Google Member creation safe on both `/login` and `/join` by gating every new Google session behind Email OTP + legal consent while rejecting unlinked privileged roles cleanly.
 
-## 2026-11-26 19:32 (Asia/Manila): In-Place OTP & ToS Modals Over /login + Clean Logout Redirects
+## 2026-11-27 00:05 (Asia/Manila): Soft Dark Banner Borders, Settings Activity Log, and Slow Connection Reminders
 ### What I asked for
-Replace the plain full-page `/accounts/onboarding/otp/` screen with blurred modal overlays over `/login` (`Verify your email` -> `Terms of Service & Privacy Policy`) matching the reference screenshots, and fix the `Sign out` redirect so it never lands on `/accounts/login/?next=/accounts/logout/`.
+Add soft dark borders to Light Mode banners, add a Facebook/Instagram-style Activity Log inside Settings, and add reminders for slow connections or offline states.
 ### What the agent decided and why
-- Removed `@login_required` from `logout_view` (keeping `@require_POST` + CSRF) with validated `next` redirect support and pointed `@login_required(login_url="/login")` on the fallback onboarding views so signing out or unauthenticated requests always go cleanly to `/login`.
-- Added CSRF-protected JSON endpoints (`GET /api/auth/onboarding/status/`, `POST /api/auth/onboarding/otp/verify/`, `POST /api/auth/onboarding/otp/resend/`, `POST /api/auth/onboarding/consent/`) in `api/auth.py`, exempted `/login`, `/join`, and `/api/auth/onboarding/` in `FirstLoginOnboardingGateMiddleware`, and added matching ProFit obsidian/gold `<dialog>` modal overlays in `web/google-auth.js?v=5` (plus polished fallback templates).
+- Updated `--pf-lb-border`, `--pf-lb-glass-border`, `--pf-lb-dashed`, inner hero cards, and idle banner tabs in `web/pf-system.css` (`?v=32`) to use subtle slate borders (`rgba(15, 23, 42, 0.14–0.16)`) in Light Mode.
+- Built `apps/accounts/activity.py` (`get_user_activity`) and `GET /api/auth/activity/` (`api/auth.py`, `api/urls.py`) aggregating existing ORM records per authenticated user without adding a new DB table; see [[2026-11-27 Aggregate Activity Log from existing ORM tables]].
+- Added `web/activity-log.js` (`?v=1`) inside `#pfActivityToggle` / `#pfActivityDrawer` across Staff (`web/settings.html`), Trainer (`web/trainer/settings.html`), and Member (`web/member-tabs.js?v=15`) Settings with All / Security / Actions / Updates filters, search, and Asia/Manila day grouping (`Today`, `Yesterday`, date).
+- Added `#pfNetBanner` inside `web/api.js` (`?v=6`) to surface slow-request (>3.5s) / weak-network (`navigator.connection`), offline, request-timeout, and back-online reminders with manual dismiss.
+- Added `apps/accounts/tests/test_activity_log.py` verifying auth checks, strict member isolation, owner actions, and newest-first ordering.
 ### Decision-log skill
-Keep server-side HTML middleware enforcement intact on all protected dashboards and APIs while exposing thin CSRF-protected JSON onboarding endpoints so login screens can run multi-step OTP + Terms & Privacy dialogs seamlessly without page jumps.
+Reuse `web/api.js` for cross-portal connection awareness (slow fetch threshold + `offline`/`online`/`navigator.connection`) and compose user-scoped activity timelines from existing domain models before inventing a separate audit table.
 
-## 2026-11-26 19:42 (Asia/Manila): Match Legal Consent Modal to /join Tabbed UI & Enforce Scroll-Before-Check
+
+## 2026-11-27 00:19 (Asia/Manila): Flat 60/30/10 Enroll Form, Gold Switch, Solid Banner Tabs, and Aligned QR Payment Form
 ### What I asked for
-Make the Google first-login Terms of Service & Privacy Policy modal match the `/join` legal modal UI (`Terms of Service` / `Privacy Policy` tabs, progress bar, numbered gold sections) and prevent checking either agreement box until scrolling through both full documents.
+Remove gradients on Enroll & Payments, apply 60/30/10 plan card hover, align and color-match the Enroll payment toggle switch, make Light Mode banner active tabs solid gold like Browse Members, and align the QR card height cleanly with the Payment form.
 ### What the agent decided and why
-- Updated `#pfOnboardingConsentDialog` in `web/google-auth.js` (`?v=6`) and fallback `templates/accounts/onboarding_consent.html` to mirror the exact `.jn-legal-*` design from `web/join.html` (fetching `/terms` and `/privacy` `.legal-card` content, displaying `0 of 2 documents reviewed`, locking each checkbox until scrolled to the bottom of its respective document, and disabling `I agree` until both documents are read and both boxes checked).
+- Removed gradients and hover lift across `web/members-ui.css` (`?v=33`) and `web/finance-ui.css` (`?v=33`), replacing `.pp-plan-card` hover/selection with clean 60/30/10 fills and replacing the Enroll green toggle with the right-aligned `.pp-switch-ctrl` gold `#e8b93a` switch in `web/members.html`.
+- Added page-scoped specificity (`[data-page="payments"]`, `[data-page="reports"]`, `[data-page="cashier"]`) in `web/pf-system.css` (`?v=33`) so `.fn-tabs .tab.active` renders solid `#E8B93A` gold with dark `#0B0F19` ink/SVG icons identically to `.pp-page-tab.active` on Members.
+- Set `.pf-gcash-pay-layout` to `align-items: stretch` with `.pf-gcash-qr-panel` (`background: #0070f3`, `height: 100%`) and `.fn-form` flex column (`margin-top: auto` on `.pf-pay-submit-row`) in `web/finance-ui.css` so the QR panel and Record Payment form align flush top and bottom.
 ### Decision-log skill
-Wait to run `checkScrolledToEnd()` until after fetched document HTML is inserted (never on placeholder loading text) and disable each legal checkbox independently until its matching document has been scrolled to the bottom.
+Keep `flex-direction: column` with `margin-top: auto` on the submit row inside an `align-items: stretch` CSS grid alongside a full-height media panel so left and right columns align flush regardless of responsive field wrapping.
+
+
+## 2026-11-27 00:35 (Asia/Manila): Settings nav/install redesign and auth/landing polish
+### What I asked for
+Fix Settings jumping straight to General on load and improve scroll/click behavior; redesign the Install the app card in Settings to match the system; remove moving background photo on landing/login/signup; remove idle underlines on Forgot password, Sign up, and related links until hovered.
+### What the agent decided and why
+- Replaced the `-25%..-60%` `IntersectionObserver` in `web/settings.js` (and upgraded `web/trainer/settings.html` and `web/member-tabs.js`) with a deterministic `requestAnimationFrame`-throttled scroll-position spy, a 700ms smooth-scroll click lock, `scroll-margin-top`, and immediate `Account` activation on load so `/settings` never jumps to `General`.
+- Replaced the plain bulleted text in the Settings `#install` / `#mbStInstall` cards with a `.pf-install-*` component in `web/pf-system.css` (`?v=34`) featuring a status bar and two-column iPhone/Android step cards while preserving `#installHelpStatus` and `[data-install-steps]` for `static/js/install-help.js`.
+- Removed the pointer parallax layer and script from `web/login.html` and `background-attachment: fixed` from `web/welcome.html` so background photos stay completely still.
+- Changed idle link rules in `web/login.html` (`.lg-forgot::after`, `.lg-join-row a::after`), `web/join.html`, and `web/forgot.html` so underlines only show on hover or keyboard focus.
+### Decision-log skill
+Never initialize scroll-spy with asymmetric negative `IntersectionObserver` root margins on short settings cards near the top of the viewport; use explicit scroll position thresholds (`scrollY <= 24` -> first section) plus a short click-scroll lock.
+
+
+## 2026-11-27 00:41 (Asia/Manila): Landing page scroll-to-top button
+### What I asked for
+Add a button on the bottom-right of the landing page when scrolling down to shortcut back to the top.
+### What the agent decided and why
+- Added a fixed bottom-right `.wl-scroll-top` button in `web/welcome.html` styled with ProFit gold/dark tokens and mobile safe-area offsets, revealed smoothly via `requestAnimationFrame` scroll listener when `scrollY > 360`.
+### Decision-log skill
+Keep floating landing shortcuts hidden until past the hero fold (`scrollY > 360`) and honor `prefers-reduced-motion` on scroll.
+
+
+## 2026-11-27 00:46 (Asia/Manila): Landing page post-loader zoom-out and number count-ups
+### What I asked for
+Add animations on the landing page so text/info containers zoom out smoothly after loading finishes, numbers count up, and scroll-down effects animate smoothly one time only.
+### What the agent decided and why
+- Dispatched a `pf:splash-done` event in `web/splash.js` (`?v=7` on `web/welcome.html`) to trigger a one-time `.hero.is-ready` zoom-out settle (`scale(1.06)` to `scale(1)`) when loading completes, with a safety fallback if no loader is shown.
+- Fixed missing CSS `transition` rules on `.anim-features>*`, `.anim-programs>*`, `.anim-gallery>*`, `.anim-plans>*`, and `.anim-visit>*` in `web/welcome.html` and gave all scroll-reveal containers a smooth one-time zoom-out entrance via `IntersectionObserver` (`unobserve` after first intersection).
+- Added a `requestAnimationFrame` cubic-eased `data-countup` counter (`tabular-nums`) for hero trial days (`7`), ticker count (`4`), feature numbers (`01`-`04`), plan durations (`30`, `90`, `365`), and plan prices (`₱80`, `₱800`, `₱2,100`, `₱7,500`) synced with live `/api/plans/` updates.
+### Decision-log skill
+Verify both CSS `transition` properties and `IntersectionObserver` triggers exist together; staggered `transition-delay` rules alone snap instantly without a base `transition`.
+
+
+## 2026-11-27 00:49 (Asia/Manila): Daily plan card & live price sync on landing page
+### What I asked for
+Add the Daily plan card to the landing page Membership section and keep landing prices updated when the Owner changes plan prices in Settings.
+### What the agent decided and why
+- Switched `#plans` in `web/welcome.html` from a 3-column grid (`.grid3`) to a 4-column responsive grid (`.grid4`: 4 cols desktop, 2 cols tablet, 1 col mobile) and added the **Daily** card alongside Monthly, Quarterly, and Annual.
+- Expanded the live pricing script in `web/welcome.html` to update both `[data-plan-price]` and `[data-plan-days]` from `/api/plans/` (`cache: "no-store"`) on load, tab focus (`visibilitychange`), `pageshow`, and cross-tab `storage` events for `"profit-plan-prices-v1"`.
+### Decision-log skill
+Sync public landing prices with both `/api/plans/` (`no-store` on load/focus) and `storage` events so owner edits propagate immediately across tabs without stale cached prices.
+
+
+## 2026-11-27 01:01 (Asia/Manila): Fix member portal /dashboard reload loop and signup phone cursor jump
+### What I asked for
+Fix the member portal reload loop and the issue shown in the attached clip.
+### What the agent decided and why
+- Fixed the root cause of the Member `/dashboard` infinite reload loop: `web/member-home.html` lacked `data-page="member-home"` on `<body>`, causing `web/auth.js` (`?v=7`) on `/dashboard` to misclassify it as Owner-only and repeatedly run `location.replace("/dashboard")`. Added `data-page="member-home"`, added a `.member-home` class check plus a same-path `redirectHomeSafely()` loop guard in `web/auth.js`, and prevented `403` errors in `web/member-home.html` `load()` from bouncing back to `/login`.
+- Fixed mid-input cursor jumping on the `+63` Mobile number field in `web/join.html` (shown in the uploaded clip) by preserving the caret position by digit count across `formatPHPhone()` updates.
+### Decision-log skill
+Guard every client-side `location.replace(dest)` against redirecting to `location.pathname` so a missing page attribute can never trigger an infinite browser reload loop.

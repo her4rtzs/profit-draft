@@ -23,7 +23,7 @@
         const cfg = await window.ProFitAPI.get("/auth/google/config");
         if (cfg && cfg.client_id) clientId = cfg.client_id;
         oauthRedirectEnabled = Boolean(cfg && cfg.oauth_redirect_enabled);
-      } catch (_) {}
+      } catch (_) { }
       return { clientId, oauthRedirectEnabled };
     })();
     return configPromise;
@@ -127,7 +127,7 @@
       await loadConfig();
       try {
         await loadGsiScript();
-      } catch (_) {}
+      } catch (_) { }
 
       if (window.google?.accounts?.oauth2) {
         const client = window.google.accounts.oauth2.initTokenClient({
@@ -143,7 +143,7 @@
             try {
               const out = await window.ProFitAPI.post("/auth/google/connect", { access_token: resp.access_token });
               if (out && out.user) {
-                try { sessionStorage.setItem("profit-verified-session", JSON.stringify(out.user)); } catch (_) {}
+                try { sessionStorage.setItem("profit-verified-session", JSON.stringify(out.user)); } catch (_) { }
                 renderState(drawer, out.user);
                 showStatus(drawer, "Google account connected.", false);
               }
@@ -186,7 +186,7 @@
     try {
       const out = await window.ProFitAPI.post("/auth/google/disconnect", {});
       if (out && out.user) {
-        try { sessionStorage.setItem("profit-verified-session", JSON.stringify(out.user)); } catch (_) {}
+        try { sessionStorage.setItem("profit-verified-session", JSON.stringify(out.user)); } catch (_) { }
         renderState(drawer, out.user);
         showStatus(drawer, "Google account disconnected.", false);
       }
@@ -247,7 +247,7 @@
           confirm_password: confirmPw,
         });
         if (out && out.user) {
-          try { sessionStorage.setItem("profit-verified-session", JSON.stringify(out.user)); } catch (_) {}
+          try { sessionStorage.setItem("profit-verified-session", JSON.stringify(out.user)); } catch (_) { }
           renderState(drawer, out.user);
           showStatus(drawer, "Password saved. You can now disconnect Google anytime.", false);
         }
@@ -280,7 +280,7 @@
       if (sess && sess.user) {
         renderState(drawer, sess.user, toggle);
       }
-    } catch (_) {}
+    } catch (_) { }
 
     const q = new URLSearchParams(location.search);
     if (q.get("google_connected") === "1") {

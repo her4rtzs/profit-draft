@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
-  <title>ProFit — My Members (Trainer Portal)</title>
+  <title>ProFit Ã¢â‚¬â€ My Members (Trainer Portal)</title>
   <script>try { var t = localStorage.getItem('pf-theme') || localStorage.getItem('theme') || 'dark'; document.documentElement.setAttribute('data-theme', t); document.documentElement.setAttribute('data-accent', 'gold'); } catch (e) { }</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,7 +23,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="ProFit">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="stylesheet" href="../pf-system.css?v=26">
+  <link rel="stylesheet" href="../pf-system.css?v=34">
 </head>
 
 <body data-page="members" data-portal="trainer" data-head="none">
@@ -39,7 +39,7 @@
           <div class="tw-hero-left">
             <div class="tw-hero-ico" data-ico="users"></div>
             <div class="tw-hero-text">
-              <span class="tw-hero-eyebrow">Coaching Roster · Module 1</span>
+              <span class="tw-hero-eyebrow">Coaching Roster Ã‚Â· Module 1</span>
               <h1 class="tw-hero-title">My Assigned Athletes</h1>
               <p class="tw-hero-sub">Monitor membership validity, track gym attendance frequency, and record live
                 check-ins for your roster.</p>
@@ -47,7 +47,7 @@
           </div>
           <div class="tw-hero-actions">
             <a href="/trainer/attendance" class="tw-btn"><span data-ico="check"></span> Attendance Log</a>
-            <a href="/trainer/schedule" class="tw-btn-primary"><span data-ico="calendar"></span> Broadcast Update</a>
+            <a href="/trainer/schedule#update" class="tw-btn-primary"><span data-ico="calendar"></span> Broadcast Update</a>
           </div>
         </section>
 
@@ -139,13 +139,13 @@
     </div>
   </div>
 
-  <script src="../config.js?v=9"></script>
-  <script src="../api.js?v=5"></script>
-  <script src="../auth.js?v=6"></script>
+  <script src="../config.js?v=11"></script>
+  <script src="../api.js?v=6"></script>
+  <script src="../auth.js?v=7"></script>
   <script src="../assets/js/staff-icons.js?v=5"></script>
   <script src="../assets/js/staff-data.js?v=12"></script>
-  <script src="../assets/js/staff.js?v=18"></script>
-  <script src="trainer.js?v=12"></script>
+  <script src="../assets/js/staff.js?v=19"></script>
+  <script src="trainer.js?v=14"></script>
   <script>
     PF.ready(async () => {
       let allMembers = [];
@@ -197,8 +197,11 @@
       }
 
       function renderStatusBadge(m) {
+        const s = String(m.membership_status || '').toUpperCase();
         if (isExpiringSoon(m)) return '<span class="tw-pill is-amber">Expiring Soon</span>';
-        if (m.is_active || m.membership_status === 'ACTIVE') return '<span class="tw-pill is-green">Active</span>';
+        if (m.is_active || s === 'ACTIVE') return '<span class="tw-pill is-green">Active</span>';
+        if (s === 'TRIAL') return '<span class="tw-pill is-blue">Trial</span>';
+        if (s === 'PENDING') return '<span class="tw-pill is-amber">Pending</span>';
         return '<span class="tw-pill is-red">Expired</span>';
       }
 
@@ -235,11 +238,11 @@
               </div>
             </div>
           </td>
-          <td>${PF.esc(m.phone || '—')}</td>
+          <td>${PF.esc(m.phone || 'Ã¢â‚¬â€')}</td>
           <td>${renderStatusBadge(m)}</td>
           <td>${Trainer.format.date(m.expiry_date)}</td>
           <td><span class="tw-pill is-blue">${m.total_checkins || 0} visits</span></td>
-          <td>${m.last_checkin ? `${Trainer.format.date(m.last_checkin)} · ${Trainer.format.time(m.last_checkin)}` : 'Never'}</td>
+          <td>${m.last_checkin ? `${Trainer.format.date(m.last_checkin)} Ã‚Â· ${Trainer.format.time(m.last_checkin)}` : 'Never'}</td>
           <td>
             <div style="display:inline-flex;gap:6px;justify-content:flex-end">
               <button class="tw-btn" data-detail="${m.id}">History</button>
@@ -292,7 +295,7 @@
               </div>
               <div class="tw-athlete-metric">
                 <span>Phone</span>
-                <strong>${PF.esc(m.phone || '—')}</strong>
+                <strong>${PF.esc(m.phone || 'Ã¢â‚¬â€')}</strong>
               </div>
               <div class="tw-athlete-metric">
                 <span>Today</span>
@@ -337,10 +340,23 @@
       }
 
       async function openMemberDetail(id) {
-        const d = await Trainer.api.getMemberDetail(id);
+        let d;
+        try {
+          d = await Trainer.api.getMemberDetail(id);
+        } catch (err) {
+          PF.toast(err.message || 'Could not load member profile.', 'error');
+          return;
+        }
         document.getElementById('mdTitle').textContent = d.name || 'Athlete Coaching Profile';
         const checkinBtn = document.getElementById('mdCheckinBtn');
+        const canCheckIn = Boolean(d.is_active) && !d.today_checked_in;
+        checkinBtn.disabled = !canCheckIn;
+        checkinBtn.innerHTML = d.today_checked_in
+          ? `${PF.icon('check')} Checked In Today`
+          : (!d.is_active ? 'Membership Inactive' : `${PF.icon('check')} Check In Now`);
         checkinBtn.onclick = async () => {
+          if (!canCheckIn) return;
+          checkinBtn.disabled = true;
           try {
             await Trainer.api.checkIn(d.id);
             PF.toast(`${d.name} checked in!`, 'success');
@@ -348,6 +364,7 @@
             await loadMembers();
           } catch (err) {
             PF.toast(err.message || 'Check-in failed.', 'error');
+            checkinBtn.disabled = false;
           }
         };
 
@@ -358,7 +375,7 @@
           <div class="avatar" style="width:52px;height:52px;font-size:18px">${PF.initials(d.name)}</div>
           <div>
             <div style="font-weight:800;font-size:17px;color:var(--text)">${PF.esc(d.name)}</div>
-            <div style="font-size:12.5px;color:var(--muted)">${PF.esc(d.email || '')} · ${PF.esc(d.phone || 'No phone')}</div>
+            <div style="font-size:12.5px;color:var(--muted)">${PF.esc(d.email || '')} Ã‚Â· ${PF.esc(d.phone || 'No phone')}</div>
           </div>
         </div>
         ${renderStatusBadge(d)}
@@ -401,9 +418,31 @@
       }
 
       async function loadMembers() {
-        allMembers = await Trainer.api.getMembers();
-        updateKPIs(allMembers);
-        render();
+        try {
+          allMembers = await Trainer.api.getMembers();
+          updateKPIs(allMembers);
+          render();
+        } catch (err) {
+          const msg = err.message || 'Could not load assigned members.';
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="7">
+                <div class="tw-empty">
+                  <div class="tw-empty-ico">${PF.icon('alert-circle')}</div>
+                  <strong>Could not load roster</strong>
+                  <p>${PF.esc(msg)}</p>
+                  <button type="button" class="tw-btn" id="retryMembersBtn" style="margin-top:8px">Retry</button>
+                </div>
+              </td>
+            </tr>
+          `;
+          document.getElementById('retryMembersBtn')?.addEventListener('click', loadMembers);
+        }
+      }
+
+      function checkDetailHash() {
+        const m = /^#detail=(\d+)$/.exec(window.location.hash || '');
+        if (m) openMemberDetail(m[1]);
       }
 
       document.querySelectorAll('[data-filter]').forEach(btn => {
@@ -425,7 +464,9 @@
       });
 
       searchInput.addEventListener('input', render);
+      window.addEventListener('hashchange', checkDetailHash);
       await loadMembers();
+      checkDetailHash();
     });
   </script>
 </body>

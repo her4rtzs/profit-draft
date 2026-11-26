@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport"
         content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
-    <script src="config.js?v=9"></script>
-    <script src="api.js"></script>
-    <script src="auth.js?v=6"></script>
+    <script src="config.js?v=11"></script>
+    <script src="api.js?v=6"></script>
+    <script src="auth.js?v=7"></script>
     <script src="auth-guard.js" data-roles="Owner"></script>
     <title>ProFit | Reports</title>
     <link rel="icon" type="image/svg+xml"
@@ -16,7 +16,7 @@
         href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Figtree:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="dashboard.css?v=18">
-    <link rel="stylesheet" href="finance-ui.css?v=27">
+    <link rel="stylesheet" href="finance-ui.css?v=33">
     <script>(function () { try { var t = localStorage.getItem('theme'); if (t === 'light' && !localStorage.getItem('pf-staff-explicit-light')) { t = 'dark'; try { localStorage.setItem('theme', 'dark'); } catch (_) { } } var d = t !== 'light'; var h = document.documentElement; h.style.background = d ? '#0a0e16' : '#fbf6ee'; h.style.colorScheme = d ? 'dark' : 'light'; h.dataset.theme = d ? 'dark' : 'light'; if (d) { h.classList.add('dark'); } else { h.classList.remove('dark'); } } catch (e) { } })();</script>
     <style>
         html.dark,
@@ -38,7 +38,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="ProFit">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="stylesheet" href="pf-system.css?v=26">
+  <link rel="stylesheet" href="pf-system.css?v=34">
 </head>
 
 <body class="pf-staff" data-page="reports" data-title="Reports" data-welcome="Your gym at a glance">
@@ -168,7 +168,7 @@
 
                     <div class="fn-tx-foot">
                         <span>Filtered total</span>
-                        <strong id="txTotal">₱0</strong>
+                        <strong id="txTotal">Ã¢â€šÂ±0</strong>
                     </div>
                 </article>
             </section>
@@ -187,7 +187,7 @@
                             </span>
                             <span class="fn-kpi-label">Total collected</span>
                         </div>
-                        <h2 class="fn-kpi-val" id="sumTotal">₱0</h2>
+                        <h2 class="fn-kpi-val" id="sumTotal">Ã¢â€šÂ±0</h2>
                         <div class="fn-kpi-foot">
                             <span class="fn-kpi-cap">All recorded payments</span>
                         </div>
@@ -222,7 +222,7 @@
                             </span>
                             <span class="fn-kpi-label">Average payment</span>
                         </div>
-                        <h2 class="fn-kpi-val" id="sumAvg">₱0</h2>
+                        <h2 class="fn-kpi-val" id="sumAvg">Ã¢â€šÂ±0</h2>
                         <div class="fn-kpi-foot">
                             <span class="fn-kpi-cap">Per transaction</span>
                         </div>
@@ -278,7 +278,7 @@
     <script src="data.js"></script>
     <script src="pages.js"></script>
     <script src="portal-fx.js?v=2"></script>
-    <script src="change-password.js?v=2" defer></script>
+    <script src="change-password.js?v=4" defer></script>
     <script src="notifications-live.js?v=2" defer></script>
     <script>
         (function () {

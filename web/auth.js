@@ -262,29 +262,38 @@
       const pageAttr = String(document.body?.dataset?.page || "").toLowerCase();
       const pageIsTrainer = isTrainer || portalAttr === "trainer";
       const pageIsCashierDash = file === "/cashier" || pageAttr === "cashier";
-      const pageIsMemberDash = isMember || pageAttr === "member-home";
+      const pageIsMemberDash = isMember || pageAttr === "member-home" || Boolean(document.body?.classList?.contains("member-home"));
       const pageIsOwnerDash = file === "/index" || (dashboardPage && !pageIsTrainer && !pageIsCashierDash && !pageIsMemberDash);
       const pageIsOwnerOnly = pageIsOwnerDash || ownerOnlyPages.has(file);
       const pageIsStaffShared = !pageIsTrainer && !pageIsMemberDash && !pageIsCashierDash && !pageIsOwnerOnly && isAdmin;
 
+      const redirectHomeSafely = () => {
+        const dest = homeForRole(role);
+        if (location.pathname.toLowerCase() === dest.toLowerCase()) {
+          document.documentElement.classList.remove("auth-checking", "auth-pending");
+          return;
+        }
+        location.replace(dest);
+      };
+
       if (pageIsTrainer && role !== "TRAINER") {
-        location.replace(homeForRole(role));
+        redirectHomeSafely();
         return;
       }
       if (pageIsMemberDash && role !== "MEMBER") {
-        location.replace(homeForRole(role));
+        redirectHomeSafely();
         return;
       }
       if (pageIsCashierDash && !isCashierRole(role)) {
-        location.replace(homeForRole(role));
+        redirectHomeSafely();
         return;
       }
       if (pageIsOwnerOnly && !isOwnerRole(role)) {
-        location.replace(homeForRole(role));
+        redirectHomeSafely();
         return;
       }
       if (pageIsStaffShared && !isStaffRole(role)) {
-        location.replace(homeForRole(role));
+        redirectHomeSafely();
         return;
       }
       if (user.must_change_password && pageIsTrainer && file !== "/settings") {

@@ -9,7 +9,7 @@ from urllib.parse import urlsplit, urlunsplit
 
 from django.conf import settings
 from django.contrib.auth.views import redirect_to_login
-from django.http import Http404, HttpResponse, HttpResponseForbidden
+from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, render
 
 from apps.accounts.google_auth import ensure_google_user_columns
@@ -51,6 +51,42 @@ def _serve_web_page(relative):
     if not path.is_file():
         raise Http404
     return HttpResponse(path.read_text(encoding="utf-8"), content_type="text/html; charset=utf-8")
+
+
+DEFAULT_PORTAL_NOT_FOUND_MSG = "The URL you entered doesn't exist or isn't available for your account."
+
+
+def _portal_not_found_forbidden(request, message=None, heading="Page not found", eyebrow="ProFit · Page not found"):
+    """Render a branded ProFit 403 error page that avoids leaking restricted role URLs."""
+    return render(
+        request,
+        "errors/portal_error.html",
+        {
+            "heading": heading,
+            "eyebrow": eyebrow,
+            "message": message or DEFAULT_PORTAL_NOT_FOUND_MSG,
+        },
+        status=403,
+    )
+
+
+def error_404(request, exception=None):
+    """Render branded ProFit 404 Page not found view."""
+    return render(
+        request,
+        "errors/portal_error.html",
+        {
+            "heading": "Page not found",
+            "eyebrow": "ProFit · Page not found",
+            "message": DEFAULT_PORTAL_NOT_FOUND_MSG,
+        },
+        status=404,
+    )
+
+
+def error_403(request, exception=None):
+    """Render branded ProFit 403 error view without exposing internal route structure."""
+    return _portal_not_found_forbidden(request)
 
 
 def _role_of(user) -> str:
@@ -126,7 +162,12 @@ def dashboard(request):
         return redirect_to_login("/dashboard", PORTAL_LOGIN_URL)
     ensure_google_user_columns()
     if not _is_active_user(request.user):
-        return HttpResponseForbidden("Account is inactive.")
+        return _portal_not_found_forbidden(
+            request,
+            message="This account is inactive. Please contact the gym administrator.",
+            heading="Account inactive",
+            eyebrow="ProFit · Access notice",
+        )
     role = _role_of(request.user)
     if role == "OWNER":
         return _serve_web_page("index")
@@ -136,7 +177,7 @@ def dashboard(request):
         return _serve_web_page("trainer/index")
     if role == "MEMBER":
         return _serve_web_page("member-home")
-    return HttpResponseForbidden("Unauthorized role.")
+    return _portal_not_found_forbidden(request)
 
 
 def web_page(request, page):
@@ -165,13 +206,18 @@ def web_page(request, page):
 
     ensure_google_user_columns()
     if not _is_active_user(request.user):
-        return HttpResponseForbidden("Account is inactive.")
+        return _portal_not_found_forbidden(
+            request,
+            message="This account is inactive. Please contact the gym administrator.",
+            heading="Account inactive",
+            eyebrow="ProFit · Access notice",
+        )
     role = _role_of(request.user)
 
     if page in LEGACY_HOME_ROLE:
         expected = LEGACY_HOME_ROLE[page]
         if role != expected:
-            return HttpResponseForbidden(f"{expected.title()} access required.")
+            return _portal_not_found_forbidden(request)
         return redirect("/dashboard")
 
     if role == "MEMBER":
@@ -181,31 +227,39 @@ def web_page(request, page):
             return _serve_web_page(page)
         if state == "LOCKED":
             has_trial = profile is not None and profile.trial_ends_at is not None
-            return HttpResponseForbidden(
-                TRIAL_ENDED_MESSAGE if has_trial else NO_MEMBERSHIP_MESSAGE
+            return _portal_not_found_forbidden(
+                request,
+                message=TRIAL_ENDED_MESSAGE if has_trial else NO_MEMBERSHIP_MESSAGE,
+                heading="Membership required",
+                eyebrow="ProFit · Membership notice",
             )
         if state == "TRIAL":
-            return HttpResponseForbidden(TRIAL_PROFILE_ONLY_MESSAGE)
-        return HttpResponseForbidden("Staff access required.")
+            return _portal_not_found_forbidden(
+                request,
+                message=TRIAL_PROFILE_ONLY_MESSAGE,
+                heading="Trial account limit",
+                eyebrow="ProFit · Membership notice",
+            )
+        return _portal_not_found_forbidden(request)
 
     if page == "onboarding":
         if role == "OWNER":
             return redirect("/dashboard")
         if role in ONBOARDING_ROLES:
             return _serve_web_page("onboarding")
-        return HttpResponseForbidden("Onboarding is not available for this role.")
+        return _portal_not_found_forbidden(request)
 
     if page in MEMBER_ONLY_PAGES:
-        return HttpResponseForbidden("Member access required.")
+        return _portal_not_found_forbidden(request)
 
     if page in OWNER_ONLY_PAGES:
         if role != "OWNER":
-            return HttpResponseForbidden("Owner access required.")
+            return _portal_not_found_forbidden(request)
         return _serve_web_page(page)
 
     if page in STAFF_SHARED_PAGES or page == "profile":
         if role not in ("OWNER", "CASHIER"):
-            return HttpResponseForbidden("Staff access required.")
+            return _portal_not_found_forbidden(request)
         return _serve_web_page(page)
 
     raise Http404
@@ -221,7 +275,7 @@ def web_page_group(request, group, page):
         return redirect_to_login(request.get_full_path(), PORTAL_LOGIN_URL)
     ensure_google_user_columns()
     if not _is_active_user(request.user) or _role_of(request.user) != "TRAINER":
-        return HttpResponseForbidden("Trainer access required.")
+        return _portal_not_found_forbidden(request)
     if page == "index":
         return redirect("/dashboard")
     return _serve_web_page(f"{group}/{page}")

@@ -22,3 +22,6 @@ urlpatterns = [
     path("<slug:group>/<slug:page>", views.web_page_group, name="web-page-group"),
     path("<slug:page>", views.web_page, name="web-page"),
 ]
+
+handler404 = "profit.views.error_404"
+handler403 = "profit.views.error_403"

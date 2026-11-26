@@ -738,10 +738,10 @@ html body.pf-staff:not(.dark)[data-page="payments"] .fn-toolbar-select {
 }
 
 .fn-filter-chips .chip.active {
-  background: linear-gradient(160deg, #f8e08c, #e8c45a 50%, #c99a2e);
-  color: #1b1406;
-  border-color: rgba(255, 224, 130, 0.7);
-  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  background: #e8b93a;
+  color: #0b0f19;
+  border-color: #e8b93a;
+  box-shadow: none;
 }
 
 /* Buttons */
@@ -753,22 +753,26 @@ html body.pf-staff:not(.dark)[data-page="payments"] .fn-toolbar-select {
   height: 44px;
   padding: 0 20px;
   border-radius: 12px;
-  border: 1px solid rgba(255, 224, 130, 0.65);
-  background: linear-gradient(160deg, #f8e08c, #e8c45a 50%, #c99a2e);
-  color: #1b1406;
+  border: 0;
+  background: #e8b93a;
+  color: #0b0f19;
   font: inherit;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
   text-decoration: none;
-  box-shadow: 0 8px 22px rgba(245, 158, 11, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.55);
-  transition: transform 0.16s ease, box-shadow 0.16s ease, filter 0.16s ease;
+  box-shadow: none;
+  transition: background-color 0.15s ease;
 }
 
 .fn-btn-gold:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.03);
-  box-shadow: 0 10px 26px rgba(245, 158, 11, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.65);
+  transform: none;
+  background: #f0c44b;
+  box-shadow: none;
+}
+
+.fn-btn-gold:active {
+  background: #b8860b;
 }
 
 .fn-btn-gold svg,
@@ -1148,8 +1152,8 @@ body[data-page="cashier"] .badge.processing::before { background: var(--pf-st-pr
 }
 
 .fn-table--review {
-  --fn-cols: minmax(150px, 1.2fr) minmax(90px, .8fr) minmax(100px, .9fr) minmax(140px, 1.2fr) minmax(180px, 1.3fr) minmax(100px, .9fr) minmax(190px, 1.1fr);
-  --fn-min-w: 960px;
+  --fn-cols: minmax(150px, 1.35fr) minmax(95px, 0.9fr) minmax(105px, 0.95fr) minmax(135px, 1.15fr) minmax(120px, 1fr) minmax(110px, 0.95fr) minmax(175px, 1.1fr);
+  --fn-min-w: 940px;
 }
 
 .fn-table thead,
@@ -1259,10 +1263,25 @@ html body.pf-staff[data-page="cashier"] .fn-table thead th.fn-right {
   background: var(--pf-tbl-selected);
 }
 
-.fn-table tbody tr:has(.empty-state) {
+.fn-table tbody tr:has(.empty-state),
+.fn-table tbody tr.fn-review-empty {
   display: block;
   height: auto;
+  min-height: 0;
   padding: 28px 16px;
+}
+
+.fn-table tbody tr.fn-review-empty td {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: auto;
+  white-space: normal;
+  text-align: center;
+  color: var(--fn-muted, var(--muted));
 }
 
 .fn-table tbody td {
@@ -2398,29 +2417,39 @@ body:not(.dark) .pf-pay-step.is-done .pf-pay-step-num {
 
 .pf-gcash-pay-layout {
   display: grid;
-  grid-template-columns: minmax(250px, 310px) minmax(0, 1fr);
+  grid-template-columns: minmax(236px, 268px) minmax(0, 1fr);
   gap: 24px;
-  align-items: start;
+  align-items: stretch;
 }
 
 .pf-gcash-qr-panel {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-between;
   text-align: center;
-  gap: 14px;
-  padding: 18px 18px 16px;
+  gap: 12px;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 16px;
   border-radius: 18px;
   border: 1px solid rgba(255, 255, 255, 0.16);
-  background: linear-gradient(180deg, #1b7fff 0%, #005ee4 100%);
+  background: #0070f3;
   color: #ffffff;
-  transition: box-shadow 0.18s ease, border-color 0.18s ease;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
 body:not(.dark) .pf-gcash-qr-panel {
   border-color: rgba(0, 94, 228, 0.28);
-  background: linear-gradient(180deg, #1b7fff 0%, #005ee4 100%);
+  background: #0070f3;
   color: #ffffff;
+}
+
+.pf-gcash-pay-layout .fn-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
 }
 
 .pf-gcash-qr-panel.is-gcash-active {
@@ -2445,20 +2474,20 @@ body:not(.dark) .pf-gcash-qr-panel {
   position: relative;
   display: block;
   width: 100%;
-  max-width: 232px;
+  max-width: 204px;
   padding: 0;
   border: 0;
   border-radius: 16px;
   overflow: hidden;
   background: #ffffff;
   cursor: zoom-in;
-  box-shadow: 0 10px 24px rgba(0, 38, 102, 0.28);
-  transition: transform 0.16s ease, box-shadow 0.16s ease;
+  box-shadow: 0 8px 20px rgba(0, 38, 102, 0.24);
+  transition: box-shadow 0.16s ease;
 }
 
 .pf-gcash-qr-thumb:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 14px 28px rgba(0, 38, 102, 0.36);
+  transform: none;
+  box-shadow: 0 12px 24px rgba(0, 38, 102, 0.32);
 }
 
 .pf-gcash-qr-thumb img {
@@ -2476,7 +2505,7 @@ body:not(.dark) .pf-gcash-qr-panel {
   grid-template-columns: 1fr;
   gap: 8px;
   width: 100%;
-  max-width: 232px;
+  max-width: 204px;
   margin-top: 2px;
 }
 
@@ -2609,7 +2638,8 @@ body:not(.dark) .pf-pay-method-pill {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: 4px;
+  margin-top: auto;
+  padding-top: 6px;
 }
 
 .pf-pay-submit-row .fn-btn-gold {
@@ -2654,6 +2684,11 @@ body:not(.dark) .pf-gcash-qr-modal-card {
 @media (max-width: 860px) {
   .pf-gcash-pay-layout {
     grid-template-columns: 1fr;
+  }
+
+  .pf-gcash-qr-panel,
+  .pf-gcash-pay-layout .fn-form {
+    height: auto;
   }
 
   .pf-gcash-qr-thumb {

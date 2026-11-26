@@ -7,7 +7,7 @@ from django.utils import timezone
 from apps.membership.models import Attendance, MemberProfile
 from apps.notifications.models import Notification
 from apps.trainers import services
-from apps.trainers.models import TrainerAssignment, TrainerProfile, TrainerRequest
+from apps.trainers.models import TrainerAssignment, TrainerProfile, TrainerRequest, TrainerSession
 
 User = get_user_model()
 PASSWORD = "Sup3r-secret-pass"
@@ -625,3 +625,271 @@ class TrainerOnboardingTests(TestCase):
             content_type="application/json",
         )
         self.assertEqual(ok_login.status_code, 200)
+
+
+class TrainerPortalBackendAuditTests(TestCase):
+    """Covers database-backed TrainerSession CRUD, RBAC is_active checks, and validation."""
+
+    def setUp(self):
+        self.owner = User.objects.create_user(
+            username="owner_audit@gym.test",
+            email="owner_audit@gym.test",
+            password=PASSWORD,
+            role="OWNER",
+            first_name="Alex",
+            last_name="Owner",
+        )
+        self.t1_user = User.objects.create_user(
+            username="coach1_audit@gym.test",
+            email="coach1_audit@gym.test",
+            password=PASSWORD,
+            role="TRAINER",
+            first_name="Mika",
+            last_name="Reyes",
+        )
+        self.t2_user = User.objects.create_user(
+            username="coach2_audit@gym.test",
+            email="coach2_audit@gym.test",
+            password=PASSWORD,
+            role="TRAINER",
+            first_name="Jun",
+            last_name="Cruz",
+        )
+        self.t1 = TrainerProfile.objects.create(user=self.t1_user, specialization="HIIT", max_members=10)
+        self.t2 = TrainerProfile.objects.create(user=self.t2_user, specialization="Strength", max_members=10)
+        self.m1_user = User.objects.create_user(
+            username="m1_audit@gym.test",
+            email="m1_audit@gym.test",
+            password=PASSWORD,
+            role="MEMBER",
+            first_name="Ana",
+            last_name="Santos",
+        )
+        self.m2_user = User.objects.create_user(
+            username="m2_audit@gym.test",
+            email="m2_audit@gym.test",
+            password=PASSWORD,
+            role="MEMBER",
+            first_name="Ben",
+            last_name="Dizon",
+        )
+        self.m1 = MemberProfile.objects.create(user=self.m1_user, membership_status="ACTIVE")
+        self.m2 = MemberProfile.objects.create(user=self.m2_user, membership_status="ACTIVE")
+        services.assign_trainer(self.m1, self.t1, actor=self.owner)
+
+    def test_schedule_starts_empty_without_hardcoded_dummy_sessions(self):
+        self.client.force_login(self.t1_user)
+        res = self.client.get("/api/trainer/schedule/")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.json()["sessions"], [])
+
+    def test_trainer_session_crud_ownership_and_dashboard_reflection(self):
+        today_dow = (timezone.localdate().weekday() + 1) % 7
+        self.client.force_login(self.t1_user)
+
+        # Validation rejects blank name or invalid time
+        bad = self.client.post(
+            "/api/trainer/schedule/sessions/",
+            {"name": "", "day_of_week": today_dow, "start_time": "25:99"},
+            content_type="application/json",
+        )
+        self.assertEqual(bad.status_code, 400)
+
+        # Create real session in DB
+        created = self.client.post(
+            "/api/trainer/schedule/sessions/",
+            {
+                "name": "Morning Conditioning",
+                "day_of_week": today_dow,
+                "start_time": "06:30",
+                "duration_mins": 50,
+                "capacity": 14,
+                "room": "Studio 1",
+                "notes": "Bring jump rope",
+            },
+            content_type="application/json",
+        )
+        self.assertEqual(created.status_code, 201)
+        body = created.json()
+        self.assertTrue(body["is_mine"])
+        self.assertEqual(body["coach"], "Mika Reyes")
+        sid = body["id"]
+        self.assertTrue(TrainerSession.objects.filter(pk=sid, trainer=self.t1).exists())
+
+        # Dashboard returns today's real DB session
+        dash = self.client.get("/api/trainer/dashboard/")
+        self.assertEqual(dash.status_code, 200)
+        self.assertEqual(dash.json()["stats"]["today_my_classes"], 1)
+        self.assertEqual(len(dash.json()["today_sessions"]), 1)
+        self.assertEqual(dash.json()["today_sessions"][0]["id"], sid)
+
+        # Update own session
+        patched = self.client.patch(
+            f"/api/trainer/schedule/sessions/{sid}/",
+            {"name": "Sunrise Conditioning", "room": "Main Floor"},
+            content_type="application/json",
+        )
+        self.assertEqual(patched.status_code, 200)
+        self.assertEqual(patched.json()["name"], "Sunrise Conditioning")
+        self.assertEqual(patched.json()["room"], "Main Floor")
+
+        # Another trainer sees is_mine=False and cannot edit or delete
+        self.client.force_login(self.t2_user)
+        sched2 = self.client.get("/api/trainer/schedule/")
+        self.assertEqual(sched2.status_code, 200)
+        self.assertEqual(len(sched2.json()["sessions"]), 1)
+        self.assertFalse(sched2.json()["sessions"][0]["is_mine"])
+
+        self.assertEqual(
+            self.client.patch(
+                f"/api/trainer/schedule/sessions/{sid}/",
+                {"name": "Hijacked"},
+                content_type="application/json",
+            ).status_code,
+            403,
+        )
+        self.assertEqual(
+            self.client.delete(f"/api/trainer/schedule/sessions/{sid}/").status_code,
+            403,
+        )
+
+        # Owning trainer deletes session cleanly
+        self.client.force_login(self.t1_user)
+        deleted = self.client.delete(f"/api/trainer/schedule/sessions/{sid}/")
+        self.assertEqual(deleted.status_code, 200)
+        self.assertFalse(TrainerSession.objects.filter(pk=sid).exists())
+
+    def test_deactivated_trainer_and_member_blocked_on_api_and_html(self):
+        # Member blocked from trainer HTML pages and API
+        self.client.force_login(self.m1_user)
+        self.assertEqual(self.client.get("/trainer/members").status_code, 403)
+        self.assertEqual(self.client.get("/api/trainer/schedule/sessions/").status_code, 403)
+
+        # Deactivated trainer blocked even with active session
+        self.client.force_login(self.t1_user)
+        self.t1_user.is_active = False
+        self.t1_user.save(update_fields=["is_active"])
+        self.assertIn(self.client.get("/trainer/members").status_code, (302, 403))
+        self.assertEqual(self.client.get("/api/trainer/profile/").status_code, 403)
+        self.assertEqual(self.client.get("/api/trainer/dashboard/").status_code, 403)
+        self.assertEqual(self.client.get("/api/trainer/schedule/sessions/").status_code, 403)
+
+    def test_schedule_note_rejects_unassigned_member_and_profile_requires_full_name(self):
+        self.client.force_login(self.t1_user)
+        unassigned_res = self.client.post(
+            "/api/trainer/schedule/note/",
+            {"session_name": "HIIT", "note": "See you", "member_id": self.m2.pk},
+            content_type="application/json",
+        )
+        self.assertEqual(unassigned_res.status_code, 403)
+
+        bad_name = self.client.patch(
+            "/api/trainer/profile/",
+            {"full_name": "Mika"},
+            content_type="application/json",
+        )
+        self.assertEqual(bad_name.status_code, 400)
+
+        good_name = self.client.patch(
+            "/api/trainer/profile/",
+            {"full_name": "Mikaela Reyes"},
+            content_type="application/json",
+        )
+        self.assertEqual(good_name.status_code, 200)
+        self.t1_user.refresh_from_db()
+        self.assertEqual(self.t1_user.first_name, "Mikaela")
+        self.assertEqual(self.t1_user.last_name, "Reyes")
+
+    def test_cannot_assign_or_request_pending_on_leave_inactive_or_deactivated_trainer(self):
+        pending_user = User.objects.create_user(
+            username="pending_trainer@gym.test",
+            email="pending_trainer@gym.test",
+            password=PASSWORD,
+            role="TRAINER",
+            first_name="Angelo",
+            last_name="Pending",
+            is_active=False,
+        )
+        pending_t = TrainerProfile.objects.create(
+            user=pending_user,
+            specialization="Strength",
+            max_members=20,
+            is_active=True,
+            status=TrainerProfile.Status.ACTIVE,
+        )
+        on_leave_user = User.objects.create_user(
+            username="leave_trainer@gym.test",
+            email="leave_trainer@gym.test",
+            password=PASSWORD,
+            role="TRAINER",
+            first_name="Sam",
+            last_name="Leave",
+        )
+        on_leave_t = TrainerProfile.objects.create(
+            user=on_leave_user,
+            specialization="Cardio",
+            max_members=10,
+            is_active=True,
+            status=TrainerProfile.Status.ON_LEAVE,
+        )
+        inactive_user = User.objects.create_user(
+            username="inactive_trainer@gym.test",
+            email="inactive_trainer@gym.test",
+            password=PASSWORD,
+            role="TRAINER",
+            first_name="Pat",
+            last_name="Inactive",
+        )
+        inactive_t = TrainerProfile.objects.create(
+            user=inactive_user,
+            specialization="HIIT",
+            max_members=10,
+            is_active=False,
+            status=TrainerProfile.Status.INACTIVE,
+        )
+        # Deactivated user whose TrainerProfile.is_active stayed True
+        self.t1_user.is_active = False
+        self.t1_user.save(update_fields=["is_active"])
+
+        self.assertTrue(services.is_trainer_assignable(self.t2))
+        for bad in (pending_t, on_leave_t, inactive_t, self.t1):
+            self.assertFalse(services.is_trainer_assignable(bad))
+            with self.assertRaises(Exception):
+                services.assign_trainer(self.m2, bad, actor=self.owner)
+            with self.assertRaises(Exception):
+                services.request_trainer(self.m2, trainer=bad, note="Please assign")
+
+        # Staff assign API rejects all unavailable trainers
+        self.client.force_login(self.owner)
+        for bad in (pending_t, on_leave_t, inactive_t, self.t1):
+            res = self.client.post(
+                f"/api/staff/members/{self.m2.pk}/trainer/",
+                {"trainer_id": bad.pk},
+                content_type="application/json",
+            )
+            self.assertEqual(res.status_code, 400)
+
+        # Approving a request while overriding to an unavailable trainer also fails
+        open_req = services.request_trainer(self.m2, note="Any active trainer")
+        decide_res = self.client.post(
+            f"/api/staff/trainer-requests/{open_req.pk}/decide/",
+            {"approve": True, "trainer_id": pending_t.pk},
+            content_type="application/json",
+        )
+        self.assertEqual(decide_res.status_code, 400)
+        self.assertIsNone(services.current_assignment(self.m2))
+
+        # Member trainer options exclude unavailable trainers and member request API rejects them
+        self.client.force_login(self.m2_user)
+        me_res = self.client.get("/api/trainer/me/")
+        self.assertEqual(me_res.status_code, 200)
+        option_ids = [item["id"] for item in me_res.json()["options"]]
+        self.assertIn(self.t2.pk, option_ids)
+        for bad in (pending_t, on_leave_t, inactive_t, self.t1):
+            self.assertNotIn(bad.pk, option_ids)
+            req_res = self.client.post(
+                "/api/trainer-requests/",
+                {"trainer_id": bad.pk, "note": "Can I train?"},
+                content_type="application/json",
+            )
+            self.assertEqual(req_res.status_code, 400)

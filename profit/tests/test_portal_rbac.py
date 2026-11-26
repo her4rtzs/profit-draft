@@ -126,6 +126,12 @@ class PortalRBACTests(TestCase):
         owner_client.force_login(self.owner)
         for path in ("/reports", "/trainers", "/cashiers", "/announcements", "/payments", "/members", "/settings"):
             self.assertEqual(owner_client.get(path).status_code, 200, path)
+        owner_cashier = owner_client.get("/cashier")
+        self.assertEqual(owner_cashier.status_code, 403)
+        self.assertIn(b"Page not found", owner_cashier.content)
+        self.assertIn(b'href="/dashboard"', owner_cashier.content)
+        self.assertNotIn(b"Cashier access required", owner_cashier.content)
+
         for path in ("/cashier", "/cashier.html", "/trainer/index", "/trainer/attendance", "/member-home", "/claim"):
             self.assertEqual(owner_client.get(path).status_code, 403, f"Owner must be blocked on {path}")
 
@@ -167,3 +173,9 @@ class PortalRBACTests(TestCase):
         req = RequestFactory().get("/dashboard")
         req.user = self.cashier
         self.assertEqual(dashboard(req).status_code, 403)
+
+    def test_error_404_handler_renders_branded_page_not_found(self):
+        res = self.client.get("/does-not-exist")
+        self.assertEqual(res.status_code, 404)
+        self.assertIn(b"Page not found", res.content)
+        self.assertIn(b'href="/login"', res.content)

@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
-  <title>Coach Dashboard — ProFit Trainer</title>
+  <title>Coach Dashboard Ã¢â‚¬â€ ProFit Trainer</title>
   <link rel="icon" href="/assets/img/logo.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,7 +24,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="ProFit">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="stylesheet" href="/pf-system.css?v=26">
+  <link rel="stylesheet" href="/pf-system.css?v=34">
 </head>
 
 <body data-portal="trainer" data-page="dashboard" data-tagline="off" data-title="Dashboard"
@@ -164,7 +164,7 @@
             <div class="tw-card-head tw-att-head">
               <div class="tw-att-head-left">
                 <h2 class="tw-card-title" id="attChartTitle">Daily attendance</h2>
-                <p class="tw-card-sub" id="attSubtitle">Daily · Oct 27 – Nov 9, 2026</p>
+                <p class="tw-card-sub" id="attSubtitle">Loading attendance range...</p>
               </div>
               <div class="tw-att-head-right">
                 <div class="tw-period-tabs" id="attPeriodTabs" role="tablist" aria-label="Chart granularity">
@@ -267,6 +267,7 @@
                 <h2 class="tw-card-title" id="schedTitle">Today's Coaching Schedule</h2>
                 <p class="tw-card-sub" id="todayScheduleDate">Training timetable</p>
               </div>
+              <a class="tw-link" href="/trainer/schedule">Manage</a>
             </div>
             <div class="tw-list" id="todaySessionsList">
               <span class="tw-skel tw-skel-row"></span>
@@ -335,14 +336,14 @@
   </div>
 
   <!-- Scripts -->
-  <script src="/config.js?v=9"></script>
-  <script src="/api.js?v=5"></script>
-  <script src="/auth.js?v=6"></script>
+  <script src="/config.js?v=11"></script>
+  <script src="/api.js?v=6"></script>
+  <script src="/auth.js?v=7"></script>
   <script src="/assets/js/staff-icons.js?v=5"></script>
   <script src="/assets/js/staff-data.js?v=12"></script>
-  <script src="/assets/js/staff.js?v=18"></script>
+  <script src="/assets/js/staff.js?v=19"></script>
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script>
-  <script src="/trainer/trainer.js?v=13"></script>
+  <script src="/trainer/trainer.js?v=14"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const PF = window.PF || {};
@@ -635,10 +636,10 @@
           const sameYear = String(fromIso).slice(0, 4) === String(toIso).slice(0, 4);
           return d.toLocaleDateString('en-US', sameYear ? { month: 'short', day: 'numeric' } : { month: 'short', day: 'numeric', year: 'numeric' });
         })();
-        const spanText = `${granWord} · ${fromShort} – ${formatIsoNice(toIso)}`;
+        const spanText = `${granWord} Ã‚Â· ${fromShort} Ã¢â‚¬â€œ ${formatIsoNice(toIso)}`;
 
         if ($('attSubtitle')) {
-          $('attSubtitle').textContent = mLabel ? `${spanText} · ${mLabel}` : spanText;
+          $('attSubtitle').textContent = mLabel ? `${spanText} Ã‚Â· ${mLabel}` : spanText;
         }
       }
 
@@ -667,7 +668,7 @@
       }
 
       function formatRateDisplay(val) {
-        if (val === null || val === undefined || Number.isNaN(Number(val))) return '—';
+        if (val === null || val === undefined || Number.isNaN(Number(val))) return 'Ã¢â‚¬â€';
         const num = Number(val);
         return `${Math.round(num)}%`;
       }
@@ -682,7 +683,7 @@
         const stage = $('attChartStage');
         $('sumCheckedIn').textContent = '0';
         $('sumScheduled').textContent = '0';
-        $('sumRate').textContent = '—';
+        $('sumRate').textContent = 'Ã¢â‚¬â€';
         stage.innerHTML =
           emptyState('calendar', 'Pick a valid date range', detailMsg || 'Enter valid From and To dates (MM/DD/YYYY) within 60 buckets.') +
           '<div class="tw-chart-tip" id="attChartTip" role="status" aria-live="polite" hidden></div>';
@@ -1128,6 +1129,50 @@
       }
 
       // Live Updates Across Portals: 30s polling + visibilitychange + cross-tab BroadcastChannel/storage
+      function hydrateHeroMetrics(dash, members, sch) {
+        const coachName = (dash.trainer && dash.trainer.name) || (window.ProFitAuth?.getUser?.()?.name) || 'Coach';
+        const firstWord = String(coachName).trim().split(/\s+/)[0] || 'Coach';
+        if ($('heroCoachEyebrow')) $('heroCoachEyebrow').textContent = `COACH ${firstWord.toUpperCase()},`;
+
+        const st = dash.stats || {};
+        const assignedCnt = Number(st.assigned_members ?? members.length) || 0;
+        const todayInCnt = Number(st.today_checkins ?? 0) || 0;
+        const todayDow = new Date().getDay();
+        const todaySessions = Array.isArray(dash.today_sessions)
+          ? dash.today_sessions
+          : (sch.sessions || []).filter(s => s.dow === todayDow);
+        const myTodayClasses = todaySessions.filter(s => s.is_mine);
+        const displayClasses = myTodayClasses.length ? myTodayClasses : todaySessions;
+        const firstClass = displayClasses[0] || null;
+
+        if ($('dutySessionName')) $('dutySessionName').textContent = firstClass ? firstClass.name : 'Open floor';
+        if ($('dutySessionSub')) {
+          $('dutySessionSub').textContent = firstClass
+            ? `${T.format.time(firstClass.time)} Ã‚Â· ${firstClass.coach || coachName}`
+            : 'No classes scheduled today';
+        }
+        if ($('dutyCheckedNum')) $('dutyCheckedNum').textContent = String(todayInCnt);
+        if ($('dutyRosterCount')) $('dutyRosterCount').textContent = `${assignedCnt} member${assignedCnt === 1 ? '' : 's'}`;
+        if ($('dutyRingArc')) {
+          const frac = assignedCnt > 0 ? Math.min(1, todayInCnt / assignedCnt) : 0;
+          $('dutyRingArc').style.strokeDashoffset = (201.06 * (1 - frac)).toFixed(2);
+        }
+        if ($('ckpiAssigned')) $('ckpiAssigned').textContent = String(assignedCnt);
+        if ($('ckpiToday')) $('ckpiToday').textContent = String(todayInCnt);
+        if ($('ckpiTodayDenom')) $('ckpiTodayDenom').textContent = `/ ${assignedCnt}`;
+        const segs = $('ckpiTodaySegs');
+        if (segs) {
+          const filled = assignedCnt > 0 ? Math.round((Math.min(todayInCnt, assignedCnt) / assignedCnt) * 5) : 0;
+          segs.querySelectorAll('i').forEach((el, idx) => el.classList.toggle('on', idx < filled));
+        }
+        if ($('ckpiClasses')) $('ckpiClasses').textContent = String(myTodayClasses.length);
+        if ($('ckpiClassesNext')) {
+          $('ckpiClassesNext').textContent = firstClass
+            ? `Next: ${T.format.time(firstClass.time)} ${firstClass.name}`
+            : 'Add a class in Schedule';
+        }
+      }
+
       async function pollLiveAttendance() {
         if (document.visibilityState === 'hidden') return;
         await fetchAndRenderAttendance({ isPoll: true });
@@ -1136,6 +1181,10 @@
           if (dash && dash.recent_attendances) renderRecentCheckins(dash.recent_attendances);
           if (Array.isArray(members)) renderRoster(members);
           if (dash && dash.stats) renderMembershipOverview(dash.stats, members || []);
+          if (dash) {
+            hydrateHeroMetrics(dash, members || [], { sessions: dash.today_sessions || [] });
+            renderSessions({ sessions: dash.today_sessions || [] });
+          }
         } catch (_) { }
       }
 
@@ -1165,14 +1214,14 @@
         const todaySessions = (sch.sessions || []).filter(s => s.dow === todayDOW);
         const box = $('todaySessionsList');
         if (!todaySessions.length) {
-          box.innerHTML = emptyState('calendar', 'No sessions scheduled today', 'Check the weekly schedule for upcoming classes.');
+          box.innerHTML = emptyState('calendar', 'No sessions scheduled today', 'Add a class in My Schedule to see it here.');
           return;
         }
         box.innerHTML = todaySessions.map(s => `
       <div class="tw-session ${s.is_mine ? 'is-mine' : ''}">
         <div class="tw-session-main">
           <div class="tw-time-badge">
-            <strong>${esc(s.time)}</strong>
+            <strong>${esc(T.format.time(s.time))}</strong>
             <small>${esc(s.mins)} min</small>
           </div>
           <div class="tw-session-text">
@@ -1181,7 +1230,7 @@
           </div>
         </div>
         <div class="tw-session-side">
-          <span class="tw-pill ${s.is_mine ? 'is-amber' : 'is-gray'}" title="${esc(s.coach)}">${esc(s.coach)}</span>
+          <span class="tw-pill ${s.is_mine ? 'is-amber' : 'is-gray'}" title="${esc(s.coach)}">${s.is_mine ? 'Your Class' : esc(s.coach)}</span>
         </div>
       </div>`).join('');
       }
@@ -1246,47 +1295,25 @@
           T.api.getSchedule()
         ]);
 
+        if (dashRes.status === 'rejected' && membersRes.status === 'rejected') {
+          const errMsg = (dashRes.reason && dashRes.reason.message) || 'Could not load trainer dashboard.';
+          if (PF.toast) PF.toast(errMsg, 'error');
+          $('recentAttendanceTbody').innerHTML = `<tr><td colspan="4">${emptyState('alert-circle', 'Could not load dashboard', esc(errMsg))}</td></tr>`;
+          $('todaySessionsList').innerHTML = emptyState('alert-circle', 'Schedule unavailable', esc(errMsg));
+          return;
+        }
+
         const dash = dashRes.status === 'fulfilled' ? (dashRes.value || {}) : {};
         const members = membersRes.status === 'fulfilled' ? (membersRes.value || []) : [];
-        const sch = schRes.status === 'fulfilled' ? (schRes.value || {}) : {};
+        const sch = schRes.status === 'fulfilled' ? (schRes.value || {}) : { sessions: dash.today_sessions || [] };
 
         if (Array.isArray(dash.assigned_members) && dash.assigned_members.length) {
           populateMemberSelect(dash.assigned_members);
         }
 
-        // Hydrate Coach Hero + On-Duty Ring + 4-Card KPI Strip
-        const coachName = (dash.trainer && dash.trainer.name) || (window.ProFitAuth?.getUser?.()?.first_name) || 'Coach';
-        const firstWord = String(coachName).trim().split(/\s+/)[0] || 'Coach';
-        if ($('heroCoachEyebrow')) $('heroCoachEyebrow').textContent = `COACH ${firstWord.toUpperCase()},`;
-
-        const st = dash.stats || {};
-        const assignedCnt = Number(st.assigned_members ?? members.length) || 0;
-        const todayInCnt = Number(st.today_checkins ?? 0) || 0;
-        const todayDow = new Date().getDay();
-        const todayClasses = (sch.sessions || []).filter(s => s.dow === todayDow);
-        const firstClass = todayClasses[0] || null;
-
-        if ($('dutySessionName')) $('dutySessionName').textContent = firstClass ? firstClass.name : 'Open floor';
-        if ($('dutySessionSub')) $('dutySessionSub').textContent = firstClass ? `${firstClass.time} · ${firstClass.coach || coachName}` : 'No scheduled class today';
-        if ($('dutyCheckedNum')) $('dutyCheckedNum').textContent = String(todayInCnt);
-        if ($('dutyRosterCount')) $('dutyRosterCount').textContent = `${assignedCnt} member${assignedCnt === 1 ? '' : 's'}`;
-        if ($('dutyRingArc')) {
-          const frac = assignedCnt > 0 ? Math.min(1, todayInCnt / assignedCnt) : 0;
-          $('dutyRingArc').style.strokeDashoffset = (201.06 * (1 - frac)).toFixed(2);
-        }
-        if ($('ckpiAssigned')) $('ckpiAssigned').textContent = String(assignedCnt);
-        if ($('ckpiToday')) $('ckpiToday').textContent = String(todayInCnt);
-        if ($('ckpiTodayDenom')) $('ckpiTodayDenom').textContent = `/ ${assignedCnt}`;
-        const segs = $('ckpiTodaySegs');
-        if (segs) {
-          const filled = assignedCnt > 0 ? Math.round((Math.min(todayInCnt, assignedCnt) / assignedCnt) * 5) : 0;
-          segs.querySelectorAll('i').forEach((el, idx) => el.classList.toggle('on', idx < filled));
-        }
-        if ($('ckpiClasses')) $('ckpiClasses').textContent = String(todayClasses.length);
-        if ($('ckpiClassesNext')) $('ckpiClassesNext').textContent = firstClass ? `Next: ${firstClass.time} ${firstClass.name}` : 'No classes today';
-
+        hydrateHeroMetrics(dash, members, sch);
         renderRoster(members);
-        renderMembershipOverview(st, members);
+        renderMembershipOverview(dash.stats || {}, members);
         renderRecentCheckins(dash.recent_attendances || []);
         renderSessions(sch);
         await fetchAndRenderAttendance();

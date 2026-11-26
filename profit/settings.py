@@ -45,6 +45,10 @@ if not ALLOWED_HOSTS:
             "ALLOWED_HOSTS must be set when DEBUG=False. Refusing to fall "
             "back to localhost in a non-debug environment."
         )
+if DEBUG:
+    for _local_host in ("localhost", "127.0.0.1", "testserver"):
+        if _local_host not in ALLOWED_HOSTS:
+            ALLOWED_HOSTS.append(_local_host)
 
 # Optionally seed from Vercel's provided deployment host.
 VERCEL_URL = env("VERCEL_URL", default="")

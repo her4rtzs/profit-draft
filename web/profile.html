@@ -68,90 +68,66 @@
     .pf-ava-cam {
       position: absolute;
       inset: 0;
-      background: rgba(10, 14, 23, .68);
-      color: #ffffff;
+      z-index: 4;
+      border-radius: 50%;
+      background: rgba(10, 14, 23, .66);
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 4px;
-      font-size: 11.5px;
-      font-weight: 700;
+      gap: 10px;
       opacity: 0;
-      transition: opacity .16s ease;
       pointer-events: none;
-    }
-
-    .pf-ava-cam i {
-      font-size: 18px;
-      color: #e8b93a;
+      transition: opacity .16s ease;
     }
 
     .pf-ava-trigger:hover .pf-ava-cam,
-    .pf-ava-trigger:focus-visible .pf-ava-cam {
+    .pf-ava-trigger:focus-within .pf-ava-cam,
+    .pf-ava-trigger.is-open .pf-ava-cam {
       opacity: 1;
+      pointer-events: auto;
     }
 
-    .pf-ava-menu {
-      position: absolute;
-      top: calc(100% + 8px);
-      left: 0;
-      min-width: 176px;
-      padding: 6px;
-      border-radius: 14px;
-      background: var(--card, #111827);
-      border: 1px solid var(--border, #263246);
-      box-shadow: 0 14px 32px rgba(0, 0, 0, .35);
-      display: grid;
-      gap: 4px;
-      z-index: 30;
-    }
-
-    body:not(.dark) .pf-ava-menu {
-      background: #ffffff;
-      border-color: #eadfc8;
-      box-shadow: 0 12px 28px rgba(42, 36, 24, .14);
-    }
-
-    .pf-ava-menu[hidden] {
+    .pf-ava-cam[hidden] {
       display: none !important;
     }
 
-    .pf-ava-menu button {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      width: 100%;
-      padding: 9px 12px;
-      border: 0;
-      border-radius: 9px;
-      background: transparent;
-      color: var(--text, #f3f4f6);
-      font-size: 13px;
-      font-weight: 600;
-      text-align: left;
+    .pf-ava-act {
+      width: 36px;
+      height: 36px;
+      min-width: 0;
+      min-height: 0;
+      padding: 0;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, .24);
+      display: grid;
+      place-items: center;
       cursor: pointer;
+      font-size: 14px;
+      transition: transform .14s ease, background-color .14s ease, border-color .14s ease;
     }
 
-    body:not(.dark) .pf-ava-menu button {
-      color: #2a2418;
+    .pf-ava-act:hover:not(:disabled) {
+      transform: scale(1.06);
     }
 
-    .pf-ava-menu button:hover:not(:disabled) {
-      background: rgba(232, 185, 58, .14);
+    .pf-ava-act.pf-ava-del {
+      background: rgba(239, 68, 68, .22);
+      border-color: rgba(248, 113, 113, .6);
+      color: #fecaca;
     }
 
-    .pf-ava-menu button.is-danger {
-      color: #f87171;
+    .pf-ava-act.pf-ava-del:hover:not(:disabled) {
+      background: #dc2626;
+      border-color: #dc2626;
+      color: #ffffff;
     }
 
-    body:not(.dark) .pf-ava-menu button.is-danger {
-      color: #dc2626;
+    .pf-ava-act[hidden] {
+      display: none !important;
     }
 
-    .pf-ava-menu button:disabled {
-      opacity: .4;
-      cursor: not-allowed;
+    .pf-ava-badge {
+      cursor: pointer;
     }
 
     .pf-hero-id {
@@ -253,10 +229,18 @@
 
     .pf-comp-box {
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       align-items: center;
-      gap: 12px;
-      min-width: 175px;
+      gap: 18px;
+      padding: 14px 18px;
+      border-radius: 14px;
+      border: 1px solid var(--border, #263246);
+      background: rgba(255, 255, 255, .025);
+    }
+
+    body:not(.dark) .pf-comp-box {
+      background: #fdfaf3;
+      border-color: #eadfc8;
     }
 
     .pf-comp-ring {
@@ -417,6 +401,9 @@
       bottom: 2px;
       width: 30px;
       height: 30px;
+      min-width: 0;
+      min-height: 0;
+      padding: 0;
       border-radius: 50%;
       background: #e8b93a;
       color: #161209;
@@ -424,8 +411,9 @@
       display: grid;
       place-items: center;
       font-size: 12px;
-      pointer-events: none;
-      z-index: 2;
+      pointer-events: auto;
+      cursor: pointer;
+      z-index: 6;
     }
 
     body:not(.dark) .pf-ava-badge {
@@ -626,35 +614,51 @@
       color: #8a6212;
     }
 
-    .pf-dirty-bar {
-      position: fixed;
-      left: 50%;
-      bottom: 22px;
-      transform: translate(-50%, 220%);
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-      background: var(--card, #111827);
-      border: 1.5px solid #e8b93a;
-      border-radius: 16px;
-      padding: 10px 14px 10px 18px;
+    #profileNotice {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 12px;
-      z-index: 950;
-      box-shadow: 0 14px 36px rgba(0, 0, 0, .38);
-      transition: transform .35s cubic-bezier(.3, 1.2, .5, 1), opacity .22s ease, visibility .22s ease;
-      max-width: calc(100vw - 24px);
-      flex-wrap: wrap;
     }
 
-    @media (max-width: 980px) {
-      .pf-dirty-bar {
-        bottom: calc(82px + env(safe-area-inset-bottom, 0px));
-        padding: 10px 12px;
-        gap: 8px;
-        justify-content: center;
-      }
+    #profileNotice[hidden] {
+      display: none !important;
+    }
+
+    .pf-notice-msg {
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+
+    .pf-notice-close {
+      flex: none;
+      width: 28px;
+      height: 28px;
+      min-width: 0;
+      min-height: 0;
+      padding: 0;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, .16);
+      background: rgba(255, 255, 255, .06);
+      color: inherit;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      font-size: 13px;
+      transition: background-color .14s ease, border-color .14s ease;
+    }
+
+    .pf-notice-close:hover {
+      background: rgba(255, 255, 255, .14);
+    }
+
+    body:not(.dark) .pf-notice-close {
+      border-color: rgba(42, 36, 24, .18);
+      background: rgba(42, 36, 24, .05);
+    }
+
+    body:not(.dark) .pf-notice-close:hover {
+      background: rgba(42, 36, 24, .12);
     }
 
     @media (max-width: 520px) {
@@ -673,48 +677,20 @@
       }
     }
 
-    body:not(.dark) .pf-dirty-bar {
-      background: #ffffff;
-      border-color: #d9a425;
-      box-shadow: 0 12px 30px rgba(42, 36, 24, .16);
-    }
-
-    .pf-dirty-bar.on {
-      transform: translate(-50%, 0);
-      opacity: 1;
-      visibility: visible;
-      pointer-events: auto;
-    }
-
-    .pf-dirty-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #e8b93a;
-      flex: none;
-    }
-
-    .pf-dirty-bar span {
-      font-size: 13.5px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
     @media (prefers-reduced-motion: reduce) {
 
       .pf-rv,
       .pf-skel,
       .pf-ava-trigger,
-      .pf-comp-arc,
-      .pf-dirty-bar {
+      .pf-comp-arc {
         animation: none !important;
         transition: none !important;
       }
     }
   </style>
-  <script src="config.js?v=9"></script>
-  <script src="api.js"></script>
-  <script src="auth.js?v=6"></script>
+  <script src="config.js?v=11"></script>
+  <script src="api.js?v=6"></script>
+  <script src="auth.js?v=7"></script>
   <script
     type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script>
   <link rel="manifest" href="/manifest.webmanifest">
@@ -726,7 +702,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="ProFit">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="stylesheet" href="pf-system.css?v=26">
+  <link rel="stylesheet" href="pf-system.css?v=34">
 </head>
 
 <body class="pf-staff" data-page="profile" data-title="My profile" data-welcome="Your staff account">
@@ -741,19 +717,15 @@
 
         <article id="identity" class="pp-section-card pp-profile-hero pf-hero-v2 pf-rv" style="--i:0">
           <div class="pf-ava-trigger-wrap">
-            <button class="pf-ava-trigger" type="button" id="profileAvaTrigger" aria-haspopup="menu"
-              aria-expanded="false" title="Change profile photo">
+            <div class="pf-ava-trigger" id="profileAvaTrigger">
               <span class="pp-avatar-photo" id="profilePhotoBox"><i class="fa-solid fa-user"></i></span>
-              <span class="pf-ava-cam" aria-hidden="true"><i class="fa-solid fa-camera"></i><span>Change
-                  photo</span></span>
-            </button>
-            <span class="pf-ava-badge" aria-hidden="true"><i class="fa-solid fa-camera"></i></span>
-            <div class="pf-ava-menu" id="profileAvaMenu" role="menu" hidden>
-              <button type="button" role="menuitem" id="profilePhotoPick"><i class="fa-solid fa-camera"
-                  aria-hidden="true"></i> Upload photo</button>
-              <button type="button" role="menuitem" class="is-danger" id="profilePhotoClear"><i
-                  class="fa-regular fa-trash-can" aria-hidden="true"></i> Remove photo</button>
+              <div class="pf-ava-cam" id="profileAvaOverlay" role="group" aria-label="Profile photo actions" hidden>
+                <button type="button" class="pf-ava-act pf-ava-del" id="profilePhotoClear" title="Remove photo"
+                  aria-label="Remove photo" hidden><i class="fa-regular fa-trash-can" aria-hidden="true"></i></button>
+              </div>
             </div>
+            <button type="button" class="pf-ava-badge" id="profileAvaBadge" title="Upload photo"
+              aria-label="Upload photo"><i class="fa-solid fa-camera" aria-hidden="true"></i></button>
             <input type="file" id="profilePhoto" accept="image/*" hidden>
           </div>
 
@@ -852,34 +824,27 @@
           </article>
         </div>
 
-        <div class="pf-dirty-bar" id="pfDirtyBar" role="status" aria-live="polite">
-          <span class="pf-dirty-dot" aria-hidden="true"></span>
-          <span>Unsaved changes</span>
-          <button type="button" class="pp-btn" id="pfDiscardBtn"
-            style="height:34px;padding:0 12px;font-size:12.5px">Discard</button>
-          <button type="button" class="pp-btn pp-btn-primary" id="pfQuickSaveBtn"
-            style="height:34px;padding:0 14px;font-size:12.5px">Save</button>
-        </div>
-
       </section>
     </main>
   </div>
   <script>
     document.addEventListener("click", function (e) {
       if (!e.target.closest("#profileChangePwBtn")) return;
-      if (typeof window.openChangePasswordModal === "function") {
+      if (window.PFChangePassword && typeof window.PFChangePassword.open === "function") {
+        window.PFChangePassword.open();
+      } else if (typeof window.openChangePasswordModal === "function") {
         window.openChangePasswordModal();
       } else {
-        document.querySelector("[data-change-password]")?.click();
+        document.querySelector("[data-cp-item]")?.click();
       }
     });
   </script>
   <script src="layout.js?v=26"></script>
   <script src="sidebar.js?v=21"></script>
   <script src="data.js"></script>
-  <script src="profile.js?v=16"></script>
+  <script src="profile.js?v=20"></script>
   <script src="portal-fx.js?v=2"></script>
-  <script src="change-password.js?v=2" defer></script>
+  <script src="change-password.js?v=4" defer></script>
   <script src="notifications-live.js?v=2" defer></script>
   <script src="site-footer.js?v=2" defer></script>
 </body>

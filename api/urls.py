@@ -89,6 +89,7 @@ urlpatterns = [
     path("auth/reset-password/", auth.reset_password_view, name="auth-reset-password"),
     path("auth/resend-otp/", auth.resend_otp_api_view, name="auth-resend-otp"),
     path("auth/change-password/", auth.change_password_view, name="auth-change-password"),
+    path("auth/activity/", auth.activity_log_view, name="auth-activity"),
     path("auth/google/config/", auth.google_config_view, name="auth-google-config"),
     path("auth/google/", auth.google_auth_view, name="auth-google"),
     path("auth/google/link/", auth.google_link_view, name="auth-google-link"),

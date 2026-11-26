@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
-  <title>ProFit — My Schedule (Trainer Portal)</title>
+  <title>ProFit Ã¢â‚¬â€ My Schedule (Trainer Portal)</title>
   <script>try { var t = localStorage.getItem('pf-theme') || localStorage.getItem('theme') || 'dark'; document.documentElement.setAttribute('data-theme', t); document.documentElement.setAttribute('data-accent', 'gold'); } catch (e) { }</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,7 +23,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="ProFit">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="stylesheet" href="../pf-system.css?v=26">
+  <link rel="stylesheet" href="../pf-system.css?v=34">
 </head>
 
 <body data-page="schedule" data-portal="trainer" data-head="none">
@@ -39,14 +39,17 @@
           <div class="tw-hero-left">
             <div class="tw-hero-ico" data-ico="calendar"></div>
             <div class="tw-hero-text">
-              <span class="tw-hero-eyebrow">Weekly Class Timetable · Coach View</span>
+              <span class="tw-hero-eyebrow">Weekly Class Timetable Ã‚Â· Coach View</span>
               <h1 class="tw-hero-title">My Coaching Schedule</h1>
               <p class="tw-hero-sub" id="schedCoachSub">Manage your weekly classes and send instant schedule updates to
                 your assigned athletes.</p>
             </div>
           </div>
           <div class="tw-hero-actions">
-            <button type="button" class="tw-btn-primary" id="openNoteModalBtn">
+            <button type="button" class="tw-btn-primary" id="openAddSessionBtn">
+              <span data-ico="plus"></span> Add Class
+            </button>
+            <button type="button" class="tw-btn" id="openNoteModalBtn">
               <span data-ico="megaphone"></span> Send Schedule Note
             </button>
           </div>
@@ -63,31 +66,46 @@
             <div class="tw-card-head" style="flex-wrap:wrap">
               <div>
                 <h2 class="tw-card-title" id="schedDayHeading">Sessions</h2>
-                <p class="tw-card-sub">Highlighted gold sessions are assigned to you. Click "Notify Athletes" to
-                  broadcast a note.</p>
+                <p class="tw-card-sub">Gold cards are your classes (edit, remove, or notify athletes anytime).</p>
               </div>
               <div class="tw-filter-pills" id="schedScopeTabs">
                 <button type="button" class="tw-filter-pill active" data-scope="all">All Classes</button>
                 <button type="button" class="tw-filter-pill" data-scope="mine">My Classes</button>
               </div>
             </div>
-            <div id="schedList" class="tw-list"></div>
+            <div id="schedList" class="tw-list">
+              <span class="tw-skel tw-skel-row"></span>
+              <span class="tw-skel tw-skel-row"></span>
+            </div>
           </article>
 
           <!-- Right Column: Availability & Assigned Roster Quick View -->
-          <div style="display:grid;gap:20px">
+          <div style="display:grid;gap:20px;align-content:start">
             <article class="tw-card">
               <div class="tw-card-head">
                 <div>
                   <h2 class="tw-card-title">My Coaching Hours</h2>
                   <p class="tw-card-sub">Displayed to members on the trainer directory.</p>
                 </div>
-                <a href="/trainer/profile" class="tw-link">Update →</a>
+                <a href="/trainer/profile" class="tw-link">Update Ã¢â€ â€™</a>
               </div>
               <div
                 style="padding:14px 16px;border-radius:12px;border:1px solid var(--line);background:var(--card-2);font-size:13.5px;color:var(--text);line-height:1.55"
                 id="coachAvailBox">
-                Mon – Sat · 6:00 AM – 2:00 PM
+                Loading coaching hours...
+              </div>
+            </article>
+
+            <article class="tw-card">
+              <div class="tw-card-head">
+                <div>
+                  <h2 class="tw-card-title">Assigned Athletes</h2>
+                  <p class="tw-card-sub">Message an individual athlete about a session.</p>
+                </div>
+                <a href="/trainer/members" class="tw-link">Roster Ã¢â€ â€™</a>
+              </div>
+              <div id="schedRosterList" class="tw-list">
+                <span class="tw-skel tw-skel-row"></span>
               </div>
             </article>
           </div>
@@ -98,12 +116,69 @@
     <nav class="bottom-nav" id="bottomNav" aria-label="Quick navigation"></nav>
   </div>
 
-  <!-- Send Schedule Update Modal -->
-  <div class="modal-backdrop" id="schedNoteModal">
+  <!-- Add / Edit Coaching Session Modal -->
+  <div class="modal-backdrop" id="sessionFormModal" role="dialog" aria-modal="true" aria-labelledby="sessModalTitle">
     <div class="modal" style="max-width:520px">
       <div class="modal-head">
-        <h3>Broadcast Schedule Update</h3>
-        <button class="modal-close" data-close-modal="schedNoteModal">&times;</button>
+        <h3 id="sessModalTitle">Add Coaching Class</h3>
+        <button type="button" class="modal-close" data-close-modal="sessionFormModal" aria-label="Close">&times;</button>
+      </div>
+      <form id="sessionForm">
+        <input type="hidden" id="sessEditId" value="">
+        <div class="modal-body">
+          <div class="tw-form-grid">
+            <div class="tw-field span-2">
+              <label for="sessName">Class / Session Name</label>
+              <input type="text" id="sessName" maxlength="120" required placeholder="e.g. Sunrise HIIT">
+            </div>
+            <div class="tw-field">
+              <label for="sessDow">Day of Week</label>
+              <select id="sessDow" required>
+                <option value="0">Sunday</option>
+                <option value="1">Monday</option>
+                <option value="2">Tuesday</option>
+                <option value="3">Wednesday</option>
+                <option value="4">Thursday</option>
+                <option value="5">Friday</option>
+                <option value="6">Saturday</option>
+              </select>
+            </div>
+            <div class="tw-field">
+              <label for="sessTime">Start Time</label>
+              <input type="time" id="sessTime" required value="07:00">
+            </div>
+            <div class="tw-field">
+              <label for="sessMins">Duration (minutes)</label>
+              <input type="number" id="sessMins" min="15" max="240" required value="45">
+            </div>
+            <div class="tw-field">
+              <label for="sessCap">Max Athletes</label>
+              <input type="number" id="sessCap" min="1" max="100" required value="12">
+            </div>
+            <div class="tw-field span-2">
+              <label for="sessRoom">Room / Gym Zone</label>
+              <input type="text" id="sessRoom" maxlength="80" placeholder="e.g. Main Floor, Studio 1" value="Main Floor">
+            </div>
+            <div class="tw-field span-2">
+              <label for="sessNotes">Session Notes (optional)</label>
+              <input type="text" id="sessNotes" maxlength="300" placeholder="e.g. Bring jump rope and towel">
+            </div>
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button type="button" class="tw-btn" data-close-modal="sessionFormModal">Cancel</button>
+          <button type="submit" class="tw-btn-primary" id="saveSessionBtn">Save Class</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Send Schedule Update Modal -->
+  <div class="modal-backdrop" id="schedNoteModal" role="dialog" aria-modal="true" aria-labelledby="schedNoteTitle">
+    <div class="modal" style="max-width:520px">
+      <div class="modal-head">
+        <h3 id="schedNoteTitle">Broadcast Schedule Update</h3>
+        <button type="button" class="modal-close" data-close-modal="schedNoteModal" aria-label="Close">&times;</button>
       </div>
       <div class="modal-body">
         <p style="font-size:13px;color:var(--muted);margin-top:0;margin-bottom:16px">Send an instant in-app notification
@@ -116,57 +191,62 @@
         </div>
         <div class="tw-field" style="margin-bottom:14px">
           <label for="noteSession">Session / Class Name</label>
-          <input type="text" id="noteSession" placeholder="e.g. Sunrise HIIT · 6:00 AM">
+          <input type="text" id="noteSession" maxlength="120" placeholder="e.g. Sunrise HIIT Ã‚Â· 6:00 AM">
         </div>
         <div class="tw-field">
           <label for="noteBody">Message to Athletes</label>
-          <textarea id="noteBody" rows="4"
+          <textarea id="noteBody" rows="4" maxlength="500"
             placeholder="e.g. Class is moving to Studio 2 today. Bring hand wraps and water!"></textarea>
         </div>
       </div>
       <div class="modal-foot">
-        <button class="tw-btn" data-close-modal="schedNoteModal">Cancel</button>
-        <button class="tw-btn-primary" id="sendNoteSubmitBtn"><span data-ico="megaphone"></span> Send Update</button>
+        <button type="button" class="tw-btn" data-close-modal="schedNoteModal">Cancel</button>
+        <button type="button" class="tw-btn-primary" id="sendNoteSubmitBtn"><span data-ico="megaphone"></span> Send Update</button>
       </div>
     </div>
   </div>
 
-  <script src="../config.js?v=9"></script>
-  <script src="../api.js?v=5"></script>
-  <script src="../auth.js?v=6"></script>
+  <script src="../config.js?v=11"></script>
+  <script src="../api.js?v=6"></script>
+  <script src="../auth.js?v=7"></script>
   <script src="../assets/js/staff-icons.js?v=5"></script>
   <script src="../assets/js/staff-data.js?v=12"></script>
-  <script src="../assets/js/staff.js?v=18"></script>
-  <script src="trainer.js?v=12"></script>
+  <script src="../assets/js/staff.js?v=19"></script>
+  <script src="trainer.js?v=14"></script>
   <script>
     PF.ready(async () => {
       const DAYS_FULL = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
       const DAYS_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       let activeDow = new Date().getDay();
       let scopeFilter = 'all';
+      let sessions = [];
+      let roster = [];
 
-      const data = await Trainer.api.getSchedule();
-      const sessions = data.sessions || [];
-      const roster = data.assigned_members || [];
+      const recSelect = document.getElementById('noteRecipient');
+      const availBox = document.getElementById('coachAvailBox');
+      const listEl = document.getElementById('schedList');
+      const rosterEl = document.getElementById('schedRosterList');
 
-      // Populate KPIs (null-safe)
-      const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-      const mySessionsCount = sessions.filter(s => s.is_mine).length;
-      const todayCount = sessions.filter(s => s.dow === new Date().getDay()).length;
-      setTxt('kpiSchedMine', mySessionsCount);
-      setTxt('kpiSchedToday', todayCount);
-      setTxt('kpiSchedTodaySub', `${DAYS_FULL[new Date().getDay()]} timetable`);
-      setTxt('kpiSchedTotal', sessions.length);
-      setTxt('kpiSchedRoster', roster.length);
-
-      if (data.availability) {
-        document.getElementById('coachAvailBox').textContent = data.availability;
+      function openBroadcastModal({ recipient = 'all', sessionName = 'General Schedule Update' } = {}) {
+        recSelect.value = String(recipient);
+        document.getElementById('noteSession').value = sessionName;
+        document.getElementById('noteBody').value = '';
+        PF.openModal('schedNoteModal');
       }
 
-      // Populate recipient select in modal
-      const recSelect = document.getElementById('noteRecipient');
-      recSelect.innerHTML = `<option value="all">All Assigned Athletes (${roster.length})</option>` +
-        roster.map(m => `<option value="${m.id}">${PF.esc(m.name)}</option>`).join('');
+      function openSessionModal(existing = null) {
+        document.getElementById('sessEditId').value = existing ? String(existing.id) : '';
+        document.getElementById('sessModalTitle').textContent = existing ? 'Edit Coaching Class' : 'Add Coaching Class';
+        document.getElementById('saveSessionBtn').textContent = existing ? 'Save Changes' : 'Save Class';
+        document.getElementById('sessName').value = existing ? (existing.name || '') : '';
+        document.getElementById('sessDow').value = String(existing ? existing.dow : activeDow);
+        document.getElementById('sessTime').value = existing ? (existing.time || '07:00') : '07:00';
+        document.getElementById('sessMins').value = String(existing ? (existing.mins || 45) : 45);
+        document.getElementById('sessCap').value = String(existing ? (existing.cap || 12) : 12);
+        document.getElementById('sessRoom').value = existing ? (existing.room || 'Main Floor') : 'Main Floor';
+        document.getElementById('sessNotes').value = existing ? (existing.notes || '') : '';
+        PF.openModal('sessionFormModal');
+      }
 
       function renderDowStrip() {
         const strip = document.getElementById('dowStrip');
@@ -175,7 +255,7 @@
           const isToday = idx === new Date().getDay();
           return `
         <button type="button" class="tw-dow-btn ${idx === activeDow ? 'active' : ''}" data-dow="${idx}">
-          <span class="tw-dow-short">${DAYS_SHORT[idx]}${isToday ? ' · Today' : ''}</span>
+          <span class="tw-dow-short">${DAYS_SHORT[idx]}${isToday ? ' Ã‚Â· Today' : ''}</span>
           <span class="tw-dow-full">${fullName}</span>
           <span class="tw-dow-count">${daySessions.length} ${daySessions.length === 1 ? 'class' : 'classes'}</span>
         </button>
@@ -194,14 +274,13 @@
       function renderSessions() {
         document.getElementById('schedDayHeading').textContent = `${DAYS_FULL[activeDow]} Timetable`;
         const daySessions = sessions.filter(s => s.dow === activeDow && (scopeFilter === 'all' || s.is_mine));
-        const listEl = document.getElementById('schedList');
 
         if (!daySessions.length) {
           listEl.innerHTML = `
         <div class="tw-empty">
           <div class="tw-empty-ico">${PF.icon('calendar')}</div>
-          <strong>No ${scopeFilter === 'mine' ? 'personal coaching ' : ''}sessions on ${DAYS_FULL[activeDow]}</strong>
-          <p>Switch to another day above or toggle "All Classes" to view the full gym floor schedule.</p>
+          <strong>No ${scopeFilter === 'mine' ? 'personal coaching ' : ''}classes scheduled on ${DAYS_FULL[activeDow]}</strong>
+          <p>Click "Add Class" above to schedule a recurring class for ${DAYS_FULL[activeDow]}, or pick another day.</p>
         </div>
       `;
           return;
@@ -211,46 +290,78 @@
       <div class="tw-session-card ${s.is_mine ? 'is-mine' : ''}">
         <div class="tw-session-main">
           <div class="tw-time-badge">
-            <strong>${PF.esc(s.time)}</strong>
+            <strong>${PF.esc(Trainer.format.time(s.time))}</strong>
             <small>${s.mins} min</small>
           </div>
           <div class="tw-session-text">
             <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
               <strong style="font-size:15px">${PF.esc(s.name)}</strong>
-              ${s.is_mine ? '<span class="tw-pill is-amber">Your Session</span>' : `<span class="tw-pill is-gray">${PF.esc(s.coach)}</span>`}
+              ${s.is_mine ? '<span class="tw-pill is-amber">Your Class</span>' : `<span class="tw-pill is-gray">${PF.esc(s.coach)}</span>`}
             </div>
             <div class="tw-session-meta">
-              <span>${PF.icon('layers')} ${PF.esc(s.room)}</span>
+              <span>${PF.icon('layers')} ${PF.esc(s.room || 'Main Floor')}</span>
               <span>${PF.icon('users')} Capacity: ${s.cap} athletes</span>
               <span>${PF.icon('clock')} ${s.mins} mins</span>
             </div>
+            ${s.notes ? `<p style="margin:6px 0 0;font-size:12.5px;color:var(--muted)">${PF.esc(s.notes)}</p>` : ''}
           </div>
         </div>
-        <div class="tw-session-side">
-          <button type="button" class="tw-btn" data-notify-session="${PF.esc(s.name)} (${s.day} ${s.time})">
-            ${PF.icon('megaphone')} Notify Athletes
+        <div class="tw-session-side" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">
+          ${s.is_mine ? `
+            <button type="button" class="tw-btn" data-edit-session="${s.id}">Edit</button>
+            <button type="button" class="tw-btn" data-delete-session="${s.id}" data-session-name="${PF.esc(s.name)}" aria-label="Delete ${PF.esc(s.name)}">${PF.icon('trash')}</button>
+          ` : ''}
+          <button type="button" class="tw-btn" data-notify-session="${PF.esc(s.name)} (${s.day} ${Trainer.format.time(s.time)})">
+            ${PF.icon('megaphone')} Notify
           </button>
         </div>
       </div>
     `).join('');
 
+        listEl.querySelectorAll('[data-edit-session]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const target = sessions.find(x => String(x.id) === String(btn.dataset.editSession));
+            if (target) openSessionModal(target);
+          });
+        });
+
+        listEl.querySelectorAll('[data-delete-session]').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const id = btn.dataset.deleteSession;
+            const label = btn.dataset.sessionName || 'this class';
+            const ok = await PF.confirm({
+              title: 'Delete coaching class?',
+              message: `Remove "${label}" from the weekly schedule?`,
+              confirm: 'Delete',
+              danger: true
+            });
+            if (!ok) return;
+            btn.disabled = true;
+            try {
+              await Trainer.api.deleteSession(id);
+              PF.toast('Class removed from schedule.', 'success');
+              await loadSchedule();
+            } catch (err) {
+              PF.toast(err.message || 'Could not remove class.', 'error');
+              btn.disabled = false;
+            }
+          });
+        });
+
         listEl.querySelectorAll('[data-notify-session]').forEach(btn => {
           btn.addEventListener('click', () => {
-            document.getElementById('noteSession').value = btn.dataset.notifySession;
-            document.getElementById('noteBody').value = '';
-            PF.openModal('schedNoteModal');
+            openBroadcastModal({ recipient: 'all', sessionName: btn.dataset.notifySession });
           });
         });
       }
 
       function renderRoster() {
-        const rosterEl = document.getElementById('schedRosterList');
         if (!rosterEl) return;
         if (!roster.length) {
           rosterEl.innerHTML = `
         <div class="tw-empty" style="min-height:110px;padding:18px">
           <strong>No athletes assigned yet</strong>
-          <p>Assigned members will appear here.</p>
+          <p>Assigned members will appear here once matched by the gym owner.</p>
         </div>
       `;
           return;
@@ -273,12 +384,42 @@
 
         rosterEl.querySelectorAll('[data-msg-member]').forEach(btn => {
           btn.addEventListener('click', () => {
-            recSelect.value = String(btn.dataset.msgMember);
-            document.getElementById('noteSession').value = `1-on-1 Coaching · ${btn.dataset.msgName}`;
-            document.getElementById('noteBody').value = '';
-            PF.openModal('schedNoteModal');
+            openBroadcastModal({
+              recipient: btn.dataset.msgMember,
+              sessionName: `1-on-1 Coaching Ã‚Â· ${btn.dataset.msgName}`
+            });
           });
         });
+      }
+
+      async function loadSchedule() {
+        try {
+          const data = await Trainer.api.getSchedule();
+          sessions = Array.isArray(data.sessions) ? data.sessions : [];
+          roster = Array.isArray(data.assigned_members) ? data.assigned_members : [];
+
+          availBox.textContent = (data.availability && data.availability.trim())
+            ? data.availability.trim()
+            : 'No availability hours set yet. Click "Update" above to add your coaching hours.';
+
+          recSelect.innerHTML = `<option value="all">All Assigned Athletes (${roster.length})</option>` +
+            roster.map(m => `<option value="${m.id}">${PF.esc(m.name)}</option>`).join('');
+
+          renderDowStrip();
+          renderSessions();
+          renderRoster();
+        } catch (err) {
+          availBox.textContent = 'Could not load coaching hours.';
+          listEl.innerHTML = `
+            <div class="tw-empty">
+              <div class="tw-empty-ico">${PF.icon('alert-circle')}</div>
+              <strong>Could not load schedule</strong>
+              <p>${PF.esc(err.message || 'Please check your connection and try again.')}</p>
+              <button type="button" class="tw-btn" id="retrySchedBtn" style="margin-top:8px">Retry</button>
+            </div>
+          `;
+          document.getElementById('retrySchedBtn')?.addEventListener('click', loadSchedule);
+        }
       }
 
       document.querySelectorAll('#schedScopeTabs [data-scope]').forEach(btn => {
@@ -291,11 +432,43 @@
         });
       });
 
-      document.getElementById('openNoteModalBtn').addEventListener('click', () => {
-        recSelect.value = 'all';
-        document.getElementById('noteSession').value = 'General Schedule Update';
-        document.getElementById('noteBody').value = '';
-        PF.openModal('schedNoteModal');
+      document.getElementById('openAddSessionBtn').addEventListener('click', () => openSessionModal(null));
+      document.getElementById('openNoteModalBtn').addEventListener('click', () => openBroadcastModal());
+
+      document.getElementById('sessionForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const editId = document.getElementById('sessEditId').value.trim();
+        const payload = {
+          name: document.getElementById('sessName').value.trim(),
+          day_of_week: Number(document.getElementById('sessDow').value),
+          start_time: document.getElementById('sessTime').value.trim(),
+          duration_mins: Number(document.getElementById('sessMins').value),
+          capacity: Number(document.getElementById('sessCap').value),
+          room: document.getElementById('sessRoom').value.trim() || 'Main Floor',
+          notes: document.getElementById('sessNotes').value.trim()
+        };
+        if (!payload.name) {
+          PF.toast('Enter a class name.', 'error');
+          return;
+        }
+        const saveBtn = document.getElementById('saveSessionBtn');
+        saveBtn.disabled = true;
+        try {
+          if (editId) {
+            await Trainer.api.updateSession(editId, payload);
+            PF.toast('Class updated.', 'success');
+          } else {
+            await Trainer.api.createSession(payload);
+            PF.toast('Class added to schedule.', 'success');
+          }
+          activeDow = payload.day_of_week;
+          PF.closeModal('sessionFormModal');
+          await loadSchedule();
+        } catch (err) {
+          PF.toast(err.message || 'Could not save class.', 'error');
+        } finally {
+          saveBtn.disabled = false;
+        }
       });
 
       document.getElementById('sendNoteSubmitBtn').addEventListener('click', async () => {
@@ -303,7 +476,7 @@
         const note = document.getElementById('noteBody').value.trim();
         const rec = recSelect.value || 'all';
         if (!note) {
-          PF.toast('Please enter a message to send.', 'warning');
+          PF.toast('Please enter a message to send.', 'error');
           return;
         }
         const submitBtn = document.getElementById('sendNoteSubmitBtn');
@@ -319,9 +492,13 @@
         }
       });
 
-      renderDowStrip();
-      renderSessions();
-      renderRoster();
+      await loadSchedule();
+      if (window.location.hash === '#update') {
+        openBroadcastModal();
+      }
+      window.addEventListener('hashchange', () => {
+        if (window.location.hash === '#update') openBroadcastModal();
+      });
     });
   </script>
 </body>

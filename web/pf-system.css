@@ -1363,11 +1363,29 @@ html body .mt-empty:not([hidden]):not(.is-error):not(:has(.fa-spin)):not(:has(.f
 }
 
 /* Table cell empty states preserve table-cell colspan behavior */
-html body td.pf-empty:not([hidden]),
-html body tr.fn-review-empty td {
+html body td.pf-empty:not([hidden]) {
   display: table-cell !important;
   text-align: center !important;
   vertical-align: middle !important;
+}
+
+/* Review table uses block-flex rows, so empty state row spans full width */
+html body tr.fn-review-empty {
+  display: block !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+html body tr.fn-review-empty td {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: auto !important;
+  white-space: normal !important;
+  gap: 8px !important;
+  text-align: center !important;
 }
 
 html body .chart-empty-state:not([hidden])::before,
@@ -1695,10 +1713,10 @@ html body .has-hero-dock>.pf-hero-dock {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   margin: 4px calc(var(--pf-dock-px) * -1) 0;
-  background: rgba(9, 13, 22, 0.78);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-top: 1px solid rgba(255, 255, 255, 0.10);
+  background: #0f172a !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 html body .pf-hero-dock .pf-hero-shortcut {
@@ -1732,8 +1750,8 @@ html body .pf-hero-dock .pf-hero-shortcut:last-child {
 
 @media (hover: hover) and (pointer: fine) {
   html body .pf-hero-dock .pf-hero-shortcut:not(:disabled):not([aria-disabled="true"]):hover {
-    background: rgba(255, 255, 255, 0.06) !important;
-    background-color: rgba(255, 255, 255, 0.06) !important;
+    background: #17233a !important;
+    background-color: #17233a !important;
     box-shadow: none !important;
     transform: none !important;
   }
@@ -1744,8 +1762,8 @@ html body .pf-hero-dock .pf-hero-shortcut:last-child {
 }
 
 html body .pf-hero-dock .pf-hero-shortcut:not(:disabled):not([aria-disabled="true"]):active {
-  background: rgba(255, 255, 255, 0.11) !important;
-  background-color: rgba(255, 255, 255, 0.11) !important;
+  background: #1e2d4a !important;
+  background-color: #1e2d4a !important;
   box-shadow: none !important;
   transform: none !important;
 }
@@ -2366,13 +2384,13 @@ html body .pfc-select-opt:focus-visible {
 }
 
 /* Custom Branded Calendar (.pfc-cal) */
-.pfc-cal {
+html body .pfc-popover .pfc-cal {
   display: grid;
-  gap: 8px;
-  padding: 4px;
+  gap: 6px;
+  padding: 2px;
 }
 
-.pfc-cal-head {
+html body .pfc-popover .pfc-cal-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -2380,20 +2398,24 @@ html body .pfc-select-opt:focus-visible {
   padding: 2px 4px;
 }
 
-.pfc-cal-title {
+html body .pfc-popover .pfc-cal-title {
   font: 800 14px/1.2 inherit;
   color: var(--pfc-text);
 }
 
-.pfc-cal-nav {
+html body .pfc-popover .pfc-cal-nav {
   display: flex;
   gap: 4px;
 }
 
-.pfc-icon-btn {
-  width: 30px;
-  height: 30px;
-  border-radius: 9px;
+html body .pfc-popover .pfc-icon-btn {
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 8px !important;
   border: 1px solid var(--pfc-border);
   background: var(--pfc-bg);
   color: var(--pfc-text);
@@ -2402,65 +2424,78 @@ html body .pfc-select-opt:focus-visible {
   cursor: pointer;
 }
 
-.pfc-icon-btn:hover {
+html body .pfc-popover .pfc-icon-btn:hover {
   background: var(--pfc-bg-hover);
   border-color: rgba(232, 185, 58, 0.45);
 }
 
-.pfc-cal-dow,
-.pfc-cal-grid {
+html body .pfc-popover .pfc-cal-dow,
+html body .pfc-popover .pfc-cal-grid {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 3px;
+  gap: 3px !important;
+  align-items: center;
+  justify-items: center;
   text-align: center;
 }
 
-.pfc-cal-dow span {
+html body .pfc-popover .pfc-cal-grid {
+  grid-auto-rows: 30px !important;
+}
+
+html body .pfc-popover .pfc-cal-dow span {
   font-size: 11px;
   font-weight: 700;
   color: var(--pfc-muted);
-  padding: 4px 0;
+  padding: 2px 0;
 }
 
-.pfc-day {
-  height: 34px;
-  border-radius: 9px;
+html body .pfc-popover .pfc-day {
+  width: 32px !important;
+  height: 30px !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 auto !important;
+  border-radius: 8px !important;
   border: 1px solid transparent;
   background: transparent;
   color: var(--pfc-text);
   font: 600 12.5px/1 inherit;
   cursor: pointer;
-  display: inline-grid;
-  place-items: center;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box;
   font-variant-numeric: tabular-nums;
 }
 
-.pfc-day.is-out {
+html body .pfc-popover .pfc-day.is-out {
   color: var(--pfc-muted);
   opacity: 0.48;
 }
 
-.pfc-day.is-today:not(.is-selected) {
+html body .pfc-popover .pfc-day.is-today:not(.is-selected) {
   border-color: rgba(232, 185, 58, 0.65);
   color: #F5B73B;
 }
 
-.pfc-day:not(:disabled):not(.is-selected):hover {
+html body .pfc-popover .pfc-day:not(:disabled):not(.is-selected):hover {
   background: var(--pfc-bg-hover);
 }
 
-.pfc-day.is-selected {
+html body .pfc-popover .pfc-day.is-selected {
   background: #E8B93A !important;
   color: #0B0F19 !important;
   font-weight: 800;
 }
 
-.pfc-day:disabled {
+html body .pfc-popover .pfc-day:disabled {
   opacity: 0.25;
   cursor: not-allowed;
 }
 
-.pfc-foot {
+html body .pfc-popover .pfc-foot {
   display: flex;
   justify-content: space-between;
   gap: 8px;
@@ -2468,10 +2503,11 @@ html body .pfc-select-opt:focus-visible {
   border-top: 1px solid var(--pfc-border);
 }
 
-.pfc-foot-btn {
-  height: 32px;
-  padding: 0 12px;
-  border-radius: 9px;
+html body .pfc-popover .pfc-foot-btn {
+  height: 30px !important;
+  min-height: 0 !important;
+  padding: 0 12px !important;
+  border-radius: 8px !important;
   border: 1px solid var(--pfc-border);
   background: transparent;
   color: var(--pfc-text);
@@ -3810,20 +3846,37 @@ html body .pf-gc-msg[hidden] {
 }
 
 /* =========================================================
-14. LIGHT MODE HERO CONSISTENCY (Owner, Cashier, Member)
-       Keep floating hero cards & dark-glass hero CTA buttons
-       crisp dark-on-photo in Light Mode (prevents [class$="-card"]
-       white-on-white leaks and dark-on-dark button text).
+14. LIGHT MODE HERO & PHOTO BANNER PARITY
+       Dark Mode stays deep dark-glass; Light Mode uses a warm
+       frosted cream scrim with subtle photo opacity and dark text
+       across Owner, Cashier, Member, Claim, and Trainer portals.
    ========================================================= */
-html body.pf-staff .csh-hero,
-html body.pf-staff:not(.dark) .csh-hero {
+:root {
+  --pf-lb-bg: #faf6ee;
+  --pf-lb-border: rgba(15, 23, 42, 0.16);
+  --pf-lb-shadow: 0 8px 24px rgba(15, 23, 42, 0.07);
+  --pf-lb-scrim-h: linear-gradient(95deg, rgba(255, 253, 248, 0.92) 0%, rgba(250, 246, 238, 0.80) 54%, rgba(250, 246, 238, 0.62) 100%);
+  --pf-lb-scrim-v: linear-gradient(180deg, rgba(250, 246, 238, 0.72) 0%, rgba(255, 253, 248, 0.94) 100%);
+  --pf-lb-photo-opacity: 0.22;
+  --pf-lb-title: #2a2418;
+  --pf-lb-sub: #5c5243;
+  --pf-lb-muted: #786c5a;
+  --pf-lb-eyebrow: #9a6b0d;
+  --pf-lb-glass: rgba(255, 255, 255, 0.86);
+  --pf-lb-glass-hover: #ffffff;
+  --pf-lb-glass-border: rgba(15, 23, 42, 0.14);
+  --pf-lb-dashed: rgba(15, 23, 42, 0.14);
+  --pf-lb-ring-track: #eadfc8;
+}
+
+/* Dark Mode scoped parity */
+html body.pf-staff.dark .csh-hero {
   background: #101521 !important;
-  border: 1px solid rgba(42, 36, 24, 0.14) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
   color: #f8fafc !important;
 }
 
-html body.pf-staff .csh-hero-card,
-html body.pf-staff:not(.dark) .csh-hero-card {
+html body.pf-staff.dark .csh-hero-card {
   background: rgba(15, 21, 34, 0.88) !important;
   background-color: rgba(15, 21, 34, 0.88) !important;
   border: 1px solid rgba(255, 255, 255, 0.14) !important;
@@ -3832,72 +3885,811 @@ html body.pf-staff:not(.dark) .csh-hero-card {
   backdrop-filter: blur(12px);
 }
 
-html body.pf-staff .csh-hero-card h3,
-html body.pf-staff:not(.dark) .csh-hero-card h3,
-html body.pf-staff .csh-hero-card .csh-hero-card-foot strong,
-html body.pf-staff:not(.dark) .csh-hero-card .csh-hero-card-foot strong {
+html body.pf-staff.dark .csh-hero-card h3,
+html body.pf-staff.dark .csh-hero-card .csh-hero-card-foot strong {
   color: #f8fafc !important;
 }
 
-html body.pf-staff .csh-hero-card .csh-shift-sub,
-html body.pf-staff:not(.dark) .csh-hero-card .csh-shift-sub,
-html body.pf-staff .csh-hero-card .csh-hero-card-foot small,
-html body.pf-staff:not(.dark) .csh-hero-card .csh-hero-card-foot small {
+html body.pf-staff.dark .csh-hero-card .csh-shift-sub,
+html body.pf-staff.dark .csh-hero-card .csh-hero-card-foot small {
   color: #94a3b8 !important;
 }
 
-html body.pf-staff .csh-hero-card .csh-live-pill,
-html body.pf-staff:not(.dark) .csh-hero-card .csh-live-pill {
+html body.pf-staff.dark .csh-hero-card .csh-live-pill {
   background: rgba(34, 197, 94, 0.16) !important;
   color: #4ade80 !important;
 }
 
-html body.pf-staff .csh-hero .csh-btn-dark,
-html body.pf-staff:not(.dark) .csh-hero .csh-btn-dark,
-html body.pf-staff .ow-hero .ow-btn-dark,
-html body.pf-staff:not(.dark) .ow-hero .ow-btn-dark {
+html body.pf-staff.dark .csh-hero .csh-btn-dark,
+html body.pf-staff.dark .ow-hero .ow-btn-dark {
   background: rgba(15, 23, 42, 0.82) !important;
   background-color: rgba(15, 23, 42, 0.82) !important;
   border: 1px solid rgba(255, 255, 255, 0.22) !important;
   color: #f8fafc !important;
 }
 
-html body.pf-staff .csh-hero .csh-btn-dark:not(:disabled):hover,
-html body.pf-staff:not(.dark) .csh-hero .csh-btn-dark:not(:disabled):hover,
-html body.pf-staff .ow-hero .ow-btn-dark:not(:disabled):hover,
-html body.pf-staff:not(.dark) .ow-hero .ow-btn-dark:not(:disabled):hover {
+html body.pf-staff.dark .csh-hero .csh-btn-dark:not(:disabled):hover,
+html body.pf-staff.dark .ow-hero .ow-btn-dark:not(:disabled):hover {
   background: rgba(255, 255, 255, 0.12) !important;
   background-color: rgba(255, 255, 255, 0.12) !important;
   border-color: rgba(255, 255, 255, 0.34) !important;
   color: #ffffff !important;
 }
 
-html body.pf-staff .csh-hero .csh-btn-dark:not(:disabled):active,
-html body.pf-staff:not(.dark) .csh-hero .csh-btn-dark:not(:disabled):active,
-html body.pf-staff .ow-hero .ow-btn-dark:not(:disabled):active,
-html body.pf-staff:not(.dark) .ow-hero .ow-btn-dark:not(:disabled):active {
+html body.pf-staff.dark .csh-hero .csh-btn-dark:not(:disabled):active,
+html body.pf-staff.dark .ow-hero .ow-btn-dark:not(:disabled):active {
   background: rgba(255, 255, 255, 0.18) !important;
   background-color: rgba(255, 255, 255, 0.18) !important;
   color: #ffffff !important;
 }
 
-html body.member-home .mb-ticket-card,
-html body.member-home:not(.dark) .mb-ticket-card {
+html body.member-home.dark .mb-ticket-card {
   background: rgba(16, 22, 36, 0.90) !important;
   background-color: rgba(16, 22, 36, 0.90) !important;
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
   color: #f8fafc !important;
 }
 
-html body.member-home:not(.dark) .mb-hero-book-btn {
-  background: rgba(15, 23, 42, 0.80) !important;
-  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+/* 1) Members page top banner (Light Mode) */
+html body.pf-staff:not(.dark)[data-page="members"] .pp-members-topbar {
+  background: var(--pf-lb-bg) !important;
+  border: 1px solid var(--pf-lb-border) !important;
+  box-shadow: var(--pf-lb-shadow) !important;
+  color: var(--pf-lb-title) !important;
+}
+
+html body.pf-staff:not(.dark)[data-page="members"] .pp-header-bg {
+  opacity: var(--pf-lb-photo-opacity) !important;
+  filter: grayscale(20%) contrast(1.02) brightness(1.06) !important;
+}
+
+html body.pf-staff:not(.dark)[data-page="members"] .pp-header-bg::after {
+  background: var(--pf-lb-scrim-h) !important;
+}
+
+html body.pf-staff:not(.dark)[data-page="members"] .pp-browse-title h2 {
+  color: var(--pf-lb-title) !important;
+}
+
+html body.pf-staff:not(.dark)[data-page="members"] .pp-browse-title p {
+  color: var(--pf-lb-sub) !important;
+}
+
+html body.pf-staff:not(.dark)[data-page="members"] .pp-browse-badge {
+  background: #fef3c7 !important;
+  border-color: #e6c675 !important;
+  color: #8a6212 !important;
+}
+
+html body.pf-staff:not(.dark)[data-page="members"] .pp-browse-ico {
+  background: #fef3c7 !important;
+  border-color: #e6c675 !important;
+  color: #9a6b0d !important;
+}
+
+html body.pf-staff:not(.dark)[data-page="members"] .pp-browse-ico.is-cyan {
+  background: #e0f2fe !important;
+  border-color: #bae6fd !important;
+  color: #0369a1 !important;
+}
+
+html body.pf-staff:not(.dark)[data-page="members"] .pp-browse-ico.is-emerald {
+  background: #dcfce7 !important;
+  border-color: #bbf7d0 !important;
+  color: #15803d !important;
+}
+
+html body.pf-staff:not(.dark)[data-page="members"] .pp-tab-ico {
+  background: #f6efe0 !important;
+  border-color: #e7dbc0 !important;
+  box-shadow: none !important;
+}
+
+html body.pf-staff:not(.dark)[data-page="members"] .pp-tab-ico.is-amber,
+html body.pf-staff:not(.dark)[data-page="members"] .pp-tab-ico.is-amber i {
+  color: #9a6b0d !important;
+  border-color: #e6c675 !important;
+}
+
+html body.pf-staff:not(.dark)[data-page="members"] .pp-tab-ico.is-cyan,
+html body.pf-staff:not(.dark)[data-page="members"] .pp-tab-ico.is-cyan i {
+  color: #0369a1 !important;
+  background: #e0f2fe !important;
+  border-color: #bae6fd !important;
+}
+
+html body.pf-staff:not(.dark)[data-page="members"] .pp-tab-ico.is-emerald,
+html body.pf-staff:not(.dark)[data-page="members"] .pp-tab-ico.is-emerald i {
+  color: #15803d !important;
+  background: #dcfce7 !important;
+  border-color: #bbf7d0 !important;
+}
+
+html body.pf-staff:not(.dark)[data-page="members"] .pp-page-tab .pp-count {
+  background: #fef3c7 !important;
+  border-color: #e6c675 !important;
+  color: #8a6212 !important;
+}
+
+/* 2) Member Detail name banner (Light Mode) */
+html body.pf-staff:not(.dark)[data-page="members"] .md-id-card {
+  background: var(--pf-lb-bg) !important;
+  border: 1px solid var(--pf-lb-border) !important;
+  box-shadow: var(--pf-lb-shadow) !important;
+  color: var(--pf-lb-title) !important;
+}
+
+html body.pf-staff:not(.dark)[data-page="members"] .md-id-card::before {
+  opacity: 0.16 !important;
+  filter: grayscale(20%) brightness(1.06) !important;
+}
+
+html body.pf-staff:not(.dark)[data-page="members"] .md-id-card::after {
+  background: var(--pf-lb-scrim-h) !important;
+}
+
+html body.pf-staff:not(.dark)[data-page="members"] .md-id-card h2,
+html body.pf-staff:not(.dark)[data-page="members"] .md-id-card .md-cols-3 strong,
+html body.pf-staff:not(.dark)[data-page="members"] .md-id-card .md-cols-2 strong {
+  color: var(--pf-lb-title) !important;
+}
+
+html body.pf-staff:not(.dark)[data-page="members"] .md-id-card .md-kicker,
+html body.pf-staff:not(.dark)[data-page="members"] .md-id-card .md-cols-3 span,
+html body.pf-staff:not(.dark)[data-page="members"] .md-id-card .md-cols-2 span,
+html body.pf-staff:not(.dark)[data-page="members"] .md-id-card .md-cols-3 small,
+html body.pf-staff:not(.dark)[data-page="members"] .md-id-card .md-cols-2 small {
+  color: var(--pf-lb-muted) !important;
+}
+
+/* 3) Payments & Reports top banner (Light Mode) */
+html body.pf-staff:not(.dark) .fn-header-card {
+  background: var(--pf-lb-bg) !important;
+  background-color: var(--pf-lb-bg) !important;
+  border: 1px solid var(--pf-lb-border) !important;
+  box-shadow: var(--pf-lb-shadow) !important;
+  color: var(--pf-lb-title) !important;
+}
+
+html body.pf-staff:not(.dark) .fn-header-bg {
+  opacity: var(--pf-lb-photo-opacity) !important;
+  filter: grayscale(20%) contrast(1.02) brightness(1.06) !important;
+}
+
+html body.pf-staff:not(.dark)[data-page="reports"] .fn-header-bg {
+  opacity: 0.20 !important;
+  filter: grayscale(20%) contrast(1.02) brightness(1.06) !important;
+}
+
+html body.pf-staff:not(.dark) .fn-header-bg::after {
+  background: var(--pf-lb-scrim-h) !important;
+}
+
+html body.pf-staff:not(.dark) .fn-header-copy h2,
+html body.pf-staff:not(.dark) .fn-page-title {
+  color: var(--pf-lb-title) !important;
+}
+
+html body.pf-staff:not(.dark) .fn-header-copy p {
+  color: var(--pf-lb-sub) !important;
+}
+
+html body.pf-staff:not(.dark) .fn-eyebrow {
+  color: var(--pf-lb-eyebrow) !important;
+}
+
+html body.pf-staff:not(.dark) .fn-header-ico {
+  background: #fef3c7 !important;
+  border-color: #e6c675 !important;
+  color: #9a6b0d !important;
+}
+
+html body.pf-staff:not(.dark) .fn-header-ico.is-cyan {
+  background: #e0f2fe !important;
+  border-color: #bae6fd !important;
+  color: #0369a1 !important;
+}
+
+html body.pf-staff:not(.dark) .fn-header-ico.is-emerald {
+  background: #dcfce7 !important;
+  border-color: #bbf7d0 !important;
+  color: #15803d !important;
+}
+
+html body.pf-staff:not(.dark) .fn-header-ico.is-violet {
+  background: #ede9fe !important;
+  border-color: #ddd6fe !important;
+  color: #6d28d9 !important;
+}
+
+html body.pf-staff:not(.dark) .fn-tab-icon {
+  background: #fef3c7 !important;
+  border-color: #e6c675 !important;
+  color: #9a6b0d !important;
+  box-shadow: none !important;
+}
+
+html body.pf-staff:not(.dark) .fn-tab-icon.is-amber {
+  color: #9a6b0d !important;
+  border-color: #e6c675 !important;
+}
+
+html body.pf-staff:not(.dark) .fn-tab-icon.is-cyan {
+  background: #e0f2fe !important;
+  border-color: #bae6fd !important;
+  color: #0369a1 !important;
+}
+
+html body.pf-staff:not(.dark) .fn-tab-icon.is-emerald {
+  background: #dcfce7 !important;
+  border-color: #bbf7d0 !important;
+  color: #15803d !important;
+}
+
+html body.pf-staff:not(.dark) .fn-tab-icon.is-violet {
+  background: #ede9fe !important;
+  border-color: #ddd6fe !important;
+  color: #6d28d9 !important;
+}
+
+/* Flat Editorial Photo Banner Tabs (Members, Payments, Reports, Cashier — Dark & Light) */
+html body.pf-staff[data-page="members"] .pp-page-tab,
+html body.pf-staff[data-page="payments"] .fn-tabs .tab,
+html body.pf-staff[data-page="reports"] .fn-tabs .tab,
+html body.pf-staff[data-page="cashier"] .fn-tabs .tab,
+html body.pf-staff .fn-tabs .tab {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease !important;
+}
+
+html body.pf-staff[data-page="members"] .pp-tab-ico,
+html body.pf-staff[data-page="payments"] .fn-tab-icon,
+html body.pf-staff[data-page="reports"] .fn-tab-icon,
+html body.pf-staff[data-page="cashier"] .fn-tab-icon,
+html body.pf-staff .fn-tab-icon {
+  box-shadow: none !important;
+}
+
+html body.pf-staff.dark[data-page="members"] .pp-page-tab,
+html body.pf-staff.dark[data-page="payments"] .fn-tabs .tab,
+html body.pf-staff.dark[data-page="reports"] .fn-tabs .tab,
+html body.pf-staff.dark[data-page="cashier"] .fn-tabs .tab,
+html body.pf-staff.dark .fn-tabs .tab {
+  background: #111827 !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #cbd5e1 !important;
+}
+
+html body.pf-staff.dark[data-page="members"] .pp-page-tab:not(.active):not([aria-selected="true"]):hover,
+html body.pf-staff.dark[data-page="payments"] .fn-tabs .tab:not(.active):hover,
+html body.pf-staff.dark[data-page="reports"] .fn-tabs .tab:not(.active):hover,
+html body.pf-staff.dark[data-page="cashier"] .fn-tabs .tab:not(.active):hover,
+html body.pf-staff.dark .fn-tabs .tab:not(.active):hover {
+  background: rgba(232, 185, 58, 0.18) !important;
+  border-color: #e8b93a !important;
   color: #f8fafc !important;
 }
 
-html body.member-home:not(.dark) .mb-hero-book-btn:hover {
-  background: rgba(255, 255, 255, 0.14) !important;
-  color: #ffffff !important;
+html body.pf-staff:not(.dark)[data-page="members"] .pp-page-tab,
+html body.pf-staff:not(.dark)[data-page="payments"] .fn-tabs .tab,
+html body.pf-staff:not(.dark)[data-page="reports"] .fn-tabs .tab,
+html body.pf-staff:not(.dark)[data-page="cashier"] .fn-tabs .tab,
+html body.pf-staff:not(.dark) .fn-tabs .tab {
+  background: #ffffff !important;
+  border: 1px solid rgba(15, 23, 42, 0.15) !important;
+  color: #5c5243 !important;
+}
+
+html body.pf-staff:not(.dark)[data-page="members"] .pp-page-tab:not(.active):not([aria-selected="true"]):hover,
+html body.pf-staff:not(.dark)[data-page="payments"] .fn-tabs .tab:not(.active):hover,
+html body.pf-staff:not(.dark)[data-page="reports"] .fn-tabs .tab:not(.active):hover,
+html body.pf-staff:not(.dark)[data-page="cashier"] .fn-tabs .tab:not(.active):hover,
+html body.pf-staff:not(.dark) .fn-tabs .tab:not(.active):hover {
+  background: #fef3c7 !important;
+  border-color: #e8b93a !important;
+  color: #2a2418 !important;
+}
+
+html body.pf-staff[data-page="members"] .pp-page-tab.active,
+html body.pf-staff[data-page="members"] .pp-page-tab[aria-selected="true"],
+html body.pf-staff[data-page="payments"] .fn-tabs .tab.active,
+html body.pf-staff[data-page="reports"] .fn-tabs .tab.active,
+html body.pf-staff[data-page="cashier"] .fn-tabs .tab.active,
+html body.pf-staff .fn-tabs .tab.active {
+  background: var(--pf-state-gold, #E8B93A) !important;
+  border: 1.5px solid var(--pf-state-gold, #E8B93A) !important;
+  color: var(--pf-state-gold-ink, #0B0F19) !important;
+  font-weight: 700 !important;
+  box-shadow: none !important;
+}
+
+html body.pf-staff[data-page="members"] .pp-page-tab.active:hover,
+html body.pf-staff[data-page="members"] .pp-page-tab[aria-selected="true"]:hover,
+html body.pf-staff[data-page="payments"] .fn-tabs .tab.active:hover,
+html body.pf-staff[data-page="reports"] .fn-tabs .tab.active:hover,
+html body.pf-staff[data-page="cashier"] .fn-tabs .tab.active:hover,
+html body.pf-staff .fn-tabs .tab.active:hover {
+  background: var(--pf-state-gold-hover, #F0C44B) !important;
+  border-color: var(--pf-state-gold-hover, #F0C44B) !important;
+  color: var(--pf-state-gold-ink, #0B0F19) !important;
+}
+
+html body.pf-staff[data-page="members"] .pp-page-tab.active .pp-tab-ico[class],
+html body.pf-staff[data-page="members"] .pp-page-tab.active .pp-tab-ico[class] i,
+html body.pf-staff[data-page="members"] .pp-page-tab[aria-selected="true"] .pp-tab-ico[class],
+html body.pf-staff[data-page="members"] .pp-page-tab[aria-selected="true"] .pp-tab-ico[class] i,
+html body.pf-staff[data-page="payments"] .fn-tabs .tab.active .fn-tab-icon[class],
+html body.pf-staff[data-page="payments"] .fn-tabs .tab.active .fn-tab-icon[class] i,
+html body.pf-staff[data-page="payments"] .fn-tabs .tab.active .fn-tab-icon[class] svg,
+html body.pf-staff[data-page="reports"] .fn-tabs .tab.active .fn-tab-icon[class],
+html body.pf-staff[data-page="reports"] .fn-tabs .tab.active .fn-tab-icon[class] i,
+html body.pf-staff[data-page="reports"] .fn-tabs .tab.active .fn-tab-icon[class] svg,
+html body.pf-staff[data-page="cashier"] .fn-tabs .tab.active .fn-tab-icon[class],
+html body.pf-staff[data-page="cashier"] .fn-tabs .tab.active .fn-tab-icon[class] i,
+html body.pf-staff[data-page="cashier"] .fn-tabs .tab.active .fn-tab-icon[class] svg,
+html body.pf-staff .fn-tabs .tab.active .fn-tab-icon[class],
+html body.pf-staff .fn-tabs .tab.active .fn-tab-icon[class] i,
+html body.pf-staff .fn-tabs .tab.active .fn-tab-icon[class] svg {
+  background: rgba(11, 15, 25, 0.12) !important;
+  border-color: transparent !important;
+  color: #0B0F19 !important;
+  box-shadow: none !important;
+}
+
+html body.pf-staff[data-page="members"] .pp-page-tab.active .pp-count[class],
+html body.pf-staff[data-page="members"] .pp-page-tab[aria-selected="true"] .pp-count[class],
+html body.pf-staff[data-page="payments"] .fn-tabs .tab.active .count[class],
+html body.pf-staff[data-page="reports"] .fn-tabs .tab.active .count[class],
+html body.pf-staff[data-page="cashier"] .fn-tabs .tab.active .count[class],
+html body.pf-staff .fn-tabs .tab.active .count[class] {
+  background: rgba(11, 15, 25, 0.14) !important;
+  border-color: rgba(11, 15, 25, 0.22) !important;
+  color: #0B0F19 !important;
+}
+
+/* 4) Owner Dashboard hero (Light Mode) */
+html body.pf-staff:not(.dark) .ow-hero {
+  background: var(--pf-lb-bg) !important;
+  border: 1px solid var(--pf-lb-border) !important;
+  box-shadow: var(--pf-lb-shadow) !important;
+}
+
+html body.pf-staff:not(.dark) .ow-hero::before {
+  opacity: var(--pf-lb-photo-opacity) !important;
+  filter: grayscale(15%) brightness(1.06) !important;
+}
+
+html body.pf-staff:not(.dark) .ow-hero::after {
+  background: var(--pf-lb-scrim-h) !important;
+}
+
+html body.pf-staff:not(.dark) .ow-eyebrow {
+  color: var(--pf-lb-eyebrow) !important;
+}
+
+html body.pf-staff:not(.dark) .ow-hero-left h2 {
+  color: var(--pf-lb-title) !important;
+}
+
+html body.pf-staff:not(.dark) .ow-hero-left p {
+  color: var(--pf-lb-sub) !important;
+}
+
+html body.pf-staff:not(.dark) .ow-hero .ow-btn-dark {
+  background: var(--pf-lb-glass) !important;
+  background-color: var(--pf-lb-glass) !important;
+  border: 1px solid var(--pf-lb-glass-border) !important;
+  color: var(--pf-lb-title) !important;
+}
+
+html body.pf-staff:not(.dark) .ow-hero .ow-btn-dark:not(:disabled):hover {
+  background: var(--pf-lb-glass-hover) !important;
+  background-color: var(--pf-lb-glass-hover) !important;
+  border-color: rgba(184, 134, 11, 0.5) !important;
+  color: var(--pf-lb-title) !important;
+}
+
+html body.pf-staff:not(.dark) .ow-hero-card {
+  background: rgba(255, 255, 255, 0.88) !important;
+  border: 1px solid #eadfc8 !important;
+  color: var(--pf-lb-title) !important;
+  box-shadow: 0 6px 18px rgba(42, 36, 24, 0.06) !important;
+}
+
+html body.pf-staff:not(.dark) .ow-open-pill {
+  background: #dcfce7 !important;
+  color: #15803d !important;
+}
+
+html body.pf-staff:not(.dark) .ow-open-dot {
+  background: #16a34a !important;
+}
+
+html body.pf-staff:not(.dark) .ow-card-top h3,
+html body.pf-staff:not(.dark) .ow-ring-center strong,
+html body.pf-staff:not(.dark) .ow-card-foot strong {
+  color: var(--pf-lb-title) !important;
+}
+
+html body.pf-staff:not(.dark) .ow-card-date,
+html body.pf-staff:not(.dark) .ow-ring-center small,
+html body.pf-staff:not(.dark) .ow-card-foot span {
+  color: var(--pf-lb-muted) !important;
+}
+
+html body.pf-staff:not(.dark) .ow-ring-track {
+  stroke: var(--pf-lb-ring-track) !important;
+}
+
+html body.pf-staff:not(.dark) .ow-card-foot {
+  border-top-color: var(--pf-lb-dashed) !important;
+}
+
+/* 5) Cashier Dashboard hero (Light Mode) */
+html body.pf-staff:not(.dark) .csh-hero {
+  background: var(--pf-lb-bg) !important;
+  border: 1px solid var(--pf-lb-border) !important;
+  box-shadow: var(--pf-lb-shadow) !important;
+  color: var(--pf-lb-title) !important;
+}
+
+html body.pf-staff:not(.dark) .csh-hero-bg {
+  opacity: var(--pf-lb-photo-opacity) !important;
+  filter: grayscale(15%) brightness(1.06) !important;
+}
+
+html body.pf-staff:not(.dark) .csh-hero-bg::after {
+  background: var(--pf-lb-scrim-h) !important;
+}
+
+html body.pf-staff:not(.dark) .csh-hero-eyebrow {
+  color: var(--pf-lb-eyebrow) !important;
+}
+
+html body.pf-staff:not(.dark) .csh-hero-copy h1 {
+  color: var(--pf-lb-title) !important;
+}
+
+html body.pf-staff:not(.dark) .csh-hero-copy p {
+  color: var(--pf-lb-sub) !important;
+}
+
+html body.pf-staff:not(.dark) .csh-hero .csh-btn-dark {
+  background: var(--pf-lb-glass) !important;
+  background-color: var(--pf-lb-glass) !important;
+  border: 1px solid var(--pf-lb-glass-border) !important;
+  color: var(--pf-lb-title) !important;
+}
+
+html body.pf-staff:not(.dark) .csh-hero .csh-btn-dark:not(:disabled):hover {
+  background: var(--pf-lb-glass-hover) !important;
+  background-color: var(--pf-lb-glass-hover) !important;
+  border-color: rgba(184, 134, 11, 0.5) !important;
+  color: var(--pf-lb-title) !important;
+}
+
+html body.pf-staff:not(.dark) .csh-hero-card {
+  background: rgba(255, 255, 255, 0.88) !important;
+  background-color: rgba(255, 255, 255, 0.88) !important;
+  border: 1px solid #eadfc8 !important;
+  color: var(--pf-lb-title) !important;
+  box-shadow: 0 6px 18px rgba(42, 36, 24, 0.06) !important;
+  backdrop-filter: blur(12px);
+}
+
+html body.pf-staff:not(.dark) .csh-hero-card h3,
+html body.pf-staff:not(.dark) .csh-hero-card .csh-hero-card-foot strong {
+  color: var(--pf-lb-title) !important;
+}
+
+html body.pf-staff:not(.dark) .csh-hero-card .csh-shift-sub,
+html body.pf-staff:not(.dark) .csh-hero-card .csh-hero-card-foot small {
+  color: var(--pf-lb-muted) !important;
+}
+
+html body.pf-staff:not(.dark) .csh-hero-card .csh-live-pill {
+  background: #dcfce7 !important;
+  color: #15803d !important;
+}
+
+html body.pf-staff:not(.dark) .csh-hero-card .csh-live-dot {
+  background: #16a34a !important;
+}
+
+html body.pf-staff:not(.dark) .csh-hero-card-foot {
+  border-top-color: var(--pf-lb-dashed) !important;
+}
+
+/* 6) Member Portal hero, tab banner & bento hero (Light Mode) */
+html body.member-home:not(.dark) .member-welcome.member-hero.pf-app-hero {
+  background: var(--pf-lb-bg) !important;
+  border: 1px solid var(--pf-lb-border) !important;
+  box-shadow: var(--pf-lb-shadow) !important;
+  color: var(--pf-lb-title) !important;
+}
+
+html body.member-home:not(.dark) .member-welcome.member-hero.pf-app-hero::before {
+  opacity: var(--pf-lb-photo-opacity) !important;
+  filter: grayscale(15%) brightness(1.06) !important;
+}
+
+html body.member-home:not(.dark) .member-welcome.member-hero.pf-app-hero::after {
+  background: var(--pf-lb-scrim-h) !important;
+}
+
+html body.member-home:not(.dark) .mb-hero-eyebrow {
+  color: var(--pf-lb-eyebrow) !important;
+}
+
+html body.member-home:not(.dark) .member-welcome.member-hero h1#memberGreeting {
+  color: var(--pf-lb-title) !important;
+}
+
+html body.member-home:not(.dark) .member-welcome.member-hero p#heroMembershipLine {
+  color: var(--pf-lb-sub) !important;
+}
+
+html body.member-home:not(.dark) .mb-hero-book-btn,
+html body.member-home:not(.dark) .pf-app-hero .member-hero-actions .btn:not(.btn-primary) {
+  background: var(--pf-lb-glass) !important;
+  border: 1px solid var(--pf-lb-glass-border) !important;
+  color: var(--pf-lb-title) !important;
+}
+
+html body.member-home:not(.dark) .mb-hero-book-btn:hover,
+html body.member-home:not(.dark) .pf-app-hero .member-hero-actions .btn:not(.btn-primary):hover {
+  background: var(--pf-lb-glass-hover) !important;
+  border-color: rgba(184, 134, 11, 0.5) !important;
+  color: var(--pf-lb-title) !important;
+}
+
+html body.member-home:not(.dark) .mb-hero-card,
+html body.member-home:not(.dark) .mb-ticket-card {
+  background: rgba(255, 255, 255, 0.88) !important;
+  background-color: rgba(255, 255, 255, 0.88) !important;
+  border: 1px solid #eadfc8 !important;
+  color: var(--pf-lb-title) !important;
+  box-shadow: 0 6px 18px rgba(42, 36, 24, 0.06) !important;
+}
+
+html body.member-home:not(.dark) .mb-status-pill {
+  background: #dcfce7 !important;
+  color: #15803d !important;
+}
+
+html body.member-home:not(.dark) .mb-status-pill.is-trial {
+  background: #fef3c7 !important;
+  color: #8a6212 !important;
+}
+
+html body.member-home:not(.dark) .mb-status-pill.is-expired {
+  background: #fee2e2 !important;
+  color: #b91c1c !important;
+}
+
+html body.member-home:not(.dark) .mb-card-top h3,
+html body.member-home:not(.dark) .mb-ring-center strong,
+html body.member-home:not(.dark) .mb-card-foot strong {
+  color: var(--pf-lb-title) !important;
+}
+
+html body.member-home:not(.dark) .mb-card-sub,
+html body.member-home:not(.dark) .mb-ring-center small,
+html body.member-home:not(.dark) .mb-card-foot span {
+  color: var(--pf-lb-muted) !important;
+}
+
+html body.member-home:not(.dark) .mb-ring-track {
+  stroke: var(--pf-lb-ring-track) !important;
+}
+
+html body.member-home:not(.dark) .mb-card-foot {
+  border-top-color: var(--pf-lb-dashed) !important;
+}
+
+html body.member-home:not(.dark) .mb-tab-banner {
+  background: var(--pf-lb-bg) !important;
+  border: 1px solid var(--pf-lb-border) !important;
+  box-shadow: var(--pf-lb-shadow) !important;
+  color: var(--pf-lb-title) !important;
+}
+
+html body.member-home:not(.dark) .mb-tab-banner::before {
+  opacity: 0.18 !important;
+  filter: grayscale(15%) brightness(1.06) !important;
+}
+
+html body.member-home:not(.dark) .mb-tab-banner::after {
+  background: var(--pf-lb-scrim-v) !important;
+}
+
+html body.member-home:not(.dark) .mb-tab-eyebrow {
+  color: var(--pf-lb-eyebrow) !important;
+}
+
+html body.member-home:not(.dark) .mb-tab-banner h2 {
+  color: var(--pf-lb-title) !important;
+}
+
+html body.member-home:not(.dark) .mb-bento-hero-photo {
+  background: var(--pf-lb-bg) !important;
+  border-color: var(--pf-lb-border) !important;
+  color: var(--pf-lb-title) !important;
+}
+
+html body.member-home:not(.dark) .mb-hero-photo-bg {
+  opacity: var(--pf-lb-photo-opacity) !important;
+  filter: grayscale(15%) brightness(1.06) !important;
+}
+
+html body.member-home:not(.dark) .mb-hero-photo-bg::after {
+  background: var(--pf-lb-scrim-h) !important;
+}
+
+html body.member-home:not(.dark) .mb-hero-pill-tag {
+  background: #fef3c7 !important;
+  border-color: #e6c675 !important;
+  color: #8a6212 !important;
+}
+
+html body.member-home:not(.dark) .mb-bento-hero-photo h1 {
+  color: var(--pf-lb-title) !important;
+}
+
+html body.member-home:not(.dark) .mb-bento-hero-photo p {
+  color: var(--pf-lb-sub) !important;
+}
+
+/* 7) Member Claim hero (Light Mode) */
+html[data-theme="light"] .claim-hero {
+  background: var(--pf-lb-scrim-h), url("/img/hero.jpg") center/cover no-repeat !important;
+  border: 1px solid var(--pf-lb-border) !important;
+  box-shadow: var(--pf-lb-shadow) !important;
+  color: var(--pf-lb-title) !important;
+}
+
+html[data-theme="light"] .claim-hero-eyebrow {
+  color: var(--pf-lb-eyebrow) !important;
+}
+
+html[data-theme="light"] .claim-hero h2 {
+  color: var(--pf-lb-title) !important;
+}
+
+html[data-theme="light"] .claim-hero p {
+  color: var(--pf-lb-sub) !important;
+}
+
+html[data-theme="light"] .claim-back-pill {
+  background: var(--pf-lb-glass) !important;
+  border: 1px solid var(--pf-lb-glass-border) !important;
+  color: var(--pf-lb-title) !important;
+}
+
+html[data-theme="light"] .claim-back-pill:hover {
+  background: var(--pf-lb-glass-hover) !important;
+}
+
+@media (prefers-color-scheme: light) {
+  html:not([data-theme="dark"]) .claim-hero {
+    background: var(--pf-lb-scrim-h), url("/img/hero.jpg") center/cover no-repeat !important;
+    border: 1px solid var(--pf-lb-border) !important;
+    box-shadow: var(--pf-lb-shadow) !important;
+    color: var(--pf-lb-title) !important;
+  }
+
+  html:not([data-theme="dark"]) .claim-hero-eyebrow {
+    color: var(--pf-lb-eyebrow) !important;
+  }
+
+  html:not([data-theme="dark"]) .claim-hero h2 {
+    color: var(--pf-lb-title) !important;
+  }
+
+  html:not([data-theme="dark"]) .claim-hero p {
+    color: var(--pf-lb-sub) !important;
+  }
+
+  html:not([data-theme="dark"]) .claim-back-pill {
+    background: var(--pf-lb-glass) !important;
+    border: 1px solid var(--pf-lb-glass-border) !important;
+    color: var(--pf-lb-title) !important;
+  }
+
+  html:not([data-theme="dark"]) .claim-back-pill:hover {
+    background: var(--pf-lb-glass-hover) !important;
+  }
+}
+
+/* 8) Trainer Portal hero banners (Light Mode) */
+html[data-theme="light"] body[data-portal="trainer"] .tw-page-hero,
+html[data-theme="light"] body[data-portal="trainer"] .tw-dash-hero {
+  background:
+    linear-gradient(95deg, rgba(255, 253, 248, 0.94) 0%, rgba(250, 246, 238, 0.86) 55%, rgba(250, 246, 238, 0.74) 100%),
+    url("/img/hero.jpg") center/cover no-repeat !important;
+  border: 1px solid var(--pf-lb-border) !important;
+  box-shadow: var(--pf-lb-shadow) !important;
+  color: var(--pf-lb-title) !important;
+}
+
+html[data-theme="light"] body[data-portal="trainer"] .tw-page-hero .tw-hero-eyebrow,
+html[data-theme="light"] body[data-portal="trainer"] .tw-dash-hero .tw-hero-eyebrow {
+  color: var(--pf-lb-eyebrow) !important;
+}
+
+html[data-theme="light"] body[data-portal="trainer"] .tw-page-hero .tw-hero-title,
+html[data-theme="light"] body[data-portal="trainer"] .tw-dash-hero .tw-hero-title {
+  color: var(--pf-lb-title) !important;
+}
+
+html[data-theme="light"] body[data-portal="trainer"] .tw-page-hero .tw-hero-sub,
+html[data-theme="light"] body[data-portal="trainer"] .tw-dash-hero .tw-hero-sub {
+  color: var(--pf-lb-sub) !important;
+}
+
+html[data-theme="light"] body[data-portal="trainer"] .tw-page-hero .tw-hero-ico {
+  background: #fef3c7 !important;
+  border: 1px solid #e6c675 !important;
+  color: #9a6b0d !important;
+}
+
+html[data-theme="light"] body[data-portal="trainer"] .tw-page-hero .tw-btn:not(.tw-btn-gold):not(.tw-btn-primary),
+html[data-theme="light"] body[data-portal="trainer"] .tw-dash-hero .tw-btn:not(.tw-btn-gold):not(.tw-btn-primary) {
+  background: var(--pf-lb-glass) !important;
+  border: 1px solid var(--pf-lb-glass-border) !important;
+  color: var(--pf-lb-title) !important;
+}
+
+html[data-theme="light"] body[data-portal="trainer"] .tw-page-hero .tw-btn:not(.tw-btn-gold):not(.tw-btn-primary):hover,
+html[data-theme="light"] body[data-portal="trainer"] .tw-dash-hero .tw-btn:not(.tw-btn-gold):not(.tw-btn-primary):hover {
+  background: var(--pf-lb-glass-hover) !important;
+  border-color: #d9a425 !important;
+  color: #8a6212 !important;
+}
+
+html[data-theme="light"] body[data-portal="trainer"] .tw-page-hero .tw-date-stepper {
+  background: var(--pf-lb-glass) !important;
+  border: 1px solid var(--pf-lb-glass-border) !important;
+  color: var(--pf-lb-title) !important;
+}
+
+html[data-theme="light"] body[data-portal="trainer"] .tw-page-hero .tw-date-stepper input {
+  color: var(--pf-lb-title) !important;
+}
+
+html[data-theme="light"] body[data-portal="trainer"] .tw-duty-card {
+  background: rgba(255, 255, 255, 0.88) !important;
+  border: 1px solid #eadfc8 !important;
+  color: var(--pf-lb-title) !important;
+  box-shadow: 0 6px 18px rgba(42, 36, 24, 0.06) !important;
+}
+
+html[data-theme="light"] body[data-portal="trainer"] .tw-duty-pill {
+  background: #dcfce7 !important;
+  color: #15803d !important;
+}
+
+html[data-theme="light"] body[data-portal="trainer"] .tw-duty-top h3,
+html[data-theme="light"] body[data-portal="trainer"] .tw-duty-ring-txt strong,
+html[data-theme="light"] body[data-portal="trainer"] .tw-duty-foot strong {
+  color: var(--pf-lb-title) !important;
+}
+
+html[data-theme="light"] body[data-portal="trainer"] .tw-duty-sub,
+html[data-theme="light"] body[data-portal="trainer"] .tw-duty-ring-txt small,
+html[data-theme="light"] body[data-portal="trainer"] .tw-duty-foot span {
+  color: var(--pf-lb-muted) !important;
+}
+
+html[data-theme="light"] body[data-portal="trainer"] .tw-duty-ring-track {
+  stroke: var(--pf-lb-ring-track) !important;
+}
+
+html[data-theme="light"] body[data-portal="trainer"] .tw-duty-foot {
+  border-top-color: var(--pf-lb-dashed) !important;
 }
 
 /* Keep payment form amount readout crisp bold gold in Dark and Light modes */
@@ -3914,4 +4706,538 @@ html body:not(.dark) input.pf-pay-amount-input,
 html body:not(.dark) input.pf-pay-amount-input[readonly] {
   color: #b45309 !important;
   -webkit-text-fill-color: #b45309 !important;
+}
+
+/* Soft dark borders on Light Mode inner hero cards & idle banner tabs */
+html body.pf-staff:not(.dark)[data-page="members"] .pp-page-tab,
+html body.pf-staff:not(.dark) .fn-tabs .tab {
+  border-color: rgba(15, 23, 42, 0.15) !important;
+}
+
+html body.pf-staff:not(.dark) .ow-hero-card,
+html body.pf-staff:not(.dark) .csh-hero-card,
+html body.member-home:not(.dark) .mb-hero-card,
+html body.member-home:not(.dark) .mb-ticket-card,
+html[data-theme="light"] body[data-portal="trainer"] .tw-duty-card {
+  border-color: rgba(15, 23, 42, 0.14) !important;
+}
+
+/* =========================================================
+15. SETTINGS ACTIVITY LOG DRAWER (All Portals — Dark & Light)
+   ========================================================= */
+html body .pf-act-toggle[aria-expanded="true"] .pf-act-chev {
+  transform: rotate(90deg);
+}
+
+html body .pf-act-chev {
+  transition: transform 0.16s ease;
+}
+
+html body .pf-act-drawer {
+  padding: 14px 16px 16px;
+  display: grid;
+  gap: 12px;
+}
+
+html body .pf-act-drawer[hidden] {
+  display: none !important;
+}
+
+html body .pf-act-head {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+html body .pf-act-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+html body .pf-act-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.05);
+  color: inherit;
+  font: 600 12.5px/1 inherit;
+  cursor: pointer;
+}
+
+html body .pf-act-pill span {
+  opacity: 0.72;
+  font-size: 11.5px;
+}
+
+html body .pf-act-pill:hover:not(.is-active) {
+  background: rgba(232, 185, 58, 0.14);
+  border-color: rgba(232, 185, 58, 0.5);
+}
+
+html body .pf-act-pill.is-active {
+  background: #e8b93a !important;
+  border-color: #e8b93a !important;
+  color: #0b0f19 !important;
+  font-weight: 700 !important;
+}
+
+html body .pf-act-pill.is-active span {
+  opacity: 0.85;
+}
+
+html body .pf-act-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+html body .pf-act-search {
+  flex: 1 1 auto;
+  min-width: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+html body .pf-act-search i {
+  position: absolute;
+  left: 11px;
+  font-size: 12px;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+html body .pf-act-search input {
+  width: 100%;
+  height: 36px;
+  padding: 0 12px 0 32px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(10, 14, 23, 0.55);
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+}
+
+html body .pf-act-refresh {
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.05);
+  color: inherit;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+html body .pf-act-refresh:hover:not(:disabled) {
+  border-color: #e8b93a;
+  color: #e8b93a;
+}
+
+html body .pf-act-scroll {
+  max-height: 360px;
+  overflow-y: auto;
+  display: grid;
+  gap: 14px;
+  padding-right: 4px;
+}
+
+html body .pf-act-date {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  opacity: 0.65;
+  margin-bottom: 6px;
+}
+
+html body .pf-act-list {
+  display: grid;
+  gap: 6px;
+}
+
+html body .pf-act-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+html body .pf-act-ico {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  flex: none;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  background: rgba(148, 163, 184, 0.16);
+  color: #cbd5e1;
+}
+
+html body .pf-act-ico.tone-gold { background: rgba(232, 185, 58, 0.18); color: #f4cc58; }
+html body .pf-act-ico.tone-emerald { background: rgba(34, 197, 94, 0.16); color: #4ade80; }
+html body .pf-act-ico.tone-sky { background: rgba(56, 189, 248, 0.16); color: #38bdf8; }
+html body .pf-act-ico.tone-rose { background: rgba(248, 113, 113, 0.18); color: #f87171; }
+
+html body .pf-act-copy {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+html body .pf-act-copy strong {
+  font-size: 13.5px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+html body .pf-act-copy small {
+  font-size: 12.5px;
+  opacity: 0.78;
+  line-height: 1.35;
+}
+
+html body .pf-act-time {
+  font-size: 11.5px;
+  opacity: 0.6;
+  margin-top: 2px;
+}
+
+html body .pf-act-go {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  color: inherit;
+  opacity: 0.65;
+  text-decoration: none;
+}
+
+html body .pf-act-go:hover {
+  opacity: 1;
+  color: #e8b93a;
+}
+
+html body .pf-act-loading,
+html body .pf-act-empty {
+  padding: 24px 12px;
+  text-align: center;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  opacity: 0.8;
+  font-size: 13px;
+}
+
+html body .pf-act-retry {
+  padding: 7px 14px;
+  border-radius: 9px;
+  border: 1px solid #e8b93a;
+  background: rgba(232, 185, 58, 0.16);
+  color: inherit;
+  font: 700 12.5px/1 inherit;
+  cursor: pointer;
+}
+
+/* Light Mode Activity Log */
+html body.pf-staff:not(.dark) .pf-act-pill,
+html body.member-home:not(.dark) .pf-act-pill,
+html[data-theme="light"] body[data-portal="trainer"] .pf-act-pill {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.16);
+  color: #2a2418;
+}
+
+html body.pf-staff:not(.dark) .pf-act-pill:hover:not(.is-active),
+html body.member-home:not(.dark) .pf-act-pill:hover:not(.is-active),
+html[data-theme="light"] body[data-portal="trainer"] .pf-act-pill:hover:not(.is-active) {
+  background: #fef3c7;
+  border-color: #e8b93a;
+}
+
+html body.pf-staff:not(.dark) .pf-act-search input,
+html body.member-home:not(.dark) .pf-act-search input,
+html[data-theme="light"] body[data-portal="trainer"] .pf-act-search input,
+html body.pf-staff:not(.dark) .pf-act-refresh,
+html body.member-home:not(.dark) .pf-act-refresh,
+html[data-theme="light"] body[data-portal="trainer"] .pf-act-refresh {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.16);
+  color: #1c1917;
+}
+
+html body.pf-staff:not(.dark) .pf-act-row,
+html body.member-home:not(.dark) .pf-act-row,
+html[data-theme="light"] body[data-portal="trainer"] .pf-act-row {
+  background: #faf6ee;
+  border-color: rgba(15, 23, 42, 0.12);
+}
+
+html body.pf-staff:not(.dark) .pf-act-ico.tone-gold,
+html body.member-home:not(.dark) .pf-act-ico.tone-gold,
+html[data-theme="light"] body[data-portal="trainer"] .pf-act-ico.tone-gold { background: #fef3c7; color: #9a6b0d; }
+html body.pf-staff:not(.dark) .pf-act-ico.tone-emerald,
+html body.member-home:not(.dark) .pf-act-ico.tone-emerald,
+html[data-theme="light"] body[data-portal="trainer"] .pf-act-ico.tone-emerald { background: #dcfce7; color: #15803d; }
+html body.pf-staff:not(.dark) .pf-act-ico.tone-sky,
+html body.member-home:not(.dark) .pf-act-ico.tone-sky,
+html[data-theme="light"] body[data-portal="trainer"] .pf-act-ico.tone-sky { background: #e0f2fe; color: #0369a1; }
+html body.pf-staff:not(.dark) .pf-act-ico.tone-rose,
+html body.member-home:not(.dark) .pf-act-ico.tone-rose,
+html[data-theme="light"] body[data-portal="trainer"] .pf-act-ico.tone-rose { background: #fee2e2; color: #b91c1c; }
+html body.pf-staff:not(.dark) .pf-act-ico.tone-slate,
+html body.member-home:not(.dark) .pf-act-ico.tone-slate,
+html[data-theme="light"] body[data-portal="trainer"] .pf-act-ico.tone-slate { background: #f1f5f9; color: #475569; }
+
+
+/* ==========================================================================
+   Settings scroll-margin & Install the app card (.pf-install-*)
+   ========================================================================== */
+.st-card,
+.tr-st-card,
+.mb-st-card {
+  scroll-margin-top: 96px;
+}
+
+@media (max-width: 860px) {
+  .st-card,
+  .tr-st-card,
+  .mb-st-card {
+    scroll-margin-top: 80px;
+  }
+}
+
+.pf-install-body {
+  padding: 18px 20px 22px;
+  display: grid;
+  gap: 14px;
+}
+
+.pf-install-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(232, 185, 58, 0.24);
+  background: rgba(232, 185, 58, 0.08);
+}
+
+.pf-install-status-ico {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  background: rgba(232, 185, 58, 0.16);
+  color: #e8b93a;
+  font-size: 15px;
+}
+
+.pf-install-status-copy {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--text, #f3f4f6);
+}
+
+.pf-install-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.pf-install-grid[hidden] {
+  display: none !important;
+}
+
+@media (max-width: 640px) {
+  .pf-install-body {
+    padding: 16px;
+  }
+  .pf-install-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.pf-install-card {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border, #263246);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.pf-install-card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border, #263246);
+}
+
+.pf-install-plat-ico {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text, #f3f4f6);
+  font-size: 15px;
+}
+
+.pf-install-plat-title {
+  margin: 0;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--text, #f3f4f6);
+}
+
+.pf-install-chip {
+  margin-left: auto;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--muted, #94a3b8);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.pf-install-steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: pf-install-step;
+  display: grid;
+  gap: 10px;
+}
+
+.pf-install-steps li {
+  counter-increment: pf-install-step;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted, #cbd5e1);
+}
+
+.pf-install-steps li::before {
+  content: counter(pf-install-step);
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  margin-top: 1px;
+  font-size: 11.5px;
+  font-weight: 800;
+  background: rgba(232, 185, 58, 0.16);
+  color: #e8b93a;
+  border: 1px solid rgba(232, 185, 58, 0.34);
+}
+
+.pf-install-steps li strong {
+  color: var(--text, #f3f4f6);
+  font-weight: 700;
+}
+
+/* Light mode overrides for .pf-install-* */
+html body.pf-staff:not(.dark) .pf-install-status,
+html body.member-home:not(.dark) .pf-install-status,
+html[data-theme="light"] body[data-portal="trainer"] .pf-install-status {
+  background: #fdf6e3;
+  border-color: #ead7a4;
+}
+
+html body.pf-staff:not(.dark) .pf-install-status-ico,
+html body.member-home:not(.dark) .pf-install-status-ico,
+html[data-theme="light"] body[data-portal="trainer"] .pf-install-status-ico {
+  background: #fae8b4;
+  color: #9a6b0d;
+}
+
+html body.pf-staff:not(.dark) .pf-install-status-copy,
+html body.member-home:not(.dark) .pf-install-status-copy,
+html[data-theme="light"] body[data-portal="trainer"] .pf-install-status-copy {
+  color: #2a2418;
+}
+
+html body.pf-staff:not(.dark) .pf-install-card,
+html body.member-home:not(.dark) .pf-install-card,
+html[data-theme="light"] body[data-portal="trainer"] .pf-install-card {
+  background: #faf6ee;
+  border-color: #eadfc8;
+}
+
+html body.pf-staff:not(.dark) .pf-install-card-head,
+html body.member-home:not(.dark) .pf-install-card-head,
+html[data-theme="light"] body[data-portal="trainer"] .pf-install-card-head {
+  border-bottom-color: #eadfc8;
+}
+
+html body.pf-staff:not(.dark) .pf-install-plat-ico,
+html body.member-home:not(.dark) .pf-install-plat-ico,
+html[data-theme="light"] body[data-portal="trainer"] .pf-install-plat-ico {
+  background: #ffffff;
+  border: 1px solid #eadfc8;
+  color: #2a2418;
+}
+
+html body.pf-staff:not(.dark) .pf-install-plat-title,
+html body.member-home:not(.dark) .pf-install-plat-title,
+html[data-theme="light"] body[data-portal="trainer"] .pf-install-plat-title {
+  color: #2a2418;
+}
+
+html body.pf-staff:not(.dark) .pf-install-chip,
+html body.member-home:not(.dark) .pf-install-chip,
+html[data-theme="light"] body[data-portal="trainer"] .pf-install-chip {
+  background: #ffffff;
+  border-color: #dfd2b6;
+  color: #6f6450;
+}
+
+html body.pf-staff:not(.dark) .pf-install-steps li,
+html body.member-home:not(.dark) .pf-install-steps li,
+html[data-theme="light"] body[data-portal="trainer"] .pf-install-steps li {
+  color: #5c5344;
+}
+
+html body.pf-staff:not(.dark) .pf-install-steps li::before,
+html body.member-home:not(.dark) .pf-install-steps li::before,
+html[data-theme="light"] body[data-portal="trainer"] .pf-install-steps li::before {
+  background: #fae8b4;
+  border-color: #e8b93a;
+  color: #7c5206;
+}
+
+html body.pf-staff:not(.dark) .pf-install-steps li strong,
+html body.member-home:not(.dark) .pf-install-steps li strong,
+html[data-theme="light"] body[data-portal="trainer"] .pf-install-steps li strong {
+  color: #1c1917;
 }

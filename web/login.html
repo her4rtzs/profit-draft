@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
-<script src="api.js?v=5"></script>
+<script src="api.js?v=6"></script>
 <style>
   :root{
     --gold:#e8b93a;
@@ -102,11 +102,8 @@
     animation:pfPageFade .35s ease-out both;
   }
   .lg-shell::after{
-    content:"";position:absolute;inset:-18px;
+    content:"";position:absolute;inset:0;
     background:url("img/hero.jpg") center/cover no-repeat;
-    transform:translate3d(var(--px,0px),var(--py,0px),0) scale(1.02);
-    transition:transform .35s cubic-bezier(.22,1,.36,1);
-    will-change:transform;
     z-index:-1;
   }
   .lg-shell::before{
@@ -274,11 +271,13 @@
   }
   .lg-forgot::after{
     content:"";position:absolute;left:10px;right:10px;bottom:8px;height:1.5px;
-    background:currentColor;transform:scaleX(.35);transform-origin:center;opacity:.65;
+    background:currentColor;transform:scaleX(0);transform-origin:center;opacity:0;
     transition:transform .2s cubic-bezier(.22,1,.36,1),opacity .2s ease;
   }
-  .lg-forgot:hover{color:var(--lime-hi)}
-  .lg-forgot:hover::after{transform:scaleX(1);opacity:1}
+  .lg-forgot:hover,
+  .lg-forgot:focus-visible{color:var(--lime-hi)}
+  .lg-forgot:hover::after,
+  .lg-forgot:focus-visible::after{transform:scaleX(1);opacity:1}
 
   .lg-divider{
     display:flex;align-items:center;gap:12px;margin:8px 0 10px;
@@ -309,11 +308,13 @@
   }
   .lg-join-row a::after{
     content:"";position:absolute;left:0;right:0;bottom:8px;height:1.5px;
-    background:currentColor;transform:scaleX(.35);transform-origin:left;opacity:.65;
+    background:currentColor;transform:scaleX(0);transform-origin:left;opacity:0;
     transition:transform .2s cubic-bezier(.22,1,.36,1),opacity .2s ease;
   }
-  .lg-join-row a:hover{color:var(--lime-hi)}
-  .lg-join-row a:hover::after{transform:scaleX(1);opacity:1}
+  .lg-join-row a:hover,
+  .lg-join-row a:focus-visible{color:var(--lime-hi)}
+  .lg-join-row a:hover::after,
+  .lg-join-row a:focus-visible::after{transform:scaleX(1);opacity:1}
 
   @media(max-width:900px){
     .lg-shell{min-height:calc(100vh - 68px);padding:24px 16px 32px;align-items:flex-start}
@@ -505,28 +506,6 @@
       setBusy(false);
       pwEl.value = '';
     }
-  });
-})();
-</script>
-<script>
-(() => {
-  const shell = document.querySelector(".lg-shell");
-  if (!shell || window.matchMedia("(prefers-reduced-motion: reduce)").matches || window.matchMedia("(pointer: coarse)").matches) return;
-  let raf = 0;
-  shell.addEventListener("pointermove", e => {
-    if (raf) return;
-    raf = requestAnimationFrame(() => {
-      raf = 0;
-      const r = shell.getBoundingClientRect();
-      const x = ((e.clientX - r.left) / r.width - 0.5) * -12;
-      const y = ((e.clientY - r.top) / r.height - 0.5) * -12;
-      shell.style.setProperty("--px", `${x.toFixed(1)}px`);
-      shell.style.setProperty("--py", `${y.toFixed(1)}px`);
-    });
-  }, { passive: true });
-  shell.addEventListener("pointerleave", () => {
-    shell.style.setProperty("--px", "0px");
-    shell.style.setProperty("--py", "0px");
   });
 })();
 </script>

@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
-  <title>ProFit — Notifications (Trainer Portal)</title>
+  <title>ProFit Ã¢â‚¬â€ Notifications (Trainer Portal)</title>
   <script>try { var t = localStorage.getItem('pf-theme') || localStorage.getItem('theme') || 'dark'; document.documentElement.setAttribute('data-theme', t); document.documentElement.setAttribute('data-accent', 'gold'); } catch (e) { }</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,7 +23,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="ProFit">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="stylesheet" href="../pf-system.css?v=26">
+  <link rel="stylesheet" href="../pf-system.css?v=34">
 </head>
 
 <body data-page="notifications" data-portal="trainer" data-head="none">
@@ -39,7 +39,7 @@
           <div class="tw-hero-left">
             <div class="tw-hero-ico" data-ico="bell"></div>
             <div class="tw-hero-text">
-              <span class="tw-hero-eyebrow">Coach Inbox · Real-Time Activity</span>
+              <span class="tw-hero-eyebrow">Coach Inbox Ã‚Â· Real-Time Activity</span>
               <h1 class="tw-hero-title">Notifications &amp; Assignment Alerts</h1>
               <p class="tw-hero-sub">Stay updated on new athlete assignments, coaching requests, schedule broadcasts,
                 and gym notices.</p>
@@ -101,13 +101,13 @@
     <nav class="bottom-nav" id="bottomNav" aria-label="Quick navigation"></nav>
   </div>
 
-  <script src="../config.js?v=9"></script>
-  <script src="../api.js?v=5"></script>
-  <script src="../auth.js?v=6"></script>
+  <script src="../config.js?v=11"></script>
+  <script src="../api.js?v=6"></script>
+  <script src="../auth.js?v=7"></script>
   <script src="../assets/js/staff-icons.js?v=5"></script>
   <script src="../assets/js/staff-data.js?v=12"></script>
-  <script src="../assets/js/staff.js?v=18"></script>
-  <script src="trainer.js?v=12"></script>
+  <script src="../assets/js/staff.js?v=19"></script>
+  <script src="trainer.js?v=14"></script>
   <script>
     PF.ready(async () => {
       let allNotifs = [];
@@ -183,9 +183,8 @@
           const cfg = getIconConfig(n);
           const ts = n.created_at || n.time || n.at;
           const bodyText = n.body !== undefined ? n.body : (n.text || '');
-          let linkTarget = String(n.link || n.href || '').trim();
-          if (linkTarget === '/trainer-portal') linkTarget = '/members';
-          if (linkTarget.startsWith('trainer/')) linkTarget = linkTarget.slice('trainer/'.length);
+          const mapped = PF.mapServerNotification ? PF.mapServerNotification(n) : n;
+          const linkTarget = String(mapped.href || mapped.link || '').trim();
           return `
         <article class="tw-notif-item ${unread ? 'is-unread' : ''}" data-notif-id="${n.id}">
           <div class="tw-notif-left">
@@ -199,13 +198,13 @@
               <p class="tw-notif-body">${PF.esc(bodyText)}</p>
               <div class="tw-notif-meta">
                 <span>${Trainer.format.timeAgo(ts)}</span>
-                <span>·</span>
+                <span>Ã‚Â·</span>
                 <span>${Trainer.format.date(ts)} at ${Trainer.format.time(ts)}</span>
               </div>
             </div>
           </div>
           <div style="display:flex;align-items:center;gap:8px;flex:none">
-            ${linkTarget && linkTarget !== '/notifications'
+            ${linkTarget && linkTarget !== '/notifications' && linkTarget !== '/trainer/notifications'
               ? `<a href="${PF.esc(linkTarget)}" class="tw-btn" data-open-link="${PF.esc(linkTarget)}">Open</a>`
               : ''}
             ${unread
@@ -221,11 +220,17 @@
           btn.addEventListener('click', async ev => {
             ev.stopPropagation();
             const id = btn.dataset.deleteNotif;
-            await Trainer.api.deleteNotif(id);
-            allNotifs = allNotifs.filter(x => String(x.id) !== String(id));
-            updateKPIs(allNotifs);
-            render();
-            PF.toast('Notification removed.', 'info');
+            btn.disabled = true;
+            try {
+              await Trainer.api.deleteNotif(id);
+              allNotifs = allNotifs.filter(x => String(x.id) !== String(id));
+              updateKPIs(allNotifs);
+              render();
+              PF.toast('Notification removed.', 'info');
+            } catch (err) {
+              btn.disabled = false;
+              PF.toast(err.message || 'Could not remove notification.', 'error');
+            }
           });
         });
 
@@ -235,20 +240,40 @@
             const id = el.dataset.notifId;
             const item = allNotifs.find(x => String(x.id) === String(id));
             if (item && isUnread(item)) {
-              item.read = true;
-              item.read_at = new Date().toISOString();
-              await Trainer.api.markNotifRead(id);
-              updateKPIs(allNotifs);
-              render();
+              const readBtn = el.querySelector('[data-mark-read]');
+              if (readBtn) readBtn.disabled = true;
+              try {
+                await Trainer.api.markNotifRead(id);
+                item.read = true;
+                item.read_at = new Date().toISOString();
+                updateKPIs(allNotifs);
+                render();
+              } catch (err) {
+                if (readBtn) readBtn.disabled = false;
+                PF.toast(err.message || 'Could not mark notification as read.', 'error');
+              }
             }
           });
         });
       }
 
       async function loadNotifs() {
-        allNotifs = await Trainer.api.getNotifications();
-        updateKPIs(allNotifs);
-        render();
+        const feed = document.getElementById('notifFeed');
+        try {
+          allNotifs = await Trainer.api.getNotifications();
+          updateKPIs(allNotifs);
+          render();
+        } catch (err) {
+          feed.innerHTML = `
+            <div class="tw-empty">
+              <div class="tw-empty-ico">${PF.icon('alert-circle')}</div>
+              <strong>Could not load notifications</strong>
+              <p>${PF.esc(err.message || 'Please check your connection and try again.')}</p>
+              <button type="button" class="tw-btn" id="retryNotifBtn" style="margin-top:8px">Retry</button>
+            </div>
+          `;
+          document.getElementById('retryNotifBtn')?.addEventListener('click', loadNotifs);
+        }
       }
 
       document.addEventListener('pf:notifications-updated', ev => {
@@ -268,24 +293,40 @@
       });
 
       document.getElementById('markAllReadBtn').addEventListener('click', async () => {
-        await Trainer.api.markAllNotifsRead();
-        allNotifs.forEach(n => {
-          n.read = true;
-          n.read_at = new Date().toISOString();
-        });
-        updateKPIs(allNotifs);
-        render();
-        PF.toast('All notifications marked as read.', 'success');
+        const btn = document.getElementById('markAllReadBtn');
+        btn.disabled = true;
+        try {
+          await Trainer.api.markAllNotifsRead();
+          allNotifs.forEach(n => {
+            n.read = true;
+            n.read_at = new Date().toISOString();
+          });
+          updateKPIs(allNotifs);
+          render();
+          PF.toast('All notifications marked as read.', 'success');
+        } catch (err) {
+          PF.toast(err.message || 'Could not update notifications.', 'error');
+        } finally {
+          btn.disabled = false;
+        }
       });
 
       document.getElementById('clearAllNotifsBtn').addEventListener('click', async () => {
         if (!allNotifs.length) return;
+        const btn = document.getElementById('clearAllNotifsBtn');
         if (await PF.confirm({ title: 'Clear all notifications?', message: 'This will remove all notifications from your inbox.', confirm: 'Clear all', danger: true })) {
-          await Trainer.api.clearNotifs(false);
-          allNotifs = [];
-          updateKPIs(allNotifs);
-          render();
-          PF.toast('All notifications cleared.', 'info');
+          btn.disabled = true;
+          try {
+            await Trainer.api.clearNotifs(false);
+            allNotifs = [];
+            updateKPIs(allNotifs);
+            render();
+            PF.toast('All notifications cleared.', 'info');
+          } catch (err) {
+            PF.toast(err.message || 'Could not clear notifications.', 'error');
+          } finally {
+            btn.disabled = false;
+          }
         }
       });
 

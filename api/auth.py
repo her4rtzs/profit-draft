@@ -1041,3 +1041,17 @@ def onboarding_consent_api_view(request):
         "redirect": _post_google_redirect_for(user),
         "user": _session_user_dict(user),
     })
+
+
+@require_GET
+def activity_log_view(request):
+    """GET /api/auth/activity/: per-user timeline of sign-ins, actions, and updates."""
+    user = request.user
+    if not user.is_authenticated:
+        return JsonResponse({"detail": "Not signed in."}, status=401)
+    if not user.is_active:
+        return JsonResponse({"detail": "Account is deactivated."}, status=403)
+
+    from apps.accounts.activity import get_user_activity
+
+    return JsonResponse(get_user_activity(user))

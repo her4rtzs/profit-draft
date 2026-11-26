@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
-<script src="api.js?v=5"></script>
+<script src="api.js?v=6"></script>
 <style>
   :root{
     --gold:#e8b93a;
@@ -236,8 +236,9 @@
     content:"";width:5px;height:9px;border:solid var(--on);border-width:0 2px 2px 0;
     transform:rotate(45deg);margin-bottom:2px;
   }
-  .jn-terms a{color:var(--gold);font-weight:600;text-decoration:underline;text-underline-offset:3px}
-  .jn-terms a:hover{color:var(--lime-hi)}
+  .jn-terms a{color:var(--gold);font-weight:600;text-decoration:none;text-underline-offset:3px}
+  .jn-terms a:hover,
+  .jn-terms a:focus-visible{color:var(--lime-hi);text-decoration:underline}
 
   .jn-err{margin:0 0 6px;min-height:0;font-size:12px;font-weight:500;color:var(--err)}
 
@@ -272,8 +273,10 @@
   .jn-alt{margin:4px 0 0;text-align:center;font-size:13px;color:var(--mu)}
   .jn-alt a{
     display:inline-flex;align-items:center;min-height:36px;
-    color:var(--gold);font-weight:600;text-decoration:underline;text-underline-offset:3px;
+    color:var(--gold);font-weight:600;text-decoration:none;text-underline-offset:3px;
   }
+  .jn-alt a:hover,
+  .jn-alt a:focus-visible{color:var(--lime-hi);text-decoration:underline}
 
   .jn-ok{text-align:center;padding:24px 8px}
   .jn-ok i{font-size:40px;color:var(--ok);margin-bottom:12px}
@@ -336,7 +339,9 @@
   .jn-legal-body .legal-num{width:24px;height:24px;border-radius:6px;display:inline-grid;place-items:center;background:var(--gold);color:var(--on);font-size:12px;font-weight:800;flex:none}
   .jn-legal-body p{margin:0 0 8px}
   .jn-legal-body ul{margin:6px 0 0;padding-left:20px;display:grid;gap:5px}
-  .jn-legal-body a{color:var(--gold);font-weight:600;text-decoration:underline}
+  .jn-legal-body a{color:var(--gold);font-weight:600;text-decoration:none;text-underline-offset:3px}
+  .jn-legal-body a:hover,
+  .jn-legal-body a:focus-visible{text-decoration:underline}
   .jn-legal-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 22px;border-top:1px solid var(--line);background:var(--bg)}
   .jn-legal-note{margin:0;font-size:12.5px;color:var(--mu)}
   .jn-legal-acts{display:flex;align-items:center;gap:10px;margin-left:auto}
@@ -551,7 +556,20 @@
     return d.slice(0, 3) + " " + d.slice(3, 6) + " " + d.slice(6);
   }
   phoneEl.addEventListener("input", () => {
-    phoneEl.value = formatPHPhone(phoneEl.value);
+    const raw = phoneEl.value;
+    const caret = phoneEl.selectionStart ?? raw.length;
+    const digitsBefore = raw.slice(0, caret).replace(/\D/g, "").length;
+    const formatted = formatPHPhone(raw);
+    phoneEl.value = formatted;
+    if (document.activeElement === phoneEl && typeof phoneEl.setSelectionRange === "function") {
+      let nextPos = 0;
+      let seen = 0;
+      while (nextPos < formatted.length && seen < digitsBefore) {
+        if (/\d/.test(formatted[nextPos])) seen++;
+        nextPos++;
+      }
+      phoneEl.setSelectionRange(nextPos, nextPos);
+    }
     updateFormState(false);
   });
 

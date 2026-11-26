@@ -1,7 +1,7 @@
 /* Members page: dark glassmorphism + amber/gold accents matching reference */
 body[data-page="members"] {
   --bm-page-bg: #070b14;
-  --bm-card-bg: linear-gradient(160deg, #141f36, #0e1627, #0b1120);
+  --bm-card-bg: #111622;
   --bm-surface: rgba(11, 17, 32, 0.72);
   --bm-surface-hi: rgba(18, 28, 49, 0.85);
   --bm-border: rgba(255, 170, 0, 0.24);
@@ -100,16 +100,17 @@ body[data-page="members"] .pp-btn:hover:not(:disabled) {
 }
 
 body[data-page="members"] .pp-btn-primary {
-  background: linear-gradient(135deg, #f2cb5c 0%, #e8b93a 100%) !important;
-  color: #1a1407 !important;
+  background: #e8b93a !important;
+  color: #0b0f19 !important;
   border: 0 !important;
   font-weight: 700 !important;
   box-shadow: none !important;
 }
 
 body[data-page="members"] .pp-btn-primary:hover:not(:disabled) {
-  filter: brightness(1.06);
-  color: #1a1407 !important;
+  background: #f0c44b !important;
+  filter: none;
+  color: #0b0f19 !important;
 }
 
 /* 1) HEADER (Unified PROFit Banner with Members Community Photo) */
@@ -1110,7 +1111,8 @@ body[data-page="members"] #detailRoot .pp-timeline li { display: flex; align-ite
 
 /* Enrollment form */
 body[data-page="members"] .pp-enroll { width: 100%; max-width: none; margin: 0; padding: 24px; }
-body[data-page="members"] .pp-enroll-head { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+body[data-page="members"] .pp-enroll-head { display: flex; align-items: center; justify-content: flex-start !important; gap: 14px; margin-bottom: 20px; text-align: left; }
+body[data-page="members"] .pp-enroll-head > div { text-align: left; }
 body[data-page="members"] .pp-enroll-head h2 { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.2rem; font-weight: 800; color: var(--bm-text); }
 body[data-page="members"] .pp-enroll-head p { margin: 4px 0 0; font-size: 0.85rem; color: var(--bm-muted); }
 body[data-page="members"] .pp-form-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 14px; }
@@ -1127,23 +1129,25 @@ body[data-page="members"] .pp-field select:focus { border-color: var(--bm-amber)
 body[data-page="members"] #eAmount { color: var(--bm-amber); font-weight: 800; }
 body[data-page="members"] .pp-fieldset { border: 0; padding: 0; margin: 16px 0; }
 body[data-page="members"] .pp-plan-cards { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 12px; }
-body[data-page="members"] .pp-plan-card { grid-column: span 3; position: relative; display: flex; flex-direction: column; padding: 16px 18px !important; border-radius: 14px !important; background: rgba(13, 20, 36, 0.78) !important; border: 1px solid rgba(255, 255, 255, 0.08) !important; box-shadow: none !important; cursor: pointer; transition: transform 160ms ease-out, border-color 160ms ease-out, box-shadow 160ms ease-out, background 160ms ease-out; }
+body[data-page="members"] .pp-plan-card { grid-column: span 3; position: relative; display: flex; flex-direction: column; padding: 16px 18px !important; border-radius: 14px !important; background: #0d121d !important; border: 1px solid rgba(255, 255, 255, 0.10) !important; box-shadow: none !important; cursor: pointer; transition: border-color 0.15s ease, background-color 0.15s ease; }
 body[data-page="members"] .pp-plan-card::before,
 body[data-page="members"] .pp-plan-card::after { display: none !important; content: none !important; }
-body[data-page="members"] .pp-plan-card:not(.selected):hover { transform: translateY(-2px); background: rgba(18, 28, 49, 0.92) !important; border-color: rgba(255, 176, 32, 0.38) !important; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28) !important; }
+body[data-page="members"] .pp-plan-card:not(.selected):hover { transform: none !important; background: rgba(255, 255, 255, 0.05) !important; border-color: rgba(232, 185, 58, 0.55) !important; box-shadow: none !important; }
 body[data-page="members"] .pp-plan-card input { position: absolute; opacity: 0; pointer-events: none; }
 body[data-page="members"] .pp-plan-body { display: grid; gap: 4px; background: transparent !important; border: 0 !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
 body[data-page="members"] .pp-plan-body strong { font-size: 0.84rem; font-weight: 700; color: var(--bm-text); }
 body[data-page="members"] .pp-plan-price { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--bm-text); }
 body[data-page="members"] .pp-plan-body small { font-size: 0.75rem; color: var(--bm-muted); }
-body[data-page="members"] .pp-plan-card.selected { background: linear-gradient(160deg, rgba(255, 176, 32, 0.16), rgba(16, 24, 42, 0.94)) !important; border: 1.5px solid rgba(255, 176, 32, 0.72) !important; box-shadow: 0 6px 18px rgba(255, 176, 32, 0.12) !important; }
-body[data-page="members"] .pp-plan-card.selected .pp-plan-body strong { color: var(--bm-amber); }
-body[data-page="members"] .pp-switch-row { display: flex; align-items: center; gap: 14px; padding: 12px 16px; margin: 18px 0; border-radius: 14px; background: rgba(7, 11, 20, 0.78); border: 1px solid rgba(255, 170, 0, 0.35); color: var(--bm-text); font-size: 0.88rem; font-weight: 700; cursor: pointer; }
-body[data-page="members"] .pp-switch-row input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-body[data-page="members"] .pp-switch-track { position: relative; width: 44px; height: 24px; border-radius: 999px; background: rgba(148, 163, 184, 0.28); flex-shrink: 0; transition: background 0.18s ease, box-shadow 0.18s ease; }
-body[data-page="members"] .pp-switch-track::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35); transition: transform 0.18s ease; }
-body[data-page="members"] .pp-switch-row input:checked + .pp-switch-track { background: linear-gradient(135deg, #f8e08c, #e8c45a, #c99a2e); box-shadow: 0 0 12px rgba(255, 176, 32, 0.45); }
-body[data-page="members"] .pp-switch-row input:checked + .pp-switch-track::after { transform: translateX(20px); }
+body[data-page="members"] .pp-plan-card.selected { background: rgba(232, 185, 58, 0.12) !important; border: 1.5px solid #e8b93a !important; box-shadow: none !important; }
+body[data-page="members"] .pp-plan-card.selected .pp-plan-body strong { color: #e8b93a; }
+body[data-page="members"] .pp-switch-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 14px 16px; margin: 18px 0; border-radius: 12px; background: #0d121d; border: 1px solid rgba(255, 255, 255, 0.10); color: var(--bm-text); font-size: 0.9rem; font-weight: 700; cursor: pointer; }
+body[data-page="members"] .pp-switch-label { min-width: 0; flex: 1 1 auto; }
+body[data-page="members"] .pp-switch-ctrl { position: relative; display: inline-block; width: 46px; height: 26px; flex: none; }
+body[data-page="members"] .pp-switch-ctrl input { position: absolute; opacity: 0; width: 0; height: 0; margin: 0; pointer-events: none; }
+body[data-page="members"] .pp-switch-track { position: absolute; inset: 0; border-radius: 99px; background: #334155; transition: background 0.18s ease; }
+body[data-page="members"] .pp-switch-track::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #ffffff; transition: transform 0.18s ease; }
+body[data-page="members"] .pp-switch-ctrl input:checked + .pp-switch-track { background: #e8b93a !important; box-shadow: none !important; }
+body[data-page="members"] .pp-switch-ctrl input:checked + .pp-switch-track::after { transform: translateX(20px); }
 body[data-page="members"] .pp-actions-end { display: flex; justify-content: flex-end; align-items: center; gap: 10px; }
 
 /* Light Mode Overrides */
@@ -1225,32 +1229,41 @@ body:not(.dark)[data-page="members"] .pp-chip { background: #f1f5f9; border-colo
 }
 
 
-/* Light Mode Plan Cards & Zero AI Glow Overrides */
+/* Light Mode Plan Cards & Switch (60/30/10, Zero Gradients/Glow) */
 body:not(.dark)[data-page="members"] .pp-plan-card {
   background: #ffffff !important;
-  border: 1px solid #eadfc8 !important;
-  color: #2a2418 !important;
+  border: 1px solid rgba(15, 23, 42, 0.14) !important;
+  color: #1c1917 !important;
   box-shadow: none !important;
 }
 body:not(.dark)[data-page="members"] .pp-plan-card:not(.selected):hover {
   background: #faf6ee !important;
-  border-color: #d6b25e !important;
+  border-color: #d9a425 !important;
   box-shadow: none !important;
+  transform: none !important;
 }
 body:not(.dark)[data-page="members"] .pp-plan-card.selected {
   background: #fef9eb !important;
-  border: 1.5px solid #b8860b !important;
+  border: 1.5px solid #e8b93a !important;
   box-shadow: none !important;
 }
 body:not(.dark)[data-page="members"] .pp-plan-body strong,
 body:not(.dark)[data-page="members"] .pp-plan-price {
-  color: #2a2418 !important;
+  color: #1c1917 !important;
 }
 body:not(.dark)[data-page="members"] .pp-plan-card.selected .pp-plan-body strong {
-  color: #8a6212 !important;
+  color: #9a6b0d !important;
 }
 body:not(.dark)[data-page="members"] .pp-plan-body small {
-  color: #6f6450 !important;
+  color: #6b6254 !important;
+}
+body:not(.dark)[data-page="members"] .pp-switch-row {
+  background: #faf6ee !important;
+  border-color: rgba(15, 23, 42, 0.14) !important;
+  color: #1c1917 !important;
+}
+body:not(.dark)[data-page="members"] .pp-switch-track {
+  background: #e2d9c8 !important;
 }
 body[data-page="members"] .pp-plan-card.selected,
 body[data-page="members"] .pp-page-tab.active,
@@ -1481,9 +1494,9 @@ body:not(.dark) .md-sec-ico.is-sky {
   background: #e6f4fe;
   color: #0369a1;
 }
-/* Clean pill toggle switch in Enroll without glow */
-body[data-page="members"] .pp-switch-row input:checked + .pp-switch-track {
-  background: #22c55e !important;
+/* Gold pill toggle switch in Enroll matching system Settings */
+body[data-page="members"] .pp-switch-ctrl input:checked + .pp-switch-track {
+  background: #e8b93a !important;
   box-shadow: none !important;
 }
 .md-stack {
@@ -1508,11 +1521,34 @@ body:not(.dark) .md-card:not(.md-id-card) {
   color: var(--muted, #94a3b8);
   margin-bottom: 4px;
 }
+.md-id-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.md-id-title {
+  min-width: 0;
+  flex: 1 1 220px;
+}
 .md-id-card h2 {
   margin: 0 0 18px;
   font-size: 24px;
   font-weight: 800;
   color: #f8fafc;
+}
+.md-id-head h2 {
+  margin: 0;
+}
+body[data-page="members"] .md-id-card .md-renew-btn {
+  height: 42px;
+  min-height: 42px;
+  padding: 0 18px;
+  border-radius: 12px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 body:not(.dark) .md-id-card .md-kicker,
 body:not(.dark) .md-id-card .md-cols-3 span,
@@ -1839,6 +1875,10 @@ body[data-page="members"] .pp-subtabs button.active {
   body[data-page="members"] .pp-member-title h3 {
     white-space: normal !important;
     line-height: 1.2 !important;
+  }
+
+  body[data-page="members"] .md-id-card .md-renew-btn {
+    width: 100%;
   }
 }
 

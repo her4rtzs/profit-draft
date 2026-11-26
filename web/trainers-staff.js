@@ -61,9 +61,9 @@
     }
 
     const total = trainers.length;
-    const available = trainers.filter(t => t.is_active && !t.is_full).length;
+    const available = trainers.filter(t => isAssignableTrainer(t) && !t.is_full).length;
     const onAssign = trainers.filter(t => Number(t.load || 0) > 0).length;
-    const activeTrainers = trainers.filter(t => t.is_active);
+    const activeTrainers = trainers.filter(isAssignableTrainer);
     const totalLoad = activeTrainers.reduce((s, t) => s + Number(t.load || 0), 0);
     const totalCap = activeTrainers.reduce((s, t) => s + Number(t.max_members || 0), 0);
     const usagePct = totalCap > 0 ? Math.min(100, Math.round((totalLoad / totalCap) * 100)) : 0;
@@ -89,6 +89,11 @@
     if (stKey === "inactive") return { key: "inactive", label: "Inactive", cls: "is-inactive" };
     if (t.is_full) return { key: "full", label: "Full", cls: "is-full" };
     return { key: "active", label: "Active", cls: "is-active" };
+  }
+
+  function isAssignableTrainer(t) {
+    const key = trainerStatus(t).key;
+    return key === "active" || key === "full";
   }
 
   const BASE_SPECS = [
@@ -210,14 +215,16 @@
         updateKPIs();
         populateSpecializations();
         renderDirectory();
-        const active = trainers.filter(t => t.is_active);
+        const active = trainers.filter(isAssignableTrainer);
         const asTrainer = document.getElementById("asTrainer");
         if (asTrainer) {
           const keep = asTrainer.value;
+          const keepValid = keep && active.some(t => String(t.id) === String(keep));
           asTrainer.innerHTML = active.length
             ? opt("", "Choose trainer...") + active.map(t => opt(t.id, `${t.name}${t.is_full ? " (full)" : ` (${t.load}/${t.max_members})`}`, t.is_full ? "disabled" : "")).join("")
             : opt("", "No active trainers available");
-          if (keep) asTrainer.value = keep;
+          asTrainer.value = keepValid ? keep : "";
+          asTrainer.dispatchEvent(new Event("change"));
         }
       } catch (err) {
         trainersState = "error";
@@ -348,7 +355,7 @@
       return;
     }
 
-    const activeTrainers = trainers.filter(t => t.is_active);
+    const activeTrainers = trainers.filter(isAssignableTrainer);
     box.innerHTML = `<table class="tr-req-table">
       <thead>
         <tr>

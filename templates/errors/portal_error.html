@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>{{ heading|default:"Page not found" }} · ProFit</title>
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'light' && !localStorage.getItem('pf-staff-explicit-light')) t = 'dark';
+        var d = t !== 'light';
+        var h = document.documentElement;
+        h.classList.toggle('dark', d);
+        h.style.colorScheme = d ? 'dark' : 'light';
+      } catch (e) { document.documentElement.classList.add('dark'); }
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap">
+  <style>
+    :root {
+      --pf-err-bg: #0a0e17;
+      --pf-err-card: #111827;
+      --pf-err-border: #263246;
+      --pf-err-text: #f3f4f6;
+      --pf-err-muted: #94a3b8;
+      --pf-err-gold: #e8b93a;
+      --pf-err-gold-hover: #f2c955;
+      --pf-err-gold-ink: #1a1407;
+      --pf-err-badge-bg: rgba(232, 185, 58, 0.14);
+      --pf-err-ghost-border: rgba(255, 255, 255, 0.16);
+    }
+
+    html:not(.dark) {
+      --pf-err-bg: #fbf6ee;
+      --pf-err-card: #ffffff;
+      --pf-err-border: #eadfc8;
+      --pf-err-text: #1f2430;
+      --pf-err-muted: #645c4c;
+      --pf-err-gold-ink: #1a1407;
+      --pf-err-badge-bg: #fdf4da;
+      --pf-err-ghost-border: #dfd2b6;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100dvh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: var(--pf-err-bg);
+      color: var(--pf-err-text);
+      font-family: Inter, system-ui, -apple-system, sans-serif;
+    }
+
+    .pf-err-card {
+      width: min(460px, 100%);
+      background: var(--pf-err-card);
+      border: 1px solid var(--pf-err-border);
+      border-radius: 20px;
+      padding: 28px 26px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+      display: grid;
+      gap: 16px;
+      text-align: center;
+    }
+
+    .pf-err-brand {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-family: "Plus Jakarta Sans", Inter, sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: 0.02em;
+      color: var(--pf-err-text);
+    }
+
+    .pf-err-brand img {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .pf-err-icon {
+      margin: 4px auto 0;
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: var(--pf-err-badge-bg);
+      color: var(--pf-err-gold);
+      display: grid;
+      place-items: center;
+    }
+
+    .pf-err-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--pf-err-gold);
+      margin: 0;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: "Plus Jakarta Sans", Inter, sans-serif;
+      font-size: clamp(22px, 4vw, 26px);
+      font-weight: 800;
+      line-height: 1.2;
+      color: var(--pf-err-text);
+    }
+
+    .pf-err-msg {
+      margin: 0;
+      font-size: 14.5px;
+      line-height: 1.55;
+      color: var(--pf-err-muted);
+    }
+
+    .pf-err-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .pf-err-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 20px;
+      border-radius: 999px;
+      font-family: "Plus Jakarta Sans", Inter, sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .pf-err-primary {
+      background: var(--pf-err-gold);
+      color: var(--pf-err-gold-ink);
+      border: 0;
+    }
+
+    .pf-err-primary:hover {
+      background: var(--pf-err-gold-hover);
+    }
+
+    .pf-err-ghost {
+      background: transparent;
+      color: var(--pf-err-text);
+      border: 1px solid var(--pf-err-ghost-border);
+    }
+  </style>
+</head>
+<body>
+  <main class="pf-err-card" role="main" aria-labelledby="pfErrTitle">
+    <div class="pf-err-brand">
+      <img src="/assets/img/logo.jpg" alt="" onerror="this.style.display='none'">
+      <span>Functional Fitness Gym · ProFit</span>
+    </div>
+    <div class="pf-err-icon" aria-hidden="true">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+      </svg>
+    </div>
+    <p class="pf-err-eyebrow">{{ eyebrow|default:"ProFit · Page not found" }}</p>
+    <h1 id="pfErrTitle">{{ heading|default:"Page not found" }}</h1>
+    <p class="pf-err-msg">{{ message|default:"The URL you entered doesn't exist or isn't available for your account." }}</p>
+    <div class="pf-err-actions">
+      {% if request.user.is_authenticated %}
+        <a class="pf-err-btn pf-err-primary" href="/dashboard">Back to Dashboard</a>
+      {% else %}
+        <a class="pf-err-btn pf-err-primary" href="/login">Sign in</a>
+        <a class="pf-err-btn pf-err-ghost" href="/">Back to Home</a>
+      {% endif %}
+    </div>
+  </main>
+</body>
+</html>

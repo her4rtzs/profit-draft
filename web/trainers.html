@@ -7,17 +7,17 @@
     <meta charset="UTF-8">
     <meta name="viewport"
         content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
-    <title>Trainers · ProFit</title>
+    <title>Trainers Ã‚Â· ProFit</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Figtree:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="dashboard.css?v=18">
-    <link rel="stylesheet" href="announcements.css?v=7">
-    <script src="config.js?v=9"></script>
-    <script src="api.js"></script>
-    <script src="auth.js?v=6"></script>
+    <link rel="stylesheet" href="announcements.css?v=9">
+    <script src="config.js?v=11"></script>
+    <script src="api.js?v=6"></script>
+    <script src="auth.js?v=7"></script>
     <script>document.documentElement.dataset.accent = 'gold'</script>
     <script
         type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*.html"},{"not":{"href_matches":"/api/*"}}]},"eagerness":"moderate"}]}</script>
@@ -30,7 +30,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="ProFit">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <link rel="stylesheet" href="pf-system.css?v=26">
+    <link rel="stylesheet" href="pf-system.css?v=34">
 </head>
 
 <body class="pf-staff" data-page="trainers" data-title="Trainers Management"
@@ -49,7 +49,7 @@
                 <article class="tr-kpi tr-kpi-gold">
                     <div class="tr-kpi-ico"><i class="fa-solid fa-users" aria-hidden="true"></i></div>
                     <div class="tr-kpi-info">
-                        <strong id="kpiTotalTrainers">—</strong>
+                        <strong id="kpiTotalTrainers">Ã¢â‚¬â€</strong>
                         <span>Total Trainers</span>
                     </div>
                     <i class="fa-solid fa-dumbbell tr-kpi-wm" aria-hidden="true"></i>
@@ -57,7 +57,7 @@
                 <article class="tr-kpi tr-kpi-cyan">
                     <div class="tr-kpi-ico"><i class="fa-solid fa-user-check" aria-hidden="true"></i></div>
                     <div class="tr-kpi-info">
-                        <strong id="kpiAvailableTrainers">—</strong>
+                        <strong id="kpiAvailableTrainers">Ã¢â‚¬â€</strong>
                         <span>Available Trainers</span>
                     </div>
                     <i class="fa-solid fa-users tr-kpi-wm" aria-hidden="true"></i>
@@ -65,7 +65,7 @@
                 <article class="tr-kpi tr-kpi-emerald">
                     <div class="tr-kpi-ico"><i class="fa-solid fa-dumbbell" aria-hidden="true"></i></div>
                     <div class="tr-kpi-info">
-                        <strong id="kpiOnAssignment">—</strong>
+                        <strong id="kpiOnAssignment">Ã¢â‚¬â€</strong>
                         <span>On Assignment</span>
                     </div>
                     <i class="fa-solid fa-calendar-check tr-kpi-wm" aria-hidden="true"></i>
@@ -73,7 +73,7 @@
                 <article class="tr-kpi tr-kpi-violet">
                     <div class="tr-kpi-ico"><i class="fa-solid fa-chart-pie" aria-hidden="true"></i></div>
                     <div class="tr-kpi-info">
-                        <strong id="kpiCapacityUsage">—</strong>
+                        <strong id="kpiCapacityUsage">Ã¢â‚¬â€</strong>
                         <span>Capacity Usage</span>
                     </div>
                     <i class="fa-solid fa-arrow-trend-up tr-kpi-wm" aria-hidden="true"></i>
@@ -144,7 +144,7 @@
             <!-- Trainer Directory -->
             <section class="panel tr-dir-panel">
                 <div class="tr-dir-summary">
-                    <div class="tr-dir-count" id="trCountLabel">Trainers (—)</div>
+                    <div class="tr-dir-count" id="trCountLabel">Trainers (Ã¢â‚¬â€)</div>
                     <p class="tr-dir-sub">Browse and manage all trainers in your gym.</p>
                 </div>
 
@@ -292,9 +292,9 @@
                     <div class="tr-field tr-status-field" id="trEditStatusWrap" hidden>
                         <label for="trEditStatus">Status &amp; Availability</label>
                         <select id="trEditStatus">
-                            <option value="active">Active — Accepting new members</option>
-                            <option value="on_leave">On Leave — Temporarily away</option>
-                            <option value="inactive">Inactive — Not accepting members</option>
+                            <option value="active">Active Ã¢â‚¬â€ Accepting new members</option>
+                            <option value="on_leave">On Leave Ã¢â‚¬â€ Temporarily away</option>
+                            <option value="inactive">Inactive Ã¢â‚¬â€ Not accepting members</option>
                         </select>
                         <small class="tr-field-hint" id="trStatusHint">Only Active trainers can receive new member
                             assignments.</small>
@@ -360,9 +360,9 @@
                 <p class="tr-success-sub" id="trSuccSub">The trainer profile and account access have been created.</p>
 
                 <div class="tr-succ-card">
-                    <div class="tr-succ-row"><span>Trainer Name</span><strong id="trSuccName">—</strong></div>
-                    <div class="tr-succ-row"><span>Specializations</span><strong id="trSuccSpec">—</strong></div>
-                    <div class="tr-succ-row"><span>Member Capacity</span><strong id="trSuccCap">—</strong></div>
+                    <div class="tr-succ-row"><span>Trainer Name</span><strong id="trSuccName">Ã¢â‚¬â€</strong></div>
+                    <div class="tr-succ-row"><span>Specializations</span><strong id="trSuccSpec">Ã¢â‚¬â€</strong></div>
+                    <div class="tr-succ-row"><span>Member Capacity</span><strong id="trSuccCap">Ã¢â‚¬â€</strong></div>
                     <div class="tr-succ-row"><span>Account Status</span><span class="tr-status is-pending"
                             id="trSuccStatus">Invite Pending</span></div>
                 </div>
@@ -421,10 +421,10 @@
 
             <div class="tr-prof-body">
                 <div class="tr-prof-card">
-                    <div class="tr-prof-row"><span>Email</span><strong id="trProfEmail">—</strong></div>
-                    <div class="tr-prof-row"><span>Phone</span><strong id="trProfPhone">—</strong></div>
+                    <div class="tr-prof-row"><span>Email</span><strong id="trProfEmail">Ã¢â‚¬â€</strong></div>
+                    <div class="tr-prof-row"><span>Phone</span><strong id="trProfPhone">Ã¢â‚¬â€</strong></div>
                     <div class="tr-prof-row"><span>Capacity</span><strong id="trProfLoad">0 / 20 members</strong></div>
-                    <div class="tr-prof-row"><span>Schedule</span><strong id="trProfAvail">—</strong></div>
+                    <div class="tr-prof-row"><span>Schedule</span><strong id="trProfAvail">Ã¢â‚¬â€</strong></div>
                     <div class="tr-prof-row">
                         <span>Account Access</span>
                         <div class="tr-prof-acc-actions">
@@ -462,9 +462,9 @@
     <script src="data.js"></script>
     <script src="settings.js?v=17"></script>
     <script src="portal-fx.js?v=2"></script>
-    <script src="change-password.js?v=2" defer></script>
+    <script src="change-password.js?v=4" defer></script>
     <script src="notifications-live.js?v=2" defer></script>
-    <script src="trainers-staff.js?v=16" defer></script>
+    <script src="trainers-staff.js?v=17" defer></script>
     <script src="site-footer.js?v=2" defer></script>
 </body>
 

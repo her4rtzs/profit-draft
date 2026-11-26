@@ -309,13 +309,75 @@
 
   // ---- Sticky section jump-nav scrollspy ----
   const navLinks = [...document.querySelectorAll("#stSideNav a[data-sec]")];
-  if (navLinks.length && "IntersectionObserver" in window) {
-    const setOn = id => navLinks.forEach(a => a.classList.toggle("on", a.dataset.sec === id));
-    navLinks.forEach(a => a.addEventListener("click", () => setOn(a.dataset.sec)));
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(ent => { if (ent.isIntersecting) setOn(ent.target.id); });
-    }, { rootMargin: "-25% 0px -60% 0px" });
-    navLinks.forEach(a => { const sec = $(a.dataset.sec); if (sec) obs.observe(sec); });
+  if (navLinks.length) {
+    const sections = navLinks
+      .map(a => ({ id: a.dataset.sec, el: $(a.dataset.sec) }))
+      .filter(s => s.el);
+    let activeId = "";
+    let lockUntil = 0;
+    let raf = 0;
+
+    const setOn = id => {
+      if (!id || activeId === id) return;
+      activeId = id;
+      navLinks.forEach(a => {
+        const on = a.dataset.sec === id;
+        a.classList.toggle("on", on);
+        if (on) a.setAttribute("aria-current", "location");
+        else a.removeAttribute("aria-current");
+      });
+    };
+
+    const syncActive = () => {
+      if (!sections.length || Date.now() < lockUntil) return;
+      const y = window.scrollY || document.documentElement.scrollTop || 0;
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      if (y <= 24) {
+        setOn(sections[0].id);
+        return;
+      }
+      if (maxScroll > 24 && y >= maxScroll - 16) {
+        setOn(sections[sections.length - 1].id);
+        return;
+      }
+      let current = sections[0].id;
+      for (const s of sections) {
+        if (s.el.getBoundingClientRect().top <= 140) current = s.id;
+      }
+      setOn(current);
+    };
+
+    const scheduleSync = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        syncActive();
+      });
+    };
+
+    navLinks.forEach(a => a.addEventListener("click", e => {
+      const id = a.dataset.sec;
+      const target = $(id);
+      if (!target) return;
+      e.preventDefault();
+      lockUntil = Date.now() + 700;
+      setOn(id);
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      try { history.replaceState(null, "", "#" + id); } catch { /* ignore */ }
+    }));
+
+    window.addEventListener("scroll", scheduleSync, { passive: true });
+    window.addEventListener("resize", scheduleSync, { passive: true });
+
+    const hashId = location.hash ? location.hash.slice(1) : "";
+    const hashTarget = hashId && sections.some(s => s.id === hashId) ? $(hashId) : null;
+    if (hashTarget) {
+      lockUntil = Date.now() + 700;
+      setOn(hashId);
+      requestAnimationFrame(() => hashTarget.scrollIntoView({ behavior: "auto", block: "start" }));
+    } else if (sections.length) {
+      setOn(sections[0].id);
+    }
   }
 
   initOwnerControls();

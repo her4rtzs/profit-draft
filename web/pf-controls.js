@@ -46,14 +46,26 @@
     const vh = window.innerHeight;
     if (minWidth) {
       pop.style.minWidth = Math.max(r.width, minWidth) + "px";
-      pop.style.maxWidth = Math.min(vw - 24, Math.max(r.width + 48, 340)) + "px";
+      pop.style.maxWidth = Math.min(vw - 24, Math.max(r.width + 48, 320)) + "px";
     }
     pop.style.left = "0px";
     pop.style.top = "0px";
     const pr = pop.getBoundingClientRect();
+
+    let minLeft = 12;
+    let maxRight = vw - 12;
+    const modal = anchor.closest(".ann-modal, .tr-modal, .csh-modal, .pay-modal-card, dialog[open]");
+    if (modal) {
+      const mr = modal.getBoundingClientRect();
+      minLeft = Math.max(12, mr.left + 12);
+      maxRight = Math.min(vw - 12, mr.right - 12);
+    }
+
     let left = r.left;
-    if (left + pr.width > vw - 12) left = Math.max(12, vw - pr.width - 12);
-    if (left < 12) left = 12;
+    if (left + pr.width > maxRight) left = Math.max(minLeft, r.right - pr.width);
+    if (left + pr.width > maxRight) left = Math.max(minLeft, maxRight - pr.width);
+    if (left < minLeft) left = minLeft;
+
     let top = r.bottom + 6;
     if (top + pr.height > vh - 12 && r.top - pr.height - 6 >= 12) {
       top = r.top - pr.height - 6;
@@ -470,7 +482,7 @@
   function openDate(input, anchor) {
     if (input.disabled || input.readOnly) return;
     const anchorEl = anchor || input;
-    const pop = createPopover(anchorEl, input, 296);
+    const pop = createPopover(anchorEl, input, 276);
     const wrap = document.createElement("div");
     wrap.className = "pfc-cal";
     pop.appendChild(wrap);
@@ -547,7 +559,8 @@
         cells.push({ y: viewY, m: viewM, d, out: false });
       }
       let nextD = 1;
-      while (cells.length < 42) {
+      const targetCells = cells.length <= 35 ? 35 : 42;
+      while (cells.length < targetCells) {
         const ny = viewM === 11 ? viewY + 1 : viewY;
         const nm = viewM === 11 ? 0 : viewM + 1;
         cells.push({ y: ny, m: nm, d: nextD++, out: true });
@@ -606,7 +619,7 @@
 
       foot.append(clearBtn, todayBtn);
       wrap.appendChild(foot);
-      positionPopover(pop, anchorEl, 296);
+      positionPopover(pop, anchorEl, 276);
     }
 
     render();

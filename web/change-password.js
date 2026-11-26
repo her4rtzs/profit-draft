@@ -1,6 +1,6 @@
-/* Change password, for every role (owner, cashier, trainer, member).
-   Self-contained: it adds a "Change password" item next to every Log out
-   button/menu item it finds, and opens its own dialog. Needs api.js. */
+/* Change password modal, shared across every role (owner, cashier, trainer, member).
+   Provides window.PFChangePassword.open / window.openChangePasswordModal for
+   Settings and Profile controls without injecting into the sidebar menu. Needs api.js. */
 (() => {
   "use strict";
   const MIN = 8;
@@ -86,25 +86,6 @@
     form.current.focus();
   }
 
-  // Put a "Change password" entry next to every Log out control.
-  function decorate() {
-    document.querySelectorAll("[data-logout], #logoutBtn").forEach(logout => {
-      if (logout.dataset.cpDone || logout.dataset.cpItem) return;
-      logout.dataset.cpDone = "1";
-      const item = document.createElement("button");
-      item.type = "button";
-      item.className = logout.className.replace(/\bis-danger\b/g, "").trim() + " pf-cp-item";
-      if (logout.getAttribute("role")) item.setAttribute("role", logout.getAttribute("role"));
-      item.dataset.cpItem = "1";
-      const icon = logout.querySelector("i");
-      const keep = icon && icon.className.indexOf("fa-arrow") === -1;
-      item.innerHTML = (keep ? icon.outerHTML : `<i class="fa-solid fa-key" aria-hidden="true"></i>`) + " Change password";
-      item.addEventListener("click", open);
-      logout.parentNode.insertBefore(item, logout);
-    });
-  }
-
   window.PFChangePassword = { open };
-  const start = () => { decorate(); new MutationObserver(decorate).observe(document.body, { childList: true, subtree: true }); };
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start); else start();
+  window.openChangePasswordModal = open;
 })();

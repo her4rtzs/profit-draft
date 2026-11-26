@@ -577,7 +577,6 @@
           <nav class="pp-subtabs md-subtabs" role="tablist" aria-label="Member sections">
             ${Object.keys(TOP_SUBTABS).map(k => `<button type="button" role="tab" aria-selected="${state.subtab === k}" class="${state.subtab === k ? "active" : ""}" data-subtab="${k}">${TOP_SUBTABS[k]}</button>`).join("")}
           </nav>
-          <button class="pp-btn pp-btn-primary" type="button" data-detail-action="renew"><i class="fa-solid fa-rotate"></i> Record renewal</button>
         </div>
       </div>
       <div class="md-layout">
@@ -610,8 +609,13 @@
         </aside>
         <div class="md-main">
           <section class="md-card md-id-card">
-            <span class="md-kicker">FULL NAME</span>
-            <h2>${esc(m.name)}</h2>
+            <div class="md-id-head">
+              <div class="md-id-title">
+                <span class="md-kicker">FULL NAME</span>
+                <h2>${esc(m.name)}</h2>
+              </div>
+              <button class="pp-btn pp-btn-primary md-renew-btn" type="button" data-detail-action="renew"><i class="fa-solid fa-rotate"></i> Record renewal</button>
+            </div>
             <div class="md-cols-3">
               <div><span>MEMBER ID</span><strong>${esc(m.id)}</strong></div>
               <div><span>HOME ADDRESS</span><strong>${esc(m.address || "Not added")}</strong></div>

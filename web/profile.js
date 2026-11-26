@@ -3,12 +3,32 @@
 (() => {
   const $ = id => document.getElementById(id);
   const notice = $("profileNotice");
+  let noticeTimer = null;
+  const hideNotice = () => {
+    if (noticeTimer) { clearTimeout(noticeTimer); noticeTimer = null; }
+    if (!notice) return;
+    notice.hidden = true;
+    notice.textContent = "";
+    notice.classList.remove("error");
+  };
   const flash = (msg, bad) => {
     if (!notice) return;
+    if (noticeTimer) { clearTimeout(noticeTimer); noticeTimer = null; }
+    notice.textContent = "";
+    const txt = document.createElement("span");
+    txt.className = "pf-notice-msg";
+    txt.textContent = msg;
+    const closeBtn = document.createElement("button");
+    closeBtn.type = "button";
+    closeBtn.className = "pf-notice-close";
+    closeBtn.setAttribute("aria-label", "Dismiss message");
+    closeBtn.innerHTML = '<i class="fa-solid fa-xmark" aria-hidden="true"></i>';
+    closeBtn.addEventListener("click", hideNotice);
+    notice.append(txt, closeBtn);
     notice.hidden = false;
-    notice.textContent = msg;
     notice.classList.toggle("error", !!bad);
     if (!bad) notice.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    noticeTimer = setTimeout(hideNotice, bad ? 6000 : 3500);
   };
 
   let profile = window.ProFitProfile.get();
@@ -52,7 +72,12 @@
       }
     }
     const clear = $("profilePhotoClear");
-    if (clear) clear.disabled = !profile.photo;
+    if (clear) {
+      clear.disabled = !profile.photo;
+      clear.hidden = !profile.photo;
+    }
+    const camOverlay = $("profileAvaOverlay");
+    if (camOverlay) camOverlay.hidden = !profile.photo;
 
     // Live completeness ring & checklist
     const checks = {
@@ -119,17 +144,10 @@
         return `<button type="button" class="pf-ava-opt${sel ? " sel" : ""}" data-pick-avatar="${pid}" aria-pressed="${sel}" title="Use avatar ${pid.slice(-1)}"><img src="${src}" alt="Avatar ${pid.slice(-1)}"></button>`;
       }).join("");
     }
-    $("pfDirtyBar")?.classList.remove("on");
   }
 
-  // Live preview + floating unsaved-changes bar while editing
+  // Live preview while editing
   const checkDirty = () => {
-    const dirty = ($("profileName")?.value.trim() || "") !== ((profile.name || "").trim())
-      || ($("profileRole")?.value.trim() || "") !== ((profile.role || "").trim())
-      || ($("profileEmail")?.value.trim() || "") !== ((profile.email || "").trim())
-      || ($("profilePhone")?.value.trim() || "") !== ((profile.phone || "").trim())
-      || ($("profileBio")?.value.trim() || "") !== ((profile.bio || "").trim());
-    $("pfDirtyBar")?.classList.toggle("on", dirty);
     if ($("pvSideName")) $("pvSideName").textContent = $("profileName")?.value.trim() || "Administrator";
     if ($("pvSideRole")) $("pvSideRole").textContent = $("profileRole")?.value.trim() || "Gym administrator";
     if ($("pvReceiptName")) $("pvReceiptName").textContent = $("profileName")?.value.trim() || "Administrator";
@@ -138,14 +156,12 @@
   ["profileName", "profileRole", "profileEmail", "profilePhone", "profileBio"].forEach(id => {
     $(id)?.addEventListener("input", checkDirty);
   });
-  $("pfDiscardBtn")?.addEventListener("click", () => paint());
   $("profileDiscardInline")?.addEventListener("click", () => paint());
   $("staffQuickAvaGrid")?.addEventListener("click", e => {
     const btn = e.target.closest("[data-pick-avatar]");
     if (!btn) return;
     savePhotoToServer(btn.dataset.pickAvatar, "Avatar updated.");
   });
-  $("pfQuickSaveBtn")?.addEventListener("click", () => $("profileForm")?.requestSubmit());
   window.addEventListener("profit:plans-updated", () => {
     if ($("pvReceiptPrice") && window.PLANS?.monthly) {
       $("pvReceiptPrice").textContent = "₱" + Number(window.PLANS.monthly.price).toLocaleString("en-PH");
@@ -194,33 +210,38 @@
     reader.readAsDataURL(file);
   });
 
-  // Clickable avatar menu (Upload photo / Remove photo)
+  // In-circle Remove button (when photo is uploaded) + corner camera badge for upload
   const avaTrigger = $("profileAvaTrigger");
-  const avaMenu = $("profileAvaMenu");
-  const closeAvaMenu = () => {
-    if (avaMenu) avaMenu.hidden = true;
-    avaTrigger?.setAttribute("aria-expanded", "false");
-  };
-  avaTrigger?.addEventListener("click", e => {
+  const closeAvaActions = () => avaTrigger?.classList.remove("is-open");
+
+  const handleCircleTap = e => {
+    if (e.target.closest(".pf-ava-act")) return;
     e.stopPropagation();
-    if (!avaMenu) return $("profilePhoto")?.click();
-    const open = avaMenu.hidden;
-    avaMenu.hidden = !open;
-    avaTrigger.setAttribute("aria-expanded", String(open));
-  });
-  $("profilePhotoPick")?.addEventListener("click", () => {
-    closeAvaMenu();
+    const clearBtn = $("profilePhotoClear");
+    if (clearBtn && !clearBtn.hidden) {
+      avaTrigger?.classList.toggle("is-open");
+    } else {
+      $("profilePhoto")?.click();
+    }
+  };
+  avaTrigger?.addEventListener("click", handleCircleTap);
+  $("profileAvaBadge")?.addEventListener("click", e => {
+    e.stopPropagation();
+    closeAvaActions();
     $("profilePhoto")?.click();
   });
-  document.addEventListener("click", e => {
-    if (avaMenu && !avaMenu.hidden && !e.target.closest(".pf-ava-trigger-wrap")) closeAvaMenu();
-  });
-  document.addEventListener("keydown", e => { if (e.key === "Escape") closeAvaMenu(); });
 
-  $("profilePhotoClear")?.addEventListener("click", () => {
-    closeAvaMenu();
+  $("profilePhotoClear")?.addEventListener("click", e => {
+    e.stopPropagation();
+    closeAvaActions();
     savePhotoToServer("", "Photo removed.");
   });
+  document.addEventListener("click", e => {
+    if (avaTrigger?.classList.contains("is-open") && !e.target.closest(".pf-ava-trigger-wrap")) {
+      closeAvaActions();
+    }
+  });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeAvaActions(); });
 
   window.addEventListener("profit-auth-ready", syncFromAuth);
 

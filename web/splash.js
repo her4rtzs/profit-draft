@@ -382,7 +382,10 @@
         setMsg("Let’s go!");
         loader.classList.add("finish");
         burst();
-        setTimeout(() => { loader.classList.add("done"); }, 450);
+        setTimeout(() => {
+          loader.classList.add("done");
+          try { window.dispatchEvent(new CustomEvent("pf:splash-done")); } catch (_) {}
+        }, 450);
         setTimeout(() => {
           canvasOn = false;
           cancelAnimationFrame(craf);

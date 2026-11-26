@@ -14,16 +14,16 @@
     rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="styles.css">
-  <script src="config.js?v=9"></script>
-  <script src="api.js"></script>
-  <script src="auth.js?v=6"></script>
+  <script src="config.js?v=11"></script>
+  <script src="api.js?v=6"></script>
+  <script src="auth.js?v=7"></script>
   <link rel="stylesheet" href="pro-theme.css">
-  <link rel="stylesheet" href="finance-ui.css?v=31">
+  <link rel="stylesheet" href="finance-ui.css?v=33">
   <link rel="stylesheet" href="spotify.css?v=14">
   <link rel="stylesheet" href="portal-ui.css?v=13">
   <script>document.documentElement.dataset.accent = 'gold'</script>
   <link rel="stylesheet" href="hover-fx.css?v=3">
-  <link rel="stylesheet" href="announcements.css?v=7">
+  <link rel="stylesheet" href="announcements.css?v=9">
   <link rel="stylesheet" href="ui-polish.css?v=2">
   <link rel="stylesheet" href="ui-fixes.css?v=1">
   <link rel="stylesheet" href="pf-modern.css?v=2">
@@ -599,10 +599,10 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="ProFit">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="stylesheet" href="pf-system.css?v=26">
+  <link rel="stylesheet" href="pf-system.css?v=34">
 </head>
 
-<body class="member-home">
+<body class="member-home" data-page="member-home">
   <div class="member-app-shell">
     <aside class="member-sidebar" id="memberSidebar" aria-label="Member navigation">
       <div class="brand">
@@ -1443,7 +1443,7 @@
         const $ = id => document.getElementById(id);
         const safe = value => String(value ?? "&mdash;");
 
-        // Ã¢”â‚¬Ã¢”â‚¬ Date helpers Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬
+        // ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ Date helpers ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬
         // localDateStr: converts any date value to a Manila-local YYYY-MM-DD string,
         // avoiding the UTC-shift bug that occurs when you pass an ISO date string
         // (e.g. "2026-10-29") to `new Date()` &mdash; that parses as midnight UTC, which
@@ -1471,7 +1471,7 @@
         // weekMondayKey: ISO date string of the most recent Monday (or today if Monday)
         const weekMondayKey = () => {
           const d = new Date();
-          const dow = d.getDay(); // 0=Sun Ã¢â‚¬Â¦ 6=Sat
+          const dow = d.getDay(); // 0=Sun ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ 6=Sat
           const diffToMon = dow === 0 ? 6 : dow - 1; // days since last Monday
           d.setDate(d.getDate() - diffToMon);
           return localDateStr(d);
@@ -1491,7 +1491,7 @@
             user: window.ProFitAuth?.user || { name: "Demo Member", email: "member@profit.test", phone: "0917 000 0000" },
             membership: { planName: "Monthly Plan", plan: "Monthly", status: "Active", expiresAt: new Date(Date.now() + 18 * 86400000).toISOString(), daysRemaining: 18 },
             attendance: generated,
-            payments: [{ reference: "P-0008", date: new Date(Date.now() - 3 * 86400000).toISOString(), method: "GCash", amountFormatted: "₱800" }]
+            payments: [{ reference: "P-0008", date: new Date(Date.now() - 3 * 86400000).toISOString(), method: "GCash", amountFormatted: "â‚±800" }]
           };
         };
         const list = (id, items, empty, render) => {
@@ -1505,7 +1505,7 @@
           });
         };
 
-        // Ã¢”â‚¬Ã¢”â‚¬ Streak Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬
+        // ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ Streak ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬
         // Uses localDateStr() so UTC-midnight ISO timestamps don't shift the date.
         // If not checked in today, streak stays alive from yesterday until the day ends.
         function calcStreak(attendance) {
@@ -1521,7 +1521,7 @@
           return streak;
         }
 
-        // Ã¢”â‚¬Ã¢”â‚¬ Weekly goal Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬Ã¢”â‚¬
+        // ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ Weekly goal ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬ÃƒÂ¢â€Ã¢â€šÂ¬
         // Counts distinct check-in dates from the start of the current ISO week
         // (Monday 00:00 local time), NOT a rolling 7-day window. This means 1 visit
         // on Monday of a new week resets the count to 1, exactly as expected.
@@ -1595,7 +1595,7 @@
           });
           const activeWeeks = activeWeeksSet.size;
 
-          // 4-card KPI strip (Overview) — smooth count-up animations
+          // 4-card KPI strip (Overview) â€” smooth count-up animations
           animateCountUp($("streakCount"), streak);
           animateCountUp($("weeklyGoalText"), Math.min(weekly, goal));
           if ($("weeklyGoalBar")) $("weeklyGoalBar").style.width = `${Math.min(100, (weekly / goal) * 100)}%`;
@@ -1827,8 +1827,8 @@
           $("membershipName").textContent = safe(raw.planName || raw.plan || "No active plan");
           $("membershipDetail").textContent = endIso
             ? (effStatus === "EXPIRED"
-              ? `Membership expired on ${date(endIso)} · 0 days remaining`
-              : `Expires ${date(endIso)} · ${remainingDays} day${remainingDays === 1 ? "" : "s"} remaining`)
+              ? `Membership expired on ${date(endIso)} Â· 0 days remaining`
+              : `Expires ${date(endIso)} Â· ${remainingDays} day${remainingDays === 1 ? "" : "s"} remaining`)
             : "No active membership period yet. Choose a plan to get started.";
           const badgeEl = $("membershipStatus");
           badgeEl.textContent = formatStatusLabel(effStatus);
@@ -1896,7 +1896,7 @@
           // Attendance dates from the API are already "YYYY-MM-DD" strings; use date()
           // which calls localDateStr() internally to avoid the UTC midnight shift.
           list("attendanceList", attendanceItems, "No attendance records yet.", x => `<span><b>${date(localDateStr(x.date))}</b><small>${safe(x.location || "Gym check-in")}</small></span><i class="fa-solid fa-arrow-right"></i>`);
-          list("paymentList", paymentItems, "No payment records yet.", x => `<span><b>${safe(x.reference || "Payment")}</b><small>${date(x.date)} · ${safe(x.method)} · ${safe(formatStatusLabel(x.status || "PAID"))}</small></span><strong>${safe(x.amountFormatted || x.amount)}</strong><button type="button" class="member-receipt" data-receipt="${safe(x.reference || "Payment")}" data-when="${safe(x.date)}" data-method="${safe(x.method)}" data-amount="${safe(x.amountFormatted || x.amount || "")}"><i class="fa-solid fa-receipt" aria-hidden="true"></i> Receipt</button>`);
+          list("paymentList", paymentItems, "No payment records yet.", x => `<span><b>${safe(x.reference || "Payment")}</b><small>${date(x.date)} Â· ${safe(x.method)} Â· ${safe(formatStatusLabel(x.status || "PAID"))}</small></span><strong>${safe(x.amountFormatted || x.amount)}</strong><button type="button" class="member-receipt" data-receipt="${safe(x.reference || "Payment")}" data-when="${safe(x.date)}" data-method="${safe(x.method)}" data-amount="${safe(x.amountFormatted || x.amount || "")}"><i class="fa-solid fa-receipt" aria-hidden="true"></i> Receipt</button>`);
           // Store attendance days as local YYYY-MM-DD strings so the calendar and
           // syncMemberChrome todayKey comparison are timezone-consistent.
           window.__pfAttendanceDays = attendanceItems.map(x => localDateStr(x.date));
@@ -1907,7 +1907,7 @@
         const payPlans = {};
 
         function payMoney(value) {
-          return "₱" + Number(value || 0).toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          return "â‚±" + Number(value || 0).toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
         function showPayStatus(kind, message) {
@@ -1949,7 +1949,7 @@
           const amount = $("memberPayAmount");
           if (!select || !amount) return;
           const plan = payPlans[select.value];
-          const formatted = plan ? payMoney(plan.price) : "—";
+          const formatted = plan ? payMoney(plan.price) : "â€”";
           amount.value = formatted;
           const amtSpan = $("memberPayConfirmAmtVal");
           if (amtSpan) amtSpan.textContent = plan ? formatted : "the plan amount";
@@ -1962,7 +1962,7 @@
           if (!select) return;
           const current = select.value;
           select.innerHTML = Object.entries(payPlans)
-            .map(([key, plan]) => `<option value="${key}">${plan.label} — ${payMoney(plan.price)}</option>`)
+            .map(([key, plan]) => `<option value="${key}">${plan.label} â€” ${payMoney(plan.price)}</option>`)
             .join("");
           if (current && payPlans[current]) select.value = current;
           updatePayAmount();
@@ -2081,7 +2081,7 @@
 
           button.disabled = true;
           const original = button.innerHTML;
-          button.innerHTML = '<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i><span>Submitting…</span>';
+          button.innerHTML = '<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i><span>Submittingâ€¦</span>';
           showPayStatus("", "");
           try {
             await ProFitAPI.post("/member/claims", {
@@ -2109,13 +2109,17 @@
             if (window.PROFIT_CONFIG?.DEMO_MODE && !window.PROFIT_CONFIG?.API_BASE_URL) render(demoData());
             else render(await ProFitAPI.get("/member/me"));
           } catch (e) {
-            const isAuthErr = e?.status === 401 || e?.status === 403 || /authentication credentials/i.test(String(e?.message || ""));
+            if (e?.payload?.redirect) {
+              location.replace(e.payload.redirect);
+              return;
+            }
+            const isUnauthErr = e?.status === 401 || /authentication credentials/i.test(String(e?.message || ""));
             const isLocalPreview = location.hostname === "localhost" || location.hostname === "127.0.0.1" || location.protocol === "file:";
-            if (isAuthErr && !isLocalPreview) {
+            if (isUnauthErr && !isLocalPreview) {
               location.replace("/login");
               return;
             }
-            if (isAuthErr && isLocalPreview) {
+            if ((isUnauthErr || e?.status === 403) && isLocalPreview) {
               render(demoData());
               return;
             }
@@ -2267,7 +2271,7 @@
           const datePill = $("heroDatePill");
           if (datePill) {
             const now = new Date();
-            datePill.textContent = `${now.toLocaleDateString(undefined, { weekday: "short" }).toUpperCase()} · ${now.toLocaleDateString(undefined, { month: "short", day: "numeric" }).toUpperCase()}`;
+            datePill.textContent = `${now.toLocaleDateString(undefined, { weekday: "short" }).toUpperCase()} Â· ${now.toLocaleDateString(undefined, { month: "short", day: "numeric" }).toUpperCase()}`;
           }
           const greeting = $("memberGreeting");
           const displayFirst = first ? (first.charAt(0).toUpperCase() + first.slice(1)) : "Member";
@@ -2489,7 +2493,7 @@
         const code = String(u.memberId || u.id || "").trim();
         const st = String(m.status || "").toUpperCase();
         if ($("mbQrName")) $("mbQrName").textContent = u.name || "Member";
-        if ($("mbQrId")) $("mbQrId").textContent = code ? `Member ID · ${code}` : "No Member ID yet";
+        if ($("mbQrId")) $("mbQrId").textContent = code ? `Member ID Â· ${code}` : "No Member ID yet";
         const box = $("mbQrCodeBox");
         const wrap = $("mbQrCanvasWrap");
         const hint = $("mbQrHint");
@@ -2528,10 +2532,11 @@
     })();
   </script>
   <script src="pf-common.js"></script>
-  <script src="member-tabs.js?v=14"></script>
+  <script src="member-tabs.js?v=16"></script>
   <script src="member-shell.js?v=4"></script>
-  <script src="change-password.js?v=1"></script>
+  <script src="change-password.js?v=4"></script>
   <script src="google-connect.js?v=2" defer></script>
+  <script src="activity-log.js?v=1" defer></script>
   <script src="portal-fx.js?v=2"></script>
   <nav class="pf-bottomnav" aria-label="Member sections">
     <button type="button" data-go-tab="overview"><i class="fa-solid fa-house"

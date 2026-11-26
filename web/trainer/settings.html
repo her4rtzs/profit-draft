@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
-  <title>ProFit — Settings (Trainer Portal)</title>
+  <title>ProFit Ã¢â‚¬â€ Settings (Trainer Portal)</title>
   <script>try { var t = localStorage.getItem('pf-theme') || localStorage.getItem('theme') || 'dark'; document.documentElement.setAttribute('data-theme', t); document.documentElement.setAttribute('data-accent', 'gold'); } catch (e) { }</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,7 +24,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="ProFit">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="stylesheet" href="../pf-system.css?v=26">
+  <link rel="stylesheet" href="../pf-system.css?v=34">
 </head>
 
 <body data-page="settings" data-portal="trainer" data-head="none" data-eyebrow="App Preferences" data-title="Settings">
@@ -75,16 +75,29 @@
                   <span class="tr-st-ico" aria-hidden="true"><i class="fa-brands fa-google"></i></span>
                   <div class="tr-st-copy">
                     <span>Google Account</span>
-                    <small data-gc-sub>Checking Google connection…</small>
+                    <small data-gc-sub>Checking Google connectionÃ¢â‚¬Â¦</small>
                   </div>
                 </div>
                 <span class="tr-st-end"><i class="fa-solid fa-chevron-right pf-gc-chev" aria-hidden="true"></i></span>
               </button>
               <div class="tr-st-drawer pf-gc-drawer" id="pfGoogleAccountRow" hidden>
-                <p class="pf-gc-note" data-gc-note>Checking your Google account link…</p>
+                <p class="pf-gc-note" data-gc-note>Checking your Google account linkÃ¢â‚¬Â¦</p>
                 <div class="pf-gc-actions" data-gc-actions></div>
                 <div class="pf-gc-msg" data-gc-msg role="status" aria-live="polite" hidden></div>
               </div>
+
+              <button class="tr-st-row pf-act-toggle" type="button" id="pfActivityToggle" aria-expanded="false"
+                aria-controls="pfActivityDrawer">
+                <div class="tr-st-lead">
+                  <span class="tr-st-ico" aria-hidden="true"><i class="fa-solid fa-clock-rotate-left"></i></span>
+                  <div class="tr-st-copy">
+                    <span>Activity Log</span>
+                    <small data-act-sub>View your recent sign-ins, actions, and updates</small>
+                  </div>
+                </div>
+                <span class="tr-st-end"><i class="fa-solid fa-chevron-right pf-act-chev" aria-hidden="true"></i></span>
+              </button>
+              <div class="tr-st-drawer pf-act-drawer" id="pfActivityDrawer" hidden></div>
             </article>
 
             <!-- Notifications -->
@@ -150,21 +163,36 @@
             <!-- Install the app -->
             <article class="tr-st-card" id="install">
               <div class="tr-st-head"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i> Install the app</div>
-              <div class="tr-st-install-body">
-                <p id="installHelpStatus" role="status" style="margin:0 0 10px;font-weight:600">Checking...</p>
-                <div data-install-steps>
-                  <p style="margin:0 0 6px;font-weight:700">iPhone (Safari)</p>
-                  <ol style="margin:0 0 12px 18px;padding:0">
-                    <li>Open ProFit in Safari.</li>
-                    <li>Tap the Share button.</li>
-                    <li>Tap Add to Home Screen, then Add.</li>
-                  </ol>
-                  <p style="margin:0 0 6px;font-weight:700">Android (Chrome)</p>
-                  <ol style="margin:0 0 0 18px;padding:0">
-                    <li>Open ProFit in Chrome.</li>
-                    <li>Tap the three-dot menu.</li>
-                    <li>Tap Install app (or Add to Home screen), then Install.</li>
-                  </ol>
+              <div class="pf-install-body">
+                <div class="pf-install-status">
+                  <span class="pf-install-status-ico" aria-hidden="true"><i class="fa-solid fa-mobile-screen-button"></i></span>
+                  <p id="installHelpStatus" class="pf-install-status-copy" role="status">Checking...</p>
+                </div>
+                <div class="pf-install-grid" data-install-steps>
+                  <div class="pf-install-card">
+                    <div class="pf-install-card-head">
+                      <span class="pf-install-plat-ico" aria-hidden="true"><i class="fa-brands fa-apple"></i></span>
+                      <h3 class="pf-install-plat-title">iPhone</h3>
+                      <span class="pf-install-chip">Safari</span>
+                    </div>
+                    <ol class="pf-install-steps">
+                      <li><span>Open ProFit in <strong>Safari</strong>.</span></li>
+                      <li><span>Tap the <strong>Share</strong> button.</span></li>
+                      <li><span>Tap <strong>Add to Home Screen</strong>, then <strong>Add</strong>.</span></li>
+                    </ol>
+                  </div>
+                  <div class="pf-install-card">
+                    <div class="pf-install-card-head">
+                      <span class="pf-install-plat-ico" aria-hidden="true"><i class="fa-brands fa-android"></i></span>
+                      <h3 class="pf-install-plat-title">Android</h3>
+                      <span class="pf-install-chip">Chrome</span>
+                    </div>
+                    <ol class="pf-install-steps">
+                      <li><span>Open ProFit in <strong>Chrome</strong>.</span></li>
+                      <li><span>Tap the <strong>three-dot menu</strong>.</span></li>
+                      <li><span>Tap <strong>Install app</strong> (or Add to Home screen), then <strong>Install</strong>.</span></li>
+                    </ol>
+                  </div>
                 </div>
               </div>
             </article>
@@ -252,25 +280,70 @@
     <nav class="bottom-nav" id="bottomNav" aria-label="Quick navigation"></nav>
   </div>
 
-  <script src="../config.js?v=9"></script>
-  <script src="../api.js?v=5"></script>
-  <script src="../auth.js?v=6"></script>
-  <script src="../change-password.js?v=1"></script>
+  <script src="../config.js?v=11"></script>
+  <script src="../api.js?v=6"></script>
+  <script src="../auth.js?v=7"></script>
+  <script src="../change-password.js?v=4"></script>
   <script src="../google-connect.js?v=2" defer></script>
+  <script src="../activity-log.js?v=1" defer></script>
   <script src="../assets/js/staff-icons.js?v=5"></script>
   <script src="../assets/js/staff-data.js?v=12"></script>
-  <script src="../assets/js/staff.js?v=18"></script>
-  <script src="trainer.js?v=12"></script>
+  <script src="../assets/js/staff.js?v=19"></script>
+  <script src="trainer.js?v=14"></script>
   <script>
     (function () {
       var navBtns = Array.prototype.slice.call(document.querySelectorAll('[data-st-jump]'));
-      navBtns.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          navBtns.forEach(function (b) { b.classList.toggle('on', b === btn); });
-          var t = document.getElementById(btn.getAttribute('data-st-jump'));
-          if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (navBtns.length) {
+        var sections = navBtns
+          .map(function (b) { return { id: b.getAttribute('data-st-jump'), el: document.getElementById(b.getAttribute('data-st-jump')) }; })
+          .filter(function (s) { return s.el; });
+        var activeId = '';
+        var lockUntil = 0;
+        var raf = 0;
+        var setOn = function (id) {
+          if (!id || activeId === id) return;
+          activeId = id;
+          navBtns.forEach(function (b) {
+            var on = b.getAttribute('data-st-jump') === id;
+            b.classList.toggle('on', on);
+            if (on) b.setAttribute('aria-current', 'location');
+            else b.removeAttribute('aria-current');
+          });
+        };
+        var syncActive = function () {
+          if (!sections.length || Date.now() < lockUntil) return;
+          var y = window.scrollY || document.documentElement.scrollTop || 0;
+          var maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+          if (y <= 24) { setOn(sections[0].id); return; }
+          if (maxScroll > 24 && y >= maxScroll - 16) { setOn(sections[sections.length - 1].id); return; }
+          var current = sections[0].id;
+          for (var i = 0; i < sections.length; i++) {
+            if (sections[i].el.getBoundingClientRect().top <= 140) current = sections[i].id;
+          }
+          setOn(current);
+        };
+        var scheduleSync = function () {
+          if (raf) return;
+          raf = requestAnimationFrame(function () {
+            raf = 0;
+            syncActive();
+          });
+        };
+        navBtns.forEach(function (btn) {
+          btn.addEventListener('click', function (e) {
+            var id = btn.getAttribute('data-st-jump');
+            var t = document.getElementById(id);
+            if (!t) return;
+            e.preventDefault();
+            lockUntil = Date.now() + 700;
+            setOn(id);
+            t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          });
         });
-      });
+        window.addEventListener('scroll', scheduleSync, { passive: true });
+        window.addEventListener('resize', scheduleSync, { passive: true });
+        if (sections.length) setOn(sections[0].id);
+      }
       var cpBtn = document.getElementById('trStChangePwBtn');
       if (cpBtn) cpBtn.addEventListener('click', function () {
         if (window.PFChangePassword && typeof window.PFChangePassword.open === 'function') window.PFChangePassword.open();
@@ -281,8 +354,15 @@
         darkInput.checked = cur !== 'light';
         darkInput.addEventListener('change', function () {
           var next = darkInput.checked ? 'dark' : 'light';
-          document.documentElement.setAttribute('data-theme', next);
-          try { localStorage.setItem('pf-theme', next); localStorage.setItem('theme', next); } catch (e) { }
+          if (window.PF && typeof window.PF.setTheme === 'function') {
+            window.PF.setTheme(next);
+          } else {
+            document.documentElement.setAttribute('data-theme', next);
+            try { localStorage.setItem('pf-theme', next); localStorage.setItem('theme', next); } catch (e) { }
+          }
+        });
+        document.addEventListener('pf:theme', function () {
+          darkInput.checked = document.documentElement.getAttribute('data-theme') !== 'light';
         });
       }
       var FONT_SCALE = { sm: '13px', md: '15px', lg: '17.5px' };
@@ -389,9 +469,21 @@
         badgeCheck.addEventListener('change', () => {
           localStorage.setItem('pref-badge', badgeCheck.checked ? 'on' : 'off');
           const bellBadge = document.getElementById('bellBadge');
-          if (bellBadge) bellBadge.style.display = badgeCheck.checked ? '' : 'none';
+          const unread = PF.db ? PF.db.unread() : 0;
+          if (bellBadge) {
+            bellBadge.hidden = !badgeCheck.checked || !unread;
+            bellBadge.style.display = badgeCheck.checked ? '' : 'none';
+          }
           PF.toast('Notification preference saved.', 'success');
         });
+      }
+
+      if (new URLSearchParams(window.location.search).get('force_password_change') === '1') {
+        setTimeout(() => {
+          if (window.PFChangePassword && typeof window.PFChangePassword.open === 'function') {
+            window.PFChangePassword.open();
+          }
+        }, 120);
       }
 
       document.getElementById('trainerSignOutBtn').addEventListener('click', async () => {

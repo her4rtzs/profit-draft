@@ -512,7 +512,11 @@ class MemberTrainerView(APIView):
             return Response({"detail": "No membership profile found."}, status=404)
         current = services.current_assignment(profile)
         pending = TrainerRequest.objects.filter(member=profile, status=TrainerRequest.Status.PENDING).first()
-        options = [_trainer_json(t) for t in _trainer_qs().filter(is_active=True)]
+        options = [
+            _trainer_json(t)
+            for t in _trainer_qs().filter(is_active=True)
+            if services.is_trainer_assignable(t)
+        ]
         return Response({
             "trainer": _trainer_json(current.trainer) if current else None,
             "pending_request": _request_json(pending) if pending else None,

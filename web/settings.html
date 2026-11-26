@@ -15,9 +15,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <script>document.documentElement.dataset.accent = 'gold'</script>
   <link rel="stylesheet" href="global.css?v=18">
-  <script src="config.js?v=9"></script>
-  <script src="api.js"></script>
-  <script src="auth.js?v=6"></script>
+  <script src="config.js?v=11"></script>
+  <script src="api.js?v=6"></script>
+  <script src="auth.js?v=7"></script>
   <link rel="manifest" href="/manifest.webmanifest">
   <meta name="theme-color" content="#0a0e17">
   <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee">
@@ -127,12 +127,10 @@
     @keyframes stRise {
       from {
         opacity: 0;
-        transform: translateY(14px);
       }
 
       to {
         opacity: 1;
-        transform: none;
       }
     }
 
@@ -147,8 +145,7 @@
     }
 
     .st-rv {
-      animation: stRise .45s cubic-bezier(.2, .8, .2, 1) both;
-      animation-delay: calc(var(--i, 0) * 65ms);
+      animation: stRise .25s ease-out both;
     }
 
     .st-skel {
@@ -832,7 +829,7 @@
       color: #2a2418;
     }
   </style>
-  <link rel="stylesheet" href="pf-system.css?v=26">
+  <link rel="stylesheet" href="pf-system.css?v=34">
 </head>
 
 <body class="pf-staff" data-page="settings" data-title="Settings" data-welcome="Manage your account and preferences">
@@ -884,16 +881,29 @@
                 <span class="st-row-ico" aria-hidden="true"><i class="fa-brands fa-google"></i></span>
                 <div class="st-row-copy">
                   <span>Google Account</span>
-                  <small data-gc-sub>Checking Google connection…</small>
+                  <small data-gc-sub>Checking Google connectionÃ¢â‚¬Â¦</small>
                 </div>
               </div>
               <span class="st-row-end"><i class="fa-solid fa-chevron-right pf-gc-chev" aria-hidden="true"></i></span>
             </button>
             <div class="st-drawer pf-gc-drawer" id="pfGoogleAccountRow" hidden>
-              <p class="pf-gc-note" data-gc-note>Checking your Google account link…</p>
+              <p class="pf-gc-note" data-gc-note>Checking your Google account linkÃ¢â‚¬Â¦</p>
               <div class="pf-gc-actions" data-gc-actions></div>
               <div class="pf-gc-msg" data-gc-msg role="status" aria-live="polite" hidden></div>
             </div>
+
+            <button class="st-row pf-act-toggle" type="button" id="pfActivityToggle" aria-expanded="false"
+              aria-controls="pfActivityDrawer">
+              <div class="st-row-lead">
+                <span class="st-row-ico" aria-hidden="true"><i class="fa-solid fa-clock-rotate-left"></i></span>
+                <div class="st-row-copy">
+                  <span>Activity Log</span>
+                  <small data-act-sub>View your recent sign-ins, actions, and updates</small>
+                </div>
+              </div>
+              <span class="st-row-end"><i class="fa-solid fa-chevron-right pf-act-chev" aria-hidden="true"></i></span>
+            </button>
+            <div class="st-drawer pf-act-drawer" id="pfActivityDrawer" hidden></div>
 
             <!-- Owner-only: Subscription Prices -->
             <button class="st-row" type="button" id="stPricesToggle" aria-expanded="false"
@@ -962,7 +972,7 @@
                 <div class="st-field">
                   <label for="gymAddressInput">Address</label>
                   <input type="text" id="gymAddressInput" maxlength="160"
-                    placeholder="Alfonso, Calabarzon · Luksuhin-Mangas Road">
+                    placeholder="Alfonso, Calabarzon Ã‚Â· Luksuhin-Mangas Road">
                 </div>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
                   <div class="st-field">
@@ -1048,7 +1058,7 @@
             </button>
           </article>
 
-          <!-- Help & Support Popup Modal (Tabbed: Contact / FAQs / Terms / Privacy — exact OG info) -->
+          <!-- Help & Support Popup Modal (Tabbed: Contact / FAQs / Terms / Privacy Ã¢â‚¬â€ exact OG info) -->
           <div class="st-modal-backdrop" id="stHelpModal" role="dialog" aria-modal="true" aria-labelledby="stHelpTitle"
             hidden>
             <div class="st-modal" style="max-width:580px">
@@ -1170,21 +1180,36 @@
           <!-- Install the app (Phase 4.5 PWA) -->
           <article class="st-card st-rv" id="install" style="--i:4">
             <div class="st-head"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i> Install the app</div>
-            <div style="padding:14px 18px 16px;font-size:13.5px;line-height:1.55">
-              <p id="installHelpStatus" role="status" style="margin:0 0 10px;font-weight:600">Checking...</p>
-              <div data-install-steps>
-                <p style="margin:0 0 4px;font-weight:700">iPhone (Safari)</p>
-                <ol style="margin:0 0 10px 18px;padding:0">
-                  <li>Open ProFit in Safari.</li>
-                  <li>Tap the Share button.</li>
-                  <li>Tap Add to Home Screen, then Add.</li>
-                </ol>
-                <p style="margin:0 0 4px;font-weight:700">Android (Chrome)</p>
-                <ol style="margin:0 0 0 18px;padding:0">
-                  <li>Open ProFit in Chrome.</li>
-                  <li>Tap the three-dot menu.</li>
-                  <li>Tap Install app (or Add to Home screen), then Install.</li>
-                </ol>
+            <div class="pf-install-body">
+              <div class="pf-install-status">
+                <span class="pf-install-status-ico" aria-hidden="true"><i class="fa-solid fa-mobile-screen-button"></i></span>
+                <p id="installHelpStatus" class="pf-install-status-copy" role="status">Checking...</p>
+              </div>
+              <div class="pf-install-grid" data-install-steps>
+                <div class="pf-install-card">
+                  <div class="pf-install-card-head">
+                    <span class="pf-install-plat-ico" aria-hidden="true"><i class="fa-brands fa-apple"></i></span>
+                    <h3 class="pf-install-plat-title">iPhone</h3>
+                    <span class="pf-install-chip">Safari</span>
+                  </div>
+                  <ol class="pf-install-steps">
+                    <li><span>Open ProFit in <strong>Safari</strong>.</span></li>
+                    <li><span>Tap the <strong>Share</strong> button.</span></li>
+                    <li><span>Tap <strong>Add to Home Screen</strong>, then <strong>Add</strong>.</span></li>
+                  </ol>
+                </div>
+                <div class="pf-install-card">
+                  <div class="pf-install-card-head">
+                    <span class="pf-install-plat-ico" aria-hidden="true"><i class="fa-brands fa-android"></i></span>
+                    <h3 class="pf-install-plat-title">Android</h3>
+                    <span class="pf-install-chip">Chrome</span>
+                  </div>
+                  <ol class="pf-install-steps">
+                    <li><span>Open ProFit in <strong>Chrome</strong>.</span></li>
+                    <li><span>Tap the <strong>three-dot menu</strong>.</span></li>
+                    <li><span>Tap <strong>Install app</strong> (or Add to Home screen), then <strong>Install</strong>.</span></li>
+                  </ol>
+                </div>
               </div>
             </div>
           </article>
@@ -1205,11 +1230,12 @@
   <script src="layout.js?v=26"></script>
   <script src="sidebar.js?v=21"></script>
   <script src="data.js?v=3"></script>
-  <script src="settings.js?v=19"></script>
+  <script src="settings.js?v=20"></script>
   <script src="portal-fx.js?v=2"></script>
   <script src="/static/js/install-help.js" defer></script>
-  <script src="change-password.js?v=2" defer></script>
+  <script src="change-password.js?v=4" defer></script>
   <script src="google-connect.js?v=2" defer></script>
+  <script src="activity-log.js?v=1" defer></script>
   <script src="notifications-live.js?v=2" defer></script>
   <script src="site-footer.js?v=2" defer></script>
 </body>

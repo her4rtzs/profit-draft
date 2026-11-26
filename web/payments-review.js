@@ -63,7 +63,7 @@
             return '<tr>'
               + '<td><strong>' + member + '</strong></td>'
               + '<td>' + plan + '</td>'
-              + '<td class="num">' + amount + '</td>'
+              + '<td>' + amount + '</td>'
               + '<td>' + reference + '</td>'
               + '<td><button type="button" class="fn-btn-dark fn-btn-sm" data-preview="' + link + '">Open proof</button></td>'
               + '<td>' + submitted + '</td>'
