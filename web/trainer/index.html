@@ -1,380 +1,427 @@
 <!doctype html>
 <html lang="en" data-default-theme="dark">
+
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
   <title>Coach Dashboard — ProFit Trainer</title>
   <link rel="icon" href="/assets/img/logo.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="/assets/css/staff.css?v=12">
   <link rel="stylesheet" href="/trainer/trainer.css?v=30">
   <script src="/assets/js/staff-boot.js?v=13"></script>
-<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0e17"><meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17"><meta name="color-scheme" content="light dark"><link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ProFit"><meta name="apple-mobile-web-app-status-bar-style" content="default">  <link rel="stylesheet" href="/pf-system.css?v=26">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#0a0e17">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf6ee">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0e17">
+  <meta name="color-scheme" content="light dark">
+  <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="ProFit">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="stylesheet" href="/pf-system.css?v=26">
 </head>
-<body data-portal="trainer" data-page="dashboard" data-tagline="off" data-title="Dashboard" data-eyebrow="Trainer Workspace" data-sub="Your roster, today's sessions, and recent check-ins in one place." data-icon="home">
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="scrim" id="scrim"></div>
-  <div class="main">
-    <header class="topbar" id="topbar"></header>
-    <main class="content" id="content">
 
-      <!-- Coach Photo Hero Banner + On-Duty Floating Card -->
-      <section class="tw-dash-hero tw-anim" style="--i:0" aria-label="Coach overview">
-        <div>
-          <span class="tw-hero-eyebrow" id="heroCoachEyebrow">COACH,</span>
-          <h1 class="tw-hero-title">FLOOR IS<br>OPEN.</h1>
-          <p class="tw-hero-sub">Check in your athletes as they arrive. Their streaks and calendars update right away.</p>
-          <div class="tw-dash-hero-actions">
-            <button type="button" class="tw-btn-primary" id="dashQrBtn"><i class="fa-solid fa-qrcode" aria-hidden="true"></i> Check in athletes</button>
-            <a class="tw-btn" href="/trainer/schedule#update"><i class="fa-solid fa-bullhorn" aria-hidden="true"></i> Broadcast</a>
+<body data-portal="trainer" data-page="dashboard" data-tagline="off" data-title="Dashboard"
+  data-eyebrow="Trainer Workspace" data-sub="Your roster, today's sessions, and recent check-ins in one place."
+  data-icon="home">
+  <div class="app">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="scrim" id="scrim"></div>
+    <div class="main">
+      <header class="topbar" id="topbar"></header>
+      <main class="content" id="content">
+
+        <!-- Coach Photo Hero Banner + On-Duty Floating Card -->
+        <section class="tw-dash-hero tw-anim" style="--i:0" aria-label="Coach overview">
+          <div>
+            <span class="tw-hero-eyebrow" id="heroCoachEyebrow">COACH,</span>
+            <h1 class="tw-hero-title">FLOOR IS<br>OPEN.</h1>
+            <p class="tw-hero-sub">Check in your athletes as they arrive. Their streaks and calendars update right away.
+            </p>
+            <div class="tw-dash-hero-actions">
+              <button type="button" class="tw-btn-primary" id="dashQrBtn"><i class="fa-solid fa-qrcode"
+                  aria-hidden="true"></i> Check in athletes</button>
+              <a class="tw-btn" href="/trainer/schedule#update"><i class="fa-solid fa-bullhorn" aria-hidden="true"></i>
+                Broadcast</a>
+            </div>
           </div>
+
+          <aside class="tw-duty-card" aria-label="On duty status">
+            <div class="tw-duty-top">
+              <div>
+                <span class="tw-duty-pill">On duty</span>
+                <h3 id="dutySessionName">Today on the floor</h3>
+                <div class="tw-duty-sub" id="dutySessionSub">Live coaching schedule</div>
+              </div>
+              <div class="tw-duty-ring" aria-label="Athletes checked in today">
+                <svg viewBox="0 0 80 80" aria-hidden="true">
+                  <circle class="tw-duty-ring-track" cx="40" cy="40" r="32"></circle>
+                  <circle class="tw-duty-ring-arc" id="dutyRingArc" cx="40" cy="40" r="32" stroke-dasharray="201.06"
+                    stroke-dashoffset="201.06"></circle>
+                </svg>
+                <div class="tw-duty-ring-txt">
+                  <strong id="dutyCheckedNum">0</strong>
+                  <small>checked in</small>
+                </div>
+              </div>
+            </div>
+            <div class="tw-duty-foot">
+              <div>
+                <span>Assigned athletes</span>
+                <strong id="dutyRosterCount">0 members</strong>
+              </div>
+              <a class="tw-btn-primary" href="/trainer/members"
+                style="height:36px;padding:0 16px;font-size:13px">Roster</a>
+            </div>
+          </aside>
+        </section>
+
+        <!-- 4-Card Live Coach KPI Strip -->
+        <section class="tw-coach-kpis tw-anim" style="--i:1" aria-label="Coach summary metrics">
+          <article class="tw-ckpi">
+            <span class="tw-ckpi-lbl"><i class="fa-solid fa-users" aria-hidden="true"></i> Assigned athletes</span>
+            <div class="tw-ckpi-val"><strong id="ckpiAssigned">0</strong><span>members</span></div>
+            <span class="tw-ckpi-sub" id="ckpiAssignedSub">Active coaching roster</span>
+          </article>
+          <article class="tw-ckpi">
+            <span class="tw-ckpi-lbl"><i class="fa-solid fa-check" aria-hidden="true"></i> Checked in today</span>
+            <div class="tw-ckpi-val"><strong id="ckpiToday">0</strong><span id="ckpiTodayDenom">/ 0</span></div>
+            <div class="tw-ckpi-segs" id="ckpiTodaySegs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+          </article>
+          <article class="tw-ckpi">
+            <span class="tw-ckpi-lbl"><i class="fa-regular fa-calendar" aria-hidden="true"></i> Classes today</span>
+            <div class="tw-ckpi-val"><strong id="ckpiClasses">0</strong><span>classes</span></div>
+            <span class="tw-ckpi-sub" id="ckpiClassesNext">No classes scheduled</span>
+          </article>
+          <article class="tw-ckpi">
+            <span class="tw-ckpi-lbl"><i class="fa-solid fa-chart-column" aria-hidden="true"></i> Attendance rate</span>
+            <div class="tw-ckpi-val"><strong id="ckpiRate">0</strong><span>%</span></div>
+            <span class="tw-ckpi-sub">Current selected range</span>
+          </article>
+        </section>
+
+        <!-- Main Dashboard Grid -->
+        <div class="tw-dash-grid">
+
+          <!-- Row 1, Col 1: Membership overview -->
+          <section class="tw-card tw-span-1 tw-anim" style="--i:1" aria-labelledby="ovTitle">
+            <div class="tw-card-head">
+              <div>
+                <h2 class="tw-card-title" id="ovTitle">Membership overview</h2>
+                <p class="tw-card-sub">Status of your assigned members</p>
+              </div>
+            </div>
+
+            <div class="tw-donut-stage">
+              <div class="tw-donut-box">
+                <svg class="tw-donut-svg" viewBox="0 0 240 240" role="img"
+                  aria-label="Assigned members by membership status">
+                  <circle class="tw-donut-track" cx="120" cy="120" r="88" stroke-width="24"></circle>
+                  <g id="donutArcs"></g>
+                </svg>
+                <div class="tw-donut-center">
+                  <div class="tw-donut-num" id="donutTotal">0</div>
+                  <div class="tw-donut-lbl">Assigned</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tw-status-list" aria-label="Status breakdown">
+              <div class="tw-status-row">
+                <span><i class="tw-status-dot" style="background:#10B981"></i>Active</span>
+                <strong id="ovActive">0</strong>
+              </div>
+              <div class="tw-status-row">
+                <span><i class="tw-status-dot" style="background:#F59E0B"></i>Expiring soon</span>
+                <strong id="ovExpiring">0</strong>
+              </div>
+              <div class="tw-status-row">
+                <span><i class="tw-status-dot" style="background:#EF4444"></i>Expired</span>
+                <strong id="ovExpired">0</strong>
+              </div>
+            </div>
+
+            <div class="tw-cap-footer">
+              <div class="tw-cap-head">
+                <span>Roster capacity</span>
+                <strong id="ovCapLabel">0 of 20 slots</strong>
+              </div>
+              <div class="tw-progress" id="capBar" role="progressbar" aria-label="Roster capacity" aria-valuemin="0"
+                aria-valuemax="100" aria-valuenow="0">
+                <i></i>
+              </div>
+            </div>
+          </section>
+
+          <!-- Row 1, Col 2-3: Attendance (the only chart) -->
+          <section class="tw-card tw-span-2 tw-anim" style="--i:2" aria-labelledby="attChartTitle">
+            <div class="tw-card-head tw-att-head">
+              <div class="tw-att-head-left">
+                <h2 class="tw-card-title" id="attChartTitle">Daily attendance</h2>
+                <p class="tw-card-sub" id="attSubtitle">Daily · Oct 27 – Nov 9, 2026</p>
+              </div>
+              <div class="tw-att-head-right">
+                <div class="tw-period-tabs" id="attPeriodTabs" role="tablist" aria-label="Chart granularity">
+                  <button type="button" class="tw-period-tab active" data-granularity="day" data-period="days"
+                    role="tab" aria-selected="true" tabindex="0">Days</button>
+                  <button type="button" class="tw-period-tab" data-granularity="week" data-period="weeks" role="tab"
+                    aria-selected="false" tabindex="-1">Week</button>
+                  <button type="button" class="tw-period-tab" data-granularity="month" data-period="months" role="tab"
+                    aria-selected="false" tabindex="-1">Month</button>
+                  <button type="button" class="tw-period-tab" data-granularity="year" data-period="years" role="tab"
+                    aria-selected="false" tabindex="-1">Year</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="tw-att-controls">
+              <div class="tw-att-filters">
+                <div class="tw-ctrl-field is-member">
+                  <label for="attMember">Member</label>
+                  <select id="attMember" class="tw-select">
+                    <option value="all">All members</option>
+                  </select>
+                </div>
+                <div class="tw-ctrl-field">
+                  <label for="attFrom">From</label>
+                  <div class="tw-date-wrap">
+                    <input type="text" id="attFrom" class="tw-input tw-date-text" inputmode="numeric"
+                      placeholder="MM/DD/YYYY" autocomplete="off" aria-label="From date (MM/DD/YYYY)">
+                    <input type="date" id="attFromPicker" class="tw-date-picker"
+                      style="position:absolute;width:0;height:0;opacity:0;pointer-events:none" tabindex="-1"
+                      aria-hidden="true">
+                    <button type="button" class="tw-date-btn" data-picker="attFromPicker"
+                      aria-label="Pick From date"><span data-icon="calendar"></span></button>
+                  </div>
+                </div>
+                <div class="tw-ctrl-field">
+                  <label for="attTo">To</label>
+                  <div class="tw-date-wrap">
+                    <input type="text" id="attTo" class="tw-input tw-date-text" inputmode="numeric"
+                      placeholder="MM/DD/YYYY" autocomplete="off" aria-label="To date (MM/DD/YYYY)">
+                    <input type="date" id="attToPicker" class="tw-date-picker"
+                      style="position:absolute;width:0;height:0;opacity:0;pointer-events:none" tabindex="-1"
+                      aria-hidden="true">
+                    <button type="button" class="tw-date-btn" data-picker="attToPicker" aria-label="Pick To date"><span
+                        data-icon="calendar"></span></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tw-att-legend-bar">
+              <div class="tw-att-legend-row" aria-hidden="true">
+                <span class="tw-leg-item"><i class="tw-leg-dot is-green"></i>Present</span>
+                <span class="tw-leg-item"><i class="tw-leg-dot is-red"></i>Absent</span>
+              </div>
+              <div class="tw-chart-nav-group" aria-label="Step date range">
+                <button type="button" class="tw-chart-nav-btn" id="attNavPrev" title="Previous period"
+                  aria-label="Previous period"><span data-icon="chevron-left"></span></button>
+                <button type="button" class="tw-chart-nav-btn" id="attNavNext" title="Next period"
+                  aria-label="Next period"><span data-icon="chevron-right"></span></button>
+              </div>
+            </div>
+
+            <div class="tw-chart-stage" id="attChartStage">
+              <div class="tw-skel-bars" aria-hidden="true">
+                <span class="tw-skel-bar" style="height:48%"></span>
+                <span class="tw-skel-bar" style="height:72%"></span>
+                <span class="tw-skel-bar" style="height:60%"></span>
+                <span class="tw-skel-bar" style="height:85%"></span>
+                <span class="tw-skel-bar" style="height:54%"></span>
+                <span class="tw-skel-bar" style="height:76%"></span>
+                <span class="tw-skel-bar" style="height:64%"></span>
+                <span class="tw-skel-bar" style="height:68%"></span>
+              </div>
+              <div class="tw-chart-tip" id="attChartTip" role="status" aria-live="polite" hidden></div>
+            </div>
+
+            <div class="tw-att-summary" aria-label="Attendance summary">
+              <div class="tw-sum-card">
+                <span>Checked in</span>
+                <strong id="sumCheckedIn">0</strong>
+              </div>
+              <div class="tw-sum-card">
+                <span>Scheduled visits</span>
+                <strong id="sumScheduled">0</strong>
+              </div>
+              <div class="tw-sum-card">
+                <span>Attendance rate</span>
+                <strong id="sumRate">0%</strong>
+              </div>
+            </div>
+            <span class="tw-updated-badge is-foot" id="attUpdatedLabel"
+              title="Live sync active (polls every 30s and on tab focus)">Updated just now</span>
+          </section>
+
+          <!-- Row 2, Col 1: Today's Coaching Schedule -->
+          <section class="tw-card tw-span-1 tw-anim" style="--i:3" aria-labelledby="schedTitle">
+            <div class="tw-card-head">
+              <div>
+                <h2 class="tw-card-title" id="schedTitle">Today's Coaching Schedule</h2>
+                <p class="tw-card-sub" id="todayScheduleDate">Training timetable</p>
+              </div>
+            </div>
+            <div class="tw-list" id="todaySessionsList">
+              <span class="tw-skel tw-skel-row"></span>
+              <span class="tw-skel tw-skel-row"></span>
+            </div>
+          </section>
+
+          <!-- Row 2, Col 2-3: Recent Member Check-ins -->
+          <section class="tw-card tw-span-2 tw-anim" style="--i:4" aria-labelledby="recentAttTitle">
+            <div class="tw-card-head">
+              <div>
+                <h2 class="tw-card-title" id="recentAttTitle">Recent Member Check-ins</h2>
+                <p class="tw-card-sub">Latest visits from your members</p>
+              </div>
+              <a class="tw-link" href="/trainer/attendance">All attendance</a>
+            </div>
+            <div class="tw-table-wrap">
+              <table class="tw-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Member</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Time</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="recentAttendanceTbody">
+                  <tr>
+                    <td colspan="4"><span class="tw-skel tw-skel-line"></span></td>
+                  </tr>
+                  <tr>
+                    <td colspan="4"><span class="tw-skel tw-skel-line"></span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
         </div>
+      </main>
+    </div>
+    <nav class="bottom-nav" id="bottomNav" aria-label="Quick navigation"></nav>
+  </div>
 
-        <aside class="tw-duty-card" aria-label="On duty status">
-          <div class="tw-duty-top">
-            <div>
-              <span class="tw-duty-pill">On duty</span>
-              <h3 id="dutySessionName">Today on the floor</h3>
-              <div class="tw-duty-sub" id="dutySessionSub">Live coaching schedule</div>
-            </div>
-            <div class="tw-duty-ring" aria-label="Athletes checked in today">
-              <svg viewBox="0 0 80 80" aria-hidden="true">
-                <circle class="tw-duty-ring-track" cx="40" cy="40" r="32"></circle>
-                <circle class="tw-duty-ring-arc" id="dutyRingArc" cx="40" cy="40" r="32" stroke-dasharray="201.06" stroke-dashoffset="201.06"></circle>
-              </svg>
-              <div class="tw-duty-ring-txt">
-                <strong id="dutyCheckedNum">0</strong>
-                <small>checked in</small>
-              </div>
-            </div>
-          </div>
-          <div class="tw-duty-foot">
-            <div>
-              <span>Assigned athletes</span>
-              <strong id="dutyRosterCount">0 members</strong>
-            </div>
-            <a class="tw-btn-primary" href="/trainer/members" style="height:36px;padding:0 16px;font-size:13px">Roster</a>
-          </div>
-        </aside>
-      </section>
-
-      <!-- 4-Card Live Coach KPI Strip -->
-      <section class="tw-coach-kpis tw-anim" style="--i:1" aria-label="Coach summary metrics">
-        <article class="tw-ckpi">
-          <span class="tw-ckpi-lbl"><i class="fa-solid fa-users" aria-hidden="true"></i> Assigned athletes</span>
-          <div class="tw-ckpi-val"><strong id="ckpiAssigned">0</strong><span>members</span></div>
-          <span class="tw-ckpi-sub" id="ckpiAssignedSub">Active coaching roster</span>
-        </article>
-        <article class="tw-ckpi">
-          <span class="tw-ckpi-lbl"><i class="fa-solid fa-check" aria-hidden="true"></i> Checked in today</span>
-          <div class="tw-ckpi-val"><strong id="ckpiToday">0</strong><span id="ckpiTodayDenom">/ 0</span></div>
-          <div class="tw-ckpi-segs" id="ckpiTodaySegs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
-        </article>
-        <article class="tw-ckpi">
-          <span class="tw-ckpi-lbl"><i class="fa-regular fa-calendar" aria-hidden="true"></i> Classes today</span>
-          <div class="tw-ckpi-val"><strong id="ckpiClasses">0</strong><span>classes</span></div>
-          <span class="tw-ckpi-sub" id="ckpiClassesNext">No classes scheduled</span>
-        </article>
-        <article class="tw-ckpi">
-          <span class="tw-ckpi-lbl"><i class="fa-solid fa-chart-column" aria-hidden="true"></i> Attendance rate</span>
-          <div class="tw-ckpi-val"><strong id="ckpiRate">0</strong><span>%</span></div>
-          <span class="tw-ckpi-sub">Current selected range</span>
-        </article>
-      </section>
-
-      <!-- Main Dashboard Grid -->
-      <div class="tw-dash-grid">
-
-        <!-- Row 1, Col 1: Membership overview -->
-        <section class="tw-card tw-span-1 tw-anim" style="--i:1" aria-labelledby="ovTitle">
-          <div class="tw-card-head">
-            <div>
-              <h2 class="tw-card-title" id="ovTitle">Membership overview</h2>
-              <p class="tw-card-sub">Status of your assigned members</p>
-            </div>
-          </div>
-
-          <div class="tw-donut-stage">
-            <div class="tw-donut-box">
-              <svg class="tw-donut-svg" viewBox="0 0 240 240" role="img" aria-label="Assigned members by membership status">
-                <circle class="tw-donut-track" cx="120" cy="120" r="88" stroke-width="24"></circle>
-                <g id="donutArcs"></g>
-              </svg>
-              <div class="tw-donut-center">
-                <div class="tw-donut-num" id="donutTotal">0</div>
-                <div class="tw-donut-lbl">Assigned</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="tw-status-list" aria-label="Status breakdown">
-            <div class="tw-status-row">
-              <span><i class="tw-status-dot" style="background:#10B981"></i>Active</span>
-              <strong id="ovActive">0</strong>
-            </div>
-            <div class="tw-status-row">
-              <span><i class="tw-status-dot" style="background:#F59E0B"></i>Expiring soon</span>
-              <strong id="ovExpiring">0</strong>
-            </div>
-            <div class="tw-status-row">
-              <span><i class="tw-status-dot" style="background:#EF4444"></i>Expired</span>
-              <strong id="ovExpired">0</strong>
-            </div>
-          </div>
-
-          <div class="tw-cap-footer">
-            <div class="tw-cap-head">
-              <span>Roster capacity</span>
-              <strong id="ovCapLabel">0 of 20 slots</strong>
-            </div>
-            <div class="tw-progress" id="capBar" role="progressbar" aria-label="Roster capacity" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-              <i></i>
-            </div>
-          </div>
-        </section>
-
-        <!-- Row 1, Col 2-3: Attendance (the only chart) -->
-        <section class="tw-card tw-span-2 tw-anim" style="--i:2" aria-labelledby="attChartTitle">
-          <div class="tw-card-head tw-att-head">
-            <div class="tw-att-head-left">
-              <h2 class="tw-card-title" id="attChartTitle">Daily attendance</h2>
-              <p class="tw-card-sub" id="attSubtitle">Daily · Oct 27 – Nov 9, 2026</p>
-            </div>
-            <div class="tw-att-head-right">
-              <div class="tw-period-tabs" id="attPeriodTabs" role="tablist" aria-label="Chart granularity">
-                <button type="button" class="tw-period-tab active" data-granularity="day" data-period="days" role="tab" aria-selected="true" tabindex="0">Days</button>
-                <button type="button" class="tw-period-tab" data-granularity="week" data-period="weeks" role="tab" aria-selected="false" tabindex="-1">Week</button>
-                <button type="button" class="tw-period-tab" data-granularity="month" data-period="months" role="tab" aria-selected="false" tabindex="-1">Month</button>
-                <button type="button" class="tw-period-tab" data-granularity="year" data-period="years" role="tab" aria-selected="false" tabindex="-1">Year</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="tw-att-controls">
-            <div class="tw-att-filters">
-              <div class="tw-ctrl-field is-member">
-                <label for="attMember">Member</label>
-                <select id="attMember" class="tw-select">
-                  <option value="all">All members</option>
-                </select>
-              </div>
-              <div class="tw-ctrl-field">
-                <label for="attFrom">From</label>
-                <div class="tw-date-wrap">
-                  <input type="text" id="attFrom" class="tw-input tw-date-text" inputmode="numeric" placeholder="MM/DD/YYYY" autocomplete="off" aria-label="From date (MM/DD/YYYY)">
-                  <input type="date" id="attFromPicker" class="tw-date-picker" style="position:absolute;width:0;height:0;opacity:0;pointer-events:none" tabindex="-1" aria-hidden="true">
-                  <button type="button" class="tw-date-btn" data-picker="attFromPicker" aria-label="Pick From date"><span data-icon="calendar"></span></button>
-                </div>
-              </div>
-              <div class="tw-ctrl-field">
-                <label for="attTo">To</label>
-                <div class="tw-date-wrap">
-                  <input type="text" id="attTo" class="tw-input tw-date-text" inputmode="numeric" placeholder="MM/DD/YYYY" autocomplete="off" aria-label="To date (MM/DD/YYYY)">
-                  <input type="date" id="attToPicker" class="tw-date-picker" style="position:absolute;width:0;height:0;opacity:0;pointer-events:none" tabindex="-1" aria-hidden="true">
-                  <button type="button" class="tw-date-btn" data-picker="attToPicker" aria-label="Pick To date"><span data-icon="calendar"></span></button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="tw-att-legend-bar">
-            <div class="tw-att-legend-row" aria-hidden="true">
-              <span class="tw-leg-item"><i class="tw-leg-dot is-green"></i>Present</span>
-              <span class="tw-leg-item"><i class="tw-leg-dot is-red"></i>Absent</span>
-            </div>
-            <div class="tw-chart-nav-group" aria-label="Step date range">
-              <button type="button" class="tw-chart-nav-btn" id="attNavPrev" title="Previous period" aria-label="Previous period"><span data-icon="chevron-left"></span></button>
-              <button type="button" class="tw-chart-nav-btn" id="attNavNext" title="Next period" aria-label="Next period"><span data-icon="chevron-right"></span></button>
-            </div>
-          </div>
-
-          <div class="tw-chart-stage" id="attChartStage">
-            <div class="tw-skel-bars" aria-hidden="true">
-              <span class="tw-skel-bar" style="height:48%"></span>
-              <span class="tw-skel-bar" style="height:72%"></span>
-              <span class="tw-skel-bar" style="height:60%"></span>
-              <span class="tw-skel-bar" style="height:85%"></span>
-              <span class="tw-skel-bar" style="height:54%"></span>
-              <span class="tw-skel-bar" style="height:76%"></span>
-              <span class="tw-skel-bar" style="height:64%"></span>
-              <span class="tw-skel-bar" style="height:68%"></span>
-            </div>
-            <div class="tw-chart-tip" id="attChartTip" role="status" aria-live="polite" hidden></div>
-          </div>
-
-          <div class="tw-att-summary" aria-label="Attendance summary">
-            <div class="tw-sum-card">
-              <span>Checked in</span>
-              <strong id="sumCheckedIn">0</strong>
-            </div>
-            <div class="tw-sum-card">
-              <span>Scheduled visits</span>
-              <strong id="sumScheduled">0</strong>
-            </div>
-            <div class="tw-sum-card">
-              <span>Attendance rate</span>
-              <strong id="sumRate">0%</strong>
-            </div>
-          </div>
-          <span class="tw-updated-badge is-foot" id="attUpdatedLabel" title="Live sync active (polls every 30s and on tab focus)">Updated just now</span>
-        </section>
-
-        <!-- Row 2, Col 1: Today's Coaching Schedule -->
-        <section class="tw-card tw-span-1 tw-anim" style="--i:3" aria-labelledby="schedTitle">
-          <div class="tw-card-head">
-            <div>
-              <h2 class="tw-card-title" id="schedTitle">Today's Coaching Schedule</h2>
-              <p class="tw-card-sub" id="todayScheduleDate">Training timetable</p>
-            </div>
-          </div>
-          <div class="tw-list" id="todaySessionsList">
-            <span class="tw-skel tw-skel-row"></span>
-            <span class="tw-skel tw-skel-row"></span>
-          </div>
-        </section>
-
-        <!-- Row 2, Col 2-3: Recent Member Check-ins -->
-        <section class="tw-card tw-span-2 tw-anim" style="--i:4" aria-labelledby="recentAttTitle">
-          <div class="tw-card-head">
-            <div>
-              <h2 class="tw-card-title" id="recentAttTitle">Recent Member Check-ins</h2>
-              <p class="tw-card-sub">Latest visits from your members</p>
-            </div>
-            <a class="tw-link" href="/trainer/attendance">All attendance</a>
-          </div>
-          <div class="tw-table-wrap">
-            <table class="tw-table">
-              <thead>
-                <tr>
-                  <th scope="col">Member</th>
-                  <th scope="col">Date</th>
-                  <th scope="col">Time</th>
-                  <th scope="col">Action</th>
-                </tr>
-              </thead>
-              <tbody id="recentAttendanceTbody">
-                <tr><td colspan="4"><span class="tw-skel tw-skel-line"></span></td></tr>
-                <tr><td colspan="4"><span class="tw-skel tw-skel-line"></span></td></tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-
+  <!-- QR Check-in Camera Scanner Modal (right on Dashboard) -->
+  <div class="modal-backdrop" id="dashQrModal" role="dialog" aria-modal="true" aria-labelledby="dashQrTitle">
+    <div class="modal" style="max-width:440px">
+      <div class="modal-head">
+        <h3 id="dashQrTitle"><i class="fa-solid fa-qrcode" style="color:#e8b93a;margin-right:8px"
+            aria-hidden="true"></i>Scan Member QR</h3>
+        <button type="button" class="modal-close" id="dashQrClose" aria-label="Close scanner">&times;</button>
       </div>
-    </main>
-  </div>
-  <nav class="bottom-nav" id="bottomNav" aria-label="Quick navigation"></nav>
-</div>
-
-<!-- QR Check-in Camera Scanner Modal (right on Dashboard) -->
-<div class="modal-backdrop" id="dashQrModal" role="dialog" aria-modal="true" aria-labelledby="dashQrTitle">
-  <div class="modal" style="max-width:440px">
-    <div class="modal-head">
-      <h3 id="dashQrTitle"><i class="fa-solid fa-qrcode" style="color:#e8b93a;margin-right:8px" aria-hidden="true"></i>Scan Member QR</h3>
-      <button type="button" class="modal-close" id="dashQrClose" aria-label="Close scanner">&times;</button>
-    </div>
-    <div class="modal-body">
-      <div id="dashQrReader" style="width:100%;min-height:240px;border-radius:14px;overflow:hidden;background:#070b14;border:1px solid var(--line-strong)"></div>
-      <p id="dashQrStatus" role="status" aria-live="polite" style="margin:12px 0 0;font-size:13.5px;font-weight:600;color:var(--muted);text-align:center">Point the camera at the member's Check-in QR pass.</p>
-    </div>
-    <div class="modal-foot">
-      <button type="button" class="tw-btn" id="dashQrDone" style="width:100%;justify-content:center">Close scanner</button>
+      <div class="modal-body">
+        <div id="dashQrReader"
+          style="width:100%;min-height:240px;border-radius:14px;overflow:hidden;background:#070b14;border:1px solid var(--line-strong)">
+        </div>
+        <p id="dashQrStatus" role="status" aria-live="polite"
+          style="margin:12px 0 0;font-size:13.5px;font-weight:600;color:var(--muted);text-align:center">Point the camera
+          at the member's Check-in QR pass.</p>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="tw-btn" id="dashQrDone" style="width:100%;justify-content:center">Close
+          scanner</button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- Scripts -->
-<script src="/config.js?v=9"></script>
-<script src="/api.js?v=5"></script>
-<script src="/auth.js?v=6"></script>
-<script src="/assets/js/staff-icons.js?v=5"></script>
-<script src="/assets/js/staff-data.js?v=12"></script>
-<script src="/assets/js/staff.js?v=18"></script>
-<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script>
-<script src="/trainer/trainer.js?v=13"></script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const PF = window.PF || {};
-  const T = window.Trainer;
-  const $ = id => document.getElementById(id);
-  const esc = v => (PF.esc ? PF.esc(v) : String(v ?? ''));
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  <!-- Scripts -->
+  <script src="/config.js?v=9"></script>
+  <script src="/api.js?v=5"></script>
+  <script src="/auth.js?v=6"></script>
+  <script src="/assets/js/staff-icons.js?v=5"></script>
+  <script src="/assets/js/staff-data.js?v=12"></script>
+  <script src="/assets/js/staff.js?v=18"></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script>
+  <script src="/trainer/trainer.js?v=13"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const PF = window.PF || {};
+      const T = window.Trainer;
+      const $ = id => document.getElementById(id);
+      const esc = v => (PF.esc ? PF.esc(v) : String(v ?? ''));
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // Populate static icons (excluding <body>)
-  document.querySelectorAll('[data-icon]:not(body)').forEach(el => {
-    el.innerHTML = PF.icon(el.dataset.icon);
-  });
+      // Populate static icons (excluding <body>)
+      document.querySelectorAll('[data-icon]:not(body)').forEach(el => {
+        el.innerHTML = PF.icon(el.dataset.icon);
+      });
 
-  const emptyState = (icon, title, help) =>
-    `<div class="tw-empty"><span class="tw-empty-ico">${PF.icon(icon)}</span><strong>${title}</strong><p>${help}</p></div>`;
+      const emptyState = (icon, title, help) =>
+        `<div class="tw-empty"><span class="tw-empty-ico">${PF.icon(icon)}</span><strong>${title}</strong><p>${help}</p></div>`;
 
-  // Date helpers (ISO YYYY-MM-DD <-> display MM/DD/YYYY)
-  const toIsoDate = d => {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
-  };
+      // Date helpers (ISO YYYY-MM-DD <-> display MM/DD/YYYY)
+      const toIsoDate = d => {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+      };
 
-  const isoToMmDdYyyy = iso => {
-    if (!iso) return '';
-    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso).trim());
-    if (!m) return String(iso);
-    return `${m[2]}/${m[3]}/${m[1]}`;
-  };
+      const isoToMmDdYyyy = iso => {
+        if (!iso) return '';
+        const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso).trim());
+        if (!m) return String(iso);
+        return `${m[2]}/${m[3]}/${m[1]}`;
+      };
 
-  const parseInputToIso = raw => {
-    if (!raw) return null;
-    const s = String(raw).trim();
-    const mUs = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(s);
-    if (mUs) {
-      const mm = Number(mUs[1]);
-      const dd = Number(mUs[2]);
-      const yy = Number(mUs[3]);
-      const dt = new Date(yy, mm - 1, dd);
-      if (dt.getFullYear() === yy && dt.getMonth() === mm - 1 && dt.getDate() === dd) {
-        return toIsoDate(dt);
-      }
-      return null;
-    }
-    const mIso = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
-    if (mIso) {
-      const yy = Number(mIso[1]);
-      const mm = Number(mIso[2]);
-      const dd = Number(mIso[3]);
-      const dt = new Date(yy, mm - 1, dd);
-      if (dt.getFullYear() === yy && dt.getMonth() === mm - 1 && dt.getDate() === dd) {
-        return toIsoDate(dt);
-      }
-      return null;
-    }
-    return null;
-  };
+      const parseInputToIso = raw => {
+        if (!raw) return null;
+        const s = String(raw).trim();
+        const mUs = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(s);
+        if (mUs) {
+          const mm = Number(mUs[1]);
+          const dd = Number(mUs[2]);
+          const yy = Number(mUs[3]);
+          const dt = new Date(yy, mm - 1, dd);
+          if (dt.getFullYear() === yy && dt.getMonth() === mm - 1 && dt.getDate() === dd) {
+            return toIsoDate(dt);
+          }
+          return null;
+        }
+        const mIso = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
+        if (mIso) {
+          const yy = Number(mIso[1]);
+          const mm = Number(mIso[2]);
+          const dd = Number(mIso[3]);
+          const dt = new Date(yy, mm - 1, dd);
+          if (dt.getFullYear() === yy && dt.getMonth() === mm - 1 && dt.getDate() === dd) {
+            return toIsoDate(dt);
+          }
+          return null;
+        }
+        return null;
+      };
 
-  const formatIsoNice = iso => {
-    if (!iso) return '';
-    const [y, m, d] = String(iso).split('-').map(Number);
-    if (!y || !m || !d) return iso;
-    const dt = new Date(y, m - 1, d);
-    return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  };
+      const formatIsoNice = iso => {
+        if (!iso) return '';
+        const [y, m, d] = String(iso).split('-').map(Number);
+        if (!y || !m || !d) return iso;
+        const dt = new Date(y, m - 1, d);
+        return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      };
 
-  const defaultRangeForGranularity = gran => {
-    const end = new Date();
-    end.setHours(0, 0, 0, 0);
-    const start = new Date(end);
-    if (gran === 'week' || gran === 'weeks') start.setDate(start.getDate() - 55);
-    else if (gran === 'month' || gran === 'months') start.setFullYear(end.getFullYear(), end.getMonth() - 5, 1);
-    else if (gran === 'year' || gran === 'years') start.setFullYear(end.getFullYear() - 2, 0, 1);
-    else start.setDate(start.getDate() - 13);
-    return { from: toIsoDate(start), to: toIsoDate(end) };
-  };
+      const defaultRangeForGranularity = gran => {
+        const end = new Date();
+        end.setHours(0, 0, 0, 0);
+        const start = new Date(end);
+        if (gran === 'week' || gran === 'weeks') start.setDate(start.getDate() - 55);
+        else if (gran === 'month' || gran === 'months') start.setFullYear(end.getFullYear(), end.getMonth() - 5, 1);
+        else if (gran === 'year' || gran === 'years') start.setFullYear(end.getFullYear() - 2, 0, 1);
+        else start.setDate(start.getDate() - 13);
+        return { from: toIsoDate(start), to: toIsoDate(end) };
+      };
 
-  const skelBarsHtml = () => `
+      const skelBarsHtml = () => `
     <div class="tw-skel-bars" aria-hidden="true">
       <span class="tw-skel-bar" style="height:48%"></span>
       <span class="tw-skel-bar" style="height:72%"></span>
@@ -387,437 +434,437 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
     <div class="tw-chart-tip" id="attChartTip" role="status" aria-live="polite" hidden></div>`;
 
-  /* ---------- 1. Membership Overview Donut & Capacity ---------- */
-  function renderMembershipOverview(stats, members) {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+      /* ---------- 1. Membership Overview Donut & Capacity ---------- */
+      function renderMembershipOverview(stats, members) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
-    let active = stats.active_members;
-    let expiring = stats.expiring_soon_members;
-    let expired = stats.expired_members;
+        let active = stats.active_members;
+        let expiring = stats.expiring_soon_members;
+        let expired = stats.expired_members;
 
-    if ((active == null || expiring == null || expired == null) && Array.isArray(members)) {
-      active = 0; expiring = 0; expired = 0;
-      members.forEach(m => {
-        const isAct = m.is_active || String(m.membership_status || '').toUpperCase() === 'ACTIVE';
-        if (!isAct) {
-          expired++;
-        } else if (m.expiry_date) {
-          const exp = new Date(m.expiry_date);
-          const diffDays = Math.ceil((exp - today) / 86400000);
-          if (diffDays >= 0 && diffDays <= 7) expiring++;
-          else if (diffDays < 0) expired++;
-          else active++;
-        } else {
-          active++;
+        if ((active == null || expiring == null || expired == null) && Array.isArray(members)) {
+          active = 0; expiring = 0; expired = 0;
+          members.forEach(m => {
+            const isAct = m.is_active || String(m.membership_status || '').toUpperCase() === 'ACTIVE';
+            if (!isAct) {
+              expired++;
+            } else if (m.expiry_date) {
+              const exp = new Date(m.expiry_date);
+              const diffDays = Math.ceil((exp - today) / 86400000);
+              if (diffDays >= 0 && diffDays <= 7) expiring++;
+              else if (diffDays < 0) expired++;
+              else active++;
+            } else {
+              active++;
+            }
+          });
         }
-      });
-    }
 
-    active = Number(active) || 0;
-    expiring = Number(expiring) || 0;
-    expired = Number(expired) || 0;
-    const total = stats.assigned_members != null ? Number(stats.assigned_members) : (active + expiring + expired);
-    const maxSlots = Number(stats.max_members) || 20;
-    const capPct = Math.max(0, Math.min(100, Math.round((total / maxSlots) * 100)));
+        active = Number(active) || 0;
+        expiring = Number(expiring) || 0;
+        expired = Number(expired) || 0;
+        const total = stats.assigned_members != null ? Number(stats.assigned_members) : (active + expiring + expired);
+        const maxSlots = Number(stats.max_members) || 20;
+        const capPct = Math.max(0, Math.min(100, Math.round((total / maxSlots) * 100)));
 
-    $('donutTotal').textContent = String(total);
-    $('ovActive').textContent = String(active);
-    $('ovExpiring').textContent = String(expiring);
-    $('ovExpired').textContent = String(expired);
-    $('ovCapLabel').textContent = `${total} of ${maxSlots} slots`;
+        $('donutTotal').textContent = String(total);
+        $('ovActive').textContent = String(active);
+        $('ovExpiring').textContent = String(expiring);
+        $('ovExpired').textContent = String(expired);
+        $('ovCapLabel').textContent = `${total} of ${maxSlots} slots`;
 
-    const bar = $('capBar');
-    bar.classList.toggle('is-full', total >= maxSlots);
-    bar.setAttribute('aria-valuenow', String(capPct));
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      bar.firstElementChild.style.width = capPct + '%';
-    }));
+        const bar = $('capBar');
+        bar.classList.toggle('is-full', total >= maxSlots);
+        bar.setAttribute('aria-valuenow', String(capPct));
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          bar.firstElementChild.style.width = capPct + '%';
+        }));
 
-    // Draw SVG Donut arcs (cx=120, cy=120, r=88)
-    const R = 88;
-    const C = 2 * Math.PI * R;
-    const g = $('donutArcs');
-    const segments = [
-      { count: active, color: '#10B981' },
-      { count: expiring, color: '#F59E0B' },
-      { count: expired, color: '#EF4444' }
-    ].filter(s => s.count > 0);
+        // Draw SVG Donut arcs (cx=120, cy=120, r=88)
+        const R = 88;
+        const C = 2 * Math.PI * R;
+        const g = $('donutArcs');
+        const segments = [
+          { count: active, color: '#10B981' },
+          { count: expiring, color: '#F59E0B' },
+          { count: expired, color: '#EF4444' }
+        ].filter(s => s.count > 0);
 
-    const sumSeg = segments.reduce((a, b) => a + b.count, 0);
-    if (!sumSeg) {
-      g.innerHTML = '';
-      return;
-    }
+        const sumSeg = segments.reduce((a, b) => a + b.count, 0);
+        if (!sumSeg) {
+          g.innerHTML = '';
+          return;
+        }
 
-    let offset = 0;
-    const arcsHtml = segments.map(seg => {
-      const frac = seg.count / sumSeg;
-      const len = frac * C;
-      const dashArray = `${len} ${C}`;
-      const targetOffset = -offset;
-      const initOffset = reduceMotion ? targetOffset : C;
-      offset += len;
-      return `<circle class="tw-donut-arc" cx="120" cy="120" r="${R}" stroke="${seg.color}" stroke-width="24"
+        let offset = 0;
+        const arcsHtml = segments.map(seg => {
+          const frac = seg.count / sumSeg;
+          const len = frac * C;
+          const dashArray = `${len} ${C}`;
+          const targetOffset = -offset;
+          const initOffset = reduceMotion ? targetOffset : C;
+          offset += len;
+          return `<circle class="tw-donut-arc" cx="120" cy="120" r="${R}" stroke="${seg.color}" stroke-width="24"
         stroke-dasharray="${dashArray}" stroke-dashoffset="${initOffset}" data-target-offset="${targetOffset}"></circle>`;
-    }).join('');
+        }).join('');
 
-    g.innerHTML = arcsHtml;
-    if (!reduceMotion) {
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-        g.querySelectorAll('.tw-donut-arc').forEach(arc => {
-          arc.style.strokeDashoffset = arc.dataset.targetOffset;
-        });
-      }));
-    }
-  }
-
-  /* ---------- 2. Attendance Chart (Stacked Bars + Secondary Rate Line) ---------- */
-  let currentGranularity = 'day';
-  let lastSeriesData = null;
-  let rosterLookup = {};
-  let nameToIdLookup = {};
-  let hasAnimatedLineOnce = false;
-  let lastFetchedAtMs = Date.now();
-
-  function populateMemberSelect(membersList) {
-    if (!Array.isArray(membersList) || !membersList.length) return;
-    const sel = $('attMember');
-    if (!sel) return;
-    const prevRaw = String(sel.value || 'all').trim().replace(/\/+$/, '');
-    const normalized = [];
-    const nextRosterLookup = {};
-    const nextNameToId = {};
-
-    membersList.forEach(m => {
-      if (!m) return;
-      const rawId = m.id !== undefined ? m.id : m.member_id;
-      const numId = Number(rawId);
-      if (!Number.isInteger(numId) || numId <= 0) return;
-      const idStr = String(numId);
-      const name = String(m.name || m.member_name || `Member #${idStr}`).trim();
-      nextRosterLookup[idStr] = name;
-      nextNameToId[name.toLowerCase()] = idStr;
-      normalized.push({ id: idStr, name });
-    });
-
-    if (!normalized.length) return;
-    rosterLookup = nextRosterLookup;
-    nameToIdLookup = nextNameToId;
-
-    sel.innerHTML = `<option value="all">All members</option>` +
-      normalized.map(m => `<option value="${esc(m.id)}">${esc(m.name)}</option>`).join('');
-
-    if (!prevRaw || prevRaw.toLowerCase() === 'all') {
-      sel.value = 'all';
-    } else if (rosterLookup[prevRaw]) {
-      sel.value = prevRaw;
-    } else if (nameToIdLookup[prevRaw.toLowerCase()]) {
-      sel.value = nameToIdLookup[prevRaw.toLowerCase()];
-    } else {
-      sel.value = 'all';
-    }
-  }
-
-  function resolveMemberIdParam() {
-    const sel = $('attMember');
-    const raw = String(sel ? sel.value : 'all').trim().replace(/\/+$/, '');
-    if (!raw || raw.toLowerCase() === 'all') return 'all';
-    if (/^\d+$/.test(raw) && Number(raw) > 0) return String(Number(raw));
-    const mapped = nameToIdLookup[raw.toLowerCase()];
-    if (mapped) {
-      if (sel) sel.value = mapped;
-      return mapped;
-    }
-    return raw;
-  }
-
-  function setDateInputsIso(fromIso, toIso) {
-    if (fromIso) {
-      $('attFrom').value = isoToMmDdYyyy(fromIso);
-      $('attFrom').dataset.iso = fromIso;
-      if ($('attFromPicker')) $('attFromPicker').value = fromIso;
-    }
-    if (toIso) {
-      $('attTo').value = isoToMmDdYyyy(toIso);
-      $('attTo').dataset.iso = toIso;
-      if ($('attToPicker')) $('attToPicker').value = toIso;
-    }
-  }
-
-  // Initialize default date range (last 14 days) formatted as MM/DD/YYYY
-  const initRange = defaultRangeForGranularity('day');
-  setDateInputsIso(initRange.from, initRange.to);
-
-  function refreshUpdatedBadge() {
-    const el = $('attUpdatedLabel');
-    if (!el) return;
-    const diffSec = Math.max(0, Math.floor((Date.now() - lastFetchedAtMs) / 1000));
-    if (diffSec < 45) {
-      el.textContent = 'Updated just now';
-    } else {
-      const mins = Math.max(1, Math.round(diffSec / 60));
-      el.textContent = `Updated ${mins} min ago`;
-    }
-  }
-  setInterval(refreshUpdatedBadge, 15000);
-
-  function updateAttendanceSubtitle(granularity, fromIso, toIso, memberId) {
-    const titles = {
-      day: 'Daily attendance',
-      days: 'Daily attendance',
-      week: 'Weekly attendance',
-      weeks: 'Weekly attendance',
-      month: 'Monthly attendance',
-      months: 'Monthly attendance',
-      year: 'Yearly attendance',
-      years: 'Yearly attendance'
-    };
-    if ($('attChartTitle')) {
-      $('attChartTitle').textContent = titles[granularity] || 'Attendance';
-    }
-
-    const mLabel = (!memberId || memberId === 'all')
-      ? ''
-      : (rosterLookup[memberId] || `Member #${memberId}`);
-
-    const granWord = { day: 'Daily', week: 'Weekly', month: 'Monthly', year: 'Yearly' }[granularity] || 'Daily';
-    const fromShort = (() => {
-      const d = new Date(fromIso + 'T00:00:00');
-      if (isNaN(d)) return formatIsoNice(fromIso);
-      const sameYear = String(fromIso).slice(0, 4) === String(toIso).slice(0, 4);
-      return d.toLocaleDateString('en-US', sameYear ? { month: 'short', day: 'numeric' } : { month: 'short', day: 'numeric', year: 'numeric' });
-    })();
-    const spanText = `${granWord} · ${fromShort} – ${formatIsoNice(toIso)}`;
-
-    if ($('attSubtitle')) {
-      $('attSubtitle').textContent = mLabel ? `${spanText} · ${mLabel}` : spanText;
-    }
-  }
-
-  function resolveAndSwapDateInputs() {
-    let fromIso = parseInputToIso($('attFrom').value);
-    let toIso = parseInputToIso($('attTo').value);
-    if (!fromIso || !toIso) {
-      return { valid: false, fromIso, toIso };
-    }
-    if (fromIso > toIso) {
-      const tmp = fromIso;
-      fromIso = toIso;
-      toIso = tmp;
-    }
-    setDateInputsIso(fromIso, toIso);
-    return { valid: true, fromIso, toIso };
-  }
-
-  function computeNiceStep(maxRaw, intervals) {
-    const target = Math.max(1, Math.ceil(maxRaw / intervals));
-    const niceSteps = [1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 25, 50, 100, 200, 500];
-    for (const s of niceSteps) {
-      if (s >= target) return s;
-    }
-    return Math.ceil(target / 100) * 100;
-  }
-
-  function formatRateDisplay(val) {
-    if (val === null || val === undefined || Number.isNaN(Number(val))) return '—';
-    const num = Number(val);
-    return `${Math.round(num)}%`;
-  }
-
-  function formatRateExact(val) {
-    if (val === null || val === undefined || Number.isNaN(Number(val))) return 'N/A';
-    const num = Number(val);
-    return Number.isInteger(num) ? `${num}%` : `${num.toFixed(1)}%`;
-  }
-
-  function renderInvalidRangeState(detailMsg) {
-    const stage = $('attChartStage');
-    $('sumCheckedIn').textContent = '0';
-    $('sumScheduled').textContent = '0';
-    $('sumRate').textContent = '—';
-    stage.innerHTML =
-      emptyState('calendar', 'Pick a valid date range', detailMsg || 'Enter valid From and To dates (MM/DD/YYYY) within 60 buckets.') +
-      '<div class="tw-chart-tip" id="attChartTip" role="status" aria-live="polite" hidden></div>';
-  }
-
-  function drawAttendanceChart(data, { isUpdate = false, changedStarts = null } = {}) {
-    const stage = $('attChartStage');
-    const buckets = (data && Array.isArray(data.buckets)) ? data.buckets : [];
-    const summary = (data && data.summary) || { checked_in: 0, scheduled: 0, missed: 0, attendance_rate: null };
-    const sumRateVal = summary.attendance_rate !== undefined ? summary.attendance_rate : summary.rate;
-
-    // Populate summary cards directly from API summary (never recomputed on frontend)
-    const setSum = (id, val) => {
-      const el = $(id);
-      if (!el || el.textContent === val) return;
-      el.textContent = val;
-      if (!reduceMotion) {
-        el.classList.remove('is-bump');
-        void el.offsetWidth;
-        el.classList.add('is-bump');
+        g.innerHTML = arcsHtml;
+        if (!reduceMotion) {
+          requestAnimationFrame(() => requestAnimationFrame(() => {
+            g.querySelectorAll('.tw-donut-arc').forEach(arc => {
+              arc.style.strokeDashoffset = arc.dataset.targetOffset;
+            });
+          }));
+        }
       }
-    };
-    setSum('sumCheckedIn', String(summary.checked_in ?? 0));
-    setSum('sumScheduled', String(summary.scheduled ?? 0));
-    setSum('sumRate', formatRateDisplay(sumRateVal));
-    $('sumRate').title = formatRateExact(sumRateVal);
-    if ($('ckpiRate')) {
-      $('ckpiRate').textContent = (sumRateVal !== null && sumRateVal !== undefined && !Number.isNaN(Number(sumRateVal)))
-        ? String(Math.round(Number(sumRateVal)))
-        : '0';
-    }
 
-    // Empty state when no buckets or scheduled is 0
-    if (!buckets.length || buckets.every(b => (Number(b.scheduled) || 0) === 0 && (Number(b.checked_in) || 0) === 0)) {
-      stage.innerHTML =
-        emptyState('calendar-check', 'No sessions scheduled in this range', 'Try selecting a wider date range or another member.') +
-        '<div class="tw-chart-tip" id="attChartTip" role="status" aria-live="polite" hidden></div>';
-      return;
-    }
+      /* ---------- 2. Attendance Chart (Stacked Bars + Secondary Rate Line) ---------- */
+      let currentGranularity = 'day';
+      let lastSeriesData = null;
+      let rosterLookup = {};
+      let nameToIdLookup = {};
+      let hasAnimatedLineOnce = false;
+      let lastFetchedAtMs = Date.now();
 
-    const rect = stage.getBoundingClientRect();
-    const W = Math.max(300, Math.floor(rect.width || 640));
-    const H = Math.max(220, Math.floor(rect.height || 275));
-    const padL = 36, padR = 24, padT = 20, padB = 30;
-    const plotW = Math.max(100, W - padL - padR);
-    const plotH = Math.max(100, H - padT - padB);
-    const yBase = padT + plotH;
+      function populateMemberSelect(membersList) {
+        if (!Array.isArray(membersList) || !membersList.length) return;
+        const sel = $('attMember');
+        if (!sel) return;
+        const prevRaw = String(sel.value || 'all').trim().replace(/\/+$/, '');
+        const normalized = [];
+        const nextRosterLookup = {};
+        const nextNameToId = {};
 
-    // Nice tick steps on the counts axis (4 intervals: e.g. 0, 4, 8, 12, 16)
-    const maxValRaw = Math.max(1, ...buckets.map(b => Math.max(Number(b.checked_in) || 0, Number(b.missed) || 0)));
-    const intervals = 4;
-    const tickStep = computeNiceStep(maxValRaw, intervals);
-    const maxCount = tickStep * intervals;
+        membersList.forEach(m => {
+          if (!m) return;
+          const rawId = m.id !== undefined ? m.id : m.member_id;
+          const numId = Number(rawId);
+          if (!Number.isInteger(numId) || numId <= 0) return;
+          const idStr = String(numId);
+          const name = String(m.name || m.member_name || `Member #${idStr}`).trim();
+          nextRosterLookup[idStr] = name;
+          nextNameToId[name.toLowerCase()] = idStr;
+          normalized.push({ id: idStr, name });
+        });
 
-    const gridLines = [];
-    for (let i = 0; i <= intervals; i++) {
-      const f = i / intervals;
-      const y = (padT + plotH * (1 - f)).toFixed(1);
-      const val = i * tickStep;
-      gridLines.push(`
+        if (!normalized.length) return;
+        rosterLookup = nextRosterLookup;
+        nameToIdLookup = nextNameToId;
+
+        sel.innerHTML = `<option value="all">All members</option>` +
+          normalized.map(m => `<option value="${esc(m.id)}">${esc(m.name)}</option>`).join('');
+
+        if (!prevRaw || prevRaw.toLowerCase() === 'all') {
+          sel.value = 'all';
+        } else if (rosterLookup[prevRaw]) {
+          sel.value = prevRaw;
+        } else if (nameToIdLookup[prevRaw.toLowerCase()]) {
+          sel.value = nameToIdLookup[prevRaw.toLowerCase()];
+        } else {
+          sel.value = 'all';
+        }
+      }
+
+      function resolveMemberIdParam() {
+        const sel = $('attMember');
+        const raw = String(sel ? sel.value : 'all').trim().replace(/\/+$/, '');
+        if (!raw || raw.toLowerCase() === 'all') return 'all';
+        if (/^\d+$/.test(raw) && Number(raw) > 0) return String(Number(raw));
+        const mapped = nameToIdLookup[raw.toLowerCase()];
+        if (mapped) {
+          if (sel) sel.value = mapped;
+          return mapped;
+        }
+        return raw;
+      }
+
+      function setDateInputsIso(fromIso, toIso) {
+        if (fromIso) {
+          $('attFrom').value = isoToMmDdYyyy(fromIso);
+          $('attFrom').dataset.iso = fromIso;
+          if ($('attFromPicker')) $('attFromPicker').value = fromIso;
+        }
+        if (toIso) {
+          $('attTo').value = isoToMmDdYyyy(toIso);
+          $('attTo').dataset.iso = toIso;
+          if ($('attToPicker')) $('attToPicker').value = toIso;
+        }
+      }
+
+      // Initialize default date range (last 14 days) formatted as MM/DD/YYYY
+      const initRange = defaultRangeForGranularity('day');
+      setDateInputsIso(initRange.from, initRange.to);
+
+      function refreshUpdatedBadge() {
+        const el = $('attUpdatedLabel');
+        if (!el) return;
+        const diffSec = Math.max(0, Math.floor((Date.now() - lastFetchedAtMs) / 1000));
+        if (diffSec < 45) {
+          el.textContent = 'Updated just now';
+        } else {
+          const mins = Math.max(1, Math.round(diffSec / 60));
+          el.textContent = `Updated ${mins} min ago`;
+        }
+      }
+      setInterval(refreshUpdatedBadge, 15000);
+
+      function updateAttendanceSubtitle(granularity, fromIso, toIso, memberId) {
+        const titles = {
+          day: 'Daily attendance',
+          days: 'Daily attendance',
+          week: 'Weekly attendance',
+          weeks: 'Weekly attendance',
+          month: 'Monthly attendance',
+          months: 'Monthly attendance',
+          year: 'Yearly attendance',
+          years: 'Yearly attendance'
+        };
+        if ($('attChartTitle')) {
+          $('attChartTitle').textContent = titles[granularity] || 'Attendance';
+        }
+
+        const mLabel = (!memberId || memberId === 'all')
+          ? ''
+          : (rosterLookup[memberId] || `Member #${memberId}`);
+
+        const granWord = { day: 'Daily', week: 'Weekly', month: 'Monthly', year: 'Yearly' }[granularity] || 'Daily';
+        const fromShort = (() => {
+          const d = new Date(fromIso + 'T00:00:00');
+          if (isNaN(d)) return formatIsoNice(fromIso);
+          const sameYear = String(fromIso).slice(0, 4) === String(toIso).slice(0, 4);
+          return d.toLocaleDateString('en-US', sameYear ? { month: 'short', day: 'numeric' } : { month: 'short', day: 'numeric', year: 'numeric' });
+        })();
+        const spanText = `${granWord} · ${fromShort} – ${formatIsoNice(toIso)}`;
+
+        if ($('attSubtitle')) {
+          $('attSubtitle').textContent = mLabel ? `${spanText} · ${mLabel}` : spanText;
+        }
+      }
+
+      function resolveAndSwapDateInputs() {
+        let fromIso = parseInputToIso($('attFrom').value);
+        let toIso = parseInputToIso($('attTo').value);
+        if (!fromIso || !toIso) {
+          return { valid: false, fromIso, toIso };
+        }
+        if (fromIso > toIso) {
+          const tmp = fromIso;
+          fromIso = toIso;
+          toIso = tmp;
+        }
+        setDateInputsIso(fromIso, toIso);
+        return { valid: true, fromIso, toIso };
+      }
+
+      function computeNiceStep(maxRaw, intervals) {
+        const target = Math.max(1, Math.ceil(maxRaw / intervals));
+        const niceSteps = [1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 25, 50, 100, 200, 500];
+        for (const s of niceSteps) {
+          if (s >= target) return s;
+        }
+        return Math.ceil(target / 100) * 100;
+      }
+
+      function formatRateDisplay(val) {
+        if (val === null || val === undefined || Number.isNaN(Number(val))) return '—';
+        const num = Number(val);
+        return `${Math.round(num)}%`;
+      }
+
+      function formatRateExact(val) {
+        if (val === null || val === undefined || Number.isNaN(Number(val))) return 'N/A';
+        const num = Number(val);
+        return Number.isInteger(num) ? `${num}%` : `${num.toFixed(1)}%`;
+      }
+
+      function renderInvalidRangeState(detailMsg) {
+        const stage = $('attChartStage');
+        $('sumCheckedIn').textContent = '0';
+        $('sumScheduled').textContent = '0';
+        $('sumRate').textContent = '—';
+        stage.innerHTML =
+          emptyState('calendar', 'Pick a valid date range', detailMsg || 'Enter valid From and To dates (MM/DD/YYYY) within 60 buckets.') +
+          '<div class="tw-chart-tip" id="attChartTip" role="status" aria-live="polite" hidden></div>';
+      }
+
+      function drawAttendanceChart(data, { isUpdate = false, changedStarts = null } = {}) {
+        const stage = $('attChartStage');
+        const buckets = (data && Array.isArray(data.buckets)) ? data.buckets : [];
+        const summary = (data && data.summary) || { checked_in: 0, scheduled: 0, missed: 0, attendance_rate: null };
+        const sumRateVal = summary.attendance_rate !== undefined ? summary.attendance_rate : summary.rate;
+
+        // Populate summary cards directly from API summary (never recomputed on frontend)
+        const setSum = (id, val) => {
+          const el = $(id);
+          if (!el || el.textContent === val) return;
+          el.textContent = val;
+          if (!reduceMotion) {
+            el.classList.remove('is-bump');
+            void el.offsetWidth;
+            el.classList.add('is-bump');
+          }
+        };
+        setSum('sumCheckedIn', String(summary.checked_in ?? 0));
+        setSum('sumScheduled', String(summary.scheduled ?? 0));
+        setSum('sumRate', formatRateDisplay(sumRateVal));
+        $('sumRate').title = formatRateExact(sumRateVal);
+        if ($('ckpiRate')) {
+          $('ckpiRate').textContent = (sumRateVal !== null && sumRateVal !== undefined && !Number.isNaN(Number(sumRateVal)))
+            ? String(Math.round(Number(sumRateVal)))
+            : '0';
+        }
+
+        // Empty state when no buckets or scheduled is 0
+        if (!buckets.length || buckets.every(b => (Number(b.scheduled) || 0) === 0 && (Number(b.checked_in) || 0) === 0)) {
+          stage.innerHTML =
+            emptyState('calendar-check', 'No sessions scheduled in this range', 'Try selecting a wider date range or another member.') +
+            '<div class="tw-chart-tip" id="attChartTip" role="status" aria-live="polite" hidden></div>';
+          return;
+        }
+
+        const rect = stage.getBoundingClientRect();
+        const W = Math.max(300, Math.floor(rect.width || 640));
+        const H = Math.max(220, Math.floor(rect.height || 275));
+        const padL = 36, padR = 24, padT = 20, padB = 30;
+        const plotW = Math.max(100, W - padL - padR);
+        const plotH = Math.max(100, H - padT - padB);
+        const yBase = padT + plotH;
+
+        // Nice tick steps on the counts axis (4 intervals: e.g. 0, 4, 8, 12, 16)
+        const maxValRaw = Math.max(1, ...buckets.map(b => Math.max(Number(b.checked_in) || 0, Number(b.missed) || 0)));
+        const intervals = 4;
+        const tickStep = computeNiceStep(maxValRaw, intervals);
+        const maxCount = tickStep * intervals;
+
+        const gridLines = [];
+        for (let i = 0; i <= intervals; i++) {
+          const f = i / intervals;
+          const y = (padT + plotH * (1 - f)).toFixed(1);
+          const val = i * tickStep;
+          gridLines.push(`
         <line class="tw-chart-grid-line" x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}"></line>
         <text class="tw-chart-axis-txt" x="${padL - 10}" y="${Number(y) + 4}" text-anchor="end">${val}</text>
       `);
-    }
+        }
 
-    const n = buckets.length;
-    const ptsPresent = [];
-    const ptsAbsent = [];
-    const bucketCoords = [];
+        const n = buckets.length;
+        const ptsPresent = [];
+        const ptsAbsent = [];
+        const bucketCoords = [];
 
-    // Helper to format clean X-axis labels
-    let lastMonthSeen = null;
-    let xLabelsHtml = '';
-    const labelStep = n > 28 ? 4 : (n > 16 ? 2 : (n > 8 ? 2 : 1));
+        // Helper to format clean X-axis labels
+        let lastMonthSeen = null;
+        let xLabelsHtml = '';
+        const labelStep = n > 28 ? 4 : (n > 16 ? 2 : (n > 8 ? 2 : 1));
 
-    buckets.forEach((b, i) => {
-      const cx = n > 1 ? (padL + (i / (n - 1)) * plotW) : (padL + plotW / 2);
-      const checked = Number(b.checked_in) || 0;
-      const missed = Number(b.missed) || 0;
-      const scheduled = Number(b.scheduled) || 0;
-      const rawRate = b.attendance_rate !== undefined ? b.attendance_rate : b.rate;
+        buckets.forEach((b, i) => {
+          const cx = n > 1 ? (padL + (i / (n - 1)) * plotW) : (padL + plotW / 2);
+          const checked = Number(b.checked_in) || 0;
+          const missed = Number(b.missed) || 0;
+          const scheduled = Number(b.scheduled) || 0;
+          const rawRate = b.attendance_rate !== undefined ? b.attendance_rate : b.rate;
 
-      const yP = padT + plotH * (1 - Math.min(1, checked / maxCount));
-      const yA = padT + plotH * (1 - Math.min(1, missed / maxCount));
+          const yP = padT + plotH * (1 - Math.min(1, checked / maxCount));
+          const yA = padT + plotH * (1 - Math.min(1, missed / maxCount));
 
-      ptsPresent.push({ cx, cy: yP, val: checked, idx: i });
-      ptsAbsent.push({ cx, cy: yA, val: missed, idx: i });
-      bucketCoords.push({ cx, yP, yA, b, rawRate });
+          ptsPresent.push({ cx, cy: yP, val: checked, idx: i });
+          ptsAbsent.push({ cx, cy: yA, val: missed, idx: i });
+          bucketCoords.push({ cx, yP, yA, b, rawRate });
 
-      // Determine label text
-      let showLabel = false;
-      let labelText = b.label || '';
+          // Determine label text
+          let showLabel = false;
+          let labelText = b.label || '';
 
-      if (currentGranularity === 'day') {
-        const dObj = b.start ? new Date(b.start + 'T00:00:00') : null;
-        if (dObj && !isNaN(dObj)) {
-          const mName = dObj.toLocaleDateString('en-US', { month: 'short' });
-          const dayNum = dObj.getDate();
-          if (i === 0 || mName !== lastMonthSeen) {
-            labelText = `${mName} ${dayNum}`;
-            lastMonthSeen = mName;
-            showLabel = true;
-          } else if (i % labelStep === 0) {
-            labelText = String(dayNum);
-            showLabel = true;
+          if (currentGranularity === 'day') {
+            const dObj = b.start ? new Date(b.start + 'T00:00:00') : null;
+            if (dObj && !isNaN(dObj)) {
+              const mName = dObj.toLocaleDateString('en-US', { month: 'short' });
+              const dayNum = dObj.getDate();
+              if (i === 0 || mName !== lastMonthSeen) {
+                labelText = `${mName} ${dayNum}`;
+                lastMonthSeen = mName;
+                showLabel = true;
+              } else if (i % labelStep === 0) {
+                labelText = String(dayNum);
+                showLabel = true;
+              }
+            } else if (i % labelStep === 0) {
+              showLabel = true;
+            }
+          } else {
+            if (i % labelStep === 0 || i === n - 1) {
+              showLabel = true;
+            }
           }
-        } else if (i % labelStep === 0) {
-          showLabel = true;
+
+          if (showLabel) {
+            xLabelsHtml += `<text class="tw-chart-axis-txt" x="${cx.toFixed(1)}" y="${H - 8}" text-anchor="middle">${esc(labelText)}</text>`;
+          }
+        });
+
+        // Build polyline points string
+        const polyPresent = ptsPresent.map(p => `${p.cx.toFixed(1)},${p.cy.toFixed(1)}`).join(' ');
+        const polyAbsent = ptsAbsent.map(p => `${p.cx.toFixed(1)},${p.cy.toFixed(1)}`).join(' ');
+
+        // Area polygon under Present line
+        let areaPolygonHtml = '';
+        if (ptsPresent.length > 1) {
+          const firstX = ptsPresent[0].cx.toFixed(1);
+          const lastX = ptsPresent[ptsPresent.length - 1].cx.toFixed(1);
+          const areaPoints = `${firstX},${yBase.toFixed(1)} ${polyPresent} ${lastX},${yBase.toFixed(1)}`;
+          areaPolygonHtml = `<polygon class="__AREA_CLS__" points="${areaPoints}"></polygon>`;
         }
-      } else {
-        if (i % labelStep === 0 || i === n - 1) {
-          showLabel = true;
+
+        // Path lengths for animation
+        let pathLenP = 0, pathLenA = 0;
+        for (let i = 1; i < ptsPresent.length; i++) {
+          pathLenP += Math.hypot(ptsPresent[i].cx - ptsPresent[i - 1].cx, ptsPresent[i].cy - ptsPresent[i - 1].cy);
+          pathLenA += Math.hypot(ptsAbsent[i].cx - ptsAbsent[i - 1].cx, ptsAbsent[i].cy - ptsAbsent[i - 1].cy);
         }
-      }
+        pathLenP = Math.ceil(pathLenP + 20);
+        pathLenA = Math.ceil(pathLenA + 20);
 
-      if (showLabel) {
-        xLabelsHtml += `<text class="tw-chart-axis-txt" x="${cx.toFixed(1)}" y="${H - 8}" text-anchor="middle">${esc(labelText)}</text>`;
-      }
-    });
+        // Animate on every fresh render (load, tab switch, member/date change, < > step).
+        // Polls and resizes redraw silently; only changed points pulse on a poll.
+        const shouldAnim = !reduceMotion && !isUpdate;
+        if (ptsPresent.length > 1) hasAnimatedLineOnce = true;
+        const animClsP = shouldAnim ? 'tw-line-present is-anim' : 'tw-line-present';
+        const animClsA = shouldAnim ? 'tw-line-absent is-anim' : 'tw-line-absent';
+        const areaCls = shouldAnim ? 'tw-area-present is-anim' : 'tw-area-present';
+        const dotDelay = idx => (n > 1 ? (idx / (n - 1)) * 0.8 : 0).toFixed(3);
+        const changedIdx = new Set();
+        if (isUpdate && changedStarts && !reduceMotion) {
+          buckets.forEach((b, i) => { if (changedStarts.has(b.start || b.key)) changedIdx.add(i); });
+        }
+        const dotCls = (base, idx) => {
+          if (shouldAnim) return `${base} is-pop`;
+          if (changedIdx.has(idx)) return `${base} is-pulse`;
+          return base;
+        };
 
-    // Build polyline points string
-    const polyPresent = ptsPresent.map(p => `${p.cx.toFixed(1)},${p.cy.toFixed(1)}`).join(' ');
-    const polyAbsent = ptsAbsent.map(p => `${p.cx.toFixed(1)},${p.cy.toFixed(1)}`).join(' ');
+        // Circular point markers
+        const dotsPresentHtml = ptsPresent.map(p =>
+          `<circle class="${dotCls('tw-dot-present', p.idx)}" style="--dd:${dotDelay(p.idx)}s" data-dot-p="${p.idx}" cx="${p.cx.toFixed(1)}" cy="${p.cy.toFixed(1)}" r="4.5"></circle>`
+        ).join('');
 
-    // Area polygon under Present line
-    let areaPolygonHtml = '';
-    if (ptsPresent.length > 1) {
-      const firstX = ptsPresent[0].cx.toFixed(1);
-      const lastX = ptsPresent[ptsPresent.length - 1].cx.toFixed(1);
-      const areaPoints = `${firstX},${yBase.toFixed(1)} ${polyPresent} ${lastX},${yBase.toFixed(1)}`;
-      areaPolygonHtml = `<polygon class="__AREA_CLS__" points="${areaPoints}"></polygon>`;
-    }
+        const dotsAbsentHtml = ptsAbsent.map(p =>
+          `<circle class="${dotCls('tw-dot-absent', p.idx)}" style="--dd:${dotDelay(p.idx)}s" data-dot-a="${p.idx}" cx="${p.cx.toFixed(1)}" cy="${p.cy.toFixed(1)}" r="4.5"></circle>`
+        ).join('');
 
-    // Path lengths for animation
-    let pathLenP = 0, pathLenA = 0;
-    for (let i = 1; i < ptsPresent.length; i++) {
-      pathLenP += Math.hypot(ptsPresent[i].cx - ptsPresent[i - 1].cx, ptsPresent[i].cy - ptsPresent[i - 1].cy);
-      pathLenA += Math.hypot(ptsAbsent[i].cx - ptsAbsent[i - 1].cx, ptsAbsent[i].cy - ptsAbsent[i - 1].cy);
-    }
-    pathLenP = Math.ceil(pathLenP + 20);
-    pathLenA = Math.ceil(pathLenA + 20);
+        // Invisible hit targets
+        const slotW = plotW / Math.max(1, n);
+        let hitColsHtml = '';
+        buckets.forEach((b, i) => {
+          const cx = ptsPresent[i].cx;
+          const srLabel = `${b.tooltip_label || b.label}: ${b.checked_in} present, ${b.missed} absent, rate ${formatRateExact(b.attendance_rate)}`;
+          const hx = (cx - slotW / 2).toFixed(1);
+          hitColsHtml += `<rect class="tw-hit-col" data-idx="${i}" tabindex="0" role="graphics-symbol" aria-label="${esc(srLabel)}" x="${hx}" y="${padT}" width="${slotW.toFixed(1)}" height="${plotH}"></rect>`;
+        });
 
-    // Animate on every fresh render (load, tab switch, member/date change, < > step).
-    // Polls and resizes redraw silently; only changed points pulse on a poll.
-    const shouldAnim = !reduceMotion && !isUpdate;
-    if (ptsPresent.length > 1) hasAnimatedLineOnce = true;
-    const animClsP = shouldAnim ? 'tw-line-present is-anim' : 'tw-line-present';
-    const animClsA = shouldAnim ? 'tw-line-absent is-anim' : 'tw-line-absent';
-    const areaCls = shouldAnim ? 'tw-area-present is-anim' : 'tw-area-present';
-    const dotDelay = idx => (n > 1 ? (idx / (n - 1)) * 0.8 : 0).toFixed(3);
-    const changedIdx = new Set();
-    if (isUpdate && changedStarts && !reduceMotion) {
-      buckets.forEach((b, i) => { if (changedStarts.has(b.start || b.key)) changedIdx.add(i); });
-    }
-    const dotCls = (base, idx) => {
-      if (shouldAnim) return `${base} is-pop`;
-      if (changedIdx.has(idx)) return `${base} is-pulse`;
-      return base;
-    };
+        const chartAriaSummary = `Daily attendance chart: ${summary.checked_in ?? 0} present, ${summary.missed ?? 0} absent, attendance rate ${formatRateExact(sumRateVal)}.`;
 
-    // Circular point markers
-    const dotsPresentHtml = ptsPresent.map(p =>
-      `<circle class="${dotCls('tw-dot-present', p.idx)}" style="--dd:${dotDelay(p.idx)}s" data-dot-p="${p.idx}" cx="${p.cx.toFixed(1)}" cy="${p.cy.toFixed(1)}" r="4.5"></circle>`
-    ).join('');
-
-    const dotsAbsentHtml = ptsAbsent.map(p =>
-      `<circle class="${dotCls('tw-dot-absent', p.idx)}" style="--dd:${dotDelay(p.idx)}s" data-dot-a="${p.idx}" cx="${p.cx.toFixed(1)}" cy="${p.cy.toFixed(1)}" r="4.5"></circle>`
-    ).join('');
-
-    // Invisible hit targets
-    const slotW = plotW / Math.max(1, n);
-    let hitColsHtml = '';
-    buckets.forEach((b, i) => {
-      const cx = ptsPresent[i].cx;
-      const srLabel = `${b.tooltip_label || b.label}: ${b.checked_in} present, ${b.missed} absent, rate ${formatRateExact(b.attendance_rate)}`;
-      const hx = (cx - slotW / 2).toFixed(1);
-      hitColsHtml += `<rect class="tw-hit-col" data-idx="${i}" tabindex="0" role="graphics-symbol" aria-label="${esc(srLabel)}" x="${hx}" y="${padT}" width="${slotW.toFixed(1)}" height="${plotH}"></rect>`;
-    });
-
-    const chartAriaSummary = `Daily attendance chart: ${summary.checked_in ?? 0} present, ${summary.missed ?? 0} absent, attendance rate ${formatRateExact(sumRateVal)}.`;
-
-    stage.innerHTML = `
+        stage.innerHTML = `
       <svg class="tw-chart-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(chartAriaSummary)}">
         <defs>
           <linearGradient id="twGradPresentArea" x1="0" y1="0" x2="0" y2="1">
@@ -839,29 +886,29 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="tw-chart-tip" id="attChartTip" role="status" aria-live="polite" hidden></div>
     `;
 
-    const tip = $('attChartTip');
-    const guide = stage.querySelector('#twChartGuide');
+        const tip = $('attChartTip');
+        const guide = stage.querySelector('#twChartGuide');
 
-    const showBucketTooltip = idx => {
-      const item = bucketCoords[idx];
-      if (!item) return;
-      const { cx, yP, yA, b, rawRate } = item;
+        const showBucketTooltip = idx => {
+          const item = bucketCoords[idx];
+          if (!item) return;
+          const { cx, yP, yA, b, rawRate } = item;
 
-      // Highlight circles
-      stage.querySelectorAll('.tw-dot-present, .tw-dot-absent').forEach(el => el.classList.remove('is-active'));
-      const dotP = stage.querySelector(`[data-dot-p="${idx}"]`);
-      if (dotP) dotP.classList.add('is-active');
-      const dotA = stage.querySelector(`[data-dot-a="${idx}"]`);
-      if (dotA) dotA.classList.add('is-active');
+          // Highlight circles
+          stage.querySelectorAll('.tw-dot-present, .tw-dot-absent').forEach(el => el.classList.remove('is-active'));
+          const dotP = stage.querySelector(`[data-dot-p="${idx}"]`);
+          if (dotP) dotP.classList.add('is-active');
+          const dotA = stage.querySelector(`[data-dot-a="${idx}"]`);
+          if (dotA) dotA.classList.add('is-active');
 
-      // Update vertical guide
-      if (guide) {
-        guide.setAttribute('x1', cx.toFixed(1));
-        guide.setAttribute('x2', cx.toFixed(1));
-        guide.classList.add('is-on');
-      }
+          // Update vertical guide
+          if (guide) {
+            guide.setAttribute('x1', cx.toFixed(1));
+            guide.setAttribute('x2', cx.toFixed(1));
+            guide.classList.add('is-on');
+          }
 
-      tip.innerHTML = `
+          tip.innerHTML = `
         <div class="tw-chart-tip-title">${esc(b.tooltip_label || b.label)}</div>
         <div class="tw-chart-tip-row">
           <span style="color:var(--green);display:inline-flex;align-items:center;gap:6px;">
@@ -880,248 +927,248 @@ document.addEventListener('DOMContentLoaded', () => {
           <strong>${formatRateExact(rawRate)}</strong>
         </div>
       `;
-      tip.hidden = false;
+          tip.hidden = false;
 
-      const tipW = tip.offsetWidth || 170;
-      const halfTip = Math.ceil(tipW / 2) + 8;
-      const clampedX = Math.max(halfTip, Math.min(W - halfTip, cx));
-      const targetY = Math.min(yP, yA);
-      const clampedY = Math.max(86, Math.min(H - 16, targetY));
-      tip.style.left = clampedX + 'px';
-      tip.style.top = clampedY + 'px';
-    };
+          const tipW = tip.offsetWidth || 170;
+          const halfTip = Math.ceil(tipW / 2) + 8;
+          const clampedX = Math.max(halfTip, Math.min(W - halfTip, cx));
+          const targetY = Math.min(yP, yA);
+          const clampedY = Math.max(86, Math.min(H - 16, targetY));
+          tip.style.left = clampedX + 'px';
+          tip.style.top = clampedY + 'px';
+        };
 
-    const hideBucketTooltip = idx => {
-      const dotP = stage.querySelector(`[data-dot-p="${idx}"]`);
-      if (dotP) dotP.classList.remove('is-active');
-      const dotA = stage.querySelector(`[data-dot-a="${idx}"]`);
-      if (dotA) dotA.classList.remove('is-active');
-      if (guide) guide.classList.remove('is-on');
-      tip.hidden = true;
-    };
+        const hideBucketTooltip = idx => {
+          const dotP = stage.querySelector(`[data-dot-p="${idx}"]`);
+          if (dotP) dotP.classList.remove('is-active');
+          const dotA = stage.querySelector(`[data-dot-a="${idx}"]`);
+          if (dotA) dotA.classList.remove('is-active');
+          if (guide) guide.classList.remove('is-on');
+          tip.hidden = true;
+        };
 
-    stage.querySelectorAll('.tw-hit-col').forEach(col => {
-      const idx = Number(col.dataset.idx);
-      col.addEventListener('mouseenter', () => showBucketTooltip(idx));
-      col.addEventListener('mouseleave', () => hideBucketTooltip(idx));
-      col.addEventListener('focus', () => showBucketTooltip(idx));
-      col.addEventListener('blur', () => hideBucketTooltip(idx));
-    });
-  }
+        stage.querySelectorAll('.tw-hit-col').forEach(col => {
+          const idx = Number(col.dataset.idx);
+          col.addEventListener('mouseenter', () => showBucketTooltip(idx));
+          col.addEventListener('mouseleave', () => hideBucketTooltip(idx));
+          col.addEventListener('focus', () => showBucketTooltip(idx));
+          col.addEventListener('blur', () => hideBucketTooltip(idx));
+        });
+      }
 
-  async function fetchAndRenderAttendance({ isPoll = false } = {}) {
-    const resolved = resolveAndSwapDateInputs();
-    if (!resolved.valid) {
-      if (!isPoll) renderInvalidRangeState();
-      return;
-    }
-    const { fromIso, toIso } = resolved;
-    const memberVal = resolveMemberIdParam();
+      async function fetchAndRenderAttendance({ isPoll = false } = {}) {
+        const resolved = resolveAndSwapDateInputs();
+        if (!resolved.valid) {
+          if (!isPoll) renderInvalidRangeState();
+          return;
+        }
+        const { fromIso, toIso } = resolved;
+        const memberVal = resolveMemberIdParam();
 
-    updateAttendanceSubtitle(currentGranularity, fromIso, toIso, memberVal);
-    if (!isPoll) {
-      $('attChartStage').innerHTML = skelBarsHtml();
-    }
+        updateAttendanceSubtitle(currentGranularity, fromIso, toIso, memberVal);
+        if (!isPoll) {
+          $('attChartStage').innerHTML = skelBarsHtml();
+        }
 
-    try {
-      const res = await T.api.getAttendanceSeries({
-        granularity: currentGranularity,
-        from: fromIso,
-        to: toIso,
-        memberId: memberVal
+        try {
+          const res = await T.api.getAttendanceSeries({
+            granularity: currentGranularity,
+            from: fromIso,
+            to: toIso,
+            memberId: memberVal
+          });
+
+          lastFetchedAtMs = Date.now();
+          refreshUpdatedBadge();
+
+          if (Array.isArray(res.assigned_members) && res.assigned_members.length) {
+            populateMemberSelect(res.assigned_members);
+          }
+
+          if (res.from && res.to) {
+            setDateInputsIso(res.from, res.to);
+            updateAttendanceSubtitle(currentGranularity, res.from, res.to, resolveMemberIdParam());
+          }
+
+          if (isPoll && lastSeriesData && Array.isArray(lastSeriesData.buckets) && Array.isArray(res.buckets)) {
+            const prevMap = new Map();
+            lastSeriesData.buckets.forEach(b => prevMap.set(b.start || b.key, `${b.checked_in}:${b.scheduled}:${b.missed}`));
+            const changedStarts = new Set();
+            res.buckets.forEach(b => {
+              const k = b.start || b.key;
+              const sig = `${b.checked_in}:${b.scheduled}:${b.missed}`;
+              if (prevMap.get(k) !== sig) changedStarts.add(k);
+            });
+            lastSeriesData = res;
+            if (changedStarts.size > 0 || prevMap.size !== res.buckets.length) {
+              drawAttendanceChart(res, { isUpdate: true, changedStarts });
+            }
+          } else {
+            lastSeriesData = res;
+            drawAttendanceChart(res, { isUpdate: false });
+          }
+        } catch (err) {
+          if (!isPoll) {
+            if (err && err.status === 400) {
+              renderInvalidRangeState(err.message);
+            } else {
+              PF.toast(err.message || 'Could not load attendance data.', 'error');
+              drawAttendanceChart({ buckets: [], summary: { checked_in: 0, scheduled: 0, missed: 0, attendance_rate: null } });
+            }
+          }
+        }
+      }
+
+      // Bind Period Tabs (click + keyboard ArrowLeft/ArrowRight/Home/End)
+      function activatePeriodTab(btn) {
+        if (!btn) return;
+        const newGran = btn.dataset.granularity || 'day';
+        if (newGran === currentGranularity) return;
+        currentGranularity = newGran;
+        $('attPeriodTabs').querySelectorAll('.tw-period-tab').forEach(b => {
+          const on = b === btn;
+          b.classList.toggle('active', on);
+          b.setAttribute('aria-selected', String(on));
+          b.setAttribute('tabindex', on ? '0' : '-1');
+        });
+        const range = defaultRangeForGranularity(currentGranularity);
+        setDateInputsIso(range.from, range.to);
+        fetchAndRenderAttendance({ isPoll: false });
+      }
+
+      $('attPeriodTabs').addEventListener('click', e => {
+        const btn = e.target.closest('[data-granularity]');
+        if (btn) activatePeriodTab(btn);
       });
 
-      lastFetchedAtMs = Date.now();
-      refreshUpdatedBadge();
+      $('attPeriodTabs').addEventListener('keydown', e => {
+        const tabs = Array.from($('attPeriodTabs').querySelectorAll('.tw-period-tab'));
+        const curIdx = tabs.indexOf(document.activeElement);
+        if (curIdx === -1) return;
+        let nextIdx = -1;
+        if (e.key === 'ArrowRight') nextIdx = (curIdx + 1) % tabs.length;
+        else if (e.key === 'ArrowLeft') nextIdx = (curIdx - 1 + tabs.length) % tabs.length;
+        else if (e.key === 'Home') nextIdx = 0;
+        else if (e.key === 'End') nextIdx = tabs.length - 1;
+        if (nextIdx !== -1) {
+          e.preventDefault();
+          tabs[nextIdx].focus();
+          activatePeriodTab(tabs[nextIdx]);
+        }
+      });
 
-      if (Array.isArray(res.assigned_members) && res.assigned_members.length) {
-        populateMemberSelect(res.assigned_members);
-      }
-
-      if (res.from && res.to) {
-        setDateInputsIso(res.from, res.to);
-        updateAttendanceSubtitle(currentGranularity, res.from, res.to, resolveMemberIdParam());
-      }
-
-      if (isPoll && lastSeriesData && Array.isArray(lastSeriesData.buckets) && Array.isArray(res.buckets)) {
-        const prevMap = new Map();
-        lastSeriesData.buckets.forEach(b => prevMap.set(b.start || b.key, `${b.checked_in}:${b.scheduled}:${b.missed}`));
-        const changedStarts = new Set();
-        res.buckets.forEach(b => {
-          const k = b.start || b.key;
-          const sig = `${b.checked_in}:${b.scheduled}:${b.missed}`;
-          if (prevMap.get(k) !== sig) changedStarts.add(k);
+      // Bind MM/DD/YYYY text inputs & calendar pickers
+      document.querySelectorAll('.tw-date-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const picker = $(btn.dataset.picker);
+          if (!picker) return;
+          if (typeof picker.showPicker === 'function') {
+            try { picker.showPicker(); return; } catch (_) { }
+          }
+          picker.focus();
+          picker.click();
         });
-        lastSeriesData = res;
-        if (changedStarts.size > 0 || prevMap.size !== res.buckets.length) {
-          drawAttendanceChart(res, { isUpdate: true, changedStarts });
+      });
+
+      $('attFromPicker').addEventListener('change', e => {
+        if (e.target.value) {
+          $('attFrom').value = isoToMmDdYyyy(e.target.value);
+          fetchAndRenderAttendance({ isPoll: false });
         }
-      } else {
-        lastSeriesData = res;
-        drawAttendanceChart(res, { isUpdate: false });
-      }
-    } catch (err) {
-      if (!isPoll) {
-        if (err && err.status === 400) {
-          renderInvalidRangeState(err.message);
-        } else {
-          PF.toast(err.message || 'Could not load attendance data.', 'error');
-          drawAttendanceChart({ buckets: [], summary: { checked_in: 0, scheduled: 0, missed: 0, attendance_rate: null } });
+      });
+
+      $('attToPicker').addEventListener('change', e => {
+        if (e.target.value) {
+          $('attTo').value = isoToMmDdYyyy(e.target.value);
+          fetchAndRenderAttendance({ isPoll: false });
         }
+      });
+
+      $('attFrom').addEventListener('change', () => fetchAndRenderAttendance({ isPoll: false }));
+      $('attTo').addEventListener('change', () => fetchAndRenderAttendance({ isPoll: false }));
+      $('attMember').addEventListener('change', () => fetchAndRenderAttendance({ isPoll: false }));
+
+      // Date range navigation buttons (< and >)
+      function stepDateRange(direction) {
+        const resolved = resolveAndSwapDateInputs();
+        if (!resolved.valid) return;
+        const fromDate = new Date(resolved.fromIso + 'T00:00:00');
+        const toDate = new Date(resolved.toIso + 'T00:00:00');
+
+        if (currentGranularity === 'day') {
+          fromDate.setDate(fromDate.getDate() + direction * 14);
+          toDate.setDate(toDate.getDate() + direction * 14);
+        } else if (currentGranularity === 'week') {
+          fromDate.setDate(fromDate.getDate() + direction * 56);
+          toDate.setDate(toDate.getDate() + direction * 56);
+        } else if (currentGranularity === 'month') {
+          fromDate.setMonth(fromDate.getMonth() + direction * 6);
+          toDate.setMonth(toDate.getMonth() + direction * 6);
+        } else if (currentGranularity === 'year') {
+          fromDate.setFullYear(fromDate.getFullYear() + direction * 2);
+          toDate.setFullYear(toDate.getFullYear() + direction * 2);
+        }
+
+        setDateInputsIso(toIsoDate(fromDate), toIsoDate(toDate));
+        fetchAndRenderAttendance({ isPoll: false });
       }
-    }
-  }
 
-  // Bind Period Tabs (click + keyboard ArrowLeft/ArrowRight/Home/End)
-  function activatePeriodTab(btn) {
-    if (!btn) return;
-    const newGran = btn.dataset.granularity || 'day';
-    if (newGran === currentGranularity) return;
-    currentGranularity = newGran;
-    $('attPeriodTabs').querySelectorAll('.tw-period-tab').forEach(b => {
-      const on = b === btn;
-      b.classList.toggle('active', on);
-      b.setAttribute('aria-selected', String(on));
-      b.setAttribute('tabindex', on ? '0' : '-1');
-    });
-    const range = defaultRangeForGranularity(currentGranularity);
-    setDateInputsIso(range.from, range.to);
-    fetchAndRenderAttendance({ isPoll: false });
-  }
+      if ($('attNavPrev')) $('attNavPrev').addEventListener('click', () => stepDateRange(-1));
+      if ($('attNavNext')) $('attNavNext').addEventListener('click', () => stepDateRange(1));
 
-  $('attPeriodTabs').addEventListener('click', e => {
-    const btn = e.target.closest('[data-granularity]');
-    if (btn) activatePeriodTab(btn);
-  });
-
-  $('attPeriodTabs').addEventListener('keydown', e => {
-    const tabs = Array.from($('attPeriodTabs').querySelectorAll('.tw-period-tab'));
-    const curIdx = tabs.indexOf(document.activeElement);
-    if (curIdx === -1) return;
-    let nextIdx = -1;
-    if (e.key === 'ArrowRight') nextIdx = (curIdx + 1) % tabs.length;
-    else if (e.key === 'ArrowLeft') nextIdx = (curIdx - 1 + tabs.length) % tabs.length;
-    else if (e.key === 'Home') nextIdx = 0;
-    else if (e.key === 'End') nextIdx = tabs.length - 1;
-    if (nextIdx !== -1) {
-      e.preventDefault();
-      tabs[nextIdx].focus();
-      activatePeriodTab(tabs[nextIdx]);
-    }
-  });
-
-  // Bind MM/DD/YYYY text inputs & calendar pickers
-  document.querySelectorAll('.tw-date-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const picker = $(btn.dataset.picker);
-      if (!picker) return;
-      if (typeof picker.showPicker === 'function') {
-        try { picker.showPicker(); return; } catch (_) {}
+      // Redraw chart on resize via ResizeObserver
+      if (window.ResizeObserver) {
+        let resizeFrame = null;
+        const ro = new ResizeObserver(() => {
+          if (!lastSeriesData) return;
+          if (resizeFrame) cancelAnimationFrame(resizeFrame);
+          resizeFrame = requestAnimationFrame(() => drawAttendanceChart(lastSeriesData, { isUpdate: true }));
+        });
+        ro.observe($('attChartStage'));
       }
-      picker.focus();
-      picker.click();
-    });
-  });
 
-  $('attFromPicker').addEventListener('change', e => {
-    if (e.target.value) {
-      $('attFrom').value = isoToMmDdYyyy(e.target.value);
-      fetchAndRenderAttendance({ isPoll: false });
-    }
-  });
+      // Live Updates Across Portals: 30s polling + visibilitychange + cross-tab BroadcastChannel/storage
+      async function pollLiveAttendance() {
+        if (document.visibilityState === 'hidden') return;
+        await fetchAndRenderAttendance({ isPoll: true });
+        try {
+          const [dash, members] = await Promise.all([T.api.getDashboard(), T.api.getMembers()]);
+          if (dash && dash.recent_attendances) renderRecentCheckins(dash.recent_attendances);
+          if (Array.isArray(members)) renderRoster(members);
+          if (dash && dash.stats) renderMembershipOverview(dash.stats, members || []);
+        } catch (_) { }
+      }
 
-  $('attToPicker').addEventListener('change', e => {
-    if (e.target.value) {
-      $('attTo').value = isoToMmDdYyyy(e.target.value);
-      fetchAndRenderAttendance({ isPoll: false });
-    }
-  });
+      setInterval(pollLiveAttendance, 30000);
 
-  $('attFrom').addEventListener('change', () => fetchAndRenderAttendance({ isPoll: false }));
-  $('attTo').addEventListener('change', () => fetchAndRenderAttendance({ isPoll: false }));
-  $('attMember').addEventListener('change', () => fetchAndRenderAttendance({ isPoll: false }));
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+          pollLiveAttendance();
+        }
+      });
 
-  // Date range navigation buttons (< and >)
-  function stepDateRange(direction) {
-    const resolved = resolveAndSwapDateInputs();
-    if (!resolved.valid) return;
-    const fromDate = new Date(resolved.fromIso + 'T00:00:00');
-    const toDate = new Date(resolved.toIso + 'T00:00:00');
+      if (window.BroadcastChannel) {
+        try {
+          const bc = new BroadcastChannel('profit-attendance-sync');
+          bc.addEventListener('message', () => pollLiveAttendance());
+        } catch (_) { }
+      }
+      window.addEventListener('storage', e => {
+        if (e.key === 'profit-last-checkin-ts') pollLiveAttendance();
+      });
 
-    if (currentGranularity === 'day') {
-      fromDate.setDate(fromDate.getDate() + direction * 14);
-      toDate.setDate(toDate.getDate() + direction * 14);
-    } else if (currentGranularity === 'week') {
-      fromDate.setDate(fromDate.getDate() + direction * 56);
-      toDate.setDate(toDate.getDate() + direction * 56);
-    } else if (currentGranularity === 'month') {
-      fromDate.setMonth(fromDate.getMonth() + direction * 6);
-      toDate.setMonth(toDate.getMonth() + direction * 6);
-    } else if (currentGranularity === 'year') {
-      fromDate.setFullYear(fromDate.getFullYear() + direction * 2);
-      toDate.setFullYear(toDate.getFullYear() + direction * 2);
-    }
-
-    setDateInputsIso(toIsoDate(fromDate), toIsoDate(toDate));
-    fetchAndRenderAttendance({ isPoll: false });
-  }
-
-  if ($('attNavPrev')) $('attNavPrev').addEventListener('click', () => stepDateRange(-1));
-  if ($('attNavNext')) $('attNavNext').addEventListener('click', () => stepDateRange(1));
-
-  // Redraw chart on resize via ResizeObserver
-  if (window.ResizeObserver) {
-    let resizeFrame = null;
-    const ro = new ResizeObserver(() => {
-      if (!lastSeriesData) return;
-      if (resizeFrame) cancelAnimationFrame(resizeFrame);
-      resizeFrame = requestAnimationFrame(() => drawAttendanceChart(lastSeriesData, { isUpdate: true }));
-    });
-    ro.observe($('attChartStage'));
-  }
-
-  // Live Updates Across Portals: 30s polling + visibilitychange + cross-tab BroadcastChannel/storage
-  async function pollLiveAttendance() {
-    if (document.visibilityState === 'hidden') return;
-    await fetchAndRenderAttendance({ isPoll: true });
-    try {
-      const [dash, members] = await Promise.all([T.api.getDashboard(), T.api.getMembers()]);
-      if (dash && dash.recent_attendances) renderRecentCheckins(dash.recent_attendances);
-      if (Array.isArray(members)) renderRoster(members);
-      if (dash && dash.stats) renderMembershipOverview(dash.stats, members || []);
-    } catch (_) {}
-  }
-
-  setInterval(pollLiveAttendance, 30000);
-
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') {
-      pollLiveAttendance();
-    }
-  });
-
-  if (window.BroadcastChannel) {
-    try {
-      const bc = new BroadcastChannel('profit-attendance-sync');
-      bc.addEventListener('message', () => pollLiveAttendance());
-    } catch (_) {}
-  }
-  window.addEventListener('storage', e => {
-    if (e.key === 'profit-last-checkin-ts') pollLiveAttendance();
-  });
-
-  /* ---------- 3. Today's Coaching Schedule ---------- */
-  function renderSessions(sch) {
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const todayDOW = new Date().getDay();
-    $('todayScheduleDate').textContent = `${days[todayDOW]} training timetable`;
-    const todaySessions = (sch.sessions || []).filter(s => s.dow === todayDOW);
-    const box = $('todaySessionsList');
-    if (!todaySessions.length) {
-      box.innerHTML = emptyState('calendar', 'No sessions scheduled today', 'Check the weekly schedule for upcoming classes.');
-      return;
-    }
-    box.innerHTML = todaySessions.map(s => `
+      /* ---------- 3. Today's Coaching Schedule ---------- */
+      function renderSessions(sch) {
+        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const todayDOW = new Date().getDay();
+        $('todayScheduleDate').textContent = `${days[todayDOW]} training timetable`;
+        const todaySessions = (sch.sessions || []).filter(s => s.dow === todayDOW);
+        const box = $('todaySessionsList');
+        if (!todaySessions.length) {
+          box.innerHTML = emptyState('calendar', 'No sessions scheduled today', 'Check the weekly schedule for upcoming classes.');
+          return;
+        }
+        box.innerHTML = todaySessions.map(s => `
       <div class="tw-session ${s.is_mine ? 'is-mine' : ''}">
         <div class="tw-session-main">
           <div class="tw-time-badge">
@@ -1137,16 +1184,16 @@ document.addEventListener('DOMContentLoaded', () => {
           <span class="tw-pill ${s.is_mine ? 'is-amber' : 'is-gray'}" title="${esc(s.coach)}">${esc(s.coach)}</span>
         </div>
       </div>`).join('');
-  }
+      }
 
-  /* ---------- 4. Recent Member Check-ins ---------- */
-  function renderRecentCheckins(atts) {
-    const tbody = $('recentAttendanceTbody');
-    if (!atts.length) {
-      tbody.innerHTML = `<tr><td colspan="4">${emptyState('calendar-check', 'No check-ins yet.', 'When your assigned members check in, their visits will appear here.')}</td></tr>`;
-      return;
-    }
-    tbody.innerHTML = atts.map(a => `
+      /* ---------- 4. Recent Member Check-ins ---------- */
+      function renderRecentCheckins(atts) {
+        const tbody = $('recentAttendanceTbody');
+        if (!atts.length) {
+          tbody.innerHTML = `<tr><td colspan="4">${emptyState('calendar-check', 'No check-ins yet.', 'When your assigned members check in, their visits will appear here.')}</td></tr>`;
+          return;
+        }
+        tbody.innerHTML = atts.map(a => `
       <tr>
         <td>
           <div class="tw-member-cell">
@@ -1160,25 +1207,25 @@ document.addEventListener('DOMContentLoaded', () => {
           <a class="tw-btn" href="/trainer/members#detail=${encodeURIComponent(a.member_id)}" aria-label="View profile of ${esc(a.member_name)}">Profile</a>
         </td>
       </tr>`).join('');
-  }
+      }
 
-  /* ---------- 5. My Roster ---------- */
-  function renderRoster(members) {
-    // Populate Member filter dropdown in Attendance card using numeric primary keys
-    populateMemberSelect(members);
+      /* ---------- 5. My Roster ---------- */
+      function renderRoster(members) {
+        // Populate Member filter dropdown in Attendance card using numeric primary keys
+        populateMemberSelect(members);
 
-    const list = $('rosterMiniList');
-    const sub = $('rosterCountSub');
-    if (!list) return;
-    const activeCount = members.filter(m => m.is_active || String(m.membership_status || '').toUpperCase() === 'ACTIVE').length;
-    if (sub) sub.textContent = `${activeCount} active member${activeCount === 1 ? '' : 's'}`;
+        const list = $('rosterMiniList');
+        const sub = $('rosterCountSub');
+        if (!list) return;
+        const activeCount = members.filter(m => m.is_active || String(m.membership_status || '').toUpperCase() === 'ACTIVE').length;
+        if (sub) sub.textContent = `${activeCount} active member${activeCount === 1 ? '' : 's'}`;
 
-    if (!members.length) {
-      list.innerHTML = `<div style="grid-column: 1 / -1">${emptyState('users', 'No members assigned yet', 'Assigned athletes will appear here once matched to your roster.')}</div>`;
-      return;
-    }
+        if (!members.length) {
+          list.innerHTML = `<div style="grid-column: 1 / -1">${emptyState('users', 'No members assigned yet', 'Assigned athletes will appear here once matched to your roster.')}</div>`;
+          return;
+        }
 
-    list.innerHTML = members.map(m => `
+        list.innerHTML = members.map(m => `
       <div class="tw-person">
         <div class="tw-person-main">
           ${PF.avatar(m.name, 'sm')}
@@ -1189,132 +1236,133 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <a class="tw-btn" href="/trainer/members#detail=${encodeURIComponent(m.id)}" aria-label="View profile of ${esc(m.name)}">View</a>
       </div>`).join('');
-  }
+      }
 
-  /* ---------- Initial Load ---------- */
-  async function loadDashboard() {
-    const [dashRes, membersRes, schRes] = await Promise.allSettled([
-      T.api.getDashboard(),
-      T.api.getMembers(),
-      T.api.getSchedule()
-    ]);
+      /* ---------- Initial Load ---------- */
+      async function loadDashboard() {
+        const [dashRes, membersRes, schRes] = await Promise.allSettled([
+          T.api.getDashboard(),
+          T.api.getMembers(),
+          T.api.getSchedule()
+        ]);
 
-    const dash = dashRes.status === 'fulfilled' ? (dashRes.value || {}) : {};
-    const members = membersRes.status === 'fulfilled' ? (membersRes.value || []) : [];
-    const sch = schRes.status === 'fulfilled' ? (schRes.value || {}) : {};
+        const dash = dashRes.status === 'fulfilled' ? (dashRes.value || {}) : {};
+        const members = membersRes.status === 'fulfilled' ? (membersRes.value || []) : [];
+        const sch = schRes.status === 'fulfilled' ? (schRes.value || {}) : {};
 
-    if (Array.isArray(dash.assigned_members) && dash.assigned_members.length) {
-      populateMemberSelect(dash.assigned_members);
-    }
+        if (Array.isArray(dash.assigned_members) && dash.assigned_members.length) {
+          populateMemberSelect(dash.assigned_members);
+        }
 
-    // Hydrate Coach Hero + On-Duty Ring + 4-Card KPI Strip
-    const coachName = (dash.trainer && dash.trainer.name) || (window.ProFitAuth?.getUser?.()?.first_name) || 'Coach';
-    const firstWord = String(coachName).trim().split(/\s+/)[0] || 'Coach';
-    if ($('heroCoachEyebrow')) $('heroCoachEyebrow').textContent = `COACH ${firstWord.toUpperCase()},`;
+        // Hydrate Coach Hero + On-Duty Ring + 4-Card KPI Strip
+        const coachName = (dash.trainer && dash.trainer.name) || (window.ProFitAuth?.getUser?.()?.first_name) || 'Coach';
+        const firstWord = String(coachName).trim().split(/\s+/)[0] || 'Coach';
+        if ($('heroCoachEyebrow')) $('heroCoachEyebrow').textContent = `COACH ${firstWord.toUpperCase()},`;
 
-    const st = dash.stats || {};
-    const assignedCnt = Number(st.assigned_members ?? members.length) || 0;
-    const todayInCnt = Number(st.today_checkins ?? 0) || 0;
-    const todayDow = new Date().getDay();
-    const todayClasses = (sch.sessions || []).filter(s => s.dow === todayDow);
-    const firstClass = todayClasses[0] || null;
+        const st = dash.stats || {};
+        const assignedCnt = Number(st.assigned_members ?? members.length) || 0;
+        const todayInCnt = Number(st.today_checkins ?? 0) || 0;
+        const todayDow = new Date().getDay();
+        const todayClasses = (sch.sessions || []).filter(s => s.dow === todayDow);
+        const firstClass = todayClasses[0] || null;
 
-    if ($('dutySessionName')) $('dutySessionName').textContent = firstClass ? firstClass.name : 'Open floor';
-    if ($('dutySessionSub')) $('dutySessionSub').textContent = firstClass ? `${firstClass.time} · ${firstClass.coach || coachName}` : 'No scheduled class today';
-    if ($('dutyCheckedNum')) $('dutyCheckedNum').textContent = String(todayInCnt);
-    if ($('dutyRosterCount')) $('dutyRosterCount').textContent = `${assignedCnt} member${assignedCnt === 1 ? '' : 's'}`;
-    if ($('dutyRingArc')) {
-      const frac = assignedCnt > 0 ? Math.min(1, todayInCnt / assignedCnt) : 0;
-      $('dutyRingArc').style.strokeDashoffset = (201.06 * (1 - frac)).toFixed(2);
-    }
-    if ($('ckpiAssigned')) $('ckpiAssigned').textContent = String(assignedCnt);
-    if ($('ckpiToday')) $('ckpiToday').textContent = String(todayInCnt);
-    if ($('ckpiTodayDenom')) $('ckpiTodayDenom').textContent = `/ ${assignedCnt}`;
-    const segs = $('ckpiTodaySegs');
-    if (segs) {
-      const filled = assignedCnt > 0 ? Math.round((Math.min(todayInCnt, assignedCnt) / assignedCnt) * 5) : 0;
-      segs.querySelectorAll('i').forEach((el, idx) => el.classList.toggle('on', idx < filled));
-    }
-    if ($('ckpiClasses')) $('ckpiClasses').textContent = String(todayClasses.length);
-    if ($('ckpiClassesNext')) $('ckpiClassesNext').textContent = firstClass ? `Next: ${firstClass.time} ${firstClass.name}` : 'No classes today';
+        if ($('dutySessionName')) $('dutySessionName').textContent = firstClass ? firstClass.name : 'Open floor';
+        if ($('dutySessionSub')) $('dutySessionSub').textContent = firstClass ? `${firstClass.time} · ${firstClass.coach || coachName}` : 'No scheduled class today';
+        if ($('dutyCheckedNum')) $('dutyCheckedNum').textContent = String(todayInCnt);
+        if ($('dutyRosterCount')) $('dutyRosterCount').textContent = `${assignedCnt} member${assignedCnt === 1 ? '' : 's'}`;
+        if ($('dutyRingArc')) {
+          const frac = assignedCnt > 0 ? Math.min(1, todayInCnt / assignedCnt) : 0;
+          $('dutyRingArc').style.strokeDashoffset = (201.06 * (1 - frac)).toFixed(2);
+        }
+        if ($('ckpiAssigned')) $('ckpiAssigned').textContent = String(assignedCnt);
+        if ($('ckpiToday')) $('ckpiToday').textContent = String(todayInCnt);
+        if ($('ckpiTodayDenom')) $('ckpiTodayDenom').textContent = `/ ${assignedCnt}`;
+        const segs = $('ckpiTodaySegs');
+        if (segs) {
+          const filled = assignedCnt > 0 ? Math.round((Math.min(todayInCnt, assignedCnt) / assignedCnt) * 5) : 0;
+          segs.querySelectorAll('i').forEach((el, idx) => el.classList.toggle('on', idx < filled));
+        }
+        if ($('ckpiClasses')) $('ckpiClasses').textContent = String(todayClasses.length);
+        if ($('ckpiClassesNext')) $('ckpiClassesNext').textContent = firstClass ? `Next: ${firstClass.time} ${firstClass.name}` : 'No classes today';
 
-    renderRoster(members);
-    renderMembershipOverview(st, members);
-    renderRecentCheckins(dash.recent_attendances || []);
-    renderSessions(sch);
-    await fetchAndRenderAttendance();
-  }
+        renderRoster(members);
+        renderMembershipOverview(st, members);
+        renderRecentCheckins(dash.recent_attendances || []);
+        renderSessions(sch);
+        await fetchAndRenderAttendance();
+      }
 
-  // ---- Dashboard QR Camera Scanner (no page navigation) ----
-  const dashQrBtn = $('dashQrBtn');
-  const dashQrModal = $('dashQrModal');
-  const dashQrStatus = $('dashQrStatus');
-  let dashQrScanner = null;
-  let dashQrBusy = false;
+      // ---- Dashboard QR Camera Scanner (no page navigation) ----
+      const dashQrBtn = $('dashQrBtn');
+      const dashQrModal = $('dashQrModal');
+      const dashQrStatus = $('dashQrStatus');
+      let dashQrScanner = null;
+      let dashQrBusy = false;
 
-  const setDashQrStatus = (msg, tone) => {
-    if (!dashQrStatus) return;
-    dashQrStatus.textContent = msg;
-    dashQrStatus.style.color = tone === 'ok' ? 'var(--tw-green, #10B981)' : tone === 'err' ? 'var(--tw-red, #EF4444)' : 'var(--muted)';
-  };
+      const setDashQrStatus = (msg, tone) => {
+        if (!dashQrStatus) return;
+        dashQrStatus.textContent = msg;
+        dashQrStatus.style.color = tone === 'ok' ? 'var(--tw-green, #10B981)' : tone === 'err' ? 'var(--tw-red, #EF4444)' : 'var(--muted)';
+      };
 
-  const stopDashQrScanner = async () => {
-    if (dashQrScanner) {
-      try { await dashQrScanner.stop(); } catch (_) {}
-      try { dashQrScanner.clear(); } catch (_) {}
-      dashQrScanner = null;
-    }
-    dashQrBusy = false;
-    if (dashQrModal) dashQrModal.classList.remove('open');
-  };
+      const stopDashQrScanner = async () => {
+        if (dashQrScanner) {
+          try { await dashQrScanner.stop(); } catch (_) { }
+          try { dashQrScanner.clear(); } catch (_) { }
+          dashQrScanner = null;
+        }
+        dashQrBusy = false;
+        if (dashQrModal) dashQrModal.classList.remove('open');
+      };
 
-  const openDashQrScanner = async () => {
-    if (!dashQrModal) return;
-    dashQrModal.classList.add('open');
-    setDashQrStatus('Starting camera...', '');
-    if (typeof window.Html5Qrcode !== 'function') {
-      setDashQrStatus('QR scanner library failed to load. Check your internet connection.', 'err');
-      return;
-    }
-    try {
-      dashQrScanner = new window.Html5Qrcode('dashQrReader');
-      await dashQrScanner.start(
-        { facingMode: 'environment' },
-        { fps: 10, qrbox: { width: 220, height: 220 } },
-        async decodedText => {
-          if (dashQrBusy) return;
-          dashQrBusy = true;
-          setDashQrStatus('Checking in...', '');
-          try {
-            const res = await T.api.checkInByQr(decodedText);
-            const msg = res.detail || `${res.member_name || 'Member'} checked in!`;
-            setDashQrStatus(msg, 'ok');
-            if (PF.toast) PF.toast(msg, 'success');
-            await loadDashboard();
-          } catch (err) {
-            const msg = err.message || 'Could not check in member.';
-            setDashQrStatus(msg, 'err');
-            if (PF.toast) PF.toast(msg, 'error');
-          } finally {
-            setTimeout(() => { dashQrBusy = false; }, 2200);
-          }
-        },
-        () => {}
-      );
-      setDashQrStatus("Point the camera at the member's Check-in QR pass.", '');
-    } catch (err) {
-      setDashQrStatus('Could not access camera. Allow camera permission (HTTPS or localhost required).', 'err');
-    }
-  };
+      const openDashQrScanner = async () => {
+        if (!dashQrModal) return;
+        dashQrModal.classList.add('open');
+        setDashQrStatus('Starting camera...', '');
+        if (typeof window.Html5Qrcode !== 'function') {
+          setDashQrStatus('QR scanner library failed to load. Check your internet connection.', 'err');
+          return;
+        }
+        try {
+          dashQrScanner = new window.Html5Qrcode('dashQrReader');
+          await dashQrScanner.start(
+            { facingMode: 'environment' },
+            { fps: 10, qrbox: { width: 220, height: 220 } },
+            async decodedText => {
+              if (dashQrBusy) return;
+              dashQrBusy = true;
+              setDashQrStatus('Checking in...', '');
+              try {
+                const res = await T.api.checkInByQr(decodedText);
+                const msg = res.detail || `${res.member_name || 'Member'} checked in!`;
+                setDashQrStatus(msg, 'ok');
+                if (PF.toast) PF.toast(msg, 'success');
+                await loadDashboard();
+              } catch (err) {
+                const msg = err.message || 'Could not check in member.';
+                setDashQrStatus(msg, 'err');
+                if (PF.toast) PF.toast(msg, 'error');
+              } finally {
+                setTimeout(() => { dashQrBusy = false; }, 2200);
+              }
+            },
+            () => { }
+          );
+          setDashQrStatus("Point the camera at the member's Check-in QR pass.", '');
+        } catch (err) {
+          setDashQrStatus('Could not access camera. Allow camera permission (HTTPS or localhost required).', 'err');
+        }
+      };
 
-  if (dashQrBtn) dashQrBtn.addEventListener('click', openDashQrScanner);
-  $('dashQrClose')?.addEventListener('click', stopDashQrScanner);
-  $('dashQrDone')?.addEventListener('click', stopDashQrScanner);
-  dashQrModal?.addEventListener('mousedown', (e) => { if (e.target === dashQrModal) stopDashQrScanner(); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && dashQrModal?.classList.contains('open')) stopDashQrScanner(); });
+      if (dashQrBtn) dashQrBtn.addEventListener('click', openDashQrScanner);
+      $('dashQrClose')?.addEventListener('click', stopDashQrScanner);
+      $('dashQrDone')?.addEventListener('click', stopDashQrScanner);
+      dashQrModal?.addEventListener('mousedown', (e) => { if (e.target === dashQrModal) stopDashQrScanner(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && dashQrModal?.classList.contains('open')) stopDashQrScanner(); });
 
-  loadDashboard();
-});
-</script>
+      loadDashboard();
+    });
+  </script>
 </body>
+
 </html>

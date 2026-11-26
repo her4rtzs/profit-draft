@@ -158,7 +158,7 @@
       if (dataUrl) map[String(id)] = dataUrl;
       else delete map[String(id)];
       localStorage.setItem(IMG_STORAGE_KEY, JSON.stringify(map));
-    } catch (_) {}
+    } catch (_) { }
   }
   function setModalImagePreview(src) {
     pendingImageData = src || "";
@@ -222,8 +222,8 @@
       audienceRaw === "ALL"
         ? "everyone"
         : audienceRaw === "SELECTED"
-        ? "members"
-        : audienceRaw.toLowerCase();
+          ? "members"
+          : audienceRaw.toLowerCase();
     return {
       id: raw.id,
       title: raw.title || "",
@@ -852,8 +852,8 @@
         modalBackdrop && !modalBackdrop.hidden
           ? modalBackdrop
           : deleteBackdrop && !deleteBackdrop.hidden
-          ? deleteBackdrop
-          : null;
+            ? deleteBackdrop
+            : null;
       if (!activeBackdrop) return;
       const focusables = [
         ...activeBackdrop.querySelectorAll(

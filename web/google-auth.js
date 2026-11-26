@@ -86,7 +86,7 @@
       sessionStorage.removeItem("profit-logged-out");
       sessionStorage.setItem("profit-verified-session", JSON.stringify(user));
       sessionStorage.setItem("pf-auth-just-logged-in", "1");
-    } catch (_) {}
+    } catch (_) { }
     const dest = targetRedirect || defaultRedirectForRole(user?.role);
     showMsg(msgText || "Signed in with Google. Redirecting…", false);
     setTimeout(() => {
@@ -306,11 +306,11 @@
   async function cancelOnboardingSession(dlg) {
     try {
       await window.ProFitAPI.post("/auth/logout", {});
-    } catch (_) {}
+    } catch (_) { }
     try {
       sessionStorage.removeItem("profit-verified-session");
       sessionStorage.removeItem("pf-auth-just-logged-in");
-    } catch (_) {}
+    } catch (_) { }
     if (dlg && dlg.open) dlg.close();
     setBusy(false);
   }
@@ -954,7 +954,7 @@
       if (sess && sess.user && sess.user.requires_first_login_gate) {
         await openOnboardingFlow(sess.user);
       }
-    } catch (_) {}
+    } catch (_) { }
   }
 
   handleQueryCallback();
