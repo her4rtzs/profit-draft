@@ -588,22 +588,41 @@
     }
 
     .pf-pv-paper {
-      background: #f6f1e3;
-      color: #2a2418;
-      border-radius: 6px 6px 2px 2px;
+      background: var(--pf-surface-inset, #0d121d);
+      color: #cbd5e1;
+      border: 1px solid var(--border, #263246);
+      border-top: 2px solid rgba(232, 185, 58, 0.45);
+      border-bottom: 0;
+      border-radius: 10px 10px 2px 2px;
       padding: 13px 14px 18px;
       font-size: 13px;
-      line-height: 1.5;
+      line-height: 1.55;
       clip-path: polygon(0 0, 100% 0, 100% calc(100% - 6px), 95% 100%, 90% calc(100% - 6px), 85% 100%, 80% calc(100% - 6px), 75% 100%, 70% calc(100% - 6px), 65% 100%, 60% calc(100% - 6px), 55% 100%, 50% calc(100% - 6px), 45% 100%, 40% calc(100% - 6px), 35% 100%, 30% calc(100% - 6px), 25% 100%, 20% calc(100% - 6px), 15% 100%, 10% calc(100% - 6px), 5% 100%, 0 calc(100% - 6px));
     }
 
     .pf-pv-paper b {
       font-weight: 800;
+      color: #f8fafc;
     }
 
     .pf-pv-paper em {
       font-style: normal;
       font-weight: 800;
+      color: #e8b93a;
+    }
+
+    body:not(.dark) .pf-pv-paper {
+      background: #f6f1e3;
+      color: #2a2418;
+      border-color: #eadfc8;
+      border-top-color: rgba(138, 98, 18, 0.32);
+    }
+
+    body:not(.dark) .pf-pv-paper b {
+      color: #1c1917;
+    }
+
+    body:not(.dark) .pf-pv-paper em {
       color: #8a6212;
     }
 

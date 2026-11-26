@@ -3911,3 +3911,12 @@ Fix the Light Mode UI bugs across the staff pages so switching to Light Mode sta
 - Bumped `pf-system.css?v=20` across all 22 portal pages and verified `cashier.html`, `members.html`, `payments.html`, and `index.html` live in Light Mode via browser preview.
 ### Decision-log skill
 Any floating card inside a dark photo hero (`-card` class suffix) must be explicitly locked to dark glass in `pf-system.css` with `!important` (alongside its dark-glass CTA buttons and their hover/active states) to prevent wildcard `[class$="-card"]` Light Mode rules from turning them white-on-white.
+
+## 2026-11-26 18:01 (Asia/Manila): Blend My Profile receipt preview into Dark Mode
+### What I asked for
+Fix the `Receipts you send` preview card on the My Profile page (`web/profile.html`) so it blends seamlessly with Dark Mode instead of rendering as bright cream paper.
+### What the agent decided and why
+- Updated `.pf-pv-paper` in `web/profile.html` to use the dark inset surface (`var(--pf-surface-inset, #0d121d)`), dark border (`var(--border, #263246)`), subtle gold top edge, light text (`#f8fafc` heading / `#cbd5e1` body), and ProFit gold accent (`#e8b93a`) for the staff/cashier name in Dark Mode, matching `.pf-pv-mini` directly above it.
+- Preserved the warm cream paper appearance (`#f6f1e3` / `#2a2418` / `#8a6212`) explicitly under `body:not(.dark) .pf-pv-paper` for Light Mode.
+### Decision-log skill
+Style decorative preview widgets (like `.pf-pv-paper`) with dark inset tokens by default and scope light-paper colors strictly to `body:not(.dark)` so every preview widget blends naturally with both themes.
