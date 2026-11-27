@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     crossorigin="anonymous">
@@ -798,8 +798,12 @@
     })();
   </script>
   <style>
-    .pf-app-arch-head,
-    .pf-app-arch-badge { display: none; }
+    .pf-app-back,
+    .pf-tw,
+    .pf-pk-scene {
+      display: none;
+    }
+
     html.pf-standalone {
       background: #070B18 !important;
       overflow-x: clip !important;
@@ -807,252 +811,341 @@
       -webkit-tap-highlight-color: transparent;
       -webkit-text-size-adjust: 100%;
     }
+
     html.pf-standalone .portal-nav,
     html.pf-standalone .fp-copy,
     html.pf-standalone .fp-kicker,
     html.pf-standalone footer.site-footer,
-    html.pf-standalone .site-footer { display: none !important; }
+    html.pf-standalone .site-footer {
+      display: none !important;
+    }
+
     html.pf-standalone body {
-      background: #F7F8FC !important;
+      background: radial-gradient(#101c38 1.5px, transparent 1.7px) 0 0 / 22px 22px, #070B18 !important;
+      color: #F4F6FB !important;
+      font-family: "Outfit", "Plus Jakarta Sans", "Inter", system-ui, sans-serif !important;
       min-height: 100dvh !important;
       width: 100% !important;
       max-width: none !important;
       margin: 0 !important;
       overflow-x: clip !important;
     }
-    @keyframes pfRingFloatA {
-      0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(-10px, 12px) scale(1.06); }
+
+    @keyframes pfTw {
+      0%, 100% { transform: scale(.6) rotate(0deg); }
+      50% { transform: scale(1.15) rotate(45deg); }
     }
-    @keyframes pfRingFloatB {
-      0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(12px, -10px) scale(1.08); }
+
+    @keyframes pfPk {
+      0%, 100% { transform: scaleY(.97); }
+      50% { transform: scaleY(1.03); }
     }
-    @keyframes pfSheetUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to { opacity: 1; transform: translateY(0); }
+
+    @keyframes pfBlink {
+      0%, 92%, 100% { transform: scaleY(1); }
+      95% { transform: scaleY(.1); }
     }
-    @keyframes pfBadgePop {
-      0% { opacity: 0; transform: translateX(-50%) scale(0.68) rotate(-8deg); }
-      70% { opacity: 1; transform: translateX(-50%) scale(1.04) rotate(0deg); }
-      100% { opacity: 1; transform: translateX(-50%) scale(1) rotate(0deg); }
+
+    @keyframes pfBubPop {
+      from { opacity: 0; transform: scale(.4); }
+      to { opacity: 1; transform: none; }
     }
-    @keyframes pfLogoGlow {
-      0%, 100% { box-shadow: 0 14px 30px rgba(7, 11, 24, 0.48), 0 0 0 6px rgba(245, 197, 24, 0.12); }
-      50% { box-shadow: 0 18px 36px rgba(7, 11, 24, 0.56), 0 0 0 10px rgba(245, 197, 24, 0.22), 0 0 26px rgba(245, 197, 24, 0.30); }
+
+    @keyframes pfCardIn {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: none; }
     }
-    @keyframes pfSheenSweep {
-      0%, 62% { transform: translateX(-140%) rotate(22deg); }
-      82%, 100% { transform: translateX(160%) rotate(22deg); }
-    }
-    @keyframes pfStaggerUp {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    html.pf-standalone .pf-app-arch-head {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+
+    html.pf-standalone .fp-shell {
       position: relative;
-      width: 100%;
-      min-height: calc(138px + env(safe-area-inset-top, 0px));
-      padding: calc(18px + env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-right, 20px)) 54px max(20px, env(safe-area-inset-left, 20px));
-      background: radial-gradient(circle at 50% 90%, rgba(245, 197, 24, 0.14) 0%, transparent 62%), linear-gradient(180deg, #FFFFFF 0%, #EEF2FA 100%);
-      overflow: hidden;
-      flex: none;
+      flex: 1 1 auto !important;
+      min-height: 100dvh !important;
+      width: 100% !important;
+      margin: 0 !important;
+      padding: calc(env(safe-area-inset-top, 0px) + 74px) max(20px, env(safe-area-inset-right, 20px)) calc(34px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 20px)) !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      background: transparent !important;
+      overflow: visible !important;
     }
-    html.pf-standalone .pf-app-ring {
-      position: absolute;
-      border-radius: 50%;
-      border: 7px solid rgba(15, 26, 51, 0.08);
-      pointer-events: none;
+
+    html.pf-standalone .fp-shell::before {
+      display: none !important;
+      content: none !important;
     }
-    html.pf-standalone .pf-app-ring.r1 {
-      width: 104px; height: 104px; top: -28px; right: -24px;
-      border-color: rgba(245, 197, 24, 0.36);
-      animation: pfRingFloatA 7.5s ease-in-out infinite alternate;
-    }
-    html.pf-standalone .pf-app-ring.r2 {
-      width: 84px; height: 84px; bottom: 18px; left: -38px;
-      border-color: rgba(15, 26, 51, 0.12);
-      animation: pfRingFloatB 8.5s ease-in-out infinite alternate;
-    }
-    html.pf-standalone .pf-app-ring.r3 {
-      width: 44px; height: 44px; top: 22px; right: 24%;
-      border-width: 4.5px;
-      border-color: rgba(245, 197, 24, 0.24);
-      animation: pfRingFloatB 6.2s ease-in-out infinite alternate-reverse;
-    }
+
     html.pf-standalone .pf-app-back {
       position: absolute;
-      top: calc(14px + env(safe-area-inset-top, 0px));
+      top: calc(env(safe-area-inset-top, 0px) + 18px);
       left: max(16px, env(safe-area-inset-left, 16px));
-      width: 44px;
-      height: 44px;
+      width: 46px;
+      height: 46px;
       border-radius: 50%;
       display: grid;
       place-items: center;
       background: #0F1A33;
       color: #F4F6FB;
-      border: 1.5px solid rgba(245, 197, 24, 0.58);
+      border: 1.5px solid #1F2F55;
       text-decoration: none;
-      z-index: 4;
+      z-index: 6;
       touch-action: manipulation;
       user-select: none;
       -webkit-user-select: none;
       -webkit-touch-callout: none;
       transition: transform .12s ease-out, background-color .15s ease, border-color .15s ease;
     }
-    html.pf-standalone .pf-app-back svg { width: 18px; height: 18px; display: block; }
-    html.pf-standalone .pf-app-back:active { transform: scale(0.94); background: #19294E; border-color: #F5C518; }
-    @media (hover: hover) and (pointer: fine) {
-      html.pf-standalone .pf-app-back:hover { background: #19294E; border-color: #F5C518; }
-    }
-    html.pf-standalone .fp-shell {
-      position: relative;
-      flex: 1 1 auto !important;
-      min-height: 0 !important;
-      margin-top: -34px;
-      padding: 70px max(20px, env(safe-area-inset-right, 20px)) calc(32px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 20px)) !important;
-      align-items: flex-start !important;
-      background: linear-gradient(180deg, #0F1A33 0%, #070B18 100%) !important;
-      border-top-left-radius: 50% 44px;
-      border-top-right-radius: 50% 44px;
-      box-shadow: 0 -10px 28px rgba(7, 11, 24, 0.14), inset 0 1px 0 rgba(245, 197, 24, 0.24);
-      overflow: visible !important;
-      animation: pfSheetUp .46s cubic-bezier(.22, 1, .36, 1) both !important;
-    }
-    html.pf-standalone .fp-shell::before {
-      display: none !important;
-      content: none !important;
-    }
-    html.pf-standalone .pf-app-arch-badge {
-      display: grid;
-      place-items: center;
-      position: absolute;
-      top: -49px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 98px;
-      height: 98px;
-      border-radius: 50%;
-      background: #070B18;
-      border: 3.5px solid #F5C518;
-      box-shadow: 0 14px 30px rgba(7, 11, 24, 0.48), 0 0 0 6px rgba(245, 197, 24, 0.12);
-      overflow: hidden;
-      z-index: 3;
-      user-select: none;
-      -webkit-user-select: none;
-      -webkit-touch-callout: none;
-      animation: pfBadgePop .56s cubic-bezier(.22, 1.15, .36, 1) .05s both, pfLogoGlow 3.8s ease-in-out .85s infinite;
-    }
-    html.pf-standalone .pf-app-arch-badge img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 50%;
+
+    html.pf-standalone .pf-app-back svg {
+      width: 22px;
+      height: 22px;
+      stroke: #F4F6FB;
+      fill: none;
+      stroke-width: 2.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
       display: block;
     }
-    html.pf-standalone .pf-app-arch-badge::after {
-      content: "";
-      position: absolute;
-      inset: -20%;
-      background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, 0.34) 50%, transparent 62%);
-      transform: translateX(-140%) rotate(22deg);
-      animation: pfSheenSweep 4.8s ease-in-out 1.4s infinite;
-      pointer-events: none;
+
+    html.pf-standalone .pf-app-back:active {
+      transform: scale(.94);
+      background: #17274b;
+      border-color: #F5C518;
     }
+
+    html.pf-standalone .pf-app-back:focus-visible {
+      outline: 3px solid #F4F6FB;
+      outline-offset: 3px;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      html.pf-standalone .pf-app-back:hover {
+        background: #17274b;
+        border-color: #F5C518;
+      }
+    }
+
+    html.pf-standalone .pf-tw {
+      display: block;
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      background: #F5C518;
+      clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+      animation: pfTw 2.4s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    html.pf-standalone .pf-tw-1 { left: 70%; top: calc(env(safe-area-inset-top, 0px) + 26px); }
+    html.pf-standalone .pf-tw-2 { left: 91%; top: calc(env(safe-area-inset-top, 0px) + 84px); animation-delay: .8s; }
+    html.pf-standalone .pf-tw-3 { left: 5%; top: calc(env(safe-area-inset-top, 0px) + 118px); animation-delay: 1.4s; }
+
     html.pf-standalone .fp-wrap {
-      grid-template-columns: 1fr !important;
-      max-width: 400px !important;
+      display: block !important;
+      max-width: 420px !important;
       width: 100% !important;
       margin: 0 auto !important;
     }
+
+    html.pf-standalone .pf-pk-scene {
+      display: block;
+      position: relative;
+      z-index: 3;
+      height: 128px;
+      margin: 14px 0 -3px;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+    }
+
+    html.pf-standalone .pf-pk {
+      position: absolute;
+      left: 8px;
+      top: 0;
+      width: 190px;
+      height: auto;
+      overflow: visible;
+    }
+
+    html.pf-standalone .pf-pkh {
+      transform-origin: 95px 110px;
+      animation: pfPk 2.2s ease-in-out infinite;
+    }
+
+    html.pf-standalone .pf-meye {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: pfBlink 4s infinite;
+    }
+
+    html.pf-standalone .pf-bub {
+      position: absolute;
+      right: 0;
+      top: 14px;
+      width: min(148px, 44%);
+      background: #F4F6FB;
+      border: 2px solid #1F2F55;
+      border-radius: 18px;
+      padding: 10px 12px;
+      font: 600 15.5px/1.2 "Outfit", system-ui, sans-serif;
+      color: #0a1128;
+      opacity: 0;
+      transform-origin: 0 100%;
+      animation: pfBubPop .5s cubic-bezier(.3, 1.6, .5, 1) .28s forwards;
+    }
+
+    html.pf-standalone .pf-bub::before {
+      content: "";
+      position: absolute;
+      left: -9px;
+      bottom: 14px;
+      width: 14px;
+      height: 14px;
+      background: #F4F6FB;
+      border-left: 2px solid #1F2F55;
+      border-bottom: 2px solid #1F2F55;
+      transform: rotate(45deg);
+    }
+
     html.pf-standalone .fp-card {
-      background: transparent !important;
-      border: 0 !important;
+      position: relative;
+      z-index: 2;
+      background: #0F1A33 !important;
+      border: 1.5px solid #1F2F55 !important;
+      border-radius: 26px !important;
       box-shadow: none !important;
-      padding: 0 !important;
+      padding: 22px 18px 20px !important;
       max-width: 100% !important;
       width: 100% !important;
-      animation: none !important;
+      animation: pfCardIn .42s cubic-bezier(.22, 1, .36, 1) both !important;
     }
-    html.pf-standalone .fp-steps,
-    html.pf-standalone .fp-card h2,
-    html.pf-standalone .fp-lead,
-    html.pf-standalone .fp-card form,
-    html.pf-standalone .fp-links {
-      animation: pfStaggerUp .42s cubic-bezier(.22, 1, .36, 1) both !important;
-    }
-    html.pf-standalone .fp-steps { animation-delay: .08s !important; }
-    html.pf-standalone .fp-card h2 { animation-delay: .13s !important; }
-    html.pf-standalone .fp-lead { animation-delay: .17s !important; }
-    html.pf-standalone .fp-card form { animation-delay: .22s !important; }
-    html.pf-standalone .fp-links { animation-delay: .28s !important; }
-    html.pf-standalone .fp-card h2 { text-align: center; font-size: 21px; margin-bottom: 6px; color: #F4F6FB; }
-    html.pf-standalone .fp-lead { text-align: center; color: #9FB0D6; margin-bottom: 18px; }
-    html.pf-standalone .fp-field-label { color: #CBD5E1 !important; font-size: 13px !important; margin-bottom: 6px !important; }
-    html.pf-standalone .fp-input {
-      height: 48px !important;
-      font-size: 16px !important;
-      border-radius: 999px !important;
-      background: rgba(7, 11, 24, 0.58) !important;
-      border: 1.5px solid rgba(159, 176, 214, 0.34) !important;
+
+    html.pf-standalone .fp-card h2 {
+      font: 600 26px/1.15 "Outfit", system-ui, sans-serif !important;
+      margin: 0 0 6px !important;
       color: #F4F6FB !important;
-      padding: 0 18px !important;
     }
-    html.pf-standalone .fp-input::placeholder { color: #8FA3CC !important; }
+
+    html.pf-standalone .fp-lead {
+      font: 600 15px/1.4 "Outfit", system-ui, sans-serif !important;
+      color: #9FB0D6 !important;
+      margin: 0 0 18px !important;
+    }
+
+    html.pf-standalone .fp-field-label {
+      color: #F4F6FB !important;
+      font: 700 14px/1.2 "Outfit", system-ui, sans-serif !important;
+      margin-bottom: 7px !important;
+    }
+
+    html.pf-standalone .fp-input {
+      height: 54px !important;
+      font: 600 16px/1 "Outfit", system-ui, sans-serif !important;
+      border-radius: 14px !important;
+      background: #070B18 !important;
+      border: 1.5px solid #1F2F55 !important;
+      color: #F4F6FB !important;
+      padding: 0 16px !important;
+      box-shadow: none !important;
+      transition: border-color .2s ease, box-shadow .2s ease !important;
+    }
+
+    html.pf-standalone .fp-input::placeholder {
+      color: #5f719b !important;
+      font-weight: 500 !important;
+    }
+
     html.pf-standalone .fp-input:focus {
+      background: #070B18 !important;
       border-color: #F5C518 !important;
       outline: none !important;
-      box-shadow: 0 0 0 3px rgba(245, 197, 24, 0.22) !important;
+      box-shadow: 0 0 0 4px rgba(245, 197, 24, .15) !important;
     }
-    html.pf-standalone .fp-pw-wrap .fp-input { padding-right: 52px !important; }
+
+    html.pf-standalone .fp-pw-wrap .fp-input {
+      padding-right: 56px !important;
+    }
+
     html.pf-standalone .fp-otp-digit {
       min-width: 0;
       width: 100%;
-      height: 50px;
+      height: 52px;
       border-radius: 14px;
-      background: rgba(7, 11, 24, 0.58);
-      border: 1.5px solid rgba(159, 176, 214, 0.34);
+      background: #070B18;
+      border: 1.5px solid #1F2F55;
       color: #F4F6FB;
-      font-size: 20px;
+      font: 700 20px/1 "Outfit", system-ui, sans-serif;
     }
+
+    html.pf-standalone .fp-otp-digit:focus {
+      border-color: #F5C518;
+      box-shadow: 0 0 0 4px rgba(245, 197, 24, .15);
+    }
+
     html.pf-standalone .fp-btn-gold {
       position: relative;
       overflow: hidden;
-      height: 50px !important;
+      height: 58px !important;
+      border: 0 !important;
       border-radius: 999px !important;
       background: #F5C518 !important;
-      color: #0B1530 !important;
-      font-size: 15.5px !important;
-      font-weight: 800 !important;
-      box-shadow: 0 10px 24px -10px rgba(245, 197, 24, 0.5) !important;
+      color: #070B18 !important;
+      font: 700 19px/1 "Outfit", system-ui, sans-serif !important;
+      box-shadow: 0 8px 24px rgba(245, 197, 24, .25) !important;
       user-select: none;
       -webkit-user-select: none;
-      transition: transform .12s ease-out, background-color .15s ease !important;
+      transition: transform .12s ease-out, background-color .15s ease, box-shadow .15s ease !important;
     }
-    html.pf-standalone .fp-btn-gold:active:not(:disabled) { transform: scale(0.975) !important; background: #D9AD0F !important; }
-    html.pf-standalone .fp-links { margin-top: 14px; }
-    html.pf-standalone .fp-links a { min-height: 44px; display: inline-flex; align-items: center; }
-    @media (min-width: 600px) {
-      html.pf-standalone .fp-shell {
-        border-top-left-radius: 50% 56px;
-        border-top-right-radius: 50% 56px;
-      }
+
+    html.pf-standalone .fp-btn-gold:active:not(:disabled) {
+      transform: scale(.97) !important;
+      box-shadow: none !important;
+      background: #e5b710 !important;
     }
+
+    html.pf-standalone .fp-btn-gold:focus-visible {
+      outline: 3px solid #F4F6FB !important;
+      outline-offset: 3px !important;
+    }
+
+    html.pf-standalone .fp-links {
+      margin-top: 18px;
+      font: 600 15px/1.4 "Outfit", system-ui, sans-serif;
+    }
+
+    html.pf-standalone .fp-links a {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      color: #F5C518;
+      font-weight: 800;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    @media (max-width: 360px) {
+      html.pf-standalone .pf-pk-scene { height: 114px; }
+      html.pf-standalone .pf-pk { left: 2px; width: 164px; }
+      html.pf-standalone .pf-bub { width: min(132px, 44%); font-size: 14px; padding: 9px 10px; }
+    }
+
     @media (max-height: 520px) {
-      html.pf-standalone .pf-app-arch-head {
-        min-height: calc(96px + env(safe-area-inset-top, 0px));
-        padding: calc(12px + env(safe-area-inset-top, 0px)) 20px 42px;
-      }
-      html.pf-standalone .pf-app-arch-badge { width: 78px; height: 78px; top: -39px; border-width: 3px; }
-      html.pf-standalone .fp-shell { margin-top: -26px; padding-top: 52px !important; }
+      html.pf-standalone .fp-shell { padding-top: calc(env(safe-area-inset-top, 0px) + 64px) !important; }
+      html.pf-standalone .pf-pk-scene { height: 102px; margin-top: 6px; }
+      html.pf-standalone .pf-pk { width: 152px; }
     }
+
     @media (prefers-reduced-motion: reduce) {
       html.pf-standalone *, html.pf-standalone *::before, html.pf-standalone *::after {
         animation: none !important;
         transition: none !important;
+      }
+      html.pf-standalone .pf-bub {
+        opacity: 1 !important;
+        transform: none !important;
       }
     }
   </style>
@@ -1070,12 +1163,6 @@
 </head>
 
 <body class="portal-body auth-page dark public-dark-theme">
-  <div class="pf-app-arch-head">
-    <span class="pf-app-ring r1" aria-hidden="true"></span>
-    <span class="pf-app-ring r2" aria-hidden="true"></span>
-    <span class="pf-app-ring r3" aria-hidden="true"></span>
-    <a class="pf-app-back" href="/login" aria-label="Back to sign in"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg></a>
-  </div>
   <header class="portal-nav">
     <a class="portal-brand" href="/">
       <img src="logo.jpg" alt="ProFit logo" width="36" height="36">
@@ -1085,7 +1172,12 @@
   </header>
 
   <main class="fp-shell">
-    <div class="pf-app-arch-badge"><img src="/logo.jpg" alt="ProFit logo" width="98" height="98"></div>
+    <a class="pf-app-back" href="/login" aria-label="Back to sign in"><svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M15 5l-7 7 7 7" />
+      </svg></a>
+    <i class="pf-tw pf-tw-1" aria-hidden="true"></i>
+    <i class="pf-tw pf-tw-2" aria-hidden="true"></i>
+    <i class="pf-tw pf-tw-3" aria-hidden="true"></i>
     <div class="fp-wrap">
       <section class="fp-copy" aria-label="Password reset overview">
         <p class="fp-eyebrow">Your gym. One platform.</p>
@@ -1099,6 +1191,31 @@
         </ul>
         <p class="fp-gym-foot"><span data-gym-name>Functional Fitness Gym</span> · Alfonso, Calabarzon</p>
       </section>
+
+      <div class="pf-pk-scene" aria-hidden="true">
+        <svg class="pf-pk" viewBox="0 -8 190 118">
+          <path d="M38 110C30 60 50 16 95 16C140 16 160 60 152 110Z" fill="#ffe45c" />
+          <g class="pf-pkh">
+            <path d="M92 18Q84 2 91 -4Q98 4 96 18Z" fill="#ffe45c" stroke="#0a1128" stroke-width="3" />
+            <path d="M97 18Q102 5 110 4Q109 12 101 19Z" fill="#ffe45c" stroke="#0a1128" stroke-width="3" />
+            <path d="M38 110C30 60 50 16 95 16C140 16 160 60 152 110" fill="none" stroke="#0a1128" stroke-width="3.5" stroke-linecap="round" />
+            <path d="M36 50Q95 30 154 50L156 64Q95 44 34 64Z" fill="#111" />
+            <ellipse cx="54" cy="92" rx="10" ry="6" fill="#f4a9c8" />
+            <ellipse cx="136" cy="92" rx="10" ry="6" fill="#f4a9c8" />
+            <g class="pf-meye">
+              <circle cx="72" cy="80" r="4.2" fill="#0a1128" />
+              <circle cx="118" cy="80" r="4.2" fill="#0a1128" />
+            </g>
+            <path d="M88 93Q95 100 102 93" stroke="#0a1128" stroke-width="3" fill="none" stroke-linecap="round" />
+          </g>
+          <path d="M22 52Q15 63 22 68Q29 63 22 52ZM168 52Q161 63 168 68Q175 63 168 52Z" fill="#111" />
+          <circle cx="44" cy="107" r="13" fill="#ffe45c" stroke="#0a1128" stroke-width="3.5" />
+          <path d="M38 102v7M44 100v9M50 102v7" stroke="#0a1128" stroke-width="2.2" stroke-linecap="round" />
+          <circle cx="146" cy="107" r="13" fill="#ffe45c" stroke="#0a1128" stroke-width="3.5" />
+          <path d="M140 102v7M146 100v9M152 102v7" stroke="#0a1128" stroke-width="2.2" stroke-linecap="round" />
+        </svg>
+        <div class="pf-bub">Let's reset it!</div>
+      </div>
 
       <section class="fp-card" aria-label="Password reset form">
         <p class="fp-kicker">Password reset</p>
